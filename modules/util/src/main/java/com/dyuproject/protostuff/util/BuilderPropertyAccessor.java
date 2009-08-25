@@ -32,51 +32,49 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import com.google.protobuf.AbstractMessageLite.Builder;
-
 /**
  * @author David Yu
  * @created Aug 23, 2009
  */
 
-public class BuilderField extends AbstractField
+public class BuilderPropertyAccessor extends PropertyAccessor
 {
     
-    HasAccessor _has;
-    GetAccessor _get;
-    ClearAccessor _clear;
-    SetAccessor _set;
+    HasMethod _has;
+    GetMethod _get;
+    ClearMethod _clear;
+    SetMethod _set;
     
-    public BuilderField(Meta meta)
+    public BuilderPropertyAccessor(PropertyMeta meta)
     {
         super(meta);
-        _get = new GetAccessor();                
-        _clear = new ClearAccessor();
+        _get = new GetMethod();                
+        _clear = new ClearMethod();
         
         if(meta.isRepeated())
         {
-            _has = new RepeatedHasAccessor();            
-            _set = new RepeatedSetAccessor();
+            _has = new RepeatedHasMethod();            
+            _set = new RepeatedSetMethod();
         }
         else
         {
-            _has = new HasAccessor();
-            _set = new SetAccessor();
+            _has = new HasMethod();
+            _set = new SetMethod();
         }
         
-        _get.init();
-        _clear.init();
-        _has.init();
-        _set.init();
+        _get.init(meta, meta.getBuilderClass());
+        _clear.init(meta);
+        _has.init(meta, meta.getBuilderClass());
+        _set.init(meta);
     }
     
-    public Object getValue(Builder<?> builder)
+    public Object getValue(Object builder)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         return _has.hasValue(builder) ? _get.getValue(builder) : null;
     }
     
-    public Object removeValue(Builder<?> builder)
+    public Object removeValue(Object builder)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         Object value = null;
@@ -88,7 +86,7 @@ public class BuilderField extends AbstractField
         return value;
     }
     
-    public void setValue(Builder<?> builder, Object value)
+    public void setValue(Object builder, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(value==null)
@@ -97,7 +95,7 @@ public class BuilderField extends AbstractField
             _set.setValue(builder, value);
     }
     
-    public boolean replaceValueIfNone(Builder<?> builder, Object value)
+    public boolean replaceValueIfNone(Object builder, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(value==null || _has.hasValue(builder))
@@ -107,7 +105,7 @@ public class BuilderField extends AbstractField
         return true;
     }
     
-    public Object replaceValueIfAny(Builder<?> builder, Object value)
+    public Object replaceValueIfAny(Object builder, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_has.hasValue(builder))
@@ -121,70 +119,16 @@ public class BuilderField extends AbstractField
         return null;
     }
     
-    class HasAccessor
+    static class ClearMethod
     {
         Method _method;
         
-        protected void init()
+        protected void init(PropertyMeta meta)
         {
             try
             {
-                _method = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("has", getMeta().getName()), NO_ARG_C);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-        
-        public boolean hasValue(Builder<?> builder) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return Boolean.TRUE.equals(_method.invoke(builder, NO_ARG));
-        }
-    }
-    
-    class RepeatedHasAccessor extends HasAccessor
-    {
-        protected void init()
-        {
-            try
-            {
-                _method = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("get", getMeta().getName() + "Count"), NO_ARG_C);
-            }
-            catch(Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public boolean hasValue(Builder<?> builder) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return !ZERO_COUNT.equals(_method.invoke(builder, NO_ARG));
-        }
-    }
-    
-    class GetAccessor
-    {
-        Method _method;
-        
-        protected void init()
-        {
-            try
-            {
-                if(getMeta().isRepeated())
-                {
-                    _method = getMeta().getBuilderClass().getDeclaredMethod(
-                            toPrefixedPascalCase("get", getMeta().getName() + "List"), NO_ARG_C);
-                }
-                else
-                {
-                    _method = getMeta().getBuilderClass().getDeclaredMethod(
-                            toPrefixedPascalCase("get", getMeta().getName()), NO_ARG_C);
-                }
+                _method = meta.getBuilderClass().getDeclaredMethod(
+                        toPrefixedPascalCase("clear", meta.getName()), NO_ARG_C);
             }
             catch(Exception e)
             {
@@ -192,55 +136,31 @@ public class BuilderField extends AbstractField
             }
         }
         
-        public Object getValue(Builder<?> builder) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return _method.invoke(builder, NO_ARG);
-        }
-    }
-    
-    class ClearAccessor
-    {
-        Method _method;
-        
-        protected void init()
-        {
-            try
-            {
-                _method = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("clear", getMeta().getName()), NO_ARG_C);
-            }
-            catch(Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-        
-        public void clearValue(Builder<?> builder) 
+        public void clearValue(Object builder) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             _method.invoke(builder, NO_ARG);
         }
     }
     
-    class SetAccessor
+    static class SetMethod
     {
         Method _method, _builderSet;
         Class<?> _builderClass;
         
-        protected void init()
+        protected void init(PropertyMeta meta)
         {
             try
             {
-                _method = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("set", getMeta().getName()), 
-                        new Class<?>[]{getMeta().getTypeClass()});
+                _method = meta.getBuilderClass().getDeclaredMethod(
+                        toPrefixedPascalCase("set", meta.getName()), 
+                        new Class<?>[]{meta.getTypeClass()});
                 
-                if(getMeta().isMessage())
+                if(meta.isMessage())
                 {
-                    _builderClass = getMeta().getTypeClass().getDeclaredClasses()[0];
-                    _builderSet = getMeta().getBuilderClass().getDeclaredMethod(
-                            toPrefixedPascalCase("set", getMeta().getName()), 
+                    _builderClass = meta.getTypeClass().getDeclaredClasses()[0];
+                    _builderSet = meta.getBuilderClass().getDeclaredMethod(
+                            toPrefixedPascalCase("set", meta.getName()), 
                             new Class<?>[]{_builderClass});
                 }
             }
@@ -249,7 +169,7 @@ public class BuilderField extends AbstractField
                 throw new RuntimeException(e);
             }
         }
-        public void setValue(Builder<?> builder, Object value) 
+        public void setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(_builderClass==value.getClass())
@@ -259,26 +179,26 @@ public class BuilderField extends AbstractField
         }
     }
     
-    class RepeatedSetAccessor extends SetAccessor
+    static class RepeatedSetMethod extends SetMethod
     {
         Method _componentAdd, _builderAdd;
         Class<?> _builderClass;
         
-        protected void init()
+        protected void init(PropertyMeta meta)
         {
             try
             {
-                _method = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("addAll", getMeta().getName()), ITERABLE_ARG_C);
-                _componentAdd = getMeta().getBuilderClass().getDeclaredMethod(
-                        toPrefixedPascalCase("add", getMeta().getName()), 
-                        new Class<?>[]{getMeta().getComponentTypeClass()});
+                _method = meta.getBuilderClass().getDeclaredMethod(
+                        toPrefixedPascalCase("addAll", meta.getName()), ITERABLE_ARG_C);
+                _componentAdd = meta.getBuilderClass().getDeclaredMethod(
+                        toPrefixedPascalCase("add", meta.getName()), 
+                        new Class<?>[]{meta.getComponentTypeClass()});
                 
-                if(getMeta().isMessage())
+                if(meta.isMessage())
                 {
-                    _builderClass = getMeta().getComponentTypeClass().getDeclaredClasses()[0];
-                    _builderAdd = getMeta().getBuilderClass().getDeclaredMethod(
-                            toPrefixedPascalCase("add", getMeta().getName()), 
+                    _builderClass = meta.getComponentTypeClass().getDeclaredClasses()[0];
+                    _builderAdd = meta.getBuilderClass().getDeclaredMethod(
+                            toPrefixedPascalCase("add", meta.getName()), 
                             new Class<?>[]{_builderClass});                    
                 }
             }
@@ -288,7 +208,7 @@ public class BuilderField extends AbstractField
             }
         }
         
-        public void setValue(Builder<?> builder, Object value) 
+        public void setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(List.class.isAssignableFrom(value.getClass()))

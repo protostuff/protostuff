@@ -26,25 +26,30 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
+
 package com.dyuproject.protostuff.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.dyuproject.protostuff.util.PropertyAccessor.GetMethod;
+import com.dyuproject.protostuff.util.PropertyAccessor.HasMethod;
+import com.dyuproject.protostuff.util.PropertyAccessor.RepeatedHasMethod;
+
 /**
  * @author David Yu
- * @created Aug 24, 2009
+ * @created Aug 25, 2009
  */
 
-public class ProtobufModel
+public class ReadOnlyModel
 {
     
     private ModelMeta _modelMeta;
     private Property[] _props;
     private Map<String, Property> _propMap;
     
-    public ProtobufModel(ModelMeta modelMeta)
+    public ReadOnlyModel(ModelMeta modelMeta)
     {
         _modelMeta = modelMeta;
         _props = new Property[_modelMeta.getMaxNumber()+1];
@@ -58,11 +63,6 @@ public class ProtobufModel
         }
     }
     
-    public ModelMeta getModelMeta()
-    {
-        return _modelMeta;
-    }
-    
     public Property getProperty(int num)
     {
         return _props[num];
@@ -73,19 +73,33 @@ public class ProtobufModel
         return _propMap.get(name);
     }
     
-    
     public static class Property
     {
         
         private PropertyMeta _propertyMeta;
-        private MessagePropertyAccessor _messageAccessor;
-        private BuilderPropertyAccessor _builderAccessor;
+        private GetMethod _messageGet = new GetMethod(), _builderGet = new GetMethod();
+        private HasMethod _messageHas, _builderHas;
         
-        Property(PropertyMeta propertyMeta)        
+        Property(PropertyMeta propertyMeta)
         {
             _propertyMeta = propertyMeta;
-            _messageAccessor = new MessagePropertyAccessor(propertyMeta);
-            _builderAccessor = new BuilderPropertyAccessor(propertyMeta);
+            _messageGet = new GetMethod();
+            if(propertyMeta.isRepeated())
+            {
+                _messageHas = new RepeatedHasMethod();
+                _builderHas = new RepeatedHasMethod();                
+            }
+            else
+            {
+                _messageHas = new HasMethod();
+                _builderHas = new HasMethod();   
+            }
+            
+            _messageHas.init(propertyMeta, propertyMeta.getMessageClass());
+            _messageGet.init(propertyMeta, propertyMeta.getMessageClass());
+            
+            _builderHas.init(propertyMeta, propertyMeta.getBuilderClass());
+            _builderGet.init(propertyMeta, propertyMeta.getBuilderClass());
         }
         
         public PropertyMeta getMeta()
@@ -93,64 +107,20 @@ public class ProtobufModel
             return _propertyMeta;
         }
         
-        public MessagePropertyAccessor getMessageField()
-        {
-            return _messageAccessor;
-        }
-        
-        public BuilderPropertyAccessor getBuilderField()
-        {
-            return _builderAccessor;
-        }
-
         public Object getValue(Object target) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(_propertyMeta.getMessageClass()==target.getClass())
-                return _messageAccessor.getValue(target);
+            {
+                return _messageHas.hasValue(target) ? _messageGet.getValue(target) : null;
+            }
             else if(_propertyMeta.getBuilderClass()==target.getClass())
-                return _builderAccessor.getValue(target);
+            {
+                return _builderHas.hasValue(target) ? _builderGet.getValue(target) : null;
+            }
             return null;
         }
         
-        public Object removeValue(Object target) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            if(_propertyMeta.getMessageClass()==target.getClass())
-                return _messageAccessor.removeValue(target);
-            else if(_propertyMeta.getBuilderClass()==target.getClass())
-                return _builderAccessor.removeValue(target);
-            return null;
-        }
-        
-        public void setValue(Object target, Object value) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            if(_propertyMeta.getMessageClass()==target.getClass())
-                _messageAccessor.setValue(target, value);
-            else if(_propertyMeta.getBuilderClass()==target.getClass())
-                _builderAccessor.setValue(target, value);
-        }
-        
-        public boolean replaceValueIfNone(Object target, Object value) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            if(_propertyMeta.getMessageClass()==target.getClass())
-                return _messageAccessor.replaceValueIfNone(target, value);
-            else if(_propertyMeta.getBuilderClass()==target.getClass())
-                return _builderAccessor.replaceValueIfNone(target, value);
-            return false;
-        }
-        
-        public Object replaceValueIfAny(Object target, Object value) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            if(_propertyMeta.getMessageClass()==target.getClass())
-                return _messageAccessor.replaceValueIfAny(target, value);
-            else if(_propertyMeta.getBuilderClass()==target.getClass())
-                return _builderAccessor.replaceValueIfAny(target, value);
-            return null;
-        }
         
     }
 

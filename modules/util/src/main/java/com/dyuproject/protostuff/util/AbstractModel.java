@@ -26,72 +26,17 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
+
 package com.dyuproject.protostuff.util;
-
-import com.google.protobuf.AbstractMessageLite;
-import com.google.protobuf.AbstractMessageLite.Builder;
-
 
 /**
  * @author David Yu
- * @created Aug 23, 2009
+ * @created Aug 25, 2009
  */
 
-public abstract class AbstractField
+public abstract class AbstractModel
 {
-    
-    public static final Object[] NO_ARG = new Object[]{};
-    public static final Integer ZERO_COUNT = Integer.valueOf(0);
-    public static final Class<?>[] NO_ARG_C = new Class<?>[]{};
-    public static final Class<?>[] INT_ARG_C = new Class<?>[]{int.class};
-    public static final Class<?>[] ITERABLE_ARG_C = new Class<?>[]{Iterable.class};
-    
-    static String toPrefixedPascalCase(String prefix, String target)
-    {
-        char c = target.charAt(0);
-        if(c>96)
-            c = (char)(c-32);
-        
-        return new StringBuilder(prefix.length() + target.length())
-            .append(prefix)
-            .append(c)
-            .append(target, 1, target.length())
-            .toString();
-    }
-    
-    static String toCamelCase(int start, String target)
-    {
-        char[] prop = new char[target.length()-start];
-        target.getChars(start, target.length(), prop, 0);
-        if(prop[0]<91)
-            prop[0] = (char)(prop[0] + 32);
 
-        return new String(prop);
-    }
     
-    private Meta _meta;
     
-    public AbstractField(Meta meta)
-    {
-        _meta = meta;
-    }
-    
-    public Meta getMeta()
-    {
-        return _meta;
-    }
-    
-    public interface Meta
-    {
-        public Class<? extends AbstractMessageLite> getMessageClass();
-        public Class<? extends Builder<?>> getBuilderClass();
-        public Class<?> getTypeClass();
-        public Class<?> getComponentTypeClass();
-        public int getNumber();
-        public boolean isRepeated();
-        public boolean isMessage();
-        public String getName();
-        public String getNormalizedName();
-    }
-
 }

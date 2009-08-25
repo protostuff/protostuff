@@ -34,113 +34,60 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.protobuf.AbstractMessageLite;
-
 
 /**
  * @author David Yu
  * @created Aug 23, 2009
  */
 
-public class MessageField extends AbstractField
+public class MessagePropertyAccessor extends PropertyAccessor
 {
 
-    FieldAccessor _fa;
-    //HasAccessor _has;
-    //GetAccessor _get;
+    FieldAccess _fa;
     
-    
-    /*protected void initHasAccessor(Method method)
-    {
-        if(_has!=null)
-            throw new IllegalStateException("HasAccessor already set.");
-        
-        _has = isRepeated() ? new RepeatedHasAccessor() : new HasAccessor();
-        _has._method = method;
-    }
-    
-    protected void initGetAccessor(Method method)
-    {
-        if(_get!=null)
-            throw new IllegalStateException("GetAccessor already set.");
-        
-        _get = new GetAccessor();
-        _get._method = method;
-    }
-    
-    public Object getValue(AbstractMessageLite message)
-    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-    {
-        return _has.hasValue(message) ? _get.getValue(message) : null;
-    }*/
-    
-    public MessageField(Meta meta, Field field)
+    public MessagePropertyAccessor(PropertyMeta meta)
     {
         super(meta);
-        _fa = meta.isRepeated() ? new RepeatedFieldAccessor() : new FieldAccessor();
-        _fa.init(field);
+        _fa = meta.isRepeated() ? new RepeatedFieldAccess() : new FieldAccess();
+        _fa.init(meta.getField());
     }
     
-    public Object getValue(AbstractMessageLite message)
+    public Field getField()
+    {
+        return _fa._field;
+    }
+    
+    public Object getValue(Object message)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         return _fa.getValue(message);
     }
     
-    public Object removeValue(AbstractMessageLite message) 
+    public Object removeValue(Object message) 
     throws IllegalArgumentException, IllegalAccessException
     {
         return _fa.removeValue(message);
     }
     
-    public void setValue(AbstractMessageLite message, Object value)
+    public void setValue(Object message, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         _fa.setValue(message, value, true);
     }
     
-    public boolean replaceValueIfNone(AbstractMessageLite message, Object value)
+    public boolean replaceValueIfNone(Object message, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         return _fa.replaceValueIfNone(message, value);
     }
     
-    public Object replaceValueIfAny(AbstractMessageLite message, Object value)
+    public Object replaceValueIfAny(Object message, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         return _fa.replaceValueIfAny(message, value);
     }
     
-    /*class HasAccessor
-    {
-        Method _method;
-        public boolean hasValue(AbstractMessageLite message) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return Boolean.TRUE.equals(_method.invoke(message, NO_ARG));
-        }
-    }
-    
-    class RepeatedHasAccessor extends HasAccessor
-    {
-        public boolean hasValue(AbstractMessageLite message) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return !ZERO_COUNT.equals(_method.invoke(message, NO_ARG));
-        }
-    }
-    
-    class GetAccessor
-    {
-        Method _method;        
-        public Object getValue(AbstractMessageLite message) 
-        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            return _method.invoke(message, NO_ARG);
-        }
-    }*/
-    
-    class FieldAccessor
+    class FieldAccess
     {
         Field _field, _has;
         
@@ -161,13 +108,13 @@ public class MessageField extends AbstractField
             }
         }
         
-        public Object getValue(AbstractMessageLite message) 
+        public Object getValue(Object message) 
         throws IllegalArgumentException, IllegalAccessException
         {
             return _has.getBoolean(message) ? _field.get(message) : null;
         }
         
-        public Object removeValue(AbstractMessageLite message)
+        public Object removeValue(Object message)
         throws IllegalArgumentException, IllegalAccessException
         {
             Object value = null;
@@ -179,7 +126,7 @@ public class MessageField extends AbstractField
             return value;
         }
         
-        public void setValue(AbstractMessageLite message, Object value, boolean clearIfNullOrEmpty) 
+        public void setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
         throws IllegalArgumentException, IllegalAccessException
         {
             if(value!=null)
@@ -191,7 +138,7 @@ public class MessageField extends AbstractField
                 _has.setBoolean(message, false);
         }
         
-        public boolean replaceValueIfNone(AbstractMessageLite message, Object value)
+        public boolean replaceValueIfNone(Object message, Object value)
         throws IllegalArgumentException, IllegalAccessException
         {
             if(value==null || _has.getBoolean(message))
@@ -201,7 +148,7 @@ public class MessageField extends AbstractField
             return true;
         }
         
-        public Object replaceValueIfAny(AbstractMessageLite message, Object value)
+        public Object replaceValueIfAny(Object message, Object value)
         throws IllegalArgumentException, IllegalAccessException
         {
             if(_has.getBoolean(message))
@@ -217,7 +164,7 @@ public class MessageField extends AbstractField
         }
     }
     
-    class RepeatedFieldAccessor extends FieldAccessor
+    class RepeatedFieldAccess extends FieldAccess
     {
         
         protected void init(Field field)
@@ -227,7 +174,7 @@ public class MessageField extends AbstractField
         }
         
         @SuppressWarnings("unchecked")
-        public Object getValue(AbstractMessageLite message) 
+        public Object getValue(Object message) 
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
@@ -235,7 +182,7 @@ public class MessageField extends AbstractField
         }
         
         @SuppressWarnings("unchecked")
-        public Object removeValue(AbstractMessageLite message)
+        public Object removeValue(Object message)
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
@@ -248,7 +195,7 @@ public class MessageField extends AbstractField
         }
         
         @SuppressWarnings("unchecked")
-        public void setValue(AbstractMessageLite message, Object value, boolean clearIfNullOrEmpty) 
+        public void setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
@@ -279,7 +226,7 @@ public class MessageField extends AbstractField
         }
         
         @SuppressWarnings("unchecked")
-        public boolean replaceValueIfNone(AbstractMessageLite message, Object value)
+        public boolean replaceValueIfNone(Object message, Object value)
         throws IllegalArgumentException, IllegalAccessException
         {
             if(value==null)
@@ -308,7 +255,7 @@ public class MessageField extends AbstractField
         }
         
         @SuppressWarnings("unchecked")
-        public Object replaceValueIfAny(AbstractMessageLite message, Object value)
+        public Object replaceValueIfAny(Object message, Object value)
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
