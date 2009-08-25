@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject</groupId>
   <artifactId>protostuff-util</artifactId>
-  <name>common utils</name>
+  <name>protostuff utils</name>
   <packaging>jar</packaging>
   
   <build>
