@@ -1,0 +1,12 @@
+==============================================================
+ protostuff
+ Copyright 2007-2009 David Yu dyuproject@gmail.com
+==============================================================
+
+slf4j is copyright QOS.ch unless otherwise noted. 
+It is licensed under a liberal license identical to the MIT license and 
+also compatible to the apache software license.
+
+protobuf is copyright Google inc unless otherwise noted. 
+It is licensed under the BSD license.
+
