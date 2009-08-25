@@ -145,6 +145,21 @@ public class V22Test extends TestCase
         
         assertTrue(person.getPriorityTask(0).getId()==6);
         
+        ReadOnlyModel taskModelR = new ReadOnlyModel(taskModel.getModelMeta());        
+        ReadOnlyModel personModelR = new ReadOnlyModel(personModel.getModelMeta());
+        
+        assertEquals(task.getName(), taskModelR.getProperty("name").getValue(task));
+        assertEquals(task.getStatus(), taskModelR.getProperty("status").getValue(task));
+        
+        assertEquals(person.getFirstName(), "John");
+        assertEquals(person.getLastName(), "Doe");
+        assertEquals(person.getFirstName(), personModelR.getProperty("firstName").getValue(person));
+        assertEquals(person.getLastName(), personModelR.getProperty("lastName").getValue(person));
+        
+        assertEquals("J", personBuilder.setFirstName("J").getFirstName());
+        assertEquals("D", personBuilder.setLastName("D").getLastName());
+        assertEquals(personBuilder.getFirstName(), personModelR.getProperty("firstName").getValue(personBuilder));
+        assertEquals(personBuilder.getLastName(), personModelR.getProperty("lastName").getValue(personBuilder));
     }
     
     public void testSpeed() throws Exception
@@ -250,6 +265,21 @@ public class V22Test extends TestCase
         
         assertTrue(person.getPriorityTask(0).getId()==6);
         
+        ReadOnlyModel taskModelR = new ReadOnlyModel(taskModel.getModelMeta());        
+        ReadOnlyModel personModelR = new ReadOnlyModel(personModel.getModelMeta());
+        
+        assertEquals(task.getName(), taskModelR.getProperty("name").getValue(task));
+        assertEquals(task.getStatus(), taskModelR.getProperty("status").getValue(task));
+        
+        assertEquals(person.getFirstName(), "John");
+        assertEquals(person.getLastName(), "Doe");
+        assertEquals(person.getFirstName(), personModelR.getProperty("firstName").getValue(person));
+        assertEquals(person.getLastName(), personModelR.getProperty("lastName").getValue(person));
+        
+        assertEquals("J", personBuilder.setFirstName("J").getFirstName());
+        assertEquals("D", personBuilder.setLastName("D").getLastName());
+        assertEquals(personBuilder.getFirstName(), personModelR.getProperty("firstName").getValue(personBuilder));
+        assertEquals(personBuilder.getLastName(), personModelR.getProperty("lastName").getValue(personBuilder));
     }
 
 }
