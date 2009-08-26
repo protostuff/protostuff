@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.protobuf.AbstractMessageLite;
+import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
@@ -164,7 +165,7 @@ public class LiteRuntime
         private Class<?> _typeClass, _typeBuilderClass, _componentTypeClass;
         private int _number;
         private String _name, _normalizedName;
-        private boolean _repeated, _message;
+        private boolean _repeated, _message, _liteRuntime;
         private Field _field;
         
         public PropMeta(Class<? extends AbstractMessageLite> messageClass, 
@@ -199,6 +200,7 @@ public class LiteRuntime
             {
                 _message = true;
                 _typeBuilderClass = _typeClass.getDeclaredClasses()[0];
+                _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_typeClass);
             }
             else if(List.class.isAssignableFrom(_typeClass))
                 _repeated = true;
@@ -223,7 +225,10 @@ public class LiteRuntime
             _repeated = true;
             _message = AbstractMessageLite.class.isAssignableFrom(_componentTypeClass);
             if(_message)
+            {
                 _typeBuilderClass = _componentTypeClass.getDeclaredClasses()[0];
+                _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_componentTypeClass);
+            }
         }
         
         public int getNumber()
@@ -244,6 +249,11 @@ public class LiteRuntime
         public boolean isMessage()
         {
             return _message;
+        }
+        
+        public boolean isLiteRuntime()
+        {
+            return _liteRuntime;
         }
         
         public String getName()

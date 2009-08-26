@@ -52,6 +52,7 @@ public interface PropertyMeta
     public int getNumber();
     public boolean isRepeated();
     public boolean isMessage();
+    public boolean isLiteRuntime();
     public String getName();
     public String getNormalizedName();
     public Field getField();
