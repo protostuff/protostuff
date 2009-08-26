@@ -93,13 +93,11 @@ public class DefaultProperty extends Property
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            _messageAccessor.setValue(target, value);
+            return _messageAccessor.setValue(target, value);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            _builderAccessor.setValue(target, value);
-        else
-            return false;
+            return _builderAccessor.setValue(target, value);
         
-        return true;
+        return false;
     }
     
     public boolean replaceValueIfNone(Object target, Object value) 

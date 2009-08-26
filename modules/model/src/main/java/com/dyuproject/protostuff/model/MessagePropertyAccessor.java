@@ -69,10 +69,10 @@ public class MessagePropertyAccessor extends PropertyAccessor
         return _fa.removeValue(message);
     }
     
-    public void setValue(Object message, Object value)
+    public boolean setValue(Object message, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
-        _fa.setValue(message, value, true);
+        return _fa.setValue(message, value, true);
     }
     
     public boolean replaceValueIfNone(Object message, Object value)
@@ -126,16 +126,20 @@ public class MessagePropertyAccessor extends PropertyAccessor
             return value;
         }
         
-        public void setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
+        public boolean setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
         throws IllegalArgumentException, IllegalAccessException
         {
             if(value!=null)
             {
                 _has.setBoolean(message, true);
                 _field.set(message, value);
+                return true;
             }
-            else if(clearIfNullOrEmpty)
+            
+            if(clearIfNullOrEmpty)
                 _has.setBoolean(message, false);
+            
+            return clearIfNullOrEmpty;
         }
         
         public boolean replaceValueIfNone(Object message, Object value)
@@ -195,7 +199,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
         }
         
         @SuppressWarnings("unchecked")
-        public void setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
+        public boolean setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
@@ -206,23 +210,38 @@ public class MessagePropertyAccessor extends PropertyAccessor
                     List<Object> vl = (List<Object>)value;
                     if(vl.size()==0)
                     {
-                        if(list.size()!=0 && clearIfNullOrEmpty)
+                        if(list.size()==0)
+                            return true;
+                        
+                        if(clearIfNullOrEmpty)
                             _field.set(message, Collections.emptyList());
-                        return;
+                        
+                        return clearIfNullOrEmpty;
                     }
-                    list.addAll(vl);
+                    
+                    if(list.size()==0)
+                        _field.set(message, vl);
+                    else
+                        list.addAll(vl);
                 }                    
                 else if(list.size()==0)
                 {
-                    ArrayList<Object> nl = new ArrayList<Object>();
+                    ArrayList<Object> nl = new ArrayList<Object>(3);
                     nl.add(value);
                     _field.set(message, nl);
                 }
                 else
                     list.add(value);
             }
-            else if(list.size()!=0 && clearIfNullOrEmpty)
-                _field.set(message, Collections.emptyList());
+            else if(list.size()!=0)
+            {
+                if(clearIfNullOrEmpty)
+                    _field.set(message, Collections.emptyList());
+                
+                return clearIfNullOrEmpty;
+            }
+            
+            return true;
         }
         
         @SuppressWarnings("unchecked")

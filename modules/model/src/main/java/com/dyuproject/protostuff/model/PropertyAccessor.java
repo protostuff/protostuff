@@ -87,7 +87,7 @@ public abstract class PropertyAccessor
     public abstract Object removeValue(Object target) 
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
     
-    public abstract void setValue(Object target, Object value) 
+    public abstract boolean setValue(Object target, Object value) 
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
     
     public abstract boolean replaceValueIfNone(Object target, Object value) 

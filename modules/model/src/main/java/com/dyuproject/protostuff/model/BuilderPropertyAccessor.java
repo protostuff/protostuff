@@ -86,13 +86,16 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         return value;
     }
     
-    public void setValue(Object builder, Object value)
+    public boolean setValue(Object builder, Object value)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(value==null)
+        {
             _clear.clearValue(builder);
-        else
-            _set.setValue(builder, value);
+            return true;
+        }
+        
+        return _set.setValue(builder, value);
     }
     
     public boolean replaceValueIfNone(Object builder, Object value)
@@ -169,13 +172,15 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 throw new RuntimeException(e);
             }
         }
-        public void setValue(Object builder, Object value) 
+        public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(_builderClass==value.getClass())
                 _builderSet.invoke(builder, value);
             else
                 _method.invoke(builder, value);
+            
+            return true;
         }
     }
     
@@ -208,7 +213,7 @@ public class BuilderPropertyAccessor extends PropertyAccessor
             }
         }
         
-        public void setValue(Object builder, Object value) 
+        public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(List.class.isAssignableFrom(value.getClass()))
@@ -217,6 +222,8 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 _builderAdd.invoke(builder, value);
             else
                 _componentAdd.invoke(builder, value);
+            
+            return true;
         }
     }
     
