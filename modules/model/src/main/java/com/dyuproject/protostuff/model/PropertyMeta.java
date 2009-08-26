@@ -31,7 +31,6 @@ package com.dyuproject.protostuff.model;
 
 import java.lang.reflect.Field;
 
-import com.dyuproject.protostuff.model.PropertyAccessor.MessageSource;
 import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
@@ -57,6 +56,11 @@ public interface PropertyMeta
     public String getName();
     public String getNormalizedName();
     public Field getField();
-    public MessageSource getMessageSource();
+    public Resolver getResolver();
+    
+    public interface Resolver
+    {
+        public Object resolveValue(Object value, PropertyMeta meta);
+    }
 
 }

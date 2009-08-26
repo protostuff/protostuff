@@ -32,7 +32,7 @@ package com.google.protobuf;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.model.PropertyAccessor.MessageSource;
+import com.dyuproject.protostuff.model.PropertyMeta;
 import com.google.protobuf.GeneratedMessage.Builder;
 
 /**
@@ -43,9 +43,9 @@ import com.google.protobuf.GeneratedMessage.Builder;
 public abstract class PBSpeed
 {
 
-    public static final MessageSource MESSAGE_SOURCE = new MessageSource()
+    public static final PropertyMeta.Resolver RESOLVER = new PropertyMeta.Resolver()
     {
-        public AbstractMessageLite getMessage(Object builder)
+        public Object resolveValue(Object builder, PropertyMeta meta)
         {
             return getGeneratedMessage((Builder<?>)builder);
         }

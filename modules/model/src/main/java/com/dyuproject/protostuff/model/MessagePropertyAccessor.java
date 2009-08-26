@@ -343,7 +343,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(meta.getTypeClass()==value.getClass())
                 return value;
             else if(meta.getTypeBuilderClass()==value.getClass())
-                return getMessageFromBuilder(value, meta);
+                return meta.getResolver().resolveValue(value, meta);
             return null;
         }
     }
@@ -355,7 +355,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(meta.getComponentTypeClass()==value.getClass())
                 return value;
             else if(meta.getTypeBuilderClass()==value.getClass())
-                return getMessageFromBuilder(value, meta);
+                return meta.getResolver().resolveValue(value, meta);
             return null;
         }
     }

@@ -239,7 +239,7 @@ public class BuilderPropertyAccessor extends PropertyAccessor
             if(_meta.getTypeClass()==value.getClass())
                 return value;
             else if(_meta.getTypeBuilderClass()==value.getClass())
-                return getMessageFromBuilder(value, _meta);
+                return _meta.getResolver().resolveValue(value, _meta);
             return null;
         }
     }
@@ -251,7 +251,7 @@ public class BuilderPropertyAccessor extends PropertyAccessor
             if(_meta.getComponentTypeClass()==value.getClass())
                 return value;
             else if(_meta.getTypeBuilderClass()==value.getClass())
-                return getMessageFromBuilder(value, _meta);
+                return _meta.getResolver().resolveValue(value, _meta);
             return null;
         }
     }

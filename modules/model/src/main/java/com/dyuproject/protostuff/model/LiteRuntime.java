@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dyuproject.protostuff.model.PropertyAccessor.MessageSource;
 import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
@@ -56,11 +55,7 @@ public class LiteRuntime
     
     @SuppressWarnings("unchecked")
     public static ModelMeta getModelMeta(Class<? extends AbstractMessageLite> messageClass)
-    {
-        
-        if(!GeneratedMessageLite.class.isAssignableFrom(messageClass) && PropertyAccessor.__speed==null)
-            throw new RuntimeException("Protobuf is running only in lite mode.");
-        
+    {        
         Class<? extends Builder<?>> builderClass = 
             (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
         
@@ -172,7 +167,7 @@ public class LiteRuntime
         private String _name, _normalizedName;
         private boolean _repeated, _message, _liteRuntime;
         private Field _field;
-        private MessageSource _messageSource;
+        private Resolver _resolver;
         
         public PropMeta(Class<? extends AbstractMessageLite> messageClass, 
                     Class<? extends Builder<?>> builderClass)
@@ -207,8 +202,8 @@ public class LiteRuntime
                 _message = true;
                 _typeBuilderClass = _typeClass.getDeclaredClasses()[0];
                 _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_typeClass);
-                _messageSource = _liteRuntime ? PropertyAccessor.__liteRuntime : 
-                    PropertyAccessor.__speed;                
+                _resolver = _liteRuntime ? PropertyAccessor.MESSAGE_RESOLVER_LITE_RUNTIME : 
+                    PropertyAccessor.MESSAGE_RESOLVER_SPEED;                
             }
             else if(List.class.isAssignableFrom(_typeClass))
                 _repeated = true;
@@ -236,8 +231,7 @@ public class LiteRuntime
             {
                 _typeBuilderClass = _componentTypeClass.getDeclaredClasses()[0];
                 _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_componentTypeClass);
-                _messageSource = _liteRuntime ? PropertyAccessor.__liteRuntime : 
-                    PropertyAccessor.__speed;
+                _resolver = _liteRuntime ? PropertyAccessor.MESSAGE_RESOLVER_LITE_RUNTIME : PropertyAccessor.MESSAGE_RESOLVER_SPEED;
             }
         }
         
@@ -296,9 +290,9 @@ public class LiteRuntime
             _field = field;
         }
         
-        public MessageSource getMessageSource()
+        public Resolver getResolver()
         {
-            return _messageSource;
+            return _resolver;
         }
         
         public String toString()
