@@ -127,15 +127,25 @@ public class V22Test extends TestCase
         
         personModel.getProperty("delegatedTask").setValue(personBuilder, taskList);
         
+        assertTrue(personBuilder.getDelegatedTaskCount()==2);
         assertTrue(personBuilder.getDelegatedTask(1).getId()==taskList.get(0).getId());
         
         personModel.getProperty("delegatedTask").replaceValueIfNone(personBuilder, task.toBuilder().setId(0));
         
+        assertTrue(personBuilder.getDelegatedTaskCount()==2);
         assertTrue(personBuilder.getDelegatedTask(0).getId()!=0);
         
+        // this will not replace (but add) if the field is repeated
         personModel.getProperty("delegatedTask").replaceValueIfAny(personBuilder, task.toBuilder().setId(5));
         
-        assertTrue(personBuilder.getDelegatedTask(0).getId()==5);
+        assertTrue(personBuilder.getDelegatedTaskCount()==3);
+        assertTrue(personBuilder.getDelegatedTask(2).getId()==5);
+        
+        // this will not replace (but add) if the field is repeated
+        personModel.getProperty("delegatedTask").replaceValueIfAny(personBuilder, taskList);
+        
+        assertTrue(personBuilder.getDelegatedTaskCount()==4);
+        assertTrue(personBuilder.getDelegatedTask(3).getId()==taskList.get(0).getId());
         
         personModel.getProperty("priorityTask").replaceValueIfNone(person, task.toBuilder().setId(0).build());
         
@@ -247,15 +257,25 @@ public class V22Test extends TestCase
         
         personModel.getProperty("delegatedTask").setValue(personBuilder, taskList);
         
+        assertTrue(personBuilder.getDelegatedTaskCount()==2);
         assertTrue(personBuilder.getDelegatedTask(1).getId()==taskList.get(0).getId());
         
         personModel.getProperty("delegatedTask").replaceValueIfNone(personBuilder, task.toBuilder().setId(0));
         
+        assertTrue(personBuilder.getDelegatedTaskCount()==2);
         assertTrue(personBuilder.getDelegatedTask(0).getId()!=0);
         
+        // this will not replace (but add) if the field is repeated
         personModel.getProperty("delegatedTask").replaceValueIfAny(personBuilder, task.toBuilder().setId(5));
         
-        assertTrue(personBuilder.getDelegatedTask(0).getId()==5);
+        assertTrue(personBuilder.getDelegatedTaskCount()==3);
+        assertTrue(personBuilder.getDelegatedTask(2).getId()==5);
+        
+        // this will not replace (but add) if the field is repeated
+        personModel.getProperty("delegatedTask").replaceValueIfAny(personBuilder, taskList);
+        
+        assertTrue(personBuilder.getDelegatedTaskCount()==4);
+        assertTrue(personBuilder.getDelegatedTask(3).getId()==taskList.get(0).getId());
         
         personModel.getProperty("priorityTask").replaceValueIfNone(person, task.toBuilder().setId(0).build());
         
