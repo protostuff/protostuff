@@ -31,6 +31,8 @@ package com.dyuproject.protostuff.model;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.google.protobuf.AbstractMessageLite;
+
 
 /**
  * PropertyAccessor - access to the equivalent property of a generated protobuf class
@@ -47,6 +49,8 @@ public abstract class PropertyAccessor
     public static final Class<?>[] NO_ARG_C = new Class<?>[]{};
     public static final Class<?>[] INT_ARG_C = new Class<?>[]{int.class};
     public static final Class<?>[] ITERABLE_ARG_C = new Class<?>[]{Iterable.class};
+    
+    static MessageSource __speed, __liteRuntime;
     
     static String toPrefixedPascalCase(String prefix, String target)
     {
@@ -69,6 +73,11 @@ public abstract class PropertyAccessor
             prop[0] = (char)(prop[0] + 32);
 
         return new String(prop);
+    }
+    
+    static Object getMessageFromBuilder(Object builder, PropertyMeta meta)
+    {
+        return meta.getMessageSource().getMessage(builder);
     }
     
     private PropertyMeta _meta;
@@ -175,5 +184,24 @@ public abstract class PropertyAccessor
             return _method.invoke(target, NO_ARG);
         }
     }
-
+    
+    public interface MessageSource
+    {
+        public AbstractMessageLite getMessage(Object builder);
+    }
+    
+    static
+    {        
+        try
+        {
+            __liteRuntime = com.google.protobuf.PBLiteRuntime.MESSAGE_SOURCE;
+            Class.forName("com.google.protobuf.GeneratedMessage", false, Thread.currentThread().getContextClassLoader());
+            __speed = com.google.protobuf.PBSpeed.MESSAGE_SOURCE;
+        }
+        catch (ClassNotFoundException e)
+        {
+            System.err.println("Running purely in protobuf lite mode.");
+        }
+    }
+    
 }

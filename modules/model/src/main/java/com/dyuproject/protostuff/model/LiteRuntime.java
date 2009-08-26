@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dyuproject.protostuff.model.PropertyAccessor.MessageSource;
 import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
@@ -56,6 +57,10 @@ public class LiteRuntime
     @SuppressWarnings("unchecked")
     public static ModelMeta getModelMeta(Class<? extends AbstractMessageLite> messageClass)
     {
+        
+        if(!GeneratedMessageLite.class.isAssignableFrom(messageClass) && PropertyAccessor.__speed==null)
+            throw new RuntimeException("Protobuf is running only in lite mode.");
+        
         Class<? extends Builder<?>> builderClass = 
             (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
         
@@ -167,6 +172,7 @@ public class LiteRuntime
         private String _name, _normalizedName;
         private boolean _repeated, _message, _liteRuntime;
         private Field _field;
+        private MessageSource _messageSource;
         
         public PropMeta(Class<? extends AbstractMessageLite> messageClass, 
                     Class<? extends Builder<?>> builderClass)
@@ -201,6 +207,8 @@ public class LiteRuntime
                 _message = true;
                 _typeBuilderClass = _typeClass.getDeclaredClasses()[0];
                 _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_typeClass);
+                _messageSource = _liteRuntime ? PropertyAccessor.__liteRuntime : 
+                    PropertyAccessor.__speed;                
             }
             else if(List.class.isAssignableFrom(_typeClass))
                 _repeated = true;
@@ -228,6 +236,8 @@ public class LiteRuntime
             {
                 _typeBuilderClass = _componentTypeClass.getDeclaredClasses()[0];
                 _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_componentTypeClass);
+                _messageSource = _liteRuntime ? PropertyAccessor.__liteRuntime : 
+                    PropertyAccessor.__speed;
             }
         }
         
@@ -284,6 +294,11 @@ public class LiteRuntime
         private void setTypeField(Field field)
         {
             _field = field;
+        }
+        
+        public MessageSource getMessageSource()
+        {
+            return _messageSource;
         }
         
         public String toString()

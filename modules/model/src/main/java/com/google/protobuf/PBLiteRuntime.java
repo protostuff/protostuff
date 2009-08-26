@@ -27,36 +27,57 @@
 //================================================================================
 
 
-package com.dyuproject.protostuff.model;
+package com.google.protobuf;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import com.dyuproject.protostuff.model.PropertyAccessor.MessageSource;
-import com.google.protobuf.AbstractMessageLite;
-import com.google.protobuf.AbstractMessageLite.Builder;
+import com.google.protobuf.GeneratedMessageLite.Builder;
 
 /**
- * PropertyMeta - the metadata of a protobuf (generated) field. 
- * 
  * @author David Yu
- * @created Aug 25, 2009
+ * @created Aug 26, 2009
  */
 
-public interface PropertyMeta
+public abstract class PBLiteRuntime
 {
     
-    public Class<? extends AbstractMessageLite> getMessageClass();
-    public Class<? extends Builder<?>> getBuilderClass();
-    public Class<?> getTypeClass();
-    public Class<?> getTypeBuilderClass();
-    public Class<?> getComponentTypeClass();
-    public int getNumber();
-    public boolean isRepeated();
-    public boolean isMessage();
-    public boolean isLiteRuntime();
-    public String getName();
-    public String getNormalizedName();
-    public Field getField();
-    public MessageSource getMessageSource();
+    @SuppressWarnings("unchecked")
+    public static final MessageSource MESSAGE_SOURCE = new MessageSource()
+    {
+        public AbstractMessageLite getMessage(Object builder)
+        {
+            return getGeneratedMessageLite((Builder<GeneratedMessageLite,?>)builder);
+        }
+    };
+    
+    public static GeneratedMessageLite getGeneratedMessageLite(Builder<GeneratedMessageLite,?> builder)
+    {
+        return builder.internalGetResult();
+    }
+    
+    public static byte[] toByteArray(Builder<GeneratedMessageLite,?> builder)
+    {
+        return builder.internalGetResult().toByteArray();
+    }
+    
+    public static void writeTo(CodedOutputStream output, 
+            Builder<GeneratedMessageLite,?> builder) throws IOException
+    {
+        builder.internalGetResult().writeTo(output);
+    }    
+    
+    public static void writeTo(OutputStream output, 
+            Builder<GeneratedMessageLite,?> builder) throws IOException
+    {
+        builder.internalGetResult().writeTo(output);
+    }
+    
+    public static void writeDelimitedTo(OutputStream output, 
+            Builder<GeneratedMessageLite,?> builder) throws IOException
+    {
+        builder.internalGetResult().writeDelimitedTo(output);
+    }
 
 }

@@ -50,7 +50,12 @@ public class MessagePropertyAccessor extends PropertyAccessor
     public MessagePropertyAccessor(PropertyMeta meta)
     {
         super(meta);
-        _fa = meta.isRepeated() ? new RepeatedFieldAccess() : new FieldAccess();
+        
+        if(meta.isRepeated())
+            _fa = meta.isMessage() ? new RepeatedMessageFieldAccess() : new RepeatedFieldAccess();
+        else
+            _fa = meta.isMessage() ? new MessageFieldAccess() : new FieldAccess();
+            
         _fa.init(meta.getField());
     }
     
@@ -108,6 +113,12 @@ public class MessagePropertyAccessor extends PropertyAccessor
             {
                 throw new RuntimeException(e);
             }
+        }        
+        
+        protected Object resolveValue(Object value, PropertyMeta meta)
+        {
+            return meta.getTypeClass().isPrimitive() 
+                || meta.getTypeClass().isAssignableFrom(value.getClass()) ? value : null;
         }
         
         public Object getValue(Object message) 
@@ -133,6 +144,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
         {
             if(value!=null)
             {
+                if((value=resolveValue(value, getMeta()))==null)
+                    return false;
+                
                 _has.setBoolean(message, true);
                 _field.set(message, value);
                 return true;
@@ -150,6 +164,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(value==null || _has.getBoolean(message))
                 return false;
             
+            if((value=resolveValue(value, getMeta()))==null)
+                return false;
+            
             _field.set(message, value);
             return true;
         }
@@ -158,12 +175,19 @@ public class MessagePropertyAccessor extends PropertyAccessor
         throws IllegalArgumentException, IllegalAccessException
         {
             if(_has.getBoolean(message))
-            {
-                Object last = _field.get(message);
+            {                
                 if(value==null)
+                {
+                    Object last = _field.get(message);
                     _has.setBoolean(message, false);
-                else
-                    _field.set(message, value);                
+                    return last;
+                }
+                
+                if((value=resolveValue(value, getMeta()))==null)
+                    return null;
+                
+                Object last = _field.get(message);
+                _field.set(message, value);               
                 return last;
             }
             return null;
@@ -177,6 +201,12 @@ public class MessagePropertyAccessor extends PropertyAccessor
         {
             _field = field;
             _field.setAccessible(true);
+        }
+        
+        protected Object resolveValue(Object value, PropertyMeta meta)
+        {            
+            return meta.getComponentTypeClass().isPrimitive() 
+                || meta.getComponentTypeClass().isAssignableFrom(value.getClass()) ? value : null;
         }
         
         @SuppressWarnings("unchecked")
@@ -227,6 +257,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 }                    
                 else if(list.size()==0)
                 {
+                    if((value=resolveValue(value, getMeta()))==null)
+                        return false;
+                    
                     ArrayList<Object> nl = new ArrayList<Object>(3);
                     nl.add(value);
                     _field.set(message, nl);
@@ -266,6 +299,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }                    
             else
             {
+                if((value=resolveValue(value, getMeta()))==null)
+                    return false;
+                
                 ArrayList<Object> nl = new ArrayList<Object>(3);
                 nl.add(value);
                 _field.set(message, nl);
@@ -288,12 +324,39 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 _field.set(message, value);
             else
             {
+                if((value=resolveValue(value, getMeta()))==null)
+                    return null;
+                    
                 ArrayList<Object> nl = new ArrayList<Object>(3);
                 nl.add(value);
                 _field.set(message, nl);
             }
             
             return list;
+        }
+    }
+    
+    class MessageFieldAccess extends FieldAccess
+    {
+        protected Object resolveValue(Object value, PropertyMeta meta)
+        {
+            if(meta.getTypeClass()==value.getClass())
+                return value;
+            else if(meta.getTypeBuilderClass()==value.getClass())
+                return getMessageFromBuilder(value, meta);
+            return null;
+        }
+    }
+    
+    class RepeatedMessageFieldAccess extends RepeatedFieldAccess
+    {
+        protected Object resolveValue(Object value, PropertyMeta meta)
+        {
+            if(meta.getComponentTypeClass()==value.getClass())
+                return value;
+            else if(meta.getTypeBuilderClass()==value.getClass())
+                return getMessageFromBuilder(value, meta);
+            return null;
         }
     }
     
