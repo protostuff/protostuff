@@ -51,25 +51,25 @@ public final class V22Lite {
     
     // repeated .testmodel.Task _delegated_task_ = 5;
     public static final int _DELEGATED_TASK__FIELD_NUMBER = 5;
-    private java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> DelegatedTask_ =
+    private java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> DelegatedTask_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> getDelegatedTaskList() {
+    public java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> getDelegatedTaskList() {
       return DelegatedTask_;
     }
     public int getDelegatedTaskCount() { return DelegatedTask_.size(); }
-    public com.dyuproject.protostuff.util.V22Lite.Task getDelegatedTask(int index) {
+    public com.dyuproject.protostuff.model.V22Lite.Task getDelegatedTask(int index) {
       return DelegatedTask_.get(index);
     }
     
     // repeated .testmodel.Task _priorityTask_ = 6;
     public static final int _PRIORITYTASK__FIELD_NUMBER = 6;
-    private java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> PriorityTask_ =
+    private java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> PriorityTask_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> getPriorityTaskList() {
+    public java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> getPriorityTaskList() {
       return PriorityTask_;
     }
     public int getPriorityTaskCount() { return PriorityTask_.size(); }
-    public com.dyuproject.protostuff.util.V22Lite.Task getPriorityTask(int index) {
+    public com.dyuproject.protostuff.model.V22Lite.Task getPriorityTask(int index) {
       return PriorityTask_.get(index);
     }
     
@@ -82,10 +82,10 @@ public final class V22Lite {
     
     public final boolean isInitialized() {
       if (!hasId) return false;
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getDelegatedTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
         if (!element.isInitialized()) return false;
       }
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getPriorityTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getPriorityTaskList()) {
         if (!element.isInitialized()) return false;
       }
       return true;
@@ -105,10 +105,10 @@ public final class V22Lite {
       if (hasLastName()) {
         output.writeString(4, getLastName());
       }
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getDelegatedTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
         output.writeMessage(5, element);
       }
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getPriorityTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getPriorityTaskList()) {
         output.writeMessage(6, element);
       }
       if (hasAGe()) {
@@ -138,11 +138,11 @@ public final class V22Lite {
         size += com.google.protobuf.CodedOutputStream
           .computeStringSize(4, getLastName());
       }
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getDelegatedTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, element);
       }
-      for (com.dyuproject.protostuff.util.V22Lite.Task element : getPriorityTaskList()) {
+      for (com.dyuproject.protostuff.model.V22Lite.Task element : getPriorityTaskList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, element);
       }
@@ -154,57 +154,57 @@ public final class V22Lite {
       return size;
     }
     
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseDelimitedFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Person parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -214,26 +214,26 @@ public final class V22Lite {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.util.V22Lite.Person prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.model.V22Lite.Person prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          com.dyuproject.protostuff.util.V22Lite.Person, Builder> {
-      private com.dyuproject.protostuff.util.V22Lite.Person result;
+          com.dyuproject.protostuff.model.V22Lite.Person, Builder> {
+      private com.dyuproject.protostuff.model.V22Lite.Person result;
       
-      // Construct using com.dyuproject.protostuff.util.V22Lite.Person.newBuilder()
+      // Construct using com.dyuproject.protostuff.model.V22Lite.Person.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.util.V22Lite.Person();
+        builder.result = new com.dyuproject.protostuff.model.V22Lite.Person();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.util.V22Lite.Person internalGetResult() {
+      protected com.dyuproject.protostuff.model.V22Lite.Person internalGetResult() {
         return result;
       }
       
@@ -242,7 +242,7 @@ public final class V22Lite {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.util.V22Lite.Person();
+        result = new com.dyuproject.protostuff.model.V22Lite.Person();
         return this;
       }
       
@@ -250,21 +250,21 @@ public final class V22Lite {
         return create().mergeFrom(result);
       }
       
-      public com.dyuproject.protostuff.util.V22Lite.Person getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.util.V22Lite.Person.getDefaultInstance();
+      public com.dyuproject.protostuff.model.V22Lite.Person getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.model.V22Lite.Person.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.util.V22Lite.Person build() {
+      public com.dyuproject.protostuff.model.V22Lite.Person build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.util.V22Lite.Person buildParsed()
+      private com.dyuproject.protostuff.model.V22Lite.Person buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -273,7 +273,7 @@ public final class V22Lite {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.util.V22Lite.Person buildPartial() {
+      public com.dyuproject.protostuff.model.V22Lite.Person buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -286,13 +286,13 @@ public final class V22Lite {
           result.PriorityTask_ =
             java.util.Collections.unmodifiableList(result.PriorityTask_);
         }
-        com.dyuproject.protostuff.util.V22Lite.Person returnMe = result;
+        com.dyuproject.protostuff.model.V22Lite.Person returnMe = result;
         result = null;
         return returnMe;
       }
       
-      public Builder mergeFrom(com.dyuproject.protostuff.util.V22Lite.Person other) {
-        if (other == com.dyuproject.protostuff.util.V22Lite.Person.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.dyuproject.protostuff.model.V22Lite.Person other) {
+        if (other == com.dyuproject.protostuff.model.V22Lite.Person.getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -307,13 +307,13 @@ public final class V22Lite {
         }
         if (!other.DelegatedTask_.isEmpty()) {
           if (result.DelegatedTask_.isEmpty()) {
-            result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+            result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
           }
           result.DelegatedTask_.addAll(other.DelegatedTask_);
         }
         if (!other.PriorityTask_.isEmpty()) {
           if (result.PriorityTask_.isEmpty()) {
-            result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+            result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
           }
           result.PriorityTask_.addAll(other.PriorityTask_);
         }
@@ -355,13 +355,13 @@ public final class V22Lite {
               break;
             }
             case 42: {
-              com.dyuproject.protostuff.util.V22Lite.Task.Builder subBuilder = com.dyuproject.protostuff.util.V22Lite.Task.newBuilder();
+              com.dyuproject.protostuff.model.V22Lite.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Lite.Task.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addDelegatedTask(subBuilder.buildPartial());
               break;
             }
             case 50: {
-              com.dyuproject.protostuff.util.V22Lite.Task.Builder subBuilder = com.dyuproject.protostuff.util.V22Lite.Task.newBuilder();
+              com.dyuproject.protostuff.model.V22Lite.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Lite.Task.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addPriorityTask(subBuilder.buildPartial());
               break;
@@ -457,47 +457,47 @@ public final class V22Lite {
       }
       
       // repeated .testmodel.Task _delegated_task_ = 5;
-      public java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> getDelegatedTaskList() {
+      public java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> getDelegatedTaskList() {
         return java.util.Collections.unmodifiableList(result.DelegatedTask_);
       }
       public int getDelegatedTaskCount() {
         return result.getDelegatedTaskCount();
       }
-      public com.dyuproject.protostuff.util.V22Lite.Task getDelegatedTask(int index) {
+      public com.dyuproject.protostuff.model.V22Lite.Task getDelegatedTask(int index) {
         return result.getDelegatedTask(index);
       }
-      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.util.V22Lite.Task value) {
+      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22Lite.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.DelegatedTask_.set(index, value);
         return this;
       }
-      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.util.V22Lite.Task.Builder builderForValue) {
+      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22Lite.Task.Builder builderForValue) {
         result.DelegatedTask_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addDelegatedTask(com.dyuproject.protostuff.util.V22Lite.Task value) {
+      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22Lite.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         result.DelegatedTask_.add(value);
         return this;
       }
-      public Builder addDelegatedTask(com.dyuproject.protostuff.util.V22Lite.Task.Builder builderForValue) {
+      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22Lite.Task.Builder builderForValue) {
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         result.DelegatedTask_.add(builderForValue.build());
         return this;
       }
       public Builder addAllDelegatedTask(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.util.V22Lite.Task> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22Lite.Task> values) {
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         super.addAll(values, result.DelegatedTask_);
         return this;
@@ -508,47 +508,47 @@ public final class V22Lite {
       }
       
       // repeated .testmodel.Task _priorityTask_ = 6;
-      public java.util.List<com.dyuproject.protostuff.util.V22Lite.Task> getPriorityTaskList() {
+      public java.util.List<com.dyuproject.protostuff.model.V22Lite.Task> getPriorityTaskList() {
         return java.util.Collections.unmodifiableList(result.PriorityTask_);
       }
       public int getPriorityTaskCount() {
         return result.getPriorityTaskCount();
       }
-      public com.dyuproject.protostuff.util.V22Lite.Task getPriorityTask(int index) {
+      public com.dyuproject.protostuff.model.V22Lite.Task getPriorityTask(int index) {
         return result.getPriorityTask(index);
       }
-      public Builder setPriorityTask(int index, com.dyuproject.protostuff.util.V22Lite.Task value) {
+      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22Lite.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.PriorityTask_.set(index, value);
         return this;
       }
-      public Builder setPriorityTask(int index, com.dyuproject.protostuff.util.V22Lite.Task.Builder builderForValue) {
+      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22Lite.Task.Builder builderForValue) {
         result.PriorityTask_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addPriorityTask(com.dyuproject.protostuff.util.V22Lite.Task value) {
+      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22Lite.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         result.PriorityTask_.add(value);
         return this;
       }
-      public Builder addPriorityTask(com.dyuproject.protostuff.util.V22Lite.Task.Builder builderForValue) {
+      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22Lite.Task.Builder builderForValue) {
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         result.PriorityTask_.add(builderForValue.build());
         return this;
       }
       public Builder addAllPriorityTask(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.util.V22Lite.Task> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22Lite.Task> values) {
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.util.V22Lite.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Lite.Task>();
         }
         super.addAll(values, result.PriorityTask_);
         return this;
@@ -578,7 +578,7 @@ public final class V22Lite {
     }
     
     static {
-      com.dyuproject.protostuff.util.V22Lite.internalForceInit();
+      com.dyuproject.protostuff.model.V22Lite.internalForceInit();
     }
   }
   
@@ -659,9 +659,9 @@ public final class V22Lite {
     // optional .testmodel.Task.Status status = 4;
     public static final int STATUS_FIELD_NUMBER = 4;
     private boolean hasStatus;
-    private com.dyuproject.protostuff.util.V22Lite.Task.Status status_ = com.dyuproject.protostuff.util.V22Lite.Task.Status.PENDING;
+    private com.dyuproject.protostuff.model.V22Lite.Task.Status status_ = com.dyuproject.protostuff.model.V22Lite.Task.Status.PENDING;
     public boolean hasStatus() { return hasStatus; }
-    public com.dyuproject.protostuff.util.V22Lite.Task.Status getStatus() { return status_; }
+    public com.dyuproject.protostuff.model.V22Lite.Task.Status getStatus() { return status_; }
     
     public final boolean isInitialized() {
       if (!hasId) return false;
@@ -710,57 +710,57 @@ public final class V22Lite {
       return size;
     }
     
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseDelimitedFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.util.V22Lite.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22Lite.Task parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -770,26 +770,26 @@ public final class V22Lite {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.util.V22Lite.Task prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.model.V22Lite.Task prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          com.dyuproject.protostuff.util.V22Lite.Task, Builder> {
-      private com.dyuproject.protostuff.util.V22Lite.Task result;
+          com.dyuproject.protostuff.model.V22Lite.Task, Builder> {
+      private com.dyuproject.protostuff.model.V22Lite.Task result;
       
-      // Construct using com.dyuproject.protostuff.util.V22Lite.Task.newBuilder()
+      // Construct using com.dyuproject.protostuff.model.V22Lite.Task.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.util.V22Lite.Task();
+        builder.result = new com.dyuproject.protostuff.model.V22Lite.Task();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.util.V22Lite.Task internalGetResult() {
+      protected com.dyuproject.protostuff.model.V22Lite.Task internalGetResult() {
         return result;
       }
       
@@ -798,7 +798,7 @@ public final class V22Lite {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.util.V22Lite.Task();
+        result = new com.dyuproject.protostuff.model.V22Lite.Task();
         return this;
       }
       
@@ -806,21 +806,21 @@ public final class V22Lite {
         return create().mergeFrom(result);
       }
       
-      public com.dyuproject.protostuff.util.V22Lite.Task getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.util.V22Lite.Task.getDefaultInstance();
+      public com.dyuproject.protostuff.model.V22Lite.Task getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.util.V22Lite.Task build() {
+      public com.dyuproject.protostuff.model.V22Lite.Task build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.util.V22Lite.Task buildParsed()
+      private com.dyuproject.protostuff.model.V22Lite.Task buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -829,18 +829,18 @@ public final class V22Lite {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.util.V22Lite.Task buildPartial() {
+      public com.dyuproject.protostuff.model.V22Lite.Task buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
         }
-        com.dyuproject.protostuff.util.V22Lite.Task returnMe = result;
+        com.dyuproject.protostuff.model.V22Lite.Task returnMe = result;
         result = null;
         return returnMe;
       }
       
-      public Builder mergeFrom(com.dyuproject.protostuff.util.V22Lite.Task other) {
-        if (other == com.dyuproject.protostuff.util.V22Lite.Task.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.dyuproject.protostuff.model.V22Lite.Task other) {
+        if (other == com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -885,7 +885,7 @@ public final class V22Lite {
             }
             case 32: {
               int rawValue = input.readEnum();
-              com.dyuproject.protostuff.util.V22Lite.Task.Status value = com.dyuproject.protostuff.util.V22Lite.Task.Status.valueOf(rawValue);
+              com.dyuproject.protostuff.model.V22Lite.Task.Status value = com.dyuproject.protostuff.model.V22Lite.Task.Status.valueOf(rawValue);
               if (value != null) {
                 setStatus(value);
               }
@@ -960,10 +960,10 @@ public final class V22Lite {
       public boolean hasStatus() {
         return result.hasStatus();
       }
-      public com.dyuproject.protostuff.util.V22Lite.Task.Status getStatus() {
+      public com.dyuproject.protostuff.model.V22Lite.Task.Status getStatus() {
         return result.getStatus();
       }
-      public Builder setStatus(com.dyuproject.protostuff.util.V22Lite.Task.Status value) {
+      public Builder setStatus(com.dyuproject.protostuff.model.V22Lite.Task.Status value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -973,13 +973,13 @@ public final class V22Lite {
       }
       public Builder clearStatus() {
         result.hasStatus = false;
-        result.status_ = com.dyuproject.protostuff.util.V22Lite.Task.Status.PENDING;
+        result.status_ = com.dyuproject.protostuff.model.V22Lite.Task.Status.PENDING;
         return this;
       }
     }
     
     static {
-      com.dyuproject.protostuff.util.V22Lite.internalForceInit();
+      com.dyuproject.protostuff.model.V22Lite.internalForceInit();
     }
   }
   

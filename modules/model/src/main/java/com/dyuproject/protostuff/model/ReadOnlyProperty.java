@@ -31,9 +31,9 @@ package com.dyuproject.protostuff.model;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.dyuproject.protostuff.util.PropertyAccessor.GetMethod;
-import com.dyuproject.protostuff.util.PropertyAccessor.HasMethod;
-import com.dyuproject.protostuff.util.PropertyAccessor.RepeatedHasMethod;
+import com.dyuproject.protostuff.model.PropertyAccessor.GetMethod;
+import com.dyuproject.protostuff.model.PropertyAccessor.HasMethod;
+import com.dyuproject.protostuff.model.PropertyAccessor.RepeatedHasMethod;
 
 /**
  * @author David Yu
