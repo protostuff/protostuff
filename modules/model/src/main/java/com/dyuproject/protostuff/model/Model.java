@@ -35,6 +35,8 @@ import java.util.Map;
 import com.google.protobuf.AbstractMessageLite;
 
 /**
+ * Model - the protobuf model from its generated classes
+ * 
  * @author David Yu
  * @created Aug 25, 2009
  */

@@ -36,6 +36,8 @@ import com.dyuproject.protostuff.model.PropertyAccessor.HasMethod;
 import com.dyuproject.protostuff.model.PropertyAccessor.RepeatedHasMethod;
 
 /**
+ * ReadOnlyProperty - read-only access on MessageLite and MessageLite.Builder
+ * 
  * @author David Yu
  * @created Aug 26, 2009
  */

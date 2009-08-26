@@ -40,6 +40,9 @@ import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
+ * LiteRuntime - generates metadata from a generated protobuf class that is optimized 
+ * for LITE_RUNTIME (as well as SPEED).
+ * 
  * @author David Yu
  * @created Aug 25, 2009
  */

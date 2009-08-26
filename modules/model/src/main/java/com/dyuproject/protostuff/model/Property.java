@@ -32,6 +32,8 @@ package com.dyuproject.protostuff.model;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Property - api to access to the equivalent property of a generated protobuf class
+ * 
  * @author David Yu
  * @created Aug 26, 2009
  */

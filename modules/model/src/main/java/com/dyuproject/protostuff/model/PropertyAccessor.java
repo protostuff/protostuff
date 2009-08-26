@@ -33,6 +33,8 @@ import java.lang.reflect.Method;
 
 
 /**
+ * PropertyAccessor - access to the equivalent property of a generated protobuf class
+ * 
  * @author David Yu
  * @created Aug 23, 2009
  */

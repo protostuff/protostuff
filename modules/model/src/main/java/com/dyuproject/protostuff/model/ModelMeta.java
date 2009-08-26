@@ -35,6 +35,8 @@ import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
+ * ModelMeta - metadata for the compiled protobuf classes
+ * 
  * @author David Yu
  * @created Aug 25, 2009
  */

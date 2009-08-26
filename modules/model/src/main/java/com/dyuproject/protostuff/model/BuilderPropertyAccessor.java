@@ -33,6 +33,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
+ * BuilderPropertyAccessor - read-and-write access on MessageLite.Builder
+ * 
  * @author David Yu
  * @created Aug 23, 2009
  */

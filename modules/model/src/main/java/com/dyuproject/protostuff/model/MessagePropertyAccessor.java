@@ -36,6 +36,8 @@ import java.util.List;
 
 
 /**
+ * MessagePropertyAccessor - read-and-write access on MessageLite
+ * 
  * @author David Yu
  * @created Aug 23, 2009
  */

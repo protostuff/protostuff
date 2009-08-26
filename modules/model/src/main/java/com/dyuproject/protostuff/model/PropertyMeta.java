@@ -35,6 +35,8 @@ import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
+ * PropertyMeta - the metadata of a protobuf (generated) field. 
+ * 
  * @author David Yu
  * @created Aug 25, 2009
  */

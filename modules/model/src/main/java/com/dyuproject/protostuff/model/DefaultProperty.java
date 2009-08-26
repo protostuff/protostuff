@@ -32,6 +32,8 @@ package com.dyuproject.protostuff.model;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * DefaultProperty - read-and-write access on MessageLite and MessageLite.Builder
+ * 
  * @author David Yu
  * @created Aug 26, 2009
  */
