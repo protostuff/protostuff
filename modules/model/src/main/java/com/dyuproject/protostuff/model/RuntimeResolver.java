@@ -29,33 +29,62 @@
 
 package com.dyuproject.protostuff.model;
 
-import java.lang.reflect.Field;
-
 import com.google.protobuf.AbstractMessageLite;
-import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
- * PropertyMeta - the metadata of a protobuf (generated) field. 
- * 
  * @author David Yu
- * @created Aug 25, 2009
+ * @created Aug 27, 2009
  */
 
-public interface PropertyMeta
+public abstract class RuntimeResolver
 {
     
-    public Class<? extends AbstractMessageLite> getMessageClass();
-    public Class<? extends Builder<?>> getBuilderClass();
-    public Class<?> getTypeClass();
-    public Class<?> getTypeBuilderClass();
-    public Class<?> getComponentTypeClass();
-    public int getNumber();
-    public boolean isRepeated();
-    public boolean isMessage();
-    public boolean isLiteRuntime();
-    public String getName();
-    public String getNormalizedName();
-    public Field getField();
-    public RuntimeResolver getResolver();
+    public static final RuntimeResolver MESSAGE_SPEED, MESSAGE_LITE_RUNTIME;
+    
+    static
+    {
+        MESSAGE_LITE_RUNTIME = com.google.protobuf.PBLiteRuntime.MESSAGE_RESOLVER;
+        Class<?> clazz = null;
+        try
+        {
+            
+            clazz = Class.forName("com.google.protobuf.GeneratedMessage", false, 
+                    Thread.currentThread().getContextClassLoader());
+        }
+        catch (ClassNotFoundException e)
+        {
+            
+        }
+        if(clazz==null)
+        {
+            MESSAGE_SPEED = new RuntimeResolver()
+            {                
+                public Object resolveValue(Object value, PropertyMeta meta)
+                {
+                    return ((AbstractMessageLite.Builder<?>)value).build();                    
+                }
+            };
+        }
+        else
+            MESSAGE_SPEED = com.google.protobuf.PBSpeed.MESSAGE_RESOLVER;
+    }
+    
+    public static final Factory DEFAULT_FACTORY = new Factory()
+    {
+        public RuntimeResolver create(PropertyMeta propertyMeta)
+        {
+            
+            return null;
+        }        
+    };
+    
+    public abstract Object resolveValue(Object value, PropertyMeta meta);
+    
+    public interface Factory
+    {
+        public RuntimeResolver create(PropertyMeta propertyMeta);
+    }
+    
+
 
 }

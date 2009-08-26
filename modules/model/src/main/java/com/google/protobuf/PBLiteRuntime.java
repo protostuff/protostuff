@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import com.dyuproject.protostuff.model.PropertyMeta;
+import com.dyuproject.protostuff.model.RuntimeResolver;
 import com.google.protobuf.GeneratedMessageLite.Builder;
 
 /**
@@ -44,7 +45,7 @@ public abstract class PBLiteRuntime
 {
     
     @SuppressWarnings("unchecked")
-    public static final PropertyMeta.Resolver RESOLVER = new PropertyMeta.Resolver()
+    public static final RuntimeResolver MESSAGE_RESOLVER = new RuntimeResolver()
     {
         public Object resolveValue(Object builder, PropertyMeta meta)
         {

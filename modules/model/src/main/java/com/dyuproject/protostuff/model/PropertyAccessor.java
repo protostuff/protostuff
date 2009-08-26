@@ -31,8 +31,6 @@ package com.dyuproject.protostuff.model;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.google.protobuf.AbstractMessageLite;
-
 
 /**
  * PropertyAccessor - access to the equivalent property of a generated protobuf class
@@ -49,8 +47,6 @@ public abstract class PropertyAccessor
     public static final Class<?>[] NO_ARG_C = new Class<?>[]{};
     public static final Class<?>[] INT_ARG_C = new Class<?>[]{int.class};
     public static final Class<?>[] ITERABLE_ARG_C = new Class<?>[]{Iterable.class};
-    
-    static final PropertyMeta.Resolver MESSAGE_RESOLVER_SPEED, MESSAGE_RESOLVER_LITE_RUNTIME;
     
     static String toPrefixedPascalCase(String prefix, String target)
     {
@@ -178,34 +174,6 @@ public abstract class PropertyAccessor
         {
             return _method.invoke(target, NO_ARG);
         }
-    }
-    
-    static
-    {
-        MESSAGE_RESOLVER_LITE_RUNTIME = com.google.protobuf.PBLiteRuntime.RESOLVER;
-        Class<?> clazz = null;
-        try
-        {
-            
-            clazz = Class.forName("com.google.protobuf.GeneratedMessage", false, 
-                    Thread.currentThread().getContextClassLoader());
-        }
-        catch (ClassNotFoundException e)
-        {
-            
-        }
-        if(clazz==null)
-        {
-            MESSAGE_RESOLVER_SPEED = new PropertyMeta.Resolver()
-            {                
-                public Object resolveValue(Object value, PropertyMeta meta)
-                {
-                    return ((AbstractMessageLite.Builder<?>)value).build();                    
-                }
-            };
-        }
-        else
-            MESSAGE_RESOLVER_SPEED = com.google.protobuf.PBSpeed.RESOLVER;
     }
     
 }
