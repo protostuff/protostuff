@@ -138,7 +138,7 @@
   </dependencyManagement>
   
   <modules>
-    <module>modules/util</module>
+    <module>modules/model</module>
   </modules>
   
   <properties>
