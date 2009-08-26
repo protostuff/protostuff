@@ -161,7 +161,7 @@ public class LiteRuntime
     {
         private Class<? extends AbstractMessageLite> _messageClass;
         private Class<? extends Builder<?>> _builderClass;
-        private Class<?> _typeClass, _componentTypeClass;
+        private Class<?> _typeClass, _typeBuilderClass, _componentTypeClass;
         private int _number;
         private String _name, _normalizedName;
         private boolean _repeated, _message;
@@ -196,9 +196,17 @@ public class LiteRuntime
             
             _typeClass = typeClass;
             if(AbstractMessageLite.class.isAssignableFrom(_typeClass))
+            {
                 _message = true;
+                _typeBuilderClass = _typeClass.getDeclaredClasses()[0];
+            }
             else if(List.class.isAssignableFrom(_typeClass))
                 _repeated = true;
+        }
+        
+        public Class<?> getTypeBuilderClass()
+        {
+            return _typeBuilderClass;
         }
         
         public Class<?> getComponentTypeClass()
@@ -214,6 +222,8 @@ public class LiteRuntime
             _componentTypeClass = componentTypeClass;
             _repeated = true;
             _message = AbstractMessageLite.class.isAssignableFrom(_componentTypeClass);
+            if(_message)
+                _typeBuilderClass = _componentTypeClass.getDeclaredClasses()[0];
         }
         
         public int getNumber()

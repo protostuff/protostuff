@@ -47,6 +47,7 @@ public interface PropertyMeta
     public Class<? extends AbstractMessageLite> getMessageClass();
     public Class<? extends Builder<?>> getBuilderClass();
     public Class<?> getTypeClass();
+    public Class<?> getTypeBuilderClass();
     public Class<?> getComponentTypeClass();
     public int getNumber();
     public boolean isRepeated();
