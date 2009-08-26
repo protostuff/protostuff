@@ -63,20 +63,27 @@ public class Model
     }
     
     private ModelMeta _modelMeta;
-    private Property[] _props;
-    private Map<String, Property> _propMap;
+    private Property[] _propsByNumber, _props;
+    private Map<String, Property> _propsByName;
     
     public Model(ModelMeta modelMeta, Property.Factory pf)
     {
         _modelMeta = modelMeta;
-        _props = new Property[_modelMeta.getMaxNumber()+1];
-        _propMap = new HashMap<String,Property>(modelMeta.getPropertyCount());
+        _propsByNumber = new Property[_modelMeta.getMaxNumber()+1];
+        _propsByName = new HashMap<String,Property>(modelMeta.getPropertyCount());
         
-        for(PropertyMeta pm : modelMeta.getPropertyMetaMap().values())
+        for(PropertyMeta pm : _modelMeta.getPropertyMetaMap().values())
         {
             Property prop = pf.create(pm);
-            _props[pm.getNumber()] = prop;
-            _propMap.put(pm.getName(), prop);
+            _propsByNumber[pm.getNumber()] = prop;
+            _propsByName.put(pm.getName(), prop);
+        }
+        
+        _props = new Property[_modelMeta.getPropertyCount()];
+        for(int i=1, j=0; i<_propsByNumber.length; i++)
+        {
+            if(_propsByNumber[i]!=null)
+                _props[j++] = _propsByNumber[i];
         }
     }
     
@@ -88,16 +95,22 @@ public class Model
     public Property getPropertyByNormalizedName(String normalizedName)
     {
         PropertyMeta pm = _modelMeta.getPropertyMetaMap().get(normalizedName);
-        return pm==null ? null : _props[pm.getNumber()];
+        return pm==null ? null : _propsByNumber[pm.getNumber()];
     }
     
     public Property getProperty(int num)
     {
-        return _props[num];
+        return _propsByNumber[num];
     }
+    
     public Property getProperty(String name)
     {
-        return _propMap.get(name);
+        return _propsByName.get(name);
+    }
+    
+    public Property[] getProperties()
+    {
+        return _props;
     }
     
 }
