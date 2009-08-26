@@ -119,13 +119,13 @@ public class MessagePropertyAccessor extends PropertyAccessor
         public Object removeValue(Object message)
         throws IllegalArgumentException, IllegalAccessException
         {
-            Object value = null;
             if(_has.getBoolean(message))
             {
-                value = _field.get(message);
+                Object value = _field.get(message);
                 _has.setBoolean(message, false);
+                return value;
             }
-            return value;
+            return null;
         }
         
         public boolean setValue(Object message, Object value, boolean clearIfNullOrEmpty) 
@@ -192,12 +192,11 @@ public class MessagePropertyAccessor extends PropertyAccessor
         throws IllegalArgumentException, IllegalAccessException
         {
             List<Object> list = (List<Object>)_field.get(message);
-            if(list.size()!=0)
-            {
-                _field.set(message, Collections.emptyList());
-                return list;
-            }
-            return null;
+            if(list.size()==0)
+                return null;
+            
+            _field.set(message, Collections.emptyList());
+            return list;
         }
         
         @SuppressWarnings("unchecked")
@@ -267,7 +266,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }                    
             else
             {
-                ArrayList<Object> nl = new ArrayList<Object>();
+                ArrayList<Object> nl = new ArrayList<Object>(3);
                 nl.add(value);
                 _field.set(message, nl);
             }
@@ -286,16 +285,10 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(value==null)
                 _field.set(message, Collections.emptyList());
             else if(List.class.isAssignableFrom(value.getClass()))
-            {
-                List<Object> vl = (List<Object>)value;
-                if(vl.size()==0)
-                    return null;
-                
-                _field.set(message, vl);
-            }
+                _field.set(message, value);
             else
             {
-                ArrayList<Object> nl = new ArrayList<Object>();
+                ArrayList<Object> nl = new ArrayList<Object>(3);
                 nl.add(value);
                 _field.set(message, nl);
             }

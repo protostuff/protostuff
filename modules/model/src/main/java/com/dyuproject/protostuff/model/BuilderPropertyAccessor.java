@@ -79,13 +79,13 @@ public class BuilderPropertyAccessor extends PropertyAccessor
     public Object removeValue(Object builder)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
-        Object value = null;
         if(_has.hasValue(builder))
         {
-            value = _get.getValue(builder);
+            Object value = _get.getValue(builder);
             _clear.clearValue(builder);
+            return value;
         }
-        return value;
+        return null;
     }
     
     public boolean setValue(Object builder, Object value)
@@ -116,8 +116,9 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         if(_has.hasValue(builder))
         {
             Object last = _get.getValue(builder);
-            _clear.clearValue(builder);
-            if(value!=null)
+            if(value==null)
+                _clear.clearValue(builder);
+            else
                 _set.setValue(builder, value);
             return last;
         }
