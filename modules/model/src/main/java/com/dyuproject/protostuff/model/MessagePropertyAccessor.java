@@ -115,12 +115,6 @@ public class MessagePropertyAccessor extends PropertyAccessor
             {
                 throw new RuntimeException(e);
             }
-        }        
-        
-        protected Object resolveValue(Object value, PropertyMeta meta)
-        {
-            return meta.getTypeClass().isPrimitive() 
-                || meta.getTypeClass().isAssignableFrom(value.getClass()) ? value : null;
         }
         
         public Object getValue(Object message) 
@@ -146,7 +140,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
         {
             if(value!=null)
             {
-                if((value=resolveValue(value, getMeta()))==null)
+                if((value=_type.resolveValue(value))==null)
                     return false;
                 
                 _has.setBoolean(message, true);
@@ -166,7 +160,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(value==null || _has.getBoolean(message))
                 return false;
             
-            if((value=resolveValue(value, getMeta()))==null)
+            if((value=_type.resolveValue(value))==null)
                 return false;
             
             _field.set(message, value);
@@ -185,7 +179,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                     return last;
                 }
                 
-                if((value=resolveValue(value, getMeta()))==null)
+                if((value=_type.resolveValue(value))==null)
                     return null;
                 
                 Object last = _field.get(message);
@@ -206,12 +200,6 @@ public class MessagePropertyAccessor extends PropertyAccessor
             _type = getMeta().isMessage() ? 
                     ParameterType.getMessageType(getMeta().getComponentTypeClass()) : 
                         ParameterType.getSimpleType(getMeta().getComponentTypeClass());
-        }
-        
-        protected Object resolveValue(Object value, PropertyMeta meta)
-        {            
-            return meta.getComponentTypeClass().isPrimitive() 
-                || meta.getComponentTypeClass().isAssignableFrom(value.getClass()) ? value : null;
         }
         
         @SuppressWarnings("unchecked")
@@ -262,7 +250,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 }                    
                 else if(list.size()==0)
                 {
-                    if((value=resolveValue(value, getMeta()))==null)
+                    if((value=_type.resolveValue(value))==null)
                         return false;
                     
                     ArrayList<Object> nl = new ArrayList<Object>(3);
@@ -304,7 +292,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }                    
             else
             {
-                if((value=resolveValue(value, getMeta()))==null)
+                if((value=_type.resolveValue(value))==null)
                     return false;
                 
                 ArrayList<Object> nl = new ArrayList<Object>(3);
@@ -329,7 +317,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 _field.set(message, value);
             else
             {
-                if((value=resolveValue(value, getMeta()))==null)
+                if((value=_type.resolveValue(value))==null)
                     return null;
                     
                 ArrayList<Object> nl = new ArrayList<Object>(3);
