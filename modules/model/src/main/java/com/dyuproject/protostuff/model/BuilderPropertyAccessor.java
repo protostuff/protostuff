@@ -57,12 +57,12 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         if(meta.isRepeated())
         {
             _has = new RepeatedHasMethod();            
-            _set = meta.isMessage() ? new RepeatedMessageSetMethod() : new RepeatedSetMethod();
+            _set = new RepeatedSetMethod();
         }
         else
         {
             _has = new HasMethod();
-            _set = meta.isMessage() ? new MessageSetMethod() : new SetMethod();
+            _set = new SetMethod();
         }
         
         _get.init(meta, meta.getBuilderClass());
@@ -154,6 +154,7 @@ public class BuilderPropertyAccessor extends PropertyAccessor
     {
         Method _method, _builderSet;
         PropertyMeta _meta;
+        ParameterType _type;
         
         protected void init(PropertyMeta meta)
         {
@@ -163,6 +164,10 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 _method = meta.getBuilderClass().getDeclaredMethod(
                         toPrefixedPascalCase("set", meta.getName()), 
                         new Class<?>[]{meta.getTypeClass()});
+                
+                _type = _meta.isMessage() ? 
+                        ParameterType.getMessageType(_meta.getTypeClass()) : 
+                            ParameterType.getSimpleType(_meta.getTypeClass());
             }
             catch(Exception e)
             {
@@ -170,16 +175,10 @@ public class BuilderPropertyAccessor extends PropertyAccessor
             }
         }
         
-        protected Object resolveValue(Object value)
-        {
-            return _meta.getTypeClass().isPrimitive() 
-                || _meta.getTypeClass().isAssignableFrom(value.getClass()) ? value : null;
-        }
-        
         public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
-            if((value=resolveValue(value))==null)
+            if((value=_type.resolveValue(value))==null)
                 return false;
             
             _method.invoke(builder, value);
@@ -202,18 +201,16 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 _componentAdd = meta.getBuilderClass().getDeclaredMethod(
                         toPrefixedPascalCase("add", meta.getName()), 
                         new Class<?>[]{meta.getComponentTypeClass()});
+                
+                _type = _meta.isMessage() ? 
+                        ParameterType.getMessageType(_meta.getComponentTypeClass()) : 
+                            ParameterType.getSimpleType(_meta.getComponentTypeClass());
             }
             catch(Exception e)
             {
                 throw new RuntimeException(e);
             }
-        }
-        
-        protected Object resolveValue(Object value)
-        {
-            return _meta.getComponentTypeClass().isPrimitive() 
-                || _meta.getComponentTypeClass().isAssignableFrom(value.getClass()) ? value : null;
-        }        
+        }      
         
         public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
@@ -222,37 +219,13 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 _method.invoke(builder, value);
             else
             {
-                if((value=resolveValue(value))==null)
+                if((value=_type.resolveValue(value))==null)
                     return false;
                 
                 _componentAdd.invoke(builder, value);
             }
             
             return true;
-        }
-    }
-    
-    static class MessageSetMethod extends SetMethod
-    {
-        protected Object resolveValue(Object value)
-        {
-            if(_meta.getTypeClass()==value.getClass())
-                return value;
-            else if(_meta.getTypeBuilderClass()==value.getClass())
-                return _meta.getResolver().resolveValue(value, _meta);
-            return null;
-        }
-    }
-    
-    class RepeatedMessageSetMethod extends RepeatedSetMethod
-    {
-        protected Object resolveValue(Object value)
-        {
-            if(_meta.getComponentTypeClass()==value.getClass())
-                return value;
-            else if(_meta.getTypeBuilderClass()==value.getClass())
-                return _meta.getResolver().resolveValue(value, _meta);
-            return null;
         }
     }
 

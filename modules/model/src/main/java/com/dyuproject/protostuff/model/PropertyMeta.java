@@ -47,15 +47,12 @@ public interface PropertyMeta
     public Class<? extends AbstractMessageLite> getMessageClass();
     public Class<? extends Builder<?>> getBuilderClass();
     public Class<?> getTypeClass();
-    public Class<?> getTypeBuilderClass();
     public Class<?> getComponentTypeClass();
     public int getNumber();
     public boolean isRepeated();
     public boolean isMessage();
-    public boolean isLiteRuntime();
     public String getName();
     public String getNormalizedName();
     public Field getField();
-    public RuntimeResolver getResolver();
 
 }

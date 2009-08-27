@@ -51,10 +51,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
     {
         super(meta);
         
-        if(meta.isRepeated())
-            _fa = meta.isMessage() ? new RepeatedMessageFieldAccess() : new RepeatedFieldAccess();
-        else
-            _fa = meta.isMessage() ? new MessageFieldAccess() : new FieldAccess();
+        _fa = meta.isRepeated() ? new RepeatedFieldAccess() : new FieldAccess();
             
         _fa.init(meta.getField());
     }
@@ -97,6 +94,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
     class FieldAccess
     {
         Field _field, _has;
+        ParameterType _type;
         
         protected void init(Field field)
         {
@@ -108,6 +106,10 @@ public class MessagePropertyAccessor extends PropertyAccessor
                         getMeta().getName()));
                 
                 Field.setAccessible(new Field[]{_field, _has}, true);
+                
+                _type = getMeta().isMessage() ? 
+                        ParameterType.getMessageType(getMeta().getTypeClass()) : 
+                            ParameterType.getSimpleType(getMeta().getTypeClass());
             }
             catch (Exception e)
             {
@@ -201,6 +203,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
         {
             _field = field;
             _field.setAccessible(true);
+            _type = getMeta().isMessage() ? 
+                    ParameterType.getMessageType(getMeta().getComponentTypeClass()) : 
+                        ParameterType.getSimpleType(getMeta().getComponentTypeClass());
         }
         
         protected Object resolveValue(Object value, PropertyMeta meta)
@@ -333,30 +338,6 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }
             
             return list;
-        }
-    }
-    
-    class MessageFieldAccess extends FieldAccess
-    {
-        protected Object resolveValue(Object value, PropertyMeta meta)
-        {
-            if(meta.getTypeClass()==value.getClass())
-                return value;
-            else if(meta.getTypeBuilderClass()==value.getClass())
-                return meta.getResolver().resolveValue(value, meta);
-            return null;
-        }
-    }
-    
-    class RepeatedMessageFieldAccess extends RepeatedFieldAccess
-    {
-        protected Object resolveValue(Object value, PropertyMeta meta)
-        {
-            if(meta.getComponentTypeClass()==value.getClass())
-                return value;
-            else if(meta.getTypeBuilderClass()==value.getClass())
-                return meta.getResolver().resolveValue(value, meta);
-            return null;
         }
     }
     

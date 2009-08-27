@@ -32,8 +32,7 @@ package com.google.protobuf;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.model.PropertyMeta;
-import com.dyuproject.protostuff.model.RuntimeResolver;
+import com.dyuproject.protostuff.model.ParameterType;
 import com.google.protobuf.GeneratedMessageLite.Builder;
 
 /**
@@ -45,9 +44,9 @@ public abstract class PBLiteRuntime
 {
     
     @SuppressWarnings("unchecked")
-    public static final RuntimeResolver MESSAGE_RESOLVER = new RuntimeResolver()
+    public static final ParameterType BUILDER_TO_MESSAGE = new ParameterType()
     {
-        public Object resolveValue(Object builder, PropertyMeta meta)
+        public Object resolveValue(Object builder)
         {
             return getGeneratedMessageLite((Builder<GeneratedMessageLite,?>)builder);
         }

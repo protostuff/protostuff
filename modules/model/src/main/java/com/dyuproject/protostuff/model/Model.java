@@ -51,7 +51,7 @@ public class Model
     
     public static Model get(Class<? extends AbstractMessageLite> clazz, boolean readOnly)
     {
-        return get(LiteRuntime.getModelMeta(clazz, RuntimeResolver.DEFAULT_FACTORY), readOnly);
+        return get(LiteRuntime.getModelMeta(clazz), readOnly);
     }
     
     public static Model get(ModelMeta modelMeta)

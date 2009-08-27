@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.protobuf.AbstractMessageLite;
-import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.AbstractMessageLite.Builder;
 
 /**
@@ -54,20 +53,18 @@ public class LiteRuntime
     static final String FIELD_NUMBER_SUFFIX = "_FIELD_NUMBER";
     
     @SuppressWarnings("unchecked")
-    public static ModelMeta getModelMeta(Class<? extends AbstractMessageLite> messageClass, 
-            RuntimeResolver.Factory resolverFactory)
+    public static ModelMeta getModelMeta(Class<? extends AbstractMessageLite> messageClass)
     {        
         Class<? extends Builder<?>> builderClass = 
             (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
         
         Map<String,PropMeta> propertyMetaMap = new HashMap<String,PropMeta>();
-        int[] minMax = parse(messageClass, builderClass, propertyMetaMap, resolverFactory);        
+        int[] minMax = parse(messageClass, builderClass, propertyMetaMap);        
         return new ModelMeta(messageClass, builderClass, propertyMetaMap, minMax[0], minMax[1]);
     }
     
     static int[] parse(Class<? extends AbstractMessageLite> messageClass, 
-            Class<? extends Builder<?>> builderClass, Map<String,PropMeta> propertyMetaMap,
-            RuntimeResolver.Factory resolverFactory)
+            Class<? extends Builder<?>> builderClass, Map<String,PropMeta> propertyMetaMap)
     {
         int min = 100, max = 1;
         for(Field f : messageClass.getDeclaredFields())
@@ -133,7 +130,6 @@ public class LiteRuntime
                 meta.setName(ccn);
                 meta.setNormalizedName(nn);
                 meta.setTypeField(f);
-                //meta._resolver = resolverFactory.create(meta);
             }
         }
         
@@ -165,12 +161,12 @@ public class LiteRuntime
     {
         private Class<? extends AbstractMessageLite> _messageClass;
         private Class<? extends Builder<?>> _builderClass;
-        private Class<?> _typeClass, _typeBuilderClass, _componentTypeClass;
+        private Class<?> _typeClass, _componentTypeClass;
         private int _number;
         private String _name, _normalizedName;
-        private boolean _repeated, _message, _liteRuntime;
+        private boolean _repeated, _message;
         private Field _field;
-        private RuntimeResolver _resolver;
+        private ParameterType _resolver;
         
         public PropMeta(Class<? extends AbstractMessageLite> messageClass, 
                     Class<? extends Builder<?>> builderClass)
@@ -201,20 +197,9 @@ public class LiteRuntime
             
             _typeClass = typeClass;
             if(AbstractMessageLite.class.isAssignableFrom(_typeClass))
-            {
                 _message = true;
-                _typeBuilderClass = _typeClass.getDeclaredClasses()[0];
-                _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_typeClass);
-                _resolver = _liteRuntime ? RuntimeResolver.MESSAGE_LITE_RUNTIME : 
-                    RuntimeResolver.MESSAGE_SPEED;                
-            }
             else if(List.class.isAssignableFrom(_typeClass))
                 _repeated = true;
-        }
-        
-        public Class<?> getTypeBuilderClass()
-        {
-            return _typeBuilderClass;
         }
         
         public Class<?> getComponentTypeClass()
@@ -230,13 +215,6 @@ public class LiteRuntime
             _componentTypeClass = componentTypeClass;
             _repeated = true;
             _message = AbstractMessageLite.class.isAssignableFrom(_componentTypeClass);
-            if(_message)
-            {
-                _typeBuilderClass = _componentTypeClass.getDeclaredClasses()[0];
-                _liteRuntime = GeneratedMessageLite.class.isAssignableFrom(_componentTypeClass);
-                _resolver = _liteRuntime ? RuntimeResolver.MESSAGE_LITE_RUNTIME : 
-                    RuntimeResolver.MESSAGE_SPEED;
-            }
         }
         
         public int getNumber()
@@ -257,11 +235,6 @@ public class LiteRuntime
         public boolean isMessage()
         {
             return _message;
-        }
-        
-        public boolean isLiteRuntime()
-        {
-            return _liteRuntime;
         }
         
         public String getName()
@@ -294,7 +267,7 @@ public class LiteRuntime
             _field = field;
         }
         
-        public RuntimeResolver getResolver()
+        public ParameterType getParameterType()
         {
             return _resolver;
         }
