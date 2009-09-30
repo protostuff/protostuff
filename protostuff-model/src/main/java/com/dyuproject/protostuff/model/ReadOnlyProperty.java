@@ -38,8 +38,8 @@ public class ReadOnlyProperty  extends Property
         }
     };
     
-    private GetMethod _messageGet, _builderGet;
-    private HasMethod _messageHas, _builderHas;
+    private final GetMethod _messageGet, _builderGet;
+    private final HasMethod _messageHas, _builderHas;
     
     public ReadOnlyProperty(PropertyMeta propertyMeta)
     {

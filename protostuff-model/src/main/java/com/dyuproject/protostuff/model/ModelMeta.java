@@ -29,10 +29,10 @@ import com.google.protobuf.AbstractMessageLite.Builder;
 public class ModelMeta
 {    
     
-    private Class<? extends AbstractMessageLite> _messageClass;
-    private Class<? extends Builder<?>> _builderClass;
-    private Map<String, ? extends PropertyMeta> _propertyMetaMap;
-    private int _minNumber, _maxNumber;
+    private final Class<? extends AbstractMessageLite> _messageClass;
+    private final Class<? extends Builder<?>> _builderClass;
+    private final Map<String, ? extends PropertyMeta> _propertyMetaMap;
+    private final int _minNumber, _maxNumber;
     
     public ModelMeta(Class<? extends AbstractMessageLite> messageClass,
             Class<? extends Builder<?>> builderClass, 

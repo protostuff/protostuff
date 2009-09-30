@@ -28,10 +28,10 @@ import java.util.List;
 public class BuilderPropertyAccessor extends PropertyAccessor
 {
     
-    HasMethod _has;
-    GetMethod _get;
-    ClearMethod _clear;
-    SetMethod _set;
+    final HasMethod _has;
+    final GetMethod _get;
+    final ClearMethod _clear;
+    final SetMethod _set;
     
     public BuilderPropertyAccessor(PropertyMeta meta)
     {

@@ -34,8 +34,8 @@ public class DefaultProperty extends Property
         }
     };
     
-    private MessagePropertyAccessor _messageAccessor;
-    private BuilderPropertyAccessor _builderAccessor;
+    private final MessagePropertyAccessor _messageAccessor;
+    private final BuilderPropertyAccessor _builderAccessor;
     
     public DefaultProperty(PropertyMeta propertyMeta)
     {

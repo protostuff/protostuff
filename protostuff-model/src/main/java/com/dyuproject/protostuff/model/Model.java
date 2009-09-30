@@ -49,9 +49,9 @@ public class Model
         return new Model(modelMeta, readOnly ? ReadOnlyProperty.FACTORY : DefaultProperty.FACTORY);
     }
     
-    private ModelMeta _modelMeta;
-    private Property[] _propsByNumber, _props;
-    private Map<String, Property> _propsByName;
+    private final ModelMeta _modelMeta;
+    private final Property[] _propsByNumber, _props;
+    private final Map<String, Property> _propsByName;
     
     public Model(ModelMeta modelMeta, Property.Factory pf)
     {

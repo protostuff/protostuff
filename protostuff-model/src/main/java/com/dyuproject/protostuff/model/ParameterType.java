@@ -129,9 +129,9 @@ public abstract class ParameterType
     
     static class Message extends ParameterType
     {        
-        private Class<?> _messageClass;
-        private Class<?> _builderClass;
-        private ParameterType _builderType;
+        private final Class<?> _messageClass;
+        private final Class<?> _builderClass;
+        private final ParameterType _builderType;
         
         Message(Class<?> messageClass, Class<?> builderClass, ParameterType builderType)
         {

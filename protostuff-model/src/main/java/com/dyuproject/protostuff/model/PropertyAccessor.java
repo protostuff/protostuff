@@ -57,7 +57,7 @@ public abstract class PropertyAccessor
         return new String(prop);
     }
     
-    private PropertyMeta _meta;
+    private final PropertyMeta _meta;
     
     public PropertyAccessor(PropertyMeta meta)
     {

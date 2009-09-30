@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class Property
 {
 
-    protected PropertyMeta _propertyMeta;
+    protected final PropertyMeta _propertyMeta;
     
     public Property(PropertyMeta propertyMeta)
     {

@@ -31,7 +31,7 @@ import java.util.List;
 public class MessagePropertyAccessor extends PropertyAccessor
 {
 
-    FieldAccess _fa;
+    final FieldAccess _fa;
     
     public MessagePropertyAccessor(PropertyMeta meta)
     {
