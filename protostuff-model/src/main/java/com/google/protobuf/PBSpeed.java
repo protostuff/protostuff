@@ -25,7 +25,7 @@ import com.google.protobuf.GeneratedMessage.Builder;
  * @created Aug 26, 2009
  */
 
-public abstract class PBSpeed
+public final class PBSpeed
 {
 
     public static final ParameterType BUILDER_TO_MESSAGE = new ParameterType()

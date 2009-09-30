@@ -25,7 +25,7 @@ import com.google.protobuf.GeneratedMessageLite.Builder;
  * @created Aug 26, 2009
  */
 
-public abstract class PBLiteRuntime
+public final class PBLiteRuntime
 {
     
     @SuppressWarnings("unchecked")

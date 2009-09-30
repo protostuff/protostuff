@@ -26,7 +26,7 @@ import com.google.protobuf.AbstractMessageLite;
  * @created Aug 25, 2009
  */
 
-public class Model
+public final class Model
 {
     
     public static Model get(Class<? extends AbstractMessageLite> clazz)

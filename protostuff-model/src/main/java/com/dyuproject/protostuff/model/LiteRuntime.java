@@ -32,7 +32,7 @@ import com.google.protobuf.AbstractMessageLite.Builder;
  * @created Aug 25, 2009
  */
 
-public class LiteRuntime 
+public final class LiteRuntime 
 {
     
     static final String FIELD_NUMBER_SUFFIX = "_FIELD_NUMBER";
