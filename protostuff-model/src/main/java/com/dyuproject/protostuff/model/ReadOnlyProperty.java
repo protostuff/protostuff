@@ -30,11 +30,17 @@ import com.dyuproject.protostuff.model.PropertyAccessor.RepeatedHasMethod;
 public class ReadOnlyProperty  extends Property
 {
     
-    public static final Property.Factory FACTORY = new Property.Factory()
+    public static final Property.Factory<ReadOnlyProperty> FACTORY = 
+        new Property.Factory<ReadOnlyProperty>()
     {        
-        public Property create(PropertyMeta propertyMeta)
+        public ReadOnlyProperty create(PropertyMeta propertyMeta)
         {
             return new ReadOnlyProperty(propertyMeta);
+        }
+
+        public Class<ReadOnlyProperty> getType()
+        {
+            return ReadOnlyProperty.class;
         }
     };
     

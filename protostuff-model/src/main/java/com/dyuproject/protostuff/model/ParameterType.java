@@ -14,9 +14,9 @@
 
 package com.dyuproject.protostuff.model;
 
-import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageLite;
+import com.google.protobuf.MessageLite;
 
 /**
  * @author David Yu
@@ -170,7 +170,7 @@ public abstract class ParameterType
             {                
                 public Object resolveValue(Object value)
                 {
-                    return ((AbstractMessageLite.Builder<?>)value).build();                    
+                    return ((MessageLite.Builder)value).build();                    
                 }
             };
         }

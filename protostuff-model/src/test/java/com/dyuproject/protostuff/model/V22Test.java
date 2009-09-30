@@ -30,8 +30,8 @@ public class V22Test extends TestCase
     public void testLite() throws Exception
     {
 
-        Model taskModel = Model.get(V22Lite.Task.class);
-        Model personModel = Model.get(V22Lite.Person.class);        
+        Model<DefaultProperty> taskModel = Model.get(V22Lite.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==4);
@@ -140,8 +140,10 @@ public class V22Test extends TestCase
         
         assertTrue(person.getPriorityTask(0).getId()==6);
         
-        Model taskModelR = Model.get(taskModel.getModelMeta(), true);        
-        Model personModelR = Model.get(personModel.getModelMeta(), true);
+        Model<ReadOnlyProperty> taskModelR = new Model<ReadOnlyProperty>(taskModel.getModelMeta(), 
+                ReadOnlyProperty.FACTORY);        
+        Model<ReadOnlyProperty> personModelR = new Model<ReadOnlyProperty>(personModel.getModelMeta(), 
+                ReadOnlyProperty.FACTORY);   
         
         assertEquals(task.getName(), taskModelR.getProperty("name").getValue(task));
         assertEquals(task.getStatus(), taskModelR.getProperty("status").getValue(task));
@@ -160,8 +162,8 @@ public class V22Test extends TestCase
     public void testSpeed() throws Exception
     {
 
-        Model taskModel = Model.get(V22Speed.Task.class);
-        Model personModel = Model.get(V22Speed.Person.class);        
+        Model<DefaultProperty> taskModel = Model.get(V22Speed.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V22Speed.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==4);
@@ -270,8 +272,10 @@ public class V22Test extends TestCase
         
         assertTrue(person.getPriorityTask(0).getId()==6);
         
-        Model taskModelR = Model.get(taskModel.getModelMeta(), true);        
-        Model personModelR = Model.get(personModel.getModelMeta(), true);
+        Model<ReadOnlyProperty> taskModelR = new Model<ReadOnlyProperty>(taskModel.getModelMeta(), 
+                ReadOnlyProperty.FACTORY);        
+        Model<ReadOnlyProperty> personModelR = new Model<ReadOnlyProperty>(personModel.getModelMeta(), 
+                ReadOnlyProperty.FACTORY);  
         
         assertEquals(task.getName(), taskModelR.getProperty("name").getValue(task));
         assertEquals(task.getStatus(), taskModelR.getProperty("status").getValue(task));

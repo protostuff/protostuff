@@ -28,10 +28,10 @@ import java.util.List;
 public class BuilderPropertyAccessor extends PropertyAccessor
 {
     
-    final HasMethod _has;
-    final GetMethod _get;
-    final ClearMethod _clear;
-    final SetMethod _set;
+    protected final HasMethod _has;
+    protected final GetMethod _get;
+    protected final ClearMethod _clear;
+    protected final SetMethod _set;
     
     public BuilderPropertyAccessor(PropertyMeta meta)
     {
@@ -112,6 +112,16 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         return null;
     }
     
+    protected boolean set(Object builder, Object value, Method method, ParameterType pType)
+    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
+    {
+        if((value=pType.resolveValue(value))==null)
+            return false;
+        
+        method.invoke(builder, value);
+        return true;
+    }
+    
     static class ClearMethod
     {
         Method _method;
@@ -136,9 +146,9 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         }
     }
     
-    static class SetMethod
+    class SetMethod
     {
-        Method _method, _builderSet;
+        Method _method;
         PropertyMeta _meta;
         ParameterType _type;
         
@@ -163,18 +173,14 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         
         public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-        {
-            if((value=_type.resolveValue(value))==null)
-                return false;
-            
-            _method.invoke(builder, value);
-            return true;
+        {            
+            return set(builder, value, _method, _type);
         }
     }
     
-    static class RepeatedSetMethod extends SetMethod
+    class RepeatedSetMethod extends SetMethod
     {
-        Method _componentAdd, _builderAdd;
+        Method _componentAdd;
         PropertyMeta _meta;
         
         protected void init(PropertyMeta meta)
@@ -202,16 +208,12 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
             if(List.class.isAssignableFrom(value.getClass()))
-                _method.invoke(builder, value);
-            else
             {
-                if((value=_type.resolveValue(value))==null)
-                    return false;
-                
-                _componentAdd.invoke(builder, value);
+                _method.invoke(builder, value);
+                return true;
             }
             
-            return true;
+            return set(builder, value, _componentAdd, _type);
         }
     }
 

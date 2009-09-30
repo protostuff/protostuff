@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff.model;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.protobuf.AbstractMessageLite;
@@ -34,11 +35,9 @@ public class ModelMeta
     private final Map<String, ? extends PropertyMeta> _propertyMetaMap;
     private final int _minNumber, _maxNumber;
     
-    public ModelMeta(Class<? extends AbstractMessageLite> messageClass,
+    public ModelMeta(Class<? extends AbstractMessageLite> messageClass, 
             Class<? extends Builder<?>> builderClass, 
-            Map<String, ? extends PropertyMeta> propertyMetaMap,
-            int minNumber,
-            int maxNumber)
+            Map<String, ? extends PropertyMeta> propertyMetaMap, int minNumber, int maxNumber)
     {
         _messageClass = messageClass;
         _builderClass = builderClass;
@@ -46,21 +45,25 @@ public class ModelMeta
         _minNumber = minNumber;
         _maxNumber = maxNumber;
     }
-                    
     
-    public Class<? extends AbstractMessageLite> getMessageClass()
+    public Class<?> getMessageClass()
     {
         return _messageClass;
     }
     
-    public Class<? extends Builder<?>> getBuilderClass()
+    public Class<?> getBuilderClass()
     {
         return _builderClass;
     }
     
-    public Map<String, ? extends PropertyMeta> getPropertyMetaMap()
+    public Collection<? extends PropertyMeta> getPropertyMetas()
     {
-        return _propertyMetaMap;
+        return _propertyMetaMap.values();
+    }
+    
+    public PropertyMeta getPropertyMeta(String normalizedName)
+    {
+        return _propertyMetaMap.get(normalizedName);
     }
     
     public int getPropertyCount()
@@ -89,10 +92,4 @@ public class ModelMeta
             .toString();
     }
     
-    public interface Factory
-    {
-        public ModelMeta create(Class<? extends AbstractMessageLite> messageClass);
-    }
- 
-
 }

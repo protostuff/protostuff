@@ -38,30 +38,34 @@ public final class PBSpeed
     
     public static GeneratedMessage getGeneratedMessage(Builder<?> builder)
     {
-        return builder.internalGetResult();
+        GeneratedMessage message = builder.internalGetResult();
+        if(message.isInitialized())
+            return message;
+            
+        throw new UninitializedMessageException(message);
     }
     
     public static byte[] toByteArray(Builder<?> builder)
     {
-        return builder.internalGetResult().toByteArray();
+        return getGeneratedMessage(builder).toByteArray();
     }
     
     public static void writeTo(CodedOutputStream output, Builder<?> builder) 
     throws IOException
     {
-        builder.internalGetResult().writeTo(output);
+        getGeneratedMessage(builder).writeTo(output);
     }    
     
     public static void writeTo(OutputStream output, Builder<?> builder) 
     throws IOException
     {
-        builder.internalGetResult().writeTo(output);
+        getGeneratedMessage(builder).writeTo(output);
     }
     
     public static void writeDelimitedTo(OutputStream output, Builder<?> builder) 
     throws IOException
     {
-        builder.internalGetResult().writeDelimitedTo(output);
+        getGeneratedMessage(builder).writeDelimitedTo(output);
     }
 
 }

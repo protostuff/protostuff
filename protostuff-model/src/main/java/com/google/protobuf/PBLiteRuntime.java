@@ -39,30 +39,34 @@ public final class PBLiteRuntime
     
     public static GeneratedMessageLite getGeneratedMessageLite(Builder<GeneratedMessageLite,?> builder)
     {
-        return builder.internalGetResult();
+        GeneratedMessageLite message = builder.internalGetResult();
+        if(message.isInitialized())
+            return message;
+        
+        throw new UninitializedMessageException(message);
     }
     
     public static byte[] toByteArray(Builder<GeneratedMessageLite,?> builder)
     {
-        return builder.internalGetResult().toByteArray();
+        return getGeneratedMessageLite(builder).toByteArray();
     }
     
     public static void writeTo(CodedOutputStream output, 
             Builder<GeneratedMessageLite,?> builder) throws IOException
     {
-        builder.internalGetResult().writeTo(output);
+        getGeneratedMessageLite(builder).writeTo(output);
     }    
     
     public static void writeTo(OutputStream output, 
             Builder<GeneratedMessageLite,?> builder) throws IOException
     {
-        builder.internalGetResult().writeTo(output);
+        getGeneratedMessageLite(builder).writeTo(output);
     }
     
     public static void writeDelimitedTo(OutputStream output, 
             Builder<GeneratedMessageLite,?> builder) throws IOException
     {
-        builder.internalGetResult().writeDelimitedTo(output);
+        getGeneratedMessageLite(builder).writeDelimitedTo(output);
     }
 
 }

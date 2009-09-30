@@ -53,9 +53,11 @@ public abstract class Property
     public abstract Object replaceValueIfAny(Object target, Object value) 
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
     
-    public interface Factory
+    public interface Factory<T extends Property>
     {
-        public Property create(PropertyMeta propertyMeta);
+        public T create(PropertyMeta propertyMeta);
+        
+        public Class<T> getType();
     }
     
 }

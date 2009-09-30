@@ -150,6 +150,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 return false;
             
             _field.set(message, value);
+            _has.setBoolean(message, true);
             return true;
         }
         

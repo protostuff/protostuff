@@ -26,22 +26,35 @@ import java.lang.reflect.InvocationTargetException;
 public class DefaultProperty extends Property
 {
     
-    public static final Property.Factory FACTORY = new Property.Factory()
+    public static final Property.Factory<DefaultProperty> FACTORY = 
+        new Property.Factory<DefaultProperty>()
     {        
-        public Property create(PropertyMeta propertyMeta)
+        public DefaultProperty create(PropertyMeta propertyMeta)
         {
             return new DefaultProperty(propertyMeta);
         }
+
+        public Class<DefaultProperty> getType()
+        {
+            return DefaultProperty.class;
+        }
     };
     
-    private final MessagePropertyAccessor _messageAccessor;
-    private final BuilderPropertyAccessor _builderAccessor;
+    protected final MessagePropertyAccessor _messageAccessor;
+    protected final BuilderPropertyAccessor _builderAccessor;
     
     public DefaultProperty(PropertyMeta propertyMeta)
     {
+        this(propertyMeta, new MessagePropertyAccessor(propertyMeta), 
+                new BuilderPropertyAccessor(propertyMeta));
+    }
+    
+    public DefaultProperty(PropertyMeta propertyMeta, MessagePropertyAccessor messageAccessor, 
+            BuilderPropertyAccessor builderPropertyAccessor)
+    {
         super(propertyMeta);
-        _messageAccessor = new MessagePropertyAccessor(propertyMeta);
-        _builderAccessor = new BuilderPropertyAccessor(propertyMeta);
+        _messageAccessor = messageAccessor;
+        _builderAccessor = builderPropertyAccessor;
     }
     
     public MessagePropertyAccessor getMessageAccessor()

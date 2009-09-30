@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff.model;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,47 +27,38 @@ import com.google.protobuf.AbstractMessageLite;
  * @created Aug 25, 2009
  */
 
-public final class Model
+public final class Model<T extends Property>
 {
     
-    public static Model get(Class<? extends AbstractMessageLite> clazz)
+    public static Model<DefaultProperty> get(Class<? extends AbstractMessageLite> clazz)
     {
-        return get(clazz, false);
+        return new Model<DefaultProperty>(LiteRuntime.getModelMeta(clazz), DefaultProperty.FACTORY);
     }
     
-    public static Model get(Class<? extends AbstractMessageLite> clazz, boolean readOnly)
+    public static Model<DefaultProperty> get(ModelMeta modelMeta)
     {
-        return get(LiteRuntime.getModelMeta(clazz), readOnly);
+        return new Model<DefaultProperty>(modelMeta, DefaultProperty.FACTORY);
     }
     
-    public static Model get(ModelMeta modelMeta)
-    {
-        return get(modelMeta, false);
-    }
-
-    public static Model get(ModelMeta modelMeta, boolean readOnly)
-    {
-        return new Model(modelMeta, readOnly ? ReadOnlyProperty.FACTORY : DefaultProperty.FACTORY);
-    }
+    private ModelMeta _modelMeta;
+    private T[] _propsByNumber, _props;
+    private Map<String, T> _propsByName;
     
-    private final ModelMeta _modelMeta;
-    private final Property[] _propsByNumber, _props;
-    private final Map<String, Property> _propsByName;
-    
-    public Model(ModelMeta modelMeta, Property.Factory pf)
+    @SuppressWarnings("unchecked")
+    public Model(ModelMeta modelMeta, Property.Factory<T> pf)
     {
         _modelMeta = modelMeta;
-        _propsByNumber = new Property[_modelMeta.getMaxNumber()+1];
-        _propsByName = new HashMap<String,Property>(modelMeta.getPropertyCount());
-        
-        for(PropertyMeta pm : _modelMeta.getPropertyMetaMap().values())
+        _propsByNumber = (T[])Array.newInstance(pf.getType(), _modelMeta.getMaxNumber()+1);
+        _propsByName = new HashMap<String,T>(modelMeta.getPropertyCount());
+
+        for(PropertyMeta pm : _modelMeta.getPropertyMetas())
         {
-            Property prop = pf.create(pm);
+            T prop = pf.create(pm);
             _propsByNumber[pm.getNumber()] = prop;
             _propsByName.put(pm.getName(), prop);
         }
         
-        _props = new Property[_modelMeta.getPropertyCount()];
+        _props = (T[])Array.newInstance(pf.getType(), _modelMeta.getPropertyCount());
         for(int i=1, j=0; i<_propsByNumber.length; i++)
         {
             if(_propsByNumber[i]!=null)
@@ -81,21 +73,21 @@ public final class Model
     
     public Property getPropertyByNormalizedName(String normalizedName)
     {
-        PropertyMeta pm = _modelMeta.getPropertyMetaMap().get(normalizedName);
+        PropertyMeta pm = _modelMeta.getPropertyMeta(normalizedName);
         return pm==null ? null : _propsByNumber[pm.getNumber()];
     }
     
-    public Property getProperty(int num)
+    public T getProperty(int num)
     {
         return _propsByNumber[num];
     }
     
-    public Property getProperty(String name)
+    public T getProperty(String name)
     {
         return _propsByName.get(name);
     }
     
-    public Property[] getProperties()
+    public T[] getProperties()
     {
         return _props;
     }
