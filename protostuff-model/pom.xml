@@ -9,26 +9,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-model</artifactId>
-  <name>protostuff model</name>
-  <description>provides accessors for protobuf generated classes</description>
+  <name>protostuff :: model</name>
+  <description>provides accessors for protobuf LITE_RUNTIME via reflection</description>
   <packaging>jar</packaging>
   
   <build>
     <defaultGoal>install</defaultGoal>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-           </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
   
   <dependencies>

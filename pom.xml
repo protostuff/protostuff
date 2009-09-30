@@ -40,6 +40,19 @@
         </configuration>
       </plugin>
       <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+           </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.1</version>
@@ -49,7 +62,7 @@
             <mode>development</mode>
             <url>http://code.google.com/p/protostuff/</url>
             <implementation-version>${pom.version}</implementation-version>
-            <package>com.dyuproject</package>
+            <package>com.dyuproject.protostuff</package>
             </manifestEntries>
           </archive>
         </configuration>
@@ -65,7 +78,7 @@
             </goals>
             <configuration>
               <tasks>
-                <delete file="../../dist/${project.build.finalName}.${project.packaging}"/>
+                <delete file="../dist/${project.build.finalName}.${project.packaging}"/>
               </tasks>
             </configuration>
           </execution>
@@ -77,7 +90,7 @@
             </goals>
             <configuration>
               <tasks>
-                <copy failonerror="false" file="target/${project.build.finalName}.${project.packaging}" tofile="../../dist/${project.build.finalName}.${project.packaging}" />
+                <copy failonerror="false" file="target/${project.build.finalName}.${project.packaging}" tofile="../dist/${project.build.finalName}.${project.packaging}" />
               </tasks>
             </configuration>
           </execution>
