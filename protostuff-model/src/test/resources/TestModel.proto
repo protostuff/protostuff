@@ -2,7 +2,7 @@ package testmodel;
 
 option optimize_for = LITE_RUNTIME;
 option java_package = "com.dyuproject.protostuff.model";
-option java_outer_classname = "V22Speed";
+option java_outer_classname = "V22Lite";
 
 message Person {
   required int32 id = 1;
@@ -13,6 +13,7 @@ message Person {
   repeated Task _delegated_task_ = 5;
   repeated Task _priorityTask_ = 6;
   optional int32 _aGe_ = 7;
+  optional Task currentTask = 8;
 }
 
 message Task {

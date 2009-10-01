@@ -80,6 +80,13 @@ public final class V22Lite {
     public boolean hasAGe() { return hasAGe; }
     public int getAGe() { return AGe_; }
     
+    // optional .testmodel.Task currentTask = 8;
+    public static final int CURRENTTASK_FIELD_NUMBER = 8;
+    private boolean hasCurrentTask;
+    private com.dyuproject.protostuff.model.V22Lite.Task currentTask_ = com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance();
+    public boolean hasCurrentTask() { return hasCurrentTask; }
+    public com.dyuproject.protostuff.model.V22Lite.Task getCurrentTask() { return currentTask_; }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
@@ -87,6 +94,9 @@ public final class V22Lite {
       }
       for (com.dyuproject.protostuff.model.V22Lite.Task element : getPriorityTaskList()) {
         if (!element.isInitialized()) return false;
+      }
+      if (hasCurrentTask()) {
+        if (!getCurrentTask().isInitialized()) return false;
       }
       return true;
     }
@@ -113,6 +123,9 @@ public final class V22Lite {
       }
       if (hasAGe()) {
         output.writeInt32(7, getAGe());
+      }
+      if (hasCurrentTask()) {
+        output.writeMessage(8, getCurrentTask());
       }
     }
     
@@ -149,6 +162,10 @@ public final class V22Lite {
       if (hasAGe()) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(7, getAGe());
+      }
+      if (hasCurrentTask()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getCurrentTask());
       }
       memoizedSerializedSize = size;
       return size;
@@ -320,6 +337,9 @@ public final class V22Lite {
         if (other.hasAGe()) {
           setAGe(other.getAGe());
         }
+        if (other.hasCurrentTask()) {
+          mergeCurrentTask(other.getCurrentTask());
+        }
         return this;
       }
       
@@ -368,6 +388,15 @@ public final class V22Lite {
             }
             case 56: {
               setAGe(input.readInt32());
+              break;
+            }
+            case 66: {
+              com.dyuproject.protostuff.model.V22Lite.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Lite.Task.newBuilder();
+              if (hasCurrentTask()) {
+                subBuilder.mergeFrom(getCurrentTask());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setCurrentTask(subBuilder.buildPartial());
               break;
             }
           }
@@ -573,6 +602,43 @@ public final class V22Lite {
       public Builder clearAGe() {
         result.hasAGe = false;
         result.AGe_ = 0;
+        return this;
+      }
+      
+      // optional .testmodel.Task currentTask = 8;
+      public boolean hasCurrentTask() {
+        return result.hasCurrentTask();
+      }
+      public com.dyuproject.protostuff.model.V22Lite.Task getCurrentTask() {
+        return result.getCurrentTask();
+      }
+      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22Lite.Task value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result.hasCurrentTask = true;
+        result.currentTask_ = value;
+        return this;
+      }
+      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22Lite.Task.Builder builderForValue) {
+        result.hasCurrentTask = true;
+        result.currentTask_ = builderForValue.build();
+        return this;
+      }
+      public Builder mergeCurrentTask(com.dyuproject.protostuff.model.V22Lite.Task value) {
+        if (result.hasCurrentTask() &&
+            result.currentTask_ != com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance()) {
+          result.currentTask_ =
+            com.dyuproject.protostuff.model.V22Lite.Task.newBuilder(result.currentTask_).mergeFrom(value).buildPartial();
+        } else {
+          result.currentTask_ = value;
+        }
+        result.hasCurrentTask = true;
+        return this;
+      }
+      public Builder clearCurrentTask() {
+        result.hasCurrentTask = false;
+        result.currentTask_ = com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance();
         return this;
       }
     }
