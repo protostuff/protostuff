@@ -17,74 +17,162 @@ package com.dyuproject.protostuff.model;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.MessageLite;
+import com.google.protobuf.WireFormat.JavaType;
 
 /**
  * @author David Yu
  * @created Aug 27, 2009
  */
 
-public abstract class ParameterType
+public abstract class ParamType
 {
     
-    public static final ParameterType MESSAGE_SPEED, MESSAGE_LITE_RUNTIME;
+    public static final ParamType MESSAGE_SPEED, MESSAGE_LITE_RUNTIME;
     
-    public static final ParameterType INT = new ParameterType()
+    public static final ParamType INT = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return Integer.class==value.getClass() ? value : null;
+        }        
+        public JavaType getJavaType()
+        {
+            return JavaType.INT;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
         }
     };
     
-    public static final ParameterType LONG = new ParameterType()
+    public static final ParamType LONG = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return Long.class==value.getClass() ? value : null;
         }
+        public JavaType getJavaType()
+        {
+            return JavaType.LONG;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
+        }
     };
     
-    public static final ParameterType BOOLEAN = new ParameterType()
+    public static final ParamType BOOLEAN = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return Boolean.class==value.getClass() ? value : null;
         }
+        public JavaType getJavaType()
+        {
+            return JavaType.BOOLEAN;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
+        }
     };
     
-    public static final ParameterType FLOAT = new ParameterType()
+    public static final ParamType FLOAT = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return Float.class==value.getClass() ? value : null;
         }
+        public JavaType getJavaType()
+        {
+            return JavaType.FLOAT;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
+        }
     };
     
-    public static final ParameterType DOUBLE = new ParameterType()
+    public static final ParamType DOUBLE = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return Double.class==value.getClass() ? value : null;
         }
+        public JavaType getJavaType()
+        {
+            return JavaType.DOUBLE;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
+        }
     };
     
-    public static final ParameterType STRING = new ParameterType()
+    public static final ParamType STRING = new ParamType()
     {
         public Object resolveValue(Object value)
         {            
             return String.class==value.getClass() ? value : null;
         }
-    };
-    
-    public static final ParameterType BYTESTRING = new ParameterType()
-    {
-        public Object resolveValue(Object value)
-        {            
-            return ByteString.class==value.getClass() ? value : null;
+        public JavaType getJavaType()
+        {
+            return JavaType.STRING;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
         }
     };
     
-    public static ParameterType getSimpleType(final Class<?> clazz)
+    public static final ParamType BYTESTRING = new ParamType()
+    {
+        public Object resolveValue(Object value)
+        {
+            if(value.getClass()==byte[].class)
+                return ByteString.copyFrom((byte[])value);
+            
+            return ByteString.class==value.getClass() ? value : null;
+        }
+        public JavaType getJavaType()
+        {
+            return JavaType.BYTE_STRING;
+        }
+        public boolean isPrimitive()
+        {
+            return true;
+        }        
+        public boolean isMessage()
+        {
+            return false;
+        }
+    };
+    
+    public static ParamType getSimpleType(final Class<?> clazz)
     {
         if(clazz.isPrimitive())
             return getPrimitiveType(clazz);
@@ -93,16 +181,28 @@ public abstract class ParameterType
         if(ByteString.class==clazz)
             return BYTESTRING;
         
-        return new ParameterType()
+        return new ParamType()
         {
             public Object resolveValue(Object value)
             {
                 return clazz.isAssignableFrom(value.getClass()) ? value : null;
-            }            
+            }
+            public JavaType getJavaType()
+            {
+                return JavaType.ENUM;
+            }
+            public boolean isPrimitive()
+            {
+                return false;
+            }
+            public boolean isMessage()
+            {
+                return false;
+            }
         };
     }
     
-    public static ParameterType getPrimitiveType(Class<?> clazz)
+    public static ParamType getPrimitiveType(Class<?> clazz)
     {
         if(Integer.TYPE==clazz)
             return INT;
@@ -118,7 +218,7 @@ public abstract class ParameterType
         throw new IllegalArgumentException(clazz + " is not a simple primitive type.");
     }
     
-    public static ParameterType getMessageType(Class<?> messageClass)
+    public static ParamType getMessageType(Class<?> messageClass)
     {
         return new Message(messageClass, messageClass.getDeclaredClasses()[0],
                 GeneratedMessageLite.class.isAssignableFrom(messageClass) ? MESSAGE_LITE_RUNTIME : 
@@ -126,14 +226,18 @@ public abstract class ParameterType
     }
     
     public abstract Object resolveValue(Object value);
+    public abstract JavaType getJavaType();
+    public abstract boolean isPrimitive();
+    public abstract boolean isMessage();
     
-    static class Message extends ParameterType
+    
+    static class Message extends ParamType
     {        
         private final Class<?> _messageClass;
         private final Class<?> _builderClass;
-        private final ParameterType _builderType;
+        private final ParamType _builderType;
         
-        Message(Class<?> messageClass, Class<?> builderClass, ParameterType builderType)
+        Message(Class<?> messageClass, Class<?> builderClass, ParamType builderType)
         {
             _messageClass = messageClass;
             _builderClass = builderClass;
@@ -147,7 +251,22 @@ public abstract class ParameterType
             else if(_builderClass==value.getClass())
                 return _builderType.resolveValue(value);
             return null;
-        }        
+        }
+        
+        public JavaType getJavaType()
+        {
+            return JavaType.MESSAGE;
+        }
+        
+        public boolean isPrimitive()
+        {
+            return false;
+        }
+        
+        public boolean isMessage()
+        {
+            return true;
+        }
     }
     
     static
@@ -166,16 +285,29 @@ public abstract class ParameterType
         }
         if(clazz==null)
         {
-            MESSAGE_SPEED = new ParameterType()
+            MESSAGE_SPEED = new ParamType()
             {                
                 public Object resolveValue(Object value)
                 {
                     return ((MessageLite.Builder)value).build();                    
+                }
+                public JavaType getJavaType()
+                {
+                    return JavaType.MESSAGE;
+                }
+                public boolean isPrimitive()
+                {
+                    return false;
+                }        
+                public boolean isMessage()
+                {
+                    return true;
                 }
             };
         }
         else
             MESSAGE_SPEED = com.google.protobuf.PBSpeed.BUILDER_TO_MESSAGE;
     }
+    
 
 }

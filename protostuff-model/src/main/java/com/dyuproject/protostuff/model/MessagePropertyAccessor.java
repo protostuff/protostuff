@@ -31,7 +31,9 @@ import java.util.List;
 public class MessagePropertyAccessor extends PropertyAccessor
 {
 
-    final FieldAccess _fa;
+    protected final FieldAccess _fa;
+    protected final ParamType _paramType;
+    protected final Class<?> _typeClass;
     
     public MessagePropertyAccessor(PropertyMeta meta)
     {
@@ -39,12 +41,19 @@ public class MessagePropertyAccessor extends PropertyAccessor
         
         _fa = meta.isRepeated() ? new RepeatedFieldAccess() : new FieldAccess();
             
-        _fa.init(meta.getField());
+        _paramType = _fa.init(meta.getField());
+        
+        _typeClass = _fa.getTypeClass();
     }
     
-    public Field getField()
+    public ParamType getParamType()
     {
-        return _fa._field;
+        return _paramType;
+    }
+    
+    public Class<?> getTypeClass()
+    {
+        return _typeClass;
     }
     
     public Object getValue(Object message)
@@ -80,9 +89,8 @@ public class MessagePropertyAccessor extends PropertyAccessor
     class FieldAccess
     {
         Field _field, _has;
-        ParameterType _type;
         
-        protected void init(Field field)
+        protected ParamType init(Field field)
         {
             try
             {
@@ -93,9 +101,9 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 
                 Field.setAccessible(new Field[]{_field, _has}, true);
                 
-                _type = getMeta().isMessage() ? 
-                        ParameterType.getMessageType(getMeta().getTypeClass()) : 
-                            ParameterType.getSimpleType(getMeta().getTypeClass());
+                return getMeta().isMessage() ? 
+                        ParamType.getMessageType(getMeta().getTypeClass()) : 
+                            ParamType.getSimpleType(getMeta().getTypeClass());
             }
             catch (Exception e)
             {
@@ -126,7 +134,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
         {
             if(value!=null)
             {
-                if((value=_type.resolveValue(value))==null)
+                if((value=_paramType.resolveValue(value))==null)
                     return false;
                 
                 _has.setBoolean(message, true);
@@ -146,7 +154,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             if(value==null || _has.getBoolean(message))
                 return false;
             
-            if((value=_type.resolveValue(value))==null)
+            if((value=_paramType.resolveValue(value))==null)
                 return false;
             
             _field.set(message, value);
@@ -166,7 +174,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                     return last;
                 }
                 
-                if((value=_type.resolveValue(value))==null)
+                if((value=_paramType.resolveValue(value))==null)
                     return null;
                 
                 Object last = _field.get(message);
@@ -175,18 +183,23 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }
             return null;
         }
+        
+        public Class<?> getTypeClass()
+        {
+            return getMeta().getTypeClass();
+        }
     }
     
     class RepeatedFieldAccess extends FieldAccess
     {
         
-        protected void init(Field field)
+        protected ParamType init(Field field)
         {
             _field = field;
             _field.setAccessible(true);
-            _type = getMeta().isMessage() ? 
-                    ParameterType.getMessageType(getMeta().getComponentTypeClass()) : 
-                        ParameterType.getSimpleType(getMeta().getComponentTypeClass());
+            return getMeta().isMessage() ? 
+                    ParamType.getMessageType(getMeta().getComponentTypeClass()) : 
+                        ParamType.getSimpleType(getMeta().getComponentTypeClass());
         }
         
         @SuppressWarnings("unchecked")
@@ -237,7 +250,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 }                    
                 else if(list.size()==0)
                 {
-                    if((value=_type.resolveValue(value))==null)
+                    if((value=_paramType.resolveValue(value))==null)
                         return false;
                     
                     ArrayList<Object> nl = new ArrayList<Object>(3);
@@ -279,7 +292,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }                    
             else
             {
-                if((value=_type.resolveValue(value))==null)
+                if((value=_paramType.resolveValue(value))==null)
                     return false;
                 
                 ArrayList<Object> nl = new ArrayList<Object>(3);
@@ -304,7 +317,7 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 _field.set(message, value);
             else
             {
-                if((value=_type.resolveValue(value))==null)
+                if((value=_paramType.resolveValue(value))==null)
                     return null;
                     
                 ArrayList<Object> nl = new ArrayList<Object>(3);
@@ -313,6 +326,11 @@ public class MessagePropertyAccessor extends PropertyAccessor
             }
             
             return list;
+        }
+        
+        public Class<?> getTypeClass()
+        {
+            return getMeta().getComponentTypeClass();
         }
     }
     

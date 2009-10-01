@@ -17,8 +17,9 @@ package com.google.protobuf;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.model.ParameterType;
+import com.dyuproject.protostuff.model.ParamType;
 import com.google.protobuf.GeneratedMessage.Builder;
+import com.google.protobuf.WireFormat.JavaType;
 
 /**
  * @author David Yu
@@ -28,11 +29,23 @@ import com.google.protobuf.GeneratedMessage.Builder;
 public final class PBSpeed
 {
 
-    public static final ParameterType BUILDER_TO_MESSAGE = new ParameterType()
+    public static final ParamType BUILDER_TO_MESSAGE = new ParamType()
     {
         public Object resolveValue(Object builder)
         {
             return getGeneratedMessage((Builder<?>)builder);
+        }
+        public JavaType getJavaType()
+        {
+            return JavaType.MESSAGE;
+        }
+        public boolean isPrimitive()
+        {
+            return false;
+        }        
+        public boolean isMessage()
+        {
+            return true;
         }
     };
     

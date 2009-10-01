@@ -32,7 +32,8 @@ public final class Model<T extends Property>
     
     public static Model<DefaultProperty> get(Class<? extends AbstractMessageLite> clazz)
     {
-        return new Model<DefaultProperty>(LiteRuntime.getModelMeta(clazz), DefaultProperty.FACTORY);
+        return new Model<DefaultProperty>(LiteRuntime.MODEL_META_FACTORY.create(clazz), 
+                DefaultProperty.FACTORY);
     }
     
     public static Model<DefaultProperty> get(ModelMeta modelMeta)

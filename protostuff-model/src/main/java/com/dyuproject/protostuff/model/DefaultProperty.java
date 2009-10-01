@@ -40,8 +40,8 @@ public class DefaultProperty extends Property
         }
     };
     
-    protected final MessagePropertyAccessor _messageAccessor;
-    protected final BuilderPropertyAccessor _builderAccessor;
+    protected final MessagePropertyAccessor _messagePropertyAccessor;
+    protected final BuilderPropertyAccessor _builderPropertyAccessor;
     
     public DefaultProperty(PropertyMeta propertyMeta)
     {
@@ -53,27 +53,27 @@ public class DefaultProperty extends Property
             BuilderPropertyAccessor builderPropertyAccessor)
     {
         super(propertyMeta);
-        _messageAccessor = messageAccessor;
-        _builderAccessor = builderPropertyAccessor;
+        _messagePropertyAccessor = messageAccessor;
+        _builderPropertyAccessor = builderPropertyAccessor;
     }
     
-    public MessagePropertyAccessor getMessageAccessor()
+    public MessagePropertyAccessor getMessagePropertyAccessor()
     {
-        return _messageAccessor;
+        return _messagePropertyAccessor;
     }
     
-    public BuilderPropertyAccessor getBuilderAccessor()
+    public BuilderPropertyAccessor getBuilderPropertyAccessor()
     {
-        return _builderAccessor;
+        return _builderPropertyAccessor;
     }
 
     public Object getValue(Object target) 
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            return _messageAccessor.getValue(target);
+            return _messagePropertyAccessor.getValue(target);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            return _builderAccessor.getValue(target);
+            return _builderPropertyAccessor.getValue(target);
         
         return null;
     }
@@ -82,9 +82,9 @@ public class DefaultProperty extends Property
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            return _messageAccessor.removeValue(target);
+            return _messagePropertyAccessor.removeValue(target);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            return _builderAccessor.removeValue(target);
+            return _builderPropertyAccessor.removeValue(target);
         
         return null;
     }
@@ -93,9 +93,9 @@ public class DefaultProperty extends Property
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            return _messageAccessor.setValue(target, value);
+            return _messagePropertyAccessor.setValue(target, value);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            return _builderAccessor.setValue(target, value);
+            return _builderPropertyAccessor.setValue(target, value);
         
         return false;
     }
@@ -104,9 +104,9 @@ public class DefaultProperty extends Property
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            return _messageAccessor.replaceValueIfNone(target, value);
+            return _messagePropertyAccessor.replaceValueIfNone(target, value);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            return _builderAccessor.replaceValueIfNone(target, value);
+            return _builderPropertyAccessor.replaceValueIfNone(target, value);
         
         return false;
     }
@@ -115,9 +115,9 @@ public class DefaultProperty extends Property
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
         if(_propertyMeta.getMessageClass()==target.getClass())
-            return _messageAccessor.replaceValueIfAny(target, value);
+            return _messagePropertyAccessor.replaceValueIfAny(target, value);
         else if(_propertyMeta.getBuilderClass()==target.getClass())
-            return _builderAccessor.replaceValueIfAny(target, value);
+            return _builderPropertyAccessor.replaceValueIfAny(target, value);
         
         return null;
     }

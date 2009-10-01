@@ -37,16 +37,19 @@ public final class LiteRuntime
     
     static final String FIELD_NUMBER_SUFFIX = "_FIELD_NUMBER";
     
-    @SuppressWarnings("unchecked")
-    public static ModelMeta getModelMeta(Class<? extends AbstractMessageLite> messageClass)
-    {        
-        Class<? extends Builder<?>> builderClass = 
-            (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
-        
-        Map<String,PropMeta> propertyMetaMap = new HashMap<String,PropMeta>();
-        int[] minMax = parse(messageClass, builderClass, propertyMetaMap);        
-        return new ModelMeta(messageClass, builderClass, propertyMetaMap, minMax[0], minMax[1]);
-    }
+    public static final ModelMeta.Factory MODEL_META_FACTORY = new ModelMeta.Factory()
+    {
+        @SuppressWarnings("unchecked")
+        public ModelMeta create(Class<? extends AbstractMessageLite> messageClass)
+        {
+            Class<? extends Builder<?>> builderClass = 
+                (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
+            
+            Map<String,PropMeta> propertyMetaMap = new HashMap<String,PropMeta>();
+            int[] minMax = parse(messageClass, builderClass, propertyMetaMap);        
+            return new ModelMeta(messageClass, builderClass, propertyMetaMap, minMax[0], minMax[1]);
+        }
+    };
     
     static int[] parse(Class<? extends AbstractMessageLite> messageClass, 
             Class<? extends Builder<?>> builderClass, Map<String,PropMeta> propertyMetaMap)
@@ -151,7 +154,6 @@ public final class LiteRuntime
         private String _name, _normalizedName;
         private boolean _repeated, _message;
         private Field _field;
-        private ParameterType _resolver;
         
         public PropMeta(Class<? extends AbstractMessageLite> messageClass, 
                     Class<? extends Builder<?>> builderClass)
@@ -250,11 +252,6 @@ public final class LiteRuntime
         private void setTypeField(Field field)
         {
             _field = field;
-        }
-        
-        public ParameterType getParameterType()
-        {
-            return _resolver;
         }
         
         public String toString()

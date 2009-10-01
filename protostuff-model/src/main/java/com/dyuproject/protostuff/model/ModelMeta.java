@@ -34,6 +34,7 @@ public class ModelMeta
     private final Class<? extends Builder<?>> _builderClass;
     private final Map<String, ? extends PropertyMeta> _propertyMetaMap;
     private final int _minNumber, _maxNumber;
+    private final AbstractMessageLite _prototype;
     
     public ModelMeta(Class<? extends AbstractMessageLite> messageClass, 
             Class<? extends Builder<?>> builderClass, 
@@ -44,6 +45,15 @@ public class ModelMeta
         _propertyMetaMap = propertyMetaMap;
         _minNumber = minNumber;
         _maxNumber = maxNumber;
+        try
+        {
+            _prototype = (AbstractMessageLite)_messageClass.getDeclaredMethod(
+                    "getDefaultInstance").invoke(new Object[]{});
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
     
     public Class<?> getMessageClass()
@@ -54,6 +64,11 @@ public class ModelMeta
     public Class<?> getBuilderClass()
     {
         return _builderClass;
+    }
+    
+    public AbstractMessageLite getPrototype()
+    {
+        return _prototype;
     }
     
     public Collection<? extends PropertyMeta> getPropertyMetas()
@@ -90,6 +105,13 @@ public class ModelMeta
             .append(" maxNum=").append(getMaxNumber())
             .append('\n').append(_propertyMetaMap.values())
             .toString();
+    }
+    
+    public interface Factory
+    {
+        
+        public ModelMeta create(Class<? extends AbstractMessageLite> messageClass);
+        
     }
     
 }

@@ -32,6 +32,8 @@ public class BuilderPropertyAccessor extends PropertyAccessor
     protected final GetMethod _get;
     protected final ClearMethod _clear;
     protected final SetMethod _set;
+    protected final ParamType _paramType;
+    protected final Class<?> _typeClass;
     
     public BuilderPropertyAccessor(PropertyMeta meta)
     {
@@ -50,11 +52,22 @@ public class BuilderPropertyAccessor extends PropertyAccessor
             _has = new HasMethod();
             _set = new SetMethod();
         }
-        
+
         _get.init(meta, meta.getBuilderClass());
         _clear.init(meta);
         _has.init(meta, meta.getBuilderClass());
-        _set.init(meta);
+        _paramType = _set.init(meta);
+        _typeClass = _set.getTypeClass();
+    }
+    
+    public ParamType getParamType()
+    {
+        return _paramType;
+    }
+    
+    public Class<?> getTypeClass()
+    {
+        return getTypeClass();
     }
     
     public Object getValue(Object builder)
@@ -112,10 +125,10 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         return null;
     }
     
-    protected boolean set(Object builder, Object value, Method method, ParameterType pType)
+    protected boolean set(Object builder, Object value, Method method)
     throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
     {
-        if((value=pType.resolveValue(value))==null)
+        if((value=_paramType.resolveValue(value))==null)
             return false;
         
         method.invoke(builder, value);
@@ -149,21 +162,18 @@ public class BuilderPropertyAccessor extends PropertyAccessor
     class SetMethod
     {
         Method _method;
-        PropertyMeta _meta;
-        ParameterType _type;
         
-        protected void init(PropertyMeta meta)
+        protected ParamType init(PropertyMeta meta)
         {
-            _meta = meta;
             try
             {
                 _method = meta.getBuilderClass().getDeclaredMethod(
                         toPrefixedPascalCase("set", meta.getName()), 
                         new Class<?>[]{meta.getTypeClass()});
                 
-                _type = _meta.isMessage() ? 
-                        ParameterType.getMessageType(_meta.getTypeClass()) : 
-                            ParameterType.getSimpleType(_meta.getTypeClass());
+                return meta.isMessage() ? 
+                        ParamType.getMessageType(meta.getTypeClass()) : 
+                            ParamType.getSimpleType(meta.getTypeClass());
             }
             catch(Exception e)
             {
@@ -174,18 +184,21 @@ public class BuilderPropertyAccessor extends PropertyAccessor
         public boolean setValue(Object builder, Object value) 
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {            
-            return set(builder, value, _method, _type);
+            return set(builder, value, _method);
+        }
+        
+        public Class<?> getTypeClass()
+        {
+            return getMeta().getTypeClass();
         }
     }
     
     class RepeatedSetMethod extends SetMethod
     {
         Method _componentAdd;
-        PropertyMeta _meta;
         
-        protected void init(PropertyMeta meta)
+        protected ParamType init(PropertyMeta meta)
         {
-            _meta = meta;
             try
             {
                 _method = meta.getBuilderClass().getDeclaredMethod(
@@ -194,9 +207,9 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                         toPrefixedPascalCase("add", meta.getName()), 
                         new Class<?>[]{meta.getComponentTypeClass()});
                 
-                _type = _meta.isMessage() ? 
-                        ParameterType.getMessageType(_meta.getComponentTypeClass()) : 
-                            ParameterType.getSimpleType(_meta.getComponentTypeClass());
+                return meta.isMessage() ? 
+                        ParamType.getMessageType(meta.getComponentTypeClass()) : 
+                            ParamType.getSimpleType(meta.getComponentTypeClass());
             }
             catch(Exception e)
             {
@@ -213,7 +226,12 @@ public class BuilderPropertyAccessor extends PropertyAccessor
                 return true;
             }
             
-            return set(builder, value, _componentAdd, _type);
+            return set(builder, value, _componentAdd);
+        }
+        
+        public Class<?> getTypeClass()
+        {
+            return getMeta().getComponentTypeClass();
         }
     }
 
