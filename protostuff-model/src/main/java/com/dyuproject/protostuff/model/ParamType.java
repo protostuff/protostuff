@@ -32,9 +32,12 @@ public abstract class ParamType
     public static final ParamType INT = new ParamType()
     {
         public Object resolveValue(Object value)
-        {            
-            return Integer.class==value.getClass() ? value : null;
-        }        
+        {
+            if(Integer.class==value.getClass())
+                return value;
+            
+            return value instanceof Number ? Integer.valueOf(((Number)value).intValue()) : null;
+        }
         public JavaType getJavaType()
         {
             return JavaType.INT;
@@ -52,8 +55,11 @@ public abstract class ParamType
     public static final ParamType LONG = new ParamType()
     {
         public Object resolveValue(Object value)
-        {            
-            return Long.class==value.getClass() ? value : null;
+        {
+            if(Long.class==value.getClass())
+                return value;
+            
+            return value instanceof Number ? Long.valueOf(((Number)value).longValue()) : null;
         }
         public JavaType getJavaType()
         {
@@ -92,8 +98,11 @@ public abstract class ParamType
     public static final ParamType FLOAT = new ParamType()
     {
         public Object resolveValue(Object value)
-        {            
-            return Float.class==value.getClass() ? value : null;
+        {
+            if(Float.class==value.getClass())
+                return value;
+            
+            return value instanceof Number ? Float.valueOf(((Number)value).floatValue()) : null;
         }
         public JavaType getJavaType()
         {
@@ -112,8 +121,11 @@ public abstract class ParamType
     public static final ParamType DOUBLE = new ParamType()
     {
         public Object resolveValue(Object value)
-        {            
-            return Double.class==value.getClass() ? value : null;
+        {
+            if(Double.class==value.getClass())
+                return value;
+            
+            return value instanceof Number ? Double.valueOf(((Number)value).doubleValue()) : null;
         }
         public JavaType getJavaType()
         {

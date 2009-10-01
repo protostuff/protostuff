@@ -14,6 +14,7 @@ message Person {
   repeated Task _priorityTask_ = 6;
   optional int32 _aGe_ = 7;
   optional Task currentTask = 8;
+  repeated int64 repeatedLong = 9;
 }
 
 message Task {

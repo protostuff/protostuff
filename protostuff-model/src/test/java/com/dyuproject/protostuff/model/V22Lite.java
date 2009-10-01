@@ -87,6 +87,18 @@ public final class V22Lite {
     public boolean hasCurrentTask() { return hasCurrentTask; }
     public com.dyuproject.protostuff.model.V22Lite.Task getCurrentTask() { return currentTask_; }
     
+    // repeated int64 repeatedLong = 9;
+    public static final int REPEATEDLONG_FIELD_NUMBER = 9;
+    private java.util.List<java.lang.Long> repeatedLong_ =
+      java.util.Collections.emptyList();
+    public java.util.List<java.lang.Long> getRepeatedLongList() {
+      return repeatedLong_;
+    }
+    public int getRepeatedLongCount() { return repeatedLong_.size(); }
+    public long getRepeatedLong(int index) {
+      return repeatedLong_.get(index);
+    }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
@@ -127,6 +139,9 @@ public final class V22Lite {
       if (hasCurrentTask()) {
         output.writeMessage(8, getCurrentTask());
       }
+      for (long element : getRepeatedLongList()) {
+        output.writeInt64(9, element);
+      }
     }
     
     private int memoizedSerializedSize = -1;
@@ -166,6 +181,15 @@ public final class V22Lite {
       if (hasCurrentTask()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, getCurrentTask());
+      }
+      {
+        int dataSize = 0;
+        for (long element : getRepeatedLongList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt64SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * getRepeatedLongList().size();
       }
       memoizedSerializedSize = size;
       return size;
@@ -303,6 +327,10 @@ public final class V22Lite {
           result.PriorityTask_ =
             java.util.Collections.unmodifiableList(result.PriorityTask_);
         }
+        if (result.repeatedLong_ != java.util.Collections.EMPTY_LIST) {
+          result.repeatedLong_ =
+            java.util.Collections.unmodifiableList(result.repeatedLong_);
+        }
         com.dyuproject.protostuff.model.V22Lite.Person returnMe = result;
         result = null;
         return returnMe;
@@ -339,6 +367,12 @@ public final class V22Lite {
         }
         if (other.hasCurrentTask()) {
           mergeCurrentTask(other.getCurrentTask());
+        }
+        if (!other.repeatedLong_.isEmpty()) {
+          if (result.repeatedLong_.isEmpty()) {
+            result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+          }
+          result.repeatedLong_.addAll(other.repeatedLong_);
         }
         return this;
       }
@@ -397,6 +431,10 @@ public final class V22Lite {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setCurrentTask(subBuilder.buildPartial());
+              break;
+            }
+            case 72: {
+              addRepeatedLong(input.readInt64());
               break;
             }
           }
@@ -639,6 +677,40 @@ public final class V22Lite {
       public Builder clearCurrentTask() {
         result.hasCurrentTask = false;
         result.currentTask_ = com.dyuproject.protostuff.model.V22Lite.Task.getDefaultInstance();
+        return this;
+      }
+      
+      // repeated int64 repeatedLong = 9;
+      public java.util.List<java.lang.Long> getRepeatedLongList() {
+        return java.util.Collections.unmodifiableList(result.repeatedLong_);
+      }
+      public int getRepeatedLongCount() {
+        return result.getRepeatedLongCount();
+      }
+      public long getRepeatedLong(int index) {
+        return result.getRepeatedLong(index);
+      }
+      public Builder setRepeatedLong(int index, long value) {
+        result.repeatedLong_.set(index, value);
+        return this;
+      }
+      public Builder addRepeatedLong(long value) {
+        if (result.repeatedLong_.isEmpty()) {
+          result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+        }
+        result.repeatedLong_.add(value);
+        return this;
+      }
+      public Builder addAllRepeatedLong(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        if (result.repeatedLong_.isEmpty()) {
+          result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+        }
+        super.addAll(values, result.repeatedLong_);
+        return this;
+      }
+      public Builder clearRepeatedLong() {
+        result.repeatedLong_ = java.util.Collections.emptyList();
         return this;
       }
     }

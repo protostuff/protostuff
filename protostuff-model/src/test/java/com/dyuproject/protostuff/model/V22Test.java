@@ -39,9 +39,9 @@ public class V22Test extends TestCase
         assertTrue(taskModel.getModelMeta().getMaxNumber()==4);
         
         System.err.println(personModel.getModelMeta());
-        assertTrue(personModel.getModelMeta().getPropertyCount()==8);
+        assertTrue(personModel.getModelMeta().getPropertyCount()==9);
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
-        assertTrue(personModel.getModelMeta().getMaxNumber()==8);        
+        assertTrue(personModel.getModelMeta().getMaxNumber()==9);        
         
         V22Lite.Task task = V22Lite.Task.newBuilder()
             .setId(1)
@@ -92,12 +92,17 @@ public class V22Test extends TestCase
         personModel.getProperty("aGe").setValue(person, 20);
         personModel.getProperty("priorityTask").setValue(person, task);
         personModel.getProperty("currentTask").setValue(person, task);
+        personModel.getProperty("repeatedLong").setValue(person, 1);
+        personModel.getProperty("repeatedLong").setValue(person, 2);
         
         assertTrue(person.getFirstName().equals("John"));
         assertTrue(person.getLastName().equals("Doe"));
         assertTrue(person.getAGe()==20);
         assertTrue(person.getPriorityTask(0).getId()==1);
         assertTrue(person.getCurrentTask().getId()==task.getId());
+        assertTrue(person.getRepeatedLongCount()==2);
+        assertTrue(person.getRepeatedLong(0)==1);
+        assertTrue(person.getRepeatedLong(1)==2);
         
         personModel.getProperty("id").setValue(personBuilder, 4);
         personModel.getProperty("priorityTask").setValue(personBuilder, task);
@@ -173,9 +178,9 @@ public class V22Test extends TestCase
         assertTrue(taskModel.getModelMeta().getMaxNumber()==4);
         
         System.err.println(personModel.getModelMeta());
-        assertTrue(personModel.getModelMeta().getPropertyCount()==8);
+        assertTrue(personModel.getModelMeta().getPropertyCount()==9);
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
-        assertTrue(personModel.getModelMeta().getMaxNumber()==8);        
+        assertTrue(personModel.getModelMeta().getMaxNumber()==9);        
         
         V22Speed.Task task = V22Speed.Task.newBuilder()
             .setId(1)
@@ -226,12 +231,17 @@ public class V22Test extends TestCase
         personModel.getProperty("aGe").setValue(person, 20);
         personModel.getProperty("priorityTask").setValue(person, task);
         personModel.getProperty("currentTask").setValue(person, task);
+        personModel.getProperty("repeatedLong").setValue(person, 1);
+        personModel.getProperty("repeatedLong").setValue(person, 2);
         
         assertTrue(person.getFirstName().equals("John"));
         assertTrue(person.getLastName().equals("Doe"));
         assertTrue(person.getAGe()==20);
         assertTrue(person.getPriorityTask(0).getId()==1);
         assertTrue(person.getCurrentTask().getId()==task.getId());
+        assertTrue(person.getRepeatedLongCount()==2);
+        assertTrue(person.getRepeatedLong(0)==1);
+        assertTrue(person.getRepeatedLong(1)==2);
         
         personModel.getProperty("id").setValue(personBuilder, 4);
         personModel.getProperty("priorityTask").setValue(personBuilder, task);

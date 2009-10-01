@@ -97,6 +97,18 @@ public final class V22Speed {
     public boolean hasCurrentTask() { return hasCurrentTask; }
     public com.dyuproject.protostuff.model.V22Speed.Task getCurrentTask() { return currentTask_; }
     
+    // repeated int64 repeatedLong = 9;
+    public static final int REPEATEDLONG_FIELD_NUMBER = 9;
+    private java.util.List<java.lang.Long> repeatedLong_ =
+      java.util.Collections.emptyList();
+    public java.util.List<java.lang.Long> getRepeatedLongList() {
+      return repeatedLong_;
+    }
+    public int getRepeatedLongCount() { return repeatedLong_.size(); }
+    public long getRepeatedLong(int index) {
+      return repeatedLong_.get(index);
+    }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       for (com.dyuproject.protostuff.model.V22Speed.Task element : getDelegatedTaskList()) {
@@ -136,6 +148,9 @@ public final class V22Speed {
       }
       if (hasCurrentTask()) {
         output.writeMessage(8, getCurrentTask());
+      }
+      for (long element : getRepeatedLongList()) {
+        output.writeInt64(9, element);
       }
       getUnknownFields().writeTo(output);
     }
@@ -177,6 +192,15 @@ public final class V22Speed {
       if (hasCurrentTask()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, getCurrentTask());
+      }
+      {
+        int dataSize = 0;
+        for (long element : getRepeatedLongList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt64SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * getRepeatedLongList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -319,6 +343,10 @@ public final class V22Speed {
           result.PriorityTask_ =
             java.util.Collections.unmodifiableList(result.PriorityTask_);
         }
+        if (result.repeatedLong_ != java.util.Collections.EMPTY_LIST) {
+          result.repeatedLong_ =
+            java.util.Collections.unmodifiableList(result.repeatedLong_);
+        }
         com.dyuproject.protostuff.model.V22Speed.Person returnMe = result;
         result = null;
         return returnMe;
@@ -364,6 +392,12 @@ public final class V22Speed {
         }
         if (other.hasCurrentTask()) {
           mergeCurrentTask(other.getCurrentTask());
+        }
+        if (!other.repeatedLong_.isEmpty()) {
+          if (result.repeatedLong_.isEmpty()) {
+            result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+          }
+          result.repeatedLong_.addAll(other.repeatedLong_);
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -429,6 +463,10 @@ public final class V22Speed {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setCurrentTask(subBuilder.buildPartial());
+              break;
+            }
+            case 72: {
+              addRepeatedLong(input.readInt64());
               break;
             }
           }
@@ -671,6 +709,40 @@ public final class V22Speed {
       public Builder clearCurrentTask() {
         result.hasCurrentTask = false;
         result.currentTask_ = com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance();
+        return this;
+      }
+      
+      // repeated int64 repeatedLong = 9;
+      public java.util.List<java.lang.Long> getRepeatedLongList() {
+        return java.util.Collections.unmodifiableList(result.repeatedLong_);
+      }
+      public int getRepeatedLongCount() {
+        return result.getRepeatedLongCount();
+      }
+      public long getRepeatedLong(int index) {
+        return result.getRepeatedLong(index);
+      }
+      public Builder setRepeatedLong(int index, long value) {
+        result.repeatedLong_.set(index, value);
+        return this;
+      }
+      public Builder addRepeatedLong(long value) {
+        if (result.repeatedLong_.isEmpty()) {
+          result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+        }
+        result.repeatedLong_.add(value);
+        return this;
+      }
+      public Builder addAllRepeatedLong(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        if (result.repeatedLong_.isEmpty()) {
+          result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
+        }
+        super.addAll(values, result.repeatedLong_);
+        return this;
+      }
+      public Builder clearRepeatedLong() {
+        result.repeatedLong_ = java.util.Collections.emptyList();
         return this;
       }
     }
@@ -1171,17 +1243,17 @@ public final class V22Speed {
   static {
     java.lang.String[] descriptorData = {
       "\n\"src/test/resources/TestModel.proto\022\tte" +
-      "stmodel\"\322\001\n\006Person\022\n\n\002id\030\001 \002(\005\022\r\n\005email\030" +
+      "stmodel\"\350\001\n\006Person\022\n\n\002id\030\001 \002(\005\022\r\n\005email\030" +
       "\002 \001(\t\022\022\n\nfirst_name\030\003 \001(\t\022\020\n\010lastName\030\004 " +
       "\001(\t\022)\n\020_delegated_task_\030\005 \003(\0132\017.testmode" +
       "l.Task\022\'\n\016_priorityTask_\030\006 \003(\0132\017.testmod" +
       "el.Task\022\r\n\005_aGe_\030\007 \001(\005\022$\n\013currentTask\030\010 " +
-      "\001(\0132\017.testmodel.Task\"\224\001\n\004Task\022\013\n\003_id\030\001 \002" +
-      "(\005\022\r\n\005name_\030\002 \001(\t\022\025\n\r_description_\030\003 \001(\t" +
-      "\022&\n\006status\030\004 \001(\0162\026.testmodel.Task.Status" +
-      "\"1\n\006Status\022\013\n\007PENDING\020\000\022\013\n\007STARTED\020\001\022\r\n\t",
-      "COMPLETED\020\002B-\n\037com.dyuproject.protostuff" +
-      ".modelB\010V22SpeedH\001"
+      "\001(\0132\017.testmodel.Task\022\024\n\014repeatedLong\030\t \003" +
+      "(\003\"\224\001\n\004Task\022\013\n\003_id\030\001 \002(\005\022\r\n\005name_\030\002 \001(\t\022" +
+      "\025\n\r_description_\030\003 \001(\t\022&\n\006status\030\004 \001(\0162\026" +
+      ".testmodel.Task.Status\"1\n\006Status\022\013\n\007PEND",
+      "ING\020\000\022\013\n\007STARTED\020\001\022\r\n\tCOMPLETED\020\002B-\n\037com" +
+      ".dyuproject.protostuff.modelB\010V22SpeedH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1193,7 +1265,7 @@ public final class V22Speed {
           internal_static_testmodel_Person_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_testmodel_Person_descriptor,
-              new java.lang.String[] { "Id", "Email", "FirstName", "LastName", "DelegatedTask", "PriorityTask", "AGe", "CurrentTask", },
+              new java.lang.String[] { "Id", "Email", "FirstName", "LastName", "DelegatedTask", "PriorityTask", "AGe", "CurrentTask", "RepeatedLong", },
               com.dyuproject.protostuff.model.V22Speed.Person.class,
               com.dyuproject.protostuff.model.V22Speed.Person.Builder.class);
           internal_static_testmodel_Task_descriptor =

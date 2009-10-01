@@ -137,8 +137,8 @@ public class MessagePropertyAccessor extends PropertyAccessor
                 if((value=_paramType.resolveValue(value))==null)
                     return false;
                 
-                _has.setBoolean(message, true);
                 _field.set(message, value);
+                _has.setBoolean(message, true);
                 return true;
             }
             
@@ -258,7 +258,11 @@ public class MessagePropertyAccessor extends PropertyAccessor
                     _field.set(message, nl);
                 }
                 else
+                {
+                    if((value=_paramType.resolveValue(value))==null)
+                        return false;
                     list.add(value);
+                }
             }
             else if(list.size()!=0)
             {
