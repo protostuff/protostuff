@@ -34,34 +34,33 @@ import com.dyuproject.protostuff.model.V22Lite.Task;
 
 public class DefaultProtobufConvertorTest extends TestCase
 {
+    static final ProtobufJSON<DefaultProtobufConvertor> pbJSON = new ProtobufJSON<DefaultProtobufConvertor>(
+            new DefaultProtobufConvertor.Factory(new Class[]{V22Lite.class}));
+    
+    static final Task task = Task.newBuilder()
+        .setId(1)
+        .setName("task_name")
+        .setDescription("task_description")
+        .setStatus(Task.Status.COMPLETED)
+        .build();
+    
+    static final Person person = Person.newBuilder()
+        .setId(1)
+        .setFirstName("john")
+        .setLastName("doe")
+        .setAGe(2)
+        .setEmail("john_doe@email.com")
+        .setCurrentTask(task)
+        .addDelegatedTask(task)
+        .addPriorityTask(task)
+        .addPriorityTask(task)
+        .addRepeatedLong(3)
+        .addRepeatedLong(4)
+        .addRepeatedLong(5)
+        .build();
     
     public void testGenerateAndParse() throws Exception
-    {
-        ProtobufJSON<DefaultProtobufConvertor> pbJSON = new ProtobufJSON<DefaultProtobufConvertor>(
-                new DefaultProtobufConvertor.Factory(new Class[]{V22Lite.class}));
-        
-        Task task = Task.newBuilder()
-            .setId(1)
-            .setName("task_name")
-            .setDescription("task_description")
-            .setStatus(Task.Status.COMPLETED)
-            .build();
-        
-        Person person = Person.newBuilder()
-            .setId(1)
-            .setFirstName("john")
-            .setLastName("doe")
-            .setAGe(2)
-            .setEmail("john_doe@email.com")
-            .setCurrentTask(task)
-            .addDelegatedTask(task)
-            .addPriorityTask(task)
-            .addPriorityTask(task)
-            .addRepeatedLong(3)
-            .addRepeatedLong(4)
-            .addRepeatedLong(5)
-            .build();
-        
+    {        
         StringWriter sw = new StringWriter();
         pbJSON.writeMessage(sw, person);
         String generated = sw.toString();
@@ -69,6 +68,21 @@ public class DefaultProtobufConvertorTest extends TestCase
         
         JsonParser parser = pbJSON.getJsonFactory().createJsonParser(generated);
         Person parsedPerson = pbJSON.readMessage(parser, Person.class);
+        assertEquals(person, parsedPerson);
+        parser.close();
+    }
+    
+    public void testGenerateAndMerge() throws Exception
+    {        
+        StringWriter sw = new StringWriter();
+        pbJSON.writeMessage(sw, person);
+        String generated = sw.toString();
+        System.err.println(generated);
+        
+        JsonParser parser = pbJSON.getJsonFactory().createJsonParser(generated);
+        Person.Builder builder = Person.newBuilder();
+        pbJSON.mergeFrom(parser, builder);
+        Person parsedPerson = builder.build();
         assertEquals(person, parsedPerson);
         parser.close();
     }

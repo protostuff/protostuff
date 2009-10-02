@@ -34,6 +34,8 @@ public interface ProtobufConvertor<T extends MessageLite, B extends Builder>
     
     public B parseFrom(JsonParser parser) throws IOException;
     
+    public void mergeFrom(JsonParser parser, B builder) throws IOException;
+    
     
     public interface ProtobufField<T extends MessageLite, B extends Builder>
     {

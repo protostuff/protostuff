@@ -95,6 +95,12 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
     public Builder parseFrom(JsonParser parser) throws IOException
     {        
         Builder builder = _model.getModelMeta().getPrototype().newBuilderForType();
+        mergeFrom(parser, builder);        
+        return builder;
+    }
+    
+    public void mergeFrom(JsonParser parser, Builder builder) throws IOException
+    {
         for(JsonToken t = parser.nextToken(); t!=JsonToken.END_OBJECT; t=parser.nextToken())
         {
             if(t!=JsonToken.FIELD_NAME)
@@ -110,9 +116,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
             
             field.readFrom(parser, builder);
         }
-        
-        return builder;
-    }    
+    }
 
     public void generateTo(JsonGenerator generator, MessageLite message) throws IOException
     {

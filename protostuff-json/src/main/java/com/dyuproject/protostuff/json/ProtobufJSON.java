@@ -182,6 +182,54 @@ public final class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Builder>
         return (B)convertor.parseFrom(parser);
     }
     
+    public final void mergeFrom(InputStream in, Builder builder)
+    throws IOException
+    {
+        JsonParser parser = _jsonFactory.createJsonParser(in);
+        try
+        {
+            mergeFrom(parser, builder);
+        }
+        finally
+        {
+            parser.close();
+        }
+    }
+    
+    public final void mergeFrom(Reader reader, Builder builder)
+    throws IOException
+    {
+        JsonParser parser = _jsonFactory.createJsonParser(reader);
+        try
+        {
+            mergeFrom(parser, builder);
+        }
+        finally
+        {
+            parser.close();
+        }
+    }
+    
+    public final void mergeFrom(JsonParser parser, Builder builder)
+    throws IOException
+    {
+        if(parser.nextToken()!=JsonToken.START_OBJECT)
+        {
+            throw new IOException("Expected token: { but was " + 
+                    parser.getCurrentToken() + " on message: " + 
+                    builder.getClass().getDeclaringClass());
+        }
+        
+        P convertor = _convertorFactory.get(builder.getClass().getDeclaringClass());
+        if(convertor==null)
+        {
+            throw new IllegalStateException("Convertor for message: " + 
+                    builder.getClass().getDeclaringClass() + " not found");
+        }
+        
+        convertor.mergeFrom(parser, builder);
+    }
+    
     public final void writeMessage(OutputStream out, MessageLite message)
     throws IOException
     {
