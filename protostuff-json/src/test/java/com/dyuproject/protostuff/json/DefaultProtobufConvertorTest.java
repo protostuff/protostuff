@@ -51,7 +51,7 @@ public class DefaultProtobufConvertorTest extends TestCase
         .setAGe(2)
         .setEmail("john_doe@email.com")
         .setCurrentTask(task)
-        .addDelegatedTask(task)
+        //.addDelegatedTask(task)
         .addPriorityTask(task)
         .addPriorityTask(task)
         .addRepeatedLong(3)

@@ -397,6 +397,11 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                     
                     generator.writeEndArray();
                 }
+                else
+                {
+                    generator.writeArrayFieldStart(fieldName);
+                    generator.writeEndArray();
+                }
             }
             catch (IllegalArgumentException e)
             {
@@ -545,6 +550,11 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                     for(Object value : values)
                         _inlineValue.writeObjectTo(generator, value);
                     
+                    generator.writeEndArray();
+                }
+                else
+                {
+                    generator.writeArrayFieldStart(fieldName);
                     generator.writeEndArray();
                 }
             }
