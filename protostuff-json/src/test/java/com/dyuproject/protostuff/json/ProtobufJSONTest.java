@@ -26,15 +26,20 @@ import org.codehaus.jackson.JsonToken;
 import com.dyuproject.protostuff.model.V22Lite;
 import com.dyuproject.protostuff.model.V22Lite.Person;
 import com.dyuproject.protostuff.model.V22Lite.Task;
+import com.google.protobuf.MessageLite;
+import com.google.protobuf.MessageLite.Builder;
 
 /**
  * @author David Yu
  * @created Sep 30, 2009
  */
 
-public class DefaultProtobufConvertorTest extends TestCase
+public class ProtobufJSONTest extends TestCase
 {
-    static final LiteJSON pbJSON = new LiteJSON(new Class[]{V22Lite.class});
+    static final LiteJSON LITE = new LiteJSON(new Class[]{V22Lite.class});
+    static final NumericLiteJSON NUM_LITE = new NumericLiteJSON(new Class[]{V22Lite.class});
+    static final ProtobufJSON<ProtobufConvertor<MessageLite, Builder>> GENERATED = 
+        V22LiteGenerated.getJSON();
     
     static final Task task = Task.newBuilder()
         .setId(1)
@@ -59,31 +64,45 @@ public class DefaultProtobufConvertorTest extends TestCase
         .build();
     
     public void testGenerateAndParse() throws Exception
-    {        
-        StringWriter sw = new StringWriter();
-        pbJSON.writeMessage(sw, person);
-        String generated = sw.toString();
-        System.err.println(generated);
+    {
+        String generated = generateAndParse(GENERATED);
+        String lite = generateAndParse(LITE);
+        String numLite = generateAndParse(NUM_LITE);
         
-        JsonParser parser = pbJSON.getJsonFactory().createJsonParser(generated);
-        Person parsedPerson = pbJSON.readMessage(parser, Person.class);
-        assertEquals(person, parsedPerson);
-        parser.close();
+        assertEquals(generated, lite);
+        
+        System.err.println(generated);
+        System.err.println(lite);
+        System.err.println(numLite);
     }
     
-    public void testGenerateAndMerge() throws Exception
-    {        
+    static String generateAndParse(LiteJSON json) throws Exception
+    {
         StringWriter sw = new StringWriter();
-        pbJSON.writeMessage(sw, person);
+        json.writeMessage(sw, person);
         String generated = sw.toString();
-        System.err.println(generated);
-        
-        JsonParser parser = pbJSON.getJsonFactory().createJsonParser(generated);
-        Person.Builder builder = Person.newBuilder();
-        pbJSON.mergeFrom(parser, builder);
-        Person parsedPerson = builder.build();
+
+        JsonParser parser = json.getJsonFactory().createJsonParser(generated);
+        Person parsedPerson = json.readMessage(parser, Person.class);
         assertEquals(person, parsedPerson);
         parser.close();
+        
+        return generated;
+    }
+    
+    static String generateAndParse(ProtobufJSON<ProtobufConvertor<MessageLite, Builder>> json) 
+    throws Exception
+    {
+        StringWriter sw = new StringWriter();
+        json.writeMessage(sw, person);
+        String generated = sw.toString();
+
+        JsonParser parser = json.getJsonFactory().createJsonParser(generated);
+        Person parsedPerson = json.readMessage(parser, Person.class);
+        assertEquals(person, parsedPerson);
+        parser.close();
+        
+        return generated;
     }
     
     static void assertEquals(Person p, Person p2)
@@ -123,7 +142,7 @@ public class DefaultProtobufConvertorTest extends TestCase
         assertTrue(t.getStatus() == t2.getStatus());        
     }
     
-    public void testFf() throws Exception
+    public void jacksonTest() throws Exception
     {
         JsonFactory factory = new JsonFactory();
         StringWriter writer = new StringWriter();
