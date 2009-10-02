@@ -68,10 +68,10 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
     };
     
     protected final Model<Field> _model;
-    protected final ProtobufConvertorFactory<DefaultProtobufConvertor> _factory;
+    protected final ProtobufConvertor.Factory<DefaultProtobufConvertor> _factory;
     
     public DefaultProtobufConvertor(ModelMeta modelMeta, 
-            ProtobufConvertorFactory<DefaultProtobufConvertor> factory)
+            ProtobufConvertor.Factory<DefaultProtobufConvertor> factory)
     {
         _model = new Model<Field>(modelMeta, PROPERTY_FACTORY);
         _factory = factory;
@@ -132,7 +132,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
         generator.writeEndObject();        
     }
     
-    public static class Factory implements ProtobufConvertorFactory<DefaultProtobufConvertor>
+    public static class Factory implements ProtobufConvertor.Factory<DefaultProtobufConvertor>
     {
         
         protected final HashMap<String,DefaultProtobufConvertor> _convertors = 
@@ -226,7 +226,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
     static abstract class Field extends DefaultProperty implements ProtobufField<MessageLite,Builder>
     {
         
-        protected ProtobufConvertorFactory<DefaultProtobufConvertor> _factory;
+        protected ProtobufConvertor.Factory<DefaultProtobufConvertor> _factory;
         protected DefaultProtobufConvertor _convertor;
 
         public Field(PropertyMeta propertyMeta)
