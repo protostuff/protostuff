@@ -67,8 +67,8 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
         }
     };
     
-    private final Model<Field> _model;
-    private final ProtobufConvertorFactory<DefaultProtobufConvertor> _factory;
+    protected final Model<Field> _model;
+    protected final ProtobufConvertorFactory<DefaultProtobufConvertor> _factory;
     
     public DefaultProtobufConvertor(ModelMeta modelMeta, 
             ProtobufConvertorFactory<DefaultProtobufConvertor> factory)
@@ -82,7 +82,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
         }
     }    
     
-    protected Field getField(String name, Model<Field> model)
+    protected Field getField(String name, Model<Field> model) throws IOException
     {
         return model.getProperty(name);
     }
@@ -112,7 +112,10 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
             String name = parser.getCurrentName();
             Field field = getField(name, _model);
             if(field==null)
-                throw new IOException("unknown field: " + name);
+            {
+                throw new IOException("unknown field: " + name + " on message: " + 
+                        _model.getModelMeta().getMessageClass());
+            }
             
             field.readFrom(parser, builder);
         }
@@ -132,12 +135,12 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
     public static class Factory implements ProtobufConvertorFactory<DefaultProtobufConvertor>
     {
         
-        private final HashMap<String,DefaultProtobufConvertor> _convertors = 
+        protected final HashMap<String,DefaultProtobufConvertor> _convertors = 
             new HashMap<String,DefaultProtobufConvertor>();
         
-        private final ArrayList<Class<?>> _modules = new ArrayList<Class<?>>();
+        protected final ArrayList<Class<?>> _modules = new ArrayList<Class<?>>();
         
-        private final ModelMeta.Factory _modelMetaFactory;
+        protected final ModelMeta.Factory _modelMetaFactory;
 
         public Factory(Class<?>[] moduleClasses)
         {
@@ -200,13 +203,17 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                 if(MessageLite.class.isAssignableFrom(messageClasses[i]))
                 {
                     Class<? extends AbstractMessageLite> clazz = (Class<? extends AbstractMessageLite>)messageClasses[i];
-                    _convertors.put(clazz.getName(), new DefaultProtobufConvertor(
-                            _modelMetaFactory.create(clazz), this));
+                    _convertors.put(clazz.getName(), newConvertor(_modelMetaFactory.create(clazz)));
                 }
             }
             
             if(size<_convertors.size())
                 _modules.add(moduleClass);
+        }
+        
+        protected DefaultProtobufConvertor newConvertor(ModelMeta modelMeta)
+        {
+            return new DefaultProtobufConvertor(modelMeta, this);
         }
 
         public <T extends MessageLite, B extends Builder> DefaultProtobufConvertor get(Class<?> messageType)
