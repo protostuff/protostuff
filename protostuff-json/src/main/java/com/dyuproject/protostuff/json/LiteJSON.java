@@ -123,14 +123,9 @@ public class LiteJSON extends ProtobufJSON<LiteConvertor>
         return new LiteConvertor(modelMeta, this);
     }
 
-    public <T extends MessageLite, B extends Builder> LiteConvertor get(Class<?> messageType)
+    public <T extends MessageLite, B extends Builder> LiteConvertor getConvertor(Class<?> messageType)
     {
         return _convertors.get(messageType.getName());
-    }
-
-    protected LiteConvertor getConvertor(Class<?> messageClass)
-    {        
-        return _convertors.get(messageClass.getName());
     }
 
     protected Field getField(String name, Model<Field> model) throws IOException

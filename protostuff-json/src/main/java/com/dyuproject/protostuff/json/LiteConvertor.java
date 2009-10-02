@@ -151,7 +151,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                         _propertyMeta.getMessageClass());
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.getConvertor(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -205,7 +205,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                 throw new IOException(e);
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.getConvertor(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
                 throw new IOException("Message not included: " + message.getClass());
             
@@ -232,7 +232,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                         _propertyMeta.getMessageClass());
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.getConvertor(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -278,7 +278,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                 List<MessageLite> messages = (List<MessageLite>)_messagePropertyAccessor.getValue(owner);
                 if(messages!=null)
                 {
-                    LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+                    LiteConvertor convertor = _convertor._lite.getConvertor(_messagePropertyAccessor.getTypeClass());
                     if(convertor==null)
                     {
                         throw new IOException("Message not included: " + 

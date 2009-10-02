@@ -263,7 +263,6 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
         convertor.generateTo(generator, message);
     }
     
-    protected abstract <T extends MessageLite, B extends Builder> P get(Class<?> messageType);
+    protected abstract <T extends MessageLite, B extends Builder> P getConvertor(Class<?> messageType);
     
-    protected abstract P getConvertor(Class<?> messageClass);
 }
