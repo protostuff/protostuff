@@ -14,7 +14,11 @@
 
 package com.dyuproject.protostuff.json;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
@@ -63,7 +67,7 @@ public class ProtobufJSONTest extends TestCase
         .addRepeatedLong(5)
         .build();
     
-    public void testGenerateAndParse() throws Exception
+    static void doTestGenerateAndParse(PrintStream out) throws Exception
     {
         String generated = generateAndParse(GENERATED);
         String lite = generateAndParse(LITE);
@@ -71,9 +75,9 @@ public class ProtobufJSONTest extends TestCase
         
         assertEquals(generated, lite);
         
-        System.err.println(generated);
-        System.err.println(lite);
-        System.err.println(numLite);
+        out.println(generated);
+        out.println(lite);
+        out.println(numLite);
     }
     
     static String generateAndParse(LiteJSON json) throws Exception
@@ -194,6 +198,97 @@ public class ProtobufJSONTest extends TestCase
         assertTrue(parser.nextToken()==JsonToken.END_OBJECT);
         
         parser.close();
+    }
+    
+    public void testBenchmark() throws Exception
+    {
+        String dir = System.getProperty("benchmark.output_dir");
+        
+        PrintStream out = dir==null ? System.out : 
+            new PrintStream(new FileOutputStream(new File(new File(dir), 
+                    "protostuff-benchmark-"+System.currentTimeMillis()+".html"), true));
+        
+        int warmups = Integer.getInteger("benchmark.warmups", 100000);
+        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        String title = "protostuff-json ser/deser benchmark for " + loops + " runs";
+        out.println("<html><head><title>");
+        out.println(title);
+        out.println("</title></head><body><p>");
+        out.println(title);        
+        out.println("</p><pre>\n\n");
+        
+        doTestGenerateAndParse(out);
+        out.println("\n\n</pre><hr/><pre>");
+        start(out, warmups, loops);
+        
+        if(System.out!=out)
+            out.close();
+    }
+    
+    public static void main(String[] args) throws Exception
+    {
+        String dir = System.getProperty("benchmark.output_dir");
+        
+        PrintStream out = dir==null ? System.out : 
+            new PrintStream(new FileOutputStream(new File(new File(dir), 
+                    "protostuff-benchmark-"+System.currentTimeMillis()+".html"), true));
+        int runs = Integer.getInteger("benchmark.runs", 1);
+        
+        
+        int warmups = Integer.getInteger("benchmark.warmups", 100000);
+        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        String title = "protostuff-json ser/deser benchmark for " + loops + " runs";
+        out.println("<html><head><title>");
+        out.println(title);
+        out.println("</title></head><body><p>");
+        out.println(title);
+        out.println("</p><pre>\n\n");
+        
+        doTestGenerateAndParse(out);
+        out.println("\n\n</pre><hr/><pre>");
+        for(int i=0; i<runs; i++)
+            start(out, warmups, loops);
+        
+        if(System.out!=out)
+            out.close();
+    }
+    
+    public static void start(PrintStream out, int warmups, int loops) throws Exception
+    {
+        Charset utf8 = Charset.forName("UTF-8");
+        
+        int generatedLen = generateAndParse(GENERATED).getBytes(utf8).length;
+        for(int i=0; i<warmups; i++)
+            generateAndParse(GENERATED);        
+        long generatedStart = System.currentTimeMillis();
+        for(int i=0; i<loops; i++)
+            generateAndParse(GENERATED);
+        long generatedFinish = System.currentTimeMillis();
+        long generatedElapsed = generatedFinish - generatedStart;
+        out.println(generatedElapsed + " ms elapsed with " + generatedLen + " bytes for GENERATED");
+        
+        int liteLen = generateAndParse(LITE).getBytes(utf8).length;
+        for(int i=0; i<warmups; i++)
+            generateAndParse(LITE);    
+        long liteStart = System.currentTimeMillis();
+        for(int i=0; i<loops; i++)
+            generateAndParse(LITE);
+        long liteFinish = System.currentTimeMillis();
+        long liteElapsed = liteFinish - liteStart;
+        out.println(liteElapsed + " ms elapsed with " + liteLen + " bytes for LITE");
+        
+        int numLiteLen = generateAndParse(NUM_LITE).getBytes(utf8).length;
+        for(int i=0; i<warmups; i++)
+            generateAndParse(NUM_LITE);
+        long numLiteStart = System.currentTimeMillis();
+        for(int i=0; i<loops; i++)
+            generateAndParse(NUM_LITE);
+        long numLiteFinish = System.currentTimeMillis();
+        long numLiteElapsed = numLiteFinish - numLiteStart;
+        out.println(numLiteElapsed + " ms elapsed with " + numLiteLen + " bytes for NUM_LITE");
+        
+        
+
     }
 
 }
