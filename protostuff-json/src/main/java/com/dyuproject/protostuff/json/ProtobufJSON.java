@@ -34,24 +34,21 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Sep 30, 2009
  */
 
-public class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Builder>>
+public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Builder>>
 {
 
     public static final JsonFactory DEFAULT_JSON_FACTORY = new JsonFactory();
     
     private final JsonFactory _jsonFactory;
-    private final ProtobufConvertor.Factory<P> _convertorFactory;
     
-    public ProtobufJSON(ProtobufConvertor.Factory<P> convertorFactory)
+    public ProtobufJSON()
     {
-        this(DEFAULT_JSON_FACTORY, convertorFactory);
+        this(DEFAULT_JSON_FACTORY);
     }
     
-    public ProtobufJSON(JsonFactory jsonFactory,
-            ProtobufConvertor.Factory<P> convertorFactory)
+    public ProtobufJSON(JsonFactory jsonFactory)
     {
         _jsonFactory = jsonFactory;
-        _convertorFactory = convertorFactory;
     }
     
     public final JsonFactory getJsonFactory()
@@ -266,9 +263,7 @@ public class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Builder>>
         convertor.generateTo(generator, message);
     }
     
-    protected P getConvertor(Class<?> messageClass)
-    {
-        return _convertorFactory.get(messageClass);
-    }
-
+    protected abstract <T extends MessageLite, B extends Builder> P get(Class<?> messageType);
+    
+    protected abstract P getConvertor(Class<?> messageClass);
 }

@@ -45,12 +45,5 @@ public interface ProtobufConvertor<T extends MessageLite, B extends Builder>
         public void writeTo(JsonGenerator generator, T message, String fieldName) throws IOException;
         
     }
-    
-    public interface Factory<P extends ProtobufConvertor<? extends MessageLite,? extends Builder>>
-    {
-        
-        public <T extends MessageLite, B extends Builder> P get(Class<?> messageType);
-
-    }
 
 }

@@ -16,50 +16,45 @@ package com.dyuproject.protostuff.json;
 
 import java.io.IOException;
 
+import org.codehaus.jackson.JsonFactory;
+
+import com.dyuproject.protostuff.json.LiteConvertor.Field;
 import com.dyuproject.protostuff.model.Model;
-import com.dyuproject.protostuff.model.ModelMeta;
+import com.dyuproject.protostuff.model.ModelMeta.Factory;
 
 /**
  * @author David Yu
  * @created Oct 2, 2009
  */
 
-public class NumberedProtobufConvertor extends DefaultProtobufConvertor
+public class NumericLiteJSON extends LiteJSON
 {
-
-    public NumberedProtobufConvertor(ModelMeta modelMeta, ProtobufConvertor.Factory<DefaultProtobufConvertor> factory)
+    
+    public NumericLiteJSON(Class<?>[] moduleClasses)
     {
-        super(modelMeta,factory);
+        super(moduleClasses);
+    }
+    
+    public NumericLiteJSON(Factory modelMetaFactory, 
+            Class<?>[] moduleClasses)
+    {
+        super(modelMetaFactory,moduleClasses);
+    }
+
+    public NumericLiteJSON(JsonFactory jsonFactory, Factory modelMetaFactory, 
+            Class<?>[] moduleClasses)
+    {
+        super(jsonFactory,modelMetaFactory,moduleClasses);
     }
     
     protected Field getField(String name, Model<Field> model) throws IOException
-    {        
+    {
         return model.getProperty(Integer.parseInt(name));
     }
     
     protected String getFieldName(Field field)
     {
         return String.valueOf(field.getPropertyMeta().getNumber());
-    }
-    
-    public static class Factory extends DefaultProtobufConvertor.Factory
-    {
-
-        public Factory(Class<?>[] moduleClasses)
-        {
-            super(moduleClasses);
-        }
-        
-        public Factory(ModelMeta.Factory factory, Class<?>[] moduleClasses)
-        {
-            super(factory, moduleClasses);
-        }
-        
-        protected NumberedProtobufConvertor newConvertor(ModelMeta modelMeta)
-        {
-            return new NumberedProtobufConvertor(modelMeta, this);
-        }
-        
     }
 
 }

@@ -17,8 +17,6 @@ package com.dyuproject.protostuff.json;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.codehaus.jackson.JsonGenerator;
@@ -27,14 +25,12 @@ import org.codehaus.jackson.JsonToken;
 
 import com.dyuproject.protostuff.model.BuilderPropertyAccessor;
 import com.dyuproject.protostuff.model.DefaultProperty;
-import com.dyuproject.protostuff.model.LiteRuntime;
 import com.dyuproject.protostuff.model.MessagePropertyAccessor;
 import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.ModelMeta;
 import com.dyuproject.protostuff.model.ParamType;
 import com.dyuproject.protostuff.model.Property;
 import com.dyuproject.protostuff.model.PropertyMeta;
-import com.google.protobuf.AbstractMessageLite;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
@@ -43,7 +39,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 1, 2009
  */
 
-public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, Builder>
+public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
 {
     
     static final Property.Factory<Field> PROPERTY_FACTORY = new Property.Factory<Field>()
@@ -68,28 +64,14 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
     };
     
     protected final Model<Field> _model;
-    protected final ProtobufConvertor.Factory<DefaultProtobufConvertor> _factory;
+    protected final LiteJSON _lite;
     
-    public DefaultProtobufConvertor(ModelMeta modelMeta, 
-            ProtobufConvertor.Factory<DefaultProtobufConvertor> factory)
+    public LiteConvertor(ModelMeta modelMeta, LiteJSON lite)
     {
         _model = new Model<Field>(modelMeta, PROPERTY_FACTORY);
-        _factory = factory;
+        _lite = lite;
         for(Field f : _model.getProperties())
-        {
-            f._factory = _factory;
             f._convertor = this;
-        }
-    }    
-    
-    protected Field getField(String name, Model<Field> model) throws IOException
-    {
-        return model.getProperty(name);
-    }
-    
-    protected String getFieldName(Field field)
-    {
-        return field.getPropertyMeta().getName();
     }
 
     public Builder parseFrom(JsonParser parser) throws IOException
@@ -110,7 +92,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                         _model.getModelMeta().getMessageClass());
             }
             String name = parser.getCurrentName();
-            Field field = getField(name, _model);
+            Field field = _lite.getField(name, _model);
             if(field==null)
             {
                 throw new IOException("unknown field: " + name + " on message: " + 
@@ -126,108 +108,15 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
         generator.writeStartObject();
 
         for(Field f : _model.getProperties())
-        {
-            f.writeTo(generator, message, getFieldName(f));
-        }
+            f.writeTo(generator, message, _lite.getFieldName(f));
+        
         generator.writeEndObject();        
-    }
-    
-    public static class Factory implements ProtobufConvertor.Factory<DefaultProtobufConvertor>
-    {
-        
-        protected final HashMap<String,DefaultProtobufConvertor> _convertors = 
-            new HashMap<String,DefaultProtobufConvertor>();
-        
-        protected final ArrayList<Class<?>> _modules = new ArrayList<Class<?>>();
-        
-        protected final ModelMeta.Factory _modelMetaFactory;
-
-        public Factory(Class<?>[] moduleClasses)
-        {
-            this(LiteRuntime.MODEL_META_FACTORY, moduleClasses);
-        }
-        
-        public Factory(ModelMeta.Factory modelMetaFactory, Class<?>[] moduleClasses)
-        {
-            _modelMetaFactory = modelMetaFactory;
-            for(Class<?> c : moduleClasses)
-                check(c);
-        }
-
-        protected void check(Class<?> c)
-        {
-            if(MessageLite.class.isAssignableFrom(c))
-                addModule(c.getDeclaringClass());
-            else if(c.getDeclaringClass()!=null)
-                check(c.getDeclaringClass());
-            else
-            {
-                Class<?>[] declaredClasses = c.getDeclaredClasses();
-                if(declaredClasses.length==0)
-                {
-                    // could be a builder
-                    if(c.getDeclaringClass()!=null)
-                        check(c.getDeclaringClass());
-                }
-                else
-                {
-                    // search twice
-                    boolean continueSearch = true;
-                    for(int i=declaredClasses.length; i-->0;)
-                    {
-                        if(MessageLite.class.isAssignableFrom(declaredClasses[i]))
-                        {
-                            addModule(c);
-                            break;
-                        }
-                        else if(continueSearch)
-                            continueSearch = false;
-                        else
-                            break;
-                    }
-                }
-            }            
-        }
-        
-        @SuppressWarnings("unchecked")
-        protected void addModule(Class<?> moduleClass)
-        {
-            if(_modules.contains(moduleClass))
-                return;            
-            
-            int size = _convertors.size();            
-            
-            Class<?>[] messageClasses = moduleClass.getDeclaredClasses();
-            for(int i=0; i<messageClasses.length; i++)
-            {
-                if(MessageLite.class.isAssignableFrom(messageClasses[i]))
-                {
-                    Class<? extends AbstractMessageLite> clazz = (Class<? extends AbstractMessageLite>)messageClasses[i];
-                    _convertors.put(clazz.getName(), newConvertor(_modelMetaFactory.create(clazz)));
-                }
-            }
-            
-            if(size<_convertors.size())
-                _modules.add(moduleClass);
-        }
-        
-        protected DefaultProtobufConvertor newConvertor(ModelMeta modelMeta)
-        {
-            return new DefaultProtobufConvertor(modelMeta, this);
-        }
-
-        public <T extends MessageLite, B extends Builder> DefaultProtobufConvertor get(Class<?> messageType)
-        {            
-            return _convertors.get(messageType.getName());
-        }
-        
     }
     
     static abstract class Field extends DefaultProperty implements ProtobufField<MessageLite,Builder>
     {
         
-        protected ProtobufConvertor.Factory<DefaultProtobufConvertor> _factory;
-        protected DefaultProtobufConvertor _convertor;
+        protected LiteConvertor _convertor;
 
         public Field(PropertyMeta propertyMeta)
         {
@@ -262,7 +151,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                         _propertyMeta.getMessageClass());
             }
             
-            DefaultProtobufConvertor convertor = _factory.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -316,7 +205,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                 throw new IOException(e);
             }
             
-            DefaultProtobufConvertor convertor = _factory.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
                 throw new IOException("Message not included: " + message.getClass());
             
@@ -343,7 +232,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                         _propertyMeta.getMessageClass());
             }
             
-            DefaultProtobufConvertor convertor = _factory.get(_messagePropertyAccessor.getTypeClass());
+            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -389,7 +278,7 @@ public class DefaultProtobufConvertor implements ProtobufConvertor<MessageLite, 
                 List<MessageLite> messages = (List<MessageLite>)_messagePropertyAccessor.getValue(owner);
                 if(messages!=null)
                 {
-                    DefaultProtobufConvertor convertor = _factory.get(_messagePropertyAccessor.getTypeClass());
+                    LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
                     if(convertor==null)
                     {
                         throw new IOException("Message not included: " + 

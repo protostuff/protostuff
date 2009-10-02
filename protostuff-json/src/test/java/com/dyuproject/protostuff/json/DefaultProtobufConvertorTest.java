@@ -34,8 +34,7 @@ import com.dyuproject.protostuff.model.V22Lite.Task;
 
 public class DefaultProtobufConvertorTest extends TestCase
 {
-    static final ProtobufJSON<DefaultProtobufConvertor> pbJSON = new ProtobufJSON<DefaultProtobufConvertor>(
-            new DefaultProtobufConvertor.Factory(new Class[]{V22Lite.class}));
+    static final LiteJSON pbJSON = new LiteJSON(new Class[]{V22Lite.class});
     
     static final Task task = Task.newBuilder()
         .setId(1)
