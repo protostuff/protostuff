@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -89,8 +91,9 @@ public class ProtobufJSONTest extends TestCase
 
         JsonParser parser = json.getJsonFactory().createJsonParser(generated);
         Person parsedPerson = json.parseFrom(parser, Person.class);
-        assertEquals(person, parsedPerson);
         parser.close();
+        
+        assertEquals(person, parsedPerson);        
         
         return generated;
     }
@@ -184,6 +187,46 @@ public class ProtobufJSONTest extends TestCase
         assertTrue(parser.nextToken()==JsonToken.END_OBJECT);
         
         parser.close();
+    }
+    
+    static String generatedAndParse(ProtobufJSON json, List<Person> personList, 
+            List<Person> parsedPersonList) throws Exception
+    {
+        StringWriter sw = new StringWriter();
+        json.writeTo(sw, personList, Person.class);
+        String generated = sw.toString();
+        
+        JsonParser parser = json.getJsonFactory().createJsonParser(generated);
+        json.appendMessageFrom(parser, parsedPersonList, Person.class);
+        parser.close();
+        assertTrue(personList.size() == parsedPersonList.size());
+        for(int i=0,len=personList.size(); i<len; i++)
+            assertEquals(personList.get(i), parsedPersonList.get(i));
+        
+        
+        return generated;
+    }
+    
+    static void appendToPersonList(ProtobufJSON json, List<Person> parsedPersonList)
+    {
+        
+    }
+    
+    public void testCollection() throws Exception
+    {
+        ArrayList<Person> personList = new ArrayList<Person>();   
+        ArrayList<Person> parsedPersonList = new ArrayList<Person>();
+        personList.add(person);
+        personList.add(person);
+        
+        System.err.println(generatedAndParse(GENERATED_FROM_LITE, personList, parsedPersonList));
+        parsedPersonList.clear();
+        
+        System.err.println(generatedAndParse(LITE, personList, parsedPersonList));
+        parsedPersonList.clear();
+        
+        System.err.println(generatedAndParse(NUM_LITE, personList, parsedPersonList));
+        parsedPersonList.clear();
     }
     
     public void testBenchmark() throws Exception
