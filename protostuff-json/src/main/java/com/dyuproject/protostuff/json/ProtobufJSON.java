@@ -76,13 +76,13 @@ public abstract class ProtobufJSON
         return _jsonFactory.createJsonGenerator(writer);
     }
     
-    public final <T extends MessageLite> T readMessage(InputStream in, Class<T> type)
+    public final <T extends MessageLite> T parseFrom(InputStream in, Class<T> type)
     throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(in);
         try
         {
-            return readMessage(parser, type);
+            return parseFrom(parser, type);
         }        
         finally
         {
@@ -90,13 +90,13 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <T extends MessageLite> T readMessage(Reader reader, Class<T> type)
+    public final <T extends MessageLite> T parseFrom(Reader reader, Class<T> type)
     throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(reader);
         try
         {
-            return readMessage(parser, type);
+            return parseFrom(parser, type);
         }
         finally
         {
@@ -105,7 +105,7 @@ public abstract class ProtobufJSON
     }
     
     @SuppressWarnings("unchecked")
-    public final <T extends MessageLite> T readMessage(JsonParser parser, Class<T> type)
+    public final <T extends MessageLite> T parseFrom(JsonParser parser, Class<T> type)
     throws IOException
     {
         if(parser.nextToken()!=JsonToken.START_OBJECT)
@@ -125,13 +125,13 @@ public abstract class ProtobufJSON
         return (T)convertor.parseFrom(parser).build();
     }
     
-    public final <B extends Builder> B readBuilder(InputStream in, Class<B> type)
+    public final <B extends Builder> B parseFrom(InputStream in, Class<B> type)
     throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(in);
         try
         {
-            return readBuilder(parser, type);
+            return parseFrom(parser, type);
         }
         finally
         {
@@ -139,13 +139,13 @@ public abstract class ProtobufJSON
         }        
     }
     
-    public final <B extends Builder> B readBuilder(Reader reader, Class<B> type)
+    public final <B extends Builder> B parseFrom(Reader reader, Class<B> type)
     throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(reader);
         try
         {
-            return readBuilder(parser, type);
+            return parseFrom(parser, type);
         }
         finally
         {
@@ -154,7 +154,7 @@ public abstract class ProtobufJSON
     }
     
     @SuppressWarnings("unchecked")
-    public final <B extends Builder> B readBuilder(JsonParser parser, Class<B> type)
+    public final <B extends Builder> B parseFrom(JsonParser parser, Class<B> type)
     throws IOException
     {
         if(parser.nextToken()!=JsonToken.START_OBJECT)
@@ -222,13 +222,13 @@ public abstract class ProtobufJSON
         convertor.mergeFrom(parser, builder);
     }
     
-    public final void writeMessage(OutputStream out, MessageLite message)
+    public final void writeTo(OutputStream out, MessageLite message)
     throws IOException
     {
         JsonGenerator generator = _jsonFactory.createJsonGenerator(out, JsonEncoding.UTF8);
         try
         {
-            writeMessage(generator, message);
+            writeTo(generator, message);
         }
         finally
         {
@@ -236,13 +236,13 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final void writeMessage(Writer writer, MessageLite message)
+    public final void writeTo(Writer writer, MessageLite message)
     throws IOException
     {
         JsonGenerator generator = _jsonFactory.createJsonGenerator(writer);
         try
         {
-            writeMessage(generator, message);
+            writeTo(generator, message);
         }
         finally
         {
@@ -250,7 +250,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final void writeMessage(JsonGenerator generator, MessageLite message)
+    public final void writeTo(JsonGenerator generator, MessageLite message)
     throws IOException
     {
         ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(message.getClass());

@@ -84,11 +84,11 @@ public class ProtobufJSONTest extends TestCase
     throws Exception
     {
         StringWriter sw = new StringWriter();
-        json.writeMessage(sw, person);
+        json.writeTo(sw, person);
         String generated = sw.toString();
 
         JsonParser parser = json.getJsonFactory().createJsonParser(generated);
-        Person parsedPerson = json.readMessage(parser, Person.class);
+        Person parsedPerson = json.parseFrom(parser, Person.class);
         assertEquals(person, parsedPerson);
         parser.close();
         
@@ -188,6 +188,8 @@ public class ProtobufJSONTest extends TestCase
     
     public void testBenchmark() throws Exception
     {
+        if(!"false".equals(System.getProperty("benchmark.skip")))
+            return;
 
         String dir = System.getProperty("benchmark.output_dir");
         
