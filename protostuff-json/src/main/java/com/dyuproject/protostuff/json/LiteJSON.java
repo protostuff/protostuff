@@ -33,7 +33,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 2, 2009
  */
 
-public class LiteJSON extends ProtobufJSON<LiteConvertor>
+public class LiteJSON extends ProtobufJSON
 {
     
     protected final HashMap<String,LiteConvertor> _convertors = 
@@ -118,15 +118,21 @@ public class LiteJSON extends ProtobufJSON<LiteConvertor>
             _modules.add(moduleClass);
     }
     
+    protected final LiteConvertor get(Class<?> messageType)
+    {
+        return _convertors.get(messageType.getName());
+    }
+    
     protected LiteConvertor newConvertor(ModelMeta modelMeta)
     {
         return new LiteConvertor(modelMeta, this);
     }
 
+    /*
     public <T extends MessageLite, B extends Builder> LiteConvertor getConvertor(Class<?> messageType)
     {
         return _convertors.get(messageType.getName());
-    }
+    }*/
 
     protected Field getField(String name, Model<Field> model) throws IOException
     {
@@ -137,6 +143,12 @@ public class LiteJSON extends ProtobufJSON<LiteConvertor>
     {
         return field.getPropertyMeta().getName();
     }
-    
+
+    @SuppressWarnings("unchecked")
+    protected <T extends MessageLite, B extends Builder> ProtobufConvertor<T, B> getConvertor(Class<?> messageType)
+    {        
+        return (ProtobufConvertor<T, B>)_convertors.get(messageType.getName());
+    }    
+
 
 }

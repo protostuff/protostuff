@@ -34,7 +34,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Sep 30, 2009
  */
 
-public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Builder>>
+public abstract class ProtobufJSON
 {
 
     public static final JsonFactory DEFAULT_JSON_FACTORY = new JsonFactory();
@@ -115,7 +115,7 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
                     type);
         }
         
-        P convertor = getConvertor(type);
+        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(type);
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -164,7 +164,7 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
                     type.getDeclaringClass());
         }
         
-        P convertor = getConvertor(type.getDeclaringClass());
+        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(type.getDeclaringClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -212,7 +212,7 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
                     builder.getClass().getDeclaringClass());
         }
         
-        P convertor = getConvertor(builder.getClass().getDeclaringClass());
+        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(builder.getClass().getDeclaringClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -253,7 +253,7 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
     public final void writeMessage(JsonGenerator generator, MessageLite message)
     throws IOException
     {
-        P convertor = getConvertor(message.getClass());
+        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(message.getClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -263,6 +263,7 @@ public abstract class ProtobufJSON<P extends ProtobufConvertor<MessageLite,Build
         convertor.generateTo(generator, message);
     }
     
-    protected abstract <T extends MessageLite, B extends Builder> P getConvertor(Class<?> messageType);
+    protected abstract <T extends MessageLite, B extends Builder> ProtobufConvertor<T,B> getConvertor(Class<?> messageType);
+
     
 }

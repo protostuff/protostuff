@@ -17,46 +17,43 @@ package com.dyuproject.protostuff.json;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import com.dyuproject.protostuff.model.V22Lite.Person;
-import com.dyuproject.protostuff.model.V22Lite.Task;
+import com.dyuproject.protostuff.model.V22Speed.Person;
+import com.dyuproject.protostuff.model.V22Speed.Task;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
 /**
  * @author David Yu
- * @created Oct 2, 2009
+ * @created Oct 3, 2009
  */
 
-public class V22LiteGenerated
+public class V22SpeedJSON extends ProtobufJSON
 {
     
-    
-    @SuppressWarnings("unchecked")
-    public static <P extends ProtobufConvertor<T,B>, T extends MessageLite, B extends Builder> 
-        ProtobufJSON<ProtobufConvertor<MessageLite,Builder>> getJSON()
+    public V22SpeedJSON()
     {
-        return JSON;
+        super();
+    }
+    
+    public V22SpeedJSON(JsonFactory factory)
+    {
+        super(factory);
     }
     
     @SuppressWarnings("unchecked")
-    static final ProtobufJSON JSON = new ProtobufJSON()
+    protected <T extends MessageLite, B extends Builder> ProtobufConvertor<T, B> getConvertor(Class<?> messageType)
     {
-
-        @Override
-        protected ProtobufConvertor getConvertor(Class messageType)
-        {
-            if(messageType==Person.class)
-                return PERSON_CONVERTOR;
-            if(messageType==Task.class)
-                return TASK_CONVERTOR;
-            return null;
-        }
-        
-    };
+        if(messageType==Person.class)
+            return (ProtobufConvertor<T, B>)PERSON_CONVERTOR;
+        if(messageType==Task.class)
+            return (ProtobufConvertor<T, B>)TASK_CONVERTOR;
+        return null;
+    }
     
     static final ProtobufConvertor<Task,Task.Builder> TASK_CONVERTOR = new ProtobufConvertor<Task,Task.Builder>()
     {
@@ -78,7 +75,7 @@ public class V22LiteGenerated
             return num.intValue();
         }
 
-        public void generateTo(JsonGenerator generator, Task task) throws IOException
+        public final void generateTo(JsonGenerator generator, Task task) throws IOException
         {
             generator.writeStartObject();
             
@@ -97,14 +94,14 @@ public class V22LiteGenerated
             generator.writeEndObject();            
         }
 
-        public Task.Builder parseFrom(JsonParser parser) throws IOException
+        public final Task.Builder parseFrom(JsonParser parser) throws IOException
         {
             Task.Builder builder = Task.newBuilder();
             mergeFrom(parser, builder);
             return builder;
         }
 
-        public void mergeFrom(JsonParser parser, Task.Builder builder) throws IOException
+        public final void mergeFrom(JsonParser parser, Task.Builder builder) throws IOException
         {
             for(JsonToken t = parser.nextToken(); t!=JsonToken.END_OBJECT; t=parser.nextToken())
             {
@@ -315,76 +312,5 @@ public class V22LiteGenerated
         }
         
     };
-
-    /*static final HashMap<String,Convertor<? extends MessageLite,? extends Builder>> __convertors = 
-        new HashMap<String,Convertor<? extends MessageLite,? extends Builder>>();
-
-    static final ProtobufJSON<Convertor<?,?>> JSON = new ProtobufJSON<Convertor<?,?>>()
-    {
-        protected <T extends MessageLite, B extends Builder> Convertor<?, ?> getConvertor(Class<?> messageType)
-        {
-            return __convertors.get(messageType.getName());
-        }        
-    };
-    
-    static void add(Class<?> messageClass, Convertor<?,?> convertor)
-    {
-        __convertors.put(messageClass.getName(), convertor);
-    }
-    
-    static abstract class Convertor<T extends MessageLite,B extends Builder> implements ProtobufConvertor<MessageLite,Builder>{}   
-    
-    static final Convertor<Task,Task.Builder> TASK_CONVERTOR = new Convertor<Task, Task.Builder>()
-    {
-
-        public void generateTo(JsonGenerator generator, MessageLite message) throws IOException
-        {
-            
-        }
-
-        public void mergeFrom(JsonParser parser, Builder builder) throws IOException
-        {
-            
-        }
-
-        public Builder parseFrom(JsonParser parser) throws IOException
-        {
-            return null;
-        }
-        
-    };
-    
-    static final Convertor<Person, Person.Builder> PERSON_CONVERTOR = new Convertor<Person, Person.Builder>()
-    {
-
-        public void generateTo(JsonGenerator generator, MessageLite message) throws IOException
-        {
-            
-        }
-
-        public void mergeFrom(JsonParser parser, Builder builder) throws IOException
-        {
-            
-        }
-
-        public Builder parseFrom(JsonParser parser) throws IOException
-        {
-            return null;
-        }
-        
-    };*/
-
-
-    /*static
-    {
-        add(Task.class, TASK_CONVERTOR);
-    }*/
-
-
-
-
-
-
-
 
 }

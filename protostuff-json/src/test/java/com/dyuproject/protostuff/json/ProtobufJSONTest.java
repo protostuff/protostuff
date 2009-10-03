@@ -30,8 +30,6 @@ import org.codehaus.jackson.JsonToken;
 import com.dyuproject.protostuff.model.V22Lite;
 import com.dyuproject.protostuff.model.V22Lite.Person;
 import com.dyuproject.protostuff.model.V22Lite.Task;
-import com.google.protobuf.MessageLite;
-import com.google.protobuf.MessageLite.Builder;
 
 /**
  * @author David Yu
@@ -42,8 +40,10 @@ public class ProtobufJSONTest extends TestCase
 {
     static final LiteJSON LITE = new LiteJSON(new Class[]{V22Lite.class});
     static final NumericLiteJSON NUM_LITE = new NumericLiteJSON(new Class[]{V22Lite.class});
-    static final ProtobufJSON<ProtobufConvertor<MessageLite, Builder>> GENERATED = 
-        V22LiteGenerated.getJSON();
+    static final V22LiteJSON GENERATED_FROM_LITE = new V22LiteJSON();
+    //static final V22SpeedJSON GENERATED_FROM_SPEED = new V22SpeedJSON();
+    
+    static final Charset utf8 = Charset.forName("UTF-8");
     
     static final Task task = Task.newBuilder()
         .setId(1)
@@ -69,7 +69,7 @@ public class ProtobufJSONTest extends TestCase
     
     static void doTestGenerateAndParse(PrintStream out) throws Exception
     {
-        String generated = generateAndParse(GENERATED);
+        String generated = generateAndParse(GENERATED_FROM_LITE);
         String lite = generateAndParse(LITE);
         String numLite = generateAndParse(NUM_LITE);
         
@@ -80,21 +80,7 @@ public class ProtobufJSONTest extends TestCase
         out.println(numLite);
     }
     
-    static String generateAndParse(LiteJSON json) throws Exception
-    {
-        StringWriter sw = new StringWriter();
-        json.writeMessage(sw, person);
-        String generated = sw.toString();
-
-        JsonParser parser = json.getJsonFactory().createJsonParser(generated);
-        Person parsedPerson = json.readMessage(parser, Person.class);
-        assertEquals(person, parsedPerson);
-        parser.close();
-        
-        return generated;
-    }
-    
-    static String generateAndParse(ProtobufJSON<ProtobufConvertor<MessageLite, Builder>> json) 
+    static String generateAndParse(ProtobufJSON json) 
     throws Exception
     {
         StringWriter sw = new StringWriter();
@@ -202,6 +188,7 @@ public class ProtobufJSONTest extends TestCase
     
     public void testBenchmark() throws Exception
     {
+
         String dir = System.getProperty("benchmark.output_dir");
         
         PrintStream out = dir==null ? System.out : 
@@ -226,7 +213,8 @@ public class ProtobufJSONTest extends TestCase
     }
     
     public static void main(String[] args) throws Exception
-    {
+    { 
+
         String dir = System.getProperty("benchmark.output_dir");
         
         PrintStream out = dir==null ? System.out : 
@@ -254,41 +242,25 @@ public class ProtobufJSONTest extends TestCase
     }
     
     public static void start(PrintStream out, int warmups, int loops) throws Exception
+    {        
+        //serDeser(out, GENERATED_FROM_SPEED, "GENERATED_FROM_SPEED", warmups, loops);
+        serDeser(out, GENERATED_FROM_LITE, "GENERATED_FROM_LITE", warmups, loops);
+        serDeser(out, LITE, "LITE", warmups, loops);
+        serDeser(out, NUM_LITE, "NUM_LITE", warmups, loops);
+    }
+    
+    static void serDeser(PrintStream out, ProtobufJSON json, String name, int warmups, int loops)
+    throws Exception
     {
-        Charset utf8 = Charset.forName("UTF-8");
-        
-        int generatedLen = generateAndParse(GENERATED).getBytes(utf8).length;
+        int len = generateAndParse(json).getBytes(utf8).length;
         for(int i=0; i<warmups; i++)
-            generateAndParse(GENERATED);        
-        long generatedStart = System.currentTimeMillis();
+            generateAndParse(json);
+        long start = System.currentTimeMillis();
         for(int i=0; i<loops; i++)
-            generateAndParse(GENERATED);
-        long generatedFinish = System.currentTimeMillis();
-        long generatedElapsed = generatedFinish - generatedStart;
-        out.println(generatedElapsed + " ms elapsed with " + generatedLen + " bytes for GENERATED");
-        
-        int liteLen = generateAndParse(LITE).getBytes(utf8).length;
-        for(int i=0; i<warmups; i++)
-            generateAndParse(LITE);    
-        long liteStart = System.currentTimeMillis();
-        for(int i=0; i<loops; i++)
-            generateAndParse(LITE);
-        long liteFinish = System.currentTimeMillis();
-        long liteElapsed = liteFinish - liteStart;
-        out.println(liteElapsed + " ms elapsed with " + liteLen + " bytes for LITE");
-        
-        int numLiteLen = generateAndParse(NUM_LITE).getBytes(utf8).length;
-        for(int i=0; i<warmups; i++)
-            generateAndParse(NUM_LITE);
-        long numLiteStart = System.currentTimeMillis();
-        for(int i=0; i<loops; i++)
-            generateAndParse(NUM_LITE);
-        long numLiteFinish = System.currentTimeMillis();
-        long numLiteElapsed = numLiteFinish - numLiteStart;
-        out.println(numLiteElapsed + " ms elapsed with " + numLiteLen + " bytes for NUM_LITE");
-        
-        
-
+            generateAndParse(json);
+        long finish = System.currentTimeMillis();
+        long elapsed = finish - start;
+        out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
     }
 
 }
