@@ -116,7 +116,7 @@ public abstract class ProtobufJSON
                     type);
         }
         
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(type);
+        ProtobufConvertor<T,Builder> convertor = getConvertor(type);
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -154,7 +154,6 @@ public abstract class ProtobufJSON
         }        
     }
     
-    @SuppressWarnings("unchecked")
     public final <B extends Builder> B parseFrom(JsonParser parser, Class<B> type)
     throws IOException
     {
@@ -165,7 +164,7 @@ public abstract class ProtobufJSON
                     type.getDeclaringClass());
         }
         
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(type.getDeclaringClass());
+        ProtobufConvertor<MessageLite,B> convertor = getConvertor(type.getDeclaringClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -203,7 +202,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final void mergeFrom(JsonParser parser, Builder builder)
+    public final <B extends Builder> void mergeFrom(JsonParser parser, B builder)
     throws IOException
     {
         if(parser.nextToken()!=JsonToken.START_OBJECT)
@@ -213,7 +212,7 @@ public abstract class ProtobufJSON
                     builder.getClass().getDeclaringClass());
         }
         
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(builder.getClass().getDeclaringClass());
+        ProtobufConvertor<MessageLite,B> convertor = getConvertor(builder.getClass().getDeclaringClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -251,10 +250,10 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final void writeTo(JsonGenerator generator, MessageLite message)
+    public final <T extends MessageLite> void writeTo(JsonGenerator generator, T message)
     throws IOException
     {
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(message.getClass());
+        ProtobufConvertor<T,Builder> convertor = getConvertor(message.getClass());
         if(convertor==null)
         {
             throw new IllegalStateException("Convertor for message: " + 
@@ -278,7 +277,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <T extends MessageLite>  void writeTo(Writer writer, List<T> messages, 
+    public final <T extends MessageLite> void writeTo(Writer writer, List<T> messages, 
             Class<T> messageType) throws IOException
     {
         JsonGenerator generator = _jsonFactory.createJsonGenerator(writer);
@@ -292,22 +291,22 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <T extends MessageLite>  void writeTo(JsonGenerator generator, List<T> messages, 
+    public final <T extends MessageLite> void writeTo(JsonGenerator generator, List<T> messages, 
             Class<T> messageType) throws IOException
     {
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(messageType);
+        ProtobufConvertor<T,Builder> convertor = getConvertor(messageType);
         if(convertor==null)
             throw new IOException("Message not included: " + messageType);
         
         generator.writeStartArray();
         
-        for(MessageLite m : messages)
+        for(T m : messages)
             convertor.generateTo(generator, m);
         
         generator.writeEndArray();
     }
     
-    public final <T extends MessageLite> void appendMessageFrom(InputStream in, List<T> messages, 
+    public final <T extends MessageLite> void appendMessageFrom(InputStream in, List<? super T> messages, 
             Class<T> messageType) throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(in);
@@ -321,7 +320,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <T extends MessageLite> void appendMessageFrom(Reader reader, List<T> messages, 
+    public final <T extends MessageLite> void appendMessageFrom(Reader reader, List<? super T> messages, 
             Class<T> messageType) throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(reader);
@@ -336,7 +335,7 @@ public abstract class ProtobufJSON
     }
     
     @SuppressWarnings("unchecked")
-    public final <T extends MessageLite> void appendMessageFrom(JsonParser parser, List<T> messages, 
+    public final <T extends MessageLite> void appendMessageFrom(JsonParser parser, List<? super T> messages, 
             Class<T> messageType) throws IOException
     {        
         if(parser.nextToken()!=JsonToken.START_ARRAY)
@@ -346,7 +345,7 @@ public abstract class ProtobufJSON
                     messageType);
         }
         
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(
+        ProtobufConvertor<T,Builder> convertor = getConvertor(
                 messageType);
         if(convertor==null)
             throw new IOException("Message not included: " + messageType);
@@ -363,7 +362,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <B extends Builder> void appendBuilderFrom(InputStream in, List<B> builders, 
+    public final <B extends Builder> void appendBuilderFrom(InputStream in, List<? super B> builders, 
             Class<B> builderClass) throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(in);
@@ -377,7 +376,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    public final <B extends Builder> void appendBuilderFrom(Reader reader, List<B> builders, 
+    public final <B extends Builder> void appendBuilderFrom(Reader reader, List<? super B> builders, 
             Class<B> builderClass) throws IOException
     {
         JsonParser parser = _jsonFactory.createJsonParser(reader);
@@ -391,8 +390,7 @@ public abstract class ProtobufJSON
         }
     }
     
-    @SuppressWarnings("unchecked")
-    public final <B extends Builder> void appendBuilderFrom(JsonParser parser, List<B> builders, 
+    public final <B extends Builder> void appendBuilderFrom(JsonParser parser, List<? super B> builders, 
             Class<B> builderClass) throws IOException
     {        
         if(parser.nextToken()!=JsonToken.START_ARRAY)
@@ -402,7 +400,7 @@ public abstract class ProtobufJSON
                     builderClass.getDeclaringClass());
         }
         
-        ProtobufConvertor<MessageLite,Builder> convertor = getConvertor(
+        ProtobufConvertor<MessageLite,B> convertor = getConvertor(
                 builderClass.getDeclaringClass());
         if(convertor==null)
             throw new IOException("Message not included: " + builderClass.getDeclaringClass());
@@ -415,7 +413,7 @@ public abstract class ProtobufJSON
                         parser.getCurrentToken() + " on parsing (list) message: " + 
                         builderClass.getDeclaringClass());
             }
-            builders.add((B)convertor.parseFrom(parser));
+            builders.add(convertor.parseFrom(parser));
         }
     }
     
