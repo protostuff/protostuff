@@ -907,6 +907,13 @@ public final class V22Lite {
     public boolean hasAdouble() { return hasAdouble; }
     public double getAdouble() { return adouble_; }
     
+    // optional int64 along = 9;
+    public static final int ALONG_FIELD_NUMBER = 9;
+    private boolean hasAlong;
+    private long along_ = 0L;
+    public boolean hasAlong() { return hasAlong; }
+    public long getAlong() { return along_; }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       return true;
@@ -937,6 +944,9 @@ public final class V22Lite {
       }
       if (hasAdouble()) {
         output.writeDouble(8, getAdouble());
+      }
+      if (hasAlong()) {
+        output.writeInt64(9, getAlong());
       }
     }
     
@@ -977,6 +987,10 @@ public final class V22Lite {
       if (hasAdouble()) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(8, getAdouble());
+      }
+      if (hasAlong()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(9, getAlong());
       }
       memoizedSerializedSize = size;
       return size;
@@ -1137,6 +1151,9 @@ public final class V22Lite {
         if (other.hasAdouble()) {
           setAdouble(other.getAdouble());
         }
+        if (other.hasAlong()) {
+          setAlong(other.getAlong());
+        }
         return this;
       }
       
@@ -1189,6 +1206,10 @@ public final class V22Lite {
             }
             case 65: {
               setAdouble(input.readDouble());
+              break;
+            }
+            case 72: {
+              setAlong(input.readInt64());
               break;
             }
           }
@@ -1349,6 +1370,24 @@ public final class V22Lite {
       public Builder clearAdouble() {
         result.hasAdouble = false;
         result.adouble_ = 0D;
+        return this;
+      }
+      
+      // optional int64 along = 9;
+      public boolean hasAlong() {
+        return result.hasAlong();
+      }
+      public long getAlong() {
+        return result.getAlong();
+      }
+      public Builder setAlong(long value) {
+        result.hasAlong = true;
+        result.along_ = value;
+        return this;
+      }
+      public Builder clearAlong() {
+        result.hasAlong = false;
+        result.along_ = 0L;
         return this;
       }
     }

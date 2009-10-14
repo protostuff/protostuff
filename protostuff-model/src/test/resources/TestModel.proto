@@ -32,4 +32,5 @@ message Task {
   optional bool aboolean = 6;
   optional float afloat = 7;
   optional double adouble = 8;
+  optional int64 along = 9;
 }

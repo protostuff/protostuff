@@ -36,9 +36,9 @@ public class V22Test extends TestCase
         Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
-        assertTrue(taskModel.getModelMeta().getPropertyCount()==8);
+        assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
-        assertTrue(taskModel.getModelMeta().getMaxNumber()==8);
+        assertTrue(taskModel.getModelMeta().getMaxNumber()==9);
         
         System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
@@ -87,6 +87,7 @@ public class V22Test extends TestCase
         taskModel.getProperty("aboolean").setValue(taskBuilder, true);
         taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
         taskModel.getProperty("adouble").setValue(taskBuilder, 10.1010101d);
+        taskModel.getProperty("along").setValue(taskBuilder, 1010101l);
         
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
@@ -96,6 +97,7 @@ public class V22Test extends TestCase
         assertTrue(taskBuilder.getAboolean()==true);
         assertTrue(taskBuilder.getAfloat()==10.101f);
         assertTrue(taskBuilder.getAdouble()==10.1010101d);
+        assertTrue(taskBuilder.getAlong()==1010101l);
         
         personModel.getProperty("firstName").setValue(person, "John");
         personModel.getProperty("lastName").setValue(person, "Doe");
@@ -188,9 +190,9 @@ public class V22Test extends TestCase
         Model<DefaultProperty> personModel = Model.get(V22Speed.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
-        assertTrue(taskModel.getModelMeta().getPropertyCount()==8);
+        assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
-        assertTrue(taskModel.getModelMeta().getMaxNumber()==8);
+        assertTrue(taskModel.getModelMeta().getMaxNumber()==9);
         
         System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
@@ -239,6 +241,7 @@ public class V22Test extends TestCase
         taskModel.getProperty("aboolean").setValue(taskBuilder, true);
         taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
         taskModel.getProperty("adouble").setValue(taskBuilder, 10.1010101d);
+        taskModel.getProperty("along").setValue(taskBuilder, 1010101l);
         
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
@@ -248,6 +251,7 @@ public class V22Test extends TestCase
         assertTrue(taskBuilder.getAboolean()==true);
         assertTrue(taskBuilder.getAfloat()==10.101f);
         assertTrue(taskBuilder.getAdouble()==10.1010101d);
+        assertTrue(taskBuilder.getAlong()==1010101l);
         
         personModel.getProperty("firstName").setValue(person, "John");
         personModel.getProperty("lastName").setValue(person, "Doe");
