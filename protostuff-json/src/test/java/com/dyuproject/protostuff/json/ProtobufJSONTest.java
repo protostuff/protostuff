@@ -32,6 +32,7 @@ import org.codehaus.jackson.JsonToken;
 import com.dyuproject.protostuff.model.V22Lite;
 import com.dyuproject.protostuff.model.V22Lite.Person;
 import com.dyuproject.protostuff.model.V22Lite.Task;
+import com.google.protobuf.ByteString;
 
 /**
  * @author David Yu
@@ -52,6 +53,7 @@ public class ProtobufJSONTest extends TestCase
         .setName("task_name")
         .setDescription("task_description")
         .setStatus(Task.Status.COMPLETED)
+        .setAttachment(ByteString.copyFrom(new byte[]{0x34}))
         .build();
     
     static final Person person = Person.newBuilder()
@@ -67,6 +69,10 @@ public class ProtobufJSONTest extends TestCase
         .addRepeatedLong(3)
         .addRepeatedLong(4)
         .addRepeatedLong(5)
+        .addImage(ByteString.copyFrom(new byte[]{0x35}))
+        .addImage(ByteString.copyFrom(new byte[]{0x36}))
+        .addImage(ByteString.copyFrom(new byte[]{0x37}))
+        .addImage(ByteString.copyFrom(new byte[]{0x38}))
         .build();
     
     static void doTestGenerateAndParse(PrintStream out) throws Exception
@@ -118,6 +124,12 @@ public class ProtobufJSONTest extends TestCase
         {
             assertEquals(p.getDelegatedTask(i), p2.getDelegatedTask(i));
         }
+        
+        assertTrue(p.getImageCount()==p2.getImageCount());
+        for(int i=0, len=p.getImageCount(); i<len; i++)
+        {
+            assertEquals(p.getImage(i), p2.getImage(i));
+        }
     }
     
     static void assertEquals(Task t, Task t2)
@@ -132,7 +144,9 @@ public class ProtobufJSONTest extends TestCase
         
         assertEquals(t.getDescription(), t2.getDescription());
         
-        assertTrue(t.getStatus() == t2.getStatus());        
+        assertTrue(t.getStatus() == t2.getStatus());
+        
+        assertEquals(t.getAttachment(), t2.getAttachment());
     }
     
     public void jacksonTest() throws Exception
@@ -258,8 +272,7 @@ public class ProtobufJSONTest extends TestCase
     }
     
     public static void main(String[] args) throws Exception
-    { 
-
+    {
         String dir = System.getProperty("benchmark.output_dir");
         
         PrintStream out = dir==null ? System.out : 

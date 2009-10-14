@@ -24,6 +24,7 @@ import org.codehaus.jackson.JsonToken;
 
 import com.dyuproject.protostuff.model.V22Speed.Person;
 import com.dyuproject.protostuff.model.V22Speed.Task;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
@@ -64,6 +65,7 @@ public class V22SpeedJSON extends ProtobufJSON
             fieldMap.put("name", 2);
             fieldMap.put("description", 3);
             fieldMap.put("status", 4);
+            fieldMap.put("attachment", 5);
         };
         
         final int getFieldNumber(String name) throws IOException
@@ -90,6 +92,9 @@ public class V22SpeedJSON extends ProtobufJSON
             
             if(task.hasStatus())
                 generator.writeStringField("status", task.getStatus().name());
+            
+            if(task.hasAttachment())
+                generator.writeStringField("attachment", task.getAttachment().toStringUtf8());
             
             generator.writeEndObject();            
         }
@@ -130,6 +135,10 @@ public class V22SpeedJSON extends ProtobufJSON
                         parser.nextToken();
                         builder.setStatus(Task.Status.valueOf(parser.getText()));
                         break;
+                    case 5:
+                        parser.nextToken();
+                        builder.setAttachment(ByteString.copyFromUtf8(parser.getText()));
+                        break;
                     default:
                         throw new IOException("Field unknown: " + name + " on message: " + Task.class);
                 }
@@ -153,6 +162,7 @@ public class V22SpeedJSON extends ProtobufJSON
             fieldMap.put("aGe", 7);
             fieldMap.put("currentTask", 8);
             fieldMap.put("repeatedLong", 9);
+            fieldMap.put("image", 10);
         };
         
         final int getFieldNumber(String name) throws IOException
@@ -205,6 +215,12 @@ public class V22SpeedJSON extends ProtobufJSON
             generator.writeStartArray();
             for(Long l : person.getRepeatedLongList())
                 generator.writeNumber(l);
+            generator.writeEndArray();
+            
+            generator.writeFieldName("image");
+            generator.writeStartArray();
+            for(ByteString b : person.getImageList())
+                generator.writeString(b.toStringUtf8());
             generator.writeEndArray();
             
             generator.writeEndObject();
@@ -296,6 +312,18 @@ public class V22SpeedJSON extends ProtobufJSON
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
                         {
                             builder.addRepeatedLong(parser.getLongValue());
+                        }
+                        break;
+                    case 10:
+                        if(parser.nextToken()!=JsonToken.START_ARRAY)
+                        {
+                            throw new IOException("Expected token: [ but was " + 
+                                    parser.getCurrentToken() + " on message: " + 
+                                    Person.class);
+                        }
+                        for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
+                        {
+                            builder.addImage(ByteString.copyFromUtf8(parser.getText()));
                         }
                         break;
                     default:
