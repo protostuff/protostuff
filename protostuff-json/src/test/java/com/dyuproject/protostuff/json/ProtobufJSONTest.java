@@ -41,7 +41,7 @@ import com.dyuproject.protostuff.model.V22Lite.Task;
 public class ProtobufJSONTest extends TestCase
 {
     static final LiteJSON LITE = new LiteJSON(new Class[]{V22Lite.class});
-    static final NumericLiteJSON NUM_LITE = new NumericLiteJSON(new Class[]{V22Lite.class});
+    static final LiteNumericJSON LITE_NUM = new LiteNumericJSON(new Class[]{V22Lite.class});
     static final V22LiteJSON GENERATED_FROM_LITE = new V22LiteJSON();
     //static final V22SpeedJSON GENERATED_FROM_SPEED = new V22SpeedJSON();
     
@@ -73,7 +73,7 @@ public class ProtobufJSONTest extends TestCase
     {
         String generated = generateAndParse(GENERATED_FROM_LITE);
         String lite = generateAndParse(LITE);
-        String numLite = generateAndParse(NUM_LITE);
+        String numLite = generateAndParse(LITE_NUM);
         
         assertEquals(generated, lite);
         
@@ -225,7 +225,7 @@ public class ProtobufJSONTest extends TestCase
         System.err.println(generatedAndParse(LITE, personList, parsedPersonList));
         parsedPersonList.clear();
         
-        System.err.println(generatedAndParse(NUM_LITE, personList, parsedPersonList));
+        System.err.println(generatedAndParse(LITE_NUM, personList, parsedPersonList));
         parsedPersonList.clear();
     }
     
@@ -291,7 +291,7 @@ public class ProtobufJSONTest extends TestCase
         //serDeser(out, GENERATED_FROM_SPEED, "GENERATED_FROM_SPEED", warmups, loops);
         serDeser(out, GENERATED_FROM_LITE, "GENERATED_FROM_LITE", warmups, loops);
         serDeser(out, LITE, "LITE", warmups, loops);
-        serDeser(out, NUM_LITE, "NUM_LITE", warmups, loops);
+        serDeser(out, LITE_NUM, "LITE_NUM", warmups, loops);
     }
     
     static void serDeser(PrintStream out, ProtobufJSON json, String name, int warmups, int loops)

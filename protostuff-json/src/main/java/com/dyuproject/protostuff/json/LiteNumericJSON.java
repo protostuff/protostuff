@@ -27,21 +27,21 @@ import com.dyuproject.protostuff.model.ModelMeta.Factory;
  * @created Oct 2, 2009
  */
 
-public class NumericLiteJSON extends LiteJSON
+public class LiteNumericJSON extends LiteJSON
 {
     
-    public NumericLiteJSON(Class<?>[] moduleClasses)
+    public LiteNumericJSON(Class<?>[] moduleClasses)
     {
         super(moduleClasses);
     }
     
-    public NumericLiteJSON(Factory modelMetaFactory, 
+    public LiteNumericJSON(Factory modelMetaFactory, 
             Class<?>[] moduleClasses)
     {
         super(modelMetaFactory,moduleClasses);
     }
 
-    public NumericLiteJSON(JsonFactory jsonFactory, Factory modelMetaFactory, 
+    public LiteNumericJSON(JsonFactory jsonFactory, Factory modelMetaFactory, 
             Class<?>[] moduleClasses)
     {
         super(jsonFactory,modelMetaFactory,moduleClasses);
