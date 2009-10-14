@@ -29,6 +29,25 @@ import junit.framework.TestCase;
 public class V22Test extends TestCase
 {
     
+    public void testPrintTypes() 
+    {
+        Model<DefaultProperty> taskModel = Model.get(V22Lite.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);
+        
+        System.err.println(taskModel.getProperty("id").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("name").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("status").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("attachment").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("aboolean").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("afloat").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("adouble").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(taskModel.getProperty("along").getPropertyMeta().getTypeClass().getSimpleName());
+        
+        System.err.println(personModel.getProperty("priorityTask").getPropertyMeta().getComponentTypeClass().getSimpleName());
+        System.err.println(personModel.getProperty("currentTask").getPropertyMeta().getTypeClass().getSimpleName());
+        System.err.println(personModel.getProperty("repeatedLong").getPropertyMeta().getComponentTypeClass().getSimpleName());        
+    }
+    
     public void testLite() throws Exception
     {
 
