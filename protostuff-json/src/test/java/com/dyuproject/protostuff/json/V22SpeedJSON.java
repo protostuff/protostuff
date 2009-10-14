@@ -66,6 +66,10 @@ public class V22SpeedJSON extends ProtobufJSON
             fieldMap.put("description", 3);
             fieldMap.put("status", 4);
             fieldMap.put("attachment", 5);
+            fieldMap.put("aboolean", 6);
+            fieldMap.put("afloat", 7);
+            fieldMap.put("adouble", 8);
+            fieldMap.put("along", 9);
         };
         
         final int getFieldNumber(String name) throws IOException
@@ -98,6 +102,18 @@ public class V22SpeedJSON extends ProtobufJSON
                 generator.writeFieldName("attachment");
                 generator.writeBinary(task.getAttachment().toByteArray());
             }
+            
+            if(task.hasAboolean())
+                generator.writeBooleanField("aboolean", task.getAboolean());
+            
+            if(task.hasAfloat())
+                generator.writeNumberField("afloat", task.getAfloat());
+            
+            if(task.hasAdouble())
+                generator.writeNumberField("adouble", task.getAdouble());
+            
+            if(task.hasAlong())
+                generator.writeNumberField("along",task.getAlong());
             
             generator.writeEndObject();            
         }
@@ -141,6 +157,21 @@ public class V22SpeedJSON extends ProtobufJSON
                     case 5:
                         parser.nextToken();
                         builder.setAttachment(ByteString.copyFrom(parser.getBinaryValue()));
+                        break;
+                    case 6:
+                        builder.setAboolean(parser.nextToken()==JsonToken.VALUE_TRUE);
+                        break;
+                    case 7:
+                        parser.nextToken();
+                        builder.setAfloat(parser.getFloatValue());
+                        break;
+                    case 8:
+                        parser.nextToken();
+                        builder.setAdouble(parser.getDoubleValue());
+                        break;
+                    case 9:
+                        parser.nextToken();
+                        builder.setAlong(parser.getLongValue());
                         break;
                     default:
                         throw new IOException("Field unknown: " + name + " on message: " + Task.class);

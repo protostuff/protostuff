@@ -54,6 +54,10 @@ public class ProtobufJSONTest extends TestCase
         .setDescription("task_description")
         .setStatus(Task.Status.COMPLETED)
         .setAttachment(ByteString.copyFrom(new byte[]{0x34}))
+        .setAboolean(true)
+        .setAfloat(10.101f)
+        .setAdouble(10.1010101d)
+        .setAlong(1010101l)
         .build();
     
     static final Person person = Person.newBuilder()
@@ -133,8 +137,7 @@ public class ProtobufJSONTest extends TestCase
     }
     
     static void assertEquals(Task t, Task t2)
-    {
-        
+    {        
         if(t==null && t2==null)
             return;
         
@@ -147,6 +150,14 @@ public class ProtobufJSONTest extends TestCase
         assertTrue(t.getStatus() == t2.getStatus());
         
         assertEquals(t.getAttachment(), t2.getAttachment());
+        
+        assertTrue(t.getAboolean()==t2.getAboolean());
+        
+        assertTrue(t.getAfloat()==t2.getAfloat());
+        
+        assertTrue(t.getAdouble()==t2.getAdouble());
+        
+        assertTrue(t.getAlong()==t2.getAlong());
     }
     
     public void jacksonTest() throws Exception
