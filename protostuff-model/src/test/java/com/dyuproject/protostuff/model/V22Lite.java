@@ -886,6 +886,27 @@ public final class V22Lite {
     public boolean hasAttachment() { return hasAttachment; }
     public com.google.protobuf.ByteString getAttachment() { return attachment_; }
     
+    // optional bool aboolean = 6;
+    public static final int ABOOLEAN_FIELD_NUMBER = 6;
+    private boolean hasAboolean;
+    private boolean aboolean_ = false;
+    public boolean hasAboolean() { return hasAboolean; }
+    public boolean getAboolean() { return aboolean_; }
+    
+    // optional float afloat = 7;
+    public static final int AFLOAT_FIELD_NUMBER = 7;
+    private boolean hasAfloat;
+    private float afloat_ = 0F;
+    public boolean hasAfloat() { return hasAfloat; }
+    public float getAfloat() { return afloat_; }
+    
+    // optional double adouble = 8;
+    public static final int ADOUBLE_FIELD_NUMBER = 8;
+    private boolean hasAdouble;
+    private double adouble_ = 0D;
+    public boolean hasAdouble() { return hasAdouble; }
+    public double getAdouble() { return adouble_; }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       return true;
@@ -907,6 +928,15 @@ public final class V22Lite {
       }
       if (hasAttachment()) {
         output.writeBytes(5, getAttachment());
+      }
+      if (hasAboolean()) {
+        output.writeBool(6, getAboolean());
+      }
+      if (hasAfloat()) {
+        output.writeFloat(7, getAfloat());
+      }
+      if (hasAdouble()) {
+        output.writeDouble(8, getAdouble());
       }
     }
     
@@ -935,6 +965,18 @@ public final class V22Lite {
       if (hasAttachment()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(5, getAttachment());
+      }
+      if (hasAboolean()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, getAboolean());
+      }
+      if (hasAfloat()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(7, getAfloat());
+      }
+      if (hasAdouble()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(8, getAdouble());
       }
       memoizedSerializedSize = size;
       return size;
@@ -1086,6 +1128,15 @@ public final class V22Lite {
         if (other.hasAttachment()) {
           setAttachment(other.getAttachment());
         }
+        if (other.hasAboolean()) {
+          setAboolean(other.getAboolean());
+        }
+        if (other.hasAfloat()) {
+          setAfloat(other.getAfloat());
+        }
+        if (other.hasAdouble()) {
+          setAdouble(other.getAdouble());
+        }
         return this;
       }
       
@@ -1126,6 +1177,18 @@ public final class V22Lite {
             }
             case 42: {
               setAttachment(input.readBytes());
+              break;
+            }
+            case 48: {
+              setAboolean(input.readBool());
+              break;
+            }
+            case 61: {
+              setAfloat(input.readFloat());
+              break;
+            }
+            case 65: {
+              setAdouble(input.readDouble());
               break;
             }
           }
@@ -1232,6 +1295,60 @@ public final class V22Lite {
       public Builder clearAttachment() {
         result.hasAttachment = false;
         result.attachment_ = getDefaultInstance().getAttachment();
+        return this;
+      }
+      
+      // optional bool aboolean = 6;
+      public boolean hasAboolean() {
+        return result.hasAboolean();
+      }
+      public boolean getAboolean() {
+        return result.getAboolean();
+      }
+      public Builder setAboolean(boolean value) {
+        result.hasAboolean = true;
+        result.aboolean_ = value;
+        return this;
+      }
+      public Builder clearAboolean() {
+        result.hasAboolean = false;
+        result.aboolean_ = false;
+        return this;
+      }
+      
+      // optional float afloat = 7;
+      public boolean hasAfloat() {
+        return result.hasAfloat();
+      }
+      public float getAfloat() {
+        return result.getAfloat();
+      }
+      public Builder setAfloat(float value) {
+        result.hasAfloat = true;
+        result.afloat_ = value;
+        return this;
+      }
+      public Builder clearAfloat() {
+        result.hasAfloat = false;
+        result.afloat_ = 0F;
+        return this;
+      }
+      
+      // optional double adouble = 8;
+      public boolean hasAdouble() {
+        return result.hasAdouble();
+      }
+      public double getAdouble() {
+        return result.getAdouble();
+      }
+      public Builder setAdouble(double value) {
+        result.hasAdouble = true;
+        result.adouble_ = value;
+        return this;
+      }
+      public Builder clearAdouble() {
+        result.hasAdouble = false;
+        result.adouble_ = 0D;
         return this;
       }
     }

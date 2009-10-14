@@ -719,6 +719,27 @@ public final class V22CodeSize {
     public boolean hasAttachment() { return hasAttachment; }
     public com.google.protobuf.ByteString getAttachment() { return attachment_; }
     
+    // optional bool aboolean = 6;
+    public static final int ABOOLEAN_FIELD_NUMBER = 6;
+    private boolean hasAboolean;
+    private boolean aboolean_ = false;
+    public boolean hasAboolean() { return hasAboolean; }
+    public boolean getAboolean() { return aboolean_; }
+    
+    // optional float afloat = 7;
+    public static final int AFLOAT_FIELD_NUMBER = 7;
+    private boolean hasAfloat;
+    private float afloat_ = 0F;
+    public boolean hasAfloat() { return hasAfloat; }
+    public float getAfloat() { return afloat_; }
+    
+    // optional double adouble = 8;
+    public static final int ADOUBLE_FIELD_NUMBER = 8;
+    private boolean hasAdouble;
+    private double adouble_ = 0D;
+    public boolean hasAdouble() { return hasAdouble; }
+    public double getAdouble() { return adouble_; }
+    
     public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -954,6 +975,60 @@ public final class V22CodeSize {
         result.attachment_ = getDefaultInstance().getAttachment();
         return this;
       }
+      
+      // optional bool aboolean = 6;
+      public boolean hasAboolean() {
+        return result.hasAboolean();
+      }
+      public boolean getAboolean() {
+        return result.getAboolean();
+      }
+      public Builder setAboolean(boolean value) {
+        result.hasAboolean = true;
+        result.aboolean_ = value;
+        return this;
+      }
+      public Builder clearAboolean() {
+        result.hasAboolean = false;
+        result.aboolean_ = false;
+        return this;
+      }
+      
+      // optional float afloat = 7;
+      public boolean hasAfloat() {
+        return result.hasAfloat();
+      }
+      public float getAfloat() {
+        return result.getAfloat();
+      }
+      public Builder setAfloat(float value) {
+        result.hasAfloat = true;
+        result.afloat_ = value;
+        return this;
+      }
+      public Builder clearAfloat() {
+        result.hasAfloat = false;
+        result.afloat_ = 0F;
+        return this;
+      }
+      
+      // optional double adouble = 8;
+      public boolean hasAdouble() {
+        return result.hasAdouble();
+      }
+      public double getAdouble() {
+        return result.getAdouble();
+      }
+      public Builder setAdouble(double value) {
+        result.hasAdouble = true;
+        result.adouble_ = value;
+        return this;
+      }
+      public Builder clearAdouble() {
+        result.hasAdouble = false;
+        result.adouble_ = 0D;
+        return this;
+      }
     }
     
     static {
@@ -991,12 +1066,14 @@ public final class V22CodeSize {
       "l.Task\022\'\n\016_priorityTask_\030\006 \003(\0132\017.testmod" +
       "el.Task\022\r\n\005_aGe_\030\007 \001(\005\022$\n\013currentTask\030\010 " +
       "\001(\0132\017.testmodel.Task\022\024\n\014repeatedLong\030\t \003" +
-      "(\003\022\r\n\005image\030\n \003(\014\"\250\001\n\004Task\022\013\n\003_id\030\001 \002(\005\022" +
+      "(\003\022\r\n\005image\030\n \003(\014\"\333\001\n\004Task\022\013\n\003_id\030\001 \002(\005\022" +
       "\r\n\005name_\030\002 \001(\t\022\025\n\r_description_\030\003 \001(\t\022&\n" +
       "\006status\030\004 \001(\0162\026.testmodel.Task.Status\022\022\n",
-      "\nattachment\030\005 \001(\014\"1\n\006Status\022\013\n\007PENDING\020\000" +
-      "\022\013\n\007STARTED\020\001\022\r\n\tCOMPLETED\020\002B0\n\037com.dyup" +
-      "roject.protostuff.modelB\013V22CodeSizeH\002"
+      "\nattachment\030\005 \001(\014\022\020\n\010aboolean\030\006 \001(\010\022\016\n\006a" +
+      "float\030\007 \001(\002\022\017\n\007adouble\030\010 \001(\001\"1\n\006Status\022\013" +
+      "\n\007PENDING\020\000\022\013\n\007STARTED\020\001\022\r\n\tCOMPLETED\020\002B" +
+      "0\n\037com.dyuproject.protostuff.modelB\013V22C" +
+      "odeSizeH\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1016,7 +1093,7 @@ public final class V22CodeSize {
           internal_static_testmodel_Task_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_testmodel_Task_descriptor,
-              new java.lang.String[] { "Id", "Name", "Description", "Status", "Attachment", },
+              new java.lang.String[] { "Id", "Name", "Description", "Status", "Attachment", "Aboolean", "Afloat", "Adouble", },
               com.dyuproject.protostuff.model.V22CodeSize.Task.class,
               com.dyuproject.protostuff.model.V22CodeSize.Task.Builder.class);
           return null;

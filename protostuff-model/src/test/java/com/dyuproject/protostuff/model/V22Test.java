@@ -36,9 +36,9 @@ public class V22Test extends TestCase
         Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
-        assertTrue(taskModel.getModelMeta().getPropertyCount()==5);
+        assertTrue(taskModel.getModelMeta().getPropertyCount()==8);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
-        assertTrue(taskModel.getModelMeta().getMaxNumber()==5);
+        assertTrue(taskModel.getModelMeta().getMaxNumber()==8);
         
         System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
@@ -84,12 +84,18 @@ public class V22Test extends TestCase
         taskModel.getProperty("description").setValue(taskBuilder, "bar1");
         taskModel.getProperty("status").setValue(taskBuilder, V22Lite.Task.Status.COMPLETED);
         taskModel.getProperty("attachment").setValue(taskBuilder, new byte[]{0x30});
+        taskModel.getProperty("aboolean").setValue(taskBuilder, true);
+        taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
+        taskModel.getProperty("adouble").setValue(taskBuilder, 10.1010101d);
         
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
         assertTrue(taskBuilder.getDescription().equals("bar1"));
         assertTrue(taskBuilder.getStatus() == V22Lite.Task.Status.COMPLETED);
         assertTrue(taskBuilder.getAttachment().equals(ByteString.copyFrom(new byte[]{0x30})));
+        assertTrue(taskBuilder.getAboolean()==true);
+        assertTrue(taskBuilder.getAfloat()==10.101f);
+        assertTrue(taskBuilder.getAdouble()==10.1010101d);
         
         personModel.getProperty("firstName").setValue(person, "John");
         personModel.getProperty("lastName").setValue(person, "Doe");
@@ -182,9 +188,9 @@ public class V22Test extends TestCase
         Model<DefaultProperty> personModel = Model.get(V22Speed.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
-        assertTrue(taskModel.getModelMeta().getPropertyCount()==5);
+        assertTrue(taskModel.getModelMeta().getPropertyCount()==8);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
-        assertTrue(taskModel.getModelMeta().getMaxNumber()==5);
+        assertTrue(taskModel.getModelMeta().getMaxNumber()==8);
         
         System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
@@ -230,12 +236,18 @@ public class V22Test extends TestCase
         taskModel.getProperty("description").setValue(taskBuilder, "bar1");
         taskModel.getProperty("status").setValue(taskBuilder, V22Speed.Task.Status.COMPLETED);
         taskModel.getProperty("attachment").setValue(taskBuilder, new byte[]{0x30});
+        taskModel.getProperty("aboolean").setValue(taskBuilder, true);
+        taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
+        taskModel.getProperty("adouble").setValue(taskBuilder, 10.1010101d);
         
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
         assertTrue(taskBuilder.getDescription().equals("bar1"));
         assertTrue(taskBuilder.getStatus() == V22Speed.Task.Status.COMPLETED);
         assertTrue(taskBuilder.getAttachment().equals(ByteString.copyFrom(new byte[]{0x30})));
+        assertTrue(taskBuilder.getAboolean()==true);
+        assertTrue(taskBuilder.getAfloat()==10.101f);
+        assertTrue(taskBuilder.getAdouble()==10.1010101d);
         
         personModel.getProperty("firstName").setValue(person, "John");
         personModel.getProperty("lastName").setValue(person, "Doe");

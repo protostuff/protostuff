@@ -29,4 +29,7 @@ message Task {
   }
   optional Status status = 4;
   optional bytes attachment = 5;
+  optional bool aboolean = 6;
+  optional float afloat = 7;
+  optional double adouble = 8;
 }
