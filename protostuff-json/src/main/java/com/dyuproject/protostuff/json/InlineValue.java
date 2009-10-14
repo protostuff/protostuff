@@ -160,13 +160,13 @@ public abstract class InlineValue<T>
     {
         public ByteString readFrom(JsonParser parser) throws IOException
         {            
-            //return ByteString.copyFrom(parser.getBinaryValue());
-            return ByteString.copyFromUtf8(parser.getText());
+            return ByteString.copyFrom(parser.getBinaryValue());
+            //return ByteString.copyFromUtf8(parser.getText());
         }
         public void writeTo(JsonGenerator generator, ByteString value) throws IOException
         {
-            //generator.writeBinary(value.toByteArray());
-            generator.writeString(value.toStringUtf8());
+            generator.writeBinary(value.toByteArray());
+            //generator.writeString(value.toStringUtf8());
         }
         public JavaType getJavaType()
         {            

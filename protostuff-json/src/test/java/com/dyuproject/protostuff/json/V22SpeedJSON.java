@@ -94,7 +94,10 @@ public class V22SpeedJSON extends ProtobufJSON
                 generator.writeStringField("status", task.getStatus().name());
             
             if(task.hasAttachment())
-                generator.writeStringField("attachment", task.getAttachment().toStringUtf8());
+            {
+                generator.writeFieldName("attachment");
+                generator.writeBinary(task.getAttachment().toByteArray());
+            }
             
             generator.writeEndObject();            
         }
@@ -137,7 +140,7 @@ public class V22SpeedJSON extends ProtobufJSON
                         break;
                     case 5:
                         parser.nextToken();
-                        builder.setAttachment(ByteString.copyFromUtf8(parser.getText()));
+                        builder.setAttachment(ByteString.copyFrom(parser.getBinaryValue()));
                         break;
                     default:
                         throw new IOException("Field unknown: " + name + " on message: " + Task.class);
@@ -220,7 +223,7 @@ public class V22SpeedJSON extends ProtobufJSON
             generator.writeFieldName("image");
             generator.writeStartArray();
             for(ByteString b : person.getImageList())
-                generator.writeString(b.toStringUtf8());
+                generator.writeBinary(b.toByteArray());
             generator.writeEndArray();
             
             generator.writeEndObject();
@@ -323,7 +326,7 @@ public class V22SpeedJSON extends ProtobufJSON
                         }
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
                         {
-                            builder.addImage(ByteString.copyFromUtf8(parser.getText()));
+                            builder.addImage(ByteString.copyFrom(parser.getBinaryValue()));
                         }
                         break;
                     default:
@@ -340,5 +343,5 @@ public class V22SpeedJSON extends ProtobufJSON
         }
         
     };
-
+    
 }
