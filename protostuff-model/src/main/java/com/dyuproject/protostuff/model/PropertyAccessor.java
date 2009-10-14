@@ -34,7 +34,19 @@ public abstract class PropertyAccessor
     public static final Class<?>[] INT_ARG_C = new Class<?>[]{int.class};
     public static final Class<?>[] ITERABLE_ARG_C = new Class<?>[]{Iterable.class};
     
-    static String toPrefixedPascalCase(String prefix, String target)
+    public static String toPascalCase(String target)
+    {
+        char c = target.charAt(0);
+        if(c>96)
+            c = (char)(c-32);
+        
+        return new StringBuilder(target.length())
+            .append(c)
+            .append(target, 1, target.length())
+            .toString();
+    }
+    
+    public static String toPrefixedPascalCase(String prefix, String target)
     {
         char c = target.charAt(0);
         if(c>96)
@@ -47,7 +59,12 @@ public abstract class PropertyAccessor
             .toString();
     }
     
-    static String toCamelCase(int start, String target)
+    public static String toCamelCase(String target)
+    {
+        return toCamelCase(0, target);
+    }
+    
+    public static String toCamelCase(int start, String target)
     {
         char[] prop = new char[target.length()-start];
         target.getChars(start, target.length(), prop, 0);
