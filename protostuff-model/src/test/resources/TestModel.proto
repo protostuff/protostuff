@@ -15,6 +15,7 @@ message Person {
   optional int32 _aGe_ = 7;
   optional Task currentTask = 8;
   repeated int64 repeatedLong = 9;
+  repeated bytes image = 10;
 }
 
 message Task {
@@ -27,4 +28,5 @@ message Task {
     COMPLETED = 2;
   }
   optional Status status = 4;
+  optional bytes attachment = 5;
 }

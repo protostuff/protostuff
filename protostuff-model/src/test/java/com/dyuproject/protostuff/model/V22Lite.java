@@ -99,6 +99,18 @@ public final class V22Lite {
       return repeatedLong_.get(index);
     }
     
+    // repeated bytes image = 10;
+    public static final int IMAGE_FIELD_NUMBER = 10;
+    private java.util.List<com.google.protobuf.ByteString> image_ =
+      java.util.Collections.emptyList();
+    public java.util.List<com.google.protobuf.ByteString> getImageList() {
+      return image_;
+    }
+    public int getImageCount() { return image_.size(); }
+    public com.google.protobuf.ByteString getImage(int index) {
+      return image_.get(index);
+    }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       for (com.dyuproject.protostuff.model.V22Lite.Task element : getDelegatedTaskList()) {
@@ -141,6 +153,9 @@ public final class V22Lite {
       }
       for (long element : getRepeatedLongList()) {
         output.writeInt64(9, element);
+      }
+      for (com.google.protobuf.ByteString element : getImageList()) {
+        output.writeBytes(10, element);
       }
     }
     
@@ -190,6 +205,15 @@ public final class V22Lite {
         }
         size += dataSize;
         size += 1 * getRepeatedLongList().size();
+      }
+      {
+        int dataSize = 0;
+        for (com.google.protobuf.ByteString element : getImageList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * getImageList().size();
       }
       memoizedSerializedSize = size;
       return size;
@@ -331,6 +355,10 @@ public final class V22Lite {
           result.repeatedLong_ =
             java.util.Collections.unmodifiableList(result.repeatedLong_);
         }
+        if (result.image_ != java.util.Collections.EMPTY_LIST) {
+          result.image_ =
+            java.util.Collections.unmodifiableList(result.image_);
+        }
         com.dyuproject.protostuff.model.V22Lite.Person returnMe = result;
         result = null;
         return returnMe;
@@ -373,6 +401,12 @@ public final class V22Lite {
             result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
           }
           result.repeatedLong_.addAll(other.repeatedLong_);
+        }
+        if (!other.image_.isEmpty()) {
+          if (result.image_.isEmpty()) {
+            result.image_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+          }
+          result.image_.addAll(other.image_);
         }
         return this;
       }
@@ -435,6 +469,10 @@ public final class V22Lite {
             }
             case 72: {
               addRepeatedLong(input.readInt64());
+              break;
+            }
+            case 82: {
+              addImage(input.readBytes());
               break;
             }
           }
@@ -713,6 +751,46 @@ public final class V22Lite {
         result.repeatedLong_ = java.util.Collections.emptyList();
         return this;
       }
+      
+      // repeated bytes image = 10;
+      public java.util.List<com.google.protobuf.ByteString> getImageList() {
+        return java.util.Collections.unmodifiableList(result.image_);
+      }
+      public int getImageCount() {
+        return result.getImageCount();
+      }
+      public com.google.protobuf.ByteString getImage(int index) {
+        return result.getImage(index);
+      }
+      public Builder setImage(int index, com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.image_.set(index, value);
+        return this;
+      }
+      public Builder addImage(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  if (result.image_.isEmpty()) {
+          result.image_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+        }
+        result.image_.add(value);
+        return this;
+      }
+      public Builder addAllImage(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        if (result.image_.isEmpty()) {
+          result.image_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+        }
+        super.addAll(values, result.image_);
+        return this;
+      }
+      public Builder clearImage() {
+        result.image_ = java.util.Collections.emptyList();
+        return this;
+      }
     }
     
     static {
@@ -801,6 +879,13 @@ public final class V22Lite {
     public boolean hasStatus() { return hasStatus; }
     public com.dyuproject.protostuff.model.V22Lite.Task.Status getStatus() { return status_; }
     
+    // optional bytes attachment = 5;
+    public static final int ATTACHMENT_FIELD_NUMBER = 5;
+    private boolean hasAttachment;
+    private com.google.protobuf.ByteString attachment_ = com.google.protobuf.ByteString.EMPTY;
+    public boolean hasAttachment() { return hasAttachment; }
+    public com.google.protobuf.ByteString getAttachment() { return attachment_; }
+    
     public final boolean isInitialized() {
       if (!hasId) return false;
       return true;
@@ -819,6 +904,9 @@ public final class V22Lite {
       }
       if (hasStatus()) {
         output.writeEnum(4, getStatus().getNumber());
+      }
+      if (hasAttachment()) {
+        output.writeBytes(5, getAttachment());
       }
     }
     
@@ -843,6 +931,10 @@ public final class V22Lite {
       if (hasStatus()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, getStatus().getNumber());
+      }
+      if (hasAttachment()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getAttachment());
       }
       memoizedSerializedSize = size;
       return size;
@@ -991,6 +1083,9 @@ public final class V22Lite {
         if (other.hasStatus()) {
           setStatus(other.getStatus());
         }
+        if (other.hasAttachment()) {
+          setAttachment(other.getAttachment());
+        }
         return this;
       }
       
@@ -1027,6 +1122,10 @@ public final class V22Lite {
               if (value != null) {
                 setStatus(value);
               }
+              break;
+            }
+            case 42: {
+              setAttachment(input.readBytes());
               break;
             }
           }
@@ -1112,6 +1211,27 @@ public final class V22Lite {
       public Builder clearStatus() {
         result.hasStatus = false;
         result.status_ = com.dyuproject.protostuff.model.V22Lite.Task.Status.PENDING;
+        return this;
+      }
+      
+      // optional bytes attachment = 5;
+      public boolean hasAttachment() {
+        return result.hasAttachment();
+      }
+      public com.google.protobuf.ByteString getAttachment() {
+        return result.getAttachment();
+      }
+      public Builder setAttachment(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasAttachment = true;
+        result.attachment_ = value;
+        return this;
+      }
+      public Builder clearAttachment() {
+        result.hasAttachment = false;
+        result.attachment_ = getDefaultInstance().getAttachment();
         return this;
       }
     }

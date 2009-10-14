@@ -2,8 +2,8 @@
 
 package com.dyuproject.protostuff.model;
 
-public final class V22Speed {
-  private V22Speed() {}
+public final class V22CodeSize {
+  private V22CodeSize() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
@@ -23,12 +23,12 @@ public final class V22Speed {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.dyuproject.protostuff.model.V22Speed.internal_static_testmodel_Person_descriptor;
+      return com.dyuproject.protostuff.model.V22CodeSize.internal_static_testmodel_Person_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.dyuproject.protostuff.model.V22Speed.internal_static_testmodel_Person_fieldAccessorTable;
+      return com.dyuproject.protostuff.model.V22CodeSize.internal_static_testmodel_Person_fieldAccessorTable;
     }
     
     // required int32 id = 1;
@@ -61,25 +61,25 @@ public final class V22Speed {
     
     // repeated .testmodel.Task _delegated_task_ = 5;
     public static final int _DELEGATED_TASK__FIELD_NUMBER = 5;
-    private java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> DelegatedTask_ =
+    private java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> DelegatedTask_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> getDelegatedTaskList() {
+    public java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> getDelegatedTaskList() {
       return DelegatedTask_;
     }
     public int getDelegatedTaskCount() { return DelegatedTask_.size(); }
-    public com.dyuproject.protostuff.model.V22Speed.Task getDelegatedTask(int index) {
+    public com.dyuproject.protostuff.model.V22CodeSize.Task getDelegatedTask(int index) {
       return DelegatedTask_.get(index);
     }
     
     // repeated .testmodel.Task _priorityTask_ = 6;
     public static final int _PRIORITYTASK__FIELD_NUMBER = 6;
-    private java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> PriorityTask_ =
+    private java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> PriorityTask_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> getPriorityTaskList() {
+    public java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> getPriorityTaskList() {
       return PriorityTask_;
     }
     public int getPriorityTaskCount() { return PriorityTask_.size(); }
-    public com.dyuproject.protostuff.model.V22Speed.Task getPriorityTask(int index) {
+    public com.dyuproject.protostuff.model.V22CodeSize.Task getPriorityTask(int index) {
       return PriorityTask_.get(index);
     }
     
@@ -93,9 +93,9 @@ public final class V22Speed {
     // optional .testmodel.Task currentTask = 8;
     public static final int CURRENTTASK_FIELD_NUMBER = 8;
     private boolean hasCurrentTask;
-    private com.dyuproject.protostuff.model.V22Speed.Task currentTask_ = com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance();
+    private com.dyuproject.protostuff.model.V22CodeSize.Task currentTask_ = com.dyuproject.protostuff.model.V22CodeSize.Task.getDefaultInstance();
     public boolean hasCurrentTask() { return hasCurrentTask; }
-    public com.dyuproject.protostuff.model.V22Speed.Task getCurrentTask() { return currentTask_; }
+    public com.dyuproject.protostuff.model.V22CodeSize.Task getCurrentTask() { return currentTask_; }
     
     // repeated int64 repeatedLong = 9;
     public static final int REPEATEDLONG_FIELD_NUMBER = 9;
@@ -121,167 +121,57 @@ public final class V22Speed {
       return image_.get(index);
     }
     
-    public final boolean isInitialized() {
-      if (!hasId) return false;
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getDelegatedTaskList()) {
-        if (!element.isInitialized()) return false;
-      }
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getPriorityTaskList()) {
-        if (!element.isInitialized()) return false;
-      }
-      if (hasCurrentTask()) {
-        if (!getCurrentTask().isInitialized()) return false;
-      }
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (hasId()) {
-        output.writeInt32(1, getId());
-      }
-      if (hasEmail()) {
-        output.writeString(2, getEmail());
-      }
-      if (hasFirstName()) {
-        output.writeString(3, getFirstName());
-      }
-      if (hasLastName()) {
-        output.writeString(4, getLastName());
-      }
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getDelegatedTaskList()) {
-        output.writeMessage(5, element);
-      }
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getPriorityTaskList()) {
-        output.writeMessage(6, element);
-      }
-      if (hasAGe()) {
-        output.writeInt32(7, getAGe());
-      }
-      if (hasCurrentTask()) {
-        output.writeMessage(8, getCurrentTask());
-      }
-      for (long element : getRepeatedLongList()) {
-        output.writeInt64(9, element);
-      }
-      for (com.google.protobuf.ByteString element : getImageList()) {
-        output.writeBytes(10, element);
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasId()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, getId());
-      }
-      if (hasEmail()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getEmail());
-      }
-      if (hasFirstName()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(3, getFirstName());
-      }
-      if (hasLastName()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getLastName());
-      }
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getDelegatedTaskList()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, element);
-      }
-      for (com.dyuproject.protostuff.model.V22Speed.Task element : getPriorityTaskList()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, element);
-      }
-      if (hasAGe()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, getAGe());
-      }
-      if (hasCurrentTask()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getCurrentTask());
-      }
-      {
-        int dataSize = 0;
-        for (long element : getRepeatedLongList()) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt64SizeNoTag(element);
-        }
-        size += dataSize;
-        size += 1 * getRepeatedLongList().size();
-      }
-      {
-        int dataSize = 0;
-        for (com.google.protobuf.ByteString element : getImageList()) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(element);
-        }
-        size += dataSize;
-        size += 1 * getImageList().size();
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseDelimitedFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Person parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Person parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -291,25 +181,25 @@ public final class V22Speed {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.model.V22Speed.Person prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.model.V22CodeSize.Person prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.dyuproject.protostuff.model.V22Speed.Person result;
+      private com.dyuproject.protostuff.model.V22CodeSize.Person result;
       
-      // Construct using com.dyuproject.protostuff.model.V22Speed.Person.newBuilder()
+      // Construct using com.dyuproject.protostuff.model.V22CodeSize.Person.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.model.V22Speed.Person();
+        builder.result = new com.dyuproject.protostuff.model.V22CodeSize.Person();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.model.V22Speed.Person internalGetResult() {
+      protected com.dyuproject.protostuff.model.V22CodeSize.Person internalGetResult() {
         return result;
       }
       
@@ -318,7 +208,7 @@ public final class V22Speed {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.model.V22Speed.Person();
+        result = new com.dyuproject.protostuff.model.V22CodeSize.Person();
         return this;
       }
       
@@ -328,24 +218,24 @@ public final class V22Speed {
       
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.dyuproject.protostuff.model.V22Speed.Person.getDescriptor();
+        return com.dyuproject.protostuff.model.V22CodeSize.Person.getDescriptor();
       }
       
-      public com.dyuproject.protostuff.model.V22Speed.Person getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.model.V22Speed.Person.getDefaultInstance();
+      public com.dyuproject.protostuff.model.V22CodeSize.Person getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.model.V22CodeSize.Person.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Person build() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Person build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.model.V22Speed.Person buildParsed()
+      private com.dyuproject.protostuff.model.V22CodeSize.Person buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -354,7 +244,7 @@ public final class V22Speed {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.model.V22Speed.Person buildPartial() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Person buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -375,140 +265,9 @@ public final class V22Speed {
           result.image_ =
             java.util.Collections.unmodifiableList(result.image_);
         }
-        com.dyuproject.protostuff.model.V22Speed.Person returnMe = result;
+        com.dyuproject.protostuff.model.V22CodeSize.Person returnMe = result;
         result = null;
         return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.dyuproject.protostuff.model.V22Speed.Person) {
-          return mergeFrom((com.dyuproject.protostuff.model.V22Speed.Person)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.dyuproject.protostuff.model.V22Speed.Person other) {
-        if (other == com.dyuproject.protostuff.model.V22Speed.Person.getDefaultInstance()) return this;
-        if (other.hasId()) {
-          setId(other.getId());
-        }
-        if (other.hasEmail()) {
-          setEmail(other.getEmail());
-        }
-        if (other.hasFirstName()) {
-          setFirstName(other.getFirstName());
-        }
-        if (other.hasLastName()) {
-          setLastName(other.getLastName());
-        }
-        if (!other.DelegatedTask_.isEmpty()) {
-          if (result.DelegatedTask_.isEmpty()) {
-            result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
-          }
-          result.DelegatedTask_.addAll(other.DelegatedTask_);
-        }
-        if (!other.PriorityTask_.isEmpty()) {
-          if (result.PriorityTask_.isEmpty()) {
-            result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
-          }
-          result.PriorityTask_.addAll(other.PriorityTask_);
-        }
-        if (other.hasAGe()) {
-          setAGe(other.getAGe());
-        }
-        if (other.hasCurrentTask()) {
-          mergeCurrentTask(other.getCurrentTask());
-        }
-        if (!other.repeatedLong_.isEmpty()) {
-          if (result.repeatedLong_.isEmpty()) {
-            result.repeatedLong_ = new java.util.ArrayList<java.lang.Long>();
-          }
-          result.repeatedLong_.addAll(other.repeatedLong_);
-        }
-        if (!other.image_.isEmpty()) {
-          if (result.image_.isEmpty()) {
-            result.image_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-          }
-          result.image_.addAll(other.image_);
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              setId(input.readInt32());
-              break;
-            }
-            case 18: {
-              setEmail(input.readString());
-              break;
-            }
-            case 26: {
-              setFirstName(input.readString());
-              break;
-            }
-            case 34: {
-              setLastName(input.readString());
-              break;
-            }
-            case 42: {
-              com.dyuproject.protostuff.model.V22Speed.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Speed.Task.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addDelegatedTask(subBuilder.buildPartial());
-              break;
-            }
-            case 50: {
-              com.dyuproject.protostuff.model.V22Speed.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Speed.Task.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addPriorityTask(subBuilder.buildPartial());
-              break;
-            }
-            case 56: {
-              setAGe(input.readInt32());
-              break;
-            }
-            case 66: {
-              com.dyuproject.protostuff.model.V22Speed.Task.Builder subBuilder = com.dyuproject.protostuff.model.V22Speed.Task.newBuilder();
-              if (hasCurrentTask()) {
-                subBuilder.mergeFrom(getCurrentTask());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setCurrentTask(subBuilder.buildPartial());
-              break;
-            }
-            case 72: {
-              addRepeatedLong(input.readInt64());
-              break;
-            }
-            case 82: {
-              addImage(input.readBytes());
-              break;
-            }
-          }
-        }
       }
       
       
@@ -594,47 +353,47 @@ public final class V22Speed {
       }
       
       // repeated .testmodel.Task _delegated_task_ = 5;
-      public java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> getDelegatedTaskList() {
+      public java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> getDelegatedTaskList() {
         return java.util.Collections.unmodifiableList(result.DelegatedTask_);
       }
       public int getDelegatedTaskCount() {
         return result.getDelegatedTaskCount();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Task getDelegatedTask(int index) {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task getDelegatedTask(int index) {
         return result.getDelegatedTask(index);
       }
-      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.DelegatedTask_.set(index, value);
         return this;
       }
-      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22Speed.Task.Builder builderForValue) {
+      public Builder setDelegatedTask(int index, com.dyuproject.protostuff.model.V22CodeSize.Task.Builder builderForValue) {
         result.DelegatedTask_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         result.DelegatedTask_.add(value);
         return this;
       }
-      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22Speed.Task.Builder builderForValue) {
+      public Builder addDelegatedTask(com.dyuproject.protostuff.model.V22CodeSize.Task.Builder builderForValue) {
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         result.DelegatedTask_.add(builderForValue.build());
         return this;
       }
       public Builder addAllDelegatedTask(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22Speed.Task> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22CodeSize.Task> values) {
         if (result.DelegatedTask_.isEmpty()) {
-          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.DelegatedTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         super.addAll(values, result.DelegatedTask_);
         return this;
@@ -645,47 +404,47 @@ public final class V22Speed {
       }
       
       // repeated .testmodel.Task _priorityTask_ = 6;
-      public java.util.List<com.dyuproject.protostuff.model.V22Speed.Task> getPriorityTaskList() {
+      public java.util.List<com.dyuproject.protostuff.model.V22CodeSize.Task> getPriorityTaskList() {
         return java.util.Collections.unmodifiableList(result.PriorityTask_);
       }
       public int getPriorityTaskCount() {
         return result.getPriorityTaskCount();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Task getPriorityTask(int index) {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task getPriorityTask(int index) {
         return result.getPriorityTask(index);
       }
-      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.PriorityTask_.set(index, value);
         return this;
       }
-      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22Speed.Task.Builder builderForValue) {
+      public Builder setPriorityTask(int index, com.dyuproject.protostuff.model.V22CodeSize.Task.Builder builderForValue) {
         result.PriorityTask_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         result.PriorityTask_.add(value);
         return this;
       }
-      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22Speed.Task.Builder builderForValue) {
+      public Builder addPriorityTask(com.dyuproject.protostuff.model.V22CodeSize.Task.Builder builderForValue) {
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         result.PriorityTask_.add(builderForValue.build());
         return this;
       }
       public Builder addAllPriorityTask(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22Speed.Task> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.model.V22CodeSize.Task> values) {
         if (result.PriorityTask_.isEmpty()) {
-          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22Speed.Task>();
+          result.PriorityTask_ = new java.util.ArrayList<com.dyuproject.protostuff.model.V22CodeSize.Task>();
         }
         super.addAll(values, result.PriorityTask_);
         return this;
@@ -717,10 +476,10 @@ public final class V22Speed {
       public boolean hasCurrentTask() {
         return result.hasCurrentTask();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Task getCurrentTask() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task getCurrentTask() {
         return result.getCurrentTask();
       }
-      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -728,16 +487,16 @@ public final class V22Speed {
         result.currentTask_ = value;
         return this;
       }
-      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22Speed.Task.Builder builderForValue) {
+      public Builder setCurrentTask(com.dyuproject.protostuff.model.V22CodeSize.Task.Builder builderForValue) {
         result.hasCurrentTask = true;
         result.currentTask_ = builderForValue.build();
         return this;
       }
-      public Builder mergeCurrentTask(com.dyuproject.protostuff.model.V22Speed.Task value) {
+      public Builder mergeCurrentTask(com.dyuproject.protostuff.model.V22CodeSize.Task value) {
         if (result.hasCurrentTask() &&
-            result.currentTask_ != com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance()) {
+            result.currentTask_ != com.dyuproject.protostuff.model.V22CodeSize.Task.getDefaultInstance()) {
           result.currentTask_ =
-            com.dyuproject.protostuff.model.V22Speed.Task.newBuilder(result.currentTask_).mergeFrom(value).buildPartial();
+            com.dyuproject.protostuff.model.V22CodeSize.Task.newBuilder(result.currentTask_).mergeFrom(value).buildPartial();
         } else {
           result.currentTask_ = value;
         }
@@ -746,7 +505,7 @@ public final class V22Speed {
       }
       public Builder clearCurrentTask() {
         result.hasCurrentTask = false;
-        result.currentTask_ = com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance();
+        result.currentTask_ = com.dyuproject.protostuff.model.V22CodeSize.Task.getDefaultInstance();
         return this;
       }
       
@@ -826,11 +585,11 @@ public final class V22Speed {
     }
     
     static {
-      com.dyuproject.protostuff.model.V22Speed.getDescriptor();
+      com.dyuproject.protostuff.model.V22CodeSize.getDescriptor();
     }
     
     static {
-      com.dyuproject.protostuff.model.V22Speed.internalForceInit();
+      com.dyuproject.protostuff.model.V22CodeSize.internalForceInit();
     }
   }
   
@@ -850,12 +609,12 @@ public final class V22Speed {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.dyuproject.protostuff.model.V22Speed.internal_static_testmodel_Task_descriptor;
+      return com.dyuproject.protostuff.model.V22CodeSize.internal_static_testmodel_Task_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.dyuproject.protostuff.model.V22Speed.internal_static_testmodel_Task_fieldAccessorTable;
+      return com.dyuproject.protostuff.model.V22CodeSize.internal_static_testmodel_Task_fieldAccessorTable;
     }
     
     public enum Status
@@ -899,7 +658,7 @@ public final class V22Speed {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.dyuproject.protostuff.model.V22Speed.Task.getDescriptor().getEnumTypes().get(0);
+        return com.dyuproject.protostuff.model.V22CodeSize.Task.getDescriptor().getEnumTypes().get(0);
       }
       
       private static final Status[] VALUES = {
@@ -921,7 +680,7 @@ public final class V22Speed {
       }
       
       static {
-        com.dyuproject.protostuff.model.V22Speed.getDescriptor();
+        com.dyuproject.protostuff.model.V22CodeSize.getDescriptor();
       }
     }
     
@@ -949,9 +708,9 @@ public final class V22Speed {
     // optional .testmodel.Task.Status status = 4;
     public static final int STATUS_FIELD_NUMBER = 4;
     private boolean hasStatus;
-    private com.dyuproject.protostuff.model.V22Speed.Task.Status status_ = com.dyuproject.protostuff.model.V22Speed.Task.Status.PENDING;
+    private com.dyuproject.protostuff.model.V22CodeSize.Task.Status status_ = com.dyuproject.protostuff.model.V22CodeSize.Task.Status.PENDING;
     public boolean hasStatus() { return hasStatus; }
-    public com.dyuproject.protostuff.model.V22Speed.Task.Status getStatus() { return status_; }
+    public com.dyuproject.protostuff.model.V22CodeSize.Task.Status getStatus() { return status_; }
     
     // optional bytes attachment = 5;
     public static final int ATTACHMENT_FIELD_NUMBER = 5;
@@ -960,113 +719,57 @@ public final class V22Speed {
     public boolean hasAttachment() { return hasAttachment; }
     public com.google.protobuf.ByteString getAttachment() { return attachment_; }
     
-    public final boolean isInitialized() {
-      if (!hasId) return false;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (hasId()) {
-        output.writeInt32(1, getId());
-      }
-      if (hasName()) {
-        output.writeString(2, getName());
-      }
-      if (hasDescription()) {
-        output.writeString(3, getDescription());
-      }
-      if (hasStatus()) {
-        output.writeEnum(4, getStatus().getNumber());
-      }
-      if (hasAttachment()) {
-        output.writeBytes(5, getAttachment());
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (hasId()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, getId());
-      }
-      if (hasName()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getName());
-      }
-      if (hasDescription()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(3, getDescription());
-      }
-      if (hasStatus()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, getStatus().getNumber());
-      }
-      if (hasAttachment()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getAttachment());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseDelimitedFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.model.V22Speed.Task parseFrom(
+    public static com.dyuproject.protostuff.model.V22CodeSize.Task parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1076,25 +779,25 @@ public final class V22Speed {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.model.V22Speed.Task prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.model.V22CodeSize.Task prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.dyuproject.protostuff.model.V22Speed.Task result;
+      private com.dyuproject.protostuff.model.V22CodeSize.Task result;
       
-      // Construct using com.dyuproject.protostuff.model.V22Speed.Task.newBuilder()
+      // Construct using com.dyuproject.protostuff.model.V22CodeSize.Task.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.model.V22Speed.Task();
+        builder.result = new com.dyuproject.protostuff.model.V22CodeSize.Task();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.model.V22Speed.Task internalGetResult() {
+      protected com.dyuproject.protostuff.model.V22CodeSize.Task internalGetResult() {
         return result;
       }
       
@@ -1103,7 +806,7 @@ public final class V22Speed {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.model.V22Speed.Task();
+        result = new com.dyuproject.protostuff.model.V22CodeSize.Task();
         return this;
       }
       
@@ -1113,24 +816,24 @@ public final class V22Speed {
       
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.dyuproject.protostuff.model.V22Speed.Task.getDescriptor();
+        return com.dyuproject.protostuff.model.V22CodeSize.Task.getDescriptor();
       }
       
-      public com.dyuproject.protostuff.model.V22Speed.Task getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance();
+      public com.dyuproject.protostuff.model.V22CodeSize.Task getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.model.V22CodeSize.Task.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Task build() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.model.V22Speed.Task buildParsed()
+      private com.dyuproject.protostuff.model.V22CodeSize.Task buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -1139,95 +842,14 @@ public final class V22Speed {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.model.V22Speed.Task buildPartial() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
         }
-        com.dyuproject.protostuff.model.V22Speed.Task returnMe = result;
+        com.dyuproject.protostuff.model.V22CodeSize.Task returnMe = result;
         result = null;
         return returnMe;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.dyuproject.protostuff.model.V22Speed.Task) {
-          return mergeFrom((com.dyuproject.protostuff.model.V22Speed.Task)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.dyuproject.protostuff.model.V22Speed.Task other) {
-        if (other == com.dyuproject.protostuff.model.V22Speed.Task.getDefaultInstance()) return this;
-        if (other.hasId()) {
-          setId(other.getId());
-        }
-        if (other.hasName()) {
-          setName(other.getName());
-        }
-        if (other.hasDescription()) {
-          setDescription(other.getDescription());
-        }
-        if (other.hasStatus()) {
-          setStatus(other.getStatus());
-        }
-        if (other.hasAttachment()) {
-          setAttachment(other.getAttachment());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              setId(input.readInt32());
-              break;
-            }
-            case 18: {
-              setName(input.readString());
-              break;
-            }
-            case 26: {
-              setDescription(input.readString());
-              break;
-            }
-            case 32: {
-              int rawValue = input.readEnum();
-              com.dyuproject.protostuff.model.V22Speed.Task.Status value = com.dyuproject.protostuff.model.V22Speed.Task.Status.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(4, rawValue);
-              } else {
-                setStatus(value);
-              }
-              break;
-            }
-            case 42: {
-              setAttachment(input.readBytes());
-              break;
-            }
-          }
-        }
       }
       
       
@@ -1295,10 +917,10 @@ public final class V22Speed {
       public boolean hasStatus() {
         return result.hasStatus();
       }
-      public com.dyuproject.protostuff.model.V22Speed.Task.Status getStatus() {
+      public com.dyuproject.protostuff.model.V22CodeSize.Task.Status getStatus() {
         return result.getStatus();
       }
-      public Builder setStatus(com.dyuproject.protostuff.model.V22Speed.Task.Status value) {
+      public Builder setStatus(com.dyuproject.protostuff.model.V22CodeSize.Task.Status value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1308,7 +930,7 @@ public final class V22Speed {
       }
       public Builder clearStatus() {
         result.hasStatus = false;
-        result.status_ = com.dyuproject.protostuff.model.V22Speed.Task.Status.PENDING;
+        result.status_ = com.dyuproject.protostuff.model.V22CodeSize.Task.Status.PENDING;
         return this;
       }
       
@@ -1335,11 +957,11 @@ public final class V22Speed {
     }
     
     static {
-      com.dyuproject.protostuff.model.V22Speed.getDescriptor();
+      com.dyuproject.protostuff.model.V22CodeSize.getDescriptor();
     }
     
     static {
-      com.dyuproject.protostuff.model.V22Speed.internalForceInit();
+      com.dyuproject.protostuff.model.V22CodeSize.internalForceInit();
     }
   }
   
@@ -1373,8 +995,8 @@ public final class V22Speed {
       "\r\n\005name_\030\002 \001(\t\022\025\n\r_description_\030\003 \001(\t\022&\n" +
       "\006status\030\004 \001(\0162\026.testmodel.Task.Status\022\022\n",
       "\nattachment\030\005 \001(\014\"1\n\006Status\022\013\n\007PENDING\020\000" +
-      "\022\013\n\007STARTED\020\001\022\r\n\tCOMPLETED\020\002B-\n\037com.dyup" +
-      "roject.protostuff.modelB\010V22SpeedH\001"
+      "\022\013\n\007STARTED\020\001\022\r\n\tCOMPLETED\020\002B0\n\037com.dyup" +
+      "roject.protostuff.modelB\013V22CodeSizeH\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1387,16 +1009,16 @@ public final class V22Speed {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_testmodel_Person_descriptor,
               new java.lang.String[] { "Id", "Email", "FirstName", "LastName", "DelegatedTask", "PriorityTask", "AGe", "CurrentTask", "RepeatedLong", "Image", },
-              com.dyuproject.protostuff.model.V22Speed.Person.class,
-              com.dyuproject.protostuff.model.V22Speed.Person.Builder.class);
+              com.dyuproject.protostuff.model.V22CodeSize.Person.class,
+              com.dyuproject.protostuff.model.V22CodeSize.Person.Builder.class);
           internal_static_testmodel_Task_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_testmodel_Task_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_testmodel_Task_descriptor,
               new java.lang.String[] { "Id", "Name", "Description", "Status", "Attachment", },
-              com.dyuproject.protostuff.model.V22Speed.Task.class,
-              com.dyuproject.protostuff.model.V22Speed.Task.Builder.class);
+              com.dyuproject.protostuff.model.V22CodeSize.Task.class,
+              com.dyuproject.protostuff.model.V22CodeSize.Task.Builder.class);
           return null;
         }
       };
