@@ -56,6 +56,7 @@ public class LiteJSON extends ProtobufJSON
     public LiteJSON(JsonFactory jsonFactory, ModelMeta.Factory modelMetaFactory,
             Class<?>[] moduleClasses)
     {
+        super(jsonFactory);
         _modelMetaFactory = modelMetaFactory;
         for(Class<?> c : moduleClasses)
             check(c);

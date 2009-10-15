@@ -44,12 +44,12 @@ public abstract class ProtobufJSON
     
     public ProtobufJSON()
     {
-        this(DEFAULT_JSON_FACTORY);
+        _jsonFactory = DEFAULT_JSON_FACTORY;
     }
     
     public ProtobufJSON(JsonFactory jsonFactory)
     {
-        _jsonFactory = jsonFactory;
+        _jsonFactory = jsonFactory==null ? DEFAULT_JSON_FACTORY : jsonFactory;
     }
     
     public final JsonFactory getJsonFactory()
