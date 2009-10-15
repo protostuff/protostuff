@@ -38,14 +38,13 @@ public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
     
     public static void main(String[] args) throws Exception
     {
-        File outputDir = new File("../protostuff-json/src/test/java");
+        File outputDir = new File("src/test/java");
         if(!outputDir.exists())
-            throw new IllegalStateException("outDir " + outputDir + "  does not exist");
+            throw new IllegalStateException("outputDir " + outputDir + "  does not exist");
 
         Module module = new Module();
-        module.setFullClassName("com.dyuproject.protostuff.model.V22Lite");
-        module.setOutputPackage("com.dyuproject.protostuff.json");
-        module.setOutputClassName("V22GeneratedNumericJSON");
+        module.setFullClassName("com.dyuproject.protostuff.codegen.V22Lite");
+        module.setOutputPackage("com.dyuproject.protostuff.codegen");
         module.setOutputDir(outputDir);
         
         ProtobufNumericJSONGenerator generator = new ProtobufNumericJSONGenerator();

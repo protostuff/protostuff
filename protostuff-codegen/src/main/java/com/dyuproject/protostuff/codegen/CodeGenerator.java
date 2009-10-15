@@ -76,7 +76,7 @@ public abstract class CodeGenerator
         if(module.getOutputClassName()==null)
         {
             String fullClassName = module.getFullClassName();
-            String outputClassName = fullClassName.substring(fullClassName.lastIndexOf('.'));
+            String outputClassName = fullClassName.substring(fullClassName.lastIndexOf('.')+1);
             module.setOutputClassName(getDefaultOutputClassName(outputClassName));
         }        
         

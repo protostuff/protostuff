@@ -56,7 +56,7 @@ public final class VelocityUtil
             return "generator.writeString(t.name());";
         
         if(String.class==type)
-            return "generator.writeString(t.name());";
+            return "generator.writeString(t);";
 
         if(boolean.class==type)
             return "generator.writeBoolean(t);";

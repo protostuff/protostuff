@@ -12,6 +12,9 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
+import com.dyuproject.protostuff.json.ProtobufConvertor;
+import com.dyuproject.protostuff.json.ProtobufJSON;
+
 #foreach( $m in $models )
 #set( $msg = $m.getModelMeta().getMessageClass().getSimpleName() )
 import ${module.getFullClassName()}.${msg};
@@ -80,9 +83,17 @@ public final class ${module.getOutputClassName()} extends ProtobufJSON
 
             generator.writeFieldName("${pn}");
             generator.writeStartArray();
+            #if( ${ctc.isEnum()} )
+
+            for (${name}.${ctc.getSimpleName()} t : message.get${ppn}List())
+                ${Util.printRGen($pm)}
+            #else
+
             for (${ctc.getSimpleName()} t : message.get${ppn}List())
                 ${Util.printRGen($pm)}
-            generator.writeEndArray();            
+            #end
+
+            generator.writeEndArray();
             #elseif( ${pm.isMessage()} )
 
             if (message.has${ppn}())
