@@ -160,13 +160,12 @@ public final class ${module.getOutputClassName()} extends ProtobufJSON
                             builder.add${ppn}(${name}.${ctc.getSimpleName()}.valueOf(parser.getText()));
                             #elseif ( ${ctc.getSimpleName()} == "boolean" )
 
-                            JsonToken jt = parser.nextToken();
-                            if(jt==JsonToken.VALUE_TRUE)
+                            if(t1==JsonToken.VALUE_TRUE)
                                 builder.add${ppn}(true);
-                            else if(jt==JsonToken.VALUE_FALSE)
+                            else if(t1==JsonToken.VALUE_FALSE)
                                 builder.add${ppn}(false);
                             else
-                                throw new IOException("Expected token: true/false but was " + jt);
+                                throw new IOException("Expected token: true/false but was " + t1);
                             #elseif ( ${ctc.getSimpleName()} == "String" )
 
                             builder.add${ppn}(parser.getText());
