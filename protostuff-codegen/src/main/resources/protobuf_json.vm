@@ -1,0 +1,231 @@
+package ${module.getOutputPackage()};
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+
+import com.google.protobuf.ByteString;
+import com.google.protobuf.MessageLite;
+import com.google.protobuf.MessageLite.Builder;
+
+#foreach( $m in $models )
+#set( $msg = $m.getModelMeta().getMessageClass().getSimpleName() )
+import ${module.getFullClassName()}.${msg};
+#end
+
+public final class ${module.getOutputClassName()} extends ProtobufJSON
+{
+
+    public ${module.getOutputClassName()}()
+    {
+        super();
+    }
+
+    public ${module.getOutputClassName()}(JsonFactory factory)
+    {
+        super(factory);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends MessageLite, B extends Builder> ProtobufConvertor<T, B> getConvertor(Class<?> messageType)
+    {
+        #foreach( $m in $models )
+        #set( $name = $m.getModelMeta().getMessageClass().getSimpleName() )
+
+        if(messageType==${name}.class)
+            return (ProtobufConvertor<T, B>)CONVERTOR_${name};
+        #end
+
+        return null;
+    }
+
+    #foreach( $m in $models )
+    #set( $name = $m.getModelMeta().getMessageClass().getSimpleName() )
+
+    static final ProtobufConvertor<${name},${name}.Builder> CONVERTOR_${name} = new ProtobufConvertor<${name},${name}.Builder>()
+    {
+        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
+        {
+            #foreach( $p in $m.getProperties() )
+            #set( $pm = $p.getPropertyMeta() )
+            
+            fieldMap.put("${pm.getName()}", ${pm.getNumber()});
+            #end
+
+        };
+
+        final int getFieldNumber(String name) throws IOException
+        {
+            Integer num = fieldMap.get(name);
+            if(num==null)
+                throw new IOException("Field unknown: " + name + " on message " + ${name}.class);
+
+            return num.intValue();
+        }
+
+        public final void generateTo(JsonGenerator generator, ${name} message) throws IOException
+        {
+            generator.writeStartObject();
+            #foreach( $p in $m.getProperties() )
+            #set( $pm = $p.getPropertyMeta() )
+            #set( $pn = $pm.getName() )
+            #set( $ppn = $Util.toPascal($pn) )
+            #set( $tc = $pm.getTypeClass() )
+            #if( $pm.isRepeated() )            
+            #set( $ctc = $pm.getComponentTypeClass() )
+
+            generator.writeFieldName("${pn}");
+            generator.writeStartArray();
+            for (${ctc.getSimpleName()} t : message.get${ppn}List())
+                ${Util.printRGen($pm)}
+            generator.writeEndArray();            
+            #elseif( ${pm.isMessage()} )
+
+            if (message.has${ppn}())
+            {
+                generator.writeFieldName("${pn}");
+                CONVERTOR_${tc.getSimpleName()}.generateTo(generator, message.get${ppn}());
+            }
+            #elseif( ${tc.getSimpleName()} == "ByteString" )
+
+            if (message.has${ppn}())
+            {
+                generator.writeFieldName("${pn}");
+                generator.writeBinary(message.get${ppn}().toByteArray());
+            }
+            #elseif( ${tc.isEnum()} )
+
+            if(message.has${ppn}())
+                generator.writeStringField("${pn}", message.get${ppn}().name());
+            #elseif( ${tc.getSimpleName()} == "boolean" ) 
+
+            if(message.has${ppn}())
+                generator.writeBooleanField("${pn}", message.get${ppn}());
+            #elseif( ${tc.getSimpleName()} == "String" ) 
+
+            if(message.has${ppn}())
+                generator.writeStringField("${pn}", message.get${ppn}());
+            #else
+
+            if(message.has${ppn}())
+                generator.writeNumberField("${pn}", message.get${ppn}());
+            #end
+            #end
+
+            generator.writeEndObject();
+        }
+
+        public final ${name}.Builder parseFrom(JsonParser parser) throws IOException
+        {
+            ${name}.Builder builder = ${name}.newBuilder();
+            mergeFrom(parser, builder);
+            return builder;
+        }
+
+        public final void mergeFrom(JsonParser parser, ${name}.Builder builder) throws IOException
+        {
+            for(JsonToken t = parser.nextToken(); t!=JsonToken.END_OBJECT; t=parser.nextToken())
+            {
+                if(t!=JsonToken.FIELD_NAME)
+                {
+                    throw new IOException("Expected token: field_name but was " + 
+                            parser.getCurrentToken() + " on message " + 
+                            ${name}.class);
+                }
+                String name = parser.getCurrentName();
+                switch( getFieldNumber(name) )
+                {
+                    #foreach( $p in $m.getProperties() )
+                    #set( $pm = $p.getPropertyMeta() )
+                    #set( $pn = $pm.getName() )
+                    #set( $ppn = $Util.toPascal($pn) )
+                    #set( $tc = $pm.getTypeClass() )
+
+                    case ${pm.getNumber()}:
+                        #if( $pm.isRepeated() )
+                        
+                        if(parser.nextToken()!=JsonToken.START_ARRAY)
+                        {
+                            throw new IOException("Expected token: [ but was " + 
+                                    parser.getCurrentToken() + " on message " + 
+                                    ${name}.class);
+                        }
+                        for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
+                        {
+                            #set( $ctc = $pm.getComponentTypeClass() )
+                            #if( $pm.isMessage() )
+
+                            builder.add${ppn}(CONVERTOR_${ctc.getSimpleName()}.parseFrom(parser));
+                            #elseif ( ${ctc.getSimpleName()} == "ByteString" )
+
+                            builder.add${ppn}(ByteString.copyFrom(parser.getBinaryValue()));
+                            #elseif ( ${ctc.isEnum()} )
+
+                            builder.add${ppn}(${name}.${ctc.getSimpleName()}.valueOf(parser.getText()));
+                            #elseif ( ${ctc.getSimpleName()} == "boolean" )
+
+                            JsonToken jt = parser.nextToken();
+                            if(jt==JsonToken.VALUE_TRUE)
+                                builder.add${ppn}(true);
+                            else if(jt==JsonToken.VALUE_FALSE)
+                                builder.add${ppn}(false);
+                            else
+                                throw new IOException("Expected token: true/false but was " + jt);
+                            #elseif ( ${ctc.getSimpleName()} == "String" )
+
+                            builder.add${ppn}(parser.getText());
+                            #else
+
+                            builder.add${ppn}(${Util.printNumberParse($ctc)});
+                            #end
+
+                        }
+                        #elseif( $pm.isMessage() )
+
+                        parser.nextToken();
+                        builder.set${ppn}(CONVERTOR_${tc.getSimpleName()}.parseFrom(parser));
+                        #elseif( ${tc.getSimpleName()} == "ByteString" )
+
+                        parser.nextToken();
+                        builder.set${ppn}(ByteString.copyFrom(parser.getBinaryValue()));
+                        #elseif( ${tc.isEnum()} )
+
+                        parser.nextToken();
+                        builder.set${ppn}(${name}.${tc.getSimpleName()}.valueOf(parser.getText()));
+                        #elseif( ${tc.getSimpleName()} == "boolean" )
+
+                        JsonToken jt = parser.nextToken();
+                        if(jt==JsonToken.VALUE_TRUE)
+                            builder.set${ppn}(true);
+                        else if(jt==JsonToken.VALUE_FALSE)
+                            builder.set${ppn}(false);
+                        else
+                            throw new IOException("Expected token: true/false but was " + jt);
+                        #elseif( ${tc.getSimpleName()} == "String" )
+                        
+                        parser.nextToken();
+                        builder.set${ppn}(parser.getText());
+                        #else
+
+                        parser.nextToken();
+                        builder.set${ppn}(${Util.printNumberParse($tc)});
+                        #end
+
+                        break;
+                    #end
+
+                    default:
+                        throw new IOException("Field unknown: " + name + " on message " + ${name}.class);
+                }
+            }
+        }
+
+    };
+
+    #end
+
+}
