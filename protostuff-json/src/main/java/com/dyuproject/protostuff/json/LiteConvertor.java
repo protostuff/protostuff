@@ -88,14 +88,14 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
             if(t!=JsonToken.FIELD_NAME)
             {
                 throw new IOException("Expected token: $field: but was " + 
-                        parser.getCurrentToken() + " on message: " + 
+                        parser.getCurrentToken() + " on message " + 
                         _model.getModelMeta().getMessageClass());
             }
             String name = parser.getCurrentName();
             Field field = _lite.getField(name, _model);
             if(field==null)
             {
-                throw new IOException("unknown field: " + name + " on message: " + 
+                throw new IOException("unknown field: " + name + " on message " + 
                         _model.getModelMeta().getMessageClass());
             }
             
@@ -147,7 +147,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
             if(parser.nextToken() != JsonToken.START_OBJECT)
             {
                 throw new IOException("Expected token: { but was " + 
-                        parser.getCurrentToken() + " on message: " + 
+                        parser.getCurrentToken() + " on message " + 
                         _propertyMeta.getMessageClass());
             }
             
@@ -228,7 +228,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
             if(parser.nextToken()!=JsonToken.START_ARRAY)
             {
                 throw new IOException("Expected token: [ but was " + 
-                        parser.getCurrentToken() + " on message: " + 
+                        parser.getCurrentToken() + " on message " + 
                         _propertyMeta.getMessageClass());
             }
             
@@ -246,7 +246,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                     if(t != JsonToken.START_OBJECT)
                     {
                         throw new IOException("Expected token: { but was " + 
-                                parser.getCurrentToken() + " on " + _propertyMeta.getName()+ " of message: " + 
+                                parser.getCurrentToken() + " on " + _propertyMeta.getName()+ " of message " + 
                                 _propertyMeta.getMessageClass());
                     }
                     

@@ -33,7 +33,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 2, 2009
  */
 
-public class V22LiteJSON extends ProtobufJSON
+public final class V22LiteJSON extends ProtobufJSON
 {
     
     public V22LiteJSON()
@@ -76,7 +76,7 @@ public class V22LiteJSON extends ProtobufJSON
         {
             Integer num = fieldMap.get(name);
             if(num==null)
-                throw new IOException("Field unknown: " + name + " on message: " + Task.class);
+                throw new IOException("Field unknown: " + name + " on message " + Task.class);
             
             return num.intValue();
         }
@@ -132,7 +132,7 @@ public class V22LiteJSON extends ProtobufJSON
                 if(t!=JsonToken.FIELD_NAME)
                 {
                     throw new IOException("Expected token: $field: but was " + 
-                            parser.getCurrentToken() + " on message: " + 
+                            parser.getCurrentToken() + " on message " + 
                             Task.class);
                 }
                 String name = parser.getCurrentName();
@@ -159,7 +159,13 @@ public class V22LiteJSON extends ProtobufJSON
                         builder.setAttachment(ByteString.copyFrom(parser.getBinaryValue()));
                         break;
                     case 6:
-                        builder.setAboolean(parser.nextToken()==JsonToken.VALUE_TRUE);
+                        JsonToken jt = parser.nextToken();
+                        if(jt==JsonToken.VALUE_TRUE)
+                            builder.setAboolean(true);
+                        else if(jt==JsonToken.VALUE_FALSE)
+                            builder.setAboolean(false);
+                        else
+                            throw new IOException("Expected token: true/false but was " + jt);
                         break;
                     case 7:
                         parser.nextToken();
@@ -174,7 +180,7 @@ public class V22LiteJSON extends ProtobufJSON
                         builder.setAlong(parser.getLongValue());
                         break;
                     default:
-                        throw new IOException("Field unknown: " + name + " on message: " + Task.class);
+                        throw new IOException("Field unknown: " + name + " on message " + Task.class);
                 }
             }
         }
@@ -203,7 +209,7 @@ public class V22LiteJSON extends ProtobufJSON
         {
             Integer num = fieldMap.get(name);
             if(num==null)
-                throw new IOException("Field unknown: " + name + " on message: " + Person.class);
+                throw new IOException("Field unknown: " + name + " on message " + Person.class);
             
             return num.intValue();
         }
@@ -268,7 +274,7 @@ public class V22LiteJSON extends ProtobufJSON
                 if(t!=JsonToken.FIELD_NAME)
                 {
                     throw new IOException("Expected token: $field: but was " + 
-                            parser.getCurrentToken() + " on message: " + 
+                            parser.getCurrentToken() + " on message " + 
                             Person.class);
                 }
                 String name = parser.getCurrentName();
@@ -294,7 +300,7 @@ public class V22LiteJSON extends ProtobufJSON
                         if(parser.nextToken()!=JsonToken.START_ARRAY)
                         {
                             throw new IOException("Expected token: [ but was " + 
-                                    parser.getCurrentToken() + " on message: " + 
+                                    parser.getCurrentToken() + " on message " + 
                                     Person.class);
                         }
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
@@ -302,7 +308,7 @@ public class V22LiteJSON extends ProtobufJSON
                             if(t1 != JsonToken.START_OBJECT)
                             {
                                 throw new IOException("Expected token: { but was " + 
-                                        parser.getCurrentToken() + " on " + name + " of message: " + 
+                                        parser.getCurrentToken() + " on " + name + " of message " + 
                                         Person.class);
                             }
                             
@@ -313,7 +319,7 @@ public class V22LiteJSON extends ProtobufJSON
                         if(parser.nextToken()!=JsonToken.START_ARRAY)
                         {
                             throw new IOException("Expected token: [ but was " + 
-                                    parser.getCurrentToken() + " on message: " + 
+                                    parser.getCurrentToken() + " on message " + 
                                     Person.class);
                         }
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
@@ -321,7 +327,7 @@ public class V22LiteJSON extends ProtobufJSON
                             if(t1 != JsonToken.START_OBJECT)
                             {
                                 throw new IOException("Expected token: { but was " + 
-                                        parser.getCurrentToken() + " on " + name + " of message: " + 
+                                        parser.getCurrentToken() + " on " + name + " of message " + 
                                         Person.class);
                             }
                             
@@ -340,7 +346,7 @@ public class V22LiteJSON extends ProtobufJSON
                         if(parser.nextToken()!=JsonToken.START_ARRAY)
                         {
                             throw new IOException("Expected token: [ but was " + 
-                                    parser.getCurrentToken() + " on message: " + 
+                                    parser.getCurrentToken() + " on message " + 
                                     Person.class);
                         }
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
@@ -352,7 +358,7 @@ public class V22LiteJSON extends ProtobufJSON
                         if(parser.nextToken()!=JsonToken.START_ARRAY)
                         {
                             throw new IOException("Expected token: [ but was " + 
-                                    parser.getCurrentToken() + " on message: " + 
+                                    parser.getCurrentToken() + " on message " + 
                                     Person.class);
                         }
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
@@ -361,7 +367,7 @@ public class V22LiteJSON extends ProtobufJSON
                         }
                         break;
                     default:
-                        throw new IOException("Field unknown: " + name + " on message: " + Person.class);
+                        throw new IOException("Field unknown: " + name + " on message " + Person.class);
                 }
             }
         }
