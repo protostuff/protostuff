@@ -232,11 +232,6 @@ public class ProtobufJSONTest extends TestCase
         return generated;
     }
     
-    static void appendToPersonList(ProtobufJSON json, List<Person> parsedPersonList)
-    {
-        
-    }
-    
     public void testCollection() throws Exception
     {
         ArrayList<Person> personList = new ArrayList<Person>();   
