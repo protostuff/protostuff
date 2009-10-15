@@ -52,6 +52,11 @@ public class ProtobufJSONGenerator extends CodeGenerator
     {
         return moduleClassName + "JSON";
     }
+    
+    protected String getTemplateLocation()
+    {
+        return TEMPLATE_LOCATION;
+    }
 
     @Override
     protected void generateFrom(Module module, ArrayList<Model<?>> models) 
@@ -63,7 +68,7 @@ public class ProtobufJSONGenerator extends CodeGenerator
         Writer writer = newWriter(module, module.getOutputClassName() + ".java");
         try
         {
-            _engine.mergeTemplate(TEMPLATE_LOCATION, "UTF-8", context, writer);
+            _engine.mergeTemplate(getTemplateLocation(), "UTF-8", context, writer);
         }
         finally
         {

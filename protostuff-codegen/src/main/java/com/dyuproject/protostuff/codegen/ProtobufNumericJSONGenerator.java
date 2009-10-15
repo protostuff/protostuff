@@ -15,60 +15,25 @@
 package com.dyuproject.protostuff.codegen;
 
 import java.io.File;
-import java.io.Writer;
-import java.util.ArrayList;
-
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
-
-import com.dyuproject.protostuff.model.Model;
 
 /**
  * @author David Yu
  * @created Oct 14, 2009
  */
 
-public class ProtobufNumericJSONGenerator extends CodeGenerator
+public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
 {
     
     static final String TEMPLATE_LOCATION = "protobuf_numeric_json.vm";
-    
-    protected final VelocityEngine _engine = new VelocityEngine();
-    {
-        _engine.setProperty(Velocity.RESOURCE_LOADER, "class");
-        _engine.setProperty("class.resource.loader.class", 
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-    }    
-    
-    protected VelocityContext newVelocityContext()
-    {
-        VelocityContext context = new VelocityContext();        
-        context.put("Util", VelocityUtil.class);        
-        return context;
-    }
     
     protected String getDefaultOutputClassName(String moduleClassName)
     {
         return moduleClassName + "NumericJSON";
     }
-
-    @Override
-    protected void generateFrom(Module module, ArrayList<Model<?>> models) 
-    throws Exception
+    
+    protected String getTemplateLocation()
     {
-        VelocityContext context = newVelocityContext();
-        context.put("module", module);
-        context.put("models", models);
-        Writer writer = newWriter(module, module.getOutputClassName() + ".java");
-        try
-        {
-            _engine.mergeTemplate(TEMPLATE_LOCATION, "UTF-8", context, writer);
-        }
-        finally
-        {
-            writer.close();
-        }
+        return TEMPLATE_LOCATION;
     }
     
     public static void main(String[] args) throws Exception
