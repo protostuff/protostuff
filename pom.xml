@@ -158,6 +158,7 @@
   <modules>
     <module>protostuff-model</module>
     <module>protostuff-json</module>
+    <module>protostuff-codegen</module>
   </modules>
   
   <properties>
