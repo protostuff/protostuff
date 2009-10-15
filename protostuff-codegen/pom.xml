@@ -27,12 +27,10 @@
       <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-model</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-model</artifactId>
+      <artifactId>protostuff-json</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
