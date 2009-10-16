@@ -73,7 +73,7 @@ public final class GeneratorMain
     public static List<Module> loadModules(Properties props)
     {
         String moduleString = props.getProperty("modules");
-        if(moduleString==null || moduleString.isEmpty())
+        if(moduleString==null || moduleString.length()==0)
         {
             propsErr();
             return null;
