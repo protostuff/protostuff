@@ -29,9 +29,9 @@ import org.codehaus.jackson.JsonParser;
 import com.dyuproject.protostuff.codegen.V22Lite.Bar;
 import com.dyuproject.protostuff.codegen.V22Lite.Baz;
 import com.dyuproject.protostuff.codegen.V22Lite.Foo;
-import com.dyuproject.protostuff.json.LiteJSON;
-import com.dyuproject.protostuff.json.LiteNumericJSON;
 import com.dyuproject.protostuff.json.ProtobufJSON;
+import com.dyuproject.protostuff.json.ReflectionJSON;
+import com.dyuproject.protostuff.json.ReflectionNumericJSON;
 import com.google.protobuf.ByteString;
 
 /**
@@ -41,8 +41,8 @@ import com.google.protobuf.ByteString;
 
 public class GeneratedProtobufJSONTest extends TestCase
 {
-    static final LiteJSON LITE = new LiteJSON(new Class[]{V22Lite.class});
-    static final LiteNumericJSON LITE_NUM = new LiteNumericJSON(new Class[]{V22Lite.class});
+    static final ReflectionJSON REFLECTION_LITE = new ReflectionJSON(new Class[]{V22Lite.class});
+    static final ReflectionNumericJSON REFLECTION_LITE_NUM = new ReflectionNumericJSON(new Class[]{V22Lite.class});
     static final V22LiteJSON GENERATED_LITE = new V22LiteJSON();
     static final V22LiteNumericJSON GENERATED_LITE_NUM = new V22LiteNumericJSON();
     
@@ -90,9 +90,9 @@ public class GeneratedProtobufJSONTest extends TestCase
     static void doTestGenerateAndParse(PrintStream out) throws Exception
     {
         String generatedLite = generateAndParse(GENERATED_LITE);
-        String lite = generateAndParse(LITE);
+        String lite = generateAndParse(REFLECTION_LITE);
         String generatedLiteNum = generateAndParse(GENERATED_LITE_NUM);
-        String liteNum = generateAndParse(LITE_NUM);
+        String liteNum = generateAndParse(REFLECTION_LITE_NUM);
         
         assertEquals(generatedLite, lite);
         assertEquals(generatedLiteNum, liteNum);
@@ -206,13 +206,13 @@ public class GeneratedProtobufJSONTest extends TestCase
         System.err.println(generatedAndParse(GENERATED_LITE, fooList, parsedFooList));
         parsedFooList.clear();
 
-        System.err.println(generatedAndParse(LITE, fooList, parsedFooList));
+        System.err.println(generatedAndParse(REFLECTION_LITE, fooList, parsedFooList));
         parsedFooList.clear();
         
         System.err.println(generatedAndParse(GENERATED_LITE_NUM, fooList, parsedFooList));
         parsedFooList.clear();
         
-        System.err.println(generatedAndParse(LITE_NUM, fooList, parsedFooList));
+        System.err.println(generatedAndParse(REFLECTION_LITE_NUM, fooList, parsedFooList));
         parsedFooList.clear();
     }
     
@@ -255,7 +255,7 @@ public class GeneratedProtobufJSONTest extends TestCase
         
         
         int warmups = Integer.getInteger("benchmark.warmups", 100000);
-        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        int loops = Integer.getInteger("benchmark.loops", 100000);
         String title = "protostuff-json ser/deser benchmark for " + loops + " runs";
         out.println("<html><head><title>");
         out.println(title);
@@ -275,9 +275,9 @@ public class GeneratedProtobufJSONTest extends TestCase
     public static void start(PrintStream out, int warmups, int loops) throws Exception
     {
         serDeser(out, GENERATED_LITE, "GENERATED_LITE", warmups, loops);
-        serDeser(out, LITE, "LITE", warmups, loops);
+        serDeser(out, REFLECTION_LITE, "REFLECTION_LITE", warmups, loops);
         serDeser(out, GENERATED_LITE_NUM, "GENERATED_LITE_NUM", warmups, loops);
-        serDeser(out, LITE_NUM, "LITE_NUM", warmups, loops);
+        serDeser(out, REFLECTION_LITE_NUM, "REFLECTION_LITE_NUM", warmups, loops);
     }
     
     static void serDeser(PrintStream out, ProtobufJSON json, String name, int warmups, int loops)

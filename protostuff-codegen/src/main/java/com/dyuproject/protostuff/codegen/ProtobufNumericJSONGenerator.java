@@ -24,16 +24,16 @@ import java.io.File;
 public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
 {
     
-    static final String TEMPLATE_LOCATION = "protobuf_numeric_json.vm";
+    static final String DEFAULT_TEMPLATE_RESOURCE = "protobuf_numeric_json.vm";
+    
+    public ProtobufNumericJSONGenerator()
+    {
+        super(DEFAULT_TEMPLATE_RESOURCE);
+    }
     
     protected String getDefaultOutputClassName(String moduleClassName)
     {
         return moduleClassName + "NumericJSON";
-    }
-    
-    protected String getTemplateLocation()
-    {
-        return TEMPLATE_LOCATION;
     }
     
     public static void main(String[] args) throws Exception

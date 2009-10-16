@@ -32,14 +32,31 @@ import com.dyuproject.protostuff.model.Model;
 public class ProtobufJSONGenerator extends CodeGenerator
 {
     
-    static final String TEMPLATE_LOCATION = "protobuf_json.vm";
+    static final String DEFAULT_TEMPLATE_RESOURCE = "protobuf_json.vm";
     
     protected final VelocityEngine _engine = new VelocityEngine();
     {
         _engine.setProperty(Velocity.RESOURCE_LOADER, "class");
         _engine.setProperty("class.resource.loader.class", 
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+    }
+    
+    protected String _templateResource;
+    
+    public ProtobufJSONGenerator()
+    {
+        this(DEFAULT_TEMPLATE_RESOURCE);
+    }
+    
+    public ProtobufJSONGenerator(String templateResource)
+    {
+        _templateResource = templateResource;
     }    
+    
+    public String getTemplateResource()
+    {
+        return _templateResource;
+    }
 
     protected VelocityContext newVelocityContext()
     {
@@ -52,11 +69,6 @@ public class ProtobufJSONGenerator extends CodeGenerator
     {
         return moduleClassName + "JSON";
     }
-    
-    protected String getTemplateLocation()
-    {
-        return TEMPLATE_LOCATION;
-    }
 
     @Override
     protected void generateFrom(Module module, ArrayList<Model<?>> models) 
@@ -68,7 +80,7 @@ public class ProtobufJSONGenerator extends CodeGenerator
         Writer writer = newWriter(module, module.getOutputClassName() + ".java");
         try
         {
-            _engine.mergeTemplate(getTemplateLocation(), "UTF-8", context, writer);
+            _engine.mergeTemplate(getTemplateResource(), "UTF-8", context, writer);
         }
         finally
         {
