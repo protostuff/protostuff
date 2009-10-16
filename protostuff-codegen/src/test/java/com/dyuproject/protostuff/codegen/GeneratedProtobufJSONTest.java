@@ -87,7 +87,7 @@ public class GeneratedProtobufJSONTest extends TestCase
         .addBar(bar)
         .build();
     
-    static void doTestGenerateAndParse(PrintStream out) throws Exception
+    public static void generateAndParse(PrintStream out) throws Exception
     {
         String generatedLite = generateAndParse(GENERATED_LITE);
         String lite = generateAndParse(REFLECTION_LITE);
@@ -216,6 +216,14 @@ public class GeneratedProtobufJSONTest extends TestCase
         parsedFooList.clear();
     }
     
+    public void testGenerateAndParse() throws Exception
+    {
+        System.err.println(generateAndParse(GENERATED_LITE));
+        System.err.println(generateAndParse(REFLECTION_LITE));
+        System.err.println(generateAndParse(GENERATED_LITE_NUM));
+        System.err.println(generateAndParse(REFLECTION_LITE_NUM));
+    }
+    
     public void testBenchmark() throws Exception
     {
         if(!"false".equals(System.getProperty("benchmark.skip")))
@@ -236,7 +244,7 @@ public class GeneratedProtobufJSONTest extends TestCase
         out.println(title);        
         out.println("</p><pre>\n\n");
         
-        doTestGenerateAndParse(out);
+        generateAndParse(out);
         out.println("\n\n</pre><hr/><pre>");
         start(out, warmups, loops);
         
@@ -263,7 +271,7 @@ public class GeneratedProtobufJSONTest extends TestCase
         out.println(title);
         out.println("</p><pre>\n\n");
         
-        doTestGenerateAndParse(out);
+        generateAndParse(out);
         out.println("\n\n</pre><hr/><pre>");
         for(int i=0; i<runs; i++)
             start(out, warmups, loops);
