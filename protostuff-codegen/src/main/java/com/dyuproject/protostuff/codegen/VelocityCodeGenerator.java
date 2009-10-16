@@ -14,36 +14,42 @@
 
 package com.dyuproject.protostuff.codegen;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 
 /**
  * @author David Yu
- * @created Oct 14, 2009
+ * @created Oct 16, 2009
  */
 
-public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
+public abstract class VelocityCodeGenerator extends CodeGenerator
 {
     
-    public static final String ID = "numeric-json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = "protobuf_numeric_json.vm";
-    
-    public ProtobufNumericJSONGenerator()
+    public static final VelocityEngine ENGINE = new VelocityEngine();
     {
-        this(DEFAULT_TEMPLATE_RESOURCE);
+        ENGINE.setProperty(Velocity.RESOURCE_LOADER, "class");
+        ENGINE.setProperty("class.resource.loader.class", 
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
     }
     
-    public ProtobufNumericJSONGenerator(String templateSource)
+    private String _templateResource;
+    
+    public VelocityCodeGenerator(String templateResource)
     {
-        super(templateSource);
+        _templateResource = templateResource;
     }
     
-    public String getId()
+    public String getTemplateResource()
     {
-        return ID;
-    }
-    
-    protected String getDefaultOutputClassname(String moduleClassname)
+        return _templateResource;
+    }    
+
+    public VelocityContext newVelocityContext()
     {
-        return moduleClassname + "NumericJSON";
+        VelocityContext context = new VelocityContext();        
+        context.put("Util", VelocityUtil.class);        
+        return context;
     }
 
 }

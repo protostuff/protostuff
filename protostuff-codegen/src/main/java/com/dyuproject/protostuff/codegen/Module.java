@@ -15,33 +15,58 @@
 package com.dyuproject.protostuff.codegen;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * @author David Yu
  * @created Oct 15, 2009
  */
 
-public class Module
+public class Module implements Serializable
 {
     
-    private String fullClassName;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8503087348372596796L;
+    
+    private String fullClassname;
     private String outputPackage;
-    private String outputClassName;
+    private String outputClassname;
+    private String generator;
+    private String encoding;
+
     private File outputDir;
+    
+    public Module()
+    {
+        
+    }
+    
+    public Module(String fullClassname, String outputPackage, String outputClassname, 
+            String generator, String encoding, File outputDir)
+    {
+        this.fullClassname = fullClassname;
+        this.outputPackage = outputPackage;
+        this.outputClassname = outputClassname;
+        this.generator = generator;
+        this.encoding = encoding;
+        this.outputDir = outputDir;
+    }
     
     /**
      * @return the fullClassName
      */
-    public String getFullClassName()
+    public String getFullClassname()
     {
-        return fullClassName;
+        return fullClassname;
     }
     /**
      * @param fullClassName the fullClassName to set
      */
-    public void setFullClassName(String fullClassName)
+    public void setFullClassname(String fullClassname)
     {
-        this.fullClassName = fullClassName;
+        this.fullClassname = fullClassname;
     }
     /**
      * @return the outputPackage
@@ -60,17 +85,50 @@ public class Module
     /**
      * @return the outputClassName
      */
-    public String getOutputClassName()
+    public String getOutputClassname()
     {
-        return outputClassName;
+        return outputClassname;
     }
     /**
      * @param outputClassName the outputClassName to set
      */
-    public void setOutputClassName(String outputClassName)
+    public void setOutputClassname(String outputClassname)
     {
-        this.outputClassName = outputClassName;
+        this.outputClassname = outputClassname;
     }
+    
+    /**
+     * @return the generator
+     */
+    public String getGenerator()
+    {
+        return generator;
+    }
+
+    /**
+     * @param generator the generator to set
+     */
+    public void setGenerator(String generator)
+    {
+        this.generator = generator;
+    }
+    
+    /**
+     * @return the encoding
+     */
+    public String getEncoding()
+    {
+        return encoding;
+    }
+
+    /**
+     * @param encoding the encoding to set
+     */
+    public void setEncoding(String encoding)
+    {
+        this.encoding = encoding;
+    }
+    
     /**
      * @return the outputDir
      */

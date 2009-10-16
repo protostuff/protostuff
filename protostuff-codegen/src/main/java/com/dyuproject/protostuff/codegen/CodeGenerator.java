@@ -33,6 +33,8 @@ import com.google.protobuf.AbstractMessageLite;
 
 public abstract class CodeGenerator
 {
+    
+    public static final String DEFAULT_ENCODING = "UTF-8";
 
     @SuppressWarnings("unchecked")
     protected static void appendModel(Class<?> moduleClass, List<Model<?>> models)
@@ -59,12 +61,12 @@ public abstract class CodeGenerator
         
         File outputFile = new File(packageDir, fileName);
         FileOutputStream out = new FileOutputStream(outputFile);
-        return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+        return new BufferedWriter(new OutputStreamWriter(out, module.getEncoding()));
     }
     
     public void generateFrom(Module module) throws Exception
     {
-        if(module.getFullClassName()==null)
+        if(module.getFullClassname()==null)
             throw new IllegalStateException("fullClassName is required.");
         
         if(module.getOutputPackage()==null)
@@ -73,17 +75,23 @@ public abstract class CodeGenerator
         if(module.getOutputDir()==null)
             throw new IllegalStateException("outputDir is required.");
         
-        if(module.getOutputClassName()==null)
+        String outputClassname = module.getOutputClassname();
+        if(outputClassname==null)
         {
-            String fullClassName = module.getFullClassName();
-            String outputClassName = fullClassName.substring(fullClassName.lastIndexOf('.')+1);
-            module.setOutputClassName(getDefaultOutputClassName(outputClassName));
-        }        
+            String fullClassname = module.getFullClassname();
+            outputClassname = fullClassname.substring(fullClassname.lastIndexOf('.')+1);
+            module.setOutputClassname(getDefaultOutputClassname(outputClassname));
+        }
+        else if(outputClassname.indexOf('.')!=-1)
+            throw new IllegalStateException("Invalid outputClassname: " + outputClassname);
+        
+        if(module.getEncoding()==null)
+            module.setEncoding(DEFAULT_ENCODING);
         
         Class<?> moduleClass = null;
         try
         {
-            moduleClass = Class.forName(module.getFullClassName(), true, 
+            moduleClass = Class.forName(module.getFullClassname(), true, 
                     Thread.currentThread().getContextClassLoader());
         }
         catch (ClassNotFoundException e)
@@ -101,7 +109,9 @@ public abstract class CodeGenerator
         generateFrom(module, models);
     }
     
-    protected abstract String getDefaultOutputClassName(String moduleClassName);
+    public abstract String getId();
+    
+    protected abstract String getDefaultOutputClassname(String moduleClassname);
     
     protected abstract void generateFrom(Module module, ArrayList<Model<?>> models) 
     throws Exception;

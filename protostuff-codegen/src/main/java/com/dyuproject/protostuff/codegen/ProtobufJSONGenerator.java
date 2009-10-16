@@ -14,13 +14,10 @@
 
 package com.dyuproject.protostuff.codegen;
 
-import java.io.File;
 import java.io.Writer;
 import java.util.ArrayList;
 
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
 
 import com.dyuproject.protostuff.model.Model;
 
@@ -29,45 +26,30 @@ import com.dyuproject.protostuff.model.Model;
  * @created Oct 14, 2009
  */
 
-public class ProtobufJSONGenerator extends CodeGenerator
+public class ProtobufJSONGenerator extends VelocityCodeGenerator
 {
     
+    public static final String ID = "json";
     static final String DEFAULT_TEMPLATE_RESOURCE = "protobuf_json.vm";
-    
-    protected final VelocityEngine _engine = new VelocityEngine();
-    {
-        _engine.setProperty(Velocity.RESOURCE_LOADER, "class");
-        _engine.setProperty("class.resource.loader.class", 
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-    }
-    
-    protected String _templateResource;
     
     public ProtobufJSONGenerator()
     {
         this(DEFAULT_TEMPLATE_RESOURCE);
     }
     
-    public ProtobufJSONGenerator(String templateResource)
+    public ProtobufJSONGenerator(String templateSource)
     {
-        _templateResource = templateResource;
-    }    
-    
-    public String getTemplateResource()
-    {
-        return _templateResource;
-    }
-
-    protected VelocityContext newVelocityContext()
-    {
-        VelocityContext context = new VelocityContext();        
-        context.put("Util", VelocityUtil.class);        
-        return context;
+        super(templateSource);
     }
     
-    protected String getDefaultOutputClassName(String moduleClassName)
+    public String getId()
     {
-        return moduleClassName + "JSON";
+        return ID;
+    }
+    
+    protected String getDefaultOutputClassname(String moduleClassname)
+    {
+        return moduleClassname + "JSON";
     }
 
     @Override
@@ -77,31 +59,15 @@ public class ProtobufJSONGenerator extends CodeGenerator
         VelocityContext context = newVelocityContext();
         context.put("module", module);
         context.put("models", models);
-        Writer writer = newWriter(module, module.getOutputClassName() + ".java");
+        Writer writer = newWriter(module, module.getOutputClassname() + ".java");
         try
         {
-            _engine.mergeTemplate(getTemplateResource(), "UTF-8", context, writer);
+            ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);
         }
         finally
         {
             writer.close();
         }
     }
-    
-    public static void main(String[] args) throws Exception
-    {
-        File outputDir = new File("src/test/java");
-        if(!outputDir.exists())
-            throw new IllegalStateException("outputDir " + outputDir + "  does not exist");
-
-        Module module = new Module();
-        module.setFullClassName("com.dyuproject.protostuff.codegen.benchmark.V22LiteMedia");
-        module.setOutputPackage("com.dyuproject.protostuff.codegen.benchmark");
-        module.setOutputDir(outputDir);
-        
-        ProtobufJSONGenerator generator = new ProtobufJSONGenerator();
-        generator.generateFrom(module);
-    }
-
 
 }

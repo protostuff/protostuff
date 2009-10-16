@@ -23,8 +23,33 @@ import com.dyuproject.protostuff.model.Model;
  * @created Oct 14, 2009
  */
 
-public class GwtJsonOverlayGenerator extends CodeGenerator
+public class GwtJsonOverlayGenerator extends VelocityCodeGenerator
 {
+    
+    public static final String ID = "gwt-json";
+    static final String DEFAULT_TEMPLATE_RESOURCE = "gwt_json_overlay.vm";
+    
+    public GwtJsonOverlayGenerator()
+    {
+        this(DEFAULT_TEMPLATE_RESOURCE);
+    }
+
+    public GwtJsonOverlayGenerator(String templateResource)
+    {
+        super(templateResource);
+    }
+
+    @Override
+    public String getId()
+    {
+        return ID;
+    }
+
+    @Override
+    protected String getDefaultOutputClassname(String moduleClassname)
+    {
+        return null;
+    }
 
     @Override
     protected void generateFrom(Module module, ArrayList<Model<?>> models) throws Exception
@@ -32,12 +57,4 @@ public class GwtJsonOverlayGenerator extends CodeGenerator
         // TODO Auto-generated method stub
         
     }
-
-    @Override
-    protected String getDefaultOutputClassName(String moduleClassName)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
