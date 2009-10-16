@@ -75,7 +75,7 @@ public final class GeneratorMain
         String moduleString = props.getProperty("modules");
         if(moduleString==null)
         {
-            propsUsage();
+            propsErr();
             return null;
         }        
         
@@ -115,9 +115,11 @@ public final class GeneratorMain
         return moduleList;
     }
     
-    static void propsUsage()
+    static void propsErr()
     {
-        System.err.println("The properties file would look like:");
+        System.err.println("\nError parsing the properties file ...");
+        
+        System.err.println("\nThe properties file would look like:");
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.foo.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar");
@@ -128,10 +130,10 @@ public final class GeneratorMain
     
     static void usage()
     {
-        System.err.println("To generate code for multiple modules: ");
+        System.err.println("\nTo generate code for multiple modules:");
         System.err.println("  java -cp your_protobuf_modules.jar -jar protostuff-codegen.jar modules.properties");
         
-        System.err.println("\nThe properties file would look like:");
+        System.err.println("\nThe properties file would look like:\n");
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.foo.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar");
@@ -139,9 +141,9 @@ public final class GeneratorMain
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
         
-        System.err.println("===================================================\n");
+        System.err.println("\n===================================================\n");
         
-        System.err.println("To generate code for a single module, execute the jar without args and specify:");
+        System.err.println("\nTo generate code for a single module, execute the jar without args and specify:");
         System.err.println("  -DfullClassname=com.example.foo.OuterClassname");
         System.err.println("  -DoutputPackage=com.example.bar");        
         System.err.println("  -Dgenerator=json //" + __generators.keySet().toString());
