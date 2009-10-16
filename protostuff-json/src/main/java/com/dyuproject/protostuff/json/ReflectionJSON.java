@@ -33,7 +33,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 2, 2009
  */
 
-public class LiteJSON extends ProtobufJSON
+public class ReflectionJSON extends ProtobufJSON
 {
     
     protected final HashMap<String,LiteConvertor> _convertors = 
@@ -43,17 +43,17 @@ public class LiteJSON extends ProtobufJSON
     
     protected final ModelMeta.Factory _modelMetaFactory;
     
-    public LiteJSON(Class<?>[] moduleClasses)
+    public ReflectionJSON(Class<?>[] moduleClasses)
     {
         this(null, LiteRuntime.MODEL_META_FACTORY, moduleClasses);
     }
     
-    public LiteJSON(ModelMeta.Factory modelMetaFactory, Class<?>[] moduleClasses)
+    public ReflectionJSON(ModelMeta.Factory modelMetaFactory, Class<?>[] moduleClasses)
     {
         this(null, modelMetaFactory, moduleClasses);
     }
     
-    public LiteJSON(JsonFactory jsonFactory, ModelMeta.Factory modelMetaFactory,
+    public ReflectionJSON(JsonFactory jsonFactory, ModelMeta.Factory modelMetaFactory,
             Class<?>[] moduleClasses)
     {
         super(jsonFactory);

@@ -33,15 +33,15 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 2, 2009
  */
 
-public final class V22LiteJSON extends ProtobufJSON
+public final class V22LiteHandcodedJSON extends ProtobufJSON
 {
     
-    public V22LiteJSON()
+    public V22LiteHandcodedJSON()
     {
         super();
     }
     
-    public V22LiteJSON(JsonFactory factory)
+    public V22LiteHandcodedJSON(JsonFactory factory)
     {
         super(factory);
     }

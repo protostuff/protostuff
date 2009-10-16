@@ -64,9 +64,9 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
     };
     
     protected final Model<Field> _model;
-    protected final LiteJSON _lite;
+    protected final ReflectionJSON _lite;
     
-    public LiteConvertor(ModelMeta modelMeta, LiteJSON lite)
+    public LiteConvertor(ModelMeta modelMeta, ReflectionJSON lite)
     {
         _model = new Model<Field>(modelMeta, PROPERTY_FACTORY);
         _lite = lite;

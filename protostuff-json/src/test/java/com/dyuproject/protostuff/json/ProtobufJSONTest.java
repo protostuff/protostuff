@@ -41,10 +41,9 @@ import com.google.protobuf.ByteString;
 
 public class ProtobufJSONTest extends TestCase
 {
-    static final LiteJSON LITE = new LiteJSON(new Class[]{V22Lite.class});
-    static final LiteNumericJSON LITE_NUM = new LiteNumericJSON(new Class[]{V22Lite.class});
-    static final V22LiteJSON GENERATED_FROM_LITE = new V22LiteJSON();
-    //static final V22SpeedJSON GENERATED_FROM_SPEED = new V22SpeedJSON();
+    static final ReflectionJSON REFLECTION_LITE = new ReflectionJSON(new Class[]{V22Lite.class});
+    static final ReflectionNumericJSON REFLECTION_LITE_NUM = new ReflectionNumericJSON(new Class[]{V22Lite.class});
+    static final V22LiteHandcodedJSON HANDCODED_LITE = new V22LiteHandcodedJSON();
     
     static final Charset utf8 = Charset.forName("UTF-8");
     
@@ -81,9 +80,9 @@ public class ProtobufJSONTest extends TestCase
     
     static void doTestGenerateAndParse(PrintStream out) throws Exception
     {
-        String generated = generateAndParse(GENERATED_FROM_LITE);
-        String lite = generateAndParse(LITE);
-        String numLite = generateAndParse(LITE_NUM);
+        String generated = generateAndParse(HANDCODED_LITE);
+        String lite = generateAndParse(REFLECTION_LITE);
+        String numLite = generateAndParse(REFLECTION_LITE_NUM);
         
         assertEquals(generated, lite);
         
@@ -239,13 +238,13 @@ public class ProtobufJSONTest extends TestCase
         personList.add(person);
         personList.add(person);
         
-        System.err.println(generatedAndParse(GENERATED_FROM_LITE, personList, parsedPersonList));
+        System.err.println(generatedAndParse(HANDCODED_LITE, personList, parsedPersonList));
         parsedPersonList.clear();
         
-        System.err.println(generatedAndParse(LITE, personList, parsedPersonList));
+        System.err.println(generatedAndParse(REFLECTION_LITE, personList, parsedPersonList));
         parsedPersonList.clear();
         
-        System.err.println(generatedAndParse(LITE_NUM, personList, parsedPersonList));
+        System.err.println(generatedAndParse(REFLECTION_LITE_NUM, personList, parsedPersonList));
         parsedPersonList.clear();
     }
     
@@ -308,9 +307,9 @@ public class ProtobufJSONTest extends TestCase
     public static void start(PrintStream out, int warmups, int loops) throws Exception
     {        
         //serDeser(out, GENERATED_FROM_SPEED, "GENERATED_FROM_SPEED", warmups, loops);
-        serDeser(out, GENERATED_FROM_LITE, "GENERATED_FROM_LITE", warmups, loops);
-        serDeser(out, LITE, "LITE", warmups, loops);
-        serDeser(out, LITE_NUM, "LITE_NUM", warmups, loops);
+        serDeser(out, HANDCODED_LITE, "HANDCODED_LITE", warmups, loops);
+        serDeser(out, REFLECTION_LITE, "REFLECTION_LITE", warmups, loops);
+        serDeser(out, REFLECTION_LITE_NUM, "REFLECTION_LITE_NUM", warmups, loops);
     }
     
     static void serDeser(PrintStream out, ProtobufJSON json, String name, int warmups, int loops)
