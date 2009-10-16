@@ -31,6 +31,7 @@ public class BenchmarkMain
     {        
         BenchmarkRunner runner = new BenchmarkRunner();
         configure(runner);
+        System.out.println("Starting benchmark ...");
         runner.start();
     }
     
