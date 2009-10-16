@@ -73,15 +73,14 @@ public final class GeneratorMain
     public static List<Module> loadModules(Properties props)
     {
         String moduleString = props.getProperty("modules");
-        if(moduleString==null)
+        if(moduleString==null || moduleString.isEmpty())
         {
             propsErr();
             return null;
         }        
         
-        String[] modules = COMMA.split(moduleString);
-        ArrayList<Module> moduleList = new ArrayList<Module>();
-        for(String m : modules)
+        ArrayList<Module> modules = new ArrayList<Module>();
+        for(String m : COMMA.split(moduleString))
         {
             m = m.trim();
             String fullClassname = props.getProperty(m + ".fullClassname");
@@ -109,10 +108,10 @@ public final class GeneratorMain
             Module module = new Module(fullClassname, outputPackage, outputClassname, 
                     generator, encoding, new File(outputDir));
             
-            moduleList.add(module);
+            modules.add(module);
         }
         
-        return moduleList;
+        return modules;
     }
     
     static void propsErr()
