@@ -3,10 +3,11 @@
  Copyright 2007-2009 David Yu dyuproject@gmail.com
 ==============================================================
 
-slf4j is copyright QOS.ch unless otherwise noted. 
-It is licensed under a liberal license identical to the MIT license and 
-also compatible to the apache software license.
+jackson-core-asl is copyright Tatu Saloranta unless otherwise noted. 
+It is licensed under the apache 2.0 license.
 
 protobuf is copyright Google inc unless otherwise noted. 
 It is licensed under the BSD license.
+
+velocity is licensed under the apache 2.0 license.
 

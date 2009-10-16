@@ -65,12 +65,7 @@
     <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
-      <version>${velocity-version}</version>
     </dependency>
   </dependencies>
-  
-  <properties>
-    <velocity-version>1.6.2</velocity-version>
-  </properties>
-  
+
 </project>

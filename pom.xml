@@ -137,6 +137,11 @@
         <artifactId>jackson-core-asl</artifactId>
         <version>${jackson-version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity</artifactId>
+        <version>${velocity-version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   
@@ -151,6 +156,7 @@
     <junit-version>3.8.2</junit-version>
     <protobuf-version>2.2.0</protobuf-version>
     <jackson-version>1.2.1</jackson-version>
+    <velocity-version>1.6.2</velocity-version>
   </properties>
   
 </project>
