@@ -33,6 +33,11 @@
       <artifactId>protostuff-json</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-codegen</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   
 </project>
