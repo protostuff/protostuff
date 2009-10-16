@@ -2,4 +2,5 @@ Parts of the benchmark code are burrowed from http://code.google.com/p/thrift-pr
 It is licensed under eclipse public license 1.0
 
 Running:
-java -Dbenchmark.output_dir=. -jar protostuff-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar
+$ cd target
+$ java -Dbenchmark.output_dir=. -jar protostuff-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar

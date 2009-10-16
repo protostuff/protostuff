@@ -1,5 +1,6 @@
 Running:
-java -jar protostuff-codegen-1.0-SNAPSHOT-jar-with-dependencies.jar modules.properties
+$ cd target
+$ java -jar protostuff-codegen-1.0-SNAPSHOT-jar-with-dependencies.jar modules.properties
 
 ==== modules.properties ====
 
