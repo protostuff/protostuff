@@ -1,10 +1,15 @@
 package com.dyuproject.protostuff.benchmark;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,17 +17,36 @@ import java.util.Map.Entry;
 
 import com.dyuproject.protostuff.benchmark.serializers.ObjectSerializer;
 
+
 /**
- * 
  * Copied from http://thrift-protobuf-compare.googlecode.com/svn/trunk/tpc/src/serializers/
  * Tweaked the method modifiers and some println parts.
- *
  */
-
 public class BenchmarkRunner
 {
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
+  
+  final PrintStream out;
+  
+  public BenchmarkRunner()
+  {
+    try
+    {
+        out = new PrintStream(new FileOutputStream(new File(
+            System.getProperty("benchmark.output_dir", "."), 
+            "benchmark-"+System.currentTimeMillis()+".html")), true);
+    }
+    catch (FileNotFoundException e)
+    {
+      throw new RuntimeException();
+    }
+  }
+  
+  public BenchmarkRunner(PrintStream out)
+  {
+      this.out = out;
+  }
 
   /**
    * Number of milliseconds to warm up for each operation type for each serializer. Let's
@@ -33,10 +57,11 @@ public class BenchmarkRunner
   @SuppressWarnings("unchecked")
   private Set<ObjectSerializer> _serializers = new LinkedHashSet<ObjectSerializer>();
 
-
-  public static void main(String[] args)
+  public static void main(String... args) throws Exception
   {
-      
+    BenchmarkRunner runner = new BenchmarkRunner();
+    System.out.println("Starting");
+    runner.start();
   }
 
   @SuppressWarnings("unchecked")
@@ -121,16 +146,25 @@ public class BenchmarkRunner
   {
     timeCreate, timeSer, timeDSer, totalTime, length
   }
-
-  @SuppressWarnings("unchecked")
+  
   public void start() throws Exception
   {
-    String dir = System.getProperty("benchmark.output_dir");
-    PrintStream out = dir==null ? System.out : 
-        new PrintStream(new FileOutputStream(new File(new File(dir), 
-                "benchmark-"+System.currentTimeMillis()+".html"), true));
-    out.println("<html><head><title>ser/deser benchmark</title></head><body><pre>");
-    out.printf("%-30s, %15s, %15s, %15s, %15s, %10s\n",
+    try
+    {
+      out.println("<html><body><pre>");
+      doStart();
+      out.println("</pre></body></html>");
+    }
+    finally
+    {
+      out.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void doStart() throws Exception
+  {
+    out.printf("%-32s, %15s, %15s, %15s, %15s, %10s\n",
                       " ",
                       "Object create",
                       "Serialization",
@@ -178,7 +212,7 @@ public class BenchmarkRunner
 
       byte[] array = serializer.serialize(serializer.create());
       double totalTime = timeCreate + timeSer + timeDSer;
-      out.printf("%-30s, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
+      out.printf("%-32s, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
                         serializer.getName(),
                         timeCreate,
                         timeSer,
@@ -187,11 +221,7 @@ public class BenchmarkRunner
                         array.length);
       addValue(values, serializer.getName(), timeCreate, timeSer, timeDSer, totalTime, array.length);
     }
-    out.println("</pre>");
-    printImages(values, out);
-    out.println("</body></html>");
-    if(out!=System.out)
-      out.close();
+    printImages(values);
   }
 
     /**
@@ -216,13 +246,25 @@ public class BenchmarkRunner
         }
     }
 
-  private void printImages(EnumMap<measurements, Map<String, Double>> values, PrintStream out)
+  private void printImages(EnumMap<measurements, Map<String, Double>> values)
   {
-    for (measurements m : values.keySet())
-      printImage(values.get(m), m, out);
+    for (measurements m : values.keySet()) {
+   	 Map<String, Double> map = values.get(m);
+   	 ArrayList<Entry> list = new ArrayList(map.entrySet());
+   	 Collections.sort(list, new Comparator<Entry>() {
+			public int compare (Entry o1, Entry o2) {
+				double diff = (Double)o1.getValue() - (Double)o2.getValue();
+				return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+			}
+   	 });
+   	 LinkedHashMap sortedMap = new LinkedHashMap();
+   	 for (Entry entry : list)
+   		 sortedMap.put(entry.getKey(), entry.getValue());
+      printImage(sortedMap, m);
+    }
   }
 
-  private void printImage(Map<String, Double> map, measurements m, PrintStream out)
+  private void printImage(Map<String, Double> map, measurements m)
   {
     StringBuilder valSb = new StringBuilder();
     String names = "";
@@ -236,7 +278,7 @@ public class BenchmarkRunner
     int avg = (int) sum / map.size();
     out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=800x375&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x390&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
         + "&chds="
         + 0
