@@ -83,8 +83,8 @@ public class ProtobufJSONGenerator extends CodeGenerator
             throw new IllegalStateException("outputDir " + outputDir + "  does not exist");
 
         Module module = new Module();
-        module.setFullClassName("com.dyuproject.protostuff.codegen.V22Lite");
-        module.setOutputPackage("com.dyuproject.protostuff.codegen");
+        module.setFullClassName("com.dyuproject.protostuff.codegen.benchmark.V22LiteMedia");
+        module.setOutputPackage("com.dyuproject.protostuff.codegen.benchmark");
         module.setOutputDir(outputDir);
         
         ProtobufJSONGenerator generator = new ProtobufJSONGenerator();
