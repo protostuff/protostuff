@@ -21,7 +21,7 @@ import com.dyuproject.protostuff.benchmark.serializers.ObjectSerializer;
 
 public class BenchmarkRunner
 {
-  public final static int ITERATIONS = 200;
+  public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
 
   /**
