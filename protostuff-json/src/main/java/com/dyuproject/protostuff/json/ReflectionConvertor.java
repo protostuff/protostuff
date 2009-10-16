@@ -39,7 +39,7 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 1, 2009
  */
 
-public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
+public class ReflectionConvertor implements ProtobufConvertor<MessageLite, Builder>
 {
     
     static final Property.Factory<Field> PROPERTY_FACTORY = new Property.Factory<Field>()
@@ -66,7 +66,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
     protected final Model<Field> _model;
     protected final ReflectionJSON _lite;
     
-    public LiteConvertor(ModelMeta modelMeta, ReflectionJSON lite)
+    public ReflectionConvertor(ModelMeta modelMeta, ReflectionJSON lite)
     {
         _model = new Model<Field>(modelMeta, PROPERTY_FACTORY);
         _lite = lite;
@@ -116,7 +116,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
     static abstract class Field extends DefaultProperty implements ProtobufField<MessageLite,Builder>
     {
         
-        protected LiteConvertor _convertor;
+        protected ReflectionConvertor _convertor;
 
         public Field(PropertyMeta propertyMeta)
         {
@@ -151,7 +151,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                         _propertyMeta.getMessageClass());
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            ReflectionConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -205,7 +205,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                 throw new IOException(e);
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            ReflectionConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
                 throw new IOException("Message not included: " + message.getClass());
             
@@ -232,7 +232,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                         _propertyMeta.getMessageClass());
             }
             
-            LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+            ReflectionConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
             if(convertor==null)
             {
                 throw new IOException("Message not included: " + 
@@ -278,7 +278,7 @@ public class LiteConvertor implements ProtobufConvertor<MessageLite, Builder>
                 List<MessageLite> messages = (List<MessageLite>)_messagePropertyAccessor.getValue(owner);
                 if(messages!=null)
                 {
-                    LiteConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
+                    ReflectionConvertor convertor = _convertor._lite.get(_messagePropertyAccessor.getTypeClass());
                     if(convertor==null)
                     {
                         throw new IOException("Message not included: " + 

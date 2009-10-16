@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.codehaus.jackson.JsonFactory;
 
-import com.dyuproject.protostuff.json.LiteConvertor.Field;
+import com.dyuproject.protostuff.json.ReflectionConvertor.Field;
 import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.ModelMeta.Factory;
 

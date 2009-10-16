@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import org.codehaus.jackson.JsonFactory;
 
-import com.dyuproject.protostuff.json.LiteConvertor.Field;
+import com.dyuproject.protostuff.json.ReflectionConvertor.Field;
 import com.dyuproject.protostuff.model.LiteRuntime;
 import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.ModelMeta;
@@ -36,8 +36,8 @@ import com.google.protobuf.MessageLite.Builder;
 public class ReflectionJSON extends ProtobufJSON
 {
     
-    protected final HashMap<String,LiteConvertor> _convertors = 
-        new HashMap<String,LiteConvertor>();
+    protected final HashMap<String,ReflectionConvertor> _convertors = 
+        new HashMap<String,ReflectionConvertor>();
     
     protected final ArrayList<Class<?>> _modules = new ArrayList<Class<?>>();
     
@@ -119,14 +119,14 @@ public class ReflectionJSON extends ProtobufJSON
             _modules.add(moduleClass);
     }
     
-    protected final LiteConvertor get(Class<?> messageType)
+    protected final ReflectionConvertor get(Class<?> messageType)
     {
         return _convertors.get(messageType.getName());
     }
     
-    protected LiteConvertor newConvertor(ModelMeta modelMeta)
+    protected ReflectionConvertor newConvertor(ModelMeta modelMeta)
     {
-        return new LiteConvertor(modelMeta, this);
+        return new ReflectionConvertor(modelMeta, this);
     }
 
     /*
