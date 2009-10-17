@@ -126,7 +126,7 @@ public final class GeneratorMain
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.bar.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar.generated");
-        System.err.println("foo.generator = json " + __generators.keySet().toString());
+        System.err.println("foo.generator = json \n" + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
     }
@@ -140,7 +140,7 @@ public final class GeneratorMain
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.bar.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar.generated");
-        System.err.println("foo.generator = json " + __generators.keySet().toString());
+        System.err.println("foo.generator = json \n" + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
         
@@ -149,7 +149,7 @@ public final class GeneratorMain
         System.err.println("\nTo generate code for a single module, execute the jar without args and specify:");
         System.err.println("  -DfullClassname=com.example.bar.OuterClassname");
         System.err.println("  -DoutputPackage=com.example.bar.generated");
-        System.err.println("  -Dgenerator=json //" + __generators.keySet().toString());
+        System.err.println("  -Dgenerator=json \n" + __generators.keySet().toString());
         System.err.println("  -Dencoding=UTF-8");
         System.err.println("  -DoutputDir=src/main/java");
     }
