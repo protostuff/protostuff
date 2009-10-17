@@ -14,60 +14,32 @@
 
 package com.dyuproject.protostuff.codegen;
 
-import java.io.Writer;
-import java.util.ArrayList;
-
-import org.apache.velocity.VelocityContext;
-
-import com.dyuproject.protostuff.model.Model;
 
 /**
  * @author David Yu
  * @created Oct 14, 2009
  */
 
-public class ProtobufJSONGenerator extends VelocityCodeGenerator
+public class GwtJsonWithNumberArrayGenerator extends GwtJsonGenerator
 {
     
-    public static final String ID = "json";
+    public static final String ID = "gwt_json_with_number_array";
     static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
-    public ProtobufJSONGenerator()
+    public GwtJsonWithNumberArrayGenerator()
     {
         this(DEFAULT_TEMPLATE_RESOURCE);
     }
-    
-    public ProtobufJSONGenerator(String templateSource)
+
+    public GwtJsonWithNumberArrayGenerator(String templateResource)
     {
-        super(templateSource);
-    }
-    
-    public String getId()
-    {
-        return ID;
-    }
-    
-    protected String getDefaultOutputClassname(String moduleClassname)
-    {
-        return moduleClassname + "JSON";
+        super(templateResource);
     }
 
     @Override
-    protected void generateFrom(Module module, ArrayList<Model<?>> models) 
-    throws Exception
+    public String getId()
     {
-        VelocityContext context = newVelocityContext();
-        context.put("module", module);
-        context.put("models", models);
-        Writer writer = newWriter(module, module.getOutputClassname() + ".java");
-        try
-        {
-            ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);
-        }
-        finally
-        {
-            writer.close();
-        }
+        return ID;
     }
 
 }

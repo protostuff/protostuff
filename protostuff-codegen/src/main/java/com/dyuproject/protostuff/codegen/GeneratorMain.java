@@ -38,10 +38,14 @@ public final class GeneratorMain
         new HashMap<String,CodeGenerator>();
     
     static
-    {
-        addGenerator(new GwtJsonOverlayGenerator());
+    {        
         addGenerator(new ProtobufJSONGenerator());
         addGenerator(new ProtobufNumericJSONGenerator());
+        
+        addGenerator(new GwtJsonGenerator());
+        addGenerator(new GwtNumericJsonGenerator());
+        addGenerator(new GwtJsonWithNumberArrayGenerator());
+        addGenerator(new GwtNumericJsonWithNumberArrayGenerator());
     }
     
     public static void addGenerator(CodeGenerator generator)
@@ -122,7 +126,7 @@ public final class GeneratorMain
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.bar.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar.generated");
-        System.err.println("foo.generator = json //" + __generators.keySet().toString());
+        System.err.println("foo.generator = json " + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
     }
@@ -136,7 +140,7 @@ public final class GeneratorMain
         System.err.println("modules = foo");
         System.err.println("foo.fullClassname = com.example.bar.OuterClassname");
         System.err.println("foo.outputPackage = com.example.bar.generated");
-        System.err.println("foo.generator = json //" + __generators.keySet().toString());
+        System.err.println("foo.generator = json " + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
         

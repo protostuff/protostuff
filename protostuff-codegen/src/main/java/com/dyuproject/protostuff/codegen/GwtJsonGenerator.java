@@ -23,51 +23,56 @@ import com.dyuproject.protostuff.model.Model;
 
 /**
  * @author David Yu
- * @created Oct 14, 2009
+ * @created Oct 17, 2009
  */
 
-public class ProtobufJSONGenerator extends VelocityCodeGenerator
+public class GwtJsonGenerator extends VelocityCodeGenerator
 {
     
-    public static final String ID = "json";
+    public static final String ID = "gwt_json";
     static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
-    public ProtobufJSONGenerator()
+    public GwtJsonGenerator()
     {
         this(DEFAULT_TEMPLATE_RESOURCE);
     }
-    
-    public ProtobufJSONGenerator(String templateSource)
+
+    public GwtJsonGenerator(String templateResource)
     {
-        super(templateSource);
+        super(templateResource);
     }
     
+    @Override
     public String getId()
     {
         return ID;
     }
-    
+
+    @Override
     protected String getDefaultOutputClassname(String moduleClassname)
     {
-        return moduleClassname + "JSON";
+        return null;
     }
 
     @Override
-    protected void generateFrom(Module module, ArrayList<Model<?>> models) 
-    throws Exception
+    protected void generateFrom(Module module, ArrayList<Model<?>> models) throws Exception
     {
-        VelocityContext context = newVelocityContext();
-        context.put("module", module);
-        context.put("models", models);
-        Writer writer = newWriter(module, module.getOutputClassname() + ".java");
-        try
+        for(Model<?> model : models)
         {
-            ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);
-        }
-        finally
-        {
-            writer.close();
-        }
+            VelocityContext context = newVelocityContext();
+            context.put("module", module);
+            context.put("model", model);
+            Writer writer = newWriter(module, 
+                    model.getModelMeta().getMessageClass().getSimpleName() + ".java");
+            try
+            {
+                ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);
+            }
+            finally
+            {
+                writer.close();
+            }
+        }        
     }
 
 }

@@ -14,47 +14,30 @@
 
 package com.dyuproject.protostuff.codegen;
 
-import java.util.ArrayList;
-
-import com.dyuproject.protostuff.model.Model;
-
 /**
  * @author David Yu
- * @created Oct 14, 2009
+ * @created Oct 17, 2009
  */
 
-public class GwtJsonOverlayGenerator extends VelocityCodeGenerator
+public class GwtNumericJsonWithNumberArrayGenerator extends GwtJsonGenerator
 {
     
-    public static final String ID = "gwt-json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = "gwt_json_overlay.vm";
+    public static final String ID = "gwt_numeric_json_with_number_array";
+    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
-    public GwtJsonOverlayGenerator()
+    public GwtNumericJsonWithNumberArrayGenerator()
     {
         this(DEFAULT_TEMPLATE_RESOURCE);
     }
 
-    public GwtJsonOverlayGenerator(String templateResource)
+    public GwtNumericJsonWithNumberArrayGenerator(String templateResource)
     {
         super(templateResource);
     }
-
-    @Override
+    
     public String getId()
     {
         return ID;
     }
 
-    @Override
-    protected String getDefaultOutputClassname(String moduleClassname)
-    {
-        return null;
-    }
-
-    @Override
-    protected void generateFrom(Module module, ArrayList<Model<?>> models) throws Exception
-    {
-        // TODO Auto-generated method stub
-        
-    }
 }

@@ -23,8 +23,8 @@ package com.dyuproject.protostuff.codegen;
 public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
 {
     
-    public static final String ID = "numeric-json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = "protobuf_numeric_json.vm";
+    public static final String ID = "numeric_json";
+    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
     public ProtobufNumericJSONGenerator()
     {
