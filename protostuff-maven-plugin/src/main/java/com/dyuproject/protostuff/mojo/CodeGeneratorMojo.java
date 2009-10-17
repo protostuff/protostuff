@@ -24,6 +24,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
+ * Generates code for protobuf-json, gwt-json
+ * The protobuf generated module/classes are required 
+ * to be on the classpath on execution.
  * 
  * @author David Yu
  * @created Oct 17, 2009
