@@ -28,6 +28,7 @@ import com.dyuproject.protostuff.codegen.GeneratorMain;
  * @author David Yu
  * @created Oct 17, 2009
  * @goal codegen
+ * @requiresDependencyResolution runtime
  */
 
 public class CodeGeneratorMojo extends AbstractMojo
