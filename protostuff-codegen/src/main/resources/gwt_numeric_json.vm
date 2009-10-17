@@ -84,7 +84,7 @@ public final class ${name} extends JavaScriptObject {
     #set( $ctc = $pm.getComponentTypeClass() )
     #if( ${pm.isMessage()} )
 
-    public native JsArray<${ppn}> get${ppn}List() /*-{
+    public native JsArray<${ppn}> get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -109,7 +109,7 @@ public final class ${name} extends JavaScriptObject {
     }
     #elseif( ${ctc.getSimpleName()} == "ByteString" )
 
-    public native JsArrayString get${ppn}() /*-{
+    public native JsArrayString get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -134,7 +134,7 @@ public final class ${name} extends JavaScriptObject {
     }
     #elseif( ${ctc.isEnum()} )
 
-    public native JsArrayString get${ppn}() /*-{
+    public native JsArrayString get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -159,7 +159,7 @@ public final class ${name} extends JavaScriptObject {
     }
     #elseif( ${ctc.getSimpleName()} == "boolean" ) 
 
-    public native JsArrayBoolean get${ppn}() /*-{
+    public native JsArrayBoolean get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -184,7 +184,7 @@ public final class ${name} extends JavaScriptObject {
     }
     #elseif( ${ctc.getSimpleName()} == "String" )
 
-    public native JsArrayString get${ppn}() /*-{
+    public native JsArrayString get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
