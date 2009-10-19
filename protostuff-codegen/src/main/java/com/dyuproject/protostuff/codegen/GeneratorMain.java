@@ -154,13 +154,17 @@ public final class GeneratorMain
     
     public static void generateFrom(Module m) throws Exception
     {
-        CodeGenerator cg = __generators.get(m.getGenerator());
-        if(cg==null)
-            throw new IllegalStateException("unknown generator: " + m.getGenerator());
-        
-        cg.generateFrom(m);
-        System.out.println("Successfully generated " + m.getGenerator() + " code from " + 
-                m.getFullClassname());
+        for(String g : COMMA.split(m.getGenerator()))
+        {
+            g = g.trim();
+            CodeGenerator cg = __generators.get(g);
+            if(cg==null)
+                throw new IllegalStateException("unknown generator: " + g);
+            
+            cg.generateFrom(m);
+            System.out.println("Successfully generated " + g + " code from " + 
+                    m.getFullClassname());
+        }
     }
     
     public static void generateFrom(List<Module> modules) throws Exception
@@ -186,14 +190,10 @@ public final class GeneratorMain
                 usage();
             else
             {
-                CodeGenerator cg = __generators.get(generator);
-                if(cg==null)
-                    throw new IllegalStateException("unknown generator: " + generator);
-                
                 Module module = new Module(fullClassname, outputPackage, outputClassname, 
                         generator, encoding, new File(outputDir));
                 
-                cg.generateFrom(module);
+                generateFrom(module);
             }
             return;
         }
