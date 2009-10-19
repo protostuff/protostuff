@@ -244,11 +244,11 @@ public final class ${name} extends JavaScriptObject {
         return this["${n}"].length;
     }-*/;
 
-    public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
+    public native double get${ppn}(int index) /*-{
         return this["${n}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${pn}) /*-{
+    public native void set${ppn}(int index, double ${pn}) /*-{
         this["${n}"][index] = ${pn};
     }-*/;
 
@@ -256,7 +256,7 @@ public final class ${name} extends JavaScriptObject {
         this["${n}"] = [];
     }-*/;
 
-    public void add${ppn}(${ctc.getSimpleName()} ${pn}) {
+    public void add${ppn}(double ${pn}) {
         set${ppn}(get${ppn}Count(), ${pn});
     }
     #end
@@ -316,11 +316,11 @@ public final class ${name} extends JavaScriptObject {
     }-*/;
     #else
 
-    public native ${tc.getSimpleName()} get${ppn}() /*-{
+    public native double get${ppn}() /*-{
         return this["${n}"];
     }-*/;
 
-    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
+    public native void set${ppn}(double ${pn}) /*-{
         this["${n}"] = ${pn};
     }-*/;
     #end
