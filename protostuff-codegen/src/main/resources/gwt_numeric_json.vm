@@ -80,11 +80,13 @@ public final class ${name} extends JavaScriptObject {
     #set( $n = $pm.getNumber() )
     #set( $ppn = $Util.toPascal($pn) )
     #set( $tc = $pm.getTypeClass() )
+
+    /** ${pn} **/
     #if( $pm.isRepeated() )
     #set( $ctc = $pm.getComponentTypeClass() )
     #if( ${pm.isMessage()} )
 
-    public native JsArray<${ppn}> get${ppn}Array() /*-{
+    public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -92,11 +94,11 @@ public final class ${name} extends JavaScriptObject {
         return this["${n}"].length;
     }-*/;
 
-    public native ${ppn} get${ppn}(int index) /*-{
+    public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
         return this["${n}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ppn} ${pn}) /*-{
+    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${pn}) /*-{
         this["${n}"][index] = ${pn};
     }-*/;
 
@@ -104,7 +106,7 @@ public final class ${name} extends JavaScriptObject {
         this["${n}"] = [];
     }-*/;
 
-    public void add${ppn}(${ppn} ${pn}) {
+    public void add${ppn}(${ctc.getSimpleName()} ${pn}) {
         set${ppn}(get${ppn}Count(), ${pn});
     }
     #elseif( ${ctc.getSimpleName()} == "ByteString" )
@@ -207,9 +209,38 @@ public final class ${name} extends JavaScriptObject {
     public void add${ppn}(String ${pn}) {
         set${ppn}(get${ppn}Count(), ${pn});
     }
+    #elseif( ${ctc.getSimpleName()} == "int" )
+
+    public native JsArrayInteger get${ppn}Array() /*-{
+        return this["${n}"];
+    }-*/;
+
+    public native int get${ppn}Count() /*-{
+        return this["${n}"].length;
+    }-*/;
+
+    public native int get${ppn}(int index) /*-{
+        return this["${n}"][index];
+    }-*/;
+
+    public native void set${ppn}(int index, int ${pn}) /*-{
+        this["${n}"][index] = ${pn};
+    }-*/;
+
+    public native void clear${ppn}() /*-{
+        this["${n}"] = [];
+    }-*/;
+
+    public void add${ppn}(int ${pn}) {
+        set${ppn}(get${ppn}Count(), ${pn});
+    }
     #else
 
-    public native ${ctc.getSimpleName()} get${ppn}Count() /*-{
+    public native JsArrayNumber get${ppn}Array() /*-{
+        return this["${n}"];
+    }-*/;
+
+    public native int get${ppn}Count() /*-{
         return this["${n}"].length;
     }-*/;
 
@@ -231,8 +262,12 @@ public final class ${name} extends JavaScriptObject {
     #end
     #elseif( ${pm.isMessage()} )
 
-    public native ${ppn} get${ppn}() /*-{
+    public native ${tc.getSimpleName()} get${ppn}() /*-{
         return this["${n}"];
+    }-*/;
+
+    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
+        this["${n}"] = ${pn};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "ByteString" )
 
@@ -281,11 +316,11 @@ public final class ${name} extends JavaScriptObject {
     }-*/;
     #else
 
-    public native double get${ppn}() /*-{
+    public native ${tc.getSimpleName()} get${ppn}() /*-{
         return this["${n}"];
     }-*/;
 
-    public native void set${ppn}(double ${pn}) /*-{
+    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
         this["${n}"] = ${pn};
     }-*/;
     #end

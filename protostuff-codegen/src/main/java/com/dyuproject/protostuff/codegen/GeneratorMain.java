@@ -44,8 +44,6 @@ public final class GeneratorMain
         
         addGenerator(new GwtJsonGenerator());
         addGenerator(new GwtNumericJsonGenerator());
-        addGenerator(new GwtJsonWithNumberArrayGenerator());
-        addGenerator(new GwtNumericJsonWithNumberArrayGenerator());
     }
     
     public static void addGenerator(CodeGenerator generator)
