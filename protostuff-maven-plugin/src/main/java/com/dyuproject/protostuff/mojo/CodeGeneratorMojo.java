@@ -24,7 +24,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
- * Generates code for protobuf-json, gwt-json
+ * Generates code for json, gwt_json
  * The protobuf generated module/classes are required 
  * to be on the classpath on execution.
  * 
@@ -42,14 +42,14 @@ public class CodeGeneratorMojo extends AbstractMojo
      *
      * @parameter
      */
-    private File modulesFile;    
+    protected File modulesFile;    
     
     /**
      * The modules to generate code from
      *
      * @parameter
      */
-    private Module[] modules;
+    protected Module[] modules;
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
