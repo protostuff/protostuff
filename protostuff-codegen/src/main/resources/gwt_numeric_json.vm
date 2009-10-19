@@ -60,7 +60,7 @@ public final class ${name} extends JavaScriptObject {
      * @return ${name} 
      */
     public static native ${name} parse(String jsonString) /*-{
-        return eval("(" + jsonString + ")");
+        return eval(jsonString);
     }-*/;
 
     /**
@@ -70,7 +70,7 @@ public final class ${name} extends JavaScriptObject {
      * @return JsArray<${name}> 
      */
     public static native JsArray<${name}> parseArray(String jsonString) /*-{
-        return eval("(" + jsonString + ")");
+        return eval(jsonString);
     }-*/;
 
     // getters and setters
