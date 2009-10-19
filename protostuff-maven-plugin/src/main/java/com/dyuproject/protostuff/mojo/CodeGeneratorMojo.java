@@ -42,7 +42,7 @@ public class CodeGeneratorMojo extends AbstractMojo
      *
      * @parameter
      */
-    private File propertiesFile;    
+    private File modulesFile;    
     
     /**
      * The modules to generate code from
@@ -53,11 +53,11 @@ public class CodeGeneratorMojo extends AbstractMojo
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
-        if(propertiesFile==null)
+        if(modulesFile==null)
         {
             if(modules==null)
             {
-                throw new MojoExecutionException("Either <propertiesFile> or <modules> " +
+                throw new MojoExecutionException("Either <modulesFile> or <modules> " +
                 		"should be provided.");
             }
             try
@@ -80,11 +80,11 @@ public class CodeGeneratorMojo extends AbstractMojo
                         GeneratorMain.generateFrom(m);
                 }
                 
-                if(!propertiesFile.exists())
-                    throw new MojoExecutionException(propertiesFile + " does not exist.");
+                if(!modulesFile.exists())
+                    throw new MojoExecutionException(modulesFile + " does not exist.");
                 
                 GeneratorMain.generateFrom(GeneratorMain.loadModules(
-                        new FileInputStream(propertiesFile)));
+                        new FileInputStream(modulesFile)));
             }
             catch(Exception e)
             {
