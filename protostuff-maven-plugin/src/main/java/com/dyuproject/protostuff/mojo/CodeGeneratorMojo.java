@@ -57,7 +57,7 @@ public class CodeGeneratorMojo extends AbstractMojo
         {
             if(modules==null)
             {
-                throw new MojoExecutionException("Either <modulesFile> or <modules> " +
+                throw new MojoExecutionException("Either <modules> or <modulesFile> " +
                 		"should be provided.");
             }
             try
