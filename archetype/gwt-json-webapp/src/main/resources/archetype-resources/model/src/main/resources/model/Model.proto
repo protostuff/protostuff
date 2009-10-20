@@ -1,0 +1,16 @@
+package ${rootArtifactId};
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "${package}.model";
+option java_outer_classname = "Model";
+
+message Greet {
+  optional int32 id = 1;
+  optional string name = 2;
+  optional string message = 3;
+  enum Status {
+    NEW = 0;
+    ACKNOWLEDGED = 1;
+  }
+  optional Status status = 4;
+}
