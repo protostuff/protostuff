@@ -10,10 +10,25 @@ import com.google.gwt.core.client.*;
  * ${module.getFullClassname()}.${name} 
  */
 public final class ${name} extends JavaScriptObject {
-    
-    // Overlay types always have protected, zero-arg constructors
-    protected ${name}() {
+    #foreach( $ec in $Util.getEnumClasses($model) )
+
+    public static final class ${ec.getSimpleName()} extends JavaScriptObject {
+        #foreach( $c in $ec.getEnumConstants() )
+
+        public static final Status ${c} = create("${c}");
+        #end
+
+        private static native ${ec.getSimpleName()} create(String name) /*-{
+            return name;
+        }-*/;
+
+        protected ${ec.getSimpleName()}() {}
+
+        public native String name() /*-{
+            return this;
+        }-*/;
     }
+    #end
 
     /**
      * Creates a new ${name} instance 
@@ -73,7 +88,7 @@ public final class ${name} extends JavaScriptObject {
         return eval("(" + jsonString + ")");
     }-*/;
 
-    // getters and setters
+    protected ${name}() {}
     #foreach( $p in $model.getProperties() )
     #set( $pm = $p.getPropertyMeta() )
     #set( $pn = $pm.getName() )
@@ -136,7 +151,7 @@ public final class ${name} extends JavaScriptObject {
     }
     #elseif( ${ctc.isEnum()} )
 
-    public native JsArrayString get${ppn}Array() /*-{
+    public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
         return this["${n}"];
     }-*/;
 
@@ -144,11 +159,11 @@ public final class ${name} extends JavaScriptObject {
         return this["${n}"].length;
     }-*/;
 
-    public native String get${ppn}(int index) /*-{
+    public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
         return this["${n}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, String ${pn}) /*-{
+    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${pn}) /*-{
         this["${n}"][index] = ${pn};
     }-*/;
 
@@ -156,7 +171,7 @@ public final class ${name} extends JavaScriptObject {
         this["${n}"] = [];
     }-*/;
 
-    public void add${ppn}(String ${pn}) {
+    public void add${ppn}(${ctc.getSimpleName()} ${pn}) {
         set${ppn}(get${ppn}Count(), ${pn});
     }
     #elseif( ${ctc.getSimpleName()} == "boolean" ) 
@@ -280,11 +295,11 @@ public final class ${name} extends JavaScriptObject {
     }-*/;
     #elseif( ${tc.isEnum()} )
 
-    public native String get${ppn}() /*-{
+    public native ${tc.getSimpleName()} get${ppn}() /*-{
         return this["${n}"];
     }-*/;
 
-    public native void set${ppn}(String ${pn}) /*-{
+    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
         this["${n}"] = ${pn};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "boolean" ) 

@@ -14,6 +14,11 @@
 
 package com.dyuproject.protostuff.codegen;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.dyuproject.protostuff.model.Model;
+import com.dyuproject.protostuff.model.Property;
 import com.dyuproject.protostuff.model.PropertyAccessor;
 import com.dyuproject.protostuff.model.PropertyMeta;
 import com.google.protobuf.ByteString;
@@ -79,6 +84,24 @@ public final class VelocityUtil
             return "parser.getDoubleValue()";
         
         throw new IllegalStateException();
+    }
+    
+    public static List<Class<?>> getEnumClasses(Model<?> model)
+    {
+        ArrayList<Class<?>> enumClasses = new ArrayList<Class<?>>();
+        for(Property p : model.getProperties())
+        {
+            PropertyMeta pm = p.getPropertyMeta();
+            if(pm.isRepeated())
+            {
+                if(pm.getComponentTypeClass().isEnum())
+                    enumClasses.add(pm.getComponentTypeClass());
+            }
+            else if(pm.getTypeClass().isEnum())
+                enumClasses.add(pm.getTypeClass());
+        }
+        
+        return enumClasses;
     }
 
 }
