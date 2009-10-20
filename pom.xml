@@ -151,7 +151,7 @@
     <module>protostuff-codegen</module>
     <module>protostuff-maven-plugin</module>
     <module>protostuff-benchmark</module>
-    <module>archetypes</module>
+    <module>archetype</module>
   </modules>
   
   <properties>
