@@ -41,7 +41,7 @@ public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
         return ID;
     }
     
-    protected String getDefaultOutputClassname(String moduleClassname)
+    protected String getOutputClassname(String moduleClassname)
     {
         return moduleClassname + "NumericJSON";
     }

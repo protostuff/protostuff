@@ -93,8 +93,6 @@ public final class GeneratorMain
             if(outputPackage==null)
                 throw new IllegalStateException(m + " must have an outputPackage");
             
-            String outputClassname = props.getProperty(m + ".outputClassname");
-            
             String generator = props.getProperty(m + ".generator");
             if(generator==null)
                 throw new IllegalStateException(m + " must have a generator");
@@ -107,7 +105,7 @@ public final class GeneratorMain
             if(outputDir==null)
                 throw new IllegalStateException(m + " must have an outputDir");
             
-            Module module = new Module(fullClassname, outputPackage, outputClassname, 
+            Module module = new Module(fullClassname, outputPackage, 
                     generator, encoding, new File(outputDir));
             
             modules.add(module);
@@ -181,7 +179,6 @@ public final class GeneratorMain
             
             String fullClassname = props.getProperty("fullClassname");            
             String outputPackage = props.getProperty("outputPackage");
-            String outputClassname = props.getProperty("outputClassname");
             String generator = props.getProperty("generator");
             String encoding = props.getProperty("encoding");
             String outputDir = props.getProperty("outputDir");
@@ -190,7 +187,7 @@ public final class GeneratorMain
                 usage();
             else
             {
-                Module module = new Module(fullClassname, outputPackage, outputClassname, 
+                Module module = new Module(fullClassname, outputPackage, 
                         generator, encoding, new File(outputDir));
                 
                 generateFrom(module);

@@ -47,7 +47,7 @@ public class ProtobufJSONGenerator extends VelocityCodeGenerator
         return ID;
     }
     
-    protected String getDefaultOutputClassname(String moduleClassname)
+    protected String getOutputClassname(String moduleClassname)
     {
         return moduleClassname + "JSON";
     }
@@ -56,10 +56,12 @@ public class ProtobufJSONGenerator extends VelocityCodeGenerator
     protected void generateFrom(Module module, ArrayList<Model<?>> models) 
     throws Exception
     {
+        String outputClassname = getOutputClassname(getOuterClassname(module));
         VelocityContext context = newVelocityContext();
         context.put("module", module);
         context.put("models", models);
-        Writer writer = newWriter(module, module.getOutputClassname() + ".java");
+        context.put("outputClassname", outputClassname);
+        Writer writer = newWriter(module, outputClassname + ".java");
         try
         {
             ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);

@@ -32,7 +32,6 @@ public class Module implements Serializable
     
     private String fullClassname;
     private String outputPackage;
-    private String outputClassname;
     private String generator;
     private String encoding;
 
@@ -43,12 +42,11 @@ public class Module implements Serializable
         
     }
     
-    public Module(String fullClassname, String outputPackage, String outputClassname, 
+    public Module(String fullClassname, String outputPackage, 
             String generator, String encoding, File outputDir)
     {
         this.fullClassname = fullClassname;
         this.outputPackage = outputPackage;
-        this.outputClassname = outputClassname;
         this.generator = generator;
         this.encoding = encoding;
         this.outputDir = outputDir;
@@ -82,21 +80,7 @@ public class Module implements Serializable
     {
         this.outputPackage = outputPackage;
     }
-    /**
-     * @return the outputClassName
-     */
-    public String getOutputClassname()
-    {
-        return outputClassname;
-    }
-    /**
-     * @param outputClassName the outputClassName to set
-     */
-    public void setOutputClassname(String outputClassname)
-    {
-        this.outputClassname = outputClassname;
-    }
-    
+
     /**
      * @return the generator
      */

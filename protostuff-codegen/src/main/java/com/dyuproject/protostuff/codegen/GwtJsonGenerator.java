@@ -49,21 +49,15 @@ public class GwtJsonGenerator extends VelocityCodeGenerator
     }
 
     @Override
-    protected String getDefaultOutputClassname(String moduleClassname)
-    {
-        return null;
-    }
-
-    @Override
     protected void generateFrom(Module module, ArrayList<Model<?>> models) throws Exception
     {
         for(Model<?> model : models)
         {
+            String outputClassname = model.getModelMeta().getMessageClass().getSimpleName();
             VelocityContext context = newVelocityContext();
             context.put("module", module);
             context.put("model", model);
-            Writer writer = newWriter(module, 
-                    model.getModelMeta().getMessageClass().getSimpleName() + ".java");
+            Writer writer = newWriter(module, outputClassname + ".java");
             try
             {
                 ENGINE.mergeTemplate(getTemplateResource(), module.getEncoding(), context, writer);

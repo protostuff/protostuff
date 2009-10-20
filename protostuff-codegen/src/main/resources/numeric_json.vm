@@ -20,15 +20,15 @@ import com.dyuproject.protostuff.json.ProtobufJSON;
 import ${module.getFullClassname()}.${msg};
 #end
 
-public final class ${module.getOutputClassname()} extends ProtobufJSON
+public final class ${outputClassname} extends ProtobufJSON
 {
 
-    public ${module.getOutputClassname()}()
+    public ${outputClassname}()
     {
         super();
     }
 
-    public ${module.getOutputClassname()}(JsonFactory factory)
+    public ${outputClassname}(JsonFactory factory)
     {
         super(factory);
     }

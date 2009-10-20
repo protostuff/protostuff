@@ -64,6 +64,12 @@ public abstract class CodeGenerator
         return new BufferedWriter(new OutputStreamWriter(out, module.getEncoding()));
     }
     
+    protected static String getOuterClassname(Module module)
+    {
+        String fullClassname = module.getFullClassname();
+        return fullClassname.substring(fullClassname.lastIndexOf('.')+1);
+    }
+    
     public void generateFrom(Module module) throws Exception
     {
         if(module.getFullClassname()==null)
@@ -74,16 +80,6 @@ public abstract class CodeGenerator
         
         if(module.getOutputDir()==null)
             throw new IllegalStateException("outputDir is required.");
-        
-        String outputClassname = module.getOutputClassname();
-        if(outputClassname==null)
-        {
-            String fullClassname = module.getFullClassname();
-            outputClassname = fullClassname.substring(fullClassname.lastIndexOf('.')+1);
-            module.setOutputClassname(getDefaultOutputClassname(outputClassname));
-        }
-        else if(outputClassname.indexOf('.')!=-1)
-            throw new IllegalStateException("Invalid outputClassname: " + outputClassname);
         
         if(module.getEncoding()==null)
             module.setEncoding(DEFAULT_ENCODING);
@@ -110,8 +106,6 @@ public abstract class CodeGenerator
     }
     
     public abstract String getId();
-    
-    protected abstract String getDefaultOutputClassname(String moduleClassname);
     
     protected abstract void generateFrom(Module module, ArrayList<Model<?>> models) 
     throws Exception;
