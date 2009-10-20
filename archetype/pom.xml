@@ -12,6 +12,41 @@
   <name>protostuff archetype</name>
   <description>archetypes for applications using protobuf</description>
   <packaging>pom</packaging>
+  
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <delete file="../../dist/archetype/${project.build.finalName}.${project.packaging}"/>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copyjar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy failonerror="false" file="target/${project.build.finalName}.${project.packaging}" tofile="../../dist/archetype/${project.build.finalName}.${project.packaging}" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <modules>
     <module>gwt-json-webapp</module>
