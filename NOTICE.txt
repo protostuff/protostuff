@@ -3,11 +3,11 @@
  Copyright 2007-2009 David Yu dyuproject@gmail.com
 ==============================================================
 
-jackson-core-asl is copyright Tatu Saloranta unless otherwise noted. 
-It is licensed under the apache 2.0 license.
-
 protobuf is copyright Google inc unless otherwise noted. 
 It is licensed under the BSD license.
+
+jackson-core-asl is copyright Tatu Saloranta unless otherwise noted. 
+It is licensed under the apache 2.0 license.
 
 velocity is licensed under the apache 2.0 license.
 
