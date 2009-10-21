@@ -83,8 +83,6 @@
     <compiler.source>1.5</compiler.source>
     <compiler.target>1.5</compiler.target>
     
-    <slf4j.version>1.5.6</slf4j.version>
-    <log4j.version>1.2.15</log4j.version>
     <junit.version>4.4</junit.version>
     <servlet.version>2.5-20081211</servlet.version>
     <jetty.version>6.1.19</jetty.version>
