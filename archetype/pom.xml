@@ -49,6 +49,7 @@
   </build>
 
   <modules>
+    <module>simple-webapp</module>
     <module>gwt-json-webapp</module>
   </modules>
   
