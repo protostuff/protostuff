@@ -37,7 +37,7 @@ public abstract class PropertyAccessor
     public static String toPascalCase(String target)
     {
         char c = target.charAt(0);
-        if(c>96)
+        if(c>96 && c<123)
             c = (char)(c-32);
         
         return new StringBuilder(target.length())
@@ -49,7 +49,7 @@ public abstract class PropertyAccessor
     public static String toPrefixedPascalCase(String prefix, String target)
     {
         char c = target.charAt(0);
-        if(c>96)
+        if(c>96 && c<123)
             c = (char)(c-32);
         
         return new StringBuilder(prefix.length() + target.length())
@@ -68,8 +68,9 @@ public abstract class PropertyAccessor
     {
         char[] prop = new char[target.length()-start];
         target.getChars(start, target.length(), prop, 0);
-        if(prop[0]<91)
-            prop[0] = (char)(prop[0] + 32);
+        char c = prop[0];
+        if(c>64 && c<91)
+            prop[0] = (char)(c + 32);
 
         return new String(prop);
     }
