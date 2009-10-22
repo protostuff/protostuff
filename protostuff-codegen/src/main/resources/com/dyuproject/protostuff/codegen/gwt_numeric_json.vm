@@ -147,7 +147,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(String ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(String ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.isEnum()} )
@@ -172,7 +172,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(${ctc.getSimpleName()} ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(${ctc.getSimpleName()} ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "boolean" ) 
@@ -197,7 +197,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(boolean ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(boolean ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "String" )
@@ -222,7 +222,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(String ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(String ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "int" )
@@ -247,7 +247,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(int ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(int ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #else
@@ -272,7 +272,7 @@ public final class ${name} extends JavaScriptObject {
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(double ${dan}) {
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(double ${dan}) {
         ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #end
