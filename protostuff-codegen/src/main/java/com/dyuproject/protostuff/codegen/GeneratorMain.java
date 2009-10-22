@@ -139,6 +139,7 @@ public final class GeneratorMain
         System.err.println("foo.generator = json \n//" + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
+        System.err.println("foo.options = key1:value1,key2:value2");
     }
     
     static void usage()
@@ -153,6 +154,7 @@ public final class GeneratorMain
         System.err.println("foo.generator = json \n//" + __generators.keySet().toString());
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.outputDir = src/main/java");
+        System.err.println("foo.options = key1:value1,key2:value2");
         
         System.err.println("\n===================================================\n");
         
@@ -162,6 +164,7 @@ public final class GeneratorMain
         System.err.println("  -Dgenerator=json \n//" + __generators.keySet().toString());
         System.err.println("  -Dencoding=UTF-8");
         System.err.println("  -DoutputDir=src/main/java");
+        System.err.println("  -Doptions=key1:value1,key2:value2");
     }
     
     public static void generateFrom(Module m) throws Exception

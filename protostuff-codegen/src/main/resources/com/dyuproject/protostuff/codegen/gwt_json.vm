@@ -15,16 +15,16 @@ public final class ${name} extends JavaScriptObject {
     public static final class ${ec.getSimpleName()} extends JavaScriptObject {
         #foreach( $c in $ec.getEnumConstants() )
 
-        public static final Status ${c} = create("${c}");
+        public static final Status ${c} = ${Util.getDerivedMethodName($module, "create")}("${c}");
         #end
 
-        private static native ${ec.getSimpleName()} create(String name) /*-{
+        private static native ${ec.getSimpleName()} ${Util.getDerivedMethodName($module, "create")}(String name) /*-{
             return name;
         }-*/;
 
         protected ${ec.getSimpleName()}() {}
 
-        public native String name() /*-{
+        public native String ${Util.getDerivedMethodName($module, "name")}() /*-{
             return this;
         }-*/;
     }
@@ -35,7 +35,7 @@ public final class ${name} extends JavaScriptObject {
      *
      * @return new ${name} instance
      */
-    public static native ${name} create() /*-{
+    public static native ${name} ${Util.getDerivedMethodName($module, "create")}() /*-{
         return {};
     }-*/;
 
@@ -44,7 +44,7 @@ public final class ${name} extends JavaScriptObject {
      *
      * @return new JsArray<${name}> instance
      */
-    public static native JsArray<${name}> createArray() /*-{
+    public static native JsArray<${name}> ${Util.getDerivedMethodName($module, "createArray")}() /*-{
         return [];
     }-*/;
 
@@ -54,7 +54,7 @@ public final class ${name} extends JavaScriptObject {
      * @param JavaScriptObject to cast
      * @return ${name}
      */
-    public static native ${name} get(JavaScriptObject jso) /*-{
+    public static native ${name} ${Util.getDerivedMethodName($module, "get")}(JavaScriptObject jso) /*-{
         return jso;
     }-*/;
 
@@ -64,7 +64,7 @@ public final class ${name} extends JavaScriptObject {
      * @param JavaScriptObject to cast
      * @return JsArray<${name}> 
      */
-    public static native JsArray<${name}> getArray(JavaScriptObject jso) /*-{
+    public static native JsArray<${name}> ${Util.getDerivedMethodName($module, "getArray")}(JavaScriptObject jso) /*-{
         return jso;
     }-*/;
 
@@ -74,7 +74,7 @@ public final class ${name} extends JavaScriptObject {
      * @param jsonString to be parsed/evaluated
      * @return ${name} 
      */
-    public static native ${name} parse(String jsonString) /*-{
+    public static native ${name} ${Util.getDerivedMethodName($module, "parse")}(String jsonString) /*-{
         return eval("(" + jsonString + ")");
     }-*/;
 
@@ -84,7 +84,7 @@ public final class ${name} extends JavaScriptObject {
      * @param jsonString to be parsed/evaluated
      * @return JsArray<${name}> 
      */
-    public static native JsArray<${name}> parseArray(String jsonString) /*-{
+    public static native JsArray<${name}> ${Util.getDerivedMethodName($module, "parseArray")}(String jsonString) /*-{
         return eval("(" + jsonString + ")");
     }-*/;
 
@@ -102,241 +102,241 @@ public final class ${name} extends JavaScriptObject {
     #set( $ctc = $pm.getComponentTypeClass() )
     #if( ${pm.isMessage()} )
 
-    public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
+    public native JsArray<${ctc.getSimpleName()}> ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
+    public native ${ctc.getSimpleName()} ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(${ctc.getSimpleName()} ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+    public void ${Util.getDerivedMethodName($module, "add", $pm)}(${ctc.getSimpleName()} ${dan}) {
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "ByteString" )
 
-    public native JsArrayString get${ppn}Array() /*-{
+    public native JsArrayString ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native String get${ppn}(int index) /*-{
+    public native String ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, String ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, String ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(String ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.isEnum()} )
 
-    public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
+    public native JsArray<${ctc.getSimpleName()}> ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
+    public native ${ctc.getSimpleName()} ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(${ctc.getSimpleName()} ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "boolean" ) 
 
-    public native JsArrayBoolean get${ppn}Array() /*-{
+    public native JsArrayBoolean ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native boolean get${ppn}(int index) /*-{
+    public native boolean ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, boolean ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, boolean ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(boolean ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "String" )
 
-    public native JsArrayString get${ppn}Array() /*-{
+    public native JsArrayString ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native String get${ppn}(int index) /*-{
+    public native String ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, String ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, String ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(String ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "int" )
 
-    public native JsArrayInteger get${ppn}Array() /*-{
+    public native JsArrayInteger ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native int get${ppn}(int index) /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, int ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, int ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(int ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #else
 
-    public native JsArrayNumber get${ppn}Array() /*-{
+    public native JsArrayNumber ${Util.getDerivedMethodName($module, "get", $pm, "Array")}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native int get${ppn}Count() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm, "Count")}() /*-{
         return this["${dpn}"].length;
     }-*/;
 
-    public native double get${ppn}(int index) /*-{
+    public native double ${Util.getDerivedMethodName($module, "get", $pm)}(int index) /*-{
         return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, double ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int index, double ${dan}) /*-{
         this["${dpn}"][index] = ${dan};
     }-*/;
 
-    public native void clear${ppn}() /*-{
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
         this["${dpn}"] = [];
     }-*/;
 
     public void add${ppn}(double ${dan}) {
-        set${ppn}(get${ppn}Count(), ${dan});
+        ${Util.getDerivedMethodName($module, "set", $pm)}(${Util.getDerivedMethodName($module, "get", $pm, "Count")}(), ${dan});
     }
     #end
     #elseif( ${pm.isMessage()} )
 
-    public native ${tc.getSimpleName()} get${ppn}() /*-{
+    public native ${tc.getSimpleName()} ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(${tc.getSimpleName()} ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(${tc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "ByteString" )
 
-    public native String get${ppn}() /*-{
+    public native String ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(String ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(String ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.isEnum()} )
 
-    public native ${tc.getSimpleName()} get${ppn}() /*-{
+    public native ${tc.getSimpleName()} ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(${tc.getSimpleName()} ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(${tc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "boolean" ) 
 
-    public native boolean get${ppn}() /*-{
+    public native boolean ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(boolean ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(boolean ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "String" )
 
-    public native String get${ppn}() /*-{
+    public native String ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(String ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(String ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "int" )
 
-    public native int get${ppn}() /*-{
+    public native int ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(int ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #else
 
-    public native double get${ppn}() /*-{
+    public native double ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
         return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(double ${dan}) /*-{
+    public native void ${Util.getDerivedMethodName($module, "set", $pm)}(double ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
     #end

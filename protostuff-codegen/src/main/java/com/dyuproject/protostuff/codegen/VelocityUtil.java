@@ -31,6 +31,10 @@ import com.google.protobuf.ByteString;
 public final class VelocityUtil
 {
     
+    static final String CAMEL = "camel", PASCAL = "pascal", UNDERSCORE = "underscore";
+    static final String FIELD_CASE = "fieldCase";
+    static final String METHOD_CASE = "methodCase";
+    
     public static String toPascal(String name)
     {
         return PropertyAccessor.toPascalCase(name);
@@ -59,10 +63,10 @@ public final class VelocityUtil
     
     public static String getDerivedPropName(Module module, PropertyMeta meta)
     {
-        String fieldCase = module.getOption("fieldCase");
-        if("pascal".equals(fieldCase))
+        String fieldCase = module.getOption(FIELD_CASE);
+        if(PASCAL.equals(fieldCase))
             return toPascal(meta.getName());
-        if("underscore".equals(fieldCase))
+        if(UNDERSCORE.equals(fieldCase))
             return toUnderscore(meta.getName());
         
         // default camel
@@ -71,12 +75,81 @@ public final class VelocityUtil
     
     public static String getDerivedArgName(Module module, PropertyMeta meta)
     {
-        String fieldCase = module.getOption("fieldCase");
-        if("underscore".equals(fieldCase))
+        String fieldCase = module.getOption(FIELD_CASE);
+        if(UNDERSCORE.equals(fieldCase))
             return toUnderscore(meta.getName());
         
         // default camel ... pascal can't be used because it conflicts with classes
         return meta.getName();
+    }
+    
+    public static String getDerivedMethodName(Module module, String camelCase)
+    {
+        String methodCase = module.getOption(METHOD_CASE);
+        if(UNDERSCORE.equals(methodCase))
+            return toUnderscore(camelCase);
+        
+        if(PASCAL.equals(methodCase))
+            return toPascal(camelCase);
+        
+        // default camel
+        return camelCase;
+    }
+    
+    public static String getDerivedMethodName(Module module, String camelPrefix, 
+            PropertyMeta meta)
+    {
+        String methodCase = module.getOption(METHOD_CASE);
+        if(UNDERSCORE.equals(methodCase))
+        {
+            return new StringBuilder()
+                .append(toUnderscore(camelPrefix))
+                .append('_')
+                .append(toUnderscore(meta.getName()))
+                .toString();
+        }
+        if(PASCAL.equals(methodCase))
+        {
+            return new StringBuilder()
+                .append(toPascal(camelPrefix))
+                .append(toPascal(meta.getName()))
+                .toString();
+        }
+        
+        // default camel
+        return new StringBuilder()
+            .append(camelPrefix)
+            .append(toPascal(meta.getName()))
+            .toString();
+    }
+    
+    public static String getDerivedMethodName(Module module, String camelPrefix, 
+            PropertyMeta meta, String pascalSuffix)
+    {
+        String methodCase = module.getOption(METHOD_CASE);
+        if(UNDERSCORE.equals(methodCase))
+        {
+            return new StringBuilder()
+                .append(toUnderscore(camelPrefix))
+                .append('_')
+                .append(toUnderscore(meta.getName()))
+                .append(toUnderscore(pascalSuffix))
+                .toString();
+        }
+        if(PASCAL.equals(methodCase))
+        {
+            return new StringBuilder()
+                .append(toPascal(camelPrefix))
+                .append(toPascal(meta.getName()))
+                .append(pascalSuffix)
+                .toString();
+        }
+        
+        // default camel
+        return new StringBuilder()
+            .append(camelPrefix)
+            .append(toPascal(meta.getName()))
+            .append(pascalSuffix).toString();
     }
     
     public static String printRGen(PropertyMeta meta)
