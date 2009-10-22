@@ -50,7 +50,7 @@
 
   <modules>
     <module>simple-webapp</module>
-    <module>gwt-json-webapp</module>
+    <module>simple-gwt-webapp</module>
   </modules>
   
 </project>
