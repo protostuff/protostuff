@@ -69,23 +69,23 @@ public final class ${name} extends JavaScriptObject {
     }-*/;
 
     /**
-     * Parses a ${name} from a jsonString
+     * Parses a ${name} from a json string
      *
-     * @param jsonString to be parsed/evaluated
+     * @param json string to be parsed/evaluated
      * @return ${name} 
      */
-    public static native ${name} ${Util.getDerivedMethodName($module, "parse")}(String jsonString) /*-{
-        return eval("(" + jsonString + ")");
+    public static native ${name} ${Util.getDerivedMethodName($module, "parse")}(String json) /*-{
+        return eval("(" + json + ")");
     }-*/;
 
     /**
-     * Parses a JsArray<${name}> from a jsonString
+     * Parses a JsArray<${name}> from a json string
      *
-     * @param jsonString to be parsed/evaluated
+     * @param json string to be parsed/evaluated
      * @return JsArray<${name}> 
      */
-    public static native JsArray<${name}> ${Util.getDerivedMethodName($module, "parseArray")}(String jsonString) /*-{
-        return eval("(" + jsonString + ")");
+    public static native JsArray<${name}> ${Util.getDerivedMethodName($module, "parseArray")}(String json) /*-{
+        return eval("(" + json + ")");
     }-*/;
 
     protected ${name}() {}
