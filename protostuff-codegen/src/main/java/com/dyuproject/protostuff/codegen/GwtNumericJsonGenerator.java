@@ -23,21 +23,11 @@ public class GwtNumericJsonGenerator extends GwtJsonGenerator
 {
     
     public static final String ID = "gwt_numeric_json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
     public GwtNumericJsonGenerator()
     {
-        this(DEFAULT_TEMPLATE_RESOURCE);
+        super(ID);
     }
-
-    public GwtNumericJsonGenerator(String templateResource)
-    {
-        super(templateResource);
-    }
-    
-    public String getId()
-    {
-        return ID;
-    }    
+ 
 
 }

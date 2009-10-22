@@ -33,11 +33,22 @@ public abstract class VelocityCodeGenerator extends CodeGenerator
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
     }
     
+    private String _id;
     private String _templateResource;
     
-    public VelocityCodeGenerator(String templateResource)
+    public VelocityCodeGenerator(String id)
     {
-        _templateResource = templateResource;
+        _id = id;
+        
+        String fullClassname = getClass().getName();
+        String packageName = fullClassname.substring(0, 
+                fullClassname.lastIndexOf('.')).replace('.', '/');        
+        _templateResource = packageName + "/" + id + ".vm"; 
+    }
+    
+    public String getId()
+    {
+        return _id;
     }
     
     public String getTemplateResource()

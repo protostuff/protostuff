@@ -30,22 +30,15 @@ public class GwtJsonGenerator extends VelocityCodeGenerator
 {
     
     public static final String ID = "gwt_json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
     public GwtJsonGenerator()
     {
-        this(DEFAULT_TEMPLATE_RESOURCE);
-    }
-
-    public GwtJsonGenerator(String templateResource)
-    {
-        super(templateResource);
+        this(ID);
     }
     
-    @Override
-    public String getId()
+    public GwtJsonGenerator(String id)
     {
-        return ID;
+        super(ID);
     }
 
     @Override

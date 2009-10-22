@@ -24,21 +24,10 @@ public class ProtobufNumericJSONGenerator extends ProtobufJSONGenerator
 {
     
     public static final String ID = "numeric_json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
     public ProtobufNumericJSONGenerator()
     {
-        this(DEFAULT_TEMPLATE_RESOURCE);
-    }
-    
-    public ProtobufNumericJSONGenerator(String templateSource)
-    {
-        super(templateSource);
-    }
-    
-    public String getId()
-    {
-        return ID;
+        super(ID);
     }
     
     protected String getOutputClassname(String moduleClassname)

@@ -30,21 +30,15 @@ public class ProtobufJSONGenerator extends VelocityCodeGenerator
 {
     
     public static final String ID = "json";
-    static final String DEFAULT_TEMPLATE_RESOURCE = ID + ".vm";
     
     public ProtobufJSONGenerator()
     {
-        this(DEFAULT_TEMPLATE_RESOURCE);
+        this(ID);
     }
     
-    public ProtobufJSONGenerator(String templateSource)
+    public ProtobufJSONGenerator(String id)
     {
-        super(templateSource);
-    }
-    
-    public String getId()
-    {
-        return ID;
+        super(id);
     }
     
     protected String getOutputClassname(String moduleClassname)
