@@ -1,6 +1,6 @@
 ==============================================================
  protostuff
- Copyright 2007-2009 David Yu dyuproject@gmail.com
+ Copyright 2009 David Yu dyuproject@gmail.com
 ==============================================================
 
 protobuf is copyright Google inc unless otherwise noted. 
