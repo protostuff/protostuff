@@ -90,6 +90,10 @@ public final class ${outputClassname} extends ProtobufJSON
 
             for (${name}.${ctc.getSimpleName()} t : message.get${ppn}List())
                 ${Util.printRGen($pm)}
+            #elseif( ${ctc.getSimpleName()} == "ByteString" )
+
+            for (com.google.protobuf.ByteString t : message.get${ppn}List())
+                ${Util.printRGen($pm)}
             #else
 
             for (${ctc.getSimpleName()} t : message.get${ppn}List())
@@ -176,7 +180,7 @@ public final class ${outputClassname} extends ProtobufJSON
                             builder.add${ppn}(CONVERTOR_${ctc.getSimpleName()}.parseFrom(parser));
                             #elseif ( ${ctc.getSimpleName()} == "ByteString" )
 
-                            builder.add${ppn}(ByteString.copyFrom(parser.getBinaryValue()));
+                            builder.add${ppn}(com.google.protobuf.ByteString.copyFrom(parser.getBinaryValue()));
                             #elseif ( ${ctc.isEnum()} )
 
                             builder.add${ppn}(${name}.${ctc.getSimpleName()}.valueOf(parser.getText()));
@@ -204,7 +208,7 @@ public final class ${outputClassname} extends ProtobufJSON
                         #elseif( ${tc.getSimpleName()} == "ByteString" )
 
                         parser.nextToken();
-                        builder.set${ppn}(ByteString.copyFrom(parser.getBinaryValue()));
+                        builder.set${ppn}(com.google.protobuf.ByteString.copyFrom(parser.getBinaryValue()));
                         #elseif( ${tc.isEnum()} )
 
                         parser.nextToken();
