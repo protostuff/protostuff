@@ -1,1 +1,4 @@
 protostuff-1.0-SNAPSHOT
++ code generator for json, numeric_json, gwt_json, gwt_numeric_json
++ maven archetypes for quick start and rapid development
++ benchmark module to distinguish effectiveness when compared to protobuf
