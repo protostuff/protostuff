@@ -38,7 +38,7 @@ public class GwtJsonGenerator extends VelocityCodeGenerator
     
     public GwtJsonGenerator(String id)
     {
-        super(ID);
+        super(id);
     }
 
     @Override
