@@ -41,6 +41,22 @@ public final class VelocityUtil
         return PropertyAccessor.toCamelCase(name);
     }
     
+    public static String toUnderscore(String camelCase)
+    {
+        StringBuilder buffer = new StringBuilder();
+        for(char c : camelCase.toCharArray())
+        {
+            if(c>96)
+            {
+                buffer.append('_');
+                buffer.append((char)(c-32));
+            }
+            else
+                buffer.append(c);
+        }
+        return buffer.toString();
+    }
+    
     public static String printRGen(PropertyMeta meta)
     {
         Class<?> type = meta.getComponentTypeClass();

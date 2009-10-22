@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.codegen;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Properties;
 
 /**
  * @author David Yu
@@ -37,6 +38,8 @@ public class Module implements Serializable
 
     private File outputDir;
     
+    private Properties options = new Properties();
+    
     public Module()
     {
         
@@ -50,6 +53,13 @@ public class Module implements Serializable
         this.generator = generator;
         this.encoding = encoding;
         this.outputDir = outputDir;
+    }
+    
+    public Module(String fullClassname, String outputPackage, 
+            String generator, String encoding, File outputDir, Properties options)
+    {
+        this(fullClassname, outputPackage, generator, encoding, outputDir);
+        this.options = options;
     }
     
     /**
@@ -126,6 +136,31 @@ public class Module implements Serializable
     public void setOutputDir(File outputDir)
     {
         this.outputDir = outputDir;
+    }
+    
+    /**
+     * @return the options
+     */
+    public Properties getOptions()
+    {
+        return options;
+    }
+    /**
+     * @param options
+     */
+    public void setOptions(Properties options)
+    {
+        this.options.putAll(options);
+    }
+    
+    public String getOptions(String key)
+    {
+        return options.getProperty(key);
+    }
+    
+    public void setOption(String key, String value)
+    {
+        options.setProperty(key, value);
     }
 
 }

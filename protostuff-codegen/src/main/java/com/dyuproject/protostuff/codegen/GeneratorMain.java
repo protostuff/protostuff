@@ -105,8 +105,22 @@ public final class GeneratorMain
             if(outputDir==null)
                 throw new IllegalStateException(m + " must have an outputDir");
             
+            String options = props.getProperty(m + ".options");
+            
             Module module = new Module(fullClassname, outputPackage, 
                     generator, encoding, new File(outputDir));
+            
+            if(options!=null)
+            {
+                for(String o : COMMA.split(options))
+                {
+                    int idx = o.indexOf(':');
+                    if(idx==-1)
+                        module.setOption(o.trim(), "");
+                    else
+                        module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+                }
+            }
             
             modules.add(module);
         }
@@ -182,6 +196,7 @@ public final class GeneratorMain
             String generator = props.getProperty("generator");
             String encoding = props.getProperty("encoding");
             String outputDir = props.getProperty("outputDir");
+            String options = props.getProperty("options");
             
             if(fullClassname==null || outputPackage==null || generator==null || outputDir==null)
                 usage();
@@ -189,6 +204,18 @@ public final class GeneratorMain
             {
                 Module module = new Module(fullClassname, outputPackage, 
                         generator, encoding, new File(outputDir));
+                
+                if(options!=null)
+                {
+                    for(String o : COMMA.split(options))
+                    {
+                        int idx = o.indexOf(':');
+                        if(idx==-1)
+                            module.setOption(o.trim(), "");
+                        else
+                            module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+                    }
+                }
                 
                 generateFrom(module);
             }
