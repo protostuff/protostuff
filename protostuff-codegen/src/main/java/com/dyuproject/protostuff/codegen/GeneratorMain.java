@@ -169,6 +169,7 @@ public final class GeneratorMain
     
     public static void generateFrom(Module m) throws Exception
     {
+        String options = m.getOptions().toString();
         for(String g : COMMA.split(m.getGenerator()))
         {
             g = g.trim();
@@ -177,8 +178,17 @@ public final class GeneratorMain
                 throw new IllegalStateException("unknown generator: " + g);
             
             cg.generateFrom(m);
-            System.out.println("Successfully generated " + g + " code from " + 
-                    m.getFullClassname());
+            
+            StringBuilder buffer = new StringBuilder()
+                .append("Successfully generated ")
+                .append(g)
+                .append(" code from ")
+                .append(m.getFullClassname());
+            
+            if(options.length()>2)
+                buffer.append(' ').append(options);
+            
+            System.out.println(buffer.toString());
         }
     }
     
