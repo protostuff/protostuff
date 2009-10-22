@@ -15,7 +15,9 @@
 package com.dyuproject.protostuff.codegen;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 
 import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.Property;
@@ -197,9 +199,9 @@ public final class VelocityUtil
         throw new IllegalStateException();
     }
     
-    public static List<Class<?>> getEnumClasses(Model<?> model)
+    public static ArrayList<Class<?>> getEnumClasses(Model<?> model)
     {
-        ArrayList<Class<?>> enumClasses = new ArrayList<Class<?>>();
+        HashSet<Class<?>> enumClasses = new HashSet<Class<?>>();
         for(Property p : model.getProperties())
         {
             PropertyMeta pm = p.getPropertyMeta();
@@ -211,8 +213,15 @@ public final class VelocityUtil
             else if(pm.getTypeClass().isEnum())
                 enumClasses.add(pm.getTypeClass());
         }
+        ArrayList<Class<?>> classes = new ArrayList<Class<?>>(enumClasses);
+        Collections.sort(classes, new Comparator<Class<?>>(){
+            public int compare(Class<?> c, Class<?> c2)
+            {                
+                return c.getSimpleName().compareTo(c2.getSimpleName());
+            }            
+        });
         
-        return enumClasses;
+        return classes;
     }
 
 }
