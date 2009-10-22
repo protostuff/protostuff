@@ -153,7 +153,7 @@ public class Module implements Serializable
         this.options.putAll(options);
     }
     
-    public String getOptions(String key)
+    public String getOption(String key)
     {
         return options.getProperty(key);
     }
