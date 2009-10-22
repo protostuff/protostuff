@@ -56,8 +56,9 @@ public final class ${outputClassname} extends ProtobufJSON
         {
             #foreach( $p in $m.getProperties() )
             #set( $pm = $p.getPropertyMeta() )
+            #set( $dpn = $Util.getDerivedPropName($module, $pm) )
             
-            fieldMap.put("${pm.getName()}", ${pm.getNumber()});
+            fieldMap.put("${dpn}", ${pm.getNumber()});
             #end
 
         };
@@ -78,11 +79,12 @@ public final class ${outputClassname} extends ProtobufJSON
             #set( $pm = $p.getPropertyMeta() )
             #set( $pn = $pm.getName() )
             #set( $ppn = $Util.toPascal($pn) )
+            #set( $dpn = $Util.getDerivedPropName($module, $pm) )
             #set( $tc = $pm.getTypeClass() )
             #if( $pm.isRepeated() )            
             #set( $ctc = $pm.getComponentTypeClass() )
 
-            generator.writeFieldName("${pn}");
+            generator.writeFieldName("${dpn}");
             generator.writeStartArray();
             #if( ${ctc.isEnum()} )
 
@@ -99,32 +101,32 @@ public final class ${outputClassname} extends ProtobufJSON
 
             if (message.has${ppn}())
             {
-                generator.writeFieldName("${pn}");
+                generator.writeFieldName("${dpn}");
                 CONVERTOR_${tc.getSimpleName()}.generateTo(generator, message.get${ppn}());
             }
             #elseif( ${tc.getSimpleName()} == "ByteString" )
 
             if (message.has${ppn}())
             {
-                generator.writeFieldName("${pn}");
+                generator.writeFieldName("${dpn}");
                 generator.writeBinary(message.get${ppn}().toByteArray());
             }
             #elseif( ${tc.isEnum()} )
 
             if(message.has${ppn}())
-                generator.writeStringField("${pn}", message.get${ppn}().name());
+                generator.writeStringField("${dpn}", message.get${ppn}().name());
             #elseif( ${tc.getSimpleName()} == "boolean" ) 
 
             if(message.has${ppn}())
-                generator.writeBooleanField("${pn}", message.get${ppn}());
+                generator.writeBooleanField("${dpn}", message.get${ppn}());
             #elseif( ${tc.getSimpleName()} == "String" ) 
 
             if(message.has${ppn}())
-                generator.writeStringField("${pn}", message.get${ppn}());
+                generator.writeStringField("${dpn}", message.get${ppn}());
             #else
 
             if(message.has${ppn}())
-                generator.writeNumberField("${pn}", message.get${ppn}());
+                generator.writeNumberField("${dpn}", message.get${ppn}());
             #end
             #end
 

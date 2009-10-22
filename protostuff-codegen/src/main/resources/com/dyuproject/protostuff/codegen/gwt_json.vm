@@ -93,249 +93,251 @@ public final class ${name} extends JavaScriptObject {
     #set( $pm = $p.getPropertyMeta() )
     #set( $pn = $pm.getName() )
     #set( $ppn = $Util.toPascal($pn) )
+    #set( $dpn = $Util.getDerivedPropName($module, $pm) )
+    #set( $dan = $Util.getDerivedArgName($module, $pm) )
     #set( $tc = $pm.getTypeClass() )
 
-    /** ${pn} **/
+    /** ${dpn} **/
     #if( $pm.isRepeated() )
     #set( $ctc = $pm.getComponentTypeClass() )
     #if( ${pm.isMessage()} )
 
     public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(${ctc.getSimpleName()} ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(${ctc.getSimpleName()} ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "ByteString" )
 
     public native JsArrayString get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native String get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, String ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, String ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(String ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(String ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #elseif( ${ctc.isEnum()} )
 
     public native JsArray<${ctc.getSimpleName()}> get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native ${ctc.getSimpleName()} get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, ${ctc.getSimpleName()} ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(${ctc.getSimpleName()} ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(${ctc.getSimpleName()} ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "boolean" ) 
 
     public native JsArrayBoolean get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native boolean get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, boolean ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, boolean ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(boolean ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(boolean ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "String" )
 
     public native JsArrayString get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native String get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, String ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, String ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(String ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(String ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #elseif( ${ctc.getSimpleName()} == "int" )
 
     public native JsArrayInteger get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native int get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, int ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, int ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(int ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(int ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #else
 
     public native JsArrayNumber get${ppn}Array() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
     public native int get${ppn}Count() /*-{
-        return this["${pn}"].length;
+        return this["${dpn}"].length;
     }-*/;
 
     public native double get${ppn}(int index) /*-{
-        return this["${pn}"][index];
+        return this["${dpn}"][index];
     }-*/;
 
-    public native void set${ppn}(int index, double ${pn}) /*-{
-        this["${pn}"][index] = ${pn};
+    public native void set${ppn}(int index, double ${dan}) /*-{
+        this["${dpn}"][index] = ${dan};
     }-*/;
 
     public native void clear${ppn}() /*-{
-        this["${pn}"] = [];
+        this["${dpn}"] = [];
     }-*/;
 
-    public void add${ppn}(double ${pn}) {
-        set${ppn}(get${ppn}Count(), ${pn});
+    public void add${ppn}(double ${dan}) {
+        set${ppn}(get${ppn}Count(), ${dan});
     }
     #end
     #elseif( ${pm.isMessage()} )
 
     public native ${tc.getSimpleName()} get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(${tc.getSimpleName()} ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "ByteString" )
 
     public native String get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(String ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(String ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.isEnum()} )
 
     public native ${tc.getSimpleName()} get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(${tc.getSimpleName()} ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(${tc.getSimpleName()} ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "boolean" ) 
 
     public native boolean get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(boolean ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(boolean ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "String" )
 
     public native String get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(String ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(String ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #elseif( ${tc.getSimpleName()} == "int" )
 
     public native int get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(int ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(int ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #else
 
     public native double get${ppn}() /*-{
-        return this["${pn}"];
+        return this["${dpn}"];
     }-*/;
 
-    public native void set${ppn}(double ${pn}) /*-{
-        this["${pn}"] = ${pn};
+    public native void set${ppn}(double ${dan}) /*-{
+        this["${dpn}"] = ${dan};
     }-*/;
     #end
     #end

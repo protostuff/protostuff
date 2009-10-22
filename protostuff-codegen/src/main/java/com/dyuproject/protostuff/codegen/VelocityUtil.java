@@ -46,15 +46,37 @@ public final class VelocityUtil
         StringBuilder buffer = new StringBuilder();
         for(char c : camelCase.toCharArray())
         {
-            if(c>96)
+            if(c>64 && c<91)
             {
                 buffer.append('_');
-                buffer.append((char)(c-32));
+                buffer.append((char)(c+32));
             }
             else
                 buffer.append(c);
         }
         return buffer.toString();
+    }
+    
+    public static String getDerivedPropName(Module module, PropertyMeta meta)
+    {
+        String fieldCase = module.getOption("fieldCase");
+        if("pascal".equals(fieldCase))
+            return toPascal(meta.getName());
+        if("underscore".equals(fieldCase))
+            return toUnderscore(meta.getName());
+        
+        // default camel
+        return meta.getName();
+    }
+    
+    public static String getDerivedArgName(Module module, PropertyMeta meta)
+    {
+        String fieldCase = module.getOption("fieldCase");
+        if("underscore".equals(fieldCase))
+            return toUnderscore(meta.getName());
+        
+        // default camel ... pascal can't be used because it conflicts with classes
+        return meta.getName();
     }
     
     public static String printRGen(PropertyMeta meta)
