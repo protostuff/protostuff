@@ -223,5 +223,16 @@ public final class VelocityUtil
         
         return classes;
     }
+    
+    public static int getLastIndexOfRepeated(Model<?> model)
+    {
+        Property[] props = model.getProperties();
+        for(int i=props.length;i-->0;)
+        {
+            if(props[i].getPropertyMeta().isRepeated())
+                return i;
+        }
+        return -1;
+    }
 
 }

@@ -36,7 +36,26 @@ public final class ${name} extends JavaScriptObject {
      * @return new ${name} instance
      */
     public static native ${name} ${Util.getDerivedMethodName($module, "create")}() /*-{
-        return {};
+        return {
+            #set( $last = $Util.getLastIndexOfRepeated($model) )
+            #if( $last != -1)
+            #set( $count = $last + 1)
+            #foreach( $p in $model.getProperties() )
+            #set( $pm = $p.getPropertyMeta() )
+            #if( $pm.isRepeated() )
+            #if( $count == $velocityCount)
+
+            "${Util.getDerivedPropName($module, $pm)}": []
+            #break;
+            #else
+
+            "${Util.getDerivedPropName($module, $pm)}": [],
+            #end
+            #end
+            #end
+            #end
+
+        };
     }-*/;
 
     /**
