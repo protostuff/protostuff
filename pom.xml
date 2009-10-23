@@ -164,6 +164,8 @@
   </modules>
   
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  
     <junit-version>3.8.2</junit-version>
     <protobuf-version>2.2.0</protobuf-version>
     <jackson-version>1.2.1</jackson-version>
