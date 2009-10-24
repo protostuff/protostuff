@@ -125,7 +125,7 @@
     <repository>
       <id>protostuff</id>
       <name>protostuff remote repository</name>
-      <url>svn:https://protostuff.googlecode.com/svn/repos/maven2/</url>
+      <url>svn:https://protostuff.googlecode.com/svn/repos/maven2</url>
       <uniqueVersion>true</uniqueVersion>
     </repository>
   </distributionManagement>
