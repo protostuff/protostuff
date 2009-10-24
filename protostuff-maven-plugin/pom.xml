@@ -27,7 +27,7 @@
             </goals>
             <configuration>
               <tasks>
-                <delete file="../dist/${project.build.finalName}.${project.packaging}"/>
+                <delete file="../dist/${project.build.finalName}.jar"/>
               </tasks>
             </configuration>
           </execution>
