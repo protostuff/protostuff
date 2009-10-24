@@ -54,7 +54,7 @@
 
   <profiles>
     <profile>
-      <id>jwp</id>
+      <id>jwd</id>
       <build>
         <plugins>
           <plugin>
