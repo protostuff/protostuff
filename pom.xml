@@ -120,21 +120,26 @@
         </configuration>
       </plugin>
     </plugins>
-    <extensions>
+    <!--<extensions>
       <extension>
         <groupId>org.jvnet.wagon-svn</groupId>
         <artifactId>wagon-svn</artifactId>
         <version>1.9</version>
       </extension>
-    </extensions>
+    </extensions>-->
   </build>
   <distributionManagement>
     <repository>
+      <id>protostuff.local.repo</id>
+      <name>protostuff local repository</name>
+      <url>file:./../repos/maven2</url>
+    </repository>
+    <!--<repository>
       <id>protostuff</id>
       <name>protostuff remote repository</name>
       <url>svn:https://protostuff.googlecode.com/svn/repos/maven2</url>
       <uniqueVersion>true</uniqueVersion>
-    </repository>
+    </repository>-->
   </distributionManagement>
   <dependencyManagement>
     <dependencies>
