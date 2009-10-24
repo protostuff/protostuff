@@ -90,6 +90,7 @@
   </modules>
   
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler.source>1.5</compiler.source>
     <compiler.target>1.5</compiler.target>
     
@@ -101,7 +102,7 @@
     <protostuff.version>1.0-SNAPSHOT</protostuff.version>
     
     <!--<google.webtoolkit.home>${env.GWT_HOME}</google.webtoolkit.home>-->
-    <gwt.version>1.7.1</gwt.version>
+    <gwt.version>1.7.0</gwt.version>
     <gwt.mojo.version>1.1</gwt.mojo.version>
   </properties>
   

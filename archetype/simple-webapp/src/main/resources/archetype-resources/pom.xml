@@ -78,6 +78,7 @@
   </modules>
   
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler.source>1.5</compiler.source>
     <compiler.target>1.5</compiler.target>
 
