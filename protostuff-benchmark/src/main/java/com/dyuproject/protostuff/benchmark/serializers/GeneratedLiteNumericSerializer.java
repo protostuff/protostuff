@@ -36,7 +36,7 @@ public class GeneratedLiteNumericSerializer extends AbstractLiteMediaSerializer
     {
         V22LiteMedia.MediaContent.Builder builder = V22LiteMedia.MediaContent.newBuilder();
         JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
-        pbJSON.mergeFrom(pbJSON.getJsonFactory().createJsonParser(array), builder);
+        pbJSON.mergeFrom(parser, builder);
         parser.close();
         return builder.build();
     }

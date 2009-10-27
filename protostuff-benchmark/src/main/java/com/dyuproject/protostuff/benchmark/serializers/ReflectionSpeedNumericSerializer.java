@@ -36,7 +36,7 @@ public class ReflectionSpeedNumericSerializer extends AbstractSpeedMediaSerializ
     {
         V22SpeedMedia.MediaContent.Builder builder = V22SpeedMedia.MediaContent.newBuilder();
         JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
-        pbJSON.mergeFrom(pbJSON.getJsonFactory().createJsonParser(array), builder);
+        pbJSON.mergeFrom(parser, builder);
         parser.close();
         return builder.build();
     }
