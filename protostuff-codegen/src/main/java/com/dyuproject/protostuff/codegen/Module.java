@@ -63,14 +63,14 @@ public class Module implements Serializable
     }
     
     /**
-     * @return the fullClassName
+     * @return the fullClassname
      */
     public String getFullClassname()
     {
         return fullClassname;
     }
     /**
-     * @param fullClassName the fullClassName to set
+     * @param fullClassname the fullClassname to set
      */
     public void setFullClassname(String fullClassname)
     {
