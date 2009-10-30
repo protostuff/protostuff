@@ -60,10 +60,11 @@
         <configuration>
           <archive>
             <manifestEntries>
-            <mode>development</mode>
-            <url>http://code.google.com/p/protostuff/</url>
-            <implementation-version>${pom.version}</implementation-version>
-            <package>com.dyuproject.protostuff</package>
+              <mode>development</mode>
+              <url>http://code.google.com/p/protostuff/</url>
+              <implementation-version>${pom.version}</implementation-version>
+              <package>com.dyuproject.protostuff</package>
+              <Built-By>dyuproject</Built-By>
             </manifestEntries>
           </archive>
         </configuration>
