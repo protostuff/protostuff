@@ -270,7 +270,7 @@ public final class CodedInput implements Input {
     }
     final int oldLimit = pushLimit(length);
     ++recursionDepth;
-    Schema<T> schema = message.getSchema();
+    Schema<T> schema = message.cachedSchema();
     schema.mergeFrom(this, message);
     checkLastTagWas(0);
     --recursionDepth;

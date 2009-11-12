@@ -68,7 +68,7 @@ public final class CodedOutput implements Output {
   /** Returns a byte array encoded with the {@code message}. */
   public static <T extends Message<T>> byte[] toByteArray(T message, boolean forceWritePrimitives) {
     try {
-      final Schema<T> schema = message.getSchema();
+      final Schema<T> schema = message.cachedSchema();
       final ComputedSizeOutput computedSize = new ComputedSizeOutput(forceWritePrimitives);
       schema.writeTo(computedSize, message);
       final byte[] result = new byte[computedSize.getSize()];
@@ -1304,7 +1304,7 @@ public final class CodedOutput implements Output {
   }
 
   public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
-    Schema<T> schema = value.getSchema();
+    Schema<T> schema = value.cachedSchema();
     ComputedSizeOutput sc = computedSize;
     int last = sc.getSize();
     schema.writeTo(sc, value);

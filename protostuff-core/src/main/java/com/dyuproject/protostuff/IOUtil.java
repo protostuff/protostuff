@@ -78,7 +78,7 @@ public final class IOUtil
     {
         try
         {
-            Schema<T> schema = message.getSchema();
+            Schema<T> schema = message.cachedSchema();
             ComputedSizeOutput sizeCount = new ComputedSizeOutput(forceWritePrimitives);
             schema.writeTo(sizeCount, message);
             byte[] result = new byte[sizeCount.getSize()];
@@ -136,7 +136,7 @@ public final class IOUtil
     public static <T extends Message<T>> byte[] toByteArrayDeferred(T message, 
             boolean forceWritePrimitives)
     {
-        Schema<T> schema = message.getSchema();
+        Schema<T> schema = message.cachedSchema();
         DeferredOutput output = new DeferredOutput(forceWritePrimitives);
         try
         {
@@ -176,7 +176,7 @@ public final class IOUtil
     {
         try
         {
-            Schema<T> schema = message.getSchema();
+            Schema<T> schema = message.cachedSchema();
             CodedInput input = CodedInput.newInstance(data);
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);

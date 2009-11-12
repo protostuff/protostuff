@@ -25,8 +25,8 @@ public interface Message<T>
 {
     
     /**
-     * Gets the schema of this message.
+     * Gets the cached schema of this message.
      */
-    public Schema<T> getSchema();
+    public Schema<T> cachedSchema();
 
 }

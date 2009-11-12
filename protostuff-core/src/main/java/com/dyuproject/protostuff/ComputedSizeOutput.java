@@ -36,7 +36,7 @@ public final class ComputedSizeOutput implements Output
     
     public static <T extends Message<T>> int getSize(T message, boolean forceWritePrimitives)
     {
-        Schema<T> schema = message.getSchema();
+        Schema<T> schema = message.cachedSchema();
         ComputedSizeOutput sizeCount = new ComputedSizeOutput(forceWritePrimitives);
         try
         {
@@ -259,7 +259,7 @@ public final class ComputedSizeOutput implements Output
         if(value==null)
             return;
         
-        Schema<T> schema = value.getSchema();
+        Schema<T> schema = value.cachedSchema();
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         int last = size;

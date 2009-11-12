@@ -325,7 +325,7 @@ public final class DeferredOutput implements Output
         if(value==null)
             return;
         
-        Schema<T> schema = value.getSchema();
+        Schema<T> schema = value.cachedSchema();
         DeferredOutput output = new DeferredOutput(forceWritePrimitives);
         schema.writeTo(output, value);
         
