@@ -262,7 +262,7 @@ public final class CodedInput implements Input {
   }*/
 
   /** Read an embedded message field value from the stream. */
-  public <T extends Message<T>> void mergeMessage(final T message)
+  public <T extends Message<T>> T mergeMessage(final T message)
       throws IOException {
     final int length = readRawVarint32();
     if (recursionDepth >= recursionLimit) {
@@ -275,6 +275,7 @@ public final class CodedInput implements Input {
     checkLastTagWas(0);
     --recursionDepth;
     popLimit(oldLimit);
+    return message;
   }
 
   /** Read a {@code bytes} field value from the stream. */
@@ -863,7 +864,7 @@ public final class CodedInput implements Input {
     }
   }
   
-  public <T> void mergeObject(T value, Schema<T> schema) throws IOException {
+  public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
     final int length = readRawVarint32();
     if (recursionDepth >= recursionLimit) {
       throw ProtobufException.recursionLimitExceeded();
@@ -874,6 +875,7 @@ public final class CodedInput implements Input {
     checkLastTagWas(0);
     --recursionDepth;
     popLimit(oldLimit);
+    return value;
   }
   
   @SuppressWarnings("unchecked")
