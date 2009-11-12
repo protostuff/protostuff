@@ -104,7 +104,7 @@ public final class CodedInput implements Input {
     lastTag = readRawVarint32();
     if (lastTag == 0) {
       // If we actually read zero, that's not a valid tag.
-      throw InvalidProtocolBufferException.invalidTag();
+      throw ProtobufException.invalidTag();
     }
     return lastTag;
   }
@@ -114,13 +114,13 @@ public final class CodedInput implements Input {
    * This is used to verify that a nested group ended with the correct
    * end tag.
    *
-   * @throws InvalidProtocolBufferException {@code value} does not match the
+   * @throws ProtobufException {@code value} does not match the
    *                                        last tag.
    */
   public void checkLastTagWas(final int value)
-                              throws InvalidProtocolBufferException {
+                              throws ProtobufException {
     if (lastTag != value) {
-      throw InvalidProtocolBufferException.invalidEndTag();
+      throw ProtobufException.invalidEndTag();
     }
   }
 
@@ -153,7 +153,7 @@ public final class CodedInput implements Input {
         readRawLittleEndian32();
         return true;
       default:
-        throw InvalidProtocolBufferException.invalidWireType();
+        throw ProtobufException.invalidWireType();
     }
   }
 
@@ -266,7 +266,7 @@ public final class CodedInput implements Input {
       throws IOException {
     final int length = readRawVarint32();
     if (recursionDepth >= recursionLimit) {
-      throw InvalidProtocolBufferException.recursionLimitExceeded();
+      throw ProtobufException.recursionLimitExceeded();
     }
     final int oldLimit = pushLimit(length);
     ++recursionDepth;
@@ -358,7 +358,7 @@ public final class CodedInput implements Input {
                 return result;
               }
             }
-            throw InvalidProtocolBufferException.malformedVarint();
+            throw ProtobufException.malformedVarint();
           }
         }
       }
@@ -379,7 +379,7 @@ public final class CodedInput implements Input {
     for (; offset < 32; offset += 7) {
       final int b = input.read();
       if (b == -1) {
-        throw InvalidProtocolBufferException.truncatedMessage();
+        throw ProtobufException.truncatedMessage();
       }
       result |= (b & 0x7f) << offset;
       if ((b & 0x80) == 0) {
@@ -390,13 +390,13 @@ public final class CodedInput implements Input {
     for (; offset < 64; offset += 7) {
       final int b = input.read();
       if (b == -1) {
-        throw InvalidProtocolBufferException.truncatedMessage();
+        throw ProtobufException.truncatedMessage();
       }
       if ((b & 0x80) == 0) {
         return result;
       }
     }
-    throw InvalidProtocolBufferException.malformedVarint();
+    throw ProtobufException.malformedVarint();
   }
 
   /** Read a raw Varint from the stream. */
@@ -411,7 +411,7 @@ public final class CodedInput implements Input {
       }
       shift += 7;
     }
-    throw InvalidProtocolBufferException.malformedVarint();
+    throw ProtobufException.malformedVarint();
   }
 
   /** Read a 32-bit little-endian integer from the stream. */
@@ -574,14 +574,14 @@ public final class CodedInput implements Input {
    *
    * @return the old limit.
    */
-  public int pushLimit(int byteLimit) throws InvalidProtocolBufferException {
+  public int pushLimit(int byteLimit) throws ProtobufException {
     if (byteLimit < 0) {
-      throw InvalidProtocolBufferException.negativeSize();
+      throw ProtobufException.negativeSize();
     }
     byteLimit += totalBytesRetired + bufferPos;
     final int oldLimit = currentLimit;
     if (byteLimit > oldLimit) {
-      throw InvalidProtocolBufferException.truncatedMessage();
+      throw ProtobufException.truncatedMessage();
     }
     currentLimit = byteLimit;
 
@@ -650,7 +650,7 @@ public final class CodedInput implements Input {
     if (totalBytesRetired + bufferSize == currentLimit) {
       // Oops, we hit a limit.
       if (mustSucceed) {
-        throw InvalidProtocolBufferException.truncatedMessage();
+        throw ProtobufException.truncatedMessage();
       } else {
         return false;
       }
@@ -668,7 +668,7 @@ public final class CodedInput implements Input {
     if (bufferSize == -1) {
       bufferSize = 0;
       if (mustSucceed) {
-        throw InvalidProtocolBufferException.truncatedMessage();
+        throw ProtobufException.truncatedMessage();
       } else {
         return false;
       }
@@ -677,7 +677,7 @@ public final class CodedInput implements Input {
       final int totalBytesRead =
         totalBytesRetired + bufferSize + bufferSizeAfterLimit;
       if (totalBytesRead > sizeLimit || totalBytesRead < 0) {
-        throw InvalidProtocolBufferException.sizeLimitExceeded();
+        throw ProtobufException.sizeLimitExceeded();
       }
       return true;
     }
@@ -686,7 +686,7 @@ public final class CodedInput implements Input {
   /**
    * Read one byte from the input.
    *
-   * @throws InvalidProtocolBufferException The end of the stream or the current
+   * @throws ProtobufException The end of the stream or the current
    *                                        limit was reached.
    */
   public byte readRawByte() throws IOException {
@@ -699,19 +699,19 @@ public final class CodedInput implements Input {
   /**
    * Read a fixed size of bytes from the input.
    *
-   * @throws InvalidProtocolBufferException The end of the stream or the current
+   * @throws ProtobufException The end of the stream or the current
    *                                        limit was reached.
    */
   public byte[] readRawBytes(final int size) throws IOException {
     if (size < 0) {
-      throw InvalidProtocolBufferException.negativeSize();
+      throw ProtobufException.negativeSize();
     }
 
     if (totalBytesRetired + bufferPos + size > currentLimit) {
       // Read to the end of the stream anyway.
       skipRawBytes(currentLimit - totalBytesRetired - bufferPos);
       // Then fail.
-      throw InvalidProtocolBufferException.truncatedMessage();
+      throw ProtobufException.truncatedMessage();
     }
 
     if (size <= bufferSize - bufferPos) {
@@ -776,7 +776,7 @@ public final class CodedInput implements Input {
           final int n = (input == null) ? -1 :
             input.read(chunk, pos, chunk.length - pos);
           if (n == -1) {
-            throw InvalidProtocolBufferException.truncatedMessage();
+            throw ProtobufException.truncatedMessage();
           }
           totalBytesRetired += n;
           pos += n;
@@ -806,19 +806,19 @@ public final class CodedInput implements Input {
   /**
    * Reads and discards {@code size} bytes.
    *
-   * @throws InvalidProtocolBufferException The end of the stream or the current
+   * @throws ProtobufException The end of the stream or the current
    *                                        limit was reached.
    */
   public void skipRawBytes(final int size) throws IOException {
     if (size < 0) {
-      throw InvalidProtocolBufferException.negativeSize();
+      throw ProtobufException.negativeSize();
     }
 
     if (totalBytesRetired + bufferPos + size > currentLimit) {
       // Read to the end of the stream anyway.
       skipRawBytes(currentLimit - totalBytesRetired - bufferPos);
       // Then fail.
-      throw InvalidProtocolBufferException.truncatedMessage();
+      throw ProtobufException.truncatedMessage();
     }
 
     if (size <= bufferSize - bufferPos) {
@@ -835,7 +835,7 @@ public final class CodedInput implements Input {
       while (pos < size) {
         final int n = (input == null) ? -1 : (int) input.skip(size - pos);
         if (n <= 0) {
-          throw InvalidProtocolBufferException.truncatedMessage();
+          throw ProtobufException.truncatedMessage();
         }
         pos += n;
         totalBytesRetired += n;
@@ -866,7 +866,7 @@ public final class CodedInput implements Input {
   public <T> void mergeObject(T value, Schema<T> schema) throws IOException {
     final int length = readRawVarint32();
     if (recursionDepth >= recursionLimit) {
-      throw InvalidProtocolBufferException.recursionLimitExceeded();
+      throw ProtobufException.recursionLimitExceeded();
     }
     final int oldLimit = pushLimit(length);
     ++recursionDepth;
