@@ -17,7 +17,15 @@ package com.dyuproject.protostuff;
 import java.io.IOException;
 
 /**
- * TODO
+ * Handles the serialization and deserialization of a message/object tied to this.
+ * 
+ * Basically, any object can be serialized via protobuf.
+ * As long as its schema is provided, it does not need to implement {@link Message}.
+ * This was designed with "unobtrusive" in mind.
+ * The goal was to be able to serialize/deserialize any existing object without 
+ * having to touch its source.
+ * This will enable you to customize the serialization of objects from 
+ * 3rd party libraries.
  *
  * @author David Yu
  * @created Nov 9, 2009
@@ -25,14 +33,39 @@ import java.io.IOException;
 public interface Schema<T>
 {
     
+    /**
+     * Gets the field name associated with the number.
+     * This is particularly useful when serializing to different formats (Eg. JSON).
+     * When using numeric field names:
+     * <pre>
+     * return String.valueOf(number);
+     * </pre>
+     */
     public String getFieldName(int number);
     
+    /**
+     * Gets the field number associated with the name.
+     * This is particularly useful when serializing to different formats (Eg. JSON).
+     * When using numeric field names:
+     * <pre>
+     * return Integer.parseInt(name);
+     * </pre>
+     */
     public int getFieldNumber(String name);
     
+    /**
+     * Creates the message/object tied to this schema.
+     */
     public T createFrom(Schema<T> schema);
     
+    /**
+     * Deserializes a message/object from the {@link Input input}.
+     */
     public void mergeFrom(Input input, T message) throws IOException;
     
+    /**
+     * Serializes a message/object to the {@link Output output}.
+     */
     public void writeTo(Output output, T message) throws IOException;
 
 }
