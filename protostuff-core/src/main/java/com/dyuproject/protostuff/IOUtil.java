@@ -17,7 +17,7 @@ package com.dyuproject.protostuff;
 import java.io.IOException;
 
 /**
- * Utility for the ser/deser of messages and objects with schema.
+ * Utility for the serialization/deserialization of messages and objects tied to a schema.
  *
  * @author David Yu
  * @created Nov 12, 2009
@@ -28,7 +28,8 @@ public final class IOUtil
     private IOUtil(){}
     
     /**
-     * Serializes the {@code object} into a byte array via {@link CodedOutput}.
+     * Computes the buffer size and serializes the {@code object} into 
+     * a byte array via {@link CodedOutput}.
      */
     public static <T> byte[] toByteArrayComputed(T object, Schema<T> schema)
     {
@@ -36,7 +37,8 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code object} into a byte array via {@link CodedOutput}.
+     * Computes the buffer size and serializes the {@code object} into 
+     * a byte array via {@link CodedOutput}.
      */
     public static <T> byte[] toByteArrayComputed(T object, Schema<T> schema, 
             boolean forceWritePrimitives)
@@ -59,7 +61,8 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link CodedOutput}.
+     * Computes the buffer size and serializes the {@code message} into 
+     * a byte array via {@link CodedOutput}.
      */
     public static <T extends Message<T>> byte[] toByteArrayComputed(T message)
     {
@@ -67,7 +70,8 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link CodedOutput}.
+     * Computes the buffer size and serializes the {@code message} into 
+     * a byte array via {@link CodedOutput}.
      */
     public static <T extends Message<T>> byte[] toByteArrayComputed(T message, 
             boolean forceWritePrimitives)
