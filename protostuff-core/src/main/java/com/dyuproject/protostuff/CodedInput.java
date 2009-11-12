@@ -487,7 +487,9 @@ public final class CodedInput implements Input {
   /**
    * The total number of bytes read before the current buffer.  The total
    * bytes read up to the current position can be computed as
-   * {@code totalBytesRetired + bufferPos}.
+   * {@code totalBytesRetired + bufferPos}. This value may be negative if 
+   * reading started in the middle of the current buffer (e.g. if the 
+   * constructor that takes a byte array and an offset was used).
    */
   private int totalBytesRetired;
 
@@ -509,6 +511,7 @@ public final class CodedInput implements Input {
     this.buffer = buffer;
     bufferSize = off + len;
     bufferPos = off;
+    totalBytesRetired = -off;
     input = null;
   }
 
@@ -516,6 +519,7 @@ public final class CodedInput implements Input {
     buffer = new byte[BUFFER_SIZE];
     bufferSize = 0;
     bufferPos = 0;
+    totalBytesRetired = 0;
     this.input = input;
   }
 
@@ -633,6 +637,14 @@ public final class CodedInput implements Input {
    */
   public boolean isAtEnd() throws IOException {
     return bufferPos == bufferSize && !refillBuffer(false);
+  }
+  
+  /**
+   * The total bytes read up to the current position. Calling
+   * {@link #resetSizeCounter()} resets this value to zero.
+   */
+  public int getTotalBytesRead() {
+    return totalBytesRetired + bufferPos;
   }
 
   /**
