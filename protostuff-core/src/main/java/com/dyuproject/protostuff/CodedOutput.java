@@ -191,7 +191,7 @@ public final class CodedOutput implements Output {
     buffer[offset++] = (byte)(value & 0xFF);
     buffer[offset++] = (byte)(value >> 8 & 0xFF);
     buffer[offset++] = (byte)(value >> 16 & 0xFF);
-    buffer[offset++] = (byte)(value >> 24 & 0xFF);
+    buffer[offset] = (byte)(value >> 24 & 0xFF);
       
     return LITTLE_ENDIAN_32_SIZE;
   }
@@ -201,14 +201,14 @@ public final class CodedOutput implements Output {
     if(buffer.length - offset < LITTLE_ENDIAN_64_SIZE)
       throw new IllegalArgumentException("buffer capacity not enough.");
     
-    buffer[offset++] = (byte)((int)value & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 8 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 16 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 24 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 32 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 40 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 48 & 0xFF);
-    buffer[offset++] = (byte)((int)value >> 56 & 0xFF);
+    buffer[offset++] = (byte)(value & 0xFF);
+    buffer[offset++] = (byte)(value >> 8 & 0xFF);
+    buffer[offset++] = (byte)(value >> 16 & 0xFF);
+    buffer[offset++] = (byte)(value >> 24 & 0xFF);
+    buffer[offset++] = (byte)(value >> 32 & 0xFF);
+    buffer[offset++] = (byte)(value >> 40 & 0xFF);
+    buffer[offset++] = (byte)(value >> 48 & 0xFF);
+    buffer[offset] = (byte)(value >> 56 & 0xFF);
     
     return LITTLE_ENDIAN_64_SIZE;
   }
