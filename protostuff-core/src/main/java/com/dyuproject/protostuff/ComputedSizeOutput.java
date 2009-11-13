@@ -49,6 +49,7 @@ public final class ComputedSizeOutput implements Output
     }
 
     private ByteArrayNode root, current;
+    private boolean recomputed;
     
     public ComputedSizeOutput()
     {
@@ -68,8 +69,9 @@ public final class ComputedSizeOutput implements Output
     /**
      * Resets the size to zero.
      */
-    public ComputedSizeOutput resetSize()
+    ComputedSizeOutput resetSize()
     {
+        recomputed = true;
         size = 0;
         return this;
     }
@@ -193,6 +195,10 @@ public final class ComputedSizeOutput implements Output
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException
     {
         Schema<T> schema = value.cachedSchema();
+        // fail fast
+        if(!recomputed && !schema.isInitialized(value))
+            throw new UninitializedMessageException(value);
+        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         int last = size;
@@ -202,6 +208,10 @@ public final class ComputedSizeOutput implements Output
     
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException
     {
+        // fail fast
+        if(!recomputed && !schema.isInitialized(value))
+            throw new UninitializedMessageException(value);
+        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         int last = size;

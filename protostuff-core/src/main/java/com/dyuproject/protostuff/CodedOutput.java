@@ -200,6 +200,7 @@ public final class CodedOutput implements Output {
   private int position;
 
   private final OutputStream output;
+  private final boolean computed;
   private final ComputedSizeOutput computedSize;
   private ByteArrayNode current;
 
@@ -223,14 +224,22 @@ public final class CodedOutput implements Output {
   private CodedOutput(final byte[] buffer, final int offset, final int length, 
       final ComputedSizeOutput computedSize) {
     int size = computedSize.getSize();
-    if(size!=0 && size!=length)
+    if(size == 0) {
+      computed = false;
+      this.computedSize = computedSize;
+    }
+    else if(size != length) {
       throw new IllegalArgumentException("The computed size is not equal to the buffer size.");
+    }
+    else {
+      computed = true;
+      this.computedSize = computedSize.resetSize();
+    }
     
     output = null;
     this.buffer = buffer;
     position = offset;
     limit = offset + length;
-    this.computedSize = computedSize.resetSize();
   }
 
   private CodedOutput(final OutputStream output, final byte[] buffer) {
@@ -238,6 +247,7 @@ public final class CodedOutput implements Output {
     this.buffer = buffer;
     position = 0;
     limit = buffer.length;
+    computed = false;
     computedSize = new ComputedSizeOutput();
   }
 
@@ -1214,11 +1224,7 @@ public final class CodedOutput implements Output {
   
   public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-    ComputedSizeOutput sc = computedSize;
-    int last = sc.getSize();
-    schema.writeTo(sc, value);
-    writeRawVarint32(sc.getSize() - last);
-    schema.writeTo(this, value);
+    writeObjectNoTag(value, schema);
   }
 
   public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException {
@@ -1240,6 +1246,22 @@ public final class CodedOutput implements Output {
 
   public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
     Schema<T> schema = value.cachedSchema();
+    // fail fast
+    if(!computed && !schema.isInitialized(value)) {
+      throw new UninitializedMessageException(value);
+    }
+    ComputedSizeOutput sc = computedSize;
+    int last = sc.getSize();
+    schema.writeTo(sc, value);
+    writeRawVarint32(sc.getSize() - last);
+    schema.writeTo(this, value);
+  }
+  
+  public <T> void writeObjectNoTag(T value, Schema<T> schema) throws IOException {
+    // fail fast
+    if(!computed && !schema.isInitialized(value)) {
+      throw new UninitializedMessageException(value);
+    }
     ComputedSizeOutput sc = computedSize;
     int last = sc.getSize();
     schema.writeTo(sc, value);
