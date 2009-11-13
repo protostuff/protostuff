@@ -140,7 +140,7 @@ public class ComputedVSDeferredTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            return IOUtil.toByteArrayComputed(message, true);
+            return IOUtil.toByteArrayComputed(message);
         }
         
     };
@@ -150,7 +150,7 @@ public class ComputedVSDeferredTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            return IOUtil.toByteArrayDeferred(message, true);
+            return IOUtil.toByteArrayDeferred(message);
         }
         
     };

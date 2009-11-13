@@ -31,13 +31,8 @@ public final class ComputedSizeOutput implements Output
     
     public static <T extends Message<T>> int getSize(T message)
     {
-        return getSize(message, false);
-    }
-    
-    public static <T extends Message<T>> int getSize(T message, boolean forceWritePrimitives)
-    {
         Schema<T> schema = message.cachedSchema();
-        ComputedSizeOutput sizeCount = new ComputedSizeOutput(forceWritePrimitives);
+        ComputedSizeOutput sizeCount = new ComputedSizeOutput();
         try
         {
             schema.writeTo(sizeCount, message);
@@ -49,13 +44,12 @@ public final class ComputedSizeOutput implements Output
         }
         return sizeCount.size;
     }
-    
-    private final boolean forceWritePrimitives;
+
     private ByteArrayNode root, current;
     
-    public ComputedSizeOutput(boolean forceWritePrimitives)
+    public ComputedSizeOutput()
     {
-        this.forceWritePrimitives = forceWritePrimitives;
+        
     }
     
     private int size = 0;
@@ -84,9 +78,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT));
         s += value<0 ? 10 : CodedOutput.computeRawVarint32Size(value);
@@ -95,9 +86,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeUInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint32Size(value);
         size += s;
@@ -105,9 +93,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeSInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint32Size(
                         CodedOutput.encodeZigZag32(value));
@@ -116,9 +101,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeFixed32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
         size += s;
@@ -126,9 +108,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeSFixed32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
         size += s;
@@ -136,9 +115,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(value);
         size += s;
@@ -146,9 +122,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeUInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(value);
         size += s;
@@ -156,9 +129,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeSInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(
                         CodedOutput.encodeZigZag64(value));
@@ -167,9 +137,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeFixed64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
         size += s;
@@ -177,9 +144,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeSFixed64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
         size += s;
@@ -187,9 +151,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeFloat(int fieldNumber, float value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
         size += s;
@@ -197,9 +158,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeDouble(int fieldNumber, double value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
         size += s;
@@ -207,9 +165,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeBool(int fieldNumber, boolean value) throws IOException
     {
-        if(!value && !forceWritePrimitives)
-            return;
-        
         int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + 1;
         size += s;
@@ -224,9 +179,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeString(int fieldNumber, String value) throws IOException
     {
-        if(value==null)
-            return;
-        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         byte[] bytes = value.getBytes(ByteString.UTF8);
@@ -235,9 +187,6 @@ public final class ComputedSizeOutput implements Output
 
     public void writeBytes(int fieldNumber, ByteString value) throws IOException
     {
-        if(value==null)
-            return;
-        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         byte[] bytes = value.getBytes();
@@ -246,9 +195,6 @@ public final class ComputedSizeOutput implements Output
     
     public void writeByteArray(int fieldNumber, byte[] value) throws IOException
     {
-        if(value==null)
-            return;
-        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         size += CodedOutput.computeRawVarint32Size(value.length) + value.length;
@@ -256,9 +202,6 @@ public final class ComputedSizeOutput implements Output
 
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException
     {
-        if(value==null)
-            return;
-        
         Schema<T> schema = value.cachedSchema();
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
@@ -269,9 +212,6 @@ public final class ComputedSizeOutput implements Output
     
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException
     {
-        if(value==null)
-            return;
-        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         int last = size;
@@ -281,11 +221,7 @@ public final class ComputedSizeOutput implements Output
 
     public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException
     {
-        if(value==null)
-            return;
-
         // Persist the serialized data for efficiency.
-        
         ByteArrayOutputStream baos = new ByteArrayOutputStream(CodedOutput.DEFAULT_BUFFER_SIZE);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(value);

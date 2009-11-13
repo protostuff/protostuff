@@ -36,14 +36,14 @@ public class SerDeserTest extends TestCase
         Foo cfoo = new Foo();
         Foo dfoo = new Foo();        
         
-        int expectedSize = ComputedSizeOutput.getSize(fooCompare, true);
+        int expectedSize = ComputedSizeOutput.getSize(fooCompare);
         
-        byte[] coded = IOUtil.toByteArrayComputed(fooCompare, true);
+        byte[] coded = IOUtil.toByteArrayComputed(fooCompare);
         assertTrue(coded.length == expectedSize);
         IOUtil.mergeFrom(coded, cfoo);      
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
-        byte[] deferred = IOUtil.toByteArrayDeferred(fooCompare, true);
+        byte[] deferred = IOUtil.toByteArrayDeferred(fooCompare);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dfoo);
         SerializableObjects.assertEquals(fooCompare, dfoo);

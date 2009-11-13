@@ -26,29 +26,19 @@ public final class IOUtil
 {
     
     private IOUtil(){}
-    
+
     /**
      * Computes the buffer size and serializes the {@code object} into 
      * a byte array via {@link CodedOutput}.
      */
     public static <T> byte[] toByteArrayComputed(T object, Schema<T> schema)
     {
-        return toByteArrayComputed(object, schema, false);
-    }
-    
-    /**
-     * Computes the buffer size and serializes the {@code object} into 
-     * a byte array via {@link CodedOutput}.
-     */
-    public static <T> byte[] toByteArrayComputed(T object, Schema<T> schema, 
-            boolean forceWritePrimitives)
-    {
         try
         {
-            ComputedSizeOutput sizeCount = new ComputedSizeOutput(forceWritePrimitives);
+            ComputedSizeOutput sizeCount = new ComputedSizeOutput();
             schema.writeTo(sizeCount, object);
             byte[] result = new byte[sizeCount.getSize()];
-            CodedOutput output = CodedOutput.newInstance(result, forceWritePrimitives, sizeCount);
+            CodedOutput output = CodedOutput.newInstance(result, sizeCount);
             schema.writeTo(output, object);
             output.checkNoSpaceLeft();
             return result;
@@ -66,23 +56,13 @@ public final class IOUtil
      */
     public static <T extends Message<T>> byte[] toByteArrayComputed(T message)
     {
-        return toByteArrayComputed(message, false);
-    }
-    
-    /**
-     * Computes the buffer size and serializes the {@code message} into 
-     * a byte array via {@link CodedOutput}.
-     */
-    public static <T extends Message<T>> byte[] toByteArrayComputed(T message, 
-            boolean forceWritePrimitives)
-    {
         try
         {
             Schema<T> schema = message.cachedSchema();
-            ComputedSizeOutput sizeCount = new ComputedSizeOutput(forceWritePrimitives);
+            ComputedSizeOutput sizeCount = new ComputedSizeOutput();
             schema.writeTo(sizeCount, message);
             byte[] result = new byte[sizeCount.getSize()];
-            CodedOutput output = CodedOutput.newInstance(result, forceWritePrimitives, sizeCount);
+            CodedOutput output = CodedOutput.newInstance(result, sizeCount);
             schema.writeTo(output, message);
             output.checkNoSpaceLeft();
             return result;
@@ -97,18 +77,9 @@ public final class IOUtil
     /**
      * Serializes the {@code object} into a byte array via {@link DeferredOutput}.
      */
-    public static <T> byte[] toByteArrayDeferred(T object, Schema<T> schema)
+    public static <T> byte[] toByteArrayDeferred(T message, Schema<T> schema)
     {
-        return toByteArrayDeferred(object, schema, false);
-    }
-    
-    /**
-     * Serializes the {@code object} into a byte array via {@link DeferredOutput}.
-     */
-    public static <T> byte[] toByteArrayDeferred(T message, Schema<T> schema, 
-            boolean forceWritePrimitives)
-    {
-        DeferredOutput output = new DeferredOutput(forceWritePrimitives);
+        DeferredOutput output = new DeferredOutput();
         try
         {
             schema.writeTo(output, message);
@@ -127,17 +98,8 @@ public final class IOUtil
      */
     public static <T extends Message<T>> byte[] toByteArrayDeferred(T message)
     {
-        return toByteArrayDeferred(message, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into a byte array via {@link DeferredOutput}.
-     */
-    public static <T extends Message<T>> byte[] toByteArrayDeferred(T message, 
-            boolean forceWritePrimitives)
-    {
         Schema<T> schema = message.cachedSchema();
-        DeferredOutput output = new DeferredOutput(forceWritePrimitives);
+        DeferredOutput output = new DeferredOutput();
         try
         {
             schema.writeTo(output, message);

@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 /**
- * A protobuf output where the writing of bytes is deferred (buffered in memory).
+ * A protobuf output where the writing of bytes is deferred (buffered chunks).
  * 
  * Once the message serialization is done, data can then be streamed to 
  * an {@link OutputStream} or a {@link ByteBuffer}.
@@ -35,11 +35,10 @@ public final class DeferredOutput implements Output
 
     private ByteArrayNode root, current;
     private int size = 0;
-    private final boolean forceWritePrimitives;
 
-    public DeferredOutput(boolean forceWritePrimitives)
+    public DeferredOutput()
     {
-        this.forceWritePrimitives = forceWritePrimitives;
+        
     }
     
     /**
@@ -121,9 +120,6 @@ public final class DeferredOutput implements Output
 
     public void writeInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = value<0 ? CodedOutput.getTagAndRawVarInt64Bytes(tag, value) : 
             CodedOutput.getTagAndRawVarInt32Bytes(tag, value);
@@ -133,9 +129,6 @@ public final class DeferredOutput implements Output
     
     public void writeUInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, value);
         size += bytes.length;
@@ -144,9 +137,6 @@ public final class DeferredOutput implements Output
     
     public void writeSInt32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, CodedOutput.encodeZigZag32(value));
         size += bytes.length;
@@ -155,9 +145,6 @@ public final class DeferredOutput implements Output
     
     public void writeFixed32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, value);
         size += bytes.length;
@@ -166,9 +153,6 @@ public final class DeferredOutput implements Output
     
     public void writeSFixed32(int fieldNumber, int value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, value);
         size += bytes.length;
@@ -177,9 +161,6 @@ public final class DeferredOutput implements Output
 
     public void writeInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
         size += bytes.length;
@@ -188,9 +169,6 @@ public final class DeferredOutput implements Output
     
     public void writeUInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
         size += bytes.length;
@@ -199,9 +177,6 @@ public final class DeferredOutput implements Output
     
     public void writeSInt64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
         size += bytes.length;
@@ -210,9 +185,6 @@ public final class DeferredOutput implements Output
     
     public void writeFixed64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, value);
         size += bytes.length;
@@ -221,9 +193,6 @@ public final class DeferredOutput implements Output
     
     public void writeSFixed64(int fieldNumber, long value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, value);
         size += bytes.length;
@@ -232,9 +201,6 @@ public final class DeferredOutput implements Output
 
     public void writeFloat(int fieldNumber, float value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, Float.floatToRawIntBits(value));
         size += bytes.length;
@@ -243,9 +209,6 @@ public final class DeferredOutput implements Output
 
     public void writeDouble(int fieldNumber, double value) throws IOException
     {
-        if(value==0 && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, Double.doubleToRawLongBits(value));
         size += bytes.length;
@@ -254,9 +217,6 @@ public final class DeferredOutput implements Output
 
     public void writeBool(int fieldNumber, boolean value) throws IOException
     {
-        if(!value && !forceWritePrimitives)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, value ? 1 : 0);
         size += bytes.length;
@@ -273,9 +233,6 @@ public final class DeferredOutput implements Output
 
     public void writeString(int fieldNumber, String value) throws IOException
     {
-        if(value==null)
-            return;
-
         byte[] bytes = value.getBytes(ByteString.UTF8);
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -290,9 +247,6 @@ public final class DeferredOutput implements Output
 
     public void writeBytes(int fieldNumber, ByteString value) throws IOException
     {
-        if(value==null)
-            return;
-
         byte[] bytes = value.getBytes();
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -307,9 +261,6 @@ public final class DeferredOutput implements Output
     
     public void writeByteArray(int fieldNumber, byte[] bytes) throws IOException
     {
-        if(bytes==null)
-            return;
-        
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
         byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);
         size += delimited.length + bytes.length;
@@ -322,11 +273,8 @@ public final class DeferredOutput implements Output
 
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException
     {
-        if(value==null)
-            return;
-        
         Schema<T> schema = value.cachedSchema();
-        DeferredOutput output = new DeferredOutput(forceWritePrimitives);
+        DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -349,10 +297,7 @@ public final class DeferredOutput implements Output
     
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException
     {
-        if(value==null)
-            return;
-        
-        DeferredOutput output = new DeferredOutput(forceWritePrimitives);
+        DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -375,9 +320,6 @@ public final class DeferredOutput implements Output
 
     public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException
     {
-        if(value==null)
-            return;
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream(CodedOutput.DEFAULT_BUFFER_SIZE);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(value);

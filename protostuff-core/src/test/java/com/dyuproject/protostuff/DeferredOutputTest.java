@@ -29,7 +29,7 @@ public class DeferredOutputTest extends TestCase
     
     public void setUp()
     {
-        output = new DeferredOutput(true);
+        output = new DeferredOutput();
     }
     
     public void testInt32() throws Exception

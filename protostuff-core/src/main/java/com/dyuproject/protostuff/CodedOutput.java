@@ -66,14 +66,13 @@ import java.io.OutputStream;
 public final class CodedOutput implements Output {
   //START EXTRA
   /** Returns a byte array encoded with the {@code message}. */
-  public static <T extends Message<T>> byte[] toByteArray(T message, boolean forceWritePrimitives) {
+  public static <T extends Message<T>> byte[] toByteArray(T message) {
     try {
       final Schema<T> schema = message.cachedSchema();
-      final ComputedSizeOutput computedSize = new ComputedSizeOutput(forceWritePrimitives);
+      final ComputedSizeOutput computedSize = new ComputedSizeOutput();
       schema.writeTo(computedSize, message);
       final byte[] result = new byte[computedSize.getSize()];
-      final CodedOutput output = new CodedOutput(result, 0, result.length, 
-          forceWritePrimitives, computedSize);
+      final CodedOutput output = new CodedOutput(result, 0, result.length, computedSize);
       schema.writeTo(output, message);
       output.checkNoSpaceLeft();
       return result;
@@ -219,7 +218,6 @@ public final class CodedOutput implements Output {
   private int position;
 
   private final OutputStream output;
-  private final boolean forceWritePrimitives;
   private final ComputedSizeOutput computedSize;
   private ByteArrayNode current;
 
@@ -241,7 +239,7 @@ public final class CodedOutput implements Output {
   }
 
   private CodedOutput(final byte[] buffer, final int offset, final int length, 
-      final boolean forceWritePrimitives,final ComputedSizeOutput computedSize) {
+      final ComputedSizeOutput computedSize) {
     int size = computedSize.getSize();
     if(size!=0 && size!=length)
       throw new IllegalArgumentException("The computed size is not equal to the buffer size.");
@@ -250,36 +248,31 @@ public final class CodedOutput implements Output {
     this.buffer = buffer;
     position = offset;
     limit = offset + length;
-    this.forceWritePrimitives = forceWritePrimitives;
     this.computedSize = computedSize.resetCount();
   }
 
-  private CodedOutput(final OutputStream output, final byte[] buffer, 
-      final boolean forceWritePrimitives) {
+  private CodedOutput(final OutputStream output, final byte[] buffer) {
     this.output = output;
     this.buffer = buffer;
     position = 0;
     limit = buffer.length;
-    this.forceWritePrimitives = forceWritePrimitives;
-    computedSize = new ComputedSizeOutput(forceWritePrimitives);
+    computedSize = new ComputedSizeOutput();
   }
 
   /**
    * Create a new {@code CodedOutputStream} wrapping the given
    * {@code OutputStream}.
    */
-  public static CodedOutput newInstance(final OutputStream output, 
-     final boolean forceWritePrimitives) {
-    return new CodedOutput(output, new byte[DEFAULT_BUFFER_SIZE], forceWritePrimitives);
+  public static CodedOutput newInstance(final OutputStream output) {
+    return new CodedOutput(output, new byte[DEFAULT_BUFFER_SIZE]);
   }
 
   /**
    * Create a new {@code CodedOutputStream} wrapping the given
    * {@code OutputStream} with a given buffer size.
    */
-  public static CodedOutput newInstance(final OutputStream output,
-      final int bufferSize, final boolean forceWritePrimitives) {
-    return new CodedOutput(output, new byte[bufferSize], forceWritePrimitives);
+  public static CodedOutput newInstance(final OutputStream output, final int bufferSize) {
+    return new CodedOutput(output, new byte[bufferSize]);
   }
 
   /**
@@ -289,15 +282,13 @@ public final class CodedOutput implements Output {
    * array is faster than writing to an {@code OutputStream}.  See also
    * {@link ByteString#newCodedBuilder}.
    */
-  public static CodedOutput newInstance(final byte[] flatArray, 
-      final boolean forceWritePrimitives) {
-    return new CodedOutput(flatArray, 0, flatArray.length, forceWritePrimitives, 
-            new ComputedSizeOutput(forceWritePrimitives));
+  public static CodedOutput newInstance(final byte[] flatArray) {
+    return new CodedOutput(flatArray, 0, flatArray.length, 
+            new ComputedSizeOutput());
   }
   
-  static CodedOutput newInstance(final byte[] flatArray, 
-      final boolean forceWritePrimitives, final ComputedSizeOutput computedSize) {
-    return new CodedOutput(flatArray, 0, flatArray.length, forceWritePrimitives, computedSize);
+  static CodedOutput newInstance(final byte[] flatArray, final ComputedSizeOutput computedSize) {
+    return new CodedOutput(flatArray, 0, flatArray.length, computedSize);
   }
   /*@
   /**
@@ -338,8 +329,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code double} field, including tag, to the stream. */
   public void writeDouble(final int fieldNumber, final double value)
                           throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeDoubleNoTag(value);
   }
@@ -347,8 +336,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code float} field, including tag, to the stream. */
   public void writeFloat(final int fieldNumber, final float value)
                          throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeFloatNoTag(value);
   }
@@ -356,8 +343,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code uint64} field, including tag, to the stream. */
   public void writeUInt64(final int fieldNumber, final long value)
                           throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeUInt64NoTag(value);
   }
@@ -365,8 +350,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code int64} field, including tag, to the stream. */
   public void writeInt64(final int fieldNumber, final long value)
                          throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeInt64NoTag(value);
   }
@@ -374,8 +357,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code int32} field, including tag, to the stream. */
   public void writeInt32(final int fieldNumber, final int value)
                          throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeInt32NoTag(value);
   }
@@ -383,8 +364,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code fixed64} field, including tag, to the stream. */
   public void writeFixed64(final int fieldNumber, final long value)
                            throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeFixed64NoTag(value);
   }
@@ -392,8 +371,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code fixed32} field, including tag, to the stream. */
   public void writeFixed32(final int fieldNumber, final int value)
                            throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeFixed32NoTag(value);
   }
@@ -401,8 +378,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code bool} field, including tag, to the stream. */
   public void writeBool(final int fieldNumber, final boolean value)
                         throws IOException {
-    if(!value && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeBoolNoTag(value);
   }
@@ -410,8 +385,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code string} field, including tag, to the stream. */
   public void writeString(final int fieldNumber, final String value)
                           throws IOException {
-    if(value==null)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeStringNoTag(value);
   }
@@ -440,8 +413,6 @@ public final class CodedOutput implements Output {
   /** Write an embedded message field, including tag, to the stream. */
   public <T extends Message<T>> void writeMessage(final int fieldNumber, final T value)
                            throws IOException {
-    if(value==null)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeMessageNoTag(value);
   }
@@ -449,8 +420,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code bytes} field, including tag, to the stream. */
   public void writeBytes(final int fieldNumber, final ByteString value)
                          throws IOException {
-    if(value==null)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeBytesNoTag(value);
   }
@@ -458,8 +427,6 @@ public final class CodedOutput implements Output {
   /** Write a {@code uint32} field, including tag, to the stream. */
   public void writeUInt32(final int fieldNumber, final int value)
                           throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeUInt32NoTag(value);
   }
@@ -477,8 +444,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code sfixed32} field, including tag, to the stream. */
   public void writeSFixed32(final int fieldNumber, final int value)
                             throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeSFixed32NoTag(value);
   }
@@ -486,8 +451,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code sfixed64} field, including tag, to the stream. */
   public void writeSFixed64(final int fieldNumber, final long value)
                             throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeSFixed64NoTag(value);
   }
@@ -495,8 +458,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code sint32} field, including tag, to the stream. */
   public void writeSInt32(final int fieldNumber, final int value)
                           throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeSInt32NoTag(value);
   }
@@ -504,8 +465,6 @@ public final class CodedOutput implements Output {
   /** Write an {@code sint64} field, including tag, to the stream. */
   public void writeSInt64(final int fieldNumber, final long value)
                           throws IOException {
-    if(value==0 && !forceWritePrimitives)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeSInt64NoTag(value);
   }
@@ -1267,16 +1226,11 @@ public final class CodedOutput implements Output {
 
   //START EXTRA
   public void writeByteArray(int fieldNumber, byte[] value) throws IOException {
-    if(value==null)
-      return;
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeByteArrayNoTag(value);
   }
   
   public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException {
-    if(value==null)
-      return;
-    
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     ComputedSizeOutput sc = computedSize;
     int last = sc.getSize();
@@ -1286,14 +1240,13 @@ public final class CodedOutput implements Output {
   }
 
   public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException {
-    if(value==null)
-      return;
-
     ByteArrayNode node = current;
     if(node==null)
       node = computedSize.getRoot();
     
+    // tag and length
     writeRawBytes(node.bytes);
+    // content
     writeRawBytes(node.next.bytes);
     current = node.next.next;
   }
