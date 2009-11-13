@@ -165,9 +165,14 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
 
     public void writeTo(Output output, Baz message) throws IOException
     {
-        output.writeInt32(1, message.id);
-        output.writeString(2, message.name);
-        output.writeInt64(3, message.timestamp);
+        if(message.id != 0)
+            output.writeInt32(1, message.id);
+        
+        if(message.name != null)
+            output.writeString(2, message.name);
+        
+        if(message.timestamp != 0l)
+            output.writeInt64(3, message.timestamp);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

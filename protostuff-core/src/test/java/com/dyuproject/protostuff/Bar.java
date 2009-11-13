@@ -346,17 +346,32 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
 
     public void writeTo(Output output, Bar message) throws IOException
     {
-        output.writeInt32(1, message.someInt);
-        output.writeString(2, message.someString);
-        output.writeMessage(3, message.baz);
-        if(message.someEnum!=null) 
+        if(message.someInt != 0)
+            output.writeInt32(1, message.someInt);
+        
+        if(message.someString != null)
+            output.writeString(2, message.someString);
+        
+        if(message.baz != null)
+            output.writeMessage(3, message.baz);
+        
+        if(message.someEnum != null) 
             output.writeEnum(4, message.someEnum.number);
         
-        output.writeBytes(5, message.someBytes);
-        output.writeBool(6, message.someBoolean);
-        output.writeFloat(7, message.someFloat);
-        output.writeDouble(8, message.someDouble);
-        output.writeInt64(9, message.someLong);
+        if(message.someBytes != null)
+            output.writeBytes(5, message.someBytes);
+        
+        if(message.someBoolean)
+            output.writeBool(6, message.someBoolean);
+        
+        if(message.someFloat != 0f)
+            output.writeFloat(7, message.someFloat);
+        
+        if(message.someDouble != 0d)
+            output.writeDouble(8, message.someDouble);
+        
+        if(message.someLong != 0l)
+            output.writeInt64(9, message.someLong);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

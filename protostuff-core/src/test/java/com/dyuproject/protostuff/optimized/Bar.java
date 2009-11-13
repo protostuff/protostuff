@@ -354,17 +354,41 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
 
     public void writeTo(Output output, Bar message) throws IOException
     {
-        output.writeInt32(1, message.someInt);
-        output.writeString(2, message.someString);
-        output.writeMessage(3, message.baz);
-        if(message.someEnum!=null) 
-            output.writeEnum(4, message.someEnum.number);
+        int someInt = message.someInt;
+        if(someInt != 0)
+            output.writeInt32(1, someInt);
         
-        output.writeBytes(5, message.someBytes);
-        output.writeBool(6, message.someBoolean);
-        output.writeFloat(7, message.someFloat);
-        output.writeDouble(8, message.someDouble);
-        output.writeInt64(9, message.someLong);
+        String someString = message.someString;
+        if(someString != null)
+            output.writeString(2, someString);
+        
+        Baz baz = message.baz;
+        if(baz != null)
+            output.writeMessage(3, baz);
+        
+        Status someEnum = message.someEnum;
+        if(someEnum != null) 
+            output.writeEnum(4, someEnum.number);
+        
+        ByteString someBytes = message.someBytes;
+        if(someBytes != null)
+            output.writeBytes(5, someBytes);
+        
+        boolean someBoolean = message.someBoolean;
+        if(someBoolean)
+            output.writeBool(6, someBoolean);
+        
+        float someFloat = message.someFloat;
+        if(someFloat != 0f)
+            output.writeFloat(7, someFloat);
+        
+        double someDouble = message.someDouble;
+        if(someDouble != 0d)
+            output.writeDouble(8, someDouble);
+        
+        long someLong = message.someLong;
+        if(someLong != 0l)
+            output.writeInt64(9, someLong);
     }
     
     private void readObject(ObjectInputStream in) throws IOException
