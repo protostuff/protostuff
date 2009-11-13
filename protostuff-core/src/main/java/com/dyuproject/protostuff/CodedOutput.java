@@ -230,7 +230,7 @@ public final class CodedOutput implements Output {
     this.buffer = buffer;
     position = offset;
     limit = offset + length;
-    this.computedSize = computedSize.resetCount();
+    this.computedSize = computedSize.resetSize();
   }
 
   private CodedOutput(final OutputStream output, final byte[] buffer) {
