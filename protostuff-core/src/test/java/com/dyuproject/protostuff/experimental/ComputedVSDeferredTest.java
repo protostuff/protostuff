@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.optimized;
+package com.dyuproject.protostuff.experimental;
 
-import static com.dyuproject.protostuff.optimized.SerializableObjects.foo;
+import static com.dyuproject.protostuff.experimental.SerializableObjects.foo;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +27,7 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Message;
 
 /**
- * Benchmark to compare the serialization speed of 2 types (optimized).
+ * Benchmark to compare the serialization speed of 2 types (experimental).
  *
  * @author David Yu
  * @created Nov 13, 2009
@@ -44,11 +44,11 @@ public class ComputedVSDeferredTest extends TestCase
         
         PrintStream out = dir==null ? System.out : 
             new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-core-optimized-"+System.currentTimeMillis()+".html"), true));
+                    "protostuff-core-experimental-"+System.currentTimeMillis()+".html"), true));
         
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
         int loops = Integer.getInteger("benchmark.loops", 2000000);
-        String title = "protostuff-core-optimized ser/deser benchmark for " + loops + " runs";
+        String title = "protostuff-core-experimental ser/deser benchmark for " + loops + " runs";
         out.println("<html><head><title>");
         out.println(title);
         out.println("</title></head><body><p>");
@@ -65,8 +65,8 @@ public class ComputedVSDeferredTest extends TestCase
     
     public static void start(PrintStream out, int warmups, int loops) throws Exception
     {
-        serDeser(out, COMPUTED, "computed-optimized", warmups, loops);
-        serDeser(out, DEFERRED, "deferred-optimized", warmups, loops);
+        serDeser(out, COMPUTED, "computed-experimental", warmups, loops);
+        serDeser(out, DEFERRED, "deferred-experimental", warmups, loops);
     }
     
     public static void serDeser(PrintStream out) throws Exception
@@ -109,11 +109,11 @@ public class ComputedVSDeferredTest extends TestCase
         
         PrintStream out = dir==null ? System.out : 
             new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-core-optimized-"+System.currentTimeMillis()+".html"), true));
+                    "protostuff-core-experimental-"+System.currentTimeMillis()+".html"), true));
         
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
         int loops = Integer.getInteger("benchmark.loops", 2000000);
-        String title = "protostuff-core-optimized ser/deser benchmark for " + loops + " runs";
+        String title = "protostuff-core-experimental ser/deser benchmark for " + loops + " runs";
         out.println("<html><head><title>");
         out.println(title);
         out.println("</title></head><body><p>");

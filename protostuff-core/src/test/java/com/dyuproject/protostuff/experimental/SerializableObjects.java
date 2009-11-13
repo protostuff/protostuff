@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.optimized;
+package com.dyuproject.protostuff.experimental;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.optimized.Foo.EnumSample;
+import com.dyuproject.protostuff.experimental.Foo.EnumSample;
 
 /**
  * The objects to be tested.

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.optimized;
+package com.dyuproject.protostuff.experimental;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
