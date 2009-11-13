@@ -97,9 +97,12 @@ public class GeneratedProtobufJSONTest extends TestCase
         assertEquals(generatedLite, lite);
         assertEquals(generatedLiteNum, liteNum);
         
-        out.println(generatedLite);        
+        out.println(generatedLite);
+        out.println();
         out.println(lite);
+        out.println();
         out.println(generatedLiteNum);
+        out.println();
         out.println(liteNum);
     }
     
