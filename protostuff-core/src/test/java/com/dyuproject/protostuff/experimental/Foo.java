@@ -273,7 +273,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
         return this;
     }
 
-    public Foo createFrom(Schema<Foo> schema)
+    public Foo newMessage()
     {
         return new Foo();
     }

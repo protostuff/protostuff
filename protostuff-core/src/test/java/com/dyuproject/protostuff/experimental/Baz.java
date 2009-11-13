@@ -117,7 +117,7 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
         return this;
     }
 
-    public Baz createFrom(Schema<Baz> schema)
+    public Baz newMessage()
     {
         return new Baz();
     }

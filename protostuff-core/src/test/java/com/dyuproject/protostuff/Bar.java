@@ -262,7 +262,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
         return this;
     }
 
-    public Bar createFrom(Schema<Bar> schema)
+    public Bar newMessage()
     {
         return new Bar();
     }

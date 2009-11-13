@@ -56,7 +56,7 @@ public interface Schema<T>
     /**
      * Creates the message/object tied to this schema.
      */
-    public T createFrom(Schema<T> schema);
+    public T newMessage();
     
     /**
      * Deserializes a message/object from the {@link Input input}.
