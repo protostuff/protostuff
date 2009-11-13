@@ -23,7 +23,7 @@ package com.dyuproject.protostuff;
  * @author David Yu
  * @created Nov 12, 2009
  */
-class ByteArrayNode
+final class ByteArrayNode
 {
     
     final byte[] bytes;
