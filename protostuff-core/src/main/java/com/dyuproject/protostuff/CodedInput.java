@@ -272,6 +272,9 @@ public final class CodedInput implements Input {
     ++recursionDepth;
     Schema<T> schema = message.cachedSchema();
     schema.mergeFrom(this, message);
+    if(!schema.isInitialized(message)) {
+      throw new UninitializedMessageException(message.getClass().getName());
+    }
     checkLastTagWas(0);
     --recursionDepth;
     popLimit(oldLimit);
@@ -884,6 +887,9 @@ public final class CodedInput implements Input {
     final int oldLimit = pushLimit(length);
     ++recursionDepth;
     schema.mergeFrom(this, value);
+    if(!schema.isInitialized(value)) {
+      throw new UninitializedMessageException(value.getClass().getName());
+    }
     checkLastTagWas(0);
     --recursionDepth;
     popLimit(oldLimit);
