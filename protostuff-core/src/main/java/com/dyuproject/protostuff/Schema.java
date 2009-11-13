@@ -54,6 +54,11 @@ public interface Schema<T>
     public int getFieldNumber(String name);
     
     /**
+     * Returns true if there is no required field or if all the required fields are set.
+     */
+    public boolean isInitialized(T message);
+    
+    /**
      * Creates the message/object tied to this schema.
      */
     public T newMessage();

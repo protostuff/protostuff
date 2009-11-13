@@ -265,6 +265,11 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
     {
         return this;
     }
+    
+    public boolean isInitialized(Foo message)
+    {
+        return true;
+    }
 
     public Foo newMessage()
     {

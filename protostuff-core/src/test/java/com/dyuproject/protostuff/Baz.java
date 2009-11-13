@@ -110,6 +110,11 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
     {        
         return this;
     }
+    
+    public boolean isInitialized(Baz message)
+    {
+        return true;
+    }
 
     public Baz newMessage()
     {

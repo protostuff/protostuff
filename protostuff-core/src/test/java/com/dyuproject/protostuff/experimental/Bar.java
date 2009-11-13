@@ -268,6 +268,11 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     {
         return this;
     }
+    
+    public boolean isInitialized(Bar message)
+    {
+        return true;
+    }
 
     public Bar newMessage()
     {
