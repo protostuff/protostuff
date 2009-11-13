@@ -60,11 +60,17 @@ package com.dyuproject.protostuff;
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
-public class UninitializedMessageException extends RuntimeException {
+public final class UninitializedMessageException extends RuntimeException {
   private static final long serialVersionUID = -7466929953374883507L;
   
-  public UninitializedMessageException(String msg) {
-    super(msg);
+  public final Object uninitializedMessage;
+  
+  public UninitializedMessageException(Object uninitializedMessage) {
+    this.uninitializedMessage = uninitializedMessage;
+  }
+  
+  public Object getUninitializedMessage() {
+    return uninitializedMessage;
   }
 
   /*@public UninitializedMessageException(final MessageLite message) {

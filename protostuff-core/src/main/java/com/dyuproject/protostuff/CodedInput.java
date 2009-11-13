@@ -273,7 +273,7 @@ public final class CodedInput implements Input {
     Schema<T> schema = message.cachedSchema();
     schema.mergeFrom(this, message);
     if(!schema.isInitialized(message)) {
-      throw new UninitializedMessageException(message.getClass().getName());
+      throw new UninitializedMessageException(message);
     }
     checkLastTagWas(0);
     --recursionDepth;
@@ -888,7 +888,7 @@ public final class CodedInput implements Input {
     ++recursionDepth;
     schema.mergeFrom(this, value);
     if(!schema.isInitialized(value)) {
-      throw new UninitializedMessageException(value.getClass().getName());
+      throw new UninitializedMessageException(value);
     }
     checkLastTagWas(0);
     --recursionDepth;
