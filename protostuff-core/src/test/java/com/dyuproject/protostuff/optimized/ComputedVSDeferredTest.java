@@ -46,8 +46,8 @@ public class ComputedVSDeferredTest extends TestCase
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-optimized-"+System.currentTimeMillis()+".html"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 100000);
-        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        int warmups = Integer.getInteger("benchmark.warmups", 200000);
+        int loops = Integer.getInteger("benchmark.loops", 2000000);
         String title = "protostuff-core-optimized ser/deser benchmark for " + loops + " runs";
         out.println("<html><head><title>");
         out.println(title);
@@ -111,8 +111,8 @@ public class ComputedVSDeferredTest extends TestCase
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-optimized-"+System.currentTimeMillis()+".html"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 100000);
-        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        int warmups = Integer.getInteger("benchmark.warmups", 200000);
+        int loops = Integer.getInteger("benchmark.loops", 2000000);
         String title = "protostuff-core-optimized ser/deser benchmark for " + loops + " runs";
         out.println("<html><head><title>");
         out.println(title);
