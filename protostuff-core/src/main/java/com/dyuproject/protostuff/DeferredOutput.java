@@ -14,9 +14,7 @@
 
 package com.dyuproject.protostuff;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -328,10 +326,7 @@ public final class DeferredOutput implements Output
 
     public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(CodedOutput.DEFAULT_BUFFER_SIZE);
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(value);
-        byte[] bytes = baos.toByteArray();
+        byte[] bytes = CodedOutput.getByteArrayFromSerializable(value);
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
         byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);

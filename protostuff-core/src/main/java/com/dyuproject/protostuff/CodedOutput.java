@@ -45,7 +45,9 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 /**
@@ -192,6 +194,13 @@ public final class CodedOutput implements Output {
     buffer[offset] = (byte)(value >> 56 & 0xFF);
     
     return LITTLE_ENDIAN_64_SIZE;
+  }
+  
+  static byte[] getByteArrayFromSerializable(Object value) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE);
+    ObjectOutputStream oos = new ObjectOutputStream(baos);
+    oos.writeObject(value);
+    return baos.toByteArray();
   }
   //END EXTRA
 
@@ -1228,15 +1237,22 @@ public final class CodedOutput implements Output {
   }
 
   public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException {
-    ByteArrayNode node = current;
-    if(node==null)
-      node = computedSize.getRoot();
+    if(computed) {
+      ByteArrayNode node = current;
+      if(node==null)
+        node = computedSize.getRoot();
+      
+      // tag and length
+      writeRawBytes(node.bytes);
+      // content
+      writeRawBytes(node.next.bytes);
+      current = node.next.next;
+      return;
+    }
     
-    // tag and length
-    writeRawBytes(node.bytes);
-    // content
-    writeRawBytes(node.next.bytes);
-    current = node.next.next;
+    byte[] data = getByteArrayFromSerializable(value);
+    writeRawVarint32(data.length);
+    writeRawBytes(data);
   }
   
   public void writeByteArrayNoTag(byte[] value) throws IOException {
