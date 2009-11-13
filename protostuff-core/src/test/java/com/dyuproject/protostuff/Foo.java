@@ -28,7 +28,7 @@ import java.util.List;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public class Foo implements Message<Foo>, Schema<Foo>, Serializable
+public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
 {
     
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    

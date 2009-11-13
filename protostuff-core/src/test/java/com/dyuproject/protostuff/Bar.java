@@ -26,7 +26,7 @@ import java.util.HashMap;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public class Bar implements Message<Bar>, Schema<Bar>, Serializable
+public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
 {
     
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
