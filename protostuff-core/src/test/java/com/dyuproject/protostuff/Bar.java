@@ -316,10 +316,9 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
                     message.someString = input.readString();
                     break;
                 case 3:
-                    Baz baz = message.baz;
-                    if(baz==null)
-                        baz = message.baz = new Baz();
-                    input.mergeMessage(baz);
+                    if(message.baz==null)
+                        message.baz = new Baz();
+                    input.mergeMessage(message.baz);
                     break;
                 case 4:
                     message.someEnum = Status.valueOf(input.readEnum());
@@ -347,17 +346,17 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
 
     public void writeTo(Output output, Bar message) throws IOException
     {
-        output.writeInt32(1, someInt);
-        output.writeString(2, someString);
-        output.writeMessage(3, baz);
+        output.writeInt32(1, message.someInt);
+        output.writeString(2, message.someString);
+        output.writeMessage(3, message.baz);
         if(message.someEnum!=null) 
             output.writeEnum(4, message.someEnum.number);
         
-        output.writeBytes(5, someBytes);
-        output.writeBool(6, someBoolean);
-        output.writeFloat(7, someFloat);
-        output.writeDouble(8, someDouble);
-        output.writeInt64(9, someLong);
+        output.writeBytes(5, message.someBytes);
+        output.writeBool(6, message.someBoolean);
+        output.writeFloat(7, message.someFloat);
+        output.writeDouble(8, message.someDouble);
+        output.writeInt64(9, message.someLong);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

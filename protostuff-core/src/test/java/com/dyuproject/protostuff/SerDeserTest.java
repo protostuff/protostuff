@@ -14,12 +14,15 @@
 
 package com.dyuproject.protostuff;
 
-import java.util.Arrays;
+import static com.dyuproject.protostuff.TestObjects.bar;
+import static com.dyuproject.protostuff.TestObjects.baz;
+import static com.dyuproject.protostuff.TestObjects.foo;
+import static com.dyuproject.protostuff.TestObjects.negativeBar;
+import static com.dyuproject.protostuff.TestObjects.negativeBaz;
+
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import com.dyuproject.protostuff.Foo.EnumSample;
 
 /**
  * Serialization and deserialization test cases.
@@ -29,51 +32,6 @@ import com.dyuproject.protostuff.Foo.EnumSample;
  */
 public class SerDeserTest extends TestCase
 {
-    
-    static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
-    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
-            ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
-
-    
-    static final Baz baz = new Baz(567, "baz", 202020202);    
-    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
-            ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
-    
-    static final Foo foo = newFoo(
-            new Integer[]{90210,-90210, 0}, 
-            new String[]{"ab", "cd"}, 
-            new Bar[]{bar, negativeBar},
-            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
-            new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")}, 
-            new Boolean[]{true, false}, 
-            new Float[]{1234.4321f, -1234.4321f, 0f}, 
-            new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
-            new Long[]{7060504030201l, -7060504030201l, 0l});
-
-    
-    static Foo newFoo(
-            Integer[] someInt, 
-            String[] someString, 
-            Bar[] someBar, 
-            EnumSample[] someEnum,
-            ByteString[] someBytes,
-            Boolean[] someBoolean,
-            Float[] someFloat,
-            Double[] someDouble,
-            Long[] someLong)
-    {
-        
-        return new Foo(
-                Arrays.asList(someInt),
-                Arrays.asList(someString), 
-                Arrays.asList(someBar), 
-                Arrays.asList(someEnum), 
-                Arrays.asList(someBytes), 
-                Arrays.asList(someBoolean), 
-                Arrays.asList(someFloat), 
-                Arrays.asList(someDouble),
-                Arrays.asList(someLong));
-    }
     
     public void testFoo() throws Exception
     {

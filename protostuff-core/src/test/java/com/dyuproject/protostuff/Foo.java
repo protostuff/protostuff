@@ -314,58 +314,49 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
                 case 0:
                     return;
                 case 1:
-                    List<Integer> someInt = this.someInt;
-                    if(someInt==null)
-                        someInt = this.someInt = new ArrayList<Integer>();
-                    someInt.add(input.readInt32());
+                    if(message.someInt==null)
+                        message.someInt = new ArrayList<Integer>();
+                    message.someInt.add(input.readInt32());
                     break;
                 case 2:
-                    List<String> someString = this.someString;
-                    if(someString==null)
-                        someString = this.someString = new ArrayList<String>();
-                    someString.add(input.readString());
+                    if(message.someString==null)
+                        message.someString = new ArrayList<String>();
+                    message.someString.add(input.readString());
                     break;
                 case 3:
-                    List<Bar> someBar = this.someBar;
-                    if(someBar==null)
-                        someBar = this.someBar = new ArrayList<Bar>();
-                    someBar.add(input.mergeMessage(new Bar()));
+                    if(message.someBar==null)
+                        message.someBar = new ArrayList<Bar>();
+                    message.someBar.add(input.mergeMessage(new Bar()));
                     break;
                 case 4:
-                    List<EnumSample> someEnum = this.someEnum;
-                    if(someEnum==null)
-                        someEnum = this.someEnum = new ArrayList<EnumSample>();
-                    someEnum.add(EnumSample.valueOf(input.readEnum()));
+                    if(message.someEnum==null)
+                        message.someEnum = new ArrayList<EnumSample>();
+                    message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
-                    List<ByteString> someBytes = this.someBytes;
-                    if(someBytes==null)
-                        someBytes = this.someBytes = new ArrayList<ByteString>();
-                    someBytes.add(input.readBytes());
+                    if(message.someBytes==null)
+                        message.someBytes = new ArrayList<ByteString>();
+                    message.someBytes.add(input.readBytes());
                     break;
                 case 6:
-                    List<Boolean> someBoolean = this.someBoolean;
-                    if(someBoolean==null)
-                        someBoolean = this.someBoolean = new ArrayList<Boolean>();
-                    someBoolean.add(input.readBool());
+                    if(message.someBoolean==null)
+                        message.someBoolean = new ArrayList<Boolean>();
+                    message.someBoolean.add(input.readBool());
                     break;
                 case 7:
-                    List<Float> someFloat = this.someFloat;
-                    if(someFloat==null)
-                        someFloat = this.someFloat = new ArrayList<Float>();
-                    someFloat.add(input.readFloat());
+                    if(message.someFloat==null)
+                        message.someFloat = new ArrayList<Float>();
+                    message.someFloat.add(input.readFloat());
                     break;
                 case 8:
-                    List<Double> someDouble = this.someDouble;
-                    if(someDouble==null)
-                        someDouble = this.someDouble = new ArrayList<Double>();
-                    someDouble.add(input.readDouble());
+                    if(message.someDouble==null)
+                        message.someDouble = new ArrayList<Double>();
+                    message.someDouble.add(input.readDouble());
                     break;
                 case 9:
-                    List<Long> someLong = this.someLong;
-                    if(someLong==null)
-                        someLong = this.someLong = new ArrayList<Long>();
-                    someLong.add(input.readInt64());
+                    if(message.someLong==null)
+                        message.someLong = new ArrayList<Long>();
+                    message.someLong.add(input.readInt64());
                     break;
                 default:
                     input.handleUnknownField(number, this);
@@ -375,58 +366,49 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
 
     public void writeTo(Output output, Foo message) throws IOException
     {
-        List<Integer> someInt = this.someInt;
-        if(someInt!=null)
+        if(message.someInt!=null)
         {
-            for(int value : someInt)
+            for(int value : message.someInt)
                 output.writeInt32(1, value);
         }
-        List<String> someString = this.someString;
-        if(someString!=null)
+        if(message.someString!=null)
         {
-            for(String value : someString)
+            for(String value : message.someString)
                 output.writeString(2, value);
         }
-        List<Bar> someBar = this.someBar;
-        if(someBar!=null)
+        if(message.someBar!=null)
         {
-            for(Bar value : someBar)
+            for(Bar value : message.someBar)
                 output.writeMessage(3, value);
         }
-        List<EnumSample> someEnum = this.someEnum;
-        if(someEnum!=null)
+        if(message.someEnum!=null)
         {
-            for(EnumSample value : someEnum)
+            for(EnumSample value : message.someEnum)
                 output.writeEnum(4, value.number);
         }
-        List<ByteString> someBytes = this.someBytes;
-        if(someBytes!=null)
+        if(message.someBytes!=null)
         {
-            for(ByteString value : someBytes)
+            for(ByteString value : message.someBytes)
                 output.writeBytes(5, value);
         }
-        List<Boolean> someBoolean = this.someBoolean;
-        if(someBoolean!=null)
+        if(message.someBoolean!=null)
         {
-            for(boolean value : someBoolean)
+            for(boolean value : message.someBoolean)
                 output.writeBool(6, value);
         }
-        List<Float> someFloat = this.someFloat;
-        if(someFloat!=null)
+        if(message.someFloat!=null)
         {
-            for(Float value : someFloat)
+            for(Float value : message.someFloat)
                 output.writeFloat(7, value);
         }
-        List<Double> someDouble = this.someDouble;
-        if(someDouble!=null)
+        if(message.someDouble!=null)
         {
-            for(Double value : someDouble)
+            for(Double value : message.someDouble)
                 output.writeDouble(8, value);
         }
-        List<Long> someLong = this.someLong;
-        if(someLong!=null)
+        if(message.someLong!=null)
         {
-            for(Long value : someLong)
+            for(Long value : message.someLong)
                 output.writeInt64(9, value);
         }
     }
