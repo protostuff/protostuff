@@ -30,6 +30,33 @@ import java.util.Iterator;
  */
 public final class DeferredOutput implements Output
 {
+    
+    
+    /**
+     * Returns an iterator for the binary values of the serialized message.
+     */
+    public static Iterator<byte[]> iterator(final DeferredOutput output)
+    {
+        return new Iterator<byte[]>()
+        {
+            ByteArrayNode node = output.root;
+            
+            public boolean hasNext()
+            {
+                return node!=null;
+            }
+            public byte[] next()
+            {
+                ByteArrayNode next = node;
+                node = node.next;
+                return next.bytes;
+            }
+            public void remove()
+            {                
+                throw new UnsupportedOperationException();
+            }            
+        };
+    }
 
     private ByteArrayNode root, current;
     private int size = 0;
@@ -53,10 +80,7 @@ public final class DeferredOutput implements Output
     public void streamTo(OutputStream out) throws IOException
     {
         for(ByteArrayNode node = root; node!=null; node = node.next)
-        {
-            byte[] bytes = node.bytes;
-            out.write(bytes, 0, bytes.length);
-        }
+            out.write(node.bytes);
     }
     
     /**
@@ -88,32 +112,6 @@ public final class DeferredOutput implements Output
             start += bytes.length;
         }
         return buffer;
-    }
-    
-    /**
-     * Returns an iterator for the binary values of the serialized message.
-     */
-    public Iterator<byte[]> iterator()
-    {
-        return new Iterator<byte[]>()
-        {
-            ByteArrayNode node = root;
-            
-            public boolean hasNext()
-            {
-                return node.next!=null;
-            }
-            public byte[] next()
-            {
-                ByteArrayNode next = node;
-                node = node.next;
-                return next.bytes;
-            }
-            public void remove()
-            {                
-                throw new UnsupportedOperationException();
-            }            
-        };
     }
 
     public void writeInt32(int fieldNumber, int value) throws IOException
