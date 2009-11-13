@@ -91,5 +91,52 @@ public class SerDeserTest extends TestCase
         }
     }
     
+    /**
+     * HasHasBar wraps an object without a schema.
+     * That object will have to be serialized via the default java serialization 
+     * and it will be delimited.
+     * 
+     * HasBar wraps a message {@link Bar}.
+     */
+    public void testJavaSerializable() throws Exception
+    {
+        HasHasBar hhbCompare = new HasHasBar("hhb", 
+                new HasBar(12345, "hb", SerializableObjects.bar));
+        HasHasBar chhb = new HasHasBar();
+        HasHasBar dhhb = new HasHasBar();        
+        
+        int expectedSize = ComputedSizeOutput.getSize(hhbCompare);
+        
+        byte[] coded = IOUtil.toByteArrayComputed(hhbCompare);
+        assertTrue(coded.length == expectedSize);
+        IOUtil.mergeFrom(coded, chhb);      
+        assertEquals(hhbCompare, chhb);
+
+        byte[] deferred = IOUtil.toByteArrayDeferred(hhbCompare);
+        assertTrue(deferred.length == expectedSize);
+        IOUtil.mergeFrom(deferred, dhhb);
+        assertEquals(hhbCompare, dhhb);
+    }
+    
+    static void assertEquals(HasHasBar h1, HasHasBar h2)
+    {
+        // true if both are null
+        if(h1 == h2)
+            return;
+        
+        assertEquals(h1.getName(), h2.getName());
+        assertEquals(h1.getHasBar(), h2.getHasBar());
+    }
+    
+    static void assertEquals(HasBar h1, HasBar h2)
+    {
+        // true if both are null
+        if(h1 == h2)
+            return;
+        
+        assertTrue(h1.getId() == h2.getId());
+        assertEquals(h1.getName(), h2.getName());
+        SerializableObjects.assertEquals(h1.getBar(), h2.getBar());
+    }
 
 }
