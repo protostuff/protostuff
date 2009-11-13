@@ -65,24 +65,6 @@ import java.io.OutputStream;
  */
 public final class CodedOutput implements Output {
   //START EXTRA
-  /** Returns a byte array encoded with the {@code message}. */
-  public static <T extends Message<T>> byte[] toByteArray(T message) {
-    try {
-      final Schema<T> schema = message.cachedSchema();
-      final ComputedSizeOutput computedSize = new ComputedSizeOutput();
-      schema.writeTo(computedSize, message);
-      final byte[] result = new byte[computedSize.getSize()];
-      final CodedOutput output = new CodedOutput(result, 0, result.length, computedSize);
-      schema.writeTo(output, message);
-      output.checkNoSpaceLeft();
-      return result;
-    } catch (IOException e) {
-      throw new RuntimeException(
-        "Serializing to a byte array threw an IOException " +
-        "(should never happen).", e);
-    }
-  }
-  
   /** Returns a byte array encoded with the tag and var int 32 */
   public static byte[] getTagAndRawVarInt32Bytes(int tag, int value) {
     int tagSize = computeRawVarint32Size(tag);
