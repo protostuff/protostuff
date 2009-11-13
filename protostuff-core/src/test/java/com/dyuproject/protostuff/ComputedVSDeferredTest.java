@@ -14,7 +14,7 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.TestObjects.foo;
+import static com.dyuproject.protostuff.SerializableObjects.foo;
 
 import java.io.File;
 import java.io.FileOutputStream;
