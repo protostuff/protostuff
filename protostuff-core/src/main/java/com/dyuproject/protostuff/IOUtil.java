@@ -53,18 +53,7 @@ public final class IOUtil
      */
     public static <T extends Message<T>> byte[] toByteArray(T message)
     {
-        DeferredOutput output = new DeferredOutput();
-        try
-        {
-            message.cachedSchema().writeTo(output, message);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        
-        return output.toByteArray();
+        return toByteArray(message, message.cachedSchema());
     }
     
     /**
@@ -90,9 +79,18 @@ public final class IOUtil
      */
     public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema)
     {
+        mergeFrom(data, 0, data.length, message, schema);
+    }
+    
+    /**
+     * Merges the {@code message} with the byte array using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
+            Schema<T> schema)
+    {
         try
         {
-            CodedInput input = CodedInput.newInstance(data);
+            CodedInput input = CodedInput.newInstance(data, offset, length);
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
@@ -108,17 +106,16 @@ public final class IOUtil
      */
     public static <T extends Message<T>> void mergeFrom(byte[] data, T message)
     {
-        try
-        {
-            CodedInput input = CodedInput.newInstance(data);
-            message.cachedSchema().mergeFrom(input, message);
-            input.checkLastTagWas(0);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
-                    "never happen).",e);
-        }
+        mergeFrom(data, 0, data.length, message, message.cachedSchema());
+    }
+    
+    /**
+     * Merges the {@code message} with the byte array.
+     */
+    public static <T extends Message<T>> void mergeFrom(byte[] data, int offset, int length, 
+            T message)
+    {
+        mergeFrom(data, offset, length, message, message.cachedSchema());
     }
     
     /**
@@ -138,9 +135,7 @@ public final class IOUtil
     public static <T extends Message<T>> void mergeFrom(InputStream in, T message) 
     throws IOException
     {
-        CodedInput input = CodedInput.newInstance(in);
-        message.cachedSchema().mergeFrom(input, message);
-        input.checkLastTagWas(0);
+        mergeFrom(in, message, message.cachedSchema());
     }
 
 }
