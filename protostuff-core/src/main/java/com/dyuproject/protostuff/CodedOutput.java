@@ -1298,18 +1298,18 @@ public final class CodedOutput implements Output {
 
   public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
     Schema<T> schema = value.cachedSchema();
-    ComputedSizeOutput sc = computedSize;
-    int last = sc.getSize();
-    schema.writeTo(sc, value);
-    writeRawVarint32(sc.getSize() - last);
+    ComputedSizeOutput cs = computedSize;
+    int last = cs.getSize();
+    schema.writeTo(cs, value);
+    writeRawVarint32(cs.getSize() - last);
     schema.writeTo(this, value);
   }
   
   public <T> void writeObjectNoTag(T value, Schema<T> schema) throws IOException {
-    ComputedSizeOutput sc = computedSize;
-    int last = sc.getSize();
-    schema.writeTo(sc, value);
-    writeRawVarint32(sc.getSize() - last);
+    ComputedSizeOutput cs = computedSize;
+    int last = cs.getSize();
+    schema.writeTo(cs, value);
+    writeRawVarint32(cs.getSize() - last);
     schema.writeTo(this, value);
   }
   //END EXTRA
