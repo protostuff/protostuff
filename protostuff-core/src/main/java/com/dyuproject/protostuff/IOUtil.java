@@ -15,6 +15,8 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Utility for the serialization/deserialization of messages and objects tied to a schema.
@@ -28,7 +30,7 @@ public final class IOUtil
     private IOUtil(){}
     
     /**
-     * Serializes the {@code object} into a byte array via {@link DeferredOutput}.
+     * Serializes the {@code message} into a byte array via {@link DeferredOutput}.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
@@ -51,11 +53,10 @@ public final class IOUtil
      */
     public static <T extends Message<T>> byte[] toByteArray(T message)
     {
-        Schema<T> schema = message.cachedSchema();
         DeferredOutput output = new DeferredOutput();
         try
         {
-            schema.writeTo(output, message);
+            message.cachedSchema().writeTo(output, message);
         }
         catch (IOException e)
         {
@@ -67,14 +68,32 @@ public final class IOUtil
     }
     
     /**
-     * Merges the {@code object} with the byte array using the given {@code schema}.
+     * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
      */
-    public static <T> void mergeFrom(byte[] data, T object, Schema<T> schema)
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        schema.writeTo(CodedOutput.newInstance(out), message);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
+     */
+    public static <T extends Message<T>> void writeTo(OutputStream out, T message)
+    throws IOException
+    {
+        message.cachedSchema().writeTo(CodedOutput.newInstance(out), message);
+    }
+    
+    /**
+     * Merges the {@code message} with the byte array using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema)
     {
         try
         {
             CodedInput input = CodedInput.newInstance(data);
-            schema.mergeFrom(input, object);
+            schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
         catch (IOException e)
@@ -91,9 +110,8 @@ public final class IOUtil
     {
         try
         {
-            Schema<T> schema = message.cachedSchema();
             CodedInput input = CodedInput.newInstance(data);
-            schema.mergeFrom(input, message);
+            message.cachedSchema().mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
         catch (IOException e)
@@ -101,6 +119,28 @@ public final class IOUtil
             throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
                     "never happen).",e);
         }
+    }
+    
+    /**
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
+    throws IOException
+    {
+        CodedInput input = CodedInput.newInstance(in);
+        schema.mergeFrom(input, message);
+        input.checkLastTagWas(0);
+    }
+    
+    /**
+     * Merges the {@code message} from the {@link InputStream}.
+     */
+    public static <T extends Message<T>> void mergeFrom(InputStream in, T message) 
+    throws IOException
+    {
+        CodedInput input = CodedInput.newInstance(in);
+        message.cachedSchema().mergeFrom(input, message);
+        input.checkLastTagWas(0);
     }
 
 }
