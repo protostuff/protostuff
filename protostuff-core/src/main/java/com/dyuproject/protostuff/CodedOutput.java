@@ -278,7 +278,7 @@ public final class CodedOutput implements Output {
     }
     else {
       computed = true;
-      this.computedSize = computedSize.resetSize();
+      this.computedSize = computedSize.reset(true);
     }
     
     output = null;
@@ -1298,10 +1298,6 @@ public final class CodedOutput implements Output {
 
   public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
     Schema<T> schema = value.cachedSchema();
-    // fail fast
-    if(!computed && !schema.isInitialized(value)) {
-      throw new UninitializedMessageException(value);
-    }
     ComputedSizeOutput sc = computedSize;
     int last = sc.getSize();
     schema.writeTo(sc, value);
@@ -1310,10 +1306,6 @@ public final class CodedOutput implements Output {
   }
   
   public <T> void writeObjectNoTag(T value, Schema<T> schema) throws IOException {
-    // fail fast
-    if(!computed && !schema.isInitialized(value)) {
-      throw new UninitializedMessageException(value);
-    }
     ComputedSizeOutput sc = computedSize;
     int last = sc.getSize();
     schema.writeTo(sc, value);

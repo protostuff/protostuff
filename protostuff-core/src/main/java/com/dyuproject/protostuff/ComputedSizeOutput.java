@@ -67,9 +67,9 @@ public final class ComputedSizeOutput implements Output
     /**
      * Resets the size to zero.
      */
-    ComputedSizeOutput resetSize()
+    ComputedSizeOutput reset(boolean recomputed)
     {
-        recomputed = true;
+        this.recomputed = recomputed;
         size = 0;
         return this;
     }
