@@ -26,58 +26,11 @@ public final class IOUtil
 {
     
     private IOUtil(){}
-
-    /**
-     * Computes the buffer size and serializes the {@code object} into 
-     * a byte array via {@link CodedOutput}.
-     */
-    public static <T> byte[] toByteArrayComputed(T object, Schema<T> schema)
-    {
-        try
-        {
-            ComputedSizeOutput sizeCount = new ComputedSizeOutput();
-            schema.writeTo(sizeCount, object);
-            byte[] result = new byte[sizeCount.getSize()];
-            CodedOutput output = CodedOutput.newInstance(result, sizeCount);
-            schema.writeTo(output, object);
-            output.checkNoSpaceLeft();
-            return result;
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).",e);
-        }
-    }
-    
-    /**
-     * Computes the buffer size and serializes the {@code message} into 
-     * a byte array via {@link CodedOutput}.
-     */
-    public static <T extends Message<T>> byte[] toByteArrayComputed(T message)
-    {
-        try
-        {
-            Schema<T> schema = message.cachedSchema();
-            ComputedSizeOutput sizeCount = new ComputedSizeOutput();
-            schema.writeTo(sizeCount, message);
-            byte[] result = new byte[sizeCount.getSize()];
-            CodedOutput output = CodedOutput.newInstance(result, sizeCount);
-            schema.writeTo(output, message);
-            output.checkNoSpaceLeft();
-            return result;
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).",e);
-        }
-    }
     
     /**
      * Serializes the {@code object} into a byte array via {@link DeferredOutput}.
      */
-    public static <T> byte[] toByteArrayDeferred(T message, Schema<T> schema)
+    public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         DeferredOutput output = new DeferredOutput();
         try
@@ -96,7 +49,7 @@ public final class IOUtil
     /**
      * Serializes the {@code message} into a byte array via {@link DeferredOutput}.
      */
-    public static <T extends Message<T>> byte[] toByteArrayDeferred(T message)
+    public static <T extends Message<T>> byte[] toByteArray(T message)
     {
         Schema<T> schema = message.cachedSchema();
         DeferredOutput output = new DeferredOutput();

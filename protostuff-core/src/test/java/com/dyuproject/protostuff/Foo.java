@@ -431,7 +431,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = IOUtil.toByteArrayDeferred(this);
+        byte[] data = IOUtil.toByteArray(this);
         out.writeInt(data.length);
         out.write(data);
         out.close();

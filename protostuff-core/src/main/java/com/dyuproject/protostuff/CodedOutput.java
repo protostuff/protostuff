@@ -196,6 +196,42 @@ public final class CodedOutput implements Output {
     return LITTLE_ENDIAN_64_SIZE;
   }
   
+  /** Returns the byte array computed from the var int 32 size */
+  public static byte[] getRawVarInt32Bytes(int value) {
+    int size = computeRawVarint32Size(value);
+    if(size==1)
+      return new byte[]{(byte)value};
+
+    int offset = 0;
+    byte[] buffer = new byte[size];
+    for(int i=0,last=size-1; i<last; i++, value >>>= 7)
+      buffer[offset++] = (byte)((value & 0x7F) | 0x80);
+        
+    buffer[offset] = (byte)value;
+    return buffer;
+  }
+  
+  /**
+   * Computes the buffer size and serializes the {@code message} into 
+   * a byte array.
+   */
+  public static <T extends Message<T>> byte[] toByteArray(T message) {
+    try {
+      Schema<T> schema = message.cachedSchema();
+      ComputedSizeOutput sizeCount = new ComputedSizeOutput();
+      schema.writeTo(sizeCount, message);
+      byte[] result = new byte[sizeCount.getSize()];
+      CodedOutput output = CodedOutput.newInstance(result, sizeCount);
+      schema.writeTo(output, message);
+      output.checkNoSpaceLeft();
+      return result;
+    } catch (IOException e) {
+      throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+        "(should never happen).",e);
+    }
+  }  
+  
+  /** Serializes the default java serializable object into a byte array */
   static byte[] getByteArrayFromSerializable(Object value) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE);
     ObjectOutputStream oos = new ObjectOutputStream(baos);

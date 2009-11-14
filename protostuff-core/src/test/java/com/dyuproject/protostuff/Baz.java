@@ -193,7 +193,7 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = IOUtil.toByteArrayDeferred(this);
+        byte[] data = IOUtil.toByteArray(this);
         out.writeInt(data.length);
         out.write(data);
         out.close();

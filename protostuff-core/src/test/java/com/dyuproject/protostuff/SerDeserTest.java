@@ -38,12 +38,12 @@ public class SerDeserTest extends TestCase
         
         int expectedSize = ComputedSizeOutput.getSize(fooCompare);
         
-        byte[] coded = IOUtil.toByteArrayComputed(fooCompare);
+        byte[] coded = CodedOutput.toByteArray(fooCompare);
         assertTrue(coded.length == expectedSize);
         IOUtil.mergeFrom(coded, cfoo);      
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
-        byte[] deferred = IOUtil.toByteArrayDeferred(fooCompare);
+        byte[] deferred = IOUtil.toByteArray(fooCompare);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dfoo);
         SerializableObjects.assertEquals(fooCompare, dfoo);
@@ -58,12 +58,12 @@ public class SerDeserTest extends TestCase
             
             int expectedSize = ComputedSizeOutput.getSize(barCompare);
             
-            byte[] coded = IOUtil.toByteArrayComputed(barCompare);
+            byte[] coded = CodedOutput.toByteArray(barCompare);
             assertTrue(coded.length == expectedSize);
             IOUtil.mergeFrom(coded, cbar);        
             SerializableObjects.assertEquals(barCompare, cbar);
 
-            byte[] deferred = IOUtil.toByteArrayDeferred(barCompare);
+            byte[] deferred = IOUtil.toByteArray(barCompare);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbar);
             SerializableObjects.assertEquals(barCompare, dbar);
@@ -79,12 +79,12 @@ public class SerDeserTest extends TestCase
             
             int expectedSize = ComputedSizeOutput.getSize(bazCompare);
             
-            byte[] coded = IOUtil.toByteArrayComputed(bazCompare);
+            byte[] coded = CodedOutput.toByteArray(bazCompare);
             assertTrue(coded.length == expectedSize);
             IOUtil.mergeFrom(coded, cbaz);        
             SerializableObjects.assertEquals(bazCompare, cbaz);
 
-            byte[] deferred = IOUtil.toByteArrayDeferred(bazCompare);
+            byte[] deferred = IOUtil.toByteArray(bazCompare);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbaz);
             SerializableObjects.assertEquals(bazCompare, dbaz);
@@ -107,12 +107,12 @@ public class SerDeserTest extends TestCase
         
         int expectedSize = ComputedSizeOutput.getSize(hhbCompare);
         
-        byte[] coded = IOUtil.toByteArrayComputed(hhbCompare);
+        byte[] coded = CodedOutput.toByteArray(hhbCompare);
         assertTrue(coded.length == expectedSize);
         IOUtil.mergeFrom(coded, chhb);      
         assertEquals(hhbCompare, chhb);
 
-        byte[] deferred = IOUtil.toByteArrayDeferred(hhbCompare);
+        byte[] deferred = IOUtil.toByteArray(hhbCompare);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dhhb);
         assertEquals(hhbCompare, dhhb);

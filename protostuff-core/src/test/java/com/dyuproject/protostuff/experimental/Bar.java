@@ -409,7 +409,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = IOUtil.toByteArrayDeferred(this);
+        byte[] data = IOUtil.toByteArray(this);
         out.writeInt(data.length);
         out.write(data);
         out.close();
