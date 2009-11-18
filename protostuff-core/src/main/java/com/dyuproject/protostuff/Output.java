@@ -33,13 +33,13 @@ public interface Output
     public void writeUInt32(int fieldNumber, int value) throws IOException;
     
     /** Writes a signed int field. */
-    public void writeSInt32(int fieldNumber, int value) throws Exception;
+    public void writeSInt32(int fieldNumber, int value) throws IOException;
     
     /** Writes a fixed int(4 bytes) field. */
-    public void writeFixed32(int fieldNumber, int value) throws Exception;
+    public void writeFixed32(int fieldNumber, int value) throws IOException;
     
     /** Writes a signed+fixed int(4 bytes) field. */
-    public void writeSFixed32(int fieldNumber, int value) throws Exception;
+    public void writeSFixed32(int fieldNumber, int value) throws IOException;
     
     /** Writes a variable long field. */
     public void writeInt64(int fieldNumber, long value) throws IOException;

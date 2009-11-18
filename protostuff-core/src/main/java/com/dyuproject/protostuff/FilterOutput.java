@@ -58,7 +58,7 @@ public class FilterOutput implements Output
         output.writeEnum(fieldNumber, value);
     }
 
-    public void writeFixed32(int fieldNumber, int value) throws Exception
+    public void writeFixed32(int fieldNumber, int value) throws IOException
     {
         output.writeFixed32(fieldNumber, value);
     }
@@ -98,7 +98,7 @@ public class FilterOutput implements Output
         output.writeObject(fieldNumber, value, typeClass);
     }
 
-    public void writeSFixed32(int fieldNumber, int value) throws Exception
+    public void writeSFixed32(int fieldNumber, int value) throws IOException
     {
         output.writeSFixed32(fieldNumber, value);
     }
@@ -108,7 +108,7 @@ public class FilterOutput implements Output
         output.writeSFixed64(fieldNumber, value);
     }
 
-    public void writeSInt32(int fieldNumber, int value) throws Exception
+    public void writeSInt32(int fieldNumber, int value) throws IOException
     {
         output.writeSInt32(fieldNumber, value);
     }
