@@ -32,7 +32,14 @@ public final class ComputedSizeOutput implements Output
      */
     public static <T extends Message<T>> int getSize(T message)
     {
-        Schema<T> schema = message.cachedSchema();
+        return getSize(message, message.cachedSchema());
+    }
+    
+    /**
+     * Computes the serialized size of a message.
+     */
+    public static <T> int getSize(T message, Schema<T> schema)
+    {
         ComputedSizeOutput sizeCount = new ComputedSizeOutput();
         try
         {
