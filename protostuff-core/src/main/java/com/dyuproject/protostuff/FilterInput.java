@@ -138,9 +138,9 @@ public class FilterInput implements Input
         return input.mergeObject(value, schema);
     }
     
-    public <T> T readObject(Class<T> typeClass) throws IOException
+    public <T> T readPojo(Class<T> typeClass) throws IOException
     {
-        return input.readObject(typeClass);
+        return input.readPojo(typeClass);
     }
 
 }

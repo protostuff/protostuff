@@ -113,7 +113,7 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
                     message.name = input.readString();
                     break;
                 case 2:
-                    message.hasBar = input.readObject(HasBar.class);
+                    message.hasBar = input.readPojo(HasBar.class);
                     break;
                 default:
                     input.handleUnknownField(number, this);
@@ -124,7 +124,7 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
     public void writeTo(Output output, HasHasBar message) throws IOException
     {
         output.writeString(1, message.name);
-        output.writeObject(2, message.hasBar, HasBar.class);
+        output.writePojo(2, message.hasBar, HasBar.class);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

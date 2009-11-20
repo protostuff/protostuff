@@ -1272,7 +1272,7 @@ public final class CodedOutput implements Output {
     writeObjectNoTag(value, schema);
   }
 
-  public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException {
+  public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException {
     if(computed) {
       ByteArrayNode node = current;
       if(node==null)

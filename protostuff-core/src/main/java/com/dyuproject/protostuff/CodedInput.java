@@ -897,7 +897,7 @@ public final class CodedInput implements Input {
   }
   
   @SuppressWarnings("unchecked")
-  public <T> T readObject(Class<T> typeClass) throws IOException {
+  public <T> T readPojo(Class<T> typeClass) throws IOException {
     ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(readByteArray()));
     try{
       return (T)ois.readObject();

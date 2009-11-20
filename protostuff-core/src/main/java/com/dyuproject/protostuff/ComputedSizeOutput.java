@@ -224,7 +224,7 @@ public final class ComputedSizeOutput implements Output
         size += CodedOutput.computeRawVarint32Size(size - last);
     }
 
-    public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException
+    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException
     {
         // Persist the serialized data for efficiency.
         byte[] bytes = CodedOutput.getByteArrayFromSerializable(value);

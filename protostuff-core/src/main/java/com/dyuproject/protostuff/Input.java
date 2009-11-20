@@ -97,10 +97,10 @@ public interface Input
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException;
     
     /**
-     * Reads an object field value.
+     * Reads a pojo field value.
      * The underlying implementation will determine the deserialization strategy.
      */
-    public <T> T readObject(Class<T> typeClass) throws IOException;
+    public <T> T readPojo(Class<T> typeClass) throws IOException;
 
 
 }

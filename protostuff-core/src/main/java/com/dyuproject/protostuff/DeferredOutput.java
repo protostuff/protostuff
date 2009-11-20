@@ -322,7 +322,7 @@ public final class DeferredOutput implements Output
         }
     }
 
-    public <T> void writeObject(int fieldNumber, T value, Class<T> typeClass) throws IOException
+    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException
     {
         byte[] bytes = CodedOutput.getByteArrayFromSerializable(value);
         
