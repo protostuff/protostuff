@@ -21,7 +21,9 @@ import java.io.OutputStream;
 import com.dyuproject.protostuff.CodedInput;
 import com.dyuproject.protostuff.CodedOutput;
 import com.dyuproject.protostuff.DeferredOutput;
+import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -79,12 +81,21 @@ public final class RuntimeIOUtil
     }
     
     /**
+     * Serializes the {@code message} into a wrapped {@link Output}.
+     */
+    public static <T> void writeTo(Output output, T message, Schema<T> schema)
+    throws IOException
+    {
+        schema.writeTo(new RuntimeOutput(output), message);
+    }
+    
+    /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
      */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        schema.writeTo(new RuntimeOutput(CodedOutput.newInstance(out)), message);
+        writeTo(CodedOutput.newInstance(out), message, schema);
     }
     
     /**
@@ -93,7 +104,7 @@ public final class RuntimeIOUtil
     public static <T extends Message<T>> void writeTo(OutputStream out, T message)
     throws IOException
     {
-        writeTo(out, message, message.cachedSchema());
+        writeTo(CodedOutput.newInstance(out), message, message.cachedSchema());
     }
     
     /**
@@ -104,11 +115,11 @@ public final class RuntimeIOUtil
     throws IOException
     {
         if(message instanceof Message)
-            writeTo(out, message, ((Message)message).cachedSchema());
+            writeTo(CodedOutput.newInstance(out), message, ((Message)message).cachedSchema());
         else
         {
             Class<T> typeClass = (Class<T>)message.getClass();
-            writeTo(out, message, RuntimeSchema.getSchema(typeClass));
+            writeTo(CodedOutput.newInstance(out), message, RuntimeSchema.getSchema(typeClass));
         }
     }
     
@@ -185,6 +196,15 @@ public final class RuntimeIOUtil
             Class<T> typeClass = (Class<T>)message.getClass();
             mergeFrom(data, offset, length, message, RuntimeSchema.getSchema(typeClass));
         }
+    }
+    
+    /**
+     * Merges the {@code message} from the wrapped {@link Input}.
+     */
+    public static <T> void mergeFrom(Input input, T message, Schema<T> schema) 
+    throws IOException
+    {
+        schema.mergeFrom(new RuntimeInput(input), message);
     }
     
     /**
