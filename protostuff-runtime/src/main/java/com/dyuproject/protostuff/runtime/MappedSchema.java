@@ -34,15 +34,17 @@ import com.dyuproject.protostuff.WireFormat.FieldType;
 public abstract class MappedSchema<T> implements Schema<T>
 {
     
-    final Field<T>[] fields, fieldsByNumber;
-    final Map<String,Field<T>> fieldsByName;
+    protected final Class<T> typeClass;
+    protected final Field<T>[] fields, fieldsByNumber;
+    protected final Map<String,Field<T>> fieldsByName;
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Field<T>[] fields)
+    public MappedSchema(Class<T> typeClass, Field<T>[] fields)
     {
         if(fields.length==0)
             throw new IllegalStateException("At least one field is required.");
         
+        this.typeClass = typeClass;
         this.fields = fields;
         fieldsByName = new HashMap<String,Field<T>>();
         fieldsByNumber = (Field<T>[])new Field<?>[fields.length + 1];
@@ -66,11 +68,12 @@ public abstract class MappedSchema<T> implements Schema<T>
     }
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Collection<Field<T>> fields)
+    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields)
     {
         if(fields.isEmpty())
             throw new IllegalStateException("At least one field is required.");
         
+        this.typeClass = typeClass;
         fieldsByName = new HashMap<String,Field<T>>();
         fieldsByNumber = (Field<T>[])new Field<?>[fields.size() + 1];
         for(Field<T> f : fields)
@@ -100,11 +103,12 @@ public abstract class MappedSchema<T> implements Schema<T>
     }
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Map<String,Field<T>> fieldsByName)
+    public MappedSchema(Class<T> typeClass, Map<String,Field<T>> fieldsByName)
     {
         if(fieldsByName.isEmpty())
             throw new IllegalStateException("At least one field is required.");
         
+        this.typeClass = typeClass;
         this.fieldsByName = fieldsByName;
         Collection<Field<T>> fields = fieldsByName.values();
         fieldsByNumber = (Field<T>[])new Field<?>[fields.size() + 1];
@@ -127,6 +131,11 @@ public abstract class MappedSchema<T> implements Schema<T>
             if(fieldsByNumber[i]!=null)
                 this.fields[j++] = fieldsByNumber[i];
         }
+    }
+    
+    public Class<T> typeClass()
+    {
+        return typeClass;
     }
     
     public String getFieldName(int number)

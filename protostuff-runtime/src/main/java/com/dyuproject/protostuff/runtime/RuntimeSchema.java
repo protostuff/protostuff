@@ -197,12 +197,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
-    final Class<T> typeClass;
-    
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields)
     {
-        super(fields);
-        this.typeClass = typeClass;
+        super(typeClass, fields);
     }
     
     /**
