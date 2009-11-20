@@ -126,6 +126,11 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
     {
         return new Baz();
     }
+    
+    public Class<Baz> typeClass()
+    {
+        return Baz.class;
+    }
 
     public String getFieldName(int number)
     {

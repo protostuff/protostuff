@@ -64,6 +64,11 @@ public interface Schema<T>
     public T newMessage();
     
     /**
+     * Gets the class of the message.
+     */
+    public Class<T> typeClass();
+    
+    /**
      * Deserializes a message/object from the {@link Input input}.
      */
     public void mergeFrom(Input input, T message) throws IOException;

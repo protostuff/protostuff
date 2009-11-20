@@ -278,6 +278,11 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     {
         return new Bar();
     }
+    
+    public Class<Bar> typeClass()
+    {
+        return Bar.class;
+    }
 
     public String getFieldName(int number)
     {

@@ -282,6 +282,11 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
     {
         return new Foo();
     }
+    
+    public Class<Foo> typeClass()
+    {
+        return Foo.class;
+    }
 
     public String getFieldName(int number)
     {

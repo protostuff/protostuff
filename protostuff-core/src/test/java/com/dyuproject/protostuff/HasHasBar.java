@@ -99,6 +99,10 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
         return new HasHasBar();
     }
     
+    public Class<HasHasBar> typeClass()
+    {
+        return HasHasBar.class;
+    }
 
     public void mergeFrom(Input input, HasHasBar message) throws IOException
     {
