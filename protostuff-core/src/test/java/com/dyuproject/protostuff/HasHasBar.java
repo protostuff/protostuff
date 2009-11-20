@@ -15,6 +15,9 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
@@ -22,7 +25,7 @@ import java.io.IOException;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>
+public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, Serializable
 {
     
     private String name;
@@ -124,6 +127,23 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>
         output.writeObject(2, message.hasBar, HasBar.class);
     }
     
+    private void readObject(ObjectInputStream in) throws IOException
+    {
+        int length = in.readInt();
+        byte[] data = new byte[length];
+        for(int offset = 0; length > 0; length -= offset)
+            offset = in.read(data, offset, length);
+        
+        in.close();
+        IOUtil.mergeFrom(data, this);
+    }
     
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        byte[] data = IOUtil.toByteArray(this);
+        out.writeInt(data.length);
+        out.write(data);
+        out.close();
+    }
 
 }
