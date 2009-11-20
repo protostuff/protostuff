@@ -67,6 +67,10 @@ public final class ByteString {
   byte[] getBytes() {
     return bytes;
   }
+  
+  public String toString() {
+    return toStringUtf8();
+  }
   //END EXTRA
   private final byte[] bytes;
 
