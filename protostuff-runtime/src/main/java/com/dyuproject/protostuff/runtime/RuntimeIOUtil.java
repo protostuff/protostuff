@@ -21,9 +21,7 @@ import java.io.OutputStream;
 import com.dyuproject.protostuff.CodedInput;
 import com.dyuproject.protostuff.CodedOutput;
 import com.dyuproject.protostuff.DeferredOutput;
-import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -47,7 +45,7 @@ public final class RuntimeIOUtil
         DeferredOutput output = new DeferredOutput();
         try
         {
-            schema.writeTo(new RuntimeOutput(output), message);
+            schema.writeTo(output, message);
         }
         catch (IOException e)
         {
@@ -81,21 +79,12 @@ public final class RuntimeIOUtil
     }
     
     /**
-     * Serializes the {@code message} into a wrapped {@link Output}.
-     */
-    public static <T> void writeTo(Output output, T message, Schema<T> schema)
-    throws IOException
-    {
-        schema.writeTo(new RuntimeOutput(output), message);
-    }
-    
-    /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
      */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        writeTo(CodedOutput.newInstance(out), message, schema);
+        schema.writeTo(CodedOutput.newInstance(out), message);
     }
     
     /**
@@ -104,7 +93,7 @@ public final class RuntimeIOUtil
     public static <T extends Message<T>> void writeTo(OutputStream out, T message)
     throws IOException
     {
-        writeTo(CodedOutput.newInstance(out), message, message.cachedSchema());
+        writeTo(out, message, message.cachedSchema());
     }
     
     /**
@@ -115,11 +104,11 @@ public final class RuntimeIOUtil
     throws IOException
     {
         if(message instanceof Message)
-            writeTo(CodedOutput.newInstance(out), message, ((Message)message).cachedSchema());
+            writeTo(out, message, ((Message)message).cachedSchema());
         else
         {
             Class<T> typeClass = (Class<T>)message.getClass();
-            writeTo(CodedOutput.newInstance(out), message, RuntimeSchema.getSchema(typeClass));
+            writeTo(out, message, RuntimeSchema.getSchema(typeClass));
         }
     }
     
@@ -140,7 +129,7 @@ public final class RuntimeIOUtil
         try
         {
             CodedInput input = CodedInput.newInstance(data, offset, length);
-            schema.mergeFrom(new RuntimeInput(input), message);
+            schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
         catch (IOException e)
@@ -199,22 +188,13 @@ public final class RuntimeIOUtil
     }
     
     /**
-     * Merges the {@code message} from the wrapped {@link Input}.
-     */
-    public static <T> void mergeFrom(Input input, T message, Schema<T> schema) 
-    throws IOException
-    {
-        schema.mergeFrom(new RuntimeInput(input), message);
-    }
-    
-    /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
         CodedInput input = CodedInput.newInstance(in);
-        schema.mergeFrom(new RuntimeInput(input), message);
+        schema.mergeFrom(input, message);
         input.checkLastTagWas(0);
     }
     
