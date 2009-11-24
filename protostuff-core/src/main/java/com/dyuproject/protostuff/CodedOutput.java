@@ -45,9 +45,7 @@
 
 package com.dyuproject.protostuff;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 /**
@@ -229,14 +227,6 @@ public final class CodedOutput implements Output {
       throw new RuntimeException("Serializing to a byte array threw an IOException " + 
         "(should never happen).",e);
     }
-  }  
-  
-  /** Serializes the default java serializable object into a byte array */
-  static byte[] getByteArrayFromSerializable(Object value) throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE);
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
-    oos.writeObject(value);
-    return baos.toByteArray();
   }
   //END EXTRA
 
@@ -245,9 +235,7 @@ public final class CodedOutput implements Output {
   private int position;
 
   private final OutputStream output;
-  private final boolean computed;
   private final ComputedSizeOutput computedSize;
-  private ByteArrayNode current;
 
   /**
    * The buffer size used in {@link #newInstance(OutputStream)}.
@@ -270,14 +258,12 @@ public final class CodedOutput implements Output {
       final ComputedSizeOutput computedSize) {
     int size = computedSize.getSize();
     if(size == 0) {
-      computed = false;
       this.computedSize = computedSize;
     }
     else if(size != length) {
       throw new IllegalArgumentException("The computed size is not equal to the buffer size.");
     }
     else {
-      computed = true;
       this.computedSize = computedSize.reset(true);
     }
     
@@ -292,7 +278,6 @@ public final class CodedOutput implements Output {
     this.buffer = buffer;
     position = 0;
     limit = buffer.length;
-    computed = false;
     computedSize = new ComputedSizeOutput();
   }
 
@@ -1270,25 +1255,6 @@ public final class CodedOutput implements Output {
   public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeObjectNoTag(value, schema);
-  }
-
-  public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException {
-    if(computed) {
-      ByteArrayNode node = current;
-      if(node==null)
-        node = computedSize.getRoot();
-      
-      // tag and length
-      writeRawBytes(node.bytes);
-      // content
-      writeRawBytes(node.next.bytes);
-      current = node.next.next;
-      return;
-    }
-    
-    byte[] data = getByteArrayFromSerializable(value);
-    writeRawVarint32(data.length);
-    writeRawBytes(data);
   }
   
   public void writeByteArrayNoTag(byte[] value) throws IOException {

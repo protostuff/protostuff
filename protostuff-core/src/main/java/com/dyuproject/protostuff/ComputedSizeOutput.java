@@ -53,7 +53,6 @@ public final class ComputedSizeOutput implements Output
         return sizeCount.size;
     }
 
-    private ByteArrayNode root, current;
     private boolean recomputed;
     
     public ComputedSizeOutput()
@@ -79,11 +78,6 @@ public final class ComputedSizeOutput implements Output
         this.recomputed = recomputed;
         size = 0;
         return this;
-    }
-    
-    ByteArrayNode getRoot()
-    {
-        return root;
     }
 
     public void writeInt32(int fieldNumber, int value) throws IOException
@@ -222,21 +216,6 @@ public final class ComputedSizeOutput implements Output
         int last = size;
         schema.writeTo(this, value);
         size += CodedOutput.computeRawVarint32Size(size - last);
-    }
-
-    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException
-    {
-        // Persist the serialized data for efficiency.
-        byte[] bytes = CodedOutput.getByteArrayFromSerializable(value);
-        
-        int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);
-        size += delimited.length + bytes.length;
-        
-        if(root==null)
-            current = new ByteArrayNode(bytes, (root=new ByteArrayNode(delimited)));
-        else
-            current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
 
 }

@@ -322,18 +322,4 @@ public final class DeferredOutput implements Output
         }
     }
 
-    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException
-    {
-        byte[] bytes = CodedOutput.getByteArrayFromSerializable(value);
-        
-        int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);
-        size += delimited.length + bytes.length;
-        
-        if(root==null)
-            current = new ByteArrayNode(bytes, (root=new ByteArrayNode(delimited)));
-        else
-            current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
-    }
-
 }

@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -117,7 +119,7 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
                     message.name = input.readString();
                     break;
                 case 2:
-                    message.hasBar = input.readPojo(HasBar.class);
+                    message.hasBar = readHasBar(input);
                     break;
                 default:
                     input.handleUnknownField(number, this);
@@ -127,8 +129,9 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
 
     public void writeTo(Output output, HasHasBar message) throws IOException
     {
-        output.writeString(1, message.name);
-        output.writePojo(2, message.hasBar, HasBar.class);
+        if(message.name!=null)
+            output.writeString(1, message.name);
+        writeHasBar(output, 2, message.hasBar);
     }
     
     private void readObject(ObjectInputStream in) throws IOException
@@ -148,6 +151,28 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
         out.writeInt(data.length);
         out.write(data);
         out.close();
+    }
+    
+    static HasBar readHasBar(Input input) throws IOException
+    {
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                input.readByteArray()));
+        try
+        {
+            return (HasBar)ois.readObject();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar) throws IOException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(hasBar);
+        output.writeByteArray(fieldNumber, baos.toByteArray());
     }
 
 }

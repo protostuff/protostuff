@@ -83,11 +83,5 @@ public interface Output
     /** Writes an object(using its schema) field. */
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException;
     
-    /**
-     * Writes a pojo field.
-     * The underlying implementation will determine the serialization strategy.
-     */
-    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException;
-    
 
 }

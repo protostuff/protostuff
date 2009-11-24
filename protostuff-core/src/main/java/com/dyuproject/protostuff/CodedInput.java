@@ -45,10 +45,8 @@
 
 package com.dyuproject.protostuff;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -894,17 +892,6 @@ public final class CodedInput implements Input {
     --recursionDepth;
     popLimit(oldLimit);
     return value;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public <T> T readPojo(Class<T> typeClass) throws IOException {
-    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(readByteArray()));
-    try{
-      return (T)ois.readObject();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
   
   public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException {

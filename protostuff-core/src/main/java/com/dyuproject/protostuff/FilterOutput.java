@@ -93,11 +93,6 @@ public class FilterOutput implements Output
         output.writeObject(fieldNumber, value, schema);
     }
 
-    public <T> void writePojo(int fieldNumber, T value, Class<T> typeClass) throws IOException
-    {
-        output.writePojo(fieldNumber, value, typeClass);
-    }
-
     public void writeSFixed32(int fieldNumber, int value) throws IOException
     {
         output.writeSFixed32(fieldNumber, value);

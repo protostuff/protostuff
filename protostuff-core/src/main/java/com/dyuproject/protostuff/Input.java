@@ -95,12 +95,6 @@ public interface Input
      * The provided {@link Schema schema} handles the deserialization for the object.
      */
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException;
-    
-    /**
-     * Reads a pojo field value.
-     * The underlying implementation will determine the deserialization strategy.
-     */
-    public <T> T readPojo(Class<T> typeClass) throws IOException;
 
 
 }

@@ -137,10 +137,5 @@ public class FilterInput implements Input
     {
         return input.mergeObject(value, schema);
     }
-    
-    public <T> T readPojo(Class<T> typeClass) throws IOException
-    {
-        return input.readPojo(typeClass);
-    }
 
 }
