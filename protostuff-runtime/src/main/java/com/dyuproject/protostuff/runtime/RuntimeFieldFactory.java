@@ -50,12 +50,13 @@ public abstract class RuntimeFieldFactory<V>
     
     public abstract V readFrom(Input input) throws IOException;
     
-    public abstract void writeTo(Output output, int number, V value) throws IOException;
+    public abstract void writeTo(Output output, int number, V value, boolean repeated) 
+    throws IOException;
     
     public abstract FieldType getFieldType();
     
     /**
-     * Gets the runtime field factory based from the type of the given reflect field.
+     * Gets the runtime field factory of the given {@code clazz}.
      */
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)
     {
@@ -66,15 +67,15 @@ public abstract class RuntimeFieldFactory<V>
         if(Map.class.isAssignableFrom(clazz))
             return null;
         
+        if(clazz.isEnum())
+            return ENUM;
+        
         if(byte[].class == clazz)
             return BYTE_ARRAY;
         
         if(clazz.isArray())
-            return Map.class.isAssignableFrom(clazz.getComponentType()) ? null : ARRAY;
-        
-        if(clazz.isEnum())
-            return ENUM;
-        
+            return ARRAY;
+
         if(List.class.isAssignableFrom(clazz))
             return LIST;
         
@@ -118,12 +119,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt32(this.number, f.getChar(message));
+                            output.writeInt32(this.number, f.getChar(message), false);
                         else
                         {
                             Character value = (Character)f.get(message);
                             if(value!=null)
-                                output.writeInt32(this.number, value.charValue());
+                                output.writeInt32(this.number, value.charValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -141,9 +142,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Character((char)input.readInt32());
         }
-        public void writeTo(Output output, int number, Character value) throws IOException
+        public void writeTo(Output output, int number, Character value, boolean repeated) 
+        throws IOException
         {
-            output.writeInt32(number, value.charValue());
+            output.writeInt32(number, value.charValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -184,12 +186,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt32(this.number, f.getShort(message));
+                            output.writeInt32(this.number, f.getShort(message), false);
                         else
                         {
                             Short value = (Short)f.get(message);
                             if(value!=null)
-                                output.writeInt32(this.number, value.shortValue());
+                                output.writeInt32(this.number, value.shortValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -207,9 +209,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Short((short)input.readInt32());
         }
-        public void writeTo(Output output, int number, Short value) throws IOException
+        public void writeTo(Output output, int number, Short value, boolean repeated) 
+        throws IOException
         {
-            output.writeInt32(number, value.shortValue());
+            output.writeInt32(number, value.shortValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -250,12 +253,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt32(this.number, f.getByte(message));
+                            output.writeInt32(this.number, f.getByte(message), false);
                         else
                         {
                             Byte value = (Byte)f.get(message);
                             if(value!=null)
-                                output.writeInt32(this.number, value.byteValue());
+                                output.writeInt32(this.number, value.byteValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -273,9 +276,9 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Byte((byte)input.readInt32());
         }
-        public void writeTo(Output output, int number, Byte value) throws IOException
+        public void writeTo(Output output, int number, Byte value, boolean repeated) throws IOException
         {
-            output.writeInt32(number, value.byteValue());
+            output.writeInt32(number, value.byteValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -317,12 +320,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt32(this.number, f.getInt(message));
+                            output.writeInt32(this.number, f.getInt(message), false);
                         else
                         {
                             Integer value = (Integer)f.get(message);
                             if(value!=null)
-                                output.writeInt32(this.number, value.intValue());
+                                output.writeInt32(this.number, value.intValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -340,9 +343,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Integer(input.readInt32());
         }
-        public void writeTo(Output output, int number, Integer value) throws IOException
+        public void writeTo(Output output, int number, Integer value, boolean repeated) 
+        throws IOException
         {
-            output.writeInt32(number, value.intValue());
+            output.writeInt32(number, value.intValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -652,12 +656,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt64(this.number, f.getLong(message));
+                            output.writeInt64(this.number, f.getLong(message), false);
                         else
                         {
                             Long value = (Long)f.get(message);
                             if(value!=null)
-                                output.writeInt64(this.number, value.longValue());
+                                output.writeInt64(this.number, value.longValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -675,9 +679,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Long(input.readInt64());
         }
-        public void writeTo(Output output, int number, Long value) throws IOException
+        public void writeTo(Output output, int number, Long value, boolean repeated) 
+        throws IOException
         {
-            output.writeInt64(number, value.longValue());
+            output.writeInt64(number, value.longValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -987,12 +992,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeFloat(this.number, f.getFloat(message));
+                            output.writeFloat(this.number, f.getFloat(message), false);
                         else
                         {
                             Float value = (Float)f.get(message);
                             if(value!=null)
-                                output.writeFloat(this.number, value.floatValue());
+                                output.writeFloat(this.number, value.floatValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -1010,9 +1015,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Float(input.readFloat());
         }
-        public void writeTo(Output output, int number, Float value) throws IOException
+        public void writeTo(Output output, int number, Float value, boolean repeated) 
+        throws IOException
         {
-            output.writeFloat(number, value.floatValue());
+            output.writeFloat(number, value.floatValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -1054,12 +1060,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeDouble(this.number, f.getDouble(message));
+                            output.writeDouble(this.number, f.getDouble(message), false);
                         else
                         {
                             Double value = (Double)f.get(message);
                             if(value!=null)
-                                output.writeDouble(this.number, value.doubleValue());
+                                output.writeDouble(this.number, value.doubleValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -1077,9 +1083,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Double(input.readDouble());
         }
-        public void writeTo(Output output, int number, Double value) throws IOException
+        public void writeTo(Output output, int number, Double value, boolean repeated) 
+        throws IOException
         {
-            output.writeDouble(number, value.doubleValue());
+            output.writeDouble(number, value.doubleValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -1122,12 +1129,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeBool(this.number, f.getBoolean(message));
+                            output.writeBool(this.number, f.getBoolean(message), false);
                         else
                         {
                             Boolean value = (Boolean)f.get(message);
                             if(value!=null)
-                                output.writeBool(this.number, value.booleanValue());
+                                output.writeBool(this.number, value.booleanValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -1145,9 +1152,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return input.readBool() ? Boolean.TRUE : Boolean.FALSE;
         }
-        public void writeTo(Output output, int number, Boolean value) throws IOException
+        public void writeTo(Output output, int number, Boolean value, boolean repeated) 
+        throws IOException
         {
-            output.writeBool(number, value.booleanValue());
+            output.writeBool(number, value.booleanValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -1186,7 +1194,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         String value = (String)f.get(message);
                         if(value!=null)
-                            output.writeString(this.number, value);
+                            output.writeString(this.number, value, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1203,9 +1211,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return input.readString();
         }
-        public void writeTo(Output output, int number, String value) throws IOException
+        public void writeTo(Output output, int number, String value, boolean repeated) 
+        throws IOException
         {
-            output.writeString(number, value);
+            output.writeString(number, value, repeated);
         }
         public FieldType getFieldType()
         {
@@ -1244,7 +1253,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         ByteString bs = (ByteString)f.get(message);
                         if(bs!=null)
-                            output.writeBytes(this.number, bs);
+                            output.writeBytes(this.number, bs, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1261,9 +1270,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return input.readBytes();
         }
-        public void writeTo(Output output, int number, ByteString value) throws IOException
+        public void writeTo(Output output, int number, ByteString value, boolean repeated) 
+        throws IOException
         {
-            output.writeBytes(number, value);
+            output.writeBytes(number, value, repeated);
         }
         public FieldType getFieldType()
         {
@@ -1302,7 +1312,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         byte[] array = (byte[])f.get(message);
                         if(array!=null)
-                            output.writeByteArray(this.number, array);
+                            output.writeByteArray(this.number, array, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1319,9 +1329,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return input.readByteArray();
         }
-        public void writeTo(Output output, int number, byte[] value) throws IOException
+        public void writeTo(Output output, int number, byte[] value, boolean repeated) 
+        throws IOException
         {
-            output.writeByteArray(number, value);
+            output.writeByteArray(number, value, repeated);
         }
         public FieldType getFieldType()
         {
@@ -1361,7 +1372,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         Enum<?> en = (Enum<?>)f.get(message);
                         if(en!=null)
-                            output.writeEnum(this.number, en.ordinal());
+                            output.writeEnum(this.number, en.ordinal(), false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1378,9 +1389,9 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Integer(input.readInt32());
         }
-        public void writeTo(Output output, int number, Integer value) throws IOException
+        public void writeTo(Output output, int number, Integer value, boolean repeated) throws IOException
         {
-            output.writeInt32(number, value.intValue());
+            output.writeInt32(number, value.intValue(), repeated);
         }
         public FieldType getFieldType()
         {
@@ -1448,7 +1459,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         Message<?> value = (Message<?>)f.get(message);
                         if(value!=null)
-                            output.writeObject(this.number, value, schema);
+                            output.writeObject(this.number, value, schema, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1465,7 +1476,8 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
-        public void writeTo(Output output, int number, Message<?> value) throws IOException
+        public void writeTo(Output output, int number, Message<?> value, boolean repeated) 
+        throws IOException
         {
             throw new UnsupportedOperationException();
         }
@@ -1513,7 +1525,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         Object value = f.get(message);
                         if(value!=null)
-                            output.writeObject(this.number, value, schema);
+                            output.writeObject(this.number, value, schema, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1530,7 +1542,8 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
-        public void writeTo(Output output, int number, Object value) throws IOException
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
         {
             throw new UnsupportedOperationException();
         }
@@ -1597,7 +1610,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Enum<?> en : list)
-                                    output.writeInt32(this.number, en.ordinal());
+                                    output.writeInt32(this.number, en.ordinal(), true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1659,7 +1672,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Object o : list)
-                                    output.writeObject(this.number, o, targetSchema);
+                                    output.writeObject(this.number, o, targetSchema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1711,7 +1724,7 @@ public abstract class RuntimeFieldFactory<V>
                         if(list!=null && !list.isEmpty())
                         {
                             for(Object o : list)
-                                inline.writeTo(output, this.number, o);
+                                inline.writeTo(output, this.number, o, true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -1730,7 +1743,8 @@ public abstract class RuntimeFieldFactory<V>
             throw new UnsupportedOperationException();
         }
 
-        public void writeTo(Output output, int number, List<?> value) throws IOException
+        public void writeTo(Output output, int number, List<?> value, boolean repeated) 
+        throws IOException
         {
             throw new UnsupportedOperationException();
         }
@@ -1797,7 +1811,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Enum<?> en : list)
-                                    output.writeInt32(this.number, en.ordinal());
+                                    output.writeInt32(this.number, en.ordinal(), true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1859,7 +1873,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(set!=null && !set.isEmpty())
                             {
                                 for(Object o : set)
-                                    output.writeObject(this.number, o, targetSchema);
+                                    output.writeObject(this.number, o, targetSchema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1911,7 +1925,7 @@ public abstract class RuntimeFieldFactory<V>
                         if(set!=null && !set.isEmpty())
                         {
                             for(Object o : set)
-                                inline.writeTo(output, this.number, o);
+                                inline.writeTo(output, this.number, o, true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -1930,7 +1944,8 @@ public abstract class RuntimeFieldFactory<V>
             throw new UnsupportedOperationException();
         }
 
-        public void writeTo(Output output, int number, Set<?> value) throws IOException
+        public void writeTo(Output output, int number, Set<?> value, boolean repeated) 
+        throws IOException
         {
             throw new UnsupportedOperationException();
         }
@@ -2000,7 +2015,7 @@ public abstract class RuntimeFieldFactory<V>
                                 for(int i=0; i<len; i++)
                                 {
                                     output.writeInt32(this.number, 
-                                            ((Enum<?>)Array.get(array, i)).ordinal());
+                                            ((Enum<?>)Array.get(array, i)).ordinal(), true);
                                 }
                             }
                         }
@@ -2072,7 +2087,7 @@ public abstract class RuntimeFieldFactory<V>
                                 for(int i=0; i<len; i++)
                                 {
                                     output.writeObject(this.number, Array.get(array, i), 
-                                            targetSchema);
+                                            targetSchema, true);
                                 }
                             }
                         }
@@ -2132,7 +2147,7 @@ public abstract class RuntimeFieldFactory<V>
                         {
                             int len = Array.getLength(array);
                             for(int i=0; i<len; i++)
-                                inline.writeTo(output, this.number, Array.get(array, i));
+                                inline.writeTo(output, this.number, Array.get(array, i), true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -2150,7 +2165,8 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
-        public void writeTo(Output output, int number, Object value) throws IOException
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
         {
             throw new UnsupportedOperationException();
         }
