@@ -33,99 +33,101 @@ public class FilterOutput implements Output
         this.output = output;
     }
 
-    public void writeBool(int fieldNumber, boolean value) throws IOException
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        output.writeBool(fieldNumber, value);
+        output.writeBool(fieldNumber, value, repeated);
     }
 
-    public void writeByteArray(int fieldNumber, byte[] value) throws IOException
+    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
-        output.writeByteArray(fieldNumber, value);
+        output.writeByteArray(fieldNumber, value, repeated);
     }
 
-    public void writeBytes(int fieldNumber, ByteString value) throws IOException
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
-        output.writeBytes(fieldNumber, value);
+        output.writeBytes(fieldNumber, value, repeated);
     }
 
-    public void writeDouble(int fieldNumber, double value) throws IOException
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        output.writeDouble(fieldNumber, value);
+        output.writeDouble(fieldNumber, value, repeated);
     }
 
-    public void writeEnum(int fieldNumber, int value) throws IOException
+    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeEnum(fieldNumber, value);
+        output.writeEnum(fieldNumber, value, repeated);
     }
 
-    public void writeFixed32(int fieldNumber, int value) throws IOException
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeFixed32(fieldNumber, value);
+        output.writeFixed32(fieldNumber, value, repeated);
     }
 
-    public void writeFixed64(int fieldNumber, long value) throws IOException
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        output.writeFixed64(fieldNumber, value);
+        output.writeFixed64(fieldNumber, value, repeated);
     }
 
-    public void writeFloat(int fieldNumber, float value) throws IOException
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        output.writeFloat(fieldNumber, value);
+        output.writeFloat(fieldNumber, value, repeated);
     }
 
-    public void writeInt32(int fieldNumber, int value) throws IOException
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeInt32(fieldNumber, value);
+        output.writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeInt64(int fieldNumber, long value) throws IOException
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        output.writeInt64(fieldNumber, value);
+        output.writeInt64(fieldNumber, value, repeated);
     }
 
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException
+    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
+    throws IOException
     {
-        output.writeMessage(fieldNumber, value);
+        output.writeMessage(fieldNumber, value, repeated);
     }
     
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
+    throws IOException
     {
-        output.writeObject(fieldNumber, value, schema);
+        output.writeObject(fieldNumber, value, schema, repeated);
     }
 
-    public void writeSFixed32(int fieldNumber, int value) throws IOException
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeSFixed32(fieldNumber, value);
+        output.writeSFixed32(fieldNumber, value, repeated);
     }
 
-    public void writeSFixed64(int fieldNumber, long value) throws IOException
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        output.writeSFixed64(fieldNumber, value);
+        output.writeSFixed64(fieldNumber, value, repeated);
     }
 
-    public void writeSInt32(int fieldNumber, int value) throws IOException
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeSInt32(fieldNumber, value);
+        output.writeSInt32(fieldNumber, value, repeated);
     }
 
-    public void writeSInt64(int fieldNumber, long value) throws IOException
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        output.writeSInt64(fieldNumber, value);
+        output.writeSInt64(fieldNumber, value, repeated);
     }
 
-    public void writeString(int fieldNumber, String value) throws IOException
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        output.writeString(fieldNumber, value);
+        output.writeString(fieldNumber, value, repeated);
     }
 
-    public void writeUInt32(int fieldNumber, int value) throws IOException
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        output.writeUInt32(fieldNumber, value);
+        output.writeUInt32(fieldNumber, value, repeated);
     }
 
-    public void writeUInt64(int fieldNumber, long value) throws IOException
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        output.writeUInt64(fieldNumber, value);
+        output.writeUInt64(fieldNumber, value, repeated);
     }
 
 }

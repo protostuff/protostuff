@@ -41,7 +41,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     {
         __fieldMap.put("someInt", 1);
         __fieldMap.put("someString", 2);
-        __fieldMap.put("baz", 3);
+        __fieldMap.put("someBaz", 3);
         __fieldMap.put("someEnum", 4);
         __fieldMap.put("someBytes", 5);
         __fieldMap.put("someBoolean", 6);
@@ -366,39 +366,39 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     {
         int someInt = message.someInt;
         if(someInt != 0)
-            output.writeInt32(1, someInt);
+            output.writeInt32(1, someInt, false);
         
         String someString = message.someString;
         if(someString != null)
-            output.writeString(2, someString);
+            output.writeString(2, someString, false);
         
         Baz baz = message.baz;
         if(baz != null)
-            output.writeMessage(3, baz);
+            output.writeMessage(3, baz, false);
         
         Status someEnum = message.someEnum;
         if(someEnum != null) 
-            output.writeEnum(4, someEnum.number);
+            output.writeEnum(4, someEnum.number, false);
         
         ByteString someBytes = message.someBytes;
         if(someBytes != null)
-            output.writeBytes(5, someBytes);
+            output.writeBytes(5, someBytes, false);
         
         boolean someBoolean = message.someBoolean;
         if(someBoolean)
-            output.writeBool(6, someBoolean);
+            output.writeBool(6, someBoolean, false);
         
         float someFloat = message.someFloat;
         if(someFloat != 0f)
-            output.writeFloat(7, someFloat);
+            output.writeFloat(7, someFloat, false);
         
         double someDouble = message.someDouble;
         if(someDouble != 0d)
-            output.writeDouble(8, someDouble);
+            output.writeDouble(8, someDouble, false);
         
         long someLong = message.someLong;
         if(someLong != 0l)
-            output.writeInt64(9, someLong);
+            output.writeInt64(9, someLong, false);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

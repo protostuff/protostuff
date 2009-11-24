@@ -34,7 +34,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     {
         __fieldMap.put("someInt", 1);
         __fieldMap.put("someString", 2);
-        __fieldMap.put("baz", 3);
+        __fieldMap.put("someBaz", 3);
         __fieldMap.put("someEnum", 4);
         __fieldMap.put("someBytes", 5);
         __fieldMap.put("someBoolean", 6);
@@ -357,31 +357,31 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Serializable
     public void writeTo(Output output, Bar message) throws IOException
     {
         if(message.someInt != 0)
-            output.writeInt32(1, message.someInt);
+            output.writeInt32(1, message.someInt, false);
         
         if(message.someString != null)
-            output.writeString(2, message.someString);
+            output.writeString(2, message.someString, false);
         
         if(message.baz != null)
-            output.writeMessage(3, message.baz);
+            output.writeMessage(3, message.baz, false);
         
         if(message.someEnum != null) 
-            output.writeEnum(4, message.someEnum.number);
+            output.writeEnum(4, message.someEnum.number, false);
         
         if(message.someBytes != null)
-            output.writeBytes(5, message.someBytes);
+            output.writeBytes(5, message.someBytes, false);
         
         if(message.someBoolean)
-            output.writeBool(6, message.someBoolean);
+            output.writeBool(6, message.someBoolean, false);
         
         if(message.someFloat != 0f)
-            output.writeFloat(7, message.someFloat);
+            output.writeFloat(7, message.someFloat, false);
         
         if(message.someDouble != 0d)
-            output.writeDouble(8, message.someDouble);
+            output.writeDouble(8, message.someDouble, false);
         
         if(message.someLong != 0l)
-            output.writeInt64(9, message.someLong);
+            output.writeInt64(9, message.someLong, false);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

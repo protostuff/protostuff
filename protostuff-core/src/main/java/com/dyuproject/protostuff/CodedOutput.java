@@ -349,63 +349,63 @@ public final class CodedOutput implements Output {
   // -----------------------------------------------------------------
   
   /** Write a {@code double} field, including tag, to the stream. */
-  public void writeDouble(final int fieldNumber, final double value)
+  public void writeDouble(final int fieldNumber, final double value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeDoubleNoTag(value);
   }
 
   /** Write a {@code float} field, including tag, to the stream. */
-  public void writeFloat(final int fieldNumber, final float value)
+  public void writeFloat(final int fieldNumber, final float value, boolean repeated)
                          throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeFloatNoTag(value);
   }
 
   /** Write a {@code uint64} field, including tag, to the stream. */
-  public void writeUInt64(final int fieldNumber, final long value)
+  public void writeUInt64(final int fieldNumber, final long value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeUInt64NoTag(value);
   }
 
   /** Write an {@code int64} field, including tag, to the stream. */
-  public void writeInt64(final int fieldNumber, final long value)
+  public void writeInt64(final int fieldNumber, final long value, boolean repeated)
                          throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeInt64NoTag(value);
   }
 
   /** Write an {@code int32} field, including tag, to the stream. */
-  public void writeInt32(final int fieldNumber, final int value)
+  public void writeInt32(final int fieldNumber, final int value, boolean repeated)
                          throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeInt32NoTag(value);
   }
 
   /** Write a {@code fixed64} field, including tag, to the stream. */
-  public void writeFixed64(final int fieldNumber, final long value)
+  public void writeFixed64(final int fieldNumber, final long value, boolean repeated)
                            throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeFixed64NoTag(value);
   }
 
   /** Write a {@code fixed32} field, including tag, to the stream. */
-  public void writeFixed32(final int fieldNumber, final int value)
+  public void writeFixed32(final int fieldNumber, final int value, boolean repeated)
                            throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeFixed32NoTag(value);
   }
 
   /** Write a {@code bool} field, including tag, to the stream. */
-  public void writeBool(final int fieldNumber, final boolean value)
+  public void writeBool(final int fieldNumber, final boolean value, boolean repeated)
                         throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeBoolNoTag(value);
   }
 
   /** Write a {@code string} field, including tag, to the stream. */
-  public void writeString(final int fieldNumber, final String value)
+  public void writeString(final int fieldNumber, final String value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeStringNoTag(value);
@@ -433,21 +433,21 @@ public final class CodedOutput implements Output {
   }*/
 
   /** Write an embedded message field, including tag, to the stream. */
-  public <T extends Message<T>> void writeMessage(final int fieldNumber, final T value)
-                           throws IOException {
+  public <T extends Message<T>> void writeMessage(final int fieldNumber, final T value, 
+                         boolean repeated) throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeMessageNoTag(value);
   }
 
   /** Write a {@code bytes} field, including tag, to the stream. */
-  public void writeBytes(final int fieldNumber, final ByteString value)
+  public void writeBytes(final int fieldNumber, final ByteString value, boolean repeated)
                          throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeBytesNoTag(value);
   }
 
   /** Write a {@code uint32} field, including tag, to the stream. */
-  public void writeUInt32(final int fieldNumber, final int value)
+  public void writeUInt32(final int fieldNumber, final int value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeUInt32NoTag(value);
@@ -457,35 +457,35 @@ public final class CodedOutput implements Output {
    * Write an enum field, including tag, to the stream.  Caller is responsible
    * for converting the enum value to its numeric value.
    */
-  public void writeEnum(final int fieldNumber, final int value)
+  public void writeEnum(final int fieldNumber, final int value, boolean repeated)
                         throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeEnumNoTag(value);
   }
 
   /** Write an {@code sfixed32} field, including tag, to the stream. */
-  public void writeSFixed32(final int fieldNumber, final int value)
+  public void writeSFixed32(final int fieldNumber, final int value, boolean repeated)
                             throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
     writeSFixed32NoTag(value);
   }
 
   /** Write an {@code sfixed64} field, including tag, to the stream. */
-  public void writeSFixed64(final int fieldNumber, final long value)
+  public void writeSFixed64(final int fieldNumber, final long value, boolean repeated)
                             throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
     writeSFixed64NoTag(value);
   }
 
   /** Write an {@code sint32} field, including tag, to the stream. */
-  public void writeSInt32(final int fieldNumber, final int value)
+  public void writeSInt32(final int fieldNumber, final int value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeSInt32NoTag(value);
   }
 
   /** Write an {@code sint64} field, including tag, to the stream. */
-  public void writeSInt64(final int fieldNumber, final long value)
+  public void writeSInt64(final int fieldNumber, final long value, boolean repeated)
                           throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
     writeSInt64NoTag(value);
@@ -1247,12 +1247,14 @@ public final class CodedOutput implements Output {
   }
 
   //START EXTRA
-  public void writeByteArray(int fieldNumber, byte[] value) throws IOException {
+  public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) 
+    throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeByteArrayNoTag(value);
   }
   
-  public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException {
+  public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
+    throws IOException {
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
     writeObjectNoTag(value, schema);
   }

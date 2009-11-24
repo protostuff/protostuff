@@ -27,61 +27,63 @@ public interface Output
 {
     
     /** Writes a variable int field. */
-    public void writeInt32(int fieldNumber, int value) throws IOException;
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes an unsigned int field. */
-    public void writeUInt32(int fieldNumber, int value) throws IOException;
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes a signed int field. */
-    public void writeSInt32(int fieldNumber, int value) throws IOException;
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes a fixed int(4 bytes) field. */
-    public void writeFixed32(int fieldNumber, int value) throws IOException;
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes a signed+fixed int(4 bytes) field. */
-    public void writeSFixed32(int fieldNumber, int value) throws IOException;
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes a variable long field. */
-    public void writeInt64(int fieldNumber, long value) throws IOException;
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException;
     
     /** Writes an unsigned long field. */
-    public void writeUInt64(int fieldNumber, long value) throws IOException;
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException;
     
     /** Writes a signed long field. */
-    public void writeSInt64(int fieldNumber, long value) throws IOException;
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException;
     
     /** Writes a fixed long(8 bytes) field. */
-    public void writeFixed64(int fieldNumber, long value) throws IOException;
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException;
     
     /** Writes a signed+fixed long(8 bytes) field. */
-    public void writeSFixed64(int fieldNumber, long value) throws IOException;
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException;
     
     /** Writes a float field. */
-    public void writeFloat(int fieldNumber, float value) throws IOException;
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException;
     
     /** Writes a double field. */
-    public void writeDouble(int fieldNumber, double value) throws IOException;
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException;
     
     /** Writes a boolean field. */
-    public void writeBool(int fieldNumber, boolean value) throws IOException;
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException;
     
     /** Writes a enum(its number) field. */
-    public void writeEnum(int fieldNumber, int value) throws IOException;
+    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException;
     
     /** Writes a String field. */
-    public void writeString(int fieldNumber, String value) throws IOException;
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException;
     
     /** Writes a ByteString(wraps byte array) field. */
-    public void writeBytes(int fieldNumber, ByteString value) throws IOException;
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException;
     
     /** Writes a byte array field. */
-    public void writeByteArray(int fieldNumber, byte[] value) throws IOException;
+    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException;
     
     /** Writes a message field. */
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException;
+    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
+    throws IOException;
     
     /** Writes an object(using its schema) field. */
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException;
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
+    throws IOException;
     
 
 }

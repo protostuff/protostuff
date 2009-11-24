@@ -36,7 +36,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
     {
         __fieldMap.put("someInt", 1);
         __fieldMap.put("someString", 2);
-        __fieldMap.put("bar", 3);
+        __fieldMap.put("someBar", 3);
         __fieldMap.put("someEnum", 4);
         __fieldMap.put("someBytes", 5);
         __fieldMap.put("someBoolean", 6);
@@ -290,7 +290,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
             case 2:
                 return "someString";
             case 3:
-                return "bar";
+                return "someBar";
             case 4:
                 return "someEnum";
             case 5:
@@ -379,47 +379,47 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
         if(message.someInt!=null)
         {
             for(int value : message.someInt)
-                output.writeInt32(1, value);
+                output.writeInt32(1, value, true);
         }
         if(message.someString!=null)
         {
             for(String value : message.someString)
-                output.writeString(2, value);
+                output.writeString(2, value, true);
         }
         if(message.someBar!=null)
         {
             for(Bar value : message.someBar)
-                output.writeMessage(3, value);
+                output.writeMessage(3, value, true);
         }
         if(message.someEnum!=null)
         {
             for(EnumSample value : message.someEnum)
-                output.writeEnum(4, value.number);
+                output.writeEnum(4, value.number, true);
         }
         if(message.someBytes!=null)
         {
             for(ByteString value : message.someBytes)
-                output.writeBytes(5, value);
+                output.writeBytes(5, value, true);
         }
         if(message.someBoolean!=null)
         {
             for(boolean value : message.someBoolean)
-                output.writeBool(6, value);
+                output.writeBool(6, value, true);
         }
         if(message.someFloat!=null)
         {
             for(Float value : message.someFloat)
-                output.writeFloat(7, value);
+                output.writeFloat(7, value, true);
         }
         if(message.someDouble!=null)
         {
             for(Double value : message.someDouble)
-                output.writeDouble(8, value);
+                output.writeDouble(8, value, true);
         }
         if(message.someLong!=null)
         {
             for(Long value : message.someLong)
-                output.writeInt64(9, value);
+                output.writeInt64(9, value, true);
         }
     }
     

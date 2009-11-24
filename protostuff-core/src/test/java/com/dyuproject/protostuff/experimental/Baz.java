@@ -183,15 +183,15 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
     {
         int id = message.id;
         if(id != 0)
-            output.writeInt32(1, id);
+            output.writeInt32(1, id, false);
         
         String name = message.name;
         if(name != null)
-            output.writeString(2, name);
+            output.writeString(2, name, false);
         
         long timestamp = message.timestamp;
         if(timestamp != 0l)
-            output.writeInt64(3, timestamp);
+            output.writeInt64(3, timestamp, false);
     }
     
     private void readObject(ObjectInputStream in) throws IOException

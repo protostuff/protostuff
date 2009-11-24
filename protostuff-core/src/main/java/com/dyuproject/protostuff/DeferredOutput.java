@@ -114,7 +114,7 @@ public final class DeferredOutput implements Output
         return buffer;
     }
 
-    public void writeInt32(int fieldNumber, int value) throws IOException
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = value<0 ? CodedOutput.getTagAndRawVarInt64Bytes(tag, value) : 
@@ -123,7 +123,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeUInt32(int fieldNumber, int value) throws IOException
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, value);
@@ -131,7 +131,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeSInt32(int fieldNumber, int value) throws IOException
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, CodedOutput.encodeZigZag32(value));
@@ -139,7 +139,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeFixed32(int fieldNumber, int value) throws IOException
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, value);
@@ -147,7 +147,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeSFixed32(int fieldNumber, int value) throws IOException
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, value);
@@ -155,7 +155,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeInt64(int fieldNumber, long value) throws IOException
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
@@ -163,7 +163,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeUInt64(int fieldNumber, long value) throws IOException
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
@@ -171,7 +171,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeSInt64(int fieldNumber, long value) throws IOException
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt64Bytes(tag, value);
@@ -179,7 +179,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeFixed64(int fieldNumber, long value) throws IOException
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, value);
@@ -187,7 +187,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
     
-    public void writeSFixed64(int fieldNumber, long value) throws IOException
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, value);
@@ -195,7 +195,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeFloat(int fieldNumber, float value) throws IOException
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian32Bytes(tag, Float.floatToRawIntBits(value));
@@ -203,7 +203,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeDouble(int fieldNumber, double value) throws IOException
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
         byte[] bytes = CodedOutput.getTagAndRawLittleEndian64Bytes(tag, Double.doubleToRawLongBits(value));
@@ -211,7 +211,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeBool(int fieldNumber, boolean value) throws IOException
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, value ? 1 : 0);
@@ -219,7 +219,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeEnum(int fieldNumber, int number) throws IOException
+    public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
         byte[] bytes = CodedOutput.getTagAndRawVarInt32Bytes(tag, number);
@@ -227,7 +227,7 @@ public final class DeferredOutput implements Output
         current = root==null ? (root=new ByteArrayNode(bytes)) : new ByteArrayNode(bytes, current);
     }
 
-    public void writeString(int fieldNumber, String value) throws IOException
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         byte[] bytes = value.getBytes(ByteString.UTF8);
         
@@ -241,7 +241,7 @@ public final class DeferredOutput implements Output
             current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
 
-    public void writeBytes(int fieldNumber, ByteString value) throws IOException
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         byte[] bytes = value.getBytes();
         
@@ -255,7 +255,7 @@ public final class DeferredOutput implements Output
             current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
     
-    public void writeByteArray(int fieldNumber, byte[] bytes) throws IOException
+    public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
         byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);
@@ -267,7 +267,8 @@ public final class DeferredOutput implements Output
             current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
 
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value) throws IOException
+    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, 
+            boolean repeated) throws IOException
     {
         Schema<T> schema = value.cachedSchema();
         // fail fast
@@ -295,7 +296,8 @@ public final class DeferredOutput implements Output
         }
     }
     
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema) throws IOException
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
+            boolean repeated) throws IOException
     {
         // fail fast
         if(!schema.isInitialized(value))

@@ -130,8 +130,8 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
     public void writeTo(Output output, HasHasBar message) throws IOException
     {
         if(message.name!=null)
-            output.writeString(1, message.name);
-        writeHasBar(output, 2, message.hasBar);
+            output.writeString(1, message.name, false);
+        writeHasBar(output, 2, message.hasBar, false);
     }
     
     private void readObject(ObjectInputStream in) throws IOException
@@ -167,12 +167,13 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
         }
     }
     
-    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar) throws IOException
+    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated) 
+    throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(hasBar);
-        output.writeByteArray(fieldNumber, baos.toByteArray());
+        output.writeByteArray(fieldNumber, baos.toByteArray(), repeated);
     }
 
 }

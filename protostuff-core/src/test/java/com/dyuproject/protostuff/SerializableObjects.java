@@ -30,16 +30,16 @@ import com.dyuproject.protostuff.Foo.EnumSample;
 public final class SerializableObjects
 {
     
-    static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
-    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
+    public static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
+    public static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
 
     
-    static final Baz baz = new Baz(567, "baz", 202020202);    
-    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
+    public static final Baz baz = new Baz(567, "baz", 202020202);    
+    public static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
     
-    static final Foo foo = newFoo(
+    public static final Foo foo = newFoo(
             new Integer[]{90210,-90210, 0}, 
             new String[]{"ab", "cd"}, 
             new Bar[]{bar, negativeBar},
@@ -51,7 +51,7 @@ public final class SerializableObjects
             new Long[]{7060504030201l, -7060504030201l, 0l});
 
     
-    static Foo newFoo(
+    public static Foo newFoo(
             Integer[] someInt, 
             String[] someString, 
             Bar[] someBar, 
@@ -75,7 +75,7 @@ public final class SerializableObjects
                 Arrays.asList(someLong));
     }
     
-    static void assertEquals(Baz baz1, Baz baz2)
+    public static void assertEquals(Baz baz1, Baz baz2)
     {
         // true if both are null
         if(baz1 == baz2)
@@ -86,7 +86,7 @@ public final class SerializableObjects
         Assert.assertTrue(baz1.getTimestamp() == baz2.getTimestamp());
     }
     
-    static void assertEquals(Bar bar1, Bar bar2)
+    public static void assertEquals(Bar bar1, Bar bar2)
     {
         // true if both are null
         if(bar1 == bar2)
@@ -103,7 +103,7 @@ public final class SerializableObjects
         Assert.assertTrue(bar1.getSomeLong() == bar2.getSomeLong());
     }
     
-    static void assertEquals(Foo f1, Foo f2)
+    public static void assertEquals(Foo f1, Foo f2)
     {
         // true if both are null
         if(f1 == f2)

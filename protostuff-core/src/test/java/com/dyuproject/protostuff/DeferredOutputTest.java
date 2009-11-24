@@ -39,7 +39,7 @@ public class DeferredOutputTest extends TestCase
         {
             int num = i;
             int value = i * i * i;
-            output.writeInt32(num, value);
+            output.writeInt32(num, value, false);
             size += CodedOutput.computeInt32Size(num, value);
             assertSize(size, output.getSize());
         }
@@ -52,7 +52,7 @@ public class DeferredOutputTest extends TestCase
         {
             int num = i;
             long value = i * i * i;
-            output.writeInt64(num, value);
+            output.writeInt64(num, value, false);
             size += CodedOutput.computeInt64Size(num, value);
             assertSize(size, output.getSize());
         }
@@ -65,7 +65,7 @@ public class DeferredOutputTest extends TestCase
         {
             int num = i;
             float value = i * i * i;
-            output.writeFloat(num, value);
+            output.writeFloat(num, value, false);
             size += CodedOutput.computeFloatSize(num, value);
             assertSize(size, output.getSize());
         }
@@ -78,7 +78,7 @@ public class DeferredOutputTest extends TestCase
         {
             int num = i;
             double value = i * i * i;
-            output.writeDouble(num, value);
+            output.writeDouble(num, value, false);
             size += CodedOutput.computeDoubleSize(num, value);
             assertSize(size, output.getSize());
         }
@@ -86,16 +86,16 @@ public class DeferredOutputTest extends TestCase
     
     public void testBoolean() throws Exception
     {
-        output.writeBool(1, true);
+        output.writeBool(1, true, false);
         assertSize(2, output.getSize());
-        output.writeBool(2, false);
+        output.writeBool(2, false, false);
         assertSize(4, output.getSize());
     }
     
     public void testString() throws Exception
     {
         String s = "abcde12345";
-        output.writeString(1, s);
+        output.writeString(1, s, false);
         assertSize(1+1+s.getBytes(ByteString.UTF8).length, output.getSize());
     }
     
@@ -104,9 +104,9 @@ public class DeferredOutputTest extends TestCase
         String s = "abcde12345";
         byte[] b = s.getBytes(ByteString.UTF8);
         ByteString bs = ByteString.copyFromUtf8(s);
-        output.writeBytes(1, bs);
+        output.writeBytes(1, bs, false);
         assertSize(1+1+10, output.getSize());
-        output.writeByteArray(2, b);
+        output.writeByteArray(2, b, false);
         assertSize(1+1+10+1+1+10, output.getSize());
     }
     

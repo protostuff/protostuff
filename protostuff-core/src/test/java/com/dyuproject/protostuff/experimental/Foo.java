@@ -43,7 +43,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
     {
         __fieldMap.put("someInt", 1);
         __fieldMap.put("someString", 2);
-        __fieldMap.put("bar", 3);
+        __fieldMap.put("someBar", 3);
         __fieldMap.put("someEnum", 4);
         __fieldMap.put("someBytes", 5);
         __fieldMap.put("someBoolean", 6);
@@ -297,7 +297,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
             case 2:
                 return "someString";
             case 3:
-                return "bar";
+                return "someBar";
             case 4:
                 return "someEnum";
             case 5:
@@ -396,55 +396,55 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
         if(someInt!=null)
         {
             for(int value : someInt)
-                output.writeInt32(1, value);
+                output.writeInt32(1, value, true);
         }
         List<String> someString = message.someString;
         if(someString!=null)
         {
             for(String value : someString)
-                output.writeString(2, value);
+                output.writeString(2, value, true);
         }
         List<Bar> someBar = message.someBar;
         if(someBar!=null)
         {
             for(Bar value : someBar)
-                output.writeMessage(3, value);
+                output.writeMessage(3, value, true);
         }
         List<EnumSample> someEnum = message.someEnum;
         if(someEnum!=null)
         {
             for(EnumSample value : someEnum)
-                output.writeEnum(4, value.number);
+                output.writeEnum(4, value.number, true);
         }
         List<ByteString> someBytes = message.someBytes;
         if(someBytes!=null)
         {
             for(ByteString value : someBytes)
-                output.writeBytes(5, value);
+                output.writeBytes(5, value, true);
         }
         List<Boolean> someBoolean = message.someBoolean;
         if(someBoolean!=null)
         {
             for(boolean value : someBoolean)
-                output.writeBool(6, value);
+                output.writeBool(6, value, true);
         }
         List<Float> someFloat = message.someFloat;
         if(someFloat!=null)
         {
             for(Float value : someFloat)
-                output.writeFloat(7, value);
+                output.writeFloat(7, value, true);
         }
         List<Double> someDouble = message.someDouble;
         if(someDouble!=null)
         {
             for(Double value : someDouble)
-                output.writeDouble(8, value);
+                output.writeDouble(8, value, true);
         }
         List<Long> someLong = message.someLong;
         if(someLong!=null)
         {
             for(Long value : someLong)
-                output.writeInt64(9, value);
+                output.writeInt64(9, value, true);
         }
     }
     
