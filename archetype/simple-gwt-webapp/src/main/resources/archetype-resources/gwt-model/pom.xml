@@ -59,15 +59,6 @@
   
   <dependencies>
     <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>${rootArtifactId}-model</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-json</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>

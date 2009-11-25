@@ -68,7 +68,7 @@
       </dependency>
       <dependency>
         <groupId>com.dyuproject.protostuff</groupId>
-        <artifactId>protostuff-json</artifactId>
+        <artifactId>protostuff-model-json</artifactId>
         <version>${protostuff.version}</version>
       </dependency>
     </dependencies>
