@@ -10,7 +10,7 @@
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-json</artifactId>
   <name>protostuff :: json</name>
-  <description>protobuf json serialization (especially for LITE_RUNTIME)</description>
+  <description>protobuf serialization on json format</description>
   <packaging>jar</packaging>
   
   <build>
@@ -25,25 +25,33 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-model</artifactId>
+      <artifactId>protostuff-core</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-model</artifactId>
+      <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
-      <optional>true</optional>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-runtime</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-    </dependency>
   </dependencies>
-  
+
 </project>
