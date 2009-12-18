@@ -99,12 +99,12 @@ public final class CodedInput implements Input {
       return 0;
     }
 
-    lastTag = readRawVarint32();
-    if (lastTag == 0) {
+    int tag = lastTag = readRawVarint32();
+    if (tag >>> WireFormat.TAG_TYPE_BITS == 0) {
       // If we actually read zero, that's not a valid tag.
       throw ProtobufException.invalidTag();
     }
-    return lastTag;
+    return tag;
   }
 
   /**
@@ -376,8 +376,17 @@ public final class CodedInput implements Input {
    * CodedInputStream buffers its input.
    */
   static int readRawVarint32(final InputStream input) throws IOException {
-    int result = 0;
-    int offset = 0;
+    final int firstByte = input.read();
+    if (firstByte == -1) {
+      throw ProtobufException.truncatedMessage();
+    }
+    
+    if ((firstByte & 0x80) == 0) {
+      return firstByte;
+    }
+    
+    int result = firstByte & 0x7f;
+    int offset = 7;
     for (; offset < 32; offset += 7) {
       final int b = input.read();
       if (b == -1) {
