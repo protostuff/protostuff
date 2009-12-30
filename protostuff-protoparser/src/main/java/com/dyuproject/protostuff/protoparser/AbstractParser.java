@@ -173,11 +173,4 @@ public abstract class AbstractParser extends Parser
                 throw new IllegalArgumentException("Not a hex character: " + c);
         }
     }
-    
-    public static void main(String[] args)
-    {
-        byte[] b = getBytesFromHexString("FACE");
-        for(int i=0; i<b.length; i++)
-            System.err.println(0xFF & b[i]);
-    }
 }

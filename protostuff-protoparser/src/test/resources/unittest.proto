@@ -428,7 +428,7 @@ message TestFieldOrderings {
 message TestExtremeDefaultValues {
   optional bytes escaped_bytes = 1 [default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
   optional uint32 large_uint32 = 2 [default = 0xFFFFFFFF];
-  optional uint64 large_uint64 = 3 [default = 0xFFFFFFFFFFFFFFF/*F*/];
+  optional uint64 large_uint64 = 3 [default = 0xFFFFFFFFFFFFFFFF];
   optional  int32 small_int32  = 4 [default = -0x7FFFFFFF];
   optional  int64 small_int64  = 5 [default = -0x7FFFFFFFFFFFFFFF];
 

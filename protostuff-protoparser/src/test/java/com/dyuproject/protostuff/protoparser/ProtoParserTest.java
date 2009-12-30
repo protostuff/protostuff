@@ -163,15 +163,49 @@ public class ProtoParserTest extends TestCase
         assertTrue(import_message_d.number == 1);
         assertTrue(import_message_d.defaultValue == null);
         
+        // unittest.proto
         
         assertEquals("protobuf_unittest", proto.getPackageName());
         assertEquals(proto.getJavaPackageName(), proto.getPackageName());
         assertTrue(proto.getMessages().size() == 18);
         assertTrue(proto.getEnumGroups().size() == 3);
         
-        assertTrue(proto.getEnumGroup("ForeignEnum").values.size() == 3);
-        assertTrue(proto.getEnumGroup("TestEnumWithDupValue").values.size() == 5);
-        assertTrue(proto.getEnumGroup("TestSparseEnum").values.size() == 7);
+        EnumGroup foreignEnum = proto.getEnumGroup("ForeignEnum");
+        assertNotNull(foreignEnum);
+        assertTrue(foreignEnum.getValues().size() == 3);
+        
+        EnumGroup testEnumWithDupValue = proto.getEnumGroup("TestEnumWithDupValue");
+        assertNotNull(testEnumWithDupValue);
+        assertTrue(testEnumWithDupValue.getValues().size() == 5);
+        assertTrue(testEnumWithDupValue.getValue(0).name.equals("FOO1"));
+        assertTrue(testEnumWithDupValue.getValue(0).number == 1);
+        assertTrue(testEnumWithDupValue.getValue(1).name.equals("FOO2"));
+        assertTrue(testEnumWithDupValue.getValue(1).number == 1);
+        assertTrue(testEnumWithDupValue.getValue(2).name.equals("BAR1"));
+        assertTrue(testEnumWithDupValue.getValue(2).number == 2);
+        assertTrue(testEnumWithDupValue.getValue(3).name.equals("BAR2"));
+        assertTrue(testEnumWithDupValue.getValue(3).number == 2);
+        assertTrue(testEnumWithDupValue.getValue(4).name.equals("BAZ"));
+        assertTrue(testEnumWithDupValue.getValue(4).number == 3);
+        
+        EnumGroup testSparseEnum = proto.getEnumGroup("TestSparseEnum");
+        assertNotNull(testSparseEnum);
+        assertTrue(testSparseEnum.getValues().size() == 7);
+        assertTrue(testSparseEnum.getValue(0).name.equals("SPARSE_E"));
+        assertTrue(testSparseEnum.getValue(0).number == -53452);
+        assertTrue(testSparseEnum.getValue(1).name.equals("SPARSE_D"));
+        assertTrue(testSparseEnum.getValue(1).number == -15);
+        assertTrue(testSparseEnum.getValue(2).name.equals("SPARSE_F"));
+        assertTrue(testSparseEnum.getValue(2).number == 0);
+        assertTrue(testSparseEnum.getValue(3).name.equals("SPARSE_G"));
+        assertTrue(testSparseEnum.getValue(3).number == 2);
+        assertTrue(testSparseEnum.getValue(4).name.equals("SPARSE_A"));
+        assertTrue(testSparseEnum.getValue(4).number == 123);
+        assertTrue(testSparseEnum.getValue(5).name.equals("SPARSE_B"));
+        assertTrue(testSparseEnum.getValue(5).number == 62374);
+        assertTrue(testSparseEnum.getValue(6).name.equals("SPARSE_C"));
+        assertTrue(testSparseEnum.getValue(6).number == 12589234);
+        
         
         Message testAllTypes = proto.getMessage("TestAllTypes");
         assertNotNull(testAllTypes);
@@ -185,8 +219,6 @@ public class ProtoParserTest extends TestCase
         
         Message foreignMessage = proto.getMessage("ForeignMessage");
         assertNotNull(foreignMessage);
-        EnumGroup foreignEnum = proto.getEnumGroup("ForeignEnum");
-        assertNotNull(foreignEnum);
         
         EnumField optional_nested_enum = testAllTypes.getField("optional_nested_enum", 
                 EnumField.class);
@@ -242,6 +274,90 @@ public class ProtoParserTest extends TestCase
                 MessageField.class);
         assertNotNull(foreign_nested);
         assertTrue(nestedMessage == foreign_nested.getMessage());
+        
+        Message testEmptyMessage = proto.getMessage("TestEmptyMessage");
+        assertNotNull(testEmptyMessage);
+        assertTrue(testEmptyMessage.getFields().size() == 0);
+        assertTrue(testEmptyMessage.getNestedEnumGroups().size() == 0);
+        assertTrue(testEmptyMessage.getNestedMessages().size() == 0);
+        
+        Message testReallyLargeTagNumber = proto.getMessage("TestReallyLargeTagNumber");
+        assertNotNull(testReallyLargeTagNumber);
+        
+        Field.Int32 a = testReallyLargeTagNumber.getField("a", Field.Int32.class);
+        assertNotNull(a);
+        assertTrue(a.number == 1);
+        Field.Int32 bb = testReallyLargeTagNumber.getField("bb", Field.Int32.class);
+        assertNotNull(bb);
+        assertTrue(bb.number == 268435455);
+        
+        Message testRecursiveMessage = proto.getMessage("TestRecursiveMessage");
+        assertNotNull(testRecursiveMessage);
+        
+        MessageField testRecursiveMessage_a = testRecursiveMessage.getField("a", 
+                MessageField.class);        
+        assertTrue(testRecursiveMessage == testRecursiveMessage_a.getMessage());
+        
+        Message testMutualRecursionA = proto.getMessage("TestMutualRecursionA");
+        assertNotNull(testMutualRecursionA);
+        Message testMutualRecursionB = proto.getMessage("TestMutualRecursionB");
+        assertNotNull(testMutualRecursionB);
+        
+        MessageField testMutualRecursionA_bb = testMutualRecursionA.getField("bb", 
+                MessageField.class);
+        assertNotNull(testMutualRecursionA_bb);
+        MessageField testMutualRecursionB_a = testMutualRecursionB.getField("a", 
+                MessageField.class);
+        assertNotNull(testMutualRecursionB_a);
+        
+        assertTrue(testMutualRecursionA == testMutualRecursionB_a.getMessage());
+        assertTrue(testMutualRecursionB == testMutualRecursionA_bb.getMessage());
+        
+        Message testNestedMessageHasBits = proto.getMessage("TestNestedMessageHasBits");
+        assertNotNull(testNestedMessageHasBits);
+        Message tnmhb_nestedMessage = testNestedMessageHasBits.getNestedMessage("NestedMessage");
+        assertNotNull(tnmhb_nestedMessage);
+        
+        MessageField tnmhb_optional_nested_message = testNestedMessageHasBits.getField("optional_nested_message", 
+                MessageField.class);
+        assertNotNull(tnmhb_optional_nested_message);
+        assertTrue(tnmhb_nestedMessage == tnmhb_optional_nested_message.getMessage());
+        
+        MessageField nestedmessage_repeated_foreignmessage = tnmhb_nestedMessage.getField("nestedmessage_repeated_foreignmessage", 
+                MessageField.class);
+        assertNotNull(nestedmessage_repeated_foreignmessage);
+        assertTrue(foreignMessage == nestedmessage_repeated_foreignmessage.getMessage());
+        
+        Message testFieldOrderings = proto.getMessage("TestFieldOrderings");
+        assertNotNull(testFieldOrderings);
+        assertTrue(testFieldOrderings.getFields().size() == 3);
+        assertEquals(testFieldOrderings.sortedFields.get(0).name, "my_int");
+        assertEquals(testFieldOrderings.sortedFields.get(1).name, "my_string");
+        assertEquals(testFieldOrderings.sortedFields.get(2).name, "my_float");
+        
+        Message testExtremeDefaultValues = proto.getMessage("TestExtremeDefaultValues");
+        assertNotNull(testExtremeDefaultValues);
+        
+        Field.UInt32 large_uint32 = testExtremeDefaultValues.getField("large_uint32", 
+                Field.UInt32.class);
+        assertNotNull(large_uint32);
+        assertTrue((large_uint32.getDefaultValue().intValue() & 0xFFFFFFFF) == 0xFFFFFFFF);
+        
+        Field.UInt64 large_uint64 = testExtremeDefaultValues.getField("large_uint64", 
+                Field.UInt64.class);
+        assertNotNull(large_uint64);
+        assertTrue(-1 == large_uint64.getDefaultValue().longValue());
+        
+        Field.Int32 small_int32 = testExtremeDefaultValues.getField("small_int32", 
+                Field.Int32.class);
+        assertNotNull(small_int32);
+        assertTrue(small_int32.getDefaultValue().intValue() == -0x7FFFFFFF);
+        
+        Field.Int64 small_int64 = testExtremeDefaultValues.getField("small_int64", 
+                Field.Int64.class);
+        assertNotNull(small_int64);
+        assertTrue(-Long.MAX_VALUE == small_int64.getDefaultValue().longValue());
+
     }
     
     public static void main(String[] args) throws Exception

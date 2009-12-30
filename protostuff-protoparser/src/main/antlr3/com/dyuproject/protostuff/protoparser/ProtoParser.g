@@ -242,10 +242,14 @@ field_options_keyval [Proto proto, Message message, Field field]
                     throw new IllegalStateException("a field can only have a single default value");
                 
                 if(field instanceof Field.Number) {
-                    if(field.getClass().getSimpleName().endsWith("32"))
-                        field.defaultValue = new Integer((int)Long.decode($HEX.text).longValue());
-                    else if(field.getClass().getSimpleName().endsWith("64"))
-                        field.defaultValue = Long.decode($HEX.text);
+                    if(field instanceof Field.Int32)
+                        field.defaultValue = new Integer(TextFormat.parseInt32($HEX.text));
+                    else if(field instanceof Field.UInt32)
+                        field.defaultValue = new Integer(TextFormat.parseUInt32($HEX.text));
+                    else if(field instanceof Field.Int64)
+                        field.defaultValue = new Long(TextFormat.parseInt64($HEX.text));
+                    else if(field instanceof Field.UInt64)
+                        field.defaultValue = new Long(TextFormat.parseUInt64($HEX.text));
                     else if(field instanceof Field.Float)
                         field.defaultValue = new Float(Long.decode($HEX.text).floatValue());
                     else if(field instanceof Field.Double) 
@@ -265,10 +269,14 @@ field_options_keyval [Proto proto, Message message, Field field]
                     throw new IllegalStateException("a field can only have a single default value");
                 
                 if(field instanceof Field.Number) {
-                    if(field.getClass().getSimpleName().endsWith("32"))
-                        field.defaultValue = new Integer((int)Long.decode($OCTAL.text).longValue());
-                    else if(field.getClass().getSimpleName().endsWith("64"))
-                        field.defaultValue = Long.decode($OCTAL.text);
+                    if(field instanceof Field.Int32)
+                        field.defaultValue = new Integer(TextFormat.parseInt32($OCTAL.text));
+                    else if(field instanceof Field.UInt32)
+                        field.defaultValue = new Integer(TextFormat.parseUInt32($OCTAL.text));
+                    else if(field instanceof Field.Int64)
+                        field.defaultValue = new Long(TextFormat.parseInt64($OCTAL.text));
+                    else if(field instanceof Field.UInt64)
+                        field.defaultValue = new Long(TextFormat.parseUInt64($OCTAL.text));
                     else if(field instanceof Field.Float)
                         field.defaultValue = new Float(Long.decode($OCTAL.text).floatValue());
                     else if(field instanceof Field.Double) 

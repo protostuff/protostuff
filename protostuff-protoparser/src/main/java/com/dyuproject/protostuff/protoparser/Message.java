@@ -151,12 +151,11 @@ public class Message
             if(f instanceof Field.Reference)
             {
                 Field.Reference fr = (Field.Reference)f;
-                //System.err.println(fr.refName + " @ " + fr.message.name);
                 String refName = fr.refName;
                 String packageName = fr.packageName;
                 if(packageName==null)
                 {
-                    Message msg = fr.message.getNestedMessage(refName);
+                    Message msg = findMessageFrom(fr.message, refName);
                     if(msg!=null || (msg=p.getMessage(refName))!=null)
                     {
                         MessageField mf = newMessageField(msg, fr);
@@ -171,7 +170,6 @@ public class Message
                         if(fr.defaultValue instanceof String)
                         {
                             String enumRefName = (String)fr.defaultValue;
-                            //System.err.println(enumRefName);
                             EnumGroup.Value value = eg.getValue(enumRefName);
                             if(value==null)
                                 throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
@@ -188,7 +186,7 @@ public class Message
                 if(dotIdx==-1)
                 {
                     // could be a nested message/enum
-                    Message msg = fr.message.getNestedMessage(packageName);
+                    Message msg = findMessageFrom(fr.message, packageName);
                     if(msg!=null || (msg=p.getMessage(packageName))!=null)
                     {
                         Message nestedMsg = msg.getNestedMessage(refName);
@@ -205,7 +203,6 @@ public class Message
                             if(fr.defaultValue instanceof String)
                             {
                                 String enumRefName = (String)fr.defaultValue;
-                                //System.err.println(enumRefName);
                                 EnumGroup.Value value = eg.getValue(enumRefName);
                                 if(value==null)
                                     throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
@@ -218,20 +215,16 @@ public class Message
                 }
                 else
                 {
-                    Message m = null, parent = null;
+                    Message m = null;
                     int last = -1;
                     boolean found = false;
                     while(true)
                     {
                         String name = packageName.substring(last+1, dotIdx);
-                        if(parent==null)
-                        {
-                            parent = m = fr.message.getNestedMessage(name);
-                            if(m==null)
-                                parent = m = p.getMessage(name);
-                        }
+                        if(m==null)
+                            m = findMessageFrom(fr.message, name);
                         else
-                            parent = m = parent.getNestedMessage(name);
+                            m = m.getNestedMessage(name);
                         
                         if(m==null)
                             break;
@@ -261,7 +254,6 @@ public class Message
                                     if(fr.defaultValue instanceof String)
                                     {
                                         String enumRefName = (String)fr.defaultValue;
-                                        //System.err.println(enumRefName);
                                         EnumGroup.Value value = eg.getValue(enumRefName);
                                         if(value==null)
                                             throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
@@ -298,7 +290,6 @@ public class Message
                     if(fr.defaultValue instanceof String)
                     {
                         String enumRefName = (String)fr.defaultValue;
-                        //System.err.println(enumRefName);
                         EnumGroup.Value value = eg.getValue(enumRefName);
                         if(value==null)
                             throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
@@ -314,11 +305,7 @@ public class Message
         sortedFields.addAll(fields.values());
         Collections.sort(sortedFields);
         for(Message m : nestedMessages.values())
-        {
-            //System.err.println("nested start");
             m.resolveReferences();
-            //System.err.println("nested end");
-        }
     }
     
     static MessageField newMessageField(Message message, Field.Reference fr)
@@ -342,6 +329,14 @@ public class Message
         to.name = from.name;
         to.number = from.number;
         to.modifier = from.modifier;
+    }
+    
+    static Message findMessageFrom(Message message, String name)
+    {
+        Message m = message.getNestedMessage(name);
+        if(m==null && message.isNested())
+            return findMessageFrom(message.parentMessage, name);
+        return m;
     }
 
 }
