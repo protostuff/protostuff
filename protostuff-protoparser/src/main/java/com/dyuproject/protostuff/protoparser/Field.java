@@ -20,7 +20,7 @@ package com.dyuproject.protostuff.protoparser;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public abstract class Field<T> implements Comparable<Field<T>>
+public abstract class Field<T> implements Comparable<Field<?>>
 {
     
     public enum Modifier
@@ -101,7 +101,7 @@ public abstract class Field<T> implements Comparable<Field<T>>
             .toString();
     }
     
-    public int compareTo(Field<T> f)
+    public int compareTo(Field<?> f)
     {
         if(f.number==number)
             throw new IllegalStateException("The field: " + f.name + " cannot have the same number as " + name);
