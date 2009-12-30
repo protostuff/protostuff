@@ -194,6 +194,7 @@
     <protobuf-version>2.2.0</protobuf-version>
     <jackson-version>1.2.1</jackson-version>
     <velocity-version>1.6.2</velocity-version>
+    <antlr3-version>3.2</antlr3-version>
   </properties>
   
 </project>
