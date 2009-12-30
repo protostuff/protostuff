@@ -177,9 +177,9 @@
   
   <modules>
     <module>protostuff-core</module>
-    <module>protostuff-protoparser</module>
     <module>protostuff-runtime</module>
     <module>protostuff-json</module>
+    <module>protostuff-protoparser</module>
     <module>protostuff-model</module>
     <module>protostuff-model-json</module>
     <module>protostuff-codegen</module>
