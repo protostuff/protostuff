@@ -46,6 +46,7 @@
 package com.dyuproject.protostuff;
 
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
@@ -131,7 +132,11 @@ public final class ByteString {
    * and returns the result as a {@code ByteString}.
    */
   public static ByteString copyFrom(final String text, final String charsetName) {
-    return new ByteString(text.getBytes(UTF8));
+    try {
+      return new ByteString(text.getBytes(charsetName));
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(charsetName + " not supported?", e);
+    }
   }
 
   /**
