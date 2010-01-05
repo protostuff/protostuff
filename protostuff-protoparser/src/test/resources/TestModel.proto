@@ -43,7 +43,7 @@ message Bar {
 
 message Baz {
   required int64 id = 1;
-  optional string name = 2;
+  optional string name = 2[default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
   optional int64 timestamp = 3;
   optional bytes data = 4 [default = 0xFACE];
 }

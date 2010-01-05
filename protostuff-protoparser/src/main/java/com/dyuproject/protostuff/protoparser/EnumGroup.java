@@ -31,6 +31,7 @@ public class EnumGroup
     Message parentMessage;
     Proto proto;
     final ArrayList<Value> values = new ArrayList<Value>();
+    final ArrayList<Value> sortedValues = new ArrayList<Value>();
     
     public EnumGroup()
     {
@@ -85,12 +86,31 @@ public class EnumGroup
         return values;
     }
     
+    public ArrayList<Value> getSortedValues()
+    {
+        return sortedValues;
+    }
+    
     void add(Value value)
     {
         value.enumGroup = this;
         values.add(value);
+        sortedValues.add(value);
         // sort along the way?
-        Collections.sort(values);
+        Collections.sort(sortedValues);
+    }
+    
+    public ArrayList<Value> getUniqueSortedValues()
+    {
+        ArrayList<Value> uniqueSorted = new ArrayList<Value>();
+        Value last = null;
+        for(Value v : sortedValues)
+        {
+            if(last!=null && v.number!=last.number)
+                uniqueSorted.add(v);
+            last = v;
+        }
+        return uniqueSorted;
     }
     
     public String toString()

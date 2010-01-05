@@ -42,5 +42,16 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         return enumGroup;
     }
+    
+    public java.lang.String getJavaType()
+    {
+        return enumGroup.getName();
+    }
+
+    public java.lang.String getDefaultValueAsString()
+    {
+        EnumGroup.Value value = defaultValue==null ? enumGroup.getValue(0) : defaultValue;
+        return enumGroup.getName() + "." + value.name;
+    }
 
 }

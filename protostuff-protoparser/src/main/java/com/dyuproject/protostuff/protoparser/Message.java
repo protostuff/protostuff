@@ -120,6 +120,14 @@ public class Message
     {
         return fields.get(name);
     }
+    
+    public Message getDescendant(String name)
+    {
+        if(parentMessage==null)
+            return null;
+        
+        return name.equals(parentMessage.name) ? parentMessage : parentMessage.getDescendant(name);
+    }
 
     @SuppressWarnings("unchecked")
     public <T extends Field<?>> T getField(String name, Class<T> typeClass)
@@ -320,6 +328,9 @@ public class Message
     {
         EnumField ef = new EnumField(enumGroup);
         ef.packable = true;
+        String refName = (String)fr.getDefaultValue();
+        if(refName!=null)
+            ef.defaultValue = enumGroup.getValue(refName);
         copy(fr, ef);
         return ef;
     }

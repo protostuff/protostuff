@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.protoparser;
 
+import java.nio.ByteBuffer;
+
 /**
  * TODO
  *
@@ -87,6 +89,21 @@ public abstract class Field<T> implements Comparable<Field<?>>
         return defaultValue;
     }
     
+    public boolean isRepeated()
+    {
+        return modifier == Modifier.REPEATED;
+    }
+    
+    public boolean isRequired()
+    {
+        return modifier == Modifier.REQUIRED;
+    }
+    
+    public boolean isOptional()
+    {
+        return modifier == Modifier.OPTIONAL;
+    }
+    
     public java.lang.String toString()
     {
         return new StringBuilder()
@@ -100,6 +117,9 @@ public abstract class Field<T> implements Comparable<Field<?>>
             .append('}')                
             .toString();
     }
+    
+    public abstract java.lang.String getJavaType();
+    public abstract java.lang.String getDefaultValueAsString();
     
     public int compareTo(Field<?> f)
     {
@@ -119,62 +139,146 @@ public abstract class Field<T> implements Comparable<Field<?>>
     
     public static class Int32 extends Number<Integer>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "int";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0" : defaultValue.toString();
+        }
     }
     
     public static class UInt32 extends Number<Integer>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "int";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0" : defaultValue.toString();
+        }
     }
     
     public static class SInt32 extends Number<Integer>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "int";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0" : defaultValue.toString();
+        }
     }
     
     public static class Fixed32 extends Number<Integer>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "int";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0" : defaultValue.toString();
+        }
     }
     
     public static class SFixed32 extends Number<Integer>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "int";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0" : defaultValue.toString();
+        }
     }
     
     public static class Int64 extends Number<Long>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "long";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0l" : defaultValue.toString() +"l";
+        }
     }
     
     public static class UInt64 extends Number<Long>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "long";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0l" : defaultValue.toString()+"l";
+        }
     }
     
     public static class SInt64 extends Number<Long>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "long";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0l" : defaultValue.toString()+"l";
+        }
     }
     
     public static class Fixed64 extends Number<Long>
     {
-        
+        public java.lang.String getJavaType()
+        {
+            return "long";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0l" : defaultValue.toString()+"l";
+        }
     }
     
     public static class SFixed64 extends Number<Long>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "long";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0l" : defaultValue.toString()+"l";
+        }
     }
     
     public static class Float extends Number<Float>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "float";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0.0f" : defaultValue.toString()+"f";
+        }
     }
     
     public static class Double extends Number<Double>
     {
-
+        public java.lang.String getJavaType()
+        {
+            return "double";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "0.0d" : defaultValue.toString()+"d";
+        }
     }
     
     public static class Bool extends Field<Boolean>
@@ -182,6 +286,14 @@ public abstract class Field<T> implements Comparable<Field<?>>
         public Bool()
         {
             super(true);
+        }
+        public java.lang.String getJavaType()
+        {
+            return "boolean";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "false" : defaultValue.toString();
         }
     }
     
@@ -191,6 +303,15 @@ public abstract class Field<T> implements Comparable<Field<?>>
         {
             super(false);
         }
+        public java.lang.String getJavaType()
+        {
+            return "string";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "null" : "Internal.stringDefaultValue(" + 
+                    TextFormat.escapeText(getDefaultValue()) + ");";
+        }
     }
     
     public static class Bytes extends Field<byte[]>
@@ -198,6 +319,16 @@ public abstract class Field<T> implements Comparable<Field<?>>
         public Bytes()
         {
             super(false);
+        }
+        
+        public java.lang.String getJavaType()
+        {
+            return "ByteString";
+        }
+        public java.lang.String getDefaultValueAsString()
+        {
+            return defaultValue==null ? "null" : "Internal.bytesDefaultValue(" + 
+                    TextFormat.escapeBytes(ByteBuffer.wrap(getDefaultValue())) + ");";
         }
     }
     
@@ -228,6 +359,16 @@ public abstract class Field<T> implements Comparable<Field<?>>
         public Message getMessage()
         {
             return message;
+        }
+        
+        public java.lang.String getJavaType()
+        {
+            return refName;
+        }
+        
+        public java.lang.String getDefaultValueAsString()
+        {
+            return "null";
         }
     }
 

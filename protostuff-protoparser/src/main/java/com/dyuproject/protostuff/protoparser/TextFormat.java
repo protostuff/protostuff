@@ -60,7 +60,7 @@ public final class TextFormat {
   private TextFormat() {
   }
   
-  static final Charset UTF8 = Charset.forName("UTF-8");
+  static final Charset UTF8 = Charset.forName("UTF-8"), ISO_8859_1 = Charset.forName("ISO-8859-1");
 
   // =================================================================
   // Utility functions
@@ -77,20 +77,20 @@ public final class TextFormat {
    * using 3-digit octal sequences.
    */
   static StringBuilder escapeBytes(ByteBuffer input) {
-    input.flip();
+    //input.flip();
     int length = input.limit();
     final StringBuilder builder = new StringBuilder(length);
     for (int i = 0; i < length; i++) {
       final byte b = input.get(i);
       switch (b) {
         // Java does not recognize \a or \v, apparently.
-        case 0x07: builder.append("\\a" ); break;
+        case 0x07: builder.append("\\007" ); break;
         case '\b': builder.append("\\b" ); break;
         case '\f': builder.append("\\f" ); break;
         case '\n': builder.append("\\n" ); break;
         case '\r': builder.append("\\r" ); break;
         case '\t': builder.append("\\t" ); break;
-        case 0x0b: builder.append("\\v" ); break;
+        case 0x0b: builder.append("\\013" ); break;
         case '\\': builder.append("\\\\"); break;
         case '\'': builder.append("\\\'"); break;
         case '"' : builder.append("\\\""); break;
@@ -201,16 +201,16 @@ public final class TextFormat {
    * individually as a 3-digit octal escape.  Yes, it's weird.
    */
   static String escapeText(final String input) {
-    return escapeBytes(ByteBuffer.wrap(input.getBytes(UTF8))).toString();
+    return escapeBytes(ByteBuffer.wrap(input.getBytes(ISO_8859_1))).toString();
   }
 
   /**
    * Un-escape a text string as escaped using {@link #escapeText(String)}.
    * Two-digit hex escapes (starting with "\x") are also recognized.
    */
-  static String unescapeText(final String input) {
+  static String unescapeText(String input) {
     ByteBuffer buffer = unescapeBytes(input);
-    return new String(buffer.array(), buffer.position(), buffer.limit(), UTF8);
+    return new String(buffer.array(), buffer.position(), buffer.limit(), ISO_8859_1);
   }
 
   /** Is this an octal digit? */

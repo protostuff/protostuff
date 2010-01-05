@@ -43,4 +43,14 @@ public class MessageField extends Field<Message>
         return message;
     }
 
+    public java.lang.String getJavaType()
+    {
+        return message.getName();
+    }
+
+    public java.lang.String getDefaultValueAsString()
+    {
+        return message.getName() + ".DEFAULT_INSTANCE";
+    }
+
 }

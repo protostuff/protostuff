@@ -122,7 +122,7 @@ public class ProtoParserTest extends TestCase
         assertTrue(baz_data !=null && baz_data.modifier == Modifier.OPTIONAL);
         
         assertEquals(bar_some_int.defaultValue, Integer.valueOf(127));
-        assertEquals(bar_some_string.defaultValue, "\u1234");
+        assertEquals(new String(bar_some_string.defaultValue.getBytes(TextFormat.ISO_8859_1), "UTF-8"), "\u1234");
         assertEquals(bar_some_float.defaultValue, Float.valueOf(127.0f));
         assertEquals(bar_some_double.defaultValue, Double.valueOf(45.123));
         byte[] data = baz_data.getDefaultValue();
@@ -177,34 +177,34 @@ public class ProtoParserTest extends TestCase
         EnumGroup testEnumWithDupValue = proto.getEnumGroup("TestEnumWithDupValue");
         assertNotNull(testEnumWithDupValue);
         assertTrue(testEnumWithDupValue.getValues().size() == 5);
-        assertTrue(testEnumWithDupValue.getValue(0).name.equals("FOO1"));
-        assertTrue(testEnumWithDupValue.getValue(0).number == 1);
-        assertTrue(testEnumWithDupValue.getValue(1).name.equals("FOO2"));
-        assertTrue(testEnumWithDupValue.getValue(1).number == 1);
-        assertTrue(testEnumWithDupValue.getValue(2).name.equals("BAR1"));
-        assertTrue(testEnumWithDupValue.getValue(2).number == 2);
-        assertTrue(testEnumWithDupValue.getValue(3).name.equals("BAR2"));
-        assertTrue(testEnumWithDupValue.getValue(3).number == 2);
-        assertTrue(testEnumWithDupValue.getValue(4).name.equals("BAZ"));
-        assertTrue(testEnumWithDupValue.getValue(4).number == 3);
+        assertTrue(testEnumWithDupValue.getSortedValues().get(0).name.equals("FOO1"));
+        assertTrue(testEnumWithDupValue.getSortedValues().get(0).number == 1);
+        assertTrue(testEnumWithDupValue.getSortedValues().get(1).name.equals("FOO2"));
+        assertTrue(testEnumWithDupValue.getSortedValues().get(1).number == 1);
+        assertTrue(testEnumWithDupValue.getSortedValues().get(2).name.equals("BAR1"));
+        assertTrue(testEnumWithDupValue.getSortedValues().get(2).number == 2);
+        assertTrue(testEnumWithDupValue.getSortedValues().get(3).name.equals("BAR2"));
+        assertTrue(testEnumWithDupValue.getSortedValues().get(3).number == 2);
+        assertTrue(testEnumWithDupValue.getSortedValues().get(4).name.equals("BAZ"));
+        assertTrue(testEnumWithDupValue.getSortedValues().get(4).number == 3);
         
         EnumGroup testSparseEnum = proto.getEnumGroup("TestSparseEnum");
         assertNotNull(testSparseEnum);
         assertTrue(testSparseEnum.getValues().size() == 7);
-        assertTrue(testSparseEnum.getValue(0).name.equals("SPARSE_E"));
-        assertTrue(testSparseEnum.getValue(0).number == -53452);
-        assertTrue(testSparseEnum.getValue(1).name.equals("SPARSE_D"));
-        assertTrue(testSparseEnum.getValue(1).number == -15);
-        assertTrue(testSparseEnum.getValue(2).name.equals("SPARSE_F"));
-        assertTrue(testSparseEnum.getValue(2).number == 0);
-        assertTrue(testSparseEnum.getValue(3).name.equals("SPARSE_G"));
-        assertTrue(testSparseEnum.getValue(3).number == 2);
-        assertTrue(testSparseEnum.getValue(4).name.equals("SPARSE_A"));
-        assertTrue(testSparseEnum.getValue(4).number == 123);
-        assertTrue(testSparseEnum.getValue(5).name.equals("SPARSE_B"));
-        assertTrue(testSparseEnum.getValue(5).number == 62374);
-        assertTrue(testSparseEnum.getValue(6).name.equals("SPARSE_C"));
-        assertTrue(testSparseEnum.getValue(6).number == 12589234);
+        assertTrue(testSparseEnum.getSortedValues().get(0).name.equals("SPARSE_E"));
+        assertTrue(testSparseEnum.getSortedValues().get(0).number == -53452);
+        assertTrue(testSparseEnum.getSortedValues().get(1).name.equals("SPARSE_D"));
+        assertTrue(testSparseEnum.getSortedValues().get(1).number == -15);
+        assertTrue(testSparseEnum.getSortedValues().get(2).name.equals("SPARSE_F"));
+        assertTrue(testSparseEnum.getSortedValues().get(2).number == 0);
+        assertTrue(testSparseEnum.getSortedValues().get(3).name.equals("SPARSE_G"));
+        assertTrue(testSparseEnum.getSortedValues().get(3).number == 2);
+        assertTrue(testSparseEnum.getSortedValues().get(4).name.equals("SPARSE_A"));
+        assertTrue(testSparseEnum.getSortedValues().get(4).number == 123);
+        assertTrue(testSparseEnum.getSortedValues().get(5).name.equals("SPARSE_B"));
+        assertTrue(testSparseEnum.getSortedValues().get(5).number == 62374);
+        assertTrue(testSparseEnum.getSortedValues().get(6).name.equals("SPARSE_C"));
+        assertTrue(testSparseEnum.getSortedValues().get(6).number == 12589234);
         
         
         Message testAllTypes = proto.getMessage("TestAllTypes");

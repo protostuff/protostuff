@@ -32,7 +32,8 @@ public class Proto
     final Proto importer;
     String packageName, javaPackageName;
     final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
-    final LinkedHashMap<String, Option> options = new LinkedHashMap<String, Option>();
+    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
+    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
     
@@ -83,19 +84,14 @@ public class Proto
         this.packageName = packageName;
     }
     
-    public Option getOption(String name)
+    public String getStandardOption(String name)
     {
-        return options.get(name);
+        return standardOptions.get(name);
     }
     
-    public Collection<Option> getOptions()
+    public String getExtraOption(String name)
     {
-        return options.values();
-    }
-    
-    void addOption(Option option)
-    {
-        options.put(option.name, option);
+        return extraOptions.get(name);
     }
     
     public Collection<Message> getMessages()
@@ -159,9 +155,8 @@ public class Proto
     
     void postParse()
     {
-        Option pkgOption = options.get("java_package");
-        javaPackageName = pkgOption==null || pkgOption.value.length()==0 ? packageName : 
-            pkgOption.value;
+        String javaPkg = extraOptions.get("java_package");
+        javaPackageName = javaPkg==null || javaPkg.length()==0 ? packageName : javaPkg;
         
         for(Message m : getMessages())
             m.resolveReferences();
@@ -172,59 +167,11 @@ public class Proto
         return new StringBuilder()
             .append('{')
             .append("packageName:").append(packageName)
-            .append(',').append("options:").append(getOptions())
+            .append(',').append("standardOptions:").append(standardOptions)
+            .append(',').append("extraOptions:").append(extraOptions)
             .append(',').append("messages:").append(getMessages())
             .append('}')
             .toString();
-    }
-    
-    public static class Option
-    {
-        final String name;
-        final String value;
-        final boolean standard;
-
-        public Option(String name, String value, boolean standard)
-        {
-            this.name = name;
-            this.value = value;
-            this.standard = standard;
-        }
-
-        /**
-         * @return the name
-         */
-        public String getName()
-        {
-            return name;
-        }
-
-        /**
-         * @return the value
-         */
-        public String getValue()
-        {
-            return value;
-        }
-
-        /**
-         * @return the isStandard
-         */
-        public boolean isStandard()
-        {
-            return standard;
-        }
-        
-        public String toString()
-        {
-            return new StringBuilder()
-                .append('{')
-                .append(name).append(':').append(value)
-                .append(',').append("standard:").append(standard)
-                .append('}')
-                .toString();
-        }
-        
     }
     
     public interface Loader

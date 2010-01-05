@@ -89,7 +89,10 @@ header_option [Proto proto]
             v=ID { standard = true; value = $v.text; } 
             | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
         ) SEMICOLON! {
-            proto.addOption(new Proto.Option($n.text, value, standard));
+            if(standard)
+                proto.standardOptions.put($n.text, value);
+            else
+                proto.extraOptions.put($n.text, value);
         }
     ;
     
