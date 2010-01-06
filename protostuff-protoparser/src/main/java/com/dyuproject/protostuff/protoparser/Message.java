@@ -51,6 +51,11 @@ public class Message
         return name;
     }
     
+    public String getCamelCaseName()
+    {
+        return ProtoUtil.toCamelCase(name).toString();
+    }
+    
     public String getFullName()
     {
         StringBuilder buffer = new StringBuilder();
