@@ -25,6 +25,8 @@ package com.dyuproject.protostuff.protoparser;
 public class EnumField extends Field<EnumGroup.Value>
 {
     
+    java.lang.String javaType;
+    Message owner;
     EnumGroup enumGroup;
     
     public EnumField()
@@ -38,6 +40,11 @@ public class EnumField extends Field<EnumGroup.Value>
         this.enumGroup = enumGroup;
     }
     
+    public Message getOwner()
+    {
+        return owner;
+    }
+    
     public EnumGroup getEnumGroup()
     {
         return enumGroup;
@@ -45,13 +52,39 @@ public class EnumField extends Field<EnumGroup.Value>
     
     public java.lang.String getJavaType()
     {
-        return enumGroup.getName();
+        if(javaType!=null)
+            return javaType;
+        
+        StringBuilder buffer = new StringBuilder();
+        if(enumGroup.isNested())
+        {
+            if(enumGroup.parentMessage==owner)
+                buffer.append(enumGroup.name);
+            else
+            {
+                Message.computeName(enumGroup.parentMessage, owner, buffer);
+                buffer.append('.').append(enumGroup.name);
+            }
+        }
+        else if(enumGroup.getProto().getJavaPackageName().equals(owner.getProto().getJavaPackageName()))
+            buffer.append(enumGroup.name);
+        else
+            buffer.append(enumGroup.getProto().getJavaPackageName()).append('.').append(enumGroup.getName());
+        
+        if(isRepeated())
+            buffer.insert(0, "List<").append('>');
+        
+        return javaType=buffer.toString();
+        
     }
 
     public java.lang.String getDefaultValueAsString()
     {
+        if(isRepeated())
+            return "null";
+        
         EnumGroup.Value value = defaultValue==null ? enumGroup.getValue(0) : defaultValue;
-        return enumGroup.getName() + "." + value.name;
+        return getJavaType() + "." + value.name;
     }
 
 }

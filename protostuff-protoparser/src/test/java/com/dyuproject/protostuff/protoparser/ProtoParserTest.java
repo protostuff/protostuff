@@ -209,7 +209,7 @@ public class ProtoParserTest extends TestCase
         
         Message testAllTypes = proto.getMessage("TestAllTypes");
         assertNotNull(testAllTypes);
-        assertTrue(testAllTypes.getNestedMessages().size() == 1);
+        assertTrue(testAllTypes.getNestedMessages().size() == 2);
         assertTrue(testAllTypes.getNestedEnumGroups().size() == 1);
         
         Message nestedMessage = testAllTypes.getNestedMessage("NestedMessage");

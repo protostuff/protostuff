@@ -83,10 +83,15 @@ public class Proto
     {
         this.packageName = packageName;
     }
-    
-    public String getStandardOption(String name)
+
+    public boolean isOptimizedForLiteRuntime()
     {
-        return standardOptions.get(name);
+        return "LITE_RUNTIME".equals(standardOptions.get("optimize_for"));
+    }
+    
+    public LinkedHashMap<String,String> getExtraOptions()
+    {
+        return extraOptions;
     }
     
     public String getExtraOption(String name)

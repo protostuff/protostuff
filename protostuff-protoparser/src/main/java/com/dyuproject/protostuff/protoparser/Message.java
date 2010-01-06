@@ -51,12 +51,31 @@ public class Message
         return name;
     }
     
+    public String getFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        resolveFullName(this, buffer);
+        return buffer.toString();
+    }
+    
+    public String getRelativeName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        resolveRelativeName(this, buffer, null);
+        return buffer.toString();
+    }
+    
     public Proto getProto()
     {
         Proto p = proto;
         if(p==null)
             p = proto = parentMessage.getProto();
         return p;
+    }
+    
+    public Message getRootMessage()
+    {
+        return parentMessage==null ? null : getRoot(parentMessage);
     }
     
     public Message getParentMessage()
@@ -121,6 +140,13 @@ public class Message
         return fields.get(name);
     }
     
+    public boolean isDescendant(Message other)
+    {
+        if(parentMessage==null)
+            return false;
+        return parentMessage == other || parentMessage.isDescendant(other);
+    }
+    
     public Message getDescendant(String name)
     {
         if(parentMessage==null)
@@ -166,7 +192,7 @@ public class Message
                     Message msg = findMessageFrom(fr.message, refName);
                     if(msg!=null || (msg=p.getMessage(refName))!=null)
                     {
-                        MessageField mf = newMessageField(msg, fr);
+                        MessageField mf = newMessageField(msg, fr, this);
                         fields.put(mf.name, mf);
                         continue;
                     }
@@ -174,7 +200,7 @@ public class Message
                     EnumGroup eg = fr.message.getNestedEnumGroup(refName);
                     if(eg!=null || (eg=p.getEnumGroup(refName))!=null)
                     {
-                        EnumField ef = newEnumField(eg, fr);
+                        EnumField ef = newEnumField(eg, fr, this);
                         if(fr.defaultValue instanceof String)
                         {
                             String enumRefName = (String)fr.defaultValue;
@@ -200,14 +226,14 @@ public class Message
                         Message nestedMsg = msg.getNestedMessage(refName);
                         if(nestedMsg!=null)
                         {
-                            MessageField mf = newMessageField(nestedMsg, fr);
+                            MessageField mf = newMessageField(nestedMsg, fr, this);
                             fields.put(mf.name, mf);
                             continue;
                         }
                         EnumGroup eg = msg.getNestedEnumGroup(refName);
                         if(eg!=null)
                         {
-                            EnumField ef = newEnumField(eg, fr);
+                            EnumField ef = newEnumField(eg, fr, this);
                             if(fr.defaultValue instanceof String)
                             {
                                 String enumRefName = (String)fr.defaultValue;
@@ -225,12 +251,17 @@ public class Message
                 {
                     Message m = null;
                     int last = -1;
-                    boolean found = false;
+                    boolean found = false;;
                     while(true)
                     {
                         String name = packageName.substring(last+1, dotIdx);
                         if(m==null)
+                        {
+                            // first iteration
                             m = findMessageFrom(fr.message, name);
+                            if(m==null)
+                                m = proto.getMessage(name);
+                        }
                         else
                             m = m.getNestedMessage(name);
                         
@@ -249,7 +280,7 @@ public class Message
                             Message nestedMsg = m.getNestedMessage(refName);
                             if(nestedMsg!=null)
                             {
-                                MessageField mf = newMessageField(nestedMsg, fr);
+                                MessageField mf = newMessageField(nestedMsg, fr, this);
                                 fields.put(mf.name, mf);
                                 found = true;
                             }
@@ -258,7 +289,7 @@ public class Message
                                 EnumGroup eg = m.getNestedEnumGroup(refName);
                                 if(eg!=null)
                                 {
-                                    EnumField ef = newEnumField(eg, fr);
+                                    EnumField ef = newEnumField(eg, fr, this);
                                     if(fr.defaultValue instanceof String)
                                     {
                                         String enumRefName = (String)fr.defaultValue;
@@ -286,7 +317,7 @@ public class Message
                 Message msg = proto.getMessage(refName);
                 if(msg!=null)
                 {
-                    MessageField mf = newMessageField(msg, fr);
+                    MessageField mf = newMessageField(msg, fr, this);
                     fields.put(mf.name, mf);
                     continue;
                 }
@@ -294,7 +325,7 @@ public class Message
                 EnumGroup eg = proto.getEnumGroup(refName);
                 if(eg!=null)
                 {
-                    EnumField ef = newEnumField(eg, fr);
+                    EnumField ef = newEnumField(eg, fr, this);
                     if(fr.defaultValue instanceof String)
                     {
                         String enumRefName = (String)fr.defaultValue;
@@ -316,22 +347,26 @@ public class Message
             m.resolveReferences();
     }
     
-    static MessageField newMessageField(Message message, Field.Reference fr)
+    static MessageField newMessageField(Message message, Field.Reference fr, Message owner)
     {
         MessageField mf = new MessageField(message);
+        mf.owner = owner;
         mf.packable = false;
         copy(fr, mf);
+        //System.err.println(owner.getRelativeName() + "." + mf.name +": " + mf.getJavaType());
         return mf;
     }
     
-    static EnumField newEnumField(EnumGroup enumGroup, Field.Reference fr)
+    static EnumField newEnumField(EnumGroup enumGroup, Field.Reference fr, Message owner)
     {
         EnumField ef = new EnumField(enumGroup);
+        ef.owner = owner;
         ef.packable = true;
         String refName = (String)fr.getDefaultValue();
         if(refName!=null)
             ef.defaultValue = enumGroup.getValue(refName);
         copy(fr, ef);
+        //System.err.println(owner.getRelativeName() + "." + ef.name +": " + ef.getJavaType());
         return ef;
     }
     
@@ -348,6 +383,45 @@ public class Message
         if(m==null && message.isNested())
             return findMessageFrom(message.parentMessage, name);
         return m;
+    }
+    
+    static void resolveFullName(Message message, StringBuilder buffer)
+    {
+        buffer.insert(0, message.name).insert(0, '.');
+        if(message.isNested())
+            resolveFullName(message.parentMessage, buffer);
+        else
+            buffer.insert(0, message.getProto().getJavaPackageName());
+    }
+    
+    static void resolveRelativeName(Message message, StringBuilder buffer, Message descendant)
+    {
+        buffer.insert(0, message.name);
+        if(message.parentMessage!=null)
+        {
+            if(message.parentMessage!=descendant)
+            {
+                buffer.insert(0, '.');
+                resolveRelativeName(message.parentMessage, buffer, descendant);
+            }
+        }
+    }
+    
+    static void computeName(Message message, Message owner, StringBuilder buffer)
+    {
+        if(owner==message || message.parentMessage==owner || owner.isDescendant(message))
+            buffer.append(message.name);
+        else if(message.isDescendant(owner))
+            Message.resolveRelativeName(message, buffer, owner);
+        else if(message.getProto().getJavaPackageName().equals(owner.getProto().getJavaPackageName()))
+            buffer.append(message.getRelativeName());
+        else
+            buffer.append(message.getFullName());
+    }
+    
+    static Message getRoot(Message parent)
+    {
+        return parent.parentMessage==null ? parent: getRoot(parent.parentMessage);
     }
 
 }

@@ -20,6 +20,8 @@
 //
 // A proto file we will use for unit testing.
 
+// Additional tests added by protostuff
+
 
 import "unittest_import.proto";
 
@@ -43,6 +45,30 @@ message TestAllTypes {
     // a local variable named "b" in one of the generated methods.  Doh.
     // This file needs to compile in proto1 to test backwards-compatibility.
     optional int32 bb = 1;
+  }
+  
+  message AnotherNestedMessage {
+    enum NestedEnum {
+      FOO = 1;
+      BAR = 2;
+      BAZ = 3;
+    }
+    
+    message DeepNestedMessage {
+      enum NestedEnum {
+        FOO = 4;
+        BAR = 5;
+        BAZ = 6;
+      }
+      
+      message DeeperNestedMessage {
+        enum NestedEnum {
+          FOO = 7;
+          BAR = 8;
+          BAZ = 9;
+        }
+      }
+    }
   }
 
   enum NestedEnum {
@@ -139,6 +165,9 @@ message TestAllTypes {
 
   optional string default_string_piece = 84 [ctype=STRING_PIECE,default="abc"];
   optional string default_cord = 85 [ctype=CORD,default="123"];
+  optional AnotherNestedMessage.NestedEnum optional_another_nested_enum = 86;
+  optional AnotherNestedMessage.DeepNestedMessage.NestedEnum optional_deep_nested_enum = 87;
+  optional AnotherNestedMessage.DeepNestedMessage.DeeperNestedMessage.NestedEnum optional_deeper_nested_enum = 88;
 }
 
 // Define these after TestAllTypes to make sure the compiler can handle
@@ -314,6 +343,9 @@ message TestRequiredForeign {
 // Test that we can use NestedMessage from outside TestAllTypes.
 message TestForeignNested {
   optional TestAllTypes.NestedMessage foreign_nested = 1;
+  optional TestAllTypes.AnotherNestedMessage another_nested = 2;
+  optional TestAllTypes.AnotherNestedMessage.DeepNestedMessage deep_nested = 3;
+  optional TestAllTypes.AnotherNestedMessage.DeepNestedMessage.DeeperNestedMessage deeper_nested = 4;
 }
 
 // TestEmptyMessage is used to test unknown field support.

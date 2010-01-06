@@ -33,7 +33,7 @@ public abstract class Field<T> implements Comparable<Field<?>>
     }
    
     
-    java.lang.String name;
+    java.lang.String name, camelCaseName;
     int number;
     Modifier modifier;
     boolean packable;
@@ -55,6 +55,14 @@ public abstract class Field<T> implements Comparable<Field<?>>
     public java.lang.String getName()
     {
         return name;
+    }
+    
+    public java.lang.String getCamelCaseName()
+    {
+        if(camelCaseName==null)
+            camelCaseName = ProtoUtil.toCamelCase(name).toString();
+            
+        return camelCaseName;
     }
 
     /**
@@ -104,6 +112,16 @@ public abstract class Field<T> implements Comparable<Field<?>>
         return modifier == Modifier.OPTIONAL;
     }
     
+    public boolean isEnumField()
+    {
+        return EnumField.class.isAssignableFrom(getClass());
+    }
+    
+    public boolean isMessageField()
+    {
+        return MessageField.class.isAssignableFrom(getClass());
+    }
+    
     public java.lang.String toString()
     {
         return new StringBuilder()
@@ -141,10 +159,13 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "int";
+            return isRepeated() ? "List<Integer>" : "int";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
+            
             return defaultValue==null ? "0" : defaultValue.toString();
         }
     }
@@ -153,10 +174,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "int";
+            return isRepeated() ? "List<Integer>" : "int";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0" : defaultValue.toString();
         }
     }
@@ -165,10 +188,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "int";
+            return isRepeated() ? "List<Integer>" : "int";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0" : defaultValue.toString();
         }
     }
@@ -177,10 +202,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "int";
+            return isRepeated() ? "List<Integer>" : "int";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0" : defaultValue.toString();
         }
     }
@@ -189,10 +216,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "int";
+            return isRepeated() ? "List<Integer>" : "int";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0" : defaultValue.toString();
         }
     }
@@ -201,10 +230,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "long";
+            return isRepeated() ? "List<Long>" : "long";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0l" : defaultValue.toString() +"l";
         }
     }
@@ -213,10 +244,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "long";
+            return isRepeated() ? "List<Long>" : "long";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0l" : defaultValue.toString()+"l";
         }
     }
@@ -225,10 +258,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "long";
+            return isRepeated() ? "List<Long>" : "long";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0l" : defaultValue.toString()+"l";
         }
     }
@@ -237,10 +272,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "long";
+            return isRepeated() ? "List<Long>" : "long";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0l" : defaultValue.toString()+"l";
         }
     }
@@ -249,34 +286,40 @@ public abstract class Field<T> implements Comparable<Field<?>>
     {
         public java.lang.String getJavaType()
         {
-            return "long";
+            return isRepeated() ? "List<Long>" : "long";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0l" : defaultValue.toString()+"l";
         }
     }
     
-    public static class Float extends Number<Float>
+    public static class Float extends Number<java.lang.Float>
     {
         public java.lang.String getJavaType()
         {
-            return "float";
+            return isRepeated() ? "List<Float>" : "float";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0.0f" : defaultValue.toString()+"f";
         }
     }
     
-    public static class Double extends Number<Double>
+    public static class Double extends Number<java.lang.Double>
     {
         public java.lang.String getJavaType()
         {
-            return "double";
+            return isRepeated() ? "List<Double>" : "double";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "0.0d" : defaultValue.toString()+"d";
         }
     }
@@ -289,10 +332,12 @@ public abstract class Field<T> implements Comparable<Field<?>>
         }
         public java.lang.String getJavaType()
         {
-            return "boolean";
+            return isRepeated() ? "List<Boolean>" : "boolean";
         }
         public java.lang.String getDefaultValueAsString()
         {
+            if(isRepeated())
+                return "null";
             return defaultValue==null ? "false" : defaultValue.toString();
         }
     }
@@ -305,12 +350,16 @@ public abstract class Field<T> implements Comparable<Field<?>>
         }
         public java.lang.String getJavaType()
         {
-            return "string";
+            return isRepeated() ? "List<String>" : "String";
         }
         public java.lang.String getDefaultValueAsString()
         {
-            return defaultValue==null ? "null" : "Internal.stringDefaultValue(" + 
-                    TextFormat.escapeText(getDefaultValue()) + ");";
+            if(isRepeated())
+                return "null";
+            
+            return defaultValue==null ? "null" : 
+                "com.dyuproject.protostuff.Internal.stringDefaultValue(\"" + 
+                    TextFormat.escapeText(getDefaultValue()) + "\")";
         }
     }
     
@@ -323,12 +372,16 @@ public abstract class Field<T> implements Comparable<Field<?>>
         
         public java.lang.String getJavaType()
         {
-            return "ByteString";
+            return isRepeated() ? "List<ByteString>" : "ByteString";
         }
         public java.lang.String getDefaultValueAsString()
         {
-            return defaultValue==null ? "null" : "Internal.bytesDefaultValue(" + 
-                    TextFormat.escapeBytes(ByteBuffer.wrap(getDefaultValue())) + ");";
+            if(isRepeated())
+                return "null";
+            
+            return defaultValue==null ? "null" : 
+                "com.dyuproject.protostuff.Internal.bytesDefaultValue(\"" + 
+                    TextFormat.escapeBytes(ByteBuffer.wrap(getDefaultValue())) + "\")";
         }
     }
     
@@ -340,7 +393,6 @@ public abstract class Field<T> implements Comparable<Field<?>>
         public Reference(java.lang.String packageName, java.lang.String refName, 
                 Message message)
         {
-            super();
             this.packageName = packageName;
             this.refName = refName;
             this.message = message;

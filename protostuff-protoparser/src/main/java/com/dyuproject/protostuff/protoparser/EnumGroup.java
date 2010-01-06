@@ -48,6 +48,16 @@ public class EnumGroup
         return name;
     }
     
+    public String getFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        if(isNested())
+            buffer.append(parentMessage.getFullName()).append('.').append(name);
+        else
+            buffer.append(getProto().getJavaPackageName()).append('.').append(name);
+        return buffer.toString();
+    }
+    
     public Message getParentMessage()
     {
         return parentMessage;

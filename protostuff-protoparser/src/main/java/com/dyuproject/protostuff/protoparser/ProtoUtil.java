@@ -70,5 +70,123 @@ public class ProtoUtil
             in.close();
         }
     }
+    
+    public static StringBuilder toCamelCase(String name)
+    {
+        StringBuilder buffer = new StringBuilder();
+        int toUpper = 0;
+        char c;
+        for(int i=0, len=name.length(); i<len;)
+        {
+            c= name.charAt(i++);
+            if(c=='_')
+            {
+                if(i==len)
+                    break;
+                if(buffer.length()!=0)
+                    toUpper++;
+                continue;
+            }
+            else if(toUpper!=0)
+            {
+                if(c>96 && c<123)
+                {
+                    buffer.append((char)(c-32));
+                    toUpper = 0;
+                }
+                else if(c>64 && c<91)
+                {
+                    buffer.append(c);
+                    toUpper = 0;
+                }
+                else
+                {
+                    while(toUpper>0)
+                    {
+                        buffer.append('_');
+                        toUpper--;
+                    }
+                    buffer.append(c);
+                }
+            }
+            else
+            {
+                if(buffer.length()==0 && c>64 && c<91)
+                    buffer.append((char)(c+32));
+                else
+                    buffer.append(c);
+            }
+        }
+        return buffer;
+    }
+    
+    static StringBuilder toPascalCase(String name)
+    {
+        StringBuilder buffer = toCamelCase(name);
+        char c = buffer.charAt(0);
+        if(c>96 && c<123)
+            buffer.setCharAt(0, (char)(c-32));
+        
+        return buffer;
+    }
+    
+    static StringBuilder toUnderscoreCase(String name)
+    {
+        StringBuilder buffer = new StringBuilder();
+        boolean toLower = false, appendUnderscore=false;
+        for(int i=0, len=name.length(); i<len;)
+        {
+            char c = name.charAt(i++);
+            if(c=='_')
+            {
+                if(i==len)
+                    break;
+                if(buffer.length()!=0)
+                    appendUnderscore = true;
+                
+                continue;
+            }
+            
+            if(appendUnderscore)
+                buffer.append('_');
+            
+            if(c>96 && c<123)
+            {
+                buffer.append(c);
+                toLower = true;
+            }
+            else if(c>64 && c<91)
+            {
+                if(toLower)
+                {
+                    // avoid duplicate underscore
+                    if(!appendUnderscore)
+                        buffer.append('_');
+                    toLower = false;
+                }
+                buffer.append((char)(c+32));
+            }
+            else
+            {
+                buffer.append(c);
+                toLower = false;
+            }
+            appendUnderscore = false;
+        }
+        return buffer;
+    }
+    
+    
+    
+    public static void main(String[] args)
+    {
+        String[] gg = {"foo_bar_baz", "fooBarBaz", "FooBarBaz", "____Foo____Bar___Baz____"};
+        for(String g : gg)
+        {
+            System.err.println(toCamelCase(g));
+            System.err.println(toPascalCase(g));
+            System.err.println(toUnderscoreCase(g));
+        }
+    }
 
 }

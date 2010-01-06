@@ -24,7 +24,8 @@ package com.dyuproject.protostuff.protoparser;
 public class MessageField extends Field<Message>
 {
     
-
+    java.lang.String javaType;
+    Message owner;
     Message message;
     
     public MessageField()
@@ -38,6 +39,11 @@ public class MessageField extends Field<Message>
         this.message = message;
     }
     
+    public Message getOwner()
+    {
+        return owner;
+    }
+    
     public Message getMessage()
     {
         return message;
@@ -45,12 +51,20 @@ public class MessageField extends Field<Message>
 
     public java.lang.String getJavaType()
     {
-        return message.getName();
+        if(javaType!=null)
+            return javaType;
+        
+        StringBuilder buffer = new StringBuilder();
+        Message.computeName(message, owner, buffer);
+        if(isRepeated())
+            buffer.insert(0, "List<").append('>');
+
+        return javaType=buffer.toString();
     }
 
     public java.lang.String getDefaultValueAsString()
     {
-        return message.getName() + ".DEFAULT_INSTANCE";
+        return "null";
     }
 
 }
