@@ -92,7 +92,7 @@ public class Application implements EntryPoint
     
     void showGreet(Greet greet)
     {
-        vp.add(new Label("Greet #" + greet.getId() + ": " + greet.getMessage() + " | " + greet.getStatus().name()));
+        vp.add(new Label("Greet #" + greet.getId() + ": " + greet.getMessage() + " | " + greet.getStatus().getNumber()));
     }
     
     static void displayError(String error)
