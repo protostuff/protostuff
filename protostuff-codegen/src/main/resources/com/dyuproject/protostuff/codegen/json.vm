@@ -118,7 +118,7 @@ public final class ${outputClassname} extends ProtobufJSON
             #elseif( ${tc.isEnum()} )
 
             if(message.has${ppn}())
-                generator.writeStringField("${dpn}", message.get${ppn}().name());
+                generator.writeNumberField("${dpn}", message.get${ppn}().getNumber());
             #elseif( ${tc.getSimpleName()} == "boolean" ) 
 
             if(message.has${ppn}())
@@ -183,7 +183,7 @@ public final class ${outputClassname} extends ProtobufJSON
                             builder.add${ppn}(com.google.protobuf.ByteString.copyFrom(parser.getBinaryValue()));
                             #elseif ( ${ctc.isEnum()} )
 
-                            builder.add${ppn}(${name}.${ctc.getSimpleName()}.valueOf(parser.getText()));
+                            builder.add${ppn}(${name}.${ctc.getSimpleName()}.valueOf(parser.getIntValue()));
                             #elseif ( ${ctc.getSimpleName()} == "boolean" )
 
                             if(t1==JsonToken.VALUE_TRUE)
@@ -212,7 +212,7 @@ public final class ${outputClassname} extends ProtobufJSON
                         #elseif( ${tc.isEnum()} )
 
                         parser.nextToken();
-                        builder.set${ppn}(${name}.${tc.getSimpleName()}.valueOf(parser.getText()));
+                        builder.set${ppn}(${name}.${tc.getSimpleName()}.valueOf(parser.getIntValue()));
                         #elseif( ${tc.getSimpleName()} == "boolean" )
 
                         JsonToken jt = parser.nextToken();

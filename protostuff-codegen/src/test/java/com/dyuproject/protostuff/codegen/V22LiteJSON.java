@@ -100,7 +100,7 @@ public final class V22LiteJSON extends ProtobufJSON
             }
                                     
             if(message.hasSomeEnum())
-                generator.writeStringField("someEnum", message.getSomeEnum().name());
+                generator.writeNumberField("someEnum", message.getSomeEnum().getNumber());
                                     
             if (message.hasSomeBytes())
             {
@@ -168,7 +168,7 @@ public final class V22LiteJSON extends ProtobufJSON
                     case 4:
                         
                         parser.nextToken();
-                        builder.setSomeEnum(Bar.Status.valueOf(parser.getText()));
+                        builder.setSomeEnum(Bar.Status.valueOf(parser.getIntValue()));
                         
                         break;
                     
@@ -376,7 +376,7 @@ public final class V22LiteJSON extends ProtobufJSON
             generator.writeStartArray();
             
             for (Foo.EnumSample t : message.getSomeEnumList())
-                generator.writeString(t.name());
+                generator.writeNumber(t.getNumber());
             
             generator.writeEndArray();
                                     
@@ -506,7 +506,7 @@ public final class V22LiteJSON extends ProtobufJSON
                         for(JsonToken t1=parser.nextToken(); t1!=JsonToken.END_ARRAY; t1=parser.nextToken())
                         {
                                                         
-                            builder.addSomeEnum(Foo.EnumSample.valueOf(parser.getText()));
+                            builder.addSomeEnum(Foo.EnumSample.valueOf(parser.getIntValue()));
                             
                         }
                         

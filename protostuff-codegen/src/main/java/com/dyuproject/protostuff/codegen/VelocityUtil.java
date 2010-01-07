@@ -171,7 +171,7 @@ public final class VelocityUtil
             return "generator.writeBinary(t.toByteArray());";
         
         if(type.isEnum())
-            return "generator.writeString(t.name());";
+            return "generator.writeNumber(t.getNumber());";
         
         if(String.class==type)
             return "generator.writeString(t);";
