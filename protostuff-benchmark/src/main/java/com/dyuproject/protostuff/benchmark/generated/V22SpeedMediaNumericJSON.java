@@ -69,7 +69,7 @@ public final class V22SpeedMediaNumericJSON extends ProtobufJSON
                 generator.writeNumberField("4", message.getHeight());
                                     
             if(message.hasSize())
-                generator.writeStringField("5", message.getSize().name());
+                generator.writeNumberField("5", message.getSize().getNumber());
                         
             generator.writeEndObject();
         }
@@ -126,7 +126,7 @@ public final class V22SpeedMediaNumericJSON extends ProtobufJSON
                     case 5:
                         
                         parser.nextToken();
-                        builder.setSize(Image.Size.valueOf(parser.getText()));
+                        builder.setSize(Image.Size.valueOf(parser.getIntValue()));
                         
                         break;
                     
@@ -179,7 +179,7 @@ public final class V22SpeedMediaNumericJSON extends ProtobufJSON
             generator.writeEndArray();
                                     
             if(message.hasPlayer())
-                generator.writeStringField("10", message.getPlayer().name());
+                generator.writeNumberField("10", message.getPlayer().getNumber());
                                     
             if(message.hasCopyright())
                 generator.writeStringField("11", message.getCopyright());
@@ -284,7 +284,7 @@ public final class V22SpeedMediaNumericJSON extends ProtobufJSON
                     case 10:
                         
                         parser.nextToken();
-                        builder.setPlayer(Media.Player.valueOf(parser.getText()));
+                        builder.setPlayer(Media.Player.valueOf(parser.getIntValue()));
                         
                         break;
                     

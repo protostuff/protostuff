@@ -93,7 +93,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                 generator.writeNumberField("height", message.getHeight());
                                     
             if(message.hasSize())
-                generator.writeStringField("size", message.getSize().name());
+                generator.writeNumberField("size", message.getSize().getNumber());
                         
             generator.writeEndObject();
         }
@@ -150,7 +150,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                     case 5:
                         
                         parser.nextToken();
-                        builder.setSize(Image.Size.valueOf(parser.getText()));
+                        builder.setSize(Image.Size.valueOf(parser.getIntValue()));
                         
                         break;
                     
@@ -238,7 +238,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
             generator.writeEndArray();
                                     
             if(message.hasPlayer())
-                generator.writeStringField("player", message.getPlayer().name());
+                generator.writeNumberField("player", message.getPlayer().getNumber());
                                     
             if(message.hasCopyright())
                 generator.writeStringField("copyright", message.getCopyright());
@@ -343,7 +343,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                     case 10:
                         
                         parser.nextToken();
-                        builder.setPlayer(Media.Player.valueOf(parser.getText()));
+                        builder.setPlayer(Media.Player.valueOf(parser.getIntValue()));
                         
                         break;
                     
