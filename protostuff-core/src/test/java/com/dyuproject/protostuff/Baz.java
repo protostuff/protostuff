@@ -191,8 +191,6 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
         byte[] data = new byte[length];
         for(int offset = 0; length > 0; length -= offset)
             offset = in.read(data, offset, length);
-        
-        in.close();
         IOUtil.mergeFrom(data, this);
     }
     
@@ -201,7 +199,6 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Serializable
         byte[] data = IOUtil.toByteArray(this);
         out.writeInt(data.length);
         out.write(data);
-        out.close();
     }
 
 }

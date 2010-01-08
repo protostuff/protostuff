@@ -165,6 +165,10 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
         {
             throw new RuntimeException(e);
         }
+        finally
+        {
+            ois.close();
+        }
     }
     
     static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated) 
@@ -172,8 +176,15 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(hasBar);
-        output.writeByteArray(fieldNumber, baos.toByteArray(), repeated);
+        try
+        {
+            oos.writeObject(hasBar);
+            output.writeByteArray(fieldNumber, baos.toByteArray(), repeated);
+        }
+        finally
+        {
+            oos.close();
+        }
     }
 
 }
