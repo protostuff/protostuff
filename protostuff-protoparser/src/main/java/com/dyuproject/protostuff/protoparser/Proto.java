@@ -83,11 +83,6 @@ public class Proto
     {
         this.packageName = packageName;
     }
-
-    public boolean isOptimizedForLiteRuntime()
-    {
-        return "LITE_RUNTIME".equals(standardOptions.get("optimize_for"));
-    }
     
     public LinkedHashMap<String,String> getExtraOptions()
     {
@@ -164,7 +159,7 @@ public class Proto
         javaPackageName = javaPkg==null || javaPkg.length()==0 ? packageName : javaPkg;
         
         for(Message m : getMessages())
-            m.resolveReferences();
+            m.resolveReferences(m);
     }
     
     public String toString()

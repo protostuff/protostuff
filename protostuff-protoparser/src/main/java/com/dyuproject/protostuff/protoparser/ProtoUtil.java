@@ -45,6 +45,20 @@ public class ProtoUtil
         parser.parse(target);
     }
     
+    public static Proto parseProto(File file)
+    {
+        Proto proto = new Proto(file);
+        try
+        {
+            loadFrom(file, proto);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        return proto;
+    }
+    
     public static void loadFrom(File file, Proto target) throws Exception
     {
         FileInputStream in = new FileInputStream(file);
@@ -120,7 +134,7 @@ public class ProtoUtil
         return buffer;
     }
     
-    static StringBuilder toPascalCase(String name)
+    public static StringBuilder toPascalCase(String name)
     {
         StringBuilder buffer = toCamelCase(name);
         char c = buffer.charAt(0);
@@ -130,7 +144,7 @@ public class ProtoUtil
         return buffer;
     }
     
-    static StringBuilder toUnderscoreCase(String name)
+    public static StringBuilder toUnderscoreCase(String name)
     {
         StringBuilder buffer = new StringBuilder();
         boolean toLower = false, appendUnderscore=false;
@@ -176,16 +190,15 @@ public class ProtoUtil
         return buffer;
     }
     
-    
-    
     public static void main(String[] args)
     {
-        String[] gg = {"foo_bar_baz", "fooBarBaz", "FooBarBaz", "____Foo____Bar___Baz____"};
+        String[] gg = {"foo_bar_baz", "fooBarBaz", "FooBarBaz", "foo_bar_baz", "____Foo____Bar___Baz____"};
         for(String g : gg)
         {
             System.err.println(toCamelCase(g));
             System.err.println(toPascalCase(g));
             System.err.println(toUnderscoreCase(g));
+            System.err.println(toUnderscoreCase(g).toString().toUpperCase());
         }
     }
 

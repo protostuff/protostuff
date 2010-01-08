@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public class Message
+public class Message implements HasName
 {
     
     String name;
@@ -35,6 +35,8 @@ public class Message
     final LinkedHashMap<String,EnumGroup> nestedEnumGroups = new LinkedHashMap<String,EnumGroup>();
     final LinkedHashMap<String,Field<?>> fields = new LinkedHashMap<String,Field<?>>();
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
+    // code generator helpers
+    boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent;
     
     public Message()
     {
@@ -49,25 +51,6 @@ public class Message
     public String getName()
     {
         return name;
-    }
-    
-    public String getCamelCaseName()
-    {
-        return ProtoUtil.toCamelCase(name).toString();
-    }
-    
-    public String getFullName()
-    {
-        StringBuilder buffer = new StringBuilder();
-        resolveFullName(this, buffer);
-        return buffer.toString();
-    }
-    
-    public String getRelativeName()
-    {
-        StringBuilder buffer = new StringBuilder();
-        resolveRelativeName(this, buffer, null);
-        return buffer.toString();
     }
     
     public Proto getProto()
@@ -168,6 +151,11 @@ public class Message
     
     void addField(Field<?> field)
     {
+        if(field.number<1)
+        {
+            throw new IllegalArgumentException("Invalid field number " + field.number 
+                    + " from field " + field.name);
+        }
         fields.put(field.name, field);
     }
     
@@ -182,12 +170,59 @@ public class Message
             .toString();
     }
     
-    void resolveReferences()
+    public String getFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        resolveFullName(this, buffer);
+        return buffer.toString();
+    }
+    
+    public String getRelativeName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        resolveRelativeName(this, buffer, null);
+        return buffer.toString();
+    }
+    
+    public boolean isRepeatedFieldPresent()
+    {
+        return repeatedFieldPresent;
+    }
+    
+    public boolean isBytesFieldPresent()
+    {
+        return bytesFieldPresent;
+    }
+    
+    public boolean isRequiredFieldPresent()
+    {
+        return requiredFieldPresent;
+    }
+    
+    // post parse
+    
+    void resolveReferences(Message root)
     {
         Proto p = getProto();
         for(Field<?> f : fields.values())
         {
-            if(f instanceof Field.Reference)
+            if(!root.repeatedFieldPresent && f.isRepeated())
+                root.repeatedFieldPresent = true;
+            
+            if(!requiredFieldPresent && f.isRequired())
+                requiredFieldPresent = true;
+            
+            if(f instanceof Field.Bytes)
+            {
+                if(!root.bytesFieldPresent)
+                    root.bytesFieldPresent = true;
+            }
+            else if(f instanceof Field.String)
+            {    
+                if(!root.bytesFieldPresent && f.defaultValue!=null)
+                    root.bytesFieldPresent = true;
+            }
+            else if(f instanceof Field.Reference)
             {
                 Field.Reference fr = (Field.Reference)f;
                 String refName = fr.refName;
@@ -349,7 +384,7 @@ public class Message
         sortedFields.addAll(fields.values());
         Collections.sort(sortedFields);
         for(Message m : nestedMessages.values())
-            m.resolveReferences();
+            m.resolveReferences(root);
     }
     
     static MessageField newMessageField(Message message, Field.Reference fr, Message owner)

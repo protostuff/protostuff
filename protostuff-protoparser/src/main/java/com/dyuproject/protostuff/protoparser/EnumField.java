@@ -71,20 +71,13 @@ public class EnumField extends Field<EnumGroup.Value>
         else
             buffer.append(enumGroup.getProto().getJavaPackageName()).append('.').append(enumGroup.getName());
         
-        if(isRepeated())
-            buffer.insert(0, "List<").append('>');
-        
         return javaType=buffer.toString();
         
     }
-
+    
     public java.lang.String getDefaultValueAsString()
     {
-        if(isRepeated())
-            return "null";
-        
-        EnumGroup.Value value = defaultValue==null ? enumGroup.getValue(0) : defaultValue;
-        return getJavaType() + "." + value.name;
+        return getJavaType() + "." + getDefaultValue().getName();
     }
 
 }

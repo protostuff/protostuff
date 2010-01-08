@@ -24,7 +24,7 @@ import java.util.Collections;
  * @author David Yu
  * @created Dec 21, 2009
  */
-public class EnumGroup
+public class EnumGroup implements HasName
 {
     
     String name;

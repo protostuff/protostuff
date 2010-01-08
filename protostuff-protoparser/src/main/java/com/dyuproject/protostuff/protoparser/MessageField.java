@@ -56,12 +56,10 @@ public class MessageField extends Field<Message>
         
         StringBuilder buffer = new StringBuilder();
         Message.computeName(message, owner, buffer);
-        if(isRepeated())
-            buffer.insert(0, "List<").append('>');
 
         return javaType=buffer.toString();
     }
-
+    
     public java.lang.String getDefaultValueAsString()
     {
         return "null";
