@@ -1,0 +1,446 @@
+group java : base;
+
+map_value_prefix ::= [
+    "Int64":  "new Long(",
+    "UInt64":  "new Long(",
+    "SInt64":  "new Long(",
+    "Fixed64":  "new Long(",
+    "SFixed64":  "new Long(",
+    "Float": "new Float(",
+    "Double": "new Double(",
+    "Bool": "new Boolean(",
+    "Bytes": "ByteString.bytesDefaultValue(\"",
+    "String": "ByteString.stringDefaultValue(\"",
+    "EnumField": ,
+    default: "new Integer("
+]
+
+map_value_suffix ::= [
+    "Int64": "l)",
+    "UInt64": "l)",
+    "SInt64": "l)",
+    "Fixed64": "l)",
+    "SFixed64": "l)",
+    "Float": "f)",
+    "Double": "d)",
+    "Bytes": "\")",
+    "String": "\")",
+    "EnumField": ,
+    default: ")"
+]
+
+map_primitive_wrapper ::= [
+    "int": "Integer",
+    "long": "Long",
+    "float": "Float",
+    "double": "Double",
+    "boolean": "Boolean",
+    default: key
+]
+
+enum_block(eg, options, includeHeader) ::= <<
+<if(includeHeader)>
+<eg:enum_header()>
+<endif>
+
+public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
+{
+    <eg.values:{v|<v.name>(<v.number>)}; separator=",\n">;
+    
+    public final int number;
+    
+    private <eg.name> (int number)
+    {
+        this.number = number;
+    }
+    
+    public int getNumber()
+    {
+        return number;
+    }
+    
+    public static <eg.name> valueOf(int number)
+    {
+        switch(number) 
+        {
+            <eg.uniqueSortedValues:enum_switch_case(); separator="\n">
+            default: return null;
+        }
+    }
+}
+>>
+
+enum_header(eg) ::= <<
+<header_text(prefix="// ")>
+
+package <eg.proto.javaPackageName>;
+
+>>
+
+enum_switch_case(value) ::= <<
+case <value.number>: return <value.name>;
+>>
+
+message_block(message, options, modifier, accessor, includeHeader) ::= <<
+<if(includeHeader)>
+<message:message_header()>
+<endif>
+
+public <modifier>class <message.name> <message:message_impl_declaration()>
+{
+    <message.nestedMessages:message_block(message=it, options=options, modifier="static " + modifier, accessor=accessor)>
+    <message.nestedEnumGroups:enum_block(eg=it, options=options)>
+    
+    <message.fields:field_defaults_declaration(); separator="\n">
+    
+    <message.fields:field_declaration(field=it, accessor=accessor); separator=";\n">;
+    <message:message_constructor()>
+    <message:message_getters_and_setters()>
+    <message:message_impl_serializable()>
+    <message:message_impl_message()>
+    <message:message_impl_schema(message=it, options=options)>
+}
+>>
+
+message_header(message) ::= <<
+<header_text(prefix="// ")>
+
+package <message.proto.javaPackageName>;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+<if(message.repeatedFieldPresent)>
+import java.util.ArrayList;
+import java.util.List;
+<endif>
+
+<if(message.bytesFieldPresent)>
+import com.dyuproject.protostuff.ByteString;
+<endif>
+
+import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Schema;
+
+>>
+
+message_impl_declaration(message) ::= <<
+implements Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
+>>
+
+field_defaults_declaration(field) ::= <<
+<if(field.defaultValue)>
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>;
+<endif>
+>>
+
+field_declaration(field, accessor) ::= <<
+<if(field.repeated)>
+<accessor>List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">
+<else>
+<accessor><map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
+<endif>
+>>
+
+message_constructor(message) ::= <<
+
+public <message.name>()
+{
+    <message.fields:field_assign_constructor_defaults(); separator="\n">
+}
+
+public <message.name>(
+    <message.fields:field_declaration(field=it); separator=",\n">
+)
+{
+    <message.fields:{this.<it.name; format="CC"> = <it.name; format="CC">;}; separator="\n">
+}
+
+>>
+
+field_assign_constructor_defaults(field) ::= <<
+<if(field.defaultValue)>
+this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
+<endif>
+>>
+
+message_getters_and_setters(message) ::= <<
+// getters and setters
+<message.fields:field_getters_and_setters()>
+>>
+
+field_getters_and_setters(field) ::= <<
+<if(field.repeated)>
+
+public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">()
+{
+    return <field.name; format="CC">;
+}
+
+public void set<field.name; format="PC">(List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">)
+{
+    this.<field.name; format="CC"> = <field.name; format="CC">;
+}
+
+<else>
+
+public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
+{
+    return <field.name; format="CC">;
+}
+
+public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">)
+{
+    this.<field.name; format="CC"> = <field.name; format="CC">;
+}
+
+<endif>
+>>
+
+message_impl_serializable(message) ::= <<
+// java serialization
+
+private void readObject(ObjectInputStream in) throws IOException
+{
+    int length = in.readInt();
+    byte[] data = new byte[length];
+    for(int offset = 0; length > 0; length -= offset)
+        offset = in.read(data, offset, length);
+    IOUtil.mergeFrom(data, this);
+}
+
+private void writeObject(ObjectOutputStream out) throws IOException
+{
+    byte[] data = IOUtil.toByteArray(this);
+    out.writeInt(data.length);
+    out.write(data);
+}
+
+>>
+
+message_impl_message(message) ::= <<
+// message method
+
+public Schema\<<message.name>\> cachedSchema()
+{
+    return this;
+}
+
+>>
+
+message_impl_schema(message, options) ::= <<
+// schema methods
+
+public <message.name> newMessage()
+{
+    return new <message.name>();
+}
+
+public Class\<<message.name>\> typeClass()
+{
+    return <message.name>.class;
+}
+
+<message:message_is_initialized()>
+<message:message_field_merge(message=it, name="message")>
+<message:message_field_write(message=it, name="message")>
+<message:message_field_map(message=it, options=options)>
+>>
+
+message_is_initialized(message) ::= <<
+<if(message.requiredFieldPresent)>
+public boolean isInitialized(<message.name> message)
+{
+    return 
+        <message.fields:field_is_initialized(field=it, name="message"); separator=" \n&& ">;
+}
+<else>
+public boolean isInitialized(<message.name> message)
+{
+    return true;
+}
+<endif>
+>>
+
+field_is_initialized(field, name) ::= <<
+<if(field.required)>
+<name>.<field.name; format="CC"> != null
+<endif>
+>>
+
+message_field_merge(message, name) ::= <<
+
+public void mergeFrom(Input input, <message.name> <name>) throws IOException
+{
+    while(true)
+    {
+        int number = input.readFieldNumber(this);
+        switch(number)
+        {
+            case 0:
+                return;
+            <message.fields:field_merge_switch(field=it,name=name); separator="\n">
+            default:
+                input.handleUnknownField(number, this);
+        }   
+    }
+}
+
+>>
+
+field_merge_switch(field, name) ::= <<
+case <field.number>:
+    <if(field.repeated)><field:repeated_field_merge_switch(field=it, name=name)>
+    <else><field:singular_field_merge_switch(field=it, name=name)>
+    <endif>
+>>
+
+singular_field_merge_switch(field, name) ::= <<
+<if(field.messageField)>
+if(<name>.<field.name; format="CC"> == null)
+    <name>.<field.name; format="CC"> = new <field.javaType>();
+input.mergeMessage(<name>.<field.name; format="CC">);
+break;
+<elseif(field.enumField)>
+<name>.<field.name; format="CC"> = <field.javaType>.valueOf(input.readEnum());
+break;
+<else>
+<name>.<field.name; format="CC"> = input.read<field.class.simpleName>();
+break;
+<endif>
+>>
+
+repeated_field_merge_switch(field, name) ::= <<
+<if(field.messageField)>
+if(<name>.<field.name; format="CC"> == null)
+    <name>.<field.name; format="CC"> = new ArrayList\<<field.javaType>\>();
+<name>.<field.name; format="CC">.add(input.mergeMessage(new <field.javaType>()));
+break;
+<elseif(field.enumField)>
+if(<name>.<field.name; format="CC"> == null)
+    <name>.<field.name; format="CC"> = new ArrayList\<<field.javaType>\>();
+<name>.<field.name; format="CC">.add(<field.javaType>.valueOf(input.readEnum()));
+break;
+<else>
+if(<name>.<field.name; format="CC"> == null)
+    <name>.<field.name; format="CC"> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+<name>.<field.name; format="CC">.add(input.read<field.class.simpleName>());
+break;
+<endif>
+>>
+
+message_field_write(message, name) ::= <<
+
+public void writeTo(Output output, <message.name> <name>) throws IOException
+{
+    <message.fields:field_write_switch(field=it,name=name); separator="\n">
+}
+
+>>
+
+field_write_switch(field, name) ::= <<
+<if(field.repeated)>
+<field:repeated_field_write_switch(field=it, name=name)>
+<else>
+<field:singular_field_write_switch(field=it, name=name)>
+<endif>
+>>
+
+singular_field_write_switch(field, name) ::= <<
+<if(field.messageField)>
+<field:singular_field_write_check()>
+     output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
+<elseif(field.enumField)>
+<field:singular_field_write_check()>
+     output.writeEnum(<field.number>, <name>.<field.name; format="CC">.number, false);
+<else>
+<field:singular_field_write_check()>
+    output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
+<endif>
+>>
+
+repeated_field_write_switch(field, name) ::= <<
+<if(field.messageField)>
+if(<name>.<field.name; format="CC"> != null)
+{
+    for(<field.javaType> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    {
+        if(<field.name; format="CC"> != null)
+            output.writeMessage(<field.number>, <field.name; format="CC">, true);
+    }
+}
+<elseif(field.enumField)>
+if(<name>.<field.name; format="CC"> != null)
+{
+    for(<field.javaType> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    {
+        if(<field.name; format="CC"> != null)
+            output.writeEnum(<field.number>, <field.name; format="CC">.number, true);
+    }
+}
+<else>
+if(<name>.<field.name; format="CC"> != null)
+{
+    for(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    {
+        if(<field.name; format="CC"> != null)
+            output.write<field.class.simpleName>(<field.number>, <field.name; format="CC">, true);
+    }
+}
+<endif>
+>>
+
+singular_field_write_check(field) ::= <<
+<if(field.defaultValue)>
+if(<name>.<field.name; format="CC"> != null && <name>.<field.name; format="CC"> != DEFAULT_<field.name; format="UUC">)
+<else>
+if(<name>.<field.name; format="CC"> != null)
+<endif>
+>>
+
+message_field_map(message, options) ::= <<
+<if(options.enableFieldNameMapping)>
+public String getFieldName(int number)
+{
+    switch(number)
+    {
+        <message.fields:field_switch_case(); separator="\n">
+        default: return null;
+    }
+}
+
+public int getFieldNumber(String name)
+{
+    Integer number = __fieldMap.get(name);
+    return number == null ? 0 : number.intValue();
+}
+
+private static final java.util.HashMap\<String,Integer\> __fieldMap = new java.util.HashMapHashMap\<String,Integer\>();
+static
+{
+    <message.fields:field_map(field=it, mapVar="__fieldMap"); separator="\n">
+}
+<else>
+public String getFieldName(int number)
+{
+    return String.valueOf(number);
+}
+
+public int getFieldNumber(String name)
+{
+    return Integer.parseInt(name);
+}
+<endif>
+>>
+
+field_switch_case(field) ::= <<
+case <field.number>: return "<field.name; format="CC">";
+>>
+
+field_map(field, mapVar) ::= <<
+<mapVar>.put("<field.name; format="CC">", <field.number>);
+>>
