@@ -43,8 +43,8 @@ public class JsonRuntimeSerDeserTest extends TestCase
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
         
-        byte[] data = JsonIOUtil.toByteArray(fooCompare, schema);
-        JsonIOUtil.mergeFrom(data, dfoo, schema);
+        byte[] data = JsonIOUtil.toByteArray(fooCompare, schema, false);
+        JsonIOUtil.mergeFrom(data, dfoo, schema, false);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
     
@@ -56,8 +56,8 @@ public class JsonRuntimeSerDeserTest extends TestCase
         {
             Bar dbar = new Bar();
 
-            byte[] data = JsonIOUtil.toByteArray(barCompare, schema);
-            JsonIOUtil.mergeFrom(data, dbar, schema);
+            byte[] data = JsonIOUtil.toByteArray(barCompare, schema, false);
+            JsonIOUtil.mergeFrom(data, dbar, schema, false);
             SerializableObjects.assertEquals(barCompare, dbar);
             //System.err.println(dbar.getSomeInt());
             //System.err.println(dbar.getSomeLong());
@@ -78,8 +78,8 @@ public class JsonRuntimeSerDeserTest extends TestCase
         {
             Baz dbaz = new Baz();            
             
-            byte[] data = JsonIOUtil.toByteArray(bazCompare, schema);
-            JsonIOUtil.mergeFrom(data, dbaz, schema);
+            byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, false);
+            JsonIOUtil.mergeFrom(data, dbaz, schema, false);
             SerializableObjects.assertEquals(bazCompare, dbaz);
             //System.err.println(dbaz.getId());
             //System.err.println(dbaz.getName());

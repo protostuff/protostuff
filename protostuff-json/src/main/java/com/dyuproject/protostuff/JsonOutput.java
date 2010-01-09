@@ -34,12 +34,19 @@ public final class JsonOutput implements Output
     
     private final JsonGenerator generator;
     private Schema<?> schema;
-    private int lastNumber;
+    private final boolean numeric;
     private boolean lastRepeated;
+    private int lastNumber;
     
     public JsonOutput(JsonGenerator generator)
     {
+        this(generator, false);
+    }
+    
+    public JsonOutput(JsonGenerator generator, boolean numeric)
+    {
         this.generator = generator;
+        this.numeric = numeric;
     }
     
     /**
@@ -49,6 +56,14 @@ public final class JsonOutput implements Output
     {
         this.schema = schema;
         return this;
+    }
+    
+    /**
+     * Returns whether the incoming messages' field names are numeric.
+     */
+    public boolean isNumeric()
+    {
+        return numeric;
     }
     
     /**
@@ -76,13 +91,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeBoolean(value);
             }
             else
-                generator.writeBooleanField(schema.getFieldName(fieldNumber), value);
+                generator.writeBooleanField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -100,14 +118,17 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeBinary(value);
             }
             else
             {
-                generator.writeFieldName(schema.getFieldName(fieldNumber));
+                generator.writeFieldName(name);
                 generator.writeBinary(value);
             }
             
@@ -132,13 +153,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeNumber(value);
             }
             else
-                generator.writeNumberField(schema.getFieldName(fieldNumber), value);
+                generator.writeNumberField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -171,13 +195,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeNumber(value);
             }
             else
-                generator.writeNumberField(schema.getFieldName(fieldNumber), value);
+                generator.writeNumberField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -195,13 +222,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeNumber(value);
             }
             else
-                generator.writeNumberField(schema.getFieldName(fieldNumber), value);
+                generator.writeNumberField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -219,13 +249,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeNumber(value);
             }
             else
-                generator.writeNumberField(schema.getFieldName(fieldNumber), value);
+                generator.writeNumberField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -263,13 +296,16 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                schema.getFieldName(fieldNumber);
+            
             if(repeated)
             {
-                generator.writeArrayFieldStart(schema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
                 generator.writeString(value);
             }
             else
-                generator.writeStringField(schema.getFieldName(fieldNumber), value);
+                generator.writeStringField(name, value);
             
             lastNumber = fieldNumber;
             lastRepeated = repeated;
@@ -305,10 +341,12 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
+            String name = numeric ? String.valueOf(fieldNumber) : 
+                lastSchema.getFieldName(fieldNumber);
             if(repeated)
-                generator.writeArrayFieldStart(lastSchema.getFieldName(fieldNumber));
+                generator.writeArrayFieldStart(name);
             else
-                generator.writeFieldName(lastSchema.getFieldName(fieldNumber));
+                generator.writeFieldName(name);
             
             // reset
             this.schema = schema;

@@ -37,8 +37,8 @@ public class JsonCoreSerDeserTest extends TestCase
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
         
-        byte[] data = JsonIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema());
-        JsonIOUtil.mergeFrom(data, dfoo, dfoo.cachedSchema());
+        byte[] data = JsonIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema(), false);
+        JsonIOUtil.mergeFrom(data, dfoo, dfoo.cachedSchema(), false);
         SerializableObjects.assertEquals(fooCompare, dfoo);
         System.err.println(new String(data, ByteString.UTF8));
     }
@@ -49,8 +49,8 @@ public class JsonCoreSerDeserTest extends TestCase
         {
             Bar dbar = new Bar();            
             
-            byte[] data = JsonIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
-            JsonIOUtil.mergeFrom(data, dbar, dbar.cachedSchema());
+            byte[] data = JsonIOUtil.toByteArray(barCompare, barCompare.cachedSchema(), false);
+            JsonIOUtil.mergeFrom(data, dbar, dbar.cachedSchema(), false);
             SerializableObjects.assertEquals(barCompare, dbar);
             System.err.println(new String(data, ByteString.UTF8));
         }
@@ -62,8 +62,8 @@ public class JsonCoreSerDeserTest extends TestCase
         {
             Baz dbaz = new Baz();            
             
-            byte[] data = JsonIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema());
-            JsonIOUtil.mergeFrom(data, dbaz, dbaz.cachedSchema());
+            byte[] data = JsonIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema(), false);
+            JsonIOUtil.mergeFrom(data, dbaz, dbaz.cachedSchema(), false);
             SerializableObjects.assertEquals(bazCompare, dbaz);
             System.err.println(new String(data, ByteString.UTF8));
         }

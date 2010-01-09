@@ -34,13 +34,28 @@ public final class JsonInput implements Input
 {
     
     private final JsonParser parser;
+    private final boolean numeric;
+    private boolean lastRepeated;
     private String lastName;
     private int lastNumber;
-    private boolean lastRepeated;
     
     public JsonInput(JsonParser parser)
     {
+        this(parser, false);
+    }
+    
+    public JsonInput(JsonParser parser, boolean numeric)
+    {
         this.parser = parser;
+        this.numeric = numeric;
+    }
+    
+    /**
+     * Returns whether the incoming messages' field names are numeric.
+     */
+    public boolean isNumeric()
+    {
+        return numeric;
     }
     
     /**
@@ -78,8 +93,8 @@ public final class JsonInput implements Input
             throw new IOException("Expected token: $field: but was " + 
                     jt + " on message " + schema.typeClass());
         }
-        
-        int number = lastNumber = schema.getFieldNumber(lastName = parser.getCurrentName());
+        String name = lastName = parser.getCurrentName();
+        int number = lastNumber = numeric ? Integer.parseInt(name) : schema.getFieldNumber(name);
         // move to the next token
         if(parser.nextToken() == JsonToken.START_ARRAY)
         {
