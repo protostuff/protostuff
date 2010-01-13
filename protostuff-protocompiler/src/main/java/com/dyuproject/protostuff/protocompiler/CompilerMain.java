@@ -41,6 +41,7 @@ public final class CompilerMain
     static
     {        
         addCompiler(new ProtoToJavaCompiler());
+        addCompiler(new ProtoToGwtCompiler());
     }
     
     public static void addCompiler(ProtoCompiler compiler)

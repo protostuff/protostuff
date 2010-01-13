@@ -1,0 +1,219 @@
+group gwt : base;
+
+map_repeated_prefix ::= [
+    "Int32":  "JsArray",
+    "UInt32":  "JsArray",
+    "SInt32":  "JsArray",
+    "Fixed32":  "JsArray",
+    "SFixed32":  "JsArray",
+    "Int64":  "JsArray",
+    "UInt64":  "JsArray",
+    "SInt64":  "JsArray",
+    "Fixed64":  "JsArray",
+    "SFixed64":  "JsArray",
+    "Float":  "JsArray",
+    "Double":  "JsArray",
+    "Bool":  "JsArray",
+    "String":  "JsArray",
+    "Bytes":  "JsArray",
+    default: "JsArray\<"
+]
+
+map_repeated_value ::= [
+    "int": "Integer",
+    "long": "Number",
+    "float": "Number",
+    "double": "Number",
+    "boolean": "Boolean",
+    "ByteString": "String",
+    default: key
+]
+
+map_repeated_suffix ::= [
+    "Int32": ,
+    "UInt32": ,
+    "SInt32": ,
+    "Fixed32": ,
+    "SFixed32": ,
+    "Int64": ,
+    "UInt64": ,
+    "SInt64": ,
+    "Fixed64": ,
+    "SFixed64": ,
+    "Float": ,
+    "Double": ,
+    "Bool": ,
+    "String": ,
+    "Bytes": ,
+    default: "\>"
+]
+
+map_singular_value ::= [
+    "long": "double",
+    "float": "double",
+    "ByteString": "String",
+    default: key
+]
+
+enum_block(eg, options, includeHeader) ::= <<
+<if(includeHeader)>
+<eg:enum_header(eg=it, options=options)>
+<endif>
+
+public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScriptObject {
+        
+    <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
+    
+    private static native <eg.name> create(int number) /*-{
+        return number;
+    }-*/;
+    
+    protected <eg.name>() {}
+    
+    public native int getNumber() /*-{
+        return this;
+    }-*/;
+}
+
+>>
+
+enum_header(eg, options) ::= <<
+<header_text(prefix="// ")>
+
+package <eg.proto.javaPackageName>;
+
+import com.google.gwt.core.client.*;
+
+>>
+
+field_enum_value_declare(val, methodName) ::= <<
+public static final <val.enumGroup.name> <val.name> = <methodName>(<val.number>);
+>>
+
+message_block(message, options, includeHeader) ::= <<
+<if(includeHeader)>
+<message:message_header(message=it, options=options)>
+<endif>
+
+public <if(!includeHeader)>static <endif>final class <message.name> 
+    extends JavaScriptObject <options.implements>{
+
+    <message.nestedMessages:message_block(message=it, options=options)>
+    <message.nestedEnumGroups:enum_block(eg=it, options=options)>
+    
+    /**
+     * Creates a new <message.name> instance 
+     *
+     * @return new <message.name> instance
+     */
+    public static native <message.name> create() /*-{
+        return {
+                        
+        };
+    }-*/;
+
+    /**
+     * Creates a new JsArray\<<message.name>\> instance 
+     *
+     * @return new JsArray\<<message.name>\> instance
+     */
+    public static native JsArray\<<message.name>\> createArray() /*-{
+        return [];
+    }-*/;
+
+    /**
+     * Gets a <message.name> (casting) from a JavaScriptObject
+     *
+     * @param JavaScriptObject to cast
+     * @return <message.name>
+     */
+    public static native <message.name> get(JavaScriptObject jso) /*-{
+        return jso;
+    }-*/;
+
+    /**
+     * Gets a JsArray\<<message.name>\> (casting) from a JavaScriptObject
+     *
+     * @param JavaScriptObject to cast
+     * @return JsArray\<<message.name>\> 
+     */
+    public static native JsArray\<<message.name>\> getArray(JavaScriptObject jso) /*-{
+        return jso;
+    }-*/;
+
+    /**
+     * Parses a <message.name> from a json string
+     *
+     * @param json string to be parsed/evaluated
+     * @return <message.name> 
+     */
+    public static native <message.name> parse(String json) /*-{
+        return eval("(" + json + ")");
+    }-*/;
+
+    /**
+     * Parses a JsArray\<<message.name>\> from a json string
+     *
+     * @param json string to be parsed/evaluated
+     * @return JsArray\<<message.name>\> 
+     */
+    public static native JsArray\<<message.name>\> parseArray(String json) /*-{
+        return eval("(" + json + ")");
+    }-*/;
+
+    protected <message.name>() {}
+
+    <message:message_getters_and_setters(message=it, options=options)>
+
+}
+>>
+
+message_header(message, options) ::= <<
+<header_text(prefix="// ")>
+
+package <message.proto.javaPackageName>;
+
+import com.google.gwt.core.client.*;
+
+>>
+
+message_getters_and_setters(message, options) ::= <<
+// getters and setters
+<message.fields:field_getters_and_setters(field=it, options=options)>
+>>
+
+field_getters_and_setters(field, options) ::= <<
+<if(field.repeated)>
+
+public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">() /*-{
+    return this["<field.name; format="CC">"];
+}-*/;
+
+public native void set<field.name; format="PC">(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <field.name; format="CC">) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <field.name; format="CC">;
+}-*/;
+
+public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">() /*-{
+    return (this["<field:field_name_or_number(field=it,options=options)>"] = []);
+}-*/;
+
+<else>
+
+public native <map_singular_value.(field.javaType)> get<field.name; format="PC">() /*-{
+    return this["<field:field_name_or_number(field=it,options=options)>"];
+}-*/;
+
+public native void set<field.name; format="PC">(<map_singular_value.(field.javaType)> <field.name; format="CC">) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <field.name; format="CC">;
+}-*/;
+
+<endif>
+>>
+
+field_name_or_number(field, options) ::= <<
+<if(options.numeric)>
+<field.name; format="CC">
+<else>
+<field.number>
+<endif>
+>>
