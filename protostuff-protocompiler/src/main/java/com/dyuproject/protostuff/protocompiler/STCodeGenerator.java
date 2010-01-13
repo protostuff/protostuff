@@ -120,7 +120,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     
     public void compile(ProtoModule module) throws IOException
     {
-        boolean compileImports = module.getOption("compileImports")!=null;
+        boolean compileImports = module.getOption("compile_imports")!=null;
         File source = module.getSource();
         if(source.isDirectory())
         {
