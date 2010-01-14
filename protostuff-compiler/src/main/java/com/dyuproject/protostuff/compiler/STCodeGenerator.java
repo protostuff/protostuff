@@ -36,26 +36,27 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
 public abstract class STCodeGenerator implements ProtoCompiler
 {
     
-    static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler/";
+    static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
     
     static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
         new ConcurrentHashMap<Class<?>, AttributeRenderer>();
     
+    static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
+            TEMPLATE_BASE, new StringTemplateErrorListener()
+    {
+        public void error(String msg, Throwable e)
+        {
+            System.err.println("error: " + msg);
+        }
+        public void warning(String msg)
+        {
+            System.err.println("warning: " + msg);
+        }
+    });
+    
     static
     {
-        StringTemplateGroup.registerGroupLoader(new CommonGroupLoader(TEMPLATE_BASE, 
-                new StringTemplateErrorListener()
-        {
-            public void error(String msg, Throwable e)
-            {
-                System.err.println("error: " + msg);
-            }
-            public void warning(String msg)
-            {
-                System.err.println("warning: " + msg);
-            }
-        }));
-        
+        StringTemplateGroup.registerGroupLoader(GROUP_LOADER);
         // attribute renderers
         
         setAttributeRenderer(String.class, new AttributeRenderer(){
@@ -83,7 +84,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
             }
         });
         
-        getSTG("base").setAttributeRenderers(DEFAULT_RENDERERS);
+        GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
     }
     
     public static void setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar)
@@ -93,7 +94,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
      
     public static StringTemplateGroup getSTG(String groupName)
     {
-        return StringTemplateGroup.loadGroup(groupName);
+        return GROUP_LOADER.loadGroup(groupName);
     }
 
     public static StringTemplate getST(String groupName, String name)
