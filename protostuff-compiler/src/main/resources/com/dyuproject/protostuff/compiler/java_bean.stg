@@ -90,7 +90,7 @@ public <modifier>class <message.name> <message:message_impl_declaration(message=
 {
     <message.nestedMessages:message_block(message=it, options=options, modifier="static " + modifier, accessor=accessor)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
-    
+    <message:message_default_instance(message=it, options=options)>
     <message.fields:field_defaults_declaration(); separator="\n">
     
     <message.fields:field_declaration(field=it, accessor=accessor); separator=";\n">;
@@ -125,6 +125,17 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
+
+>>
+
+message_default_instance(message,options) ::= <<
+
+public static Schema\<<message.name>\> getSchema()
+{
+    return DEFAULT_INSTANCE;
+}
+
+static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
 >>
 
