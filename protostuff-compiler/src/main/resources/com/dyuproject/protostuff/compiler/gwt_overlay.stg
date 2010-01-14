@@ -1,4 +1,4 @@
-group gwt : base;
+group gwt_overlay : base;
 
 map_repeated_prefix ::= [
     "Int32":  "JsArray",

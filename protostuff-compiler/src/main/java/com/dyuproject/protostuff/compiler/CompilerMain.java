@@ -40,8 +40,8 @@ public final class CompilerMain
     
     static
     {        
-        addCompiler(new ProtoToJavaCompiler());
-        addCompiler(new ProtoToGwtCompiler());
+        addCompiler(new ProtoToJavaBeanCompiler());
+        addCompiler(new ProtoToGwtOverlayCompiler());
     }
     
     public static void addCompiler(ProtoCompiler compiler)
@@ -127,7 +127,7 @@ public final class CompilerMain
         System.err.println("\nThe properties file would look like:");
         System.err.println("modules = foo");
         System.err.println("foo.source = path/to/your/proto/file/or/dir");
-        System.err.println("foo.output = java");
+        System.err.println("foo.output = java_bean");
         System.err.println("foo.outputDir = src/main/java");
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.options = key1:value1,key2:value2");
@@ -141,7 +141,7 @@ public final class CompilerMain
         System.err.println("\nThe properties file would look like:\n");
         System.err.println("modules = foo");
         System.err.println("foo.source = path/to/your/proto/file/or/dir");
-        System.err.println("foo.output = java");
+        System.err.println("foo.output = java_bean");
         System.err.println("foo.outputDir = src/main/java");
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.options = key1:value1,key2:value2");
@@ -150,7 +150,7 @@ public final class CompilerMain
         
         System.err.println("\nTo generate code for a single module, execute the jar without args and specify:");
         System.err.println("  -Dsource=path/to/your/proto/file/or/dir");
-        System.err.println("  -Doutput=java");
+        System.err.println("  -Doutput=java_bean");
         System.err.println("  -DoutputDir=src/main/java");
         System.err.println("  -Dencoding=UTF-8");
         System.err.println("  -Doptions=key1:value1,key2:value2");
@@ -172,8 +172,7 @@ public final class CompilerMain
                 .append("Successfully compiled proto from ")
                 .append(m.getSource())
                 .append(" to output: ")
-                .append(g)
-                .append('.');
+                .append(g);
             
             if(options.length()>2)
                 buffer.append(' ').append(options);

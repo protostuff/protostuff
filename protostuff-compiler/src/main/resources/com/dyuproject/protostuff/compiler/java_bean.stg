@@ -1,4 +1,4 @@
-group java : base;
+group java_bean : base;
 
 map_value_prefix ::= [
     "Int64":  "new Long(",

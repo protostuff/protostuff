@@ -29,20 +29,20 @@ import com.dyuproject.protostuff.parser.Proto;
  * TODO
  *
  * @author David Yu
- * @created Jan 13, 2010
+ * @created Jan 4, 2010
  */
-public class ProtoToGwtCompiler extends STCodeGenerator
+public class ProtoToJavaBeanCompiler extends STCodeGenerator
 {
-
-    public ProtoToGwtCompiler()
+    
+    public ProtoToJavaBeanCompiler()
     {
-        super("gwt");
+        super("java_bean");
     }
-
-    protected void compile(ProtoModule module, Proto proto) throws IOException
+    
+    public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        StringTemplateGroup group = getSTG("gwt");
+        StringTemplateGroup group = getSTG(getOutputId());
         //module.setOption("enableFieldNameMapping", "");
         
         for(EnumGroup eg : proto.getEnumGroups())
@@ -72,11 +72,12 @@ public class ProtoToGwtCompiler extends STCodeGenerator
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("includeHeader", Boolean.TRUE);
             messageBlock.setAttribute("message", m);
+            messageBlock.setAttribute("modifier", "final ");
+            messageBlock.setAttribute("accessor", "private ");
             messageBlock.setAttribute("options", module.getOptions());
             messageBlock.write(out);
             writer.close();
         }
-        
     }
 
 }
