@@ -49,6 +49,14 @@ public final class JsonIOUtil
     /**
      * Serializes the {@code message} into a byte array via {@link JsonOutput}.
      */
+    public static <T extends Message<T>> byte[] toByteArray(T message, boolean numeric)
+    {
+        return toByteArray(message, message.cachedSchema(), numeric);
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array via {@link JsonOutput}.
+     */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -112,6 +120,15 @@ public final class JsonIOUtil
             generator.writeEndArray();
         
         generator.writeEndObject();
+    }
+    
+    /**
+     * Merges the {@code message} with the byte array using the given {@code schema}.
+     */
+    public static <T extends Message<T>> void mergeFrom(byte[] data, T message, boolean numeric) 
+    throws IOException
+    {
+        mergeFrom(data, 0, data.length, message, message.cachedSchema(), numeric);
     }
     
     /**
