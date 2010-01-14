@@ -157,6 +157,7 @@ public <message.name>(
     <message.fields:field_declaration(field=it); separator=",\n">
 )
 {
+    super();
     <message.fields:{this.<it.name; format="CC"> = <it.name; format="CC">;}; separator="\n">
 }
 
