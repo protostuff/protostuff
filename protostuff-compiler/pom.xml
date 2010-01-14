@@ -35,8 +35,4 @@
     </dependency>
   </dependencies>
   
-  <properties>
-    <stringtemplate-version>3.2.1</stringtemplate-version>
-  </properties>
-  
 </project>

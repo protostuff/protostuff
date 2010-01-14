@@ -197,6 +197,7 @@
     <jackson-version>1.2.1</jackson-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
+    <stringtemplate-version>3.2.1</stringtemplate-version>
   </properties>
   
 </project>
