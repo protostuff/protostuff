@@ -16,7 +16,14 @@ import com.dyuproject.protostuff.Schema;
 
 public final class MediaContent implements Serializable, Message<MediaContent>, Schema<MediaContent>
 {
-    
+
+    public static Schema<MediaContent> getSchema()
+    {
+        return DEFAULT_INSTANCE;
+    }
+
+    static final MediaContent DEFAULT_INSTANCE = new MediaContent();
+
     
     private List<Image> image;
     private Media media;

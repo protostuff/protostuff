@@ -40,7 +40,14 @@ public final class Image implements Serializable, Message<Image>, Schema<Image>
             }
         }
     }
-    
+
+    public static Schema<Image> getSchema()
+    {
+        return DEFAULT_INSTANCE;
+    }
+
+    static final Image DEFAULT_INSTANCE = new Image();
+
     
     private String uri;
     private String title;
