@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.benchmark.serializers;
+package com.dyuproject.protostuff.benchmark.serializers.model;
 
 import java.io.ByteArrayOutputStream;
 
@@ -20,17 +20,18 @@ import org.codehaus.jackson.JsonParser;
 
 import com.dyuproject.protostuff.benchmark.V22SpeedMedia;
 import com.dyuproject.protostuff.benchmark.V22SpeedMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.generated.V22SpeedMediaJSON;
+import com.dyuproject.protostuff.benchmark.serializers.AbstractSpeedMediaSerializer;
+import com.dyuproject.protostuff.json.ReflectionNumericJSON;
 
 /**
  * @author David Yu
  * @created Oct 16, 2009
  */
 
-public class GeneratedSpeedSerializer extends AbstractSpeedMediaSerializer
+public class ReflectionSpeedNumericSerializer extends AbstractSpeedMediaSerializer
 {
     
-    final V22SpeedMediaJSON pbJSON = new V22SpeedMediaJSON();
+    final ReflectionNumericJSON pbJSON = new ReflectionNumericJSON(new Class[]{V22SpeedMedia.class});
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
@@ -42,8 +43,8 @@ public class GeneratedSpeedSerializer extends AbstractSpeedMediaSerializer
     }
 
     public String getName()
-    {        
-        return "generated-speed-json";
+    {
+        return "reflection-speed-numeric-json";
     }
 
     public byte[] serialize(MediaContent content) throws Exception
@@ -52,5 +53,4 @@ public class GeneratedSpeedSerializer extends AbstractSpeedMediaSerializer
         pbJSON.writeTo(out, content);
         return out.toByteArray();
     }
-
 }

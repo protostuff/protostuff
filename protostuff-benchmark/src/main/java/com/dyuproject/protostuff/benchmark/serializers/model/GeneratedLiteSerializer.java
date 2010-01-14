@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.benchmark.serializers;
+package com.dyuproject.protostuff.benchmark.serializers.model;
 
 import java.io.ByteArrayOutputStream;
 
@@ -20,17 +20,18 @@ import org.codehaus.jackson.JsonParser;
 
 import com.dyuproject.protostuff.benchmark.V22LiteMedia;
 import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.generated.V22LiteMediaNumericJSON;
+import com.dyuproject.protostuff.benchmark.generated.V22LiteMediaJSON;
+import com.dyuproject.protostuff.benchmark.serializers.AbstractLiteMediaSerializer;
 
 /**
  * @author David Yu
  * @created Oct 16, 2009
  */
 
-public class GeneratedLiteNumericSerializer extends AbstractLiteMediaSerializer
+public class GeneratedLiteSerializer extends AbstractLiteMediaSerializer
 {
     
-    final V22LiteMediaNumericJSON pbJSON = new V22LiteMediaNumericJSON();
+    final V22LiteMediaJSON pbJSON = new V22LiteMediaJSON();
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
@@ -43,7 +44,7 @@ public class GeneratedLiteNumericSerializer extends AbstractLiteMediaSerializer
 
     public String getName()
     {        
-        return "generated-lite-numeric-json";
+        return "generated-lite-json";
     }
 
     public byte[] serialize(MediaContent content) throws Exception

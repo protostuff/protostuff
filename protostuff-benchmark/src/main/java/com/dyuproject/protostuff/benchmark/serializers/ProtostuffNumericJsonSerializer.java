@@ -1,5 +1,5 @@
 //========================================================================
-//Copyright 2007-2009 David Yu dyuproject@gmail.com
+//Copyright 2007-2010 David Yu dyuproject@gmail.com
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -14,43 +14,33 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import java.io.ByteArrayOutputStream;
-
-import org.codehaus.jackson.JsonParser;
-
-import com.dyuproject.protostuff.benchmark.V22LiteMedia;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.generated.V22LiteMediaJSON;
+import com.dyuproject.protostuff.JsonIOUtil;
+import com.dyuproject.protostuff.benchmark.MediaContent;
 
 /**
+ * TODO
+ *
  * @author David Yu
- * @created Oct 16, 2009
+ * @created Jan 14, 2010
  */
-
-public class GeneratedLiteSerializer extends AbstractLiteMediaSerializer
+public class ProtostuffNumericJsonSerializer extends AbstractProtostuffSerializer
 {
     
-    final V22LiteMediaJSON pbJSON = new V22LiteMediaJSON();
-
     public MediaContent deserialize(byte[] array) throws Exception
     {
-        V22LiteMedia.MediaContent.Builder builder = V22LiteMedia.MediaContent.newBuilder();
-        JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
-        pbJSON.mergeFrom(parser, builder);
-        parser.close();
-        return builder.build();
+        MediaContent mediaContent = new MediaContent();
+        JsonIOUtil.mergeFrom(array, mediaContent, true);
+        return mediaContent;
     }
 
     public String getName()
-    {        
-        return "generated-lite-json";
+    {
+        return "protostuff-numeric-json";
     }
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(512);
-        pbJSON.writeTo(out, content);
-        return out.toByteArray();
+        return JsonIOUtil.toByteArray(content, true);
     }
 
 }

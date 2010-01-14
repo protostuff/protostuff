@@ -16,14 +16,18 @@ package com.dyuproject.protostuff.benchmark;
 
 import java.net.URL;
 
-import com.dyuproject.protostuff.benchmark.serializers.GeneratedLiteNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.GeneratedLiteSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.GeneratedSpeedNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.GeneratedSpeedSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.ReflectionLiteNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.ReflectionLiteSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.ReflectionSpeedNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.ReflectionSpeedSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffJsonSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteNumericSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedNumericSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionLiteNumericSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionLiteSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionSpeedNumericSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionSpeedSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
@@ -49,6 +53,11 @@ public class BenchmarkModules
     
     static void configure(BenchmarkRunner runner)
     {
+        runner.addObjectSerializer(new ProtostuffCoreSerializer());
+        runner.addObjectSerializer(new ProtostuffRuntimeSerializer());
+        runner.addObjectSerializer(new ProtostuffJsonSerializer());
+        runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
+        
         runner.addObjectSerializer(new GeneratedSpeedSerializer());
         runner.addObjectSerializer(new ReflectionSpeedSerializer());
         runner.addObjectSerializer(new GeneratedLiteSerializer());

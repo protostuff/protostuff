@@ -17,6 +17,35 @@
     <defaultGoal>install</defaultGoal>
     <plugins>
       <plugin>
+        <groupId>com.dyuproject.protostuff</groupId>
+        <artifactId>protostuff-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <protoModules>
+            <protoModule>
+              <source>src/main/resources/media.proto</source>
+              <outputDir>src/main/java</outputDir>
+              <output>java_bean</output>
+              <encoding>UTF-8</encoding>
+              <options>
+                <property>
+                  <name>generate_field_map</name>
+                </property>
+              </options>
+            </protoModule>
+          </protoModules>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
@@ -34,6 +63,21 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-json</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>

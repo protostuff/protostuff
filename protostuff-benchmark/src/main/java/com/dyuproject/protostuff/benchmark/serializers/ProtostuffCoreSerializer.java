@@ -1,5 +1,5 @@
 //========================================================================
-//Copyright 2007-2009 David Yu dyuproject@gmail.com
+//Copyright 2007-2010 David Yu dyuproject@gmail.com
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -14,43 +14,33 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import java.io.ByteArrayOutputStream;
-
-import org.codehaus.jackson.JsonParser;
-
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.generated.V22SpeedMediaNumericJSON;
+import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.benchmark.MediaContent;
 
 /**
+ * TODO
+ *
  * @author David Yu
- * @created Oct 16, 2009
+ * @created Jan 14, 2010
  */
-
-public class GeneratedSpeedNumericSerializer extends AbstractSpeedMediaSerializer
+public class ProtostuffCoreSerializer extends AbstractProtostuffSerializer
 {
-    
-    final V22SpeedMediaNumericJSON pbJSON = new V22SpeedMediaNumericJSON();
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
-        V22SpeedMedia.MediaContent.Builder builder = V22SpeedMedia.MediaContent.newBuilder();
-        JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
-        pbJSON.mergeFrom(parser, builder);
-        parser.close();
-        return builder.build();
+        MediaContent mediaContent = new MediaContent();
+        IOUtil.mergeFrom(array, mediaContent);
+        return mediaContent;
     }
 
     public String getName()
-    {        
-        return "generated-speed-numeric-json";
+    {
+        return "protostuff-core";
     }
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(512);
-        pbJSON.writeTo(out, content);
-        return out.toByteArray();
+        return IOUtil.toByteArray(content);
     }
 
 }
