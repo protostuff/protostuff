@@ -73,6 +73,13 @@ public final class JsonInput implements Input
     {
         return lastRepeated;
     }
+    
+    void reset()
+    {
+        lastRepeated = false;
+        lastName = null;
+        lastNumber = 0;
+    }
 
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {

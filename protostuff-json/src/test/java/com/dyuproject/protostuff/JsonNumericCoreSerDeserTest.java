@@ -19,6 +19,12 @@ import static com.dyuproject.protostuff.SerializableObjects.baz;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 
@@ -67,6 +73,27 @@ public class JsonNumericCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(bazCompare, dbaz);
             System.err.println(new String(data, ByteString.UTF8));
         }
+    }
+    
+    public void testListIO() throws Exception
+    {
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(SerializableObjects.bar);
+        bars.add(SerializableObjects.negativeBar);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JsonIOUtil.writeListTo(out, bars, 
+                SerializableObjects.bar.cachedSchema(), true);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        List<Bar> parsedBars = JsonIOUtil.parseListFrom(in, 
+                SerializableObjects.bar.cachedSchema(), true);
+        
+        assertTrue(parsedBars.size() == bars.size());
+        int i=0;
+        for(Bar b : parsedBars)
+            SerializableObjects.assertEquals(bars.get(i++), b);
     }
 
 }

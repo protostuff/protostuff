@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
@@ -213,5 +215,142 @@ public final class JsonIOUtil
                     schema.typeClass());
         }
     }
-
+    
+    /**
+     * Serializes the {@code messages} into the stream using the given schema.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
+        try
+        {
+            writeListTo(generator, messages, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
+    }
+    
+    /**
+     * Serializes the {@code messages} into the writer using the given schema.
+     */
+    public static <T> void writeListTo(Writer writer, List<T> messages, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
+        try
+        {
+            writeListTo(generator, messages, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
+    }
+    
+    /**
+     * Serializes the {@code messages} into the generator using the given schema.
+     */
+    public static <T> void writeListTo(JsonGenerator generator, List<T> messages, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        generator.writeStartArray();
+        if(messages.isEmpty())
+        {
+            generator.writeEndArray();
+            return;
+        }
+        
+        JsonOutput output = new JsonOutput(generator, numeric);
+        
+        for(T m : messages)
+        {
+            output.use(schema);
+            generator.writeStartObject();
+            
+            schema.writeTo(output, m);
+            if(output.isLastRepeated())
+                generator.writeEndArray();
+            
+            generator.writeEndObject();
+        }
+        
+        generator.writeEndArray();
+    }
+    
+    /**
+     * Parses the {@code messages} from the stream using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) 
+    throws IOException
+    {
+        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        try
+        {
+            return parseListFrom(parser, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
+    }
+    
+    /**
+     * Parses the {@code messages} from the reader using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(Reader reader, Schema<T> schema, boolean numeric) 
+    throws IOException
+    {
+        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
+        try
+        {
+            return parseListFrom(parser, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
+    }
+    
+    /**
+     * Parses the {@code messages} from the parser using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(JsonParser parser, Schema<T> schema, boolean numeric) 
+    throws IOException
+    {
+        if(parser.nextToken()!=JsonToken.START_ARRAY)
+        {
+            throw new IOException("Expected token: [ but was " + 
+                    parser.getCurrentToken() + " on message: " + 
+                    schema.typeClass());
+        }
+        
+        JsonInput input = new JsonInput(parser, numeric);
+        List<T> list = new ArrayList<T>();
+        for(JsonToken t=parser.nextToken(); t!=JsonToken.END_ARRAY; t=parser.nextToken())
+        {
+            if(t != JsonToken.START_OBJECT)
+            {
+                throw new IOException("Expected token: { but was " + 
+                        parser.getCurrentToken() + " on message " + 
+                        schema.typeClass());
+            }
+            
+            T message = schema.newMessage();
+            schema.mergeFrom(input, message);
+            
+            if(parser.getCurrentToken() != JsonToken.END_OBJECT)
+            {
+                throw new IOException("Expected token: } but was " + 
+                        parser.getCurrentToken() + " on message " + 
+                        schema.typeClass());
+            }
+            
+            list.add(message);
+            input.reset();
+        }
+        return list;
+    }
 }
