@@ -96,7 +96,7 @@ message_block(message, options, includeHeader) ::= <<
 <endif>
 
 public <if(!includeHeader)>static <endif>final class <message.name> 
-    extends JavaScriptObject <options.(message.name + ".impl_declaration")>{
+    extends JavaScriptObject <options.(message.name + ".implements_declaration")>{
 
     <message.nestedMessages:message_block(message=it, options=options)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>

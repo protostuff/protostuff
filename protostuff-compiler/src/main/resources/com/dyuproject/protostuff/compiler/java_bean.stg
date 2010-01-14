@@ -86,7 +86,7 @@ message_block(message, options, modifier, accessor, includeHeader) ::= <<
 <message:message_header()>
 <endif>
 
-public <modifier>class <message.name> <message:message_impl_declaration()>
+public <modifier>class <message.name> <message:message_impl_declaration(message=it, options=options)>
 {
     <message.nestedMessages:message_block(message=it, options=options, modifier="static " + modifier, accessor=accessor)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
@@ -128,8 +128,14 @@ import com.dyuproject.protostuff.Schema;
 
 >>
 
-message_impl_declaration(message) ::= <<
-implements Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
+message_impl_declaration(message, options) ::= <<
+<options.(message.name + ".extends_declaration")>
+<if(options.(message.name + ".implements_declaration"))>
+options.(message.name + ".implements_declaration"), 
+<else>
+implements 
+<endif>
+Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
 >>
 
 field_defaults_declaration(field) ::= <<
