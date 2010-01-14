@@ -419,7 +419,7 @@ public int getFieldNumber(String name)
     return number == null ? 0 : number.intValue();
 }
 
-private static final java.util.HashMap\<String,Integer\> __fieldMap = new java.util.HashMapHashMap\<String,Integer\>();
+private static final java.util.HashMap\<String,Integer\> __fieldMap = new java.util.HashMap\<String,Integer\>();
 static
 {
     <message.fields:field_map(field=it, mapVar="__fieldMap"); separator="\n">
