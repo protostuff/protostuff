@@ -5,7 +5,7 @@ Requirements:
 - java 1.5 or higher
 
 Build Requirements:
-- maven 2.0.7 or higher
+- maven 2.0.9 or higher
 
 Building:
 - $ mvn install
