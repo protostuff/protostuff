@@ -65,6 +65,18 @@ import java.io.OutputStream;
  */
 public final class CodedOutput implements Output {
   //START EXTRA
+    
+  public static void writeRawVarInt32Bytes(OutputStream out, int value) throws IOException {
+    while (true) {
+      if ((value & ~0x7F) == 0) {
+        out.write(value);
+        return;
+      } else {
+          out.write((value & 0x7F) | 0x80);
+          value >>>= 7;
+      }
+    }  
+  }
   /** Returns a byte array encoded with the tag and var int 32 */
   public static byte[] getTagAndRawVarInt32Bytes(int tag, int value) {
     int tagSize = computeRawVarint32Size(tag);

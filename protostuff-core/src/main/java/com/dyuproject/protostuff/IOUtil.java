@@ -17,6 +17,9 @@ package com.dyuproject.protostuff;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Utility for the serialization/deserialization of messages and objects tied to a schema.
@@ -136,6 +139,45 @@ public final class IOUtil
     throws IOException
     {
         mergeFrom(in, message, message.cachedSchema());
+    }
+    
+    /**
+     * Serializes the {@code messages} (delimited) into 
+     * an {@link OutputStream} via {@link CodedOutput} using the given schema.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+    throws IOException
+    {
+        for(T m : messages)
+        {
+            byte[] value = toByteArray(m, schema);
+            CodedOutput.writeRawVarInt32Bytes(out, value.length);
+            out.write(value);
+        }
+    }
+    
+    /**
+     * Parses the {@code messages} (delimited) from the 
+     * {@link InputStream} using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) 
+    throws IOException
+    {
+        int size = in.read();
+        if(size<1)
+            return Collections.emptyList();
+        
+        ArrayList<T> list = new ArrayList<T>();
+        for(; size>0; size=in.read())
+        {
+            int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+            CodedInput input = CodedInput.newInstance(new LimitedInputStream(in, len));
+            T message = schema.newMessage();
+            schema.mergeFrom(input, message);
+            input.checkLastTagWas(0);
+            list.add(message);
+        }
+        return list;
     }
 
 }

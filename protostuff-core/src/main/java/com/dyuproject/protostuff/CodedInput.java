@@ -367,7 +367,7 @@ public final class CodedInput implements Input {
     }
     return result;
   }
-
+  
   /**
    * Reads a varint from the input one byte at a time, so that it does not
    * read any bytes after the end of the varint.  If you simply wrapped the
@@ -384,7 +384,17 @@ public final class CodedInput implements Input {
     if ((firstByte & 0x80) == 0) {
       return firstByte;
     }
-    
+    return readRawVarint32(input, firstByte);
+  }
+
+  /**
+   * Reads a varint from the input one byte at a time, so that it does not
+   * read any bytes after the end of the varint.  If you simply wrapped the
+   * stream in a CodedInputStream and used {@link #readRawVarint32(InputStream)}
+   * then you would probably end up reading past the end of the varint since
+   * CodedInputStream buffers its input.
+   */
+  static int readRawVarint32(final InputStream input, int firstByte) throws IOException {
     int result = firstByte & 0x7f;
     int offset = 7;
     for (; offset < 32; offset += 7) {
