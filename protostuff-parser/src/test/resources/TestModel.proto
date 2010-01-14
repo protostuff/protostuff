@@ -1,0 +1,50 @@
+package simple;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.example.simple";
+option java_outer_classname = "Simple";
+
+message Foo {
+  enum EnumSample {
+    TYPE0 = 0;
+    TYPE1 = 1;
+    TYPE2 = 2;
+    TYPE3 = 3;
+    TYPE4 = 4;
+  }
+  repeated int32 some_int = 1;
+  repeated string some_string = 2;
+  repeated Bar bar = 3;
+  repeated EnumSample some_enum = 4;
+  repeated bytes some_bytes = 5;
+  repeated bool some_boolean = 6;
+  repeated float some_float = 7;
+  repeated double some_double = 8;
+  repeated int64 some_long = 9;
+}
+
+message Bar {
+  enum Status {
+    PENDING = 0;
+    STARTED = 1;
+    COMPLETED = 2;
+  }
+  optional int32 some_int = 1[default=0x7f];
+  optional string some_string = 2[default = "\341\210\264"];
+  optional Baz baz = 3;
+  optional Status some_enum = 4;
+  optional bytes some_bytes = 5[default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
+  optional bool some_boolean = 6;
+  optional float some_float = 7[default=0x7f];
+  optional double some_double = 8[default = 45.123f];
+  optional int64 some_long = 9;
+  
+}
+
+message Baz {
+  required int64 id = 1;
+  optional string name = 2[default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
+  optional int64 timestamp = 3;
+  optional bytes data = 4 [default = 0xFACE];
+}
+
