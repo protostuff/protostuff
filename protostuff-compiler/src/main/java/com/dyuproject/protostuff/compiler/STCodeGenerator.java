@@ -28,7 +28,7 @@ import com.dyuproject.protostuff.parser.Proto;
 import com.dyuproject.protostuff.parser.ProtoUtil;
 
 /**
- * TODO
+ * Base class for code generators using StringTemplate.
  *
  * @author David Yu
  * @created Jan 5, 2010
@@ -57,6 +57,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     static
     {
         StringTemplateGroup.registerGroupLoader(GROUP_LOADER);
+        
         // attribute renderers
         
         setAttributeRenderer(String.class, new AttributeRenderer(){

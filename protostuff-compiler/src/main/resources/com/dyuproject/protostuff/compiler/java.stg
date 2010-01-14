@@ -403,7 +403,7 @@ if(<name>.<field.name; format="CC"> != null)
 >>
 
 message_field_map(message, options) ::= <<
-<if(options.enableFieldNameMapping)>
+<if(options.generate_field_map)>
 public String getFieldName(int number)
 {
     switch(number)
