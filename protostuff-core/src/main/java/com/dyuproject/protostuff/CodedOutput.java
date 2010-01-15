@@ -276,7 +276,7 @@ public final class CodedOutput implements Output {
       throw new IllegalArgumentException("The computed size is not equal to the buffer size.");
     }
     else {
-      this.computedSize = computedSize.reset(true);
+      this.computedSize = computedSize.reset();
     }
     
     output = null;

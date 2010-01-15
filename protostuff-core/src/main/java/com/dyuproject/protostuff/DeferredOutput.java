@@ -271,9 +271,6 @@ public final class DeferredOutput implements Output
             boolean repeated) throws IOException
     {
         Schema<T> schema = value.cachedSchema();
-        // fail fast
-        if(!schema.isInitialized(value))
-            throw new UninitializedMessageException(value, schema);
         
         DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
@@ -299,10 +296,6 @@ public final class DeferredOutput implements Output
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        // fail fast
-        if(!schema.isInitialized(value))
-            throw new UninitializedMessageException(value, schema);
-        
         DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
         
