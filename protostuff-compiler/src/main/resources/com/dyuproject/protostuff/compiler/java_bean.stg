@@ -86,7 +86,7 @@ message_block(message, options, modifier, accessor, includeHeader) ::= <<
 <message:message_header()>
 <endif>
 
-public <modifier>class <message.name> <message:message_impl_declaration(message=it, options=options)>
+public <modifier>class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
     <message.nestedMessages:message_block(message=it, options=options, modifier="static " + modifier, accessor=accessor)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
@@ -140,7 +140,6 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 >>
 
 message_impl_declaration(message, options) ::= <<
-<options.(message.name + ".extends_declaration")>
 <if(options.(message.name + ".implements_declaration"))>
 options.(message.name + ".implements_declaration"), 
 <else>

@@ -9,7 +9,7 @@ import com.google.gwt.core.client.*;
  * A simple wrapper generated from the protobuf message 
  * ${module.getFullClassname()}.${name} 
  */
-public final class ${name} extends JavaScriptObject {
+public final class ${name} extends JavaScriptObject ${Util.getOption($module, $name, ".implements_declaration", " ")}{
     #foreach( $ec in $Util.getEnumClasses($model) )
 
     public static final class ${ec.getSimpleName()} extends JavaScriptObject {

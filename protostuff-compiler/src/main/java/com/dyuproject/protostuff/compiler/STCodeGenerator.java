@@ -69,6 +69,9 @@ public abstract class STCodeGenerator implements ProtoCompiler
             public String toString(Object o, String formatName)
             {
                 String str = (String)o;
+                if(formatName==null)
+                    return str;
+                
                 if("CC".equals(formatName))
                     return ProtoUtil.toCamelCase(str).toString();
                 
@@ -81,7 +84,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if("UUC".equals(formatName))
                     return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
                 
-                return str;
+                return str + formatName;
             }
         });
         

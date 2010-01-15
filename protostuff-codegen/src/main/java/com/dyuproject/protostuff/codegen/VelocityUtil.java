@@ -234,5 +234,21 @@ public final class VelocityUtil
         }
         return -1;
     }
+    
+    public static String getOption(Module module, String key)
+    {
+        return module.getOptions().getProperty(key, "");
+    }
+    
+    public static String getOption(Module module, String prefix, String key)
+    {
+        return module.getOptions().getProperty(prefix+key, "");
+    }
+    
+    public static String getOption(Module module, String prefix, String key, String append)
+    {
+        String value = module.getOption(prefix+key);
+        return value==null ? "" : value + append;
+    }
 
 }
