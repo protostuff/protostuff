@@ -42,7 +42,9 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        StringTemplateGroup group = getSTG(getOutputId());
+        String template = module.getOption("separate_schema")==null ? 
+                "java_bean" : "java_bean_separate_schema";
+        StringTemplateGroup group = getSTG(template);
         
         for(EnumGroup eg : proto.getEnumGroups())
         {

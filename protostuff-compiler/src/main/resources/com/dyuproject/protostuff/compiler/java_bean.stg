@@ -139,6 +139,11 @@ public static Schema\<<message.name>\> getSchema()
     return DEFAULT_INSTANCE;
 }
 
+public static <message.name> getDefaultInstance()
+{
+    return DEFAULT_INSTANCE;
+}
+
 static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
 >>

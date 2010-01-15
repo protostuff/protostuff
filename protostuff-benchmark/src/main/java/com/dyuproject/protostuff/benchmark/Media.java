@@ -48,6 +48,11 @@ public final class Media implements Serializable, Message<Media>, Schema<Media>
         return DEFAULT_INSTANCE;
     }
 
+    public static Media getDefaultInstance()
+    {
+        return DEFAULT_INSTANCE;
+    }
+
     static final Media DEFAULT_INSTANCE = new Media();
 
     

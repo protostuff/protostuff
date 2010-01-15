@@ -22,6 +22,11 @@ public final class MediaContent implements Serializable, Message<MediaContent>, 
         return DEFAULT_INSTANCE;
     }
 
+    public static MediaContent getDefaultInstance()
+    {
+        return DEFAULT_INSTANCE;
+    }
+
     static final MediaContent DEFAULT_INSTANCE = new MediaContent();
 
     

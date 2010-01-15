@@ -1,0 +1,62 @@
+group java_bean_static_schema : java_bean;
+
+message_block(message, options, includeHeader, modifier) ::= <<
+<if(includeHeader)>
+<message:message_header()>
+<endif>
+
+public <modifier; format=" ">final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
+{
+    <message.nestedMessages:message_block(message=it, options=options, modifier="static")>
+    <message.nestedEnumGroups:enum_block(eg=it, options=options)>
+    <message:message_default_instance(message=it, options=options)>
+    <message.fields:field_defaults_declaration(); separator="\n">
+    
+    // non-private fields
+    // see http://developer.android.com/guide/practices/design/performance.html#package_inner
+    <message.fields:field_declaration(field=it); separator=";\n">;
+    <message:message_constructor()>
+    <message:message_getters_and_setters()>
+    <message:message_impl_serializable()>
+    <message:message_impl_message()>
+    static final Schema\<<message.name>\> SCHEMA = new Schema\<<message.name>\>()
+    {
+        <message:message_impl_schema(message=it, options=options)>
+    };
+}
+>>
+
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+options.(message.name + ".implements_declaration"), 
+<else>
+implements 
+<endif>
+Serializable, Message\<<message.name>\>
+>>
+
+message_default_instance(message,options) ::= <<
+
+public static Schema\<<message.name>\> getSchema()
+{
+    return SCHEMA;
+}
+
+public static <message.name> getDefaultInstance()
+{
+    return DEFAULT_INSTANCE;
+}
+
+static final <message.name> DEFAULT_INSTANCE = new <message.name>();
+
+>>
+
+message_impl_message(message) ::= <<
+// message method
+
+public Schema\<<message.name>\> cachedSchema()
+{
+    return SCHEMA;
+}
+
+>>

@@ -47,6 +47,11 @@ public final class Image implements Serializable, Message<Image>, Schema<Image>
         return DEFAULT_INSTANCE;
     }
 
+    public static Image getDefaultInstance()
+    {
+        return DEFAULT_INSTANCE;
+    }
+
     static final Image DEFAULT_INSTANCE = new Image();
 
     
