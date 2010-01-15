@@ -13,7 +13,7 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
-
+import com.dyuproject.protostuff.UninitializedMessageException;
 public final class Media implements Serializable, Message<Media>, Schema<Media>
 {
     public enum Player implements com.dyuproject.protostuff.EnumLite<Player>
@@ -302,22 +302,31 @@ public final class Media implements Serializable, Message<Media>, Schema<Media>
 
     public void writeTo(Output output, Media message) throws IOException
     {
-        if(message.uri != null)
-            output.writeString(1, message.uri, false);
+        if(message.uri == null)
+            throw new UninitializedMessageException(message);
+        output.writeString(1, message.uri, false);
+
         if(message.title != null)
             output.writeString(2, message.title, false);
+
         if(message.width != null)
             output.writeInt32(3, message.width, false);
+
         if(message.height != null)
             output.writeInt32(4, message.height, false);
+
         if(message.format != null)
             output.writeString(5, message.format, false);
+
         if(message.duration != null)
             output.writeInt64(6, message.duration, false);
+
         if(message.size != null)
             output.writeInt64(7, message.size, false);
+
         if(message.bitrate != null)
             output.writeInt32(8, message.bitrate, false);
+
         if(message.person != null)
         {
             for(String person : message.person)
@@ -326,8 +335,10 @@ public final class Media implements Serializable, Message<Media>, Schema<Media>
                     output.writeString(9, person, true);
             }
         }
+
         if(message.player != null)
              output.writeEnum(10, message.player.number, false);
+
         if(message.copyright != null)
             output.writeString(11, message.copyright, false);
     }

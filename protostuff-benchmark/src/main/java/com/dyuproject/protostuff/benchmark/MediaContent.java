@@ -145,6 +145,7 @@ public final class MediaContent implements Serializable, Message<MediaContent>, 
             }
         }
 
+
         if(message.media != null)
              output.writeMessage(2, message.media, false);
 

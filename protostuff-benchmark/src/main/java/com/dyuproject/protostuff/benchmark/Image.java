@@ -11,7 +11,7 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
-
+import com.dyuproject.protostuff.UninitializedMessageException;
 public final class Image implements Serializable, Message<Image>, Schema<Image>
 {
     public enum Size implements com.dyuproject.protostuff.EnumLite<Size>
@@ -203,14 +203,19 @@ public final class Image implements Serializable, Message<Image>, Schema<Image>
 
     public void writeTo(Output output, Image message) throws IOException
     {
-        if(message.uri != null)
-            output.writeString(1, message.uri, false);
+        if(message.uri == null)
+            throw new UninitializedMessageException(message);
+        output.writeString(1, message.uri, false);
+
         if(message.title != null)
             output.writeString(2, message.title, false);
+
         if(message.width != null)
             output.writeInt32(3, message.width, false);
+
         if(message.height != null)
             output.writeInt32(4, message.height, false);
+
         if(message.size != null)
              output.writeEnum(5, message.size.number, false);
     }
