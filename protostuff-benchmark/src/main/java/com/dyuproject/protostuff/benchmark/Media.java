@@ -14,6 +14,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
+
 public final class Media implements Serializable, Message<Media>, Schema<Media>
 {
     public enum Player implements com.dyuproject.protostuff.EnumLite<Player>

@@ -129,6 +129,7 @@ import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
 <endif>
 
+
 >>
 
 message_default_instance(message,options) ::= <<

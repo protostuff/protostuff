@@ -12,6 +12,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
+
 public final class Image implements Serializable, Message<Image>, Schema<Image>
 {
     public enum Size implements com.dyuproject.protostuff.EnumLite<Size>
