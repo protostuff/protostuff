@@ -168,10 +168,11 @@ public final class IOUtil
             return Collections.emptyList();
         
         ArrayList<T> list = new ArrayList<T>();
+        LimitedInputStream lis = new LimitedInputStream(in);
         for(; size>0; size=in.read())
         {
             int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
-            CodedInput input = CodedInput.newInstance(new LimitedInputStream(in, len));
+            CodedInput input = CodedInput.newInstance(lis.limit(len));
             T message = schema.newMessage();
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);

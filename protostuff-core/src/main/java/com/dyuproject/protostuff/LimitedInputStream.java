@@ -59,10 +59,21 @@ public final class LimitedInputStream extends FilterInputStream
 {
     private int limit;
 
+    public LimitedInputStream(InputStream in)
+    {
+        super(in);
+    }
+    
     public LimitedInputStream(InputStream in, int limit)
     {
         super(in);
         this.limit = limit;
+    }
+    
+    LimitedInputStream limit(int limit)
+    {
+        this.limit = limit;
+        return this;
     }
 
     public int available() throws IOException
