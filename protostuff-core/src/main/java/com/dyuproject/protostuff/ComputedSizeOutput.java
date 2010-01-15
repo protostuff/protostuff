@@ -197,7 +197,7 @@ public final class ComputedSizeOutput implements Output
         Schema<T> schema = value.cachedSchema();
         // fail fast
         if(!recomputed && !schema.isInitialized(value))
-            throw new UninitializedMessageException(value);
+            throw new UninitializedMessageException(value, schema);
         
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
@@ -211,7 +211,7 @@ public final class ComputedSizeOutput implements Output
     {
         // fail fast
         if(!recomputed && !schema.isInitialized(value))
-            throw new UninitializedMessageException(value);
+            throw new UninitializedMessageException(value, schema);
         
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));

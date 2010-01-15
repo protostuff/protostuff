@@ -63,16 +63,28 @@ package com.dyuproject.protostuff;
 public final class UninitializedMessageException extends RuntimeException {
   private static final long serialVersionUID = -7466929953374883507L;
   
-  public final Object uninitializedMessage;
+  public final Object targetMessage;
+  public final Schema<?> targetSchema;
   
-  public UninitializedMessageException(Object uninitializedMessage) {
-    this.uninitializedMessage = uninitializedMessage;
+  public UninitializedMessageException(Message<?> targetMessage) {
+    this(targetMessage, targetMessage.cachedSchema());
   }
   
-  public Object getUninitializedMessage() {
-    return uninitializedMessage;
+  public UninitializedMessageException(Object targetMessage, Schema<?> targetSchema) {
+    this.targetMessage = targetMessage;
+    this.targetSchema = targetSchema;
   }
-
+  
+  @SuppressWarnings("unchecked")
+  public <T> T getTargetMessage() {
+    return (T)targetMessage;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T> Schema<T> getTargetSchema() {
+    return (Schema<T>)targetSchema;
+  }
+  
   /*@public UninitializedMessageException(final MessageLite message) {
     super("Message was missing required fields.  (Lite runtime could not " +
           "determine which fields were missing).");

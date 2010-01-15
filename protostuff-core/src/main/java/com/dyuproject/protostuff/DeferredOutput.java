@@ -273,7 +273,7 @@ public final class DeferredOutput implements Output
         Schema<T> schema = value.cachedSchema();
         // fail fast
         if(!schema.isInitialized(value))
-            throw new UninitializedMessageException(value);
+            throw new UninitializedMessageException(value, schema);
         
         DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
@@ -301,7 +301,7 @@ public final class DeferredOutput implements Output
     {
         // fail fast
         if(!schema.isInitialized(value))
-            throw new UninitializedMessageException(value);
+            throw new UninitializedMessageException(value, schema);
         
         DeferredOutput output = new DeferredOutput();
         schema.writeTo(output, value);
