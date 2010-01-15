@@ -314,6 +314,9 @@ public final class JsonInput implements Input
                     schema.typeClass());
         }
         
+        if(!schema.isInitialized(value))
+            throw new UninitializedMessageException(value, schema);
+        
         // restore state
         this.lastNumber = lastNumber;
         this.lastRepeated = lastRepeated;

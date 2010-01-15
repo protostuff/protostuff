@@ -125,6 +125,9 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
+<if(message.requiredFieldPresent)>
+import com.dyuproject.protostuff.UninitializedMessageException;
+<endif>
 
 >>
 
@@ -354,7 +357,7 @@ message_field_write(message, name) ::= <<
 
 public void writeTo(Output output, <message.name> <name>) throws IOException
 {
-    <message.fields:field_write_switch(field=it,name=name); separator="\n">
+    <message.fields:field_write_switch(field=it,name=name); separator="\n\n">
 }
 
 >>
@@ -368,6 +371,17 @@ field_write_switch(field, name) ::= <<
 >>
 
 singular_field_write_switch(field, name) ::= <<
+<if(field.required)>
+if(<name>.<field.name; format="CC"> == null)
+    throw new UninitializedMessageException(<name>);
+<if(field.messageField)>
+output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
+<elseif(field.enumField)>
+output.writeEnum(<field.number>, <name>.<field.name; format="CC">.number, false);
+<else>
+output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
+<endif>
+<else>
 <if(field.messageField)>
 <field:singular_field_write_check()>
      output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
@@ -377,6 +391,7 @@ singular_field_write_switch(field, name) ::= <<
 <else>
 <field:singular_field_write_check()>
     output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
+<endif>
 <endif>
 >>
 
