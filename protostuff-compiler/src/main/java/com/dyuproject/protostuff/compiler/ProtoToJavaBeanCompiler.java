@@ -43,7 +43,6 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
     {
         String javaPackageName = proto.getJavaPackageName();
         StringTemplateGroup group = getSTG(getOutputId());
-        //module.setOption("enableFieldNameMapping", "");
         
         for(EnumGroup eg : proto.getEnumGroups())
         {
@@ -72,8 +71,6 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("includeHeader", Boolean.TRUE);
             messageBlock.setAttribute("message", m);
-            messageBlock.setAttribute("modifier", "final ");
-            messageBlock.setAttribute("accessor", "private ");
             messageBlock.setAttribute("options", module.getOptions());
             messageBlock.write(out);
             writer.close();

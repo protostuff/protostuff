@@ -81,19 +81,19 @@ enum_switch_case(value) ::= <<
 case <value.number>: return <value.name>;
 >>
 
-message_block(message, options, modifier, accessor, includeHeader) ::= <<
+message_block(message, options, includeHeader, modifier) ::= <<
 <if(includeHeader)>
 <message:message_header()>
 <endif>
 
-public <modifier>class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
+public <modifier; format=" ">final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
-    <message.nestedMessages:message_block(message=it, options=options, modifier="static " + modifier, accessor=accessor)>
+    <message.nestedMessages:message_block(message=it, options=options, modifier="static")>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
     <message:message_default_instance(message=it, options=options)>
     <message.fields:field_defaults_declaration(); separator="\n">
     
-    <message.fields:field_declaration(field=it, accessor=accessor); separator=";\n">;
+    <message.fields:field_declaration(field=it, modifier="private"); separator=";\n">;
     <message:message_constructor()>
     <message:message_getters_and_setters()>
     <message:message_impl_serializable()>
@@ -158,11 +158,11 @@ static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; forma
 <endif>
 >>
 
-field_declaration(field, accessor) ::= <<
+field_declaration(field, modifier) ::= <<
 <if(field.repeated)>
-<accessor>List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">
+<modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">
 <else>
-<accessor><map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
+<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
 <endif>
 >>
 
