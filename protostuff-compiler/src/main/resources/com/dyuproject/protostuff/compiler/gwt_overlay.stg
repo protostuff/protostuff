@@ -212,8 +212,8 @@ public native void set<field.name; format="PC">(<map_singular_value.(field.javaT
 
 field_name_or_number(field, options) ::= <<
 <if(options.numeric)>
-<field.name; format="CC">
-<else>
 <field.number>
+<else>
+<field.name; format="CC">
 <endif>
 >>
