@@ -96,7 +96,7 @@ message_block(message, options, includeHeader) ::= <<
 <endif>
 
 public <if(!includeHeader)>static <endif>final class <message.name> 
-    extends JavaScriptObject <options.(message.name + ".implements_declaration"); format=" ">{
+    extends JavaScriptObject <message:message_impl_declaration(message=it, options=options)>{
 
     <message.nestedMessages:message_block(message=it, options=options)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
@@ -177,6 +177,16 @@ import com.google.gwt.core.client.*;
 
 >>
 
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+options.(message.name + ".implements_declaration") 
+<else>
+<if(options.generate_interface_from_package)>
+implements <options.generate_interface_from_package>.<message.name> 
+<endif>
+<endif>
+>>
+
 message_getters_and_setters(message, options) ::= <<
 // getters and setters
 <message.fields:field_getters_and_setters(field=it, options=options)>
@@ -198,7 +208,7 @@ public native void set<field.name; format="PC">Array(<map_repeated_prefix.(field
 public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">Array() /*-{
     return (this["<field:field_name_or_number(field=it,options=options)>"] = []);
 }-*/;
-<if(options.generate_interface)>
+<if(options.generate_interface_from_package)>
 
 public <map_singular_value.(field.javaType)> get<field.name; format="PC">(int index)
 {
