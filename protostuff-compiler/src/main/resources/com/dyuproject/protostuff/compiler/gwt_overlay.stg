@@ -183,19 +183,44 @@ message_getters_and_setters(message, options) ::= <<
 >>
 
 field_getters_and_setters(field, options) ::= <<
+
+// <field.name; format="CC">
 <if(field.repeated)>
 
-public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">() /*-{
-    return this["<field.name; format="CC">"];
+public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">Array() /*-{
+    return this["<field:field_name_or_number(field=it,options=options)>"];
 }-*/;
 
-public native void set<field.name; format="PC">(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <field.name; format="CC">) /*-{
+public native void set<field.name; format="PC">Array(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <field.name; format="CC">) /*-{
     this["<field:field_name_or_number(field=it,options=options)>"] = <field.name; format="CC">;
 }-*/;
 
-public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">() /*-{
+public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">Array() /*-{
     return (this["<field:field_name_or_number(field=it,options=options)>"] = []);
 }-*/;
+<if(options.generate_interface)>
+
+public <map_singular_value.(field.javaType)> get<field.name; format="PC">(int index)
+{
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    return array == null ? null : array.get(index);
+}
+
+public int get<field.name; format="PC">Count()
+{
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    return array == null ? 0 : array.length();
+}
+
+public void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <field.name; format="CC">)
+{
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    if(array == null)
+        array = clear<field.name; format="PC">Array();
+    array.push(<field.name; format="CC">);
+}
+
+<endif>
 
 <else>
 

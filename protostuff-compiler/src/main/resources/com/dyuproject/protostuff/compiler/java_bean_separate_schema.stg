@@ -15,8 +15,8 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
     <message.fields:field_declaration(field=it); separator=";\n">;
-    <message:message_constructor()>
-    <message:message_getters_and_setters()>
+    <message:message_constructor(message=it, options=options)>
+    <message:message_getters_and_setters(message=it, options=options)>
     <message:message_impl_serializable()>
     <message:message_impl_message()>
     static final Schema\<<message.name>\> SCHEMA = new Schema\<<message.name>\>()

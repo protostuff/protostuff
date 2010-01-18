@@ -94,8 +94,8 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
     <message.fields:field_defaults_declaration(); separator="\n">
     
     <message.fields:field_declaration(field=it, modifier="private"); separator=";\n">;
-    <message:message_constructor()>
-    <message:message_getters_and_setters()>
+    <message:message_constructor(message=it, options=options)>
+    <message:message_getters_and_setters(message=it, options=options)>
     <message:message_impl_serializable()>
     <message:message_impl_message()>
     <message:message_impl_schema(message=it, options=options)>
@@ -171,7 +171,7 @@ field_declaration(field, modifier) ::= <<
 <endif>
 >>
 
-message_constructor(message) ::= <<
+message_constructor(message, options) ::= <<
 
 public <message.name>()
 {
@@ -209,23 +209,45 @@ this.<field.name; format="CC"> = <field.name; format="CC">;
 <endif>
 >>
 
-message_getters_and_setters(message) ::= <<
+message_getters_and_setters(message, options) ::= <<
 // getters and setters
-<message.fields:field_getters_and_setters()>
+<message.fields:field_getters_and_setters(field=it, options=options)>
 >>
 
-field_getters_and_setters(field) ::= <<
+field_getters_and_setters(field, options) ::= <<
+
+// <field.name; format="CC">
 <if(field.repeated)>
 
-public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">()
+public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">List()
 {
     return <field.name; format="CC">;
 }
 
-public void set<field.name; format="PC">(List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">)
+public void set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">)
 {
     this.<field.name; format="CC"> = <field.name; format="CC">;
 }
+<if(options.generate_interface)>
+
+public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
+{
+    return <field.name; format="CC"> == null ? null : <field.name; format="CC">.get(index);
+}
+
+public int get<field.name; format="PC">Count()
+{
+    return <field.name; format="CC"> == null ? 0 : <field.name; format="CC">.size();
+}
+
+public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">)
+{
+    if(this.<field.name; format="CC"> == null)
+        this.<field.name; format="CC"> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+    this.<field.name; format="CC">.add(<field.name; format="CC">);
+}
+
+<endif>
 
 <else>
 
