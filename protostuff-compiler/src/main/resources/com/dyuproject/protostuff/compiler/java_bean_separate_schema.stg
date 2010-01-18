@@ -60,3 +60,37 @@ public Schema\<<message.name>\> cachedSchema()
 }
 
 >>
+
+message_field_map(message, options) ::= <<
+<if(options.generate_field_map)>
+public String getFieldName(int number)
+{
+    switch(number)
+    {
+        <message.fields:field_switch_case(); separator="\n">
+        default: return null;
+    }
+}
+
+public int getFieldNumber(String name)
+{
+    Integer number = fieldMap.get(name);
+    return number == null ? 0 : number.intValue();
+}
+
+final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<String,Integer\>();
+{
+    <message.fields:field_map(field=it, mapVar="fieldMap"); separator="\n">
+}
+<else>
+public String getFieldName(int number)
+{
+    return String.valueOf(number);
+}
+
+public int getFieldNumber(String name)
+{
+    return Integer.parseInt(name);
+}
+<endif>
+>>
