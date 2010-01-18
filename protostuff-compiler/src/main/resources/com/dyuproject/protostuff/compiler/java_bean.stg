@@ -177,20 +177,35 @@ public <message.name>()
 {
     <message.fields:field_assign_constructor_defaults(); separator="\n">
 }
+<if(message.requiredFieldPresent)>
 
 public <message.name>(
-    <message.fields:field_declaration(field=it); separator=",\n">
+    <message.fields:field_declare_constructor_singular(); separator=",\n">
 )
 {
-    super();
-    <message.fields:{this.<it.name; format="CC"> = <it.name; format="CC">;}; separator="\n">
+    this();
+    <message.fields:field_assign_constructor_singular(); separator="\n">
 }
+
+<endif>
 
 >>
 
 field_assign_constructor_defaults(field) ::= <<
 <if(field.defaultValue)>
 this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
+<endif>
+>>
+
+field_declare_constructor_singular(field) ::= <<
+<if(field.required)>
+<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
+<endif>
+>>
+
+field_assign_constructor_singular(field) ::= <<
+<if(field.required)>
+this.<field.name; format="CC"> = <field.name; format="CC">;
 <endif>
 >>
 
