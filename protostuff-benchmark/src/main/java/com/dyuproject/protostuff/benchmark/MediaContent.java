@@ -14,12 +14,12 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
 
-public final class MediaContent implements Serializable, Message<MediaContent>, Schema<MediaContent>
+public final class MediaContent implements Serializable, Message<MediaContent>
 {
 
     public static Schema<MediaContent> getSchema()
     {
-        return DEFAULT_INSTANCE;
+        return SCHEMA;
     }
 
     public static MediaContent getDefaultInstance()
@@ -30,34 +30,30 @@ public final class MediaContent implements Serializable, Message<MediaContent>, 
     static final MediaContent DEFAULT_INSTANCE = new MediaContent();
 
     
-    private List<Image> image;
-    private Media media;
+    // non-private fields
+    // see http://developer.android.com/guide/practices/design/performance.html#package_inner
+    List<Image> image;
+    Media media;
 
     public MediaContent()
     {
     }
 
-    public MediaContent(
-        List<Image> image,
-        Media media
-    )
-    {
-        super();
-        this.image = image;
-        this.media = media;
-    }
-
     // getters and setters
 
-    public List<Image> getImage()
+    // image
+
+    public List<Image> getImageList()
     {
         return image;
     }
 
-    public void setImage(List<Image> image)
+    public void setImageList(List<Image> image)
     {
         this.image = image;
     }
+
+    // media
 
     public Media getMedia()
     {
@@ -91,91 +87,93 @@ public final class MediaContent implements Serializable, Message<MediaContent>, 
 
     public Schema<MediaContent> cachedSchema()
     {
-        return this;
+        return SCHEMA;
     }
 
-    // schema methods
-
-    public MediaContent newMessage()
+    static final Schema<MediaContent> SCHEMA = new Schema<MediaContent>()
     {
-        return new MediaContent();
-    }
+        // schema methods
 
-    public Class<MediaContent> typeClass()
-    {
-        return MediaContent.class;
-    }
-
-    public boolean isInitialized(MediaContent message)
-    {
-        return true;
-    }
-
-    public void mergeFrom(Input input, MediaContent message) throws IOException
-    {
-        while(true)
+        public MediaContent newMessage()
         {
-            int number = input.readFieldNumber(this);
-            switch(number)
-            {
-                case 0:
-                    return;
-                case 1:
-                    if(message.image == null)
-                        message.image = new ArrayList<Image>();
-                    message.image.add(input.mergeMessage(new Image()));
-                    break;
-
-                case 2:
-                    if(message.media == null)
-                        message.media = new Media();
-                    input.mergeMessage(message.media);
-                    break;
-
-                default:
-                    input.handleUnknownField(number, this);
-            }   
+            return new MediaContent();
         }
-    }
 
-
-    public void writeTo(Output output, MediaContent message) throws IOException
-    {
-        if(message.image != null)
+        public Class<MediaContent> typeClass()
         {
-            for(Image image : message.image)
+            return MediaContent.class;
+        }
+
+        public boolean isInitialized(MediaContent message)
+        {
+            return true;
+        }
+
+        public void mergeFrom(Input input, MediaContent message) throws IOException
+        {
+            while(true)
             {
-                if(image != null)
-                    output.writeMessage(1, image, true);
+                int number = input.readFieldNumber(this);
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        if(message.image == null)
+                            message.image = new ArrayList<Image>();
+                        message.image.add(input.mergeMessage(new Image()));
+                        break;
+
+                    case 2:
+                        if(message.media == null)
+                            message.media = new Media();
+                        input.mergeMessage(message.media);
+                        break;
+
+                    default:
+                        input.handleUnknownField(number, this);
+                }   
             }
         }
 
 
-        if(message.media != null)
-             output.writeMessage(2, message.media, false);
-
-    }
-
-    public String getFieldName(int number)
-    {
-        switch(number)
+        public void writeTo(Output output, MediaContent message) throws IOException
         {
-            case 1: return "image";
-            case 2: return "media";
-            default: return null;
+            if(message.image != null)
+            {
+                for(Image image : message.image)
+                {
+                    if(image != null)
+                        output.writeMessage(1, image, true);
+                }
+            }
+
+
+            if(message.media != null)
+                 output.writeMessage(2, message.media, false);
+
         }
-    }
 
-    public int getFieldNumber(String name)
-    {
-        Integer number = __fieldMap.get(name);
-        return number == null ? 0 : number.intValue();
-    }
+        public String getFieldName(int number)
+        {
+            switch(number)
+            {
+                case 1: return "image";
+                case 2: return "media";
+                default: return null;
+            }
+        }
 
-    private static final java.util.HashMap<String,Integer> __fieldMap = new java.util.HashMap<String,Integer>();
-    static
-    {
-        __fieldMap.put("image", 1);
-        __fieldMap.put("media", 2);
-    }
+        public int getFieldNumber(String name)
+        {
+            Integer number = fieldMap.get(name);
+            return number == null ? 0 : number.intValue();
+        }
+
+        final java.util.HashMap<String,Integer> fieldMap = new java.util.HashMap<String,Integer>();
+        {
+            fieldMap.put("image", 1);
+            fieldMap.put("media", 2);
+        }
+    };
 }

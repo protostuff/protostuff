@@ -33,40 +33,42 @@ public abstract class AbstractProtostuffSerializer implements ObjectSerializer<M
     
     public MediaContent create()
     {
-        ArrayList<Image> image = new ArrayList<Image>();
-        image.add(new Image(
-                "http://javaone.com/keynote_large.jpg",
-                "Javaone Keynote",
-                0,
-                0,
-                Size.LARGE)
-        );
-        image.add(new Image(
-                "http://javaone.com/keynote_thumbnail.jpg",
-                "Javaone Keynote",
-                0,
-                0,
-                Size.SMALL)
-        );
-        ArrayList<String> person = new ArrayList<String>();
-        person.add("Bill Gates");
-        person.add("Steve Jobs");
+        Image image1 = new Image("http://javaone.com/keynote_large.jpg");
+        image1.setTitle("Javaone Keynote");
+        image1.setHeight(0);
+        image1.setWidth(0);
+        image1.setSize(Size.LARGE);
         
-        Media media = new Media(
-                "http://javaone.com/keynote.mpg",
-                "Javaone Keynote",
-                0,
-                0,
-                "video/mpg4",
-                1234567l,
-                123l,
-                123,
-                person,
-                Player.JAVA,
-                null
-                );
+        Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg");
+        image2.setTitle("Javaone Keynote");
+        image2.setHeight(0);
+        image2.setWidth(0);
+        image2.setSize(Size.SMALL);
+        
+        ArrayList<Image> imageList = new ArrayList<Image>();
+        imageList.add(image1);
+        imageList.add(image2);
 
-        return new MediaContent(image, media);
+        ArrayList<String> personList = new ArrayList<String>();
+        personList.add("Bill Gates");
+        personList.add("Steve Jobs");
+        
+        Media media = new Media("http://javaone.com/keynote.mpg");
+        media.setTitle("Javaone Keynote");
+        media.setWidth(0);
+        media.setHeight(0);
+        media.setFormat("video/mpg4");
+        media.setDuration(1234567l);
+        media.setSize(123l);
+        media.setBitrate(123);
+        media.setPlayer(Player.JAVA);
+        media.setPersonList(personList);
+
+        MediaContent mediaContent = new MediaContent();
+        mediaContent.setImageList(imageList);
+        mediaContent.setMedia(media);
+        
+        return mediaContent;
     }
 
 }
