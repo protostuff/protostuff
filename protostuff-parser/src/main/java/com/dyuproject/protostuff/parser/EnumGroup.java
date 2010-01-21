@@ -116,7 +116,7 @@ public class EnumGroup implements HasName
         Value last = null;
         for(Value v : sortedValues)
         {
-            if(last!=null && v.number!=last.number)
+            if(last==null || v.number!=last.number)
                 uniqueSorted.add(v);
             last = v;
         }
