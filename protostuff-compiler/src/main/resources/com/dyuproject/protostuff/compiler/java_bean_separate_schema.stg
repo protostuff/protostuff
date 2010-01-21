@@ -28,12 +28,9 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
 
 message_impl_declaration(message, options) ::= <<
 <if(options.(message.name + ".implements_declaration"))>
-options.(message.name + ".implements_declaration"), 
+<options.(message.name + ".implements_declaration")>, 
 <else>
 implements 
-<if(options.generate_interface_from_package)>
-<options.generate_interface_from_package>.<message.name>, 
-<endif>
 <endif>
 Serializable, Message\<<message.name>\>
 >>

@@ -179,11 +179,7 @@ import com.google.gwt.core.client.*;
 
 message_impl_declaration(message, options) ::= <<
 <if(options.(message.name + ".implements_declaration"))>
-options.(message.name + ".implements_declaration") 
-<else>
-<if(options.generate_interface_from_package)>
-implements <options.generate_interface_from_package>.<message.name> 
-<endif>
+<options.(message.name + ".implements_declaration")>
 <endif>
 >>
 
