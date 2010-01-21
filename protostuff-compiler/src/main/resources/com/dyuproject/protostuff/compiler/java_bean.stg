@@ -228,7 +228,7 @@ public void set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field
 {
     this.<field.name; format="CC"> = <field.name; format="CC">;
 }
-<if(options.generate_interface_from_package)>
+<if(options.generate_helper_methods)>
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
 {
