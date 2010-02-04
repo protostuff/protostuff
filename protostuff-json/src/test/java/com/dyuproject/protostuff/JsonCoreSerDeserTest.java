@@ -46,7 +46,6 @@ public class JsonCoreSerDeserTest extends TestCase
         byte[] data = JsonIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema(), false);
         JsonIOUtil.mergeFrom(data, dfoo, dfoo.cachedSchema(), false);
         SerializableObjects.assertEquals(fooCompare, dfoo);
-        System.err.println(new String(data, ByteString.UTF8));
     }
     
     public void testBar() throws Exception
@@ -58,7 +57,6 @@ public class JsonCoreSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(barCompare, barCompare.cachedSchema(), false);
             JsonIOUtil.mergeFrom(data, dbar, dbar.cachedSchema(), false);
             SerializableObjects.assertEquals(barCompare, dbar);
-            System.err.println(new String(data, ByteString.UTF8));
         }
     }
     
@@ -71,7 +69,6 @@ public class JsonCoreSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema(), false);
             JsonIOUtil.mergeFrom(data, dbaz, dbaz.cachedSchema(), false);
             SerializableObjects.assertEquals(bazCompare, dbaz);
-            System.err.println(new String(data, ByteString.UTF8));
         }
     }
     

@@ -29,9 +29,6 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.Schema;
-
 /**
  * Utility for the JSON serialization/deserialization of messages and objects tied to a schema.
  *
@@ -68,7 +65,6 @@ public final class JsonIOUtil
         }
         catch (IOException e)
         {
-            System.err.println(new String(baos.toByteArray(), ByteString.UTF8));
             throw new RuntimeException(e);
         }
         return baos.toByteArray();
