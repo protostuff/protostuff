@@ -95,8 +95,8 @@
     <protostuff.version>1.0-SNAPSHOT</protostuff.version>
     
     <!--<google.webtoolkit.home>${env.GWT_HOME}</google.webtoolkit.home>-->
-    <gwt.version>1.7.0</gwt.version>
-    <gwt.mojo.version>1.1</gwt.mojo.version>
+    <gwt.version>2.0.0</gwt.version>
+    <gwt.mojo.version>1.2</gwt.mojo.version>
   </properties>
   
 </project>
