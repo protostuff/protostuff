@@ -46,9 +46,10 @@
 package com.dyuproject.protostuff;
 
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 /**
  * Immutable array of bytes.
@@ -59,12 +60,11 @@ import java.nio.charset.Charset;
  */
 public final class ByteString {
   //START EXTRA
-  public static final Charset UTF8 = Charset.forName("UTF-8");
-  // trust package access
+  // internal package access to avoid double memory allocation
   static ByteString wrap(byte[] bytes) {
     return new ByteString(bytes);
   }
-  //trust package access
+  // internal package access to avoid double memory allocation
   byte[] getBytes() {
     return bytes;
   }
@@ -144,7 +144,7 @@ public final class ByteString {
    * result as a {@code ByteString}.
    */
   public static ByteString copyFromUtf8(final String text) {
-    return new ByteString(text.getBytes(UTF8));
+    return new ByteString(STRING.ser(text));
     /*@try {
       return new ByteString(text.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
@@ -211,7 +211,7 @@ public final class ByteString {
    * Constructs a new {@code String} by decoding the bytes as UTF-8.
    */
   public String toStringUtf8() {
-    return new String(bytes, UTF8);
+    return STRING.deser(bytes);
     /*@try {
       return new String(bytes, "UTF-8");
     } catch (UnsupportedEncodingException e) {

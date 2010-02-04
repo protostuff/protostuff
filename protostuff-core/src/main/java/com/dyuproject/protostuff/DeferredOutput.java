@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -229,7 +231,7 @@ public final class DeferredOutput implements Output
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        byte[] bytes = value.getBytes(ByteString.UTF8);
+        byte[] bytes = STRING.ser(value);
         
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
         byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);

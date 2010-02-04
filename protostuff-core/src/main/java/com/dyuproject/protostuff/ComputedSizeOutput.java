@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+
 import java.io.IOException;
 
 /**
@@ -169,7 +171,7 @@ public final class ComputedSizeOutput implements Output
     {
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        byte[] bytes = value.getBytes(ByteString.UTF8);
+        byte[] bytes = STRING.ser(value);
         size += CodedOutput.computeRawVarint32Size(bytes.length) + bytes.length;
     }
 

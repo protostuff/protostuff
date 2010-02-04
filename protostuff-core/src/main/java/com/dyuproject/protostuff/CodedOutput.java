@@ -45,6 +45,8 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -581,7 +583,7 @@ public final class CodedOutput implements Output {
     // Unfortunately there does not appear to be any way to tell Java to encode
     // UTF-8 directly into our buffer, so we have to let it create its own byte
     // array and then copy.
-    final byte[] bytes = value.getBytes(ByteString.UTF8);
+    final byte[] bytes = STRING.ser(value);
     writeRawVarint32(bytes.length);
     writeRawBytes(bytes);
   }

@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff.experimental;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
 import static com.dyuproject.protostuff.experimental.SerializableObjects.foo;
 
 import java.io.File;
@@ -22,7 +23,6 @@ import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.CodedOutput;
 import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Message;
@@ -72,8 +72,8 @@ public class ComputedVSDeferredTest extends TestCase
     
     public static void serDeser(PrintStream out) throws Exception
     {
-        String computed = new String(serDeser(COMPUTED), ByteString.UTF8);
-        String deferred = new String(serDeser(DEFERRED), ByteString.UTF8);
+        String computed = STRING.deser(serDeser(COMPUTED));
+        String deferred = STRING.deser(serDeser(DEFERRED));
         
         assertEquals(computed, deferred);
         

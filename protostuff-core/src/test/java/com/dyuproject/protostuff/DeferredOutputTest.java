@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
 import junit.framework.TestCase;
 
 /**
@@ -96,13 +97,13 @@ public class DeferredOutputTest extends TestCase
     {
         String s = "abcde12345";
         output.writeString(1, s, false);
-        assertSize(1+1+s.getBytes(ByteString.UTF8).length, output.getSize());
+        assertSize(1+1+STRING.ser(s).length, output.getSize());
     }
     
     public void testBytes() throws Exception
     {
         String s = "abcde12345";
-        byte[] b = s.getBytes(ByteString.UTF8);
+        byte[] b = STRING.ser(s);
         ByteString bs = ByteString.copyFromUtf8(s);
         output.writeBytes(1, bs, false);
         assertSize(1+1+10, output.getSize());
