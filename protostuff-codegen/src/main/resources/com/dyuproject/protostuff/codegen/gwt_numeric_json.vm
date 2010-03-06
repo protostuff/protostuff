@@ -15,7 +15,7 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
     public static final class ${ec.getSimpleName()} extends JavaScriptObject {
         #foreach( $c in $ec.getEnumConstants() )
 
-        public static final Status ${c} = ${Util.getDerivedMethodName($module, "create")}(${c.getNumber()});
+        public static final ${ec.getSimpleName()} ${c} = ${Util.getDerivedMethodName($module, "create")}(${c.getNumber()});
         #end
 
         private static native ${ec.getSimpleName()} ${Util.getDerivedMethodName($module, "create")}(int number) /*-{
