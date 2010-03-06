@@ -56,13 +56,22 @@ parse [Proto proto]
     ;
     
 statement [Proto proto]
-    :   header_package[proto]
+    :   header_syntax[proto]
+    |   header_package[proto]
     |   header_import[proto]
     |   header_option[proto]
     |   message_block[proto, null]
     |   enum_block[proto, null]
     |   extend_block[proto]
     |   service_block[proto]
+    ;
+
+header_syntax [Proto proto]
+    :   SYNTAX ASSIGN STRING_LITERAL SEMICOLON! {
+            if(! "proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text)))
+                throw new IllegalStateException("Syntax isn't proto2: '"+
+                  getStringFromStringLiteral($STRING_LITERAL.text)+"'");
+        }
     ;
 
 header_package [Proto proto]

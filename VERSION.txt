@@ -1,4 +1,5 @@
-protostuff-1.0-SNAPSHOT 
+protostuff-1.0-SNAPSHOT
++ completed Issue 6: Support the header: syntax = "proto2";
 + fixed Issue 2: Wrong enum type in generated code of GWT overlays
 + fixed benchmark deser bug on protostuff-json (duplicate parser created)
 

@@ -90,6 +90,10 @@ FALSE
 PKG 
     :   'package'
     ;
+
+SYNTAX
+    :   'syntax'
+    ;
     
 IMPORT
     :   'import'
