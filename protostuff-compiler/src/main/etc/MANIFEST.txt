@@ -1,0 +1,5 @@
+Main-Class: com.dyuproject.protostuff.compiler.CompilerMain
+implementation-version: 1.0-SNAPSHOT
+mode: development
+package: com.dyuproject.protostuff
+url: http://code.google.com/p/protostuff/

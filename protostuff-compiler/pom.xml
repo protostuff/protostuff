@@ -15,6 +15,18 @@
   
   <build>
     <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.dyuproject.protostuff.compiler.CompilerMain</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
   
   <dependencies>
@@ -34,5 +46,36 @@
       <version>${stringtemplate-version}</version>
     </dependency>
   </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>jwd</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.2-beta-4</version>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+               <archive>
+                <manifestFile>src/main/etc/MANIFEST.txt</manifestFile>
+              </archive> 
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   
 </project>
