@@ -15,9 +15,11 @@
 package com.dyuproject.protostuff.codegen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.Property;
@@ -249,6 +251,15 @@ public final class VelocityUtil
     {
         String value = module.getOption(prefix+key);
         return value==null ? "" : value + append;
+    }
+    
+    public static List<String> getOptionAsList(Module module, String key, String separator)
+    {
+        String value = module.getOptions().getProperty(key);
+        if(value == null)
+            return Collections.emptyList();
+        
+        return Arrays.asList(value.split(separator));
     }
 
 }

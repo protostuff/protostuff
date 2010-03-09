@@ -20,6 +20,10 @@ import com.dyuproject.protostuff.json.ProtobufJSON;
 import ${module.getFullClassname()}.${msg};
 #end
 
+#foreach( $i in $Util.getOptionAsList($module, "imports", ";") )
+import static ${i}JSON.*;
+#end
+
 public final class ${outputClassname} extends ProtobufJSON
 {
 
