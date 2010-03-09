@@ -65,7 +65,7 @@ public final class ${outputClassname} extends ProtobufJSON
             fieldMap.put("${dpn}", ${pm.getNumber()});
             #end
 
-        };
+        }
 
         final int getFieldNumber(String name) throws IOException
         {
