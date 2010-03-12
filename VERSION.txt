@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ completed Issue 7: Add optional clear methods on code compiled to gwt_overlay
 + fixed Issue 4: .proto files that use "import" create non-compilable Java files
 + completed Issue 6: Support the header: syntax = "proto2";
 + fixed Issue 2: Wrong enum type in generated code of GWT overlays

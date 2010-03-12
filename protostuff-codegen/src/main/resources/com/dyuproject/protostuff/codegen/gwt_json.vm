@@ -304,6 +304,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(${tc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
+    }-*/;
     #elseif( ${tc.getSimpleName()} == "ByteString" )
 
     public native String ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
@@ -312,6 +316,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
 
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(String ${dan}) /*-{
         this["${dpn}"] = ${dan};
+    }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
     }-*/;
     #elseif( ${tc.isEnum()} )
 
@@ -322,6 +330,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(${tc.getSimpleName()} ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
+    }-*/;
     #elseif( ${tc.getSimpleName()} == "boolean" ) 
 
     public native boolean ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
@@ -330,6 +342,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
 
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(boolean ${dan}) /*-{
         this["${dpn}"] = ${dan};
+    }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
     }-*/;
     #elseif( ${tc.getSimpleName()} == "String" )
 
@@ -340,6 +356,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(String ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
+    }-*/;
     #elseif( ${tc.getSimpleName()} == "int" )
 
     public native int ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
@@ -349,6 +369,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(int ${dan}) /*-{
         this["${dpn}"] = ${dan};
     }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
+    }-*/;
     #else
 
     public native double ${Util.getDerivedMethodName($module, "get", $pm)}() /*-{
@@ -357,6 +381,10 @@ public final class ${name} extends JavaScriptObject ${Util.getOption($module, $n
 
     public native void ${Util.getDerivedMethodName($module, "set", $pm)}(double ${dan}) /*-{
         this["${dpn}"] = ${dan};
+    }-*/;
+    
+    public native void ${Util.getDerivedMethodName($module, "clear", $pm)}() /*-{
+        delete this["${dpn}"];
     }-*/;
     #end
     #end
