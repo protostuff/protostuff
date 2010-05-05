@@ -226,11 +226,10 @@ public void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <
 }
 
 <endif>
-
 <else>
 
 public native <map_singular_value.(field.javaType)> get<field.name; format="PC">() /*-{
-    return this["<field:field_name_or_number(field=it,options=options)>"];
+    <field:field_return_value(field=it,options=options)>
 }-*/;
 
 public native void set<field.name; format="PC">(<map_singular_value.(field.javaType)> <field.name; format="CC">) /*-{
@@ -249,5 +248,43 @@ field_name_or_number(field, options) ::= <<
 <field.number>
 <else>
 <field.name; format="CC">
+<endif>
+>>
+
+field_return_value(field, options) ::= <<
+<if(options.plain_overlay)>
+return this["<field:field_name_or_number(field=field,options=options)>"];
+<elseif(field.messageField)>
+return this["<field:field_name_or_number(field=field,options=options)>"];
+<elseif(field.bytesField)>
+return this["<field:field_name_or_number(field=field,options=options)>"];
+<elseif(field.stringField)>
+<if(field.defaultValue)>
+var v = this["<field:field_name_or_number(field=it,options=options)>"];
+return v == null ? "<field.defaultValueAsString>" : v;
+
+<else>
+return this["<field:field_name_or_number(field=field,options=options)>"] || "";
+
+<endif>
+<elseif(field.enumField)>
+var v = this["<field:field_name_or_number(field=it,options=options)>"];
+return v == null ? <field.defaultValue.number> : v;
+<elseif(field.numberField)>
+<if(field.defaultValue)>
+var v = this["<field:field_name_or_number(field=it,options=options)>"];
+return v == null ? <field.defaultValue> : v;
+
+<else>
+return this["<field:field_name_or_number(field=field,options=options)>"] || 0;
+
+<endif>
+<else>
+<if(field.defaultValue)>
+var v = this["<field:field_name_or_number(field=it,options=options)>"];
+return v == null ? <field.defaultValue> : v;
+<else>
+return this["<field:field_name_or_number(field=field,options=options)>"] || false;
+<endif>
 <endif>
 >>
