@@ -159,7 +159,9 @@ Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
 
 field_defaults_declaration(field) ::= <<
 <if(field.defaultValue)>
+<if(!field.enumField)>
 static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>;
+<endif>
 <endif>
 >>
 
@@ -193,7 +195,9 @@ public <message.name>(
 
 field_assign_constructor_defaults(field) ::= <<
 <if(field.defaultValue)>
+<if(!field.enumField)>
 this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
+<endif>
 <endif>
 >>
 
@@ -253,7 +257,11 @@ public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
 {
+    <if(field.enumField)>
+    return <field.name; format="CC"> == null ? <field.defaultValueAsString> : <field.name; format="CC">;
+    <else>
     return <field.name; format="CC">;
+    <endif>
 }
 
 public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">)
@@ -471,7 +479,11 @@ if(<name>.<field.name; format="CC"> != null)
 
 singular_field_write_check(field) ::= <<
 <if(field.defaultValue)>
+<if(!field.enumField)>
 if(<name>.<field.name; format="CC"> != null && <name>.<field.name; format="CC"> != DEFAULT_<field.name; format="UUC">)
+<else>
+if(<name>.<field.name; format="CC"> != null)
+<endif>
 <else>
 if(<name>.<field.name; format="CC"> != null)
 <endif>
