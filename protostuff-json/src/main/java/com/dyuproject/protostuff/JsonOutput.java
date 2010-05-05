@@ -355,6 +355,8 @@ public final class JsonOutput implements Output
             // recursive write
             generator.writeStartObject();
             schema.writeTo(this, value);
+            if(lastRepeated)
+                generator.writeEndArray();
             generator.writeEndObject();
             // restore state
             lastNumber = fieldNumber;
