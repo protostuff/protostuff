@@ -104,6 +104,11 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
         return modifier == Modifier.OPTIONAL;
     }
     
+    public boolean isNumberField()
+    {
+        return Number.class.isAssignableFrom(getClass());
+    }
+    
     public boolean isEnumField()
     {
         return EnumField.class.isAssignableFrom(getClass());
@@ -122,6 +127,11 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     public boolean isStringField()
     {
         return String.class.isAssignableFrom(getClass());
+    }
+    
+    public boolean isDelimited()
+    {
+        return false;
     }
     
     public java.lang.String toString()
@@ -283,6 +293,10 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
         {
             return TextFormat.escapeText(getDefaultValue());
         }
+        public boolean isDelimited()
+        {
+            return true;
+        }
     }
     
     public static class Bytes extends Field<byte[]>
@@ -298,6 +312,10 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
         public java.lang.String getDefaultValueAsString()
         {
             return TextFormat.escapeBytes(ByteBuffer.wrap(getDefaultValue())).toString();
+        }
+        public boolean isDelimited()
+        {
+            return true;
         }
     }
     

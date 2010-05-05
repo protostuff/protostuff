@@ -101,6 +101,11 @@ public class EnumGroup implements HasName
         return sortedValues;
     }
     
+    public Value getFirstValue()
+    {
+        return values.get(0);
+    }
+    
     void add(Value value)
     {
         value.enumGroup = this;

@@ -241,14 +241,6 @@ public class Message implements HasName
                     if(eg!=null || (eg=p.getEnumGroup(refName))!=null)
                     {
                         EnumField ef = newEnumField(eg, fr, this);
-                        if(fr.defaultValue instanceof String)
-                        {
-                            String enumRefName = (String)fr.defaultValue;
-                            EnumGroup.Value value = eg.getValue(enumRefName);
-                            if(value==null)
-                                throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
-                        }
-                        
                         fields.put(ef.name, ef);
                         continue;
                     }
@@ -274,14 +266,6 @@ public class Message implements HasName
                         if(eg!=null)
                         {
                             EnumField ef = newEnumField(eg, fr, this);
-                            if(fr.defaultValue instanceof String)
-                            {
-                                String enumRefName = (String)fr.defaultValue;
-                                EnumGroup.Value value = eg.getValue(enumRefName);
-                                if(value==null)
-                                    throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
-                            }
-                            
                             fields.put(ef.name, ef);
                             continue;
                         }
@@ -330,14 +314,6 @@ public class Message implements HasName
                                 if(eg!=null)
                                 {
                                     EnumField ef = newEnumField(eg, fr, this);
-                                    if(fr.defaultValue instanceof String)
-                                    {
-                                        String enumRefName = (String)fr.defaultValue;
-                                        EnumGroup.Value value = eg.getValue(enumRefName);
-                                        if(value==null)
-                                            throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
-                                    }
-                                    
                                     fields.put(ef.name, ef);
                                     found = true;
                                 }
@@ -366,14 +342,6 @@ public class Message implements HasName
                 if(eg!=null)
                 {
                     EnumField ef = newEnumField(eg, fr, this);
-                    if(fr.defaultValue instanceof String)
-                    {
-                        String enumRefName = (String)fr.defaultValue;
-                        EnumGroup.Value value = eg.getValue(enumRefName);
-                        if(value==null)
-                            throw new IllegalStateException("The field: " + ef.name + " contains an unknown enum value: " + enumRefName);
-                    }
-                    
                     fields.put(ef.name, ef);
                     continue;
                 }
@@ -403,8 +371,17 @@ public class Message implements HasName
         ef.owner = owner;
         ef.packable = true;
         String refName = (String)fr.getDefaultValue();
-        if(refName!=null)
+        if(refName == null)
+            ef.defaultValue = enumGroup.getFirstValue();
+        else
+        {
             ef.defaultValue = enumGroup.getValue(refName);
+            if(ef.defaultValue == null)
+            {
+                throw new IllegalStateException("The field: " + ef.name + 
+                        " contains an unknown enum value: " + refName);
+            }
+        }
         copy(fr, ef);
         //System.err.println(owner.getRelativeName() + "." + ef.name +": " + ef.getJavaType());
         return ef;

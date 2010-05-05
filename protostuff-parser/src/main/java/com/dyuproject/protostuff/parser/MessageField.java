@@ -64,5 +64,10 @@ public class MessageField extends Field<Message>
     {
         return "null";
     }
+    
+    public boolean isDelimited()
+    {
+        return true;
+    }
 
 }
