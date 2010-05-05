@@ -130,7 +130,7 @@ public final class Image implements Serializable, Message<Image>
 
     public Size getSize()
     {
-        return size;
+        return size == null ? Size.SMALL : size;
     }
 
     public void setSize(Size size)

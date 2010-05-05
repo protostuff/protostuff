@@ -462,15 +462,16 @@ public final class V22LiteMedia {
     public enum Player
         implements com.google.protobuf.Internal.EnumLite {
       JAVA(0, 0),
+      FLASH(1, 1),
       ;
       
-      public static final Player FLASH = JAVA;
       
       public final int getNumber() { return value; }
       
       public static Player valueOf(int value) {
         switch (value) {
           case 0: return JAVA;
+          case 1: return FLASH;
           default: return null;
         }
       }

@@ -20,7 +20,7 @@ public final class Media implements Serializable, Message<Media>
     public enum Player implements com.dyuproject.protostuff.EnumLite<Player>
     {
         JAVA(0),
-        FLASH(0);
+        FLASH(1);
         
         public final int number;
         
@@ -39,6 +39,7 @@ public final class Media implements Serializable, Message<Media>
             switch(number) 
             {
                 case 0: return JAVA;
+                case 1: return FLASH;
                 default: return null;
             }
         }
@@ -197,7 +198,7 @@ public final class Media implements Serializable, Message<Media>
 
     public Player getPlayer()
     {
-        return player;
+        return player == null ? Player.JAVA : player;
     }
 
     public void setPlayer(Player player)
