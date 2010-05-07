@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ fixed Issue 3: JSON parser converts null values to the string "null"
 + fixed Issue 10: JsonOutput bug when writing a message that contains an inner message with repeated fields
 + completed Issue 8: Use the default values of the optional fields of gwt-overlays
 + completed Issue 9: If enum's default value is not specified, it should be the first value listed in the enum's type definition

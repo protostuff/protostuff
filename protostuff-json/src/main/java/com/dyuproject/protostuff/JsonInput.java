@@ -256,6 +256,9 @@ public final class JsonInput implements Input
 
     public String readString() throws IOException
     {
+        if(parser.getCurrentToken() != JsonToken.VALUE_STRING)
+            throw new IOException("Expected token: string but was " + parser.getCurrentToken());
+        
         String value = parser.getText();
         
         if(lastRepeated && parser.nextToken()==JsonToken.END_ARRAY)

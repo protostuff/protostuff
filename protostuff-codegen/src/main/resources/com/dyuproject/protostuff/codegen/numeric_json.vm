@@ -178,6 +178,8 @@ public final class ${outputClassname} extends ProtobufJSON
                                 throw new IOException("Expected token: true/false but was " + t1);
                             #elseif ( ${ctc.getSimpleName()} == "String" )
 
+                            if(t1 != JsonToken.VALUE_STRING)
+                                throw new IOException("Expected token: string but was " + t1);
                             builder.add${ppn}(parser.getText());
                             #else
 
@@ -208,7 +210,8 @@ public final class ${outputClassname} extends ProtobufJSON
                             throw new IOException("Expected token: true/false but was " + jt);
                         #elseif( ${tc.getSimpleName()} == "String" )
                         
-                        parser.nextToken();
+                        if(parser.nextToken() != JsonToken.VALUE_STRING)
+                            throw new IOException("Expected token: string but was " + jt);
                         builder.set${ppn}(parser.getText());
                         #else
 
