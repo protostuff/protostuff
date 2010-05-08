@@ -84,6 +84,19 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if("UUC".equals(formatName))
                     return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
                 
+                // regex replace
+                int eq = formatName.indexOf("==");
+                if(eq > 0 && eq+2 < str.length())
+                {
+                    String toReplace = formatName.substring(0, eq);
+                    String replacement = formatName.substring(eq+2);
+                    
+                    if(toReplace.length()==1 && replacement.length()==1)
+                        return str.replace(toReplace.charAt(0), replacement.charAt(0));
+
+                    return str.replaceAll(toReplace, replacement);
+                }
+                
                 return str + formatName;
             }
         });

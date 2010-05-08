@@ -147,6 +147,9 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
      * @return <message.name> 
      */
     public static native <message.name> parse(String json) /*-{
+        <if(options.check_global_json)>
+        <message:message_parse_condition(message=it, options=options, arg="json")>
+        <endif>
         return eval("(" + json + ")");
     }-*/;
 
@@ -157,8 +160,15 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
      * @return JsArray\<<message.name>\> 
      */
     public static native JsArray\<<message.name>\> parseArray(String json) /*-{
+        <if(options.check_global_json)>
+        <message:message_parse_condition(message=it, options=options, arg="json")>
+        <endif>
         return eval("(" + json + ")");
     }-*/;
+    
+    <if(options.generate_stringify_method)>
+    <message:message_stringify_method(message=it, options=options)>
+    <endif>
 
     protected <message.name>() {}
 
@@ -180,6 +190,89 @@ message_impl_declaration(message, options) ::= <<
 <if(options.(message.name + ".implements_declaration"))>
 <options.(message.name + ".implements_declaration")>
 <endif>
+>>
+
+message_parse_condition(message, options, arg) ::= <<
+if($wnd.JSON && typeof $wnd.JSON.parse == "function")
+    return $wnd.JSON.parse(<arg>);
+
+>>
+
+message_stringify_condition(message, options, arg) ::= <<
+if($wnd.JSON && typeof $wnd.JSON.stringify == "function")
+    return $wnd.JSON.stringify(<arg>);
+
+>>
+
+message_stringify_method(message, options) ::= <<
+/**
+ * Serializes a json object to a json string.
+ *
+ * @param <message.name> the object to serialize
+ * @return String the serialized json string
+ */
+public static native String stringify(<message.name> obj) /*-{
+    <if(options.check_global_json)>
+    <message:message_stringify_condition(message=it, options=options, arg="obj")>
+    <endif>
+    var buf = [];
+    <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
+    return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
+}-*/;
+
+>>
+
+field_stringify(field, options, obj, buf) ::= <<
+var _<field.number> = <obj>["<field:field_name_or_number(field=it,options=options)>"];
+<if(field.repeated)>
+if(_<field.number> != null && _<field.number>.length != 0) {
+    <if(field.messageField)>
+    <field:field_stringify_repeated_message(field=it, options=options, arg=buf)>
+    <else>
+    <field:field_stringify_repeated_nonmessage(field=it, options=options, arg=buf)>
+    <endif>
+}
+
+<else>
+if(_<field.number> != null)
+    <if(field.messageField)>
+    <field:field_stringify_singular_message(field=it, options=options, arg=buf)>
+    <else>
+    <field:field_stringify_singular_nonmessage(field=it, options=options, arg=buf)>
+    <endif>
+
+<endif>
+>>
+
+field_stringify_repeated_message(field, options, arg) ::= <<
+var b = [], fn = <field:field_stringify_outercall(field=it, options=options)>;
+for(var i=0,l=_<field.number>.length; i\<l; i++)
+    b.push(fn(_<field.number>[i]));
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":[" + b.join(",") + "]");
+>>
+
+field_stringify_repeated_nonmessage(field, options, arg) ::= <<
+<if(field.delimited)>
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":[\"" + _<field.number>.join("\",\"") + "\"]");
+<else>
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":[" + _<field.number>.join(",") + "]");
+<endif>
+>>
+
+field_stringify_singular_message(field, options, arg) ::= <<
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":" + <field:field_stringify_outercall(field=it, options=options, arg="(_"+field.number+")")>);
+>>
+
+field_stringify_singular_nonmessage(field, options, arg) ::= <<
+<if(field.delimited)>
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":\"" + _<field.number> + "\"");
+<else>
+<arg>.push("\"<field:field_name_or_number(field=it,options=options)>\":" + _<field.number>);
+<endif>
+>>
+
+field_stringify_outercall(field, options, arg) ::= <<
+@<field.message.proto.javaPackageName>.<field.message.name>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.name>;)<arg>
 >>
 
 message_getters_and_setters(message, options) ::= <<
