@@ -65,14 +65,41 @@ public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScrip
     <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
     
     private static native <eg.name> create(int number) /*-{
+        <if(options.dev_mode)>
+        return [number];
+        <else>
         return number;
+        <endif>
     }-*/;
     
     protected <eg.name>() {}
     
     public native int getNumber() /*-{
+        <if(options.dev_mode)>
+        return this[0];
+        <else>
         return this;
+        <endif>
     }-*/;
+    
+    <if(options.dev_mode)>
+    // dev mode
+    public static native JsArray\<<eg.name>\> getArray(JavaScriptObject obj, String key) /*-{
+        var v = obj[key];
+        if(v && v.length && !v[0].length) {
+            for(var i=0,l=v.length; i\<l; i++)
+                v[i] = [v[i]];
+        }
+        return v;
+    }-*/;
+    
+    public static native <eg.name> get(JavaScriptObject obj, String key) /*-{
+        var v = obj[key];
+        if(v == null)
+            return [<eg.firstValue.number>];
+        return v.length ? v : (obj[key] = [v]);
+    }-*/;
+    <endif>
 }
 
 >>
@@ -286,7 +313,15 @@ field_getters_and_setters(field, options) ::= <<
 <if(field.repeated)>
 
 public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">Array() /*-{
+    <if(field.enumField)>
+    <if(options.dev_mode)>
+    return @<field.enumGroup.fullName>::getArray(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
+    <else>
     return this["<field:field_name_or_number(field=it,options=options)>"];
+    <endif>
+    <else>
+    return this["<field:field_name_or_number(field=it,options=options)>"];
+    <endif>
 }-*/;
 
 public native void set<field.name; format="PC">Array(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <field.name; format="CC">) /*-{
@@ -358,8 +393,13 @@ return this["<field:field_name_or_number(field=field,options=options)>"] || "";
 
 <endif>
 <elseif(field.enumField)>
+<if(options.dev_mode)>
+return @<field.enumGroup.fullName>::get(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
+<else>
 var v = this["<field:field_name_or_number(field=it,options=options)>"];
 return v == null ? <field.defaultValue.number> : v;
+<endif>
+
 <elseif(field.numberField)>
 <if(field.defaultValue)>
 var v = this["<field:field_name_or_number(field=it,options=options)>"];

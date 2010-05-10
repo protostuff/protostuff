@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ completed Issue 12: Add support for protobuf enums on GWT overlays hosted mode
 + completed Issue 11: Add serialization (optional) of GWT overlay types (stringify/toJSON)
 + fixed Issue 3: JSON parser converts null values to the string "null"
 + fixed Issue 10: JsonOutput bug when writing a message that contains an inner message with repeated fields
