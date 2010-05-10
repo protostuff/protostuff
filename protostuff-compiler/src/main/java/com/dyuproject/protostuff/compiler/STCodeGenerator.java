@@ -16,6 +16,8 @@ package com.dyuproject.protostuff.compiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.antlr.stringtemplate.AttributeRenderer;
@@ -139,19 +141,18 @@ public abstract class STCodeGenerator implements ProtoCompiler
         if(source.isDirectory())
         {
             for(File f : CompilerUtil.getProtoFiles(source))
-            {
-                Proto proto = ProtoUtil.parseProto(f);
-                compile(module, proto);
-                if(compileImports)
-                {
-                    for(Proto p : proto.getImportedProtos())
-                        compile(module, p);
-                }
-            }
+                compile(module, ProtoUtil.parseProto(f), compileImports);
         }
         else
+            compile(module, ProtoUtil.parseProto(source), compileImports);
+    }
+    
+    private void compile(ProtoModule module, Proto proto, boolean compileImports)
+    throws IOException
+    {
+        List<Proto> overridden = preCompile(module, proto);
+        try
         {
-            Proto proto = ProtoUtil.parseProto(source);
             compile(module, proto);
             if(compileImports)
             {
@@ -159,6 +160,62 @@ public abstract class STCodeGenerator implements ProtoCompiler
                     compile(module, p);
             }
         }
+        finally
+        {
+            if(overridden != null)
+            {
+                for(Proto p : overridden)
+                    postCompile(module, p);
+            }
+        }
+    }
+    
+    private static List<Proto> preCompile(ProtoModule module, Proto proto)
+    {
+        List<Proto> overridden = null;
+        if(override(module, proto))
+        {
+            if(overridden == null)
+                overridden = new ArrayList<Proto>();
+            overridden.add(proto);
+        }
+        
+        for(Proto p : proto.getImportedProtos())
+        {
+            if(override(module, p))
+            {
+                if(overridden == null)
+                    overridden = new ArrayList<Proto>();
+                overridden.add(p);
+            }
+        }
+        return overridden;
+    }
+    
+    private static boolean override(ProtoModule module, Proto proto)
+    {
+        String pkg = proto.getPackageName();
+        String jpkg = proto.getJavaPackageName();
+        String opkg = module.getOption(pkg);
+        String ojpkg = module.getOption(jpkg);
+        boolean override = false;
+        if(opkg != null)
+        {
+            proto.getMutablePackageName().override(opkg);
+            override = true;
+        }
+        if(ojpkg != null)
+        {
+            proto.getMutableJavaPackageName().override(ojpkg);
+            override = true;
+        }
+        return override;
+    }
+    
+    private static void postCompile(ProtoModule module, Proto proto)
+    {
+        proto.getMutableJavaPackageName().reset();
+        proto.getMutablePackageName().reset();
     }
     
     protected abstract void compile(ProtoModule module, Proto proto) throws IOException;
