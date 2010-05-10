@@ -174,10 +174,15 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
      * @return <message.name> 
      */
     public static native <message.name> parse(String json) /*-{
-        <if(options.check_global_json)>
-        <message:message_parse_condition(message=it, options=options, arg="json")>
-        <endif>
+        <if(options.dev_mode)>
         return eval("(" + json + ")");
+        <else>
+        <if(options.use_global_json)>
+        return $wnd.JSON.parse(json);
+        <else>
+        return eval("(" + json + ")");
+        <endif>
+        <endif>
     }-*/;
 
     /**
@@ -187,15 +192,38 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
      * @return JsArray\<<message.name>\> 
      */
     public static native JsArray\<<message.name>\> parseArray(String json) /*-{
-        <if(options.check_global_json)>
-        <message:message_parse_condition(message=it, options=options, arg="json")>
-        <endif>
+        <if(options.dev_mode)>
         return eval("(" + json + ")");
+        <else>
+        <if(options.use_global_json)>
+        return $wnd.JSON.parse(json);
+        <else>
+        return eval("(" + json + ")");
+        <endif>
+        <endif>
     }-*/;
     
-    <if(options.generate_stringify_method)>
-    <message:message_stringify_method(message=it, options=options)>
-    <endif>
+    /**
+     * Serializes a json object to a json string.
+     *
+     * @param <message.name> the object to serialize
+     * @return String the serialized json string
+     */
+    public static native String stringify(<message.name> obj) /*-{
+        <if(options.dev_mode)>
+        var buf = [];
+        <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
+        return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
+        <else>
+        <if(options.use_global_json)>
+        return $wnd.JSON.stringify(obj);
+        <else>
+        var buf = [];
+        <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
+        return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
+        <endif>
+        <endif>
+    }-*/;
 
     protected <message.name>() {}
 
@@ -217,36 +245,6 @@ message_impl_declaration(message, options) ::= <<
 <if(options.(message.name + ".implements_declaration"))>
 <options.(message.name + ".implements_declaration")>
 <endif>
->>
-
-message_parse_condition(message, options, arg) ::= <<
-if($wnd.JSON && typeof $wnd.JSON.parse == "function")
-    return $wnd.JSON.parse(<arg>);
-
->>
-
-message_stringify_condition(message, options, arg) ::= <<
-if($wnd.JSON && typeof $wnd.JSON.stringify == "function")
-    return $wnd.JSON.stringify(<arg>);
-
->>
-
-message_stringify_method(message, options) ::= <<
-/**
- * Serializes a json object to a json string.
- *
- * @param <message.name> the object to serialize
- * @return String the serialized json string
- */
-public static native String stringify(<message.name> obj) /*-{
-    <if(options.check_global_json)>
-    <message:message_stringify_condition(message=it, options=options, arg="obj")>
-    <endif>
-    var buf = [];
-    <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
-    return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
-}-*/;
-
 >>
 
 field_stringify(field, options, obj, buf) ::= <<
