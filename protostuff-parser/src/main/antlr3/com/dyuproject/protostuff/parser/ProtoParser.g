@@ -76,7 +76,7 @@ header_syntax [Proto proto]
 
 header_package [Proto proto]
     :   PKG p=(FULL_ID | ID) SEMICOLON! {
-            if(proto.packageName!=null)
+            if(proto.getPackageName() != null)
                 throw new IllegalStateException("Multiple package definitions.");
             
             proto.setPackageName($p.text);

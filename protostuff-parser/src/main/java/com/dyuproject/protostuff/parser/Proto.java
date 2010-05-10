@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 
 /**
- * TODO
+ * Contains the metadata of parsed protos.
  *
  * @author David Yu
  * @created Dec 18, 2009
@@ -30,7 +30,7 @@ public class Proto
     final File file;
     final Loader loader;
     final Proto importer;
-    String packageName, javaPackageName;
+    private Mutable<String> packageName, javaPackageName;
     final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
     final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
@@ -69,19 +69,30 @@ public class Proto
         return file;
     }
     
-    public String getPackageName()
+    public Mutable<String> getMutablePackageName()
     {
         return packageName;
     }
     
-    public String getJavaPackageName()
+    public String getPackageName()
+    {
+        return packageName == null ? null : packageName.getValue();
+    }
+    
+    public Mutable<String> getMutableJavaPackageName()
     {
         return javaPackageName;
     }
     
+    public String getJavaPackageName()
+    {
+        return javaPackageName.getValue();
+    }
+    
     void setPackageName(String packageName)
     {
-        this.packageName = packageName;
+        if(this.packageName == null)
+            this.packageName = new Mutable<String>(packageName);
     }
     
     public LinkedHashMap<String,String> getExtraOptions()
@@ -150,13 +161,15 @@ public class Proto
     
     void addImportedProto(Proto proto)
     {
-        importedProtos.put(proto.packageName, proto);
+        importedProtos.put(proto.packageName.getValue(), proto);
     }
     
     void postParse()
     {
         String javaPkg = extraOptions.get("java_package");
-        javaPackageName = javaPkg==null || javaPkg.length()==0 ? packageName : javaPkg;
+        String javaPackageName = javaPkg==null || javaPkg.length()==0 ? 
+                packageName.getValue() : javaPkg;
+        this.javaPackageName = new Mutable<String>(javaPackageName);
         
         for(Message m : getMessages())
             m.resolveReferences(m);
