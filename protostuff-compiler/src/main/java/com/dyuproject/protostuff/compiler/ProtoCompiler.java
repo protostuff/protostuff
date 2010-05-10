@@ -17,7 +17,7 @@ package com.dyuproject.protostuff.compiler;
 import java.io.IOException;
 
 /**
- * TODO
+ * Proto compiler.
  *
  * @author David Yu
  * @created Jan 4, 2010
@@ -25,7 +25,13 @@ import java.io.IOException;
 public interface ProtoCompiler
 {
     
+    /**
+     * The unique id that basically is the target output.
+     */
     public String getOutputId();
+    /**
+     * Compiles the proto configured/encapsulated in the module.
+     */
     public void compile(ProtoModule module) throws IOException;
 
 }

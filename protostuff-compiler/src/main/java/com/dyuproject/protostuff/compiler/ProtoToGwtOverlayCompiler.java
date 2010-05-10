@@ -26,7 +26,7 @@ import com.dyuproject.protostuff.parser.Message;
 import com.dyuproject.protostuff.parser.Proto;
 
 /**
- * TODO
+ * Compiles proto files to gwt overlays source (java) files.
  *
  * @author David Yu
  * @created Jan 13, 2010
@@ -43,7 +43,6 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
     {
         String javaPackageName = proto.getJavaPackageName();
         StringTemplateGroup group = getSTG(getOutputId());
-        //module.setOption("enableFieldNameMapping", "");
         
         for(EnumGroup eg : proto.getEnumGroups())
         {

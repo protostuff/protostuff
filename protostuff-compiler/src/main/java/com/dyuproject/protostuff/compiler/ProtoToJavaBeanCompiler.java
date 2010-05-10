@@ -26,7 +26,7 @@ import com.dyuproject.protostuff.parser.Message;
 import com.dyuproject.protostuff.parser.Proto;
 
 /**
- * TODO
+ * Compiles proto files to protobuf java messages (pojos).
  *
  * @author David Yu
  * @created Jan 4, 2010

@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * TODO
+ * Configuration for the proto w/c ontains the compile options and arguments.
  *
  * @author David Yu
  * @created Jan 5, 2010

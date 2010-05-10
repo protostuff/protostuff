@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO
+ * Utilities and helpers for compiling protos.
  *
  * @author David Yu
  * @created Jan 5, 2010

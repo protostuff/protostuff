@@ -25,7 +25,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
- * TODO
+ * The main execution point of compiling protos.
  *
  * @author David Yu
  * @created Jan 5, 2010

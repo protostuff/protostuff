@@ -125,11 +125,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         this.id = id;
     }
-    
-    public STCodeGenerator(String id, String groupName)
-    {
-        this.id = id;
-    }
+
     
     public String getOutputId()
     {
