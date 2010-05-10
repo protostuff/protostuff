@@ -87,7 +87,7 @@ public final class JsonInput implements Input
         if(parser.getCurrentToken().isScalarValue())
             return;
         
-        throw new IOException("Unknown field: " + lastName + " on message " + schema.typeClass());
+        throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.typeClass());
     }    
 
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
@@ -101,7 +101,7 @@ public final class JsonInput implements Input
         
         if(jt != JsonToken.FIELD_NAME)
         {
-            throw new IOException("Expected token: $field: but was " + 
+            throw new JsonInputException("Expected token: $field: but was " + 
                     jt + " on message " + schema.typeClass());
         }
         String name = lastName = parser.getCurrentName();
@@ -122,7 +122,7 @@ public final class JsonInput implements Input
             if(parser.getCurrentToken().isScalarValue())
                 return readFieldNumber(schema);
             
-            throw new IOException("Unknown field: " + lastName + " on message " + schema.typeClass());
+            throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.typeClass());
         }
         
         return number;
@@ -139,7 +139,7 @@ public final class JsonInput implements Input
         if(jt==JsonToken.VALUE_FALSE)
             return false;
         
-        throw new IOException("Expected token: true/false but was " + jt);
+        throw new JsonInputException("Expected token: true/false but was " + jt);
     }
 
     public byte[] readByteArray() throws IOException
@@ -270,7 +270,7 @@ public final class JsonInput implements Input
     public String readString() throws IOException
     {
         if(parser.getCurrentToken() != JsonToken.VALUE_STRING)
-            throw new IOException("Expected token: string but was " + parser.getCurrentToken());
+            throw new JsonInputException("Expected token: string but was " + parser.getCurrentToken());
         
         String value = parser.getText();
         
@@ -309,7 +309,7 @@ public final class JsonInput implements Input
     {
         if(parser.getCurrentToken() != JsonToken.START_OBJECT)
         {
-            throw new IOException("Expected token: { but was " + 
+            throw new JsonInputException("Expected token: { but was " + 
                     parser.getCurrentToken() + " on " + lastName + " of message " + 
                     schema.typeClass());
         }
@@ -325,7 +325,7 @@ public final class JsonInput implements Input
         
         if(parser.getCurrentToken() != JsonToken.END_OBJECT)
         {
-            throw new IOException("Expected token: } but was " + 
+            throw new JsonInputException("Expected token: } but was " + 
                     parser.getCurrentToken() + " on " + lastName + " of message " + 
                     schema.typeClass());
         }
