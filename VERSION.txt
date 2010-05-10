@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ completed Issue 13: Allow unknown scalar fields to be ignored when parsing json-encoded messages
 + completed Issue 12: Add support for protobuf enums on GWT overlays hosted mode
 + completed Issue 11: Add serialization method (stringify) for GWT overlay types
 + fixed Issue 3: JSON parser converts null values to the string "null"

@@ -83,6 +83,10 @@ public final class JsonInput implements Input
 
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
+        // we can skip this unknown field
+        if(parser.getCurrentToken().isScalarValue())
+            return;
+        
         throw new IOException("Unknown field: " + lastName + " on message " + schema.typeClass());
     }    
 
@@ -110,6 +114,15 @@ public final class JsonInput implements Input
                 return readFieldNumber(schema);
             
             lastRepeated = true;
+        }
+        
+        if(number == 0)
+        {
+            // we can skip this unknown field
+            if(parser.getCurrentToken().isScalarValue())
+                return readFieldNumber(schema);
+            
+            throw new IOException("Unknown field: " + lastName + " on message " + schema.typeClass());
         }
         
         return number;
