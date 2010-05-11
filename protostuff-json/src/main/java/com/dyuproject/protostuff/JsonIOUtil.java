@@ -197,7 +197,7 @@ public final class JsonIOUtil
     {
         if(parser.nextToken() != JsonToken.START_OBJECT)
         {
-            throw new IOException("Expected token: { but was " + 
+            throw new JsonInputException("Expected token: { but was " + 
                     parser.getCurrentToken() + " on message " + 
                     schema.typeClass());
         }
@@ -206,7 +206,7 @@ public final class JsonIOUtil
         
         if(parser.getCurrentToken() != JsonToken.END_OBJECT)
         {
-            throw new IOException("Expected token: } but was " + 
+            throw new JsonInputException("Expected token: } but was " + 
                     parser.getCurrentToken() + " on message " + 
                     schema.typeClass());
         }
@@ -318,7 +318,7 @@ public final class JsonIOUtil
     {
         if(parser.nextToken()!=JsonToken.START_ARRAY)
         {
-            throw new IOException("Expected token: [ but was " + 
+            throw new JsonInputException("Expected token: [ but was " + 
                     parser.getCurrentToken() + " on message: " + 
                     schema.typeClass());
         }
@@ -329,7 +329,7 @@ public final class JsonIOUtil
         {
             if(t != JsonToken.START_OBJECT)
             {
-                throw new IOException("Expected token: { but was " + 
+                throw new JsonInputException("Expected token: { but was " + 
                         parser.getCurrentToken() + " on message " + 
                         schema.typeClass());
             }
@@ -339,7 +339,7 @@ public final class JsonIOUtil
             
             if(parser.getCurrentToken() != JsonToken.END_OBJECT)
             {
-                throw new IOException("Expected token: } but was " + 
+                throw new JsonInputException("Expected token: } but was " + 
                         parser.getCurrentToken() + " on message " + 
                         schema.typeClass());
             }
