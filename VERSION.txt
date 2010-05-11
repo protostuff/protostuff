@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ fixed Issue 15: JsonIOUtil.writeListTo fails when inner messages contain repeated fields
 + completed Issue 14: Allow packages to be overriden via compile time options
 + completed Issue 13: Allow unknown scalar fields to be ignored when parsing json-encoded messages
 + completed Issue 12: Add support for protobuf enums on GWT overlays hosted mode

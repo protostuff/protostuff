@@ -124,4 +124,27 @@ public class JsonCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(bars.get(i++), b);
     }
 
+    public void testListIOWithArrays() throws Exception
+    {
+        ArrayList<Foo> foos = new ArrayList<Foo>();
+        foos.add(SerializableObjects.foo);
+        foos.add(SerializableObjects.foo);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JsonIOUtil.writeListTo(out, foos, 
+                SerializableObjects.foo.cachedSchema(), false);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        List<Foo> parsed = JsonIOUtil.parseListFrom(in, 
+                SerializableObjects.foo.cachedSchema(), false);
+        
+        assertTrue(parsed.size() == foos.size());
+        int i=0;
+        for(Foo f : parsed)
+            SerializableObjects.assertEquals(foos.get(i++), f);
+    }
+
+
+
 }

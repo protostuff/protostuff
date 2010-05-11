@@ -55,6 +55,8 @@ public final class JsonOutput implements Output
     public JsonOutput use(Schema<?> schema)
     {
         this.schema = schema;
+        lastRepeated = false;
+        lastNumber = 0;
         return this;
     }
     
