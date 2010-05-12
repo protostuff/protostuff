@@ -344,7 +344,7 @@ enum_block [Proto proto, Message message]
                 proto.addEnumGroup(enumGroup);
             else
                 message.addNestedEnumGroup(enumGroup);
-        }
+        } SEMICOLON?
     ;
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]

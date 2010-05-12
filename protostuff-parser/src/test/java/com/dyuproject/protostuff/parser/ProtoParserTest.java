@@ -360,18 +360,28 @@ public class ProtoParserTest extends TestCase
 
     }
     
-    public static void main(String[] args) throws Exception
+    public void testEnumWithTrailingSemicolon() throws Exception
     {
-        /*File f = getFile("unittest.proto");
+        File f = getFile("enum_with_semicolon.proto");
         assertTrue(f.exists());
         
         Proto proto = new Proto(f);
-        ProtoUtil.loadFrom(f, proto);*/
+        ProtoUtil.loadFrom(f, proto);
+        assertEquals(proto.getPackageName(), "enumtest");
+    }
+    
+    /*public static void main(String[] args) throws Exception
+    {
+        File f = getFile("unittest.proto");
+        assertTrue(f.exists());
+        
+        Proto proto = new Proto(f);
+        ProtoUtil.loadFrom(f, proto);
         System.err.println(Float.parseFloat("6.13e5"));
         byte[] b = "123".getBytes();
         for(int i=0; i<b.length; i++)
             System.err.println(b[i]);
         
-    }
+    }*/
 
 }
