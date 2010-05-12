@@ -68,6 +68,7 @@ public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
         }
     }
 }
+
 >>
 
 enum_header(eg) ::= <<
@@ -100,6 +101,7 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
     <message:message_impl_message()>
     <message:message_impl_schema(message=it, options=options)>
 }
+
 >>
 
 message_header(message) ::= <<

@@ -24,6 +24,7 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
         <message:message_impl_schema(message=it, options=options)>
     };
 }
+
 >>
 
 message_impl_declaration(message, options) ::= <<
