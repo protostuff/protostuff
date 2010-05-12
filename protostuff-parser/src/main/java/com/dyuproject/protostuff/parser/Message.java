@@ -209,8 +209,8 @@ public class Message implements HasName
             if(!root.repeatedFieldPresent && f.isRepeated())
                 root.repeatedFieldPresent = true;
             
-            if(!requiredFieldPresent && f.isRequired())
-                requiredFieldPresent = true;
+            if(!root.requiredFieldPresent && f.isRequired())
+                root.requiredFieldPresent = true;
             
             if(f instanceof Field.Bytes)
             {
