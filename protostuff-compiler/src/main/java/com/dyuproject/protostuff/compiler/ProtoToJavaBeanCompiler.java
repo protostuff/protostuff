@@ -64,7 +64,10 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
         {
             // true if its a service message w/c isn't supported atm
             if(m.getFields().isEmpty())
+            {
+                System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
+            }
             
             Writer writer = CompilerUtil.newWriter(module, 
                     javaPackageName, m.getName()+".java");

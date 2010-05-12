@@ -136,7 +136,8 @@ message_body [Proto proto, Message message]
     
 extensions_range [Proto proto, Message message]
     :   EXTENSIONS first=(NUMINT | ID) TO last=(NUMINT | ID) {
-            System.err.println("ignoring 'extensions' atm @ line " + $EXTENSIONS.line);
+            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
+            System.err.println("ignoring 'extensions' atm @ line " + $EXTENSIONS.line + suffix);
         } SEMICOLON!
     ;
     
@@ -363,13 +364,15 @@ enum_field [Proto proto, Message message, EnumGroup enumGroup]
     
 service_block [Proto proto]
     :   SERVICE ID ignore_block {
-            System.err.println("ignoring 'service' block atm @ line " + $SERVICE.line);
+            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
+            System.err.println("ignoring 'service' block atm @ line " + $SERVICE.line + suffix);
         }
     ;
     
 extend_block [Proto proto]
     :   EXTEND t=(FULL_ID | ID) ignore_block {
-            System.err.println("ignoring 'extend' block atm @ line " + $EXTEND.line);
+            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
+            System.err.println("ignoring 'extend' block atm @ line " + $EXTEND.line + suffix);
         }
     ;
     
