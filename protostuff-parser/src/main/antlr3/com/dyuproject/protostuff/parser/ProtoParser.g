@@ -368,7 +368,7 @@ service_block [Proto proto]
     ;
     
 extend_block [Proto proto]
-    :   EXTEND ID ignore_block {
+    :   EXTEND t=(FULL_ID | ID) ignore_block {
             System.err.println("ignoring 'extend' block atm @ line " + $EXTEND.line);
         }
     ;
