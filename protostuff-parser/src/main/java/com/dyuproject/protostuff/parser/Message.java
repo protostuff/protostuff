@@ -37,6 +37,7 @@ public class Message implements HasName
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
     // code generator helpers
     boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent;
+    boolean requiredFieldPresentOnCurrent;
     
     public Message()
     {
@@ -199,6 +200,11 @@ public class Message implements HasName
         return requiredFieldPresent;
     }
     
+    public boolean isRequiredFieldPresentOnCurrent()
+    {
+        return requiredFieldPresentOnCurrent;
+    }
+    
     // post parse
     
     void resolveReferences(Message root)
@@ -211,6 +217,9 @@ public class Message implements HasName
             
             if(!root.requiredFieldPresent && f.isRequired())
                 root.requiredFieldPresent = true;
+            
+            if(!requiredFieldPresentOnCurrent && f.isRequired())
+                requiredFieldPresentOnCurrent = true;
             
             if(f instanceof Field.Bytes)
             {

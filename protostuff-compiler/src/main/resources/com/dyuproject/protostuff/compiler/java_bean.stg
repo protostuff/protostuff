@@ -181,7 +181,7 @@ public <message.name>()
 {
     <message.fields:field_assign_constructor_defaults(); separator="\n">
 }
-<if(message.requiredFieldPresent)>
+<if(message.requiredFieldPresentOnCurrent)>
 
 public <message.name>(
     <message.fields:field_declare_constructor_singular(); separator=",\n">
@@ -329,7 +329,7 @@ public Class\<<message.name>\> typeClass()
 >>
 
 message_is_initialized(message) ::= <<
-<if(message.requiredFieldPresent)>
+<if(message.requiredFieldPresentOnCurrent)>
 public boolean isInitialized(<message.name> message)
 {
     return 
