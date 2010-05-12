@@ -153,13 +153,17 @@ message_field [Proto proto, Message message]
         }
         field_type[proto, message, fieldHolder] 
         var ASSIGN NUMINT {
-            fieldHolder.field.modifier = modifier;
-            fieldHolder.field.name = $var.text;
-            fieldHolder.field.number = Integer.parseInt($NUMINT.text);
+            if(fieldHolder.field != null) {
+                fieldHolder.field.modifier = modifier;
+                fieldHolder.field.name = $var.text;
+                fieldHolder.field.number = Integer.parseInt($NUMINT.text);
+            }
         } 
-        (field_options[proto, message, fieldHolder.field])? SEMICOLON! {
-            message.addField(fieldHolder.field);
+        (field_options[proto, message, fieldHolder.field])? {
+            if(fieldHolder.field != null)
+                message.addField(fieldHolder.field);
         }
+        (SEMICOLON! | ignore_block)
     ;
     
 field_type [Proto proto, Message message, FieldHolder fieldHolder]
@@ -178,6 +182,10 @@ field_type [Proto proto, Message message, FieldHolder fieldHolder]
     |   BOOL { fieldHolder.setField(new Field.Bool()); }
     |   STRING { fieldHolder.setField(new Field.String()); }
     |   BYTES { fieldHolder.setField(new Field.Bytes()); }
+    |   GROUP {
+            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
+            System.err.println("'group' not supported @ line " + $GROUP.line + suffix);
+        }
     |   FULL_ID {
             String fullType = $FULL_ID.text;
             int lastDot = fullType.lastIndexOf('.');

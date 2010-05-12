@@ -16,6 +16,12 @@ message Foo {
     optional Bar bar = 3;
     optional string package = 4;
     optional int32 service = 5;
+    repeated group Result = 6 {
+        required string url = 7;
+        optional string title = 8;
+        repeated string snippets = 9;
+    }
+
 }
 
 enum WithoutSemicolon {
