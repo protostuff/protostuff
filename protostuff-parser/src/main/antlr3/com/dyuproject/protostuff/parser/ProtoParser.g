@@ -136,7 +136,7 @@ message_body [Proto proto, Message message]
     
 extensions_range [Proto proto, Message message]
     :   EXTENSIONS first=(NUMINT | ID) TO last=(NUMINT | ID) {
-            System.err.println("extensions not supported @ line " + $EXTENSIONS.line);
+            System.err.println("ignoring 'extensions' atm @ line " + $EXTENSIONS.line);
         } SEMICOLON!
     ;
     
@@ -363,13 +363,13 @@ enum_field [Proto proto, Message message, EnumGroup enumGroup]
     
 service_block [Proto proto]
     :   SERVICE ID ignore_block {
-            System.err.println("ignoring 'service' at the moment ...");
+            System.err.println("ignoring 'service' block atm @ line " + $SERVICE.line);
         }
     ;
     
 extend_block [Proto proto]
     :   EXTEND ID ignore_block {
-            System.err.println("extensions not supported @ line " + $EXTEND.line);
+            System.err.println("ignoring 'extend' block atm @ line " + $EXTEND.line);
         }
     ;
     
