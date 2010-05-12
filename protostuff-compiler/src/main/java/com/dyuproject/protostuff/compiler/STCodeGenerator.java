@@ -136,19 +136,22 @@ public abstract class STCodeGenerator implements ProtoCompiler
     
     public void compile(ProtoModule module) throws IOException
     {
-        boolean compileImports = module.getOption("compile_imports")!=null;
+        String ci = module.getOption("compile_imports");
+        boolean compileImports = ci != null && !"false".equalsIgnoreCase(ci);
+        boolean recursive = "recursive".equalsIgnoreCase(ci);
+        
         File source = module.getSource();
         if(source.isDirectory())
         {
             for(File f : CompilerUtil.getProtoFiles(source))
-                compile(module, ProtoUtil.parseProto(f), compileImports);
+                compile(module, ProtoUtil.parseProto(f), compileImports, recursive);
         }
         else
-            compile(module, ProtoUtil.parseProto(source), compileImports);
+            compile(module, ProtoUtil.parseProto(source), compileImports, recursive);
     }
     
-    private void compile(ProtoModule module, Proto proto, boolean compileImports)
-    throws IOException
+    private void compile(ProtoModule module, Proto proto, boolean compileImports, 
+            boolean recursive) throws IOException
     {
         List<Proto> overridden = preCompile(module, proto);
         try
@@ -157,7 +160,12 @@ public abstract class STCodeGenerator implements ProtoCompiler
             if(compileImports)
             {
                 for(Proto p : proto.getImportedProtos())
-                    compile(module, p);
+                {
+                    if(recursive)
+                        compile(module, p, compileImports, recursive);
+                    else
+                        compile(module, p);
+                }
             }
         }
         finally
