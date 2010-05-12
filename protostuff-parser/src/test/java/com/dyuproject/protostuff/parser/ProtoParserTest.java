@@ -367,7 +367,17 @@ public class ProtoParserTest extends TestCase
         
         Proto proto = new Proto(f);
         ProtoUtil.loadFrom(f, proto);
-        assertEquals(proto.getPackageName(), "enumtest");
+        assertEquals(proto.getPackageName(), "rpc");
+    }
+    
+    public void testDescriptorProto() throws Exception
+    {
+        File f = getFile("descriptor.proto");
+        assertTrue(f.exists());
+        
+        Proto proto = new Proto(f);
+        ProtoUtil.loadFrom(f, proto);
+        assertEquals(proto.getPackageName(), "google.protobuf");
     }
     
     /*public static void main(String[] args) throws Exception

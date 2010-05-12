@@ -66,6 +66,11 @@ statement [Proto proto]
     |   service_block[proto]
     ;
 
+// some keywords that might possibly be used as a variable
+var
+    :   PKG | SYNTAX | MESSAGE | SERVICE | GROUP | RPC | ID
+    ;
+
 header_syntax [Proto proto]
     :   SYNTAX ASSIGN STRING_LITERAL SEMICOLON! {
             if(! "proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text)))
@@ -75,11 +80,14 @@ header_syntax [Proto proto]
     ;
 
 header_package [Proto proto]
-    :   PKG p=(FULL_ID | ID) SEMICOLON! {
+@init {
+    String value = null;
+}
+    :   PKG (FULL_ID { value = $FULL_ID.text; } | var { value = $var.text; }) SEMICOLON! {
             if(proto.getPackageName() != null)
                 throw new IllegalStateException("Multiple package definitions.");
             
-            proto.setPackageName($p.text);
+            proto.setPackageName(value);
         }
     ;
     
@@ -129,7 +137,7 @@ message_body [Proto proto, Message message]
 extensions_range [Proto proto, Message message]
     :   EXTENSIONS first=(NUMINT | ID) TO last=(NUMINT | ID) {
             System.err.println("extensions not supported @ line " + $EXTENSIONS.line);
-        }
+        } SEMICOLON!
     ;
     
 message_field [Proto proto, Message message]
@@ -143,9 +151,9 @@ message_field [Proto proto, Message message]
             fieldHolder = new FieldHolder();
         }
         field_type[proto, message, fieldHolder] 
-        ID ASSIGN NUMINT {
+        var ASSIGN NUMINT {
             fieldHolder.field.modifier = modifier;
-            fieldHolder.field.name = $ID.text;
+            fieldHolder.field.name = $var.text;
             fieldHolder.field.number = Integer.parseInt($NUMINT.text);
         } 
         (field_options[proto, message, fieldHolder.field])? SEMICOLON! {
@@ -344,7 +352,7 @@ enum_block [Proto proto, Message message]
                 proto.addEnumGroup(enumGroup);
             else
                 message.addNestedEnumGroup(enumGroup);
-        } SEMICOLON?
+        } (SEMICOLON?)!
     ;
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]

@@ -1,0 +1,25 @@
+package rpc;
+
+enum Bar {
+    ONE = 1;
+    TWO = 2;
+};
+
+message Foo {
+    enum Baz {
+        THREE = 3;
+        FOUR = 4;
+    };
+
+    optional string id = 1;
+    optional Baz baz = 2;
+    optional Bar bar = 3;
+    optional string package = 4;
+    optional int32 service = 5;
+}
+
+enum WithoutSemicolon {
+    FIVE = 5;
+    SIX = 6;
+    SEVEN = 7;
+}
