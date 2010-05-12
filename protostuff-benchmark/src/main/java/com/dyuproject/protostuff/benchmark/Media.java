@@ -45,6 +45,7 @@ public final class Media implements Serializable, Message<Media>
         }
     }
 
+
     public static Schema<Media> getSchema()
     {
         return SCHEMA;

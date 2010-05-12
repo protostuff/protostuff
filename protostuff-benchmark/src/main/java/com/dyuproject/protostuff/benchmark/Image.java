@@ -43,6 +43,7 @@ public final class Image implements Serializable, Message<Image>
         }
     }
 
+
     public static Schema<Image> getSchema()
     {
         return SCHEMA;
