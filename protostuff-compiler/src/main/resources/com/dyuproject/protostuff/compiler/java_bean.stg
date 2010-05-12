@@ -258,7 +258,11 @@ public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
 {
     <if(field.enumField)>
+    <if(field.required)>
+    return <field.name; format="CC">;
+    <else>
     return <field.name; format="CC"> == null ? <field.defaultValueAsString> : <field.name; format="CC">;
+    <endif>
     <else>
     return <field.name; format="CC">;
     <endif>
