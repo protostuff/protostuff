@@ -297,7 +297,7 @@ field_stringify_singular_nonmessage(field, options, arg) ::= <<
 >>
 
 field_stringify_outercall(field, options, arg) ::= <<
-@<field.message.proto.javaPackageName>.<field.message.name>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.name>;)<arg>
+@<field.message.fullName>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.relativeName; format=".==$">;)<arg>
 >>
 
 message_getters_and_setters(message, options) ::= <<
