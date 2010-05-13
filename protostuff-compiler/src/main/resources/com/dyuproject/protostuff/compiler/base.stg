@@ -10,3 +10,11 @@ header_text(prefix, suffix, module) ::= <<
 <endif>
 <endif>
 >>
+
+var(val, fmt, options) ::= <<
+<if(options.underscore_on_vars)>
+<val; format=fmt+"U">
+<else>
+<val; format=fmt>
+<endif>
+>>

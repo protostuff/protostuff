@@ -343,8 +343,8 @@ public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.
     <endif>
 }-*/;
 
-public native void set<field.name; format="PC">Array(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <field.name; format="CCU">) /*-{
-    this["<field:field_name_or_number(field=it,options=options)>"] = <field.name; format="CCU">;
+public native void set<field.name; format="PC">Array(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <var(val=field.name, fmt="CC", options=options)>) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <var(val=field.name, fmt="CC", options=options)>;
 }-*/;
 
 public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">Array() /*-{
@@ -362,11 +362,11 @@ public int get<field.name; format="PC">Count() {
     return array == null ? 0 : array.length();
 }
 
-public void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <field.name; format="CCU">) {
+public void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) {
     <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
     if(array == null)
         array = clear<field.name; format="PC">Array();
-    array.push(<field.name; format="CCU">);
+    array.push(<var(val=field.name, fmt="CC", options=options)>);
 }
 
 <endif>
@@ -376,8 +376,8 @@ public native <map_singular_value.(field.javaType)> get<field.name; format="PC">
     <field:field_return_value(field=it,options=options)>
 }-*/;
 
-public native void set<field.name; format="PC">(<map_singular_value.(field.javaType)> <field.name; format="CCU">) /*-{
-    this["<field:field_name_or_number(field=it,options=options)>"] = <field.name; format="CCU">;
+public native void set<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <var(val=field.name, fmt="CC", options=options)>;
 }-*/;
 
 public native void clear<field.name; format="PC">() /*-{
