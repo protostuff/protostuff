@@ -169,9 +169,9 @@ static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; forma
 
 field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
-<modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">
+<modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>
 <else>
-<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
+<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
 <endif>
 >>
 
@@ -198,20 +198,20 @@ public <message.name>(
 field_assign_constructor_defaults(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
-this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
+this.<var(val=field.name, fmt="CC", options=options)> = DEFAULT_<field.name; format="UUC">;
 <endif>
 <endif>
 >>
 
 field_declare_constructor_singular(field, options) ::= <<
 <if(field.required)>
-<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
+<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
 <endif>
 >>
 
 field_assign_constructor_singular(field, options) ::= <<
 <if(field.required)>
-this.<field.name; format="CC"> = <field.name; format="CC">;
+this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
 <endif>
 >>
 
@@ -227,30 +227,30 @@ field_getters_and_setters(field, options) ::= <<
 
 public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">List()
 {
-    return <field.name; format="CC">;
+    return <var(val=field.name, fmt="CC", options=options)>;
 }
 
-public void set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">)
+public void set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
 {
-    this.<field.name; format="CC"> = <field.name; format="CC">;
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
 }
 <if(options.generate_helper_methods)>
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
 {
-    return <field.name; format="CC"> == null ? null : <field.name; format="CC">.get(index);
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : <var(val=field.name, fmt="CC", options=options)>.get(index);
 }
 
 public int get<field.name; format="PC">Count()
 {
-    return <field.name; format="CC"> == null ? 0 : <field.name; format="CC">.size();
+    return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
 }
 
-public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">)
+public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
 {
-    if(this.<field.name; format="CC"> == null)
-        this.<field.name; format="CC"> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
-    this.<field.name; format="CC">.add(<field.name; format="CC">);
+    if(this.<var(val=field.name, fmt="CC", options=options)> == null)
+        this.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+    this.<var(val=field.name, fmt="CC", options=options)>.add(<var(val=field.name, fmt="CC", options=options)>);
 }
 
 <endif>
@@ -261,18 +261,18 @@ public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
 {
     <if(field.enumField)>
     <if(field.required)>
-    return <field.name; format="CC">;
+    return <var(val=field.name, fmt="CC", options=options)>;
     <else>
-    return <field.name; format="CC"> == null ? <field.defaultValueAsString> : <field.name; format="CC">;
+    return <var(val=field.name, fmt="CC", options=options)> == null ? <field.defaultValueAsString> : <var(val=field.name, fmt="CC", options=options)>;
     <endif>
     <else>
-    return <field.name; format="CC">;
+    return <var(val=field.name, fmt="CC", options=options)>;
     <endif>
 }
 
-public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC">)
+public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
 {
-    this.<field.name; format="CC"> = <field.name; format="CC">;
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
 }
 
 <endif>
@@ -345,7 +345,7 @@ public boolean isInitialized(<message.name> message)
 
 field_is_initialized(field, options, name) ::= <<
 <if(field.required)>
-<name>.<field.name; format="CC"> != null
+<name>.<var(val=field.name, fmt="CC", options=options)> != null
 <endif>
 >>
 
@@ -378,34 +378,34 @@ case <field.number>:
 
 singular_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
-if(<name>.<field.name; format="CC"> == null)
-    <name>.<field.name; format="CC"> = new <field.javaType>();
-input.mergeMessage(<name>.<field.name; format="CC">);
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new <field.javaType>();
+input.mergeMessage(<name>.<var(val=field.name, fmt="CC", options=options)>);
 break;
 <elseif(field.enumField)>
-<name>.<field.name; format="CC"> = <field.javaType>.valueOf(input.readEnum());
+<name>.<var(val=field.name, fmt="CC", options=options)> = <field.javaType>.valueOf(input.readEnum());
 break;
 <else>
-<name>.<field.name; format="CC"> = input.read<field.class.simpleName>();
+<name>.<var(val=field.name, fmt="CC", options=options)> = input.read<field.class.simpleName>();
 break;
 <endif>
 >>
 
 repeated_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
-if(<name>.<field.name; format="CC"> == null)
-    <name>.<field.name; format="CC"> = new ArrayList\<<field.javaType>\>();
-<name>.<field.name; format="CC">.add(input.mergeMessage(new <field.javaType>()));
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<field.javaType>\>();
+<name>.<var(val=field.name, fmt="CC", options=options)>.add(input.mergeMessage(new <field.javaType>()));
 break;
 <elseif(field.enumField)>
-if(<name>.<field.name; format="CC"> == null)
-    <name>.<field.name; format="CC"> = new ArrayList\<<field.javaType>\>();
-<name>.<field.name; format="CC">.add(<field.javaType>.valueOf(input.readEnum()));
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<field.javaType>\>();
+<name>.<var(val=field.name, fmt="CC", options=options)>.add(<field.javaType>.valueOf(input.readEnum()));
 break;
 <else>
-if(<name>.<field.name; format="CC"> == null)
-    <name>.<field.name; format="CC"> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
-<name>.<field.name; format="CC">.add(input.read<field.class.simpleName>());
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+<name>.<var(val=field.name, fmt="CC", options=options)>.add(input.read<field.class.simpleName>());
 break;
 <endif>
 >>
@@ -429,55 +429,55 @@ field_write_switch(field, options, name) ::= <<
 
 singular_field_write_switch(field, options, name) ::= <<
 <if(field.required)>
-if(<name>.<field.name; format="CC"> == null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     throw new UninitializedMessageException(<name>);
 <if(field.messageField)>
-output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
+output.writeMessage(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <elseif(field.enumField)>
-output.writeEnum(<field.number>, <name>.<field.name; format="CC">.number, false);
+output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.number, false);
 <else>
-output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <endif>
 <else>
 <if(field.messageField)>
 <field:singular_field_write_check(field=it, options=options)>
-     output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
+     output.writeMessage(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <elseif(field.enumField)>
 <field:singular_field_write_check(field=it, options=options)>
-     output.writeEnum(<field.number>, <name>.<field.name; format="CC">.number, false);
+     output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.number, false);
 <else>
 <field:singular_field_write_check(field=it, options=options)>
-    output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
+    output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <endif>
 <endif>
 >>
 
 repeated_field_write_switch(field, options, name) ::= <<
 <if(field.messageField)>
-if(<name>.<field.name; format="CC"> != null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 {
-    for(<field.javaType> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    for(<field.javaType> <var(val=field.name, fmt="CC", options=options)> : <name>.<var(val=field.name, fmt="CC", options=options)>)
     {
-        if(<field.name; format="CC"> != null)
-            output.writeMessage(<field.number>, <field.name; format="CC">, true);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.writeMessage(<field.number>, <var(val=field.name, fmt="CC", options=options)>, true);
     }
 }
 <elseif(field.enumField)>
-if(<name>.<field.name; format="CC"> != null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 {
-    for(<field.javaType> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    for(<field.javaType> <var(val=field.name, fmt="CC", options=options)> : <name>.<var(val=field.name, fmt="CC", options=options)>)
     {
-        if(<field.name; format="CC"> != null)
-            output.writeEnum(<field.number>, <field.name; format="CC">.number, true);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.writeEnum(<field.number>, <var(val=field.name, fmt="CC", options=options)>.number, true);
     }
 }
 <else>
-if(<name>.<field.name; format="CC"> != null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 {
-    for(<map_primitive_wrapper.(field.javaType)> <field.name; format="CC"> : <name>.<field.name; format="CC">)
+    for(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)> : <name>.<var(val=field.name, fmt="CC", options=options)>)
     {
-        if(<field.name; format="CC"> != null)
-            output.write<field.class.simpleName>(<field.number>, <field.name; format="CC">, true);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.write<field.class.simpleName>(<field.number>, <var(val=field.name, fmt="CC", options=options)>, true);
     }
 }
 <endif>
@@ -486,12 +486,12 @@ if(<name>.<field.name; format="CC"> != null)
 singular_field_write_check(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
-if(<name>.<field.name; format="CC"> != null && <name>.<field.name; format="CC"> != DEFAULT_<field.name; format="UUC">)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
 <else>
-if(<name>.<field.name; format="CC"> != null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 <endif>
 <else>
-if(<name>.<field.name; format="CC"> != null)
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 <endif>
 >>
 
