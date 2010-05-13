@@ -10,15 +10,15 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
     <message.nestedMessages:message_block(message=it, module=module, options=options, modifier="static")>
     <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options)>
     <message:message_default_instance(message=it, options=options)>
-    <message.fields:field_defaults_declaration(); separator="\n">
+    <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
     
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
-    <message.fields:field_declaration(field=it); separator=";\n">;
+    <message.fields:field_declaration(field=it, options=options); separator=";\n">;
     <message:message_constructor(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
-    <message:message_impl_serializable()>
-    <message:message_impl_message()>
+    <message:message_impl_serializable(message=it, options=options)>
+    <message:message_impl_message(message=it, options=options)>
     static final Schema\<<message.name>\> SCHEMA = new Schema\<<message.name>\>()
     {
         <message:message_impl_schema(message=it, options=options)>
@@ -36,7 +36,7 @@ implements
 Serializable, Message\<<message.name>\>
 >>
 
-message_default_instance(message,options) ::= <<
+message_default_instance(message, options) ::= <<
 
 public static Schema\<<message.name>\> getSchema()
 {
@@ -52,7 +52,7 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
 >>
 
-message_impl_message(message) ::= <<
+message_impl_message(message, options) ::= <<
 // message method
 
 public Schema\<<message.name>\> cachedSchema()
@@ -68,7 +68,7 @@ public String getFieldName(int number)
 {
     switch(number)
     {
-        <message.fields:field_switch_case(); separator="\n">
+        <message.fields:field_switch_case(field=it, options=options); separator="\n">
         default: return null;
     }
 }
@@ -81,7 +81,7 @@ public int getFieldNumber(String name)
 
 final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<String,Integer\>();
 {
-    <message.fields:field_map(field=it, mapVar="fieldMap"); separator="\n">
+    <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
 }
 <else>
 public String getFieldName(int number)

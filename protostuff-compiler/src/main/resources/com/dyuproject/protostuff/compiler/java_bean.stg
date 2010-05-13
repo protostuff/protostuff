@@ -63,7 +63,7 @@ public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
     {
         switch(number) 
         {
-            <eg.uniqueSortedValues:enum_switch_case(); separator="\n">
+            <eg.uniqueSortedValues:enum_switch_case(value=it, options=options); separator="\n">
             default: return null;
         }
     }
@@ -78,7 +78,7 @@ package <eg.proto.javaPackageName>;
 
 >>
 
-enum_switch_case(value) ::= <<
+enum_switch_case(value, options) ::= <<
 case <value.number>: return <value.name>;
 >>
 
@@ -92,13 +92,13 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
     <message.nestedMessages:message_block(message=it, module=module, options=options, modifier="static")>
     <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options)>
     <message:message_default_instance(message=it, options=options)>
-    <message.fields:field_defaults_declaration(); separator="\n">
+    <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
     
-    <message.fields:field_declaration(field=it, modifier="private"); separator=";\n">;
+    <message.fields:field_declaration(field=it, options=options, modifier="private"); separator=";\n">;
     <message:message_constructor(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
-    <message:message_impl_serializable()>
-    <message:message_impl_message()>
+    <message:message_impl_serializable(message=it, options=options)>
+    <message:message_impl_message(message=it, options=options)>
     <message:message_impl_schema(message=it, options=options)>
 }
 
@@ -134,7 +134,7 @@ import com.dyuproject.protostuff.UninitializedMessageException;
 
 >>
 
-message_default_instance(message,options) ::= <<
+message_default_instance(message, options) ::= <<
 
 public static Schema\<<message.name>\> getSchema()
 {
@@ -159,7 +159,7 @@ implements
 Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
 >>
 
-field_defaults_declaration(field) ::= <<
+field_defaults_declaration(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
 static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>;
@@ -167,7 +167,7 @@ static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; forma
 <endif>
 >>
 
-field_declaration(field, modifier) ::= <<
+field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
 <modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <field.name; format="CC">
 <else>
@@ -179,23 +179,23 @@ message_constructor(message, options) ::= <<
 
 public <message.name>()
 {
-    <message.fields:field_assign_constructor_defaults(); separator="\n">
+    <message.fields:field_assign_constructor_defaults(field=it, options=options); separator="\n">
 }
 <if(message.requiredFieldPresentOnCurrent)>
 
 public <message.name>(
-    <message.fields:field_declare_constructor_singular(); separator=",\n">
+    <message.fields:field_declare_constructor_singular(field=it, options=options); separator=",\n">
 )
 {
     this();
-    <message.fields:field_assign_constructor_singular(); separator="\n">
+    <message.fields:field_assign_constructor_singular(field=it, options=options); separator="\n">
 }
 
 <endif>
 
 >>
 
-field_assign_constructor_defaults(field) ::= <<
+field_assign_constructor_defaults(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
 this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
@@ -203,13 +203,13 @@ this.<field.name; format="CC"> = DEFAULT_<field.name; format="UUC">;
 <endif>
 >>
 
-field_declare_constructor_singular(field) ::= <<
+field_declare_constructor_singular(field, options) ::= <<
 <if(field.required)>
 <map_primitive_wrapper.(field.javaType)> <field.name; format="CC">
 <endif>
 >>
 
-field_assign_constructor_singular(field) ::= <<
+field_assign_constructor_singular(field, options) ::= <<
 <if(field.required)>
 this.<field.name; format="CC"> = <field.name; format="CC">;
 <endif>
@@ -278,7 +278,7 @@ public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)
 <endif>
 >>
 
-message_impl_serializable(message) ::= <<
+message_impl_serializable(message, options) ::= <<
 // java serialization
 
 private void readObject(ObjectInputStream in) throws IOException
@@ -299,7 +299,7 @@ private void writeObject(ObjectOutputStream out) throws IOException
 
 >>
 
-message_impl_message(message) ::= <<
+message_impl_message(message, options) ::= <<
 // message method
 
 public Schema\<<message.name>\> cachedSchema()
@@ -322,18 +322,18 @@ public Class\<<message.name>\> typeClass()
     return <message.name>.class;
 }
 
-<message:message_is_initialized()>
-<message:message_field_merge(message=it, name="message")>
-<message:message_field_write(message=it, name="message")>
+<message:message_is_initialized(message=it, options=options)>
+<message:message_field_merge(message=it, options=options, name="message")>
+<message:message_field_write(message=it, options=options, name="message")>
 <message:message_field_map(message=it, options=options)>
 >>
 
-message_is_initialized(message) ::= <<
+message_is_initialized(message, options) ::= <<
 <if(message.requiredFieldPresentOnCurrent)>
 public boolean isInitialized(<message.name> message)
 {
     return 
-        <message.fields:field_is_initialized(field=it, name="message"); separator=" \n&& ">;
+        <message.fields:field_is_initialized(field=it, options=options, name="message"); separator=" \n&& ">;
 }
 <else>
 public boolean isInitialized(<message.name> message)
@@ -343,13 +343,13 @@ public boolean isInitialized(<message.name> message)
 <endif>
 >>
 
-field_is_initialized(field, name) ::= <<
+field_is_initialized(field, options, name) ::= <<
 <if(field.required)>
 <name>.<field.name; format="CC"> != null
 <endif>
 >>
 
-message_field_merge(message, name) ::= <<
+message_field_merge(message, options, name) ::= <<
 
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
@@ -360,7 +360,7 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
         {
             case 0:
                 return;
-            <message.fields:field_merge_switch(field=it,name=name); separator="\n">
+            <message.fields:field_merge_switch(field=it, options=options, name=name); separator="\n">
             default:
                 input.handleUnknownField(number, this);
         }   
@@ -369,14 +369,14 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
 
 >>
 
-field_merge_switch(field, name) ::= <<
+field_merge_switch(field, options, name) ::= <<
 case <field.number>:
-    <if(field.repeated)><field:repeated_field_merge_switch(field=it, name=name)>
-    <else><field:singular_field_merge_switch(field=it, name=name)>
+    <if(field.repeated)><field:repeated_field_merge_switch(field=it, options=options, name=name)>
+    <else><field:singular_field_merge_switch(field=it, options=options, name=name)>
     <endif>
 >>
 
-singular_field_merge_switch(field, name) ::= <<
+singular_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
 if(<name>.<field.name; format="CC"> == null)
     <name>.<field.name; format="CC"> = new <field.javaType>();
@@ -391,7 +391,7 @@ break;
 <endif>
 >>
 
-repeated_field_merge_switch(field, name) ::= <<
+repeated_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
 if(<name>.<field.name; format="CC"> == null)
     <name>.<field.name; format="CC"> = new ArrayList\<<field.javaType>\>();
@@ -410,24 +410,24 @@ break;
 <endif>
 >>
 
-message_field_write(message, name) ::= <<
+message_field_write(message, options, name) ::= <<
 
 public void writeTo(Output output, <message.name> <name>) throws IOException
 {
-    <message.fields:field_write_switch(field=it,name=name); separator="\n\n">
+    <message.fields:field_write_switch(field=it, options=options, name=name); separator="\n\n">
 }
 
 >>
 
-field_write_switch(field, name) ::= <<
+field_write_switch(field, options, name) ::= <<
 <if(field.repeated)>
-<field:repeated_field_write_switch(field=it, name=name)>
+<field:repeated_field_write_switch(field=it, options=options, name=name)>
 <else>
-<field:singular_field_write_switch(field=it, name=name)>
+<field:singular_field_write_switch(field=it, options=options, name=name)>
 <endif>
 >>
 
-singular_field_write_switch(field, name) ::= <<
+singular_field_write_switch(field, options, name) ::= <<
 <if(field.required)>
 if(<name>.<field.name; format="CC"> == null)
     throw new UninitializedMessageException(<name>);
@@ -440,19 +440,19 @@ output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format=
 <endif>
 <else>
 <if(field.messageField)>
-<field:singular_field_write_check()>
+<field:singular_field_write_check(field=it, options=options)>
      output.writeMessage(<field.number>, <name>.<field.name; format="CC">, false);
 <elseif(field.enumField)>
-<field:singular_field_write_check()>
+<field:singular_field_write_check(field=it, options=options)>
      output.writeEnum(<field.number>, <name>.<field.name; format="CC">.number, false);
 <else>
-<field:singular_field_write_check()>
+<field:singular_field_write_check(field=it, options=options)>
     output.write<field.class.simpleName>(<field.number>, <name>.<field.name; format="CC">, false);
 <endif>
 <endif>
 >>
 
-repeated_field_write_switch(field, name) ::= <<
+repeated_field_write_switch(field, options, name) ::= <<
 <if(field.messageField)>
 if(<name>.<field.name; format="CC"> != null)
 {
@@ -483,7 +483,7 @@ if(<name>.<field.name; format="CC"> != null)
 <endif>
 >>
 
-singular_field_write_check(field) ::= <<
+singular_field_write_check(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
 if(<name>.<field.name; format="CC"> != null && <name>.<field.name; format="CC"> != DEFAULT_<field.name; format="UUC">)
@@ -501,7 +501,7 @@ public String getFieldName(int number)
 {
     switch(number)
     {
-        <message.fields:field_switch_case(); separator="\n">
+        <message.fields:field_switch_case(field=it, options=options); separator="\n">
         default: return null;
     }
 }
@@ -515,7 +515,7 @@ public int getFieldNumber(String name)
 private static final java.util.HashMap\<String,Integer\> __fieldMap = new java.util.HashMap\<String,Integer\>();
 static
 {
-    <message.fields:field_map(field=it, mapVar="__fieldMap"); separator="\n">
+    <message.fields:field_map(field=it, options=options, mapVar="__fieldMap"); separator="\n">
 }
 <else>
 public String getFieldName(int number)
@@ -530,10 +530,10 @@ public int getFieldNumber(String name)
 <endif>
 >>
 
-field_switch_case(field) ::= <<
+field_switch_case(field, options) ::= <<
 case <field.number>: return "<field.name; format="CC">";
 >>
 
-field_map(field, mapVar) ::= <<
+field_map(field, options, mapVar) ::= <<
 <mapVar>.put("<field.name; format="CC">", <field.number>);
 >>
