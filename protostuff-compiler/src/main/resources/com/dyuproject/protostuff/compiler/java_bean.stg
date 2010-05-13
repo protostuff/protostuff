@@ -38,9 +38,9 @@ map_primitive_wrapper ::= [
     default: key
 ]
 
-enum_block(eg, options, includeHeader) ::= <<
+enum_block(eg, module, options, includeHeader) ::= <<
 <if(includeHeader)>
-<eg:enum_header()>
+<eg:enum_header(eg=it, module=module, options=options)>
 <endif>
 
 public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
@@ -71,8 +71,8 @@ public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
 
 >>
 
-enum_header(eg) ::= <<
-<header_text(prefix="// ")>
+enum_header(eg, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
 
 package <eg.proto.javaPackageName>;
 
@@ -82,15 +82,15 @@ enum_switch_case(value) ::= <<
 case <value.number>: return <value.name>;
 >>
 
-message_block(message, options, includeHeader, modifier) ::= <<
+message_block(message, module, options, includeHeader, modifier) ::= <<
 <if(includeHeader)>
-<message:message_header()>
+<message:message_header(message=it, module=module, options=options)>
 <endif>
 
 public <modifier; format=" ">final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
-    <message.nestedMessages:message_block(message=it, options=options, modifier="static")>
-    <message.nestedEnumGroups:enum_block(eg=it, options=options)>
+    <message.nestedMessages:message_block(message=it, module=module, options=options, modifier="static")>
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options)>
     <message:message_default_instance(message=it, options=options)>
     <message.fields:field_defaults_declaration(); separator="\n">
     
@@ -104,8 +104,8 @@ public <modifier; format=" ">final class <message.name> <options.(message.name +
 
 >>
 
-message_header(message) ::= <<
-<header_text(prefix="// ")>
+message_header(message, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
 
 package <message.proto.javaPackageName>;
 

@@ -55,9 +55,9 @@ map_singular_value ::= [
     default: key
 ]
 
-enum_block(eg, options, includeHeader) ::= <<
+enum_block(eg, module, options, includeHeader) ::= <<
 <if(includeHeader)>
-<eg:enum_header(eg=it, options=options)>
+<eg:enum_header(eg=it, module=module, options=options)>
 <endif>
 
 public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScriptObject {
@@ -104,8 +104,8 @@ public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScrip
 
 >>
 
-enum_header(eg, options) ::= <<
-<header_text(prefix="// ")>
+enum_header(eg, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
 
 package <eg.proto.javaPackageName>;
 
@@ -117,9 +117,9 @@ field_enum_value_declare(val, methodName) ::= <<
 public static final <val.enumGroup.name> <val.name> = <methodName>(<val.number>);
 >>
 
-message_block(message, options, includeHeader) ::= <<
+message_block(message, module, options, includeHeader) ::= <<
 <if(includeHeader)>
-<message:message_header(message=it, options=options)>
+<message:message_header(message=it, module=module, options=options)>
 <endif>
 
 public <if(!includeHeader)>static <endif>final class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
@@ -232,8 +232,8 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
 }
 >>
 
-message_header(message, options) ::= <<
-<header_text(prefix="// ")>
+message_header(message, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
 
 package <message.proto.javaPackageName>;
 

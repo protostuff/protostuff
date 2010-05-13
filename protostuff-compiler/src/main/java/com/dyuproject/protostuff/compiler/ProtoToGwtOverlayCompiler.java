@@ -51,9 +51,10 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             AutoIndentWriter out = new AutoIndentWriter(writer);
             
             StringTemplate enumBlock = group.getInstanceOf("enum_block");
-            enumBlock.setAttribute("includeHeader", Boolean.TRUE);
             enumBlock.setAttribute("eg", eg);
+            enumBlock.setAttribute("module", module);
             enumBlock.setAttribute("options", module.getOptions());
+            enumBlock.setAttribute("includeHeader", Boolean.TRUE);
             enumBlock.write(out);
             writer.close();
         }
@@ -72,9 +73,10 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             AutoIndentWriter out = new AutoIndentWriter(writer);
             
             StringTemplate messageBlock = group.getInstanceOf("message_block");
-            messageBlock.setAttribute("includeHeader", Boolean.TRUE);
             messageBlock.setAttribute("message", m);
+            messageBlock.setAttribute("module", module);
             messageBlock.setAttribute("options", module.getOptions());
+            messageBlock.setAttribute("includeHeader", Boolean.TRUE);
             messageBlock.write(out);
             writer.close();
         }
