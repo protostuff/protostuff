@@ -74,15 +74,27 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if(formatName==null)
                     return str;
                 
+                // camel-case
                 if("CC".equals(formatName))
                     return ProtoUtil.toCamelCase(str).toString();
                 
+                // camel-case with trailing underscore
+                if("CCU".equals(formatName))
+                    return ProtoUtil.toCamelCase(str).append('_').toString();
+                
+                // pascal-case
                 if("PC".equals(formatName))
                     return ProtoUtil.toPascalCase(str).toString();
                 
+                // underscore-case
                 if("UC".equals(formatName))
                     return ProtoUtil.toUnderscoreCase(str).toString();
                 
+                // underscore-case with trailing underscore
+                if("UCU".equals(formatName))
+                    return ProtoUtil.toUnderscoreCase(str).toString();
+                
+                // "upper-cased" underscore-case
                 if("UUC".equals(formatName))
                     return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
                 
