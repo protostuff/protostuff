@@ -238,6 +238,14 @@ public class Message implements HasName
                 String packageName = fr.packageName;
                 if(packageName==null)
                 {
+                    // field reference to owner (self).
+                    if(name.equals(refName))
+                    {
+                        MessageField mf = newMessageField(this, fr, this);
+                        fields.put(mf.name, mf);
+                        continue;
+                    }
+                    
                     Message msg = findMessageFrom(fr.message, refName);
                     if(msg!=null || (msg=p.getMessage(refName))!=null)
                     {
