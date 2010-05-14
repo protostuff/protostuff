@@ -228,8 +228,15 @@ public final class CodedOutput implements Output {
    * a byte array.
    */
   public static <T extends Message<T>> byte[] toByteArray(T message) {
+    return toByteArray(message, message.cachedSchema());
+  }
+  
+  /**
+   * Computes the buffer size and serializes the {@code message} tied to a schema into 
+   * a byte array.
+   */
+  public static <T> byte[] toByteArray(T message, Schema<T> schema) {
     try {
-      Schema<T> schema = message.cachedSchema();
       ComputedSizeOutput sizeCount = new ComputedSizeOutput();
       schema.writeTo(sizeCount, message);
       byte[] result = new byte[sizeCount.getSize()];
