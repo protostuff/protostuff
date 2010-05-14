@@ -350,11 +350,11 @@ field_options_keyval [Proto proto, Message message, Field field]
                 else if(field instanceof Field.Float) {
                     if("inf".equals(refName)) {
                         field.defaultValue = Float.POSITIVE_INFINITY;
-                        field.stringConstant = "Float.POSITIVE_INFINITY";
+                        field.defaultValueConstant = "Float.POSITIVE_INFINITY";
                     }
                     else if("nan".equals(refName)) {
                         field.defaultValue = Float.NaN;
-                        field.stringConstant = "Float.NaN";
+                        field.defaultValueConstant = "Float.NaN";
                     }
                     else
                         throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
@@ -362,11 +362,11 @@ field_options_keyval [Proto proto, Message message, Field field]
                 else if(field instanceof Field.Double) {
                     if("inf".equals(refName)) {
                         field.defaultValue = Double.POSITIVE_INFINITY;
-                        field.stringConstant = "Double.POSITIVE_INFINITY";
+                        field.defaultValueConstant = "Double.POSITIVE_INFINITY";
                     }
                     else if("nan".equals(refName)) {
                         field.defaultValue = Double.NaN;
-                        field.stringConstant = "Double.NaN";
+                        field.defaultValueConstant = "Double.NaN";
                     }
                     else
                         throw new IllegalStateException("Invalid double default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
@@ -402,7 +402,7 @@ signed_constant [Proto proto, Message message, Field field, String key]
                 if(field instanceof Field.Float) {
                     if("inf".equals(refName)) {
                         field.defaultValue = Float.NEGATIVE_INFINITY;
-                        field.stringConstant = "Float.NEGATIVE_INFINITY";
+                        field.defaultValueConstant = "Float.NEGATIVE_INFINITY";
                     }
                     else
                         throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
@@ -410,7 +410,7 @@ signed_constant [Proto proto, Message message, Field field, String key]
                 else if(field instanceof Field.Double) {
                     if("inf".equals(refName)) {
                         field.defaultValue = Double.NEGATIVE_INFINITY;
-                        field.stringConstant = "Double.NEGATIVE_INFINITY";
+                        field.defaultValueConstant = "Double.NEGATIVE_INFINITY";
                     }
                     else
                         throw new IllegalStateException("Invalid double default value for the field: " + field.getClass().getSimpleName() + " " + field.name);

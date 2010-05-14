@@ -168,8 +168,8 @@ static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; forma
 >>
 
 field_default_value(field, options) ::= <<
-<if(field.stringConstant)>
-<field.stringConstant>
+<if(field.defaultValueConstant)>
+<field.defaultValueConstant>
 <else>
 <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>
 <endif>
