@@ -118,6 +118,114 @@ public class SerDeserTest extends TestCase
         assertEquals(hhbCompare, dhhb);
     }
     
+    public void testEmptyMessage() throws Exception
+    {
+        Bar bar = new Bar();
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testEmptyMessageInner() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessage() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeInt(1);
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessageWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeString("someString");
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessageWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeString("");
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessageInner() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setId(2);
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessageInnerWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setName("asdfsf");
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyMessageInnerWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setName("");
+        bar.setBaz(baz);
+        
+        byte[] coded = CodedOutput.toByteArray(bar);
+        byte[] deferred = IOUtil.toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
     static void assertEquals(HasHasBar h1, HasHasBar h2)
     {
         // true if both are null
