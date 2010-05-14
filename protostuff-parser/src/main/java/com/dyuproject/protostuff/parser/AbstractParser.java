@@ -32,6 +32,8 @@ import org.antlr.runtime.TokenStream;
  */
 public abstract class AbstractParser extends Parser
 {
+    
+    static final boolean SUPPRESS_WARNINGS = System.getProperty("parser.suppress_warnings")!=null;
 
     protected AbstractParser(TokenStream input)
     {
@@ -172,5 +174,16 @@ public abstract class AbstractParser extends Parser
             default:
                 throw new IllegalArgumentException("Not a hex character: " + c);
         }
+    }
+    
+    static void info(String msg)
+    {
+        System.out.println(msg);
+    }
+    
+    static void warn(String msg)
+    {
+        if(!SUPPRESS_WARNINGS)
+            System.err.println(msg);
     }
 }

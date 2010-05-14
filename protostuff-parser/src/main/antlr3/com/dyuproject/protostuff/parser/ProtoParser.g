@@ -139,7 +139,7 @@ extensions_range [Proto proto, Message message]
     :   EXTENSIONS first=(NUMINT | ID)
         (SEMICOLON! | (TO last=(NUMINT | ID)) {
             String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            System.err.println("ignoring 'extensions' atm @ line " + $EXTENSIONS.line + suffix);
+            warn("ignoring 'extensions' atm @ line " + $EXTENSIONS.line + suffix);
         } SEMICOLON!)
     ;
     
@@ -186,7 +186,7 @@ field_type [Proto proto, Message message, FieldHolder fieldHolder]
     |   BYTES { fieldHolder.setField(new Field.Bytes()); }
     |   GROUP {
             String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            System.err.println("'group' not supported @ line " + $GROUP.line + suffix);
+            warn("'group' not supported @ line " + $GROUP.line + suffix);
         }
     |   FULL_ID {
             String fullType = $FULL_ID.text;
@@ -443,14 +443,14 @@ enum_field [Proto proto, Message message, EnumGroup enumGroup]
 service_block [Proto proto]
     :   SERVICE ID ignore_block {
             String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            System.err.println("ignoring 'service' block atm @ line " + $SERVICE.line + suffix);
+            warn("ignoring 'service' block atm @ line " + $SERVICE.line + suffix);
         }
     ;
     
 extend_block [Proto proto]
     :   EXTEND t=(FULL_ID | ID) ignore_block {
             String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            System.err.println("ignoring 'extend' block atm @ line " + $EXTEND.line + suffix);
+            warn("ignoring 'extend' block atm @ line " + $EXTEND.line + suffix);
         }
     ;
     
