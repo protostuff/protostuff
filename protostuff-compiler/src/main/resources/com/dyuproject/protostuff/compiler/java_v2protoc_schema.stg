@@ -1,0 +1,230 @@
+group java_v2protoc_schema : base;
+
+
+proto_outer_block(proto, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
+
+package <proto.javaPackageName>;
+
+<proto:header_imports(proto=it, options=options)>
+
+public final class Schema<proto:derived_outer_name(proto=it, options=options)>
+{
+    <proto.messages:message_schema_block(message=it, proto=proto, options=options)>
+}
+
+>>
+
+header_imports(proto, options) ::= <<
+import java.io.IOException;
+
+import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Schema;
+>>
+
+derived_outer_name(proto, options) ::= <<
+<if(proto.extraOptions.java_outer_classname)>
+<proto.extraOptions.java_outer_classname>
+<else>
+<proto.file.name; format="PC">
+<endif>
+>>
+
+schema_fullname(proto, options) ::= <<
+<proto.javaPackageName>.Schema<proto:derived_outer_name(proto=it, options=options)>
+>>
+
+message_fullname(message, options) ::= <<
+<message.proto.javaPackageName>.<message.proto:derived_outer_name(proto=it, options=options)>.<message.relativeName>
+>>
+
+enum_fullname(eg, options) ::= <<
+<if(eg.nested)>
+<eg.proto.javaPackageName>.<eg.proto:derived_outer_name(proto=it, options=options)>.<eg.parentMessage.relativeName>.<eg.name>
+<else>
+<eg.proto.javaPackageName>.<eg.proto:derived_outer_name(proto=it, options=options)>.<eg.name>
+<endif>
+>>
+
+message_schema_block(message, proto, options) ::= <<
+
+public static final class <message.name>
+{
+    <message.nestedMessages:message_schema_block(message=it, proto=proto, options=options)>
+    public static final MessageSchema WRITE = new MessageSchema();
+    public static final BuilderSchema MERGE = new BuilderSchema();
+    
+    <message:message_output(message=it, options=options)>
+    <message:builder_input(message=it, options=options)>
+    <message:message_static_field_map(message=it, options=options)>
+}
+
+>>
+
+message_output(message, options) ::= <<
+public static class MessageSchema implements Schema\<<message:message_fullname(message=it, options=options)>\>
+{
+    public void writeTo(Output output, <message:message_fullname(message=it, options=options)> message) throws IOException
+    {
+        <message.fields:field_write_output(field=it, options=options); separator="\n">
+    }
+    public boolean isInitialized(<message:message_fullname(message=it, options=options)> message)
+    {
+        return message.isInitialized();
+    }
+    <message:message_field_map(message=it, options=options)>
+    public Class\<<message:message_fullname(message=it, options=options)>\> typeClass()
+    {
+        return <message:message_fullname(message=it, options=options)>.class;
+    }
+    //unused
+    public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)> message) throws IOException {}
+    public <message:message_fullname(message=it, options=options)> newMessage() { return null; }
+}
+>>
+
+builder_input(message, options) ::= <<
+public static class BuilderSchema implements Schema\<<message:message_fullname(message=it, options=options)>.Builder\>
+{
+    public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException
+    {
+        while(true)
+        {
+            int number = input.readFieldNumber(this);
+            switch(number)
+            {
+                case 0:
+                    return;
+                <message.fields:field_merge_input(field=it, options=options); separator="\n">
+                default:
+                    input.handleUnknownField(number, this);
+            }
+        }
+    }
+    public boolean isInitialized(<message:message_fullname(message=it, options=options)>.Builder builder)
+    {
+        return builder.isInitialized();
+    }
+    public <message:message_fullname(message=it, options=options)>.Builder newMessage()
+    {
+        return <message:message_fullname(message=it, options=options)>.newBuilder();
+    }
+    <message:message_field_map(message=it, options=options)>
+    public Class\<<message:message_fullname(message=it, options=options)>.Builder\> typeClass()
+    {
+        return <message:message_fullname(message=it, options=options)>.Builder.class;
+    }
+    //unused
+    public void writeTo(Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException {}
+}
+>>
+
+field_write_output(field, options) ::= <<
+<if(field.repeated)>
+<field:repeated_field_write(field=it, options=options)>
+<else>
+if(message.has<field.name; format="PC">())
+    <field:singular_field_write(field=it, options=options)>
+<endif>
+>>
+
+field_merge_input(field, options) ::= <<
+case <field.number>:
+    <if(field.repeated)>
+    <field:field_merge_switch(field=it, options=options, setOrAdd="add")>
+    <else>
+    <field:field_merge_switch(field=it, options=options, setOrAdd="set")>
+    <endif>
+    break;
+>>
+
+repeated_field_write(field, options) ::= <<
+<if(field.messageField)>
+for(<field.message:message_fullname(message=it, options=options)> <var(val=field.name, fmt="CC", options=options)> : message.get<field.name; format="PC">List())
+    output.writeObject(<field.number>, <var(val=field.name, fmt="CC", options=options)>, <field.message.proto:schema_fullname(proto=it, options=options)>.<field.message.relativeName>.WRITE, true);
+<elseif(field.bytesField)>
+for(com.google.protobuf.ByteString <var(val=field.name, fmt="CC", options=options)> : message.get<field.name; format="PC">List())
+    output.writeByteArray(<field.number>, <var(val=field.name, fmt="CC", options=options)>.toByteArray(), true);
+<elseif(field.enumField)>
+for(<field.enumGroup:enum_fullname(eg=it, options=options)> <var(val=field.name, fmt="CC", options=options)> : message.get<field.name; format="PC">List())
+    output.writeEnum(<field.number>, <var(val=field.name, fmt="CC", options=options)>.getNumber(), true);
+<else>
+for(<field.javaType> <var(val=field.name, fmt="CC", options=options)> : message.get<field.name; format="PC">List())
+    output.write<field.class.simpleName>(<field.number>, <var(val=field.name, fmt="CC", options=options)>, true);
+<endif>
+>>
+
+singular_field_write(field, options) ::= <<
+<if(field.messageField)>
+output.writeObject(<field.number>, message.get<field.name; format="PC">(), <field.message.proto:schema_fullname(proto=it, options=options)>.<field.message.relativeName>.WRITE, false);
+<elseif(field.bytesField)>
+output.writeByteArray(<field.number>, message.get<field.name; format="PC">().toByteArray(), false);
+<elseif(field.enumField)>
+output.writeEnum(<field.number>, message.get<field.name; format="PC">().getNumber(), false);
+<else>
+output.write<field.class.simpleName>(<field.number>, message.get<field.name; format="PC">(), false);
+<endif>
+>>
+
+field_merge_switch(field, options, setOrAdd) ::= <<
+<if(field.messageField)>
+builder.<setOrAdd><field.name; format="PC">(input.mergeObject(<field.message:message_fullname(message=it, options=options)>.newBuilder(), <field.message.proto:schema_fullname(proto=it, options=options)>.<field.message.relativeName>.MERGE));
+<elseif(field.bytesField)>
+builder.<setOrAdd><field.name; format="PC">(com.google.protobuf.ByteString.copyFrom(input.readByteArray()));
+<elseif(field.enumField)>
+builder.<setOrAdd><field.name; format="PC">(<field.enumGroup:enum_fullname(eg=it, options=options)>.valueOf(input.readEnum()));
+
+<else>
+builder.<setOrAdd><field.name; format="PC">(input.read<field.class.simpleName>());
+<endif>
+>>
+
+message_static_field_map(message, options) ::= <<
+public static String getFieldName(int number)
+{
+    <if(options.generate_field_map)>
+    switch(number)
+    {
+        <message.fields:field_switch_case(field=it, options=options); separator="\n">
+        default: return null;
+    }
+    <else>
+    return String.valueOf(number);
+    <endif>
+}
+public static int getFieldNumber(String name)
+{
+    <if(options.generate_field_map)>
+    Integer number = fieldMap.get(name);
+    return number == null ? 0 : number.intValue();
+    <else>
+    return Integer.parseInt(name);
+    <endif>
+}
+<if(options.generate_field_map)>
+private static final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<String,Integer\>();
+{
+    <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
+}
+<endif>
+>>
+
+message_field_map(message, options) ::= <<
+public String getFieldName(int number)
+{
+    return <message.name>.getFieldName(number);
+}
+public int getFieldNumber(String name)
+{
+    return <message.name>.getFieldNumber(name);
+}
+>>
+
+field_map(field, options, mapVar) ::= <<
+<mapVar>.put("<field.name; format="CC">", <field.number>);
+>>
+
+field_switch_case(field, options) ::= <<
+case <field.number>: return "<field.name; format="CC">";
+>>

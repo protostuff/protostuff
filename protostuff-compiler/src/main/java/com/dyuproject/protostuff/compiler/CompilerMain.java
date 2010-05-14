@@ -42,6 +42,7 @@ public final class CompilerMain
     {        
         addCompiler(new ProtoToJavaBeanCompiler());
         addCompiler(new ProtoToGwtOverlayCompiler());
+        addCompiler(new ProtoToJavaV2ProtocSchemaCompiler());
     }
     
     public static void addCompiler(ProtoCompiler compiler)
