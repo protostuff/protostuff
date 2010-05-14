@@ -4,6 +4,25 @@ option optimize_for = LITE_RUNTIME;
 option java_package = "com.dyuproject.protostuff.protocompiler";
 option java_outer_classname = "Simple";
 
+message Hello {
+  optional double inf_double = 14 [default = inf];
+  optional double neg_inf_double = 15 [default = -inf];
+  optional double nan_double = 16 [default = nan];
+  optional float inf_float = 17 [default = inf];
+  optional float neg_inf_float = 18 [default = -inf];
+  optional float nan_float = 19 [default = nan];
+  repeated int32 packed_int = 20 [packed=true];
+  repeated int64 packed_long = 21 [packed=true];
+  repeated float packed_float = 22 [packed=true];
+  repeated double packed_double = 23 [packed=true];
+  repeated int32 packed_int2 = 24 [packed=true];
+  
+  optional float large_float = 25 [default = 2E8];
+  optional float small_negative_float = 26 [default = -8e-28];
+  optional float some_float = 27 [default = -1.45];
+  optional double some_double = 28 [default = -1000.0293];
+}
+
 enum TestEnum {
   TYPE0 = 0;
   TYPE1 = 1;

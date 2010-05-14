@@ -33,7 +33,7 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     }
    
     
-    java.lang.String name, nameCC, namePC, nameUC;
+    java.lang.String name, stringConstant;
     int number;
     Modifier modifier;
     boolean packable;
@@ -55,6 +55,11 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     public java.lang.String getName()
     {
         return name;
+    }
+    
+    public java.lang.String getStringConstant()
+    {
+        return stringConstant;
     }
 
     /**

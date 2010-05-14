@@ -162,8 +162,16 @@ Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
 field_defaults_declaration(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
-static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>;
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
 <endif>
+<endif>
+>>
+
+field_default_value(field, options) ::= <<
+<if(field.stringConstant)>
+<field.stringConstant>
+<else>
+<map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>
 <endif>
 >>
 
