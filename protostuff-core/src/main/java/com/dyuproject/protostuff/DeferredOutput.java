@@ -60,12 +60,13 @@ public final class DeferredOutput implements Output
         };
     }
 
-    private ByteArrayNode root, current;
+    private final ByteArrayNode root = new ByteArrayNode(null);
+    private ByteArrayNode current = root;
     private int size = 0;
 
     public DeferredOutput()
     {
-        current = root = new ByteArrayNode(null);
+        
     }
     
     /**
