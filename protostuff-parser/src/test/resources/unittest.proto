@@ -1,18 +1,32 @@
 // Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.
+// Copyright 2008 Google Inc.  All rights reserved.
 // http://code.google.com/p/protobuf/
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Author: kenton@google.com (Kenton Varda)
 //  Based on original Protocol Buffers design by
@@ -20,10 +34,8 @@
 //
 // A proto file we will use for unit testing.
 
-// Additional tests added by protostuff
 
-
-import "unittest_import.proto";
+import "google/protobuf/unittest_import.proto";
 
 // We don't put this in a package within proto2 because we need to make sure
 // that the generated code doesn't depend on being in the proto2 namespace.
@@ -45,30 +57,6 @@ message TestAllTypes {
     // a local variable named "b" in one of the generated methods.  Doh.
     // This file needs to compile in proto1 to test backwards-compatibility.
     optional int32 bb = 1;
-  }
-  
-  message AnotherNestedMessage {
-    enum NestedEnum {
-      FOO = 1;
-      BAR = 2;
-      BAZ = 3;
-    }
-    
-    message DeepNestedMessage {
-      enum NestedEnum {
-        FOO = 4;
-        BAR = 5;
-        BAZ = 6;
-      }
-      
-      message DeeperNestedMessage {
-        enum NestedEnum {
-          FOO = 7;
-          BAR = 8;
-          BAZ = 9;
-        }
-      }
-    }
   }
 
   enum NestedEnum {
@@ -94,9 +82,9 @@ message TestAllTypes {
   optional   string optional_string   = 14;
   optional    bytes optional_bytes    = 15;
 
-  /*optional group OptionalGroup = 16 {
+  optional group OptionalGroup = 16 {
     optional int32 a = 17;
-  }*/
+  }
 
   optional NestedMessage                        optional_nested_message  = 18;
   optional ForeignMessage                       optional_foreign_message = 19;
@@ -126,9 +114,9 @@ message TestAllTypes {
   repeated   string repeated_string   = 44;
   repeated    bytes repeated_bytes    = 45;
 
-  /*repeated group RepeatedGroup = 46 {
+  repeated group RepeatedGroup = 46 {
     optional int32 a = 47;
-  }*/
+  }
 
   repeated NestedMessage                        repeated_nested_message  = 48;
   repeated ForeignMessage                       repeated_foreign_message = 49;
@@ -165,9 +153,10 @@ message TestAllTypes {
 
   optional string default_string_piece = 84 [ctype=STRING_PIECE,default="abc"];
   optional string default_cord = 85 [ctype=CORD,default="123"];
-  optional AnotherNestedMessage.NestedEnum optional_another_nested_enum = 86;
-  optional AnotherNestedMessage.DeepNestedMessage.NestedEnum optional_deep_nested_enum = 87;
-  optional AnotherNestedMessage.DeepNestedMessage.DeeperNestedMessage.NestedEnum optional_deeper_nested_enum = 88;
+}
+
+message TestDeprecatedFields {
+  optional int32 deprecated_int32 = 1 [deprecated=true];
 }
 
 // Define these after TestAllTypes to make sure the compiler can handle
@@ -181,7 +170,7 @@ enum ForeignEnum {
   FOREIGN_BAR = 5;
   FOREIGN_BAZ = 6;
 }
-/*
+
 message TestAllExtensions {
   extensions 1 to max;
 }
@@ -283,7 +272,15 @@ extend TestAllExtensions {
                                                        default="abc"];
   optional string default_cord_extension = 85 [ctype=CORD, default="123"];
 }
-*/
+
+message TestNestedExtension {
+  extend TestAllExtensions {
+    // Check for bug where string extensions declared in tested scope did not
+    // compile.
+    optional string test = 1002 [default="test"];
+  }
+}
+
 // We have separate messages for testing required fields because it's
 // annoying to have to fill in required fields in TestProto in order to
 // do anything with it.  Note that we don't need to test every type of
@@ -294,10 +291,10 @@ message TestRequired {
   optional int32 dummy2 = 2;
   required int32 b = 3;
 
-  /*extend TestAllExtensions {
+  extend TestAllExtensions {
     optional TestRequired single = 1000;
     repeated TestRequired multi  = 1001;
-  }*/
+  }
 
   // Pad the field count to 32 so that we can test that IsInitialized()
   // properly checks multiple elements of has_bits_.
@@ -343,9 +340,6 @@ message TestRequiredForeign {
 // Test that we can use NestedMessage from outside TestAllTypes.
 message TestForeignNested {
   optional TestAllTypes.NestedMessage foreign_nested = 1;
-  optional TestAllTypes.AnotherNestedMessage another_nested = 2;
-  optional TestAllTypes.AnotherNestedMessage.DeepNestedMessage deep_nested = 3;
-  optional TestAllTypes.AnotherNestedMessage.DeepNestedMessage.DeeperNestedMessage deeper_nested = 4;
 }
 
 // TestEmptyMessage is used to test unknown field support.
@@ -354,9 +348,15 @@ message TestEmptyMessage {
 
 // Like above, but declare all field numbers as potential extensions.  No
 // actual extensions should ever be defined for this type.
-/*message TestEmptyMessageWithExtensions {
+message TestEmptyMessageWithExtensions {
   extensions 1 to max;
-}*/
+}
+
+message TestMultipleExtensionRanges {
+  extensions 42;
+  extensions 4143 to 4243;
+  extensions 65536 to max;
+}
 
 // Test that really large tag numbers don't break anything.
 message TestReallyLargeTagNumber {
@@ -382,13 +382,14 @@ message TestMutualRecursionB {
 }
 
 // Test that groups have disjoint field numbers from their siblings and
-// parents.  This is NOT possible in proto1; only proto2.  When outputting
-// proto1, the dup fields should be dropped.
-/*message TestDupFieldNumber {
-  optional int32 a = 1;
-  optional group Foo = 2 { optional int32 a = 1; }
-  optional group Bar = 3 { optional int32 a = 1; }
-}*/
+// parents.  This is NOT possible in proto1; only proto2.  When attempting
+// to compile with proto1, this will emit an error; so we only include it
+// in protobuf_unittest_proto.
+message TestDupFieldNumber {                        // NO_PROTO1
+  optional int32 a = 1;                             // NO_PROTO1
+  optional group Foo = 2 { optional int32 a = 1; }  // NO_PROTO1
+  optional group Bar = 3 { optional int32 a = 1; }  // NO_PROTO1
+}                                                   // NO_PROTO1
 
 
 // Needed for a Python test.
@@ -444,17 +445,17 @@ message TestCamelCaseFieldNames {
 // field index to determine serialization order.
 message TestFieldOrderings {
   optional string my_string = 11;
-  //extensions 2 to 10;
+  extensions 2 to 10;
   optional int64 my_int = 1;
-  //extensions 12 to 100;
+  extensions 12 to 100;
   optional float my_float = 101;
 }
 
 
-/*extend TestFieldOrderings {
+extend TestFieldOrderings {
   optional string my_extension_string = 50;
   optional int32 my_extension_int = 5;
-}*/
+}
 
 
 message TestExtremeDefaultValues {
@@ -468,6 +469,133 @@ message TestExtremeDefaultValues {
   // the UTF-8 text directly into this text file rather than escape it, but
   // lots of people use editors that would be confused by this.)
   optional string utf8_string = 6 [default = "\341\210\264"];
+
+  // Tests for single-precision floating-point values.
+  optional float zero_float = 7 [default = 0];
+  optional float one_float = 8 [default = 1];
+  optional float small_float = 9 [default = 1.5];
+  optional float negative_one_float = 10 [default = -1];
+  optional float negative_float = 11 [default = -1.5];
+  // Using exponents
+  optional float large_float = 12 [default = 2E8];
+  optional float small_negative_float = 13 [default = -8e-28];
+
+  // Text for nonfinite floating-point values.
+  optional double inf_double = 14 [default = inf];
+  optional double neg_inf_double = 15 [default = -inf];
+  optional double nan_double = 16 [default = nan];
+  optional float inf_float = 17 [default = inf];
+  optional float neg_inf_float = 18 [default = -inf];
+  optional float nan_float = 19 [default = nan];
+}
+
+// Test String and Bytes: string is for valid UTF-8 strings
+message OneString {
+  optional string data = 1;
+}
+
+message OneBytes {
+  optional bytes data = 1;
+}
+
+// Test messages for packed fields
+
+message TestPackedTypes {
+  repeated    int32 packed_int32    =  90 [packed = true];
+  repeated    int64 packed_int64    =  91 [packed = true];
+  repeated   uint32 packed_uint32   =  92 [packed = true];
+  repeated   uint64 packed_uint64   =  93 [packed = true];
+  repeated   sint32 packed_sint32   =  94 [packed = true];
+  repeated   sint64 packed_sint64   =  95 [packed = true];
+  repeated  fixed32 packed_fixed32  =  96 [packed = true];
+  repeated  fixed64 packed_fixed64  =  97 [packed = true];
+  repeated sfixed32 packed_sfixed32 =  98 [packed = true];
+  repeated sfixed64 packed_sfixed64 =  99 [packed = true];
+  repeated    float packed_float    = 100 [packed = true];
+  repeated   double packed_double   = 101 [packed = true];
+  repeated     bool packed_bool     = 102 [packed = true];
+  repeated ForeignEnum packed_enum  = 103 [packed = true];
+}
+
+// A message with the same fields as TestPackedTypes, but without packing. Used
+// to test packed <-> unpacked wire compatibility.
+message TestUnpackedTypes {
+  repeated    int32 unpacked_int32    =  90 [packed = false];
+  repeated    int64 unpacked_int64    =  91 [packed = false];
+  repeated   uint32 unpacked_uint32   =  92 [packed = false];
+  repeated   uint64 unpacked_uint64   =  93 [packed = false];
+  repeated   sint32 unpacked_sint32   =  94 [packed = false];
+  repeated   sint64 unpacked_sint64   =  95 [packed = false];
+  repeated  fixed32 unpacked_fixed32  =  96 [packed = false];
+  repeated  fixed64 unpacked_fixed64  =  97 [packed = false];
+  repeated sfixed32 unpacked_sfixed32 =  98 [packed = false];
+  repeated sfixed64 unpacked_sfixed64 =  99 [packed = false];
+  repeated    float unpacked_float    = 100 [packed = false];
+  repeated   double unpacked_double   = 101 [packed = false];
+  repeated     bool unpacked_bool     = 102 [packed = false];
+  repeated ForeignEnum unpacked_enum  = 103 [packed = false];
+}
+
+message TestPackedExtensions {
+  extensions 1 to max;
+}
+
+extend TestPackedExtensions {
+  repeated    int32 packed_int32_extension    =  90 [packed = true];
+  repeated    int64 packed_int64_extension    =  91 [packed = true];
+  repeated   uint32 packed_uint32_extension   =  92 [packed = true];
+  repeated   uint64 packed_uint64_extension   =  93 [packed = true];
+  repeated   sint32 packed_sint32_extension   =  94 [packed = true];
+  repeated   sint64 packed_sint64_extension   =  95 [packed = true];
+  repeated  fixed32 packed_fixed32_extension  =  96 [packed = true];
+  repeated  fixed64 packed_fixed64_extension  =  97 [packed = true];
+  repeated sfixed32 packed_sfixed32_extension =  98 [packed = true];
+  repeated sfixed64 packed_sfixed64_extension =  99 [packed = true];
+  repeated    float packed_float_extension    = 100 [packed = true];
+  repeated   double packed_double_extension   = 101 [packed = true];
+  repeated     bool packed_bool_extension     = 102 [packed = true];
+  repeated ForeignEnum packed_enum_extension  = 103 [packed = true];
+}
+
+// Used by ExtensionSetTest/DynamicExtensions.  The test actually builds
+// a set of extensions to TestAllExtensions dynamically, based on the fields
+// of this message type.
+message TestDynamicExtensions {
+  enum DynamicEnumType {
+    DYNAMIC_FOO = 2200;
+    DYNAMIC_BAR = 2201;
+    DYNAMIC_BAZ = 2202;
+  }
+  message DynamicMessageType {
+    optional int32 dynamic_field = 2100;
+  }
+
+  optional fixed32 scalar_extension = 2000;
+  optional ForeignEnum enum_extension = 2001;
+  optional DynamicEnumType dynamic_enum_extension = 2002;
+
+  optional ForeignMessage message_extension = 2003;
+  optional DynamicMessageType dynamic_message_extension = 2004;
+
+  repeated string repeated_extension = 2005;
+  repeated sint32 packed_extension = 2006 [packed = true];
+}
+
+message TestRepeatedScalarDifferentTagSizes {
+  // Parsing repeated fixed size values used to fail. This message needs to be
+  // used in order to get a tag of the right size; all of the repeated fields
+  // in TestAllTypes didn't trigger the check.
+  repeated fixed32 repeated_fixed32 = 12;
+  // Check for a varint type, just for good measure.
+  repeated int32   repeated_int32   = 13;
+
+  // These have two-byte tags.
+  repeated fixed64 repeated_fixed64 = 2046;
+  repeated int64   repeated_int64   = 2047;
+
+  // Three byte tags.
+  repeated float   repeated_float   = 262142;
+  repeated uint64  repeated_uint64  = 262143;
 }
 
 // Test that RPC services work.

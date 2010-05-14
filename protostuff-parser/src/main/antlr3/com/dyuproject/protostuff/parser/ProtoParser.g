@@ -131,14 +131,16 @@ message_body [Proto proto, Message message]
     :   message_block[proto, message]
     |   message_field[proto, message]
     |   enum_block[proto, message]
+    |   extend_block[proto]
     |   extensions_range[proto, message]
     ;
     
 extensions_range [Proto proto, Message message]
-    :   EXTENSIONS first=(NUMINT | ID) TO last=(NUMINT | ID) {
+    :   EXTENSIONS first=(NUMINT | ID)
+        (SEMICOLON! | (TO last=(NUMINT | ID)) {
             String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
             System.err.println("ignoring 'extensions' atm @ line " + $EXTENSIONS.line + suffix);
-        } SEMICOLON!
+        } SEMICOLON!)
     ;
     
 message_field [Proto proto, Message message]
@@ -345,10 +347,66 @@ field_options_keyval [Proto proto, Message message, Field field]
                 String refName = $val.text;
                 if(field instanceof Field.Reference)
                     field.defaultValue = refName;
+                else if(field instanceof Field.Float) {
+                    if("inf".equals(refName))
+                        field.defaultValue = Float.POSITIVE_INFINITY;
+                    else if("nan".equals(refName))
+                        field.defaultValue = Float.NaN;
+                    else
+                        throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                }
+                else if(field instanceof Field.Double) {
+                    if("inf".equals(refName))
+                        field.defaultValue = Double.POSITIVE_INFINITY;
+                    else if("nan".equals(refName))
+                        field.defaultValue = Double.NaN;
+                    else
+                        throw new IllegalStateException("Invalid double default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                }   
                 else
                     throw new IllegalStateException("invalid field value '" + refName + "' for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
-        })
+        }
+    |   EXP {
+            if("default".equals($key.text)) {
+                if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
+                    throw new IllegalStateException("a field can only have a single default value");
+                
+                if(field instanceof Field.Float)
+                    field.defaultValue = Float.valueOf($EXP.text);
+                else if(field instanceof Field.Double) 
+                    field.defaultValue = Double.valueOf($EXP.text);
+                else
+                    throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
+            }
+        }
+    |   signed_constant[proto, message, field, $key.text]
+        )
+    ;
+    
+signed_constant [Proto proto, Message message, Field field, String key]
+    :   MINUS ID {
+            if("default".equals(key)) {
+                if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
+                    throw new IllegalStateException("a field can only have a single default value");
+                
+                String refName = $ID.text;
+                if(field instanceof Field.Float) {
+                    if("inf".equals(refName))
+                        field.defaultValue = Float.POSITIVE_INFINITY;
+                    else
+                        throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                }
+                else if(field instanceof Field.Double) {
+                    if("inf".equals(refName))
+                        field.defaultValue = Double.POSITIVE_INFINITY;
+                    else
+                        throw new IllegalStateException("Invalid double default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                }   
+                else
+                    throw new IllegalStateException("invalid field value '" + refName + "' for the field: " + field.getClass().getSimpleName() + " " + field.name);
+            }
+        }
     ;
     
 enum_block [Proto proto, Message message]

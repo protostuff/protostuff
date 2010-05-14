@@ -219,6 +219,10 @@ ID
     :   ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
     ;
     
+EXP
+    :   NUMINT ('e'|'E') NUMINT
+    ;
+    
 NUMDOUBLE
     :   (NUMFLOAT|NUMINT)
         'e' '0'..'9'+
