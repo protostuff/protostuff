@@ -384,6 +384,10 @@ public native void clear<field.name; format="PC">() /*-{
     delete this["<field:field_name_or_number(field=it,options=options)>"];
 }-*/;
 
+public native boolean has<field.name; format="PC">() /*-{
+    return this["<field:field_name_or_number(field=it,options=options)>"] != null;
+}-*/;
+
 <endif>
 >>
 
