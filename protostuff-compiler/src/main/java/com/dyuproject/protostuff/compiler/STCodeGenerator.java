@@ -219,12 +219,12 @@ public abstract class STCodeGenerator implements ProtoCompiler
         String opkg = module.getOption(pkg);
         String ojpkg = module.getOption(jpkg);
         boolean override = false;
-        if(opkg != null)
+        if(opkg != null && opkg.length() != 0)
         {
             proto.getMutablePackageName().override(opkg);
             override = true;
         }
-        if(ojpkg != null)
+        if(ojpkg != null && ojpkg.length() != 0)
         {
             proto.getMutableJavaPackageName().override(ojpkg);
             override = true;
