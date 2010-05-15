@@ -211,7 +211,7 @@ public final class ${outputClassname} extends ProtobufJSON
                         #elseif( ${tc.getSimpleName()} == "String" )
                         
                         if(parser.nextToken() != JsonToken.VALUE_STRING)
-                            throw new IOException("Expected token: string but was " + jt);
+                            throw new IOException("Expected token: string but was " + parser.getCurrentToken());
                         builder.set${ppn}(parser.getText());
                         #else
 
