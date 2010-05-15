@@ -19,6 +19,13 @@ import static com.dyuproject.protostuff.SerializableObjects.baz;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 /**
@@ -116,6 +123,89 @@ public class SerDeserTest extends TestCase
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dhhb);
         assertEquals(hhbCompare, dhhb);
+    }
+    
+    public void testJavaSerializableEmptyBar() throws Exception
+    {
+        Bar bar = new Bar();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(bar);
+
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        Bar parsedBar = (Bar)in.readObject();
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testJavaSerializableEmptyBarInner() throws Exception
+    {
+        Bar bar = new Bar();
+        bar.setBaz(new Baz());
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(bar);
+
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        Bar parsedBar = (Bar)in.readObject();
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testJavaSerializableEmptyFoo() throws Exception
+    {
+        Foo foo = new Foo();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(foo);
+
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        Foo parsedFoo = (Foo)in.readObject();
+        SerializableObjects.assertEquals(parsedFoo, foo);
+    }
+    
+    public void testJavaSerializableEmptyFoo2() throws Exception
+    {
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        Bar bar = new Bar();
+        bars.add(bar);
+        Foo foo = new Foo();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(foo);
+
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        Foo parsedFoo = (Foo)in.readObject();
+        SerializableObjects.assertEquals(parsedFoo, foo);
+    }
+    
+    public void testJavaSerializableEmptyFooInner() throws Exception
+    {
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        Bar bar = new Bar();
+        bar.setBaz(new Baz());
+        bars.add(bar);
+        Foo foo = new Foo();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(foo);
+
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        Foo parsedFoo = (Foo)in.readObject();
+        SerializableObjects.assertEquals(parsedFoo, foo);
     }
     
     public void testEmptyMessage() throws Exception
