@@ -78,6 +78,17 @@ public final class DeferredOutput implements Output
     }
     
     /**
+     * Resets this output.
+     */
+    public DeferredOutput reset()
+    {
+        root.next = null;
+        current = root;
+        size = 0;
+        return this;
+    }
+    
+    /**
      * Writes the raw bytes into the {@link OutputStream}.
      */
     public void streamTo(OutputStream out) throws IOException

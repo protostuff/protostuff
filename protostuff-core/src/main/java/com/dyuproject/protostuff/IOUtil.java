@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -148,11 +147,13 @@ public final class IOUtil
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
     throws IOException
     {
+        final DeferredOutput output = new DeferredOutput();
         for(T m : messages)
         {
-            byte[] value = toByteArray(m, schema);
-            CodedOutput.writeRawVarInt32Bytes(out, value.length);
-            out.write(value);
+            schema.writeTo(output, m);
+            CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
+            output.streamTo(out);
+            output.reset();
         }
     }
     
@@ -163,19 +164,19 @@ public final class IOUtil
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) 
     throws IOException
     {
-        int size = in.read();
-        if(size<1)
-            return Collections.emptyList();
-        
-        ArrayList<T> list = new ArrayList<T>();
-        LimitedInputStream lis = new LimitedInputStream(in);
-        for(; size>0; size=in.read())
+        final ArrayList<T> list = new ArrayList<T>();
+        final LimitedInputStream lis = new LimitedInputStream(in);
+        for(int size=in.read(); size!=-1; size=in.read())
         {
-            int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
-            CodedInput input = CodedInput.newInstance(lis.limit(len));
             T message = schema.newMessage();
-            schema.mergeFrom(input, message);
-            input.checkLastTagWas(0);
+            int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+            if(len != 0)
+            {
+                // not an empty message
+                CodedInput input = CodedInput.newInstance(lis.limit(len));
+                schema.mergeFrom(input, message);
+                input.checkLastTagWas(0);
+            }
             list.add(message);
         }
         return list;
