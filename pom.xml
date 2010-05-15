@@ -193,7 +193,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   
     <junit-version>3.8.2</junit-version>
-    <protobuf-version>2.2.0</protobuf-version>
+    <protobuf-version>2.3.0</protobuf-version>
     <jackson-version>1.2.1</jackson-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
