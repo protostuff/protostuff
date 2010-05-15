@@ -14,8 +14,6 @@
 
 package com.dyuproject.protostuff.benchmark;
 
-import com.dyuproject.protostuff.benchmark.serializers.ProtobufJsonSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.ProtobufCodeSizeSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtobufLiteSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtobufSpeedSerializer;
 
@@ -31,16 +29,18 @@ public class BenchmarkMain
     {        
         BenchmarkRunner runner = new BenchmarkRunner();
         configure(runner);
-        System.out.println("Starting benchmark ...");
+        System.out.println("benchmark running.");
         runner.start();
+        System.out.println("benchmark ended.");
     }
     
     public static void configure(BenchmarkRunner runner) throws Exception
     {
-        runner.addObjectSerializer(new ProtobufCodeSizeSerializer());
         runner.addObjectSerializer(new ProtobufSpeedSerializer());
         runner.addObjectSerializer(new ProtobufLiteSerializer());
-        runner.addObjectSerializer(new ProtobufJsonSerializer());
+        
+        //runner.addObjectSerializer(new ProtobufCodeSizeSerializer());
+        //runner.addObjectSerializer(new ProtobufJsonSerializer());
         
         BenchmarkModules.configure(runner);
     }

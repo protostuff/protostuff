@@ -24,10 +24,6 @@ import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteNumeri
 import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedNumericSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionLiteNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionLiteSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionSpeedNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.ReflectionSpeedSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
@@ -53,20 +49,24 @@ public class BenchmarkModules
     
     static void configure(BenchmarkRunner runner)
     {
+        // protobuf-encoded
         runner.addObjectSerializer(new ProtostuffCoreSerializer());
         runner.addObjectSerializer(new ProtostuffRuntimeSerializer());
-        runner.addObjectSerializer(new ProtostuffJsonSerializer());
+        
+        // json
         runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
-        
-        runner.addObjectSerializer(new GeneratedSpeedSerializer());
-        runner.addObjectSerializer(new ReflectionSpeedSerializer());
-        runner.addObjectSerializer(new GeneratedLiteSerializer());
-        runner.addObjectSerializer(new ReflectionLiteSerializer());
-        
         runner.addObjectSerializer(new GeneratedSpeedNumericSerializer());
-        runner.addObjectSerializer(new ReflectionSpeedNumericSerializer());
-        runner.addObjectSerializer(new GeneratedLiteNumericSerializer());                       
-        runner.addObjectSerializer(new ReflectionLiteNumericSerializer());
+        runner.addObjectSerializer(new GeneratedLiteNumericSerializer());
+        
+        // numeric
+        runner.addObjectSerializer(new ProtostuffJsonSerializer());
+        runner.addObjectSerializer(new GeneratedSpeedSerializer());
+        runner.addObjectSerializer(new GeneratedLiteSerializer());
+        
+        //runner.addObjectSerializer(new ReflectionSpeedSerializer());
+        //runner.addObjectSerializer(new ReflectionLiteSerializer());
+        //runner.addObjectSerializer(new ReflectionSpeedNumericSerializer());
+        //runner.addObjectSerializer(new ReflectionLiteNumericSerializer());
     }
 
 }
