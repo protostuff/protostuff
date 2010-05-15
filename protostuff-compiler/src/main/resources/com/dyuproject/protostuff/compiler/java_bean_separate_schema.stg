@@ -33,7 +33,7 @@ message_impl_declaration(message, options) ::= <<
 <else>
 implements 
 <endif>
-Serializable, Message\<<message.name>\>
+Externalizable, Message\<<message.name>\>
 >>
 
 message_default_instance(message, options) ::= <<

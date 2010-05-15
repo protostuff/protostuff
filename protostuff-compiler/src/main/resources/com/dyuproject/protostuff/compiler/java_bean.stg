@@ -109,10 +109,10 @@ message_header(message, module, options) ::= <<
 
 package <message.proto.javaPackageName>;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 <if(message.repeatedFieldPresent)>
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +156,7 @@ message_impl_declaration(message, options) ::= <<
 <else>
 implements 
 <endif>
-Serializable, Message\<<message.name>\>, Schema\<<message.name>\>
+Externalizable, Message\<<message.name>\>, Schema\<<message.name>\>
 >>
 
 field_defaults_declaration(field, options) ::= <<
@@ -306,7 +306,7 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 message_impl_serializable(message, options) ::= <<
 // java serialization
 
-private void readObject(ObjectInputStream in) throws IOException
+public void readExternal(ObjectInput in) throws IOException
 {
     int length = in.readInt();
     byte[] data = new byte[length];
@@ -315,7 +315,7 @@ private void readObject(ObjectInputStream in) throws IOException
     IOUtil.mergeFrom(data, this);
 }
 
-private void writeObject(ObjectOutputStream out) throws IOException
+public void writeExternal(ObjectOutput out) throws IOException
 {
     byte[] data = IOUtil.toByteArray(this);
     out.writeInt(data.length);
