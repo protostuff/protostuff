@@ -95,9 +95,10 @@ public final class Media implements Serializable, Message<Media>
         return uri;
     }
 
-    public void setUri(String uri)
+    public Media setUri(String uri)
     {
         this.uri = uri;
+        return this;
     }
 
     // title
@@ -107,9 +108,10 @@ public final class Media implements Serializable, Message<Media>
         return title;
     }
 
-    public void setTitle(String title)
+    public Media setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     // width
@@ -119,9 +121,10 @@ public final class Media implements Serializable, Message<Media>
         return width;
     }
 
-    public void setWidth(Integer width)
+    public Media setWidth(Integer width)
     {
         this.width = width;
+        return this;
     }
 
     // height
@@ -131,9 +134,10 @@ public final class Media implements Serializable, Message<Media>
         return height;
     }
 
-    public void setHeight(Integer height)
+    public Media setHeight(Integer height)
     {
         this.height = height;
+        return this;
     }
 
     // format
@@ -143,9 +147,10 @@ public final class Media implements Serializable, Message<Media>
         return format;
     }
 
-    public void setFormat(String format)
+    public Media setFormat(String format)
     {
         this.format = format;
+        return this;
     }
 
     // duration
@@ -155,9 +160,10 @@ public final class Media implements Serializable, Message<Media>
         return duration;
     }
 
-    public void setDuration(Long duration)
+    public Media setDuration(Long duration)
     {
         this.duration = duration;
+        return this;
     }
 
     // size
@@ -167,9 +173,10 @@ public final class Media implements Serializable, Message<Media>
         return size;
     }
 
-    public void setSize(Long size)
+    public Media setSize(Long size)
     {
         this.size = size;
+        return this;
     }
 
     // bitrate
@@ -179,9 +186,10 @@ public final class Media implements Serializable, Message<Media>
         return bitrate;
     }
 
-    public void setBitrate(Integer bitrate)
+    public Media setBitrate(Integer bitrate)
     {
         this.bitrate = bitrate;
+        return this;
     }
 
     // person
@@ -191,9 +199,10 @@ public final class Media implements Serializable, Message<Media>
         return person;
     }
 
-    public void setPersonList(List<String> person)
+    public Media setPersonList(List<String> person)
     {
         this.person = person;
+        return this;
     }
 
     // player
@@ -203,9 +212,10 @@ public final class Media implements Serializable, Message<Media>
         return player == null ? Player.JAVA : player;
     }
 
-    public void setPlayer(Player player)
+    public Media setPlayer(Player player)
     {
         this.player = player;
+        return this;
     }
 
     // copyright
@@ -215,9 +225,10 @@ public final class Media implements Serializable, Message<Media>
         return copyright;
     }
 
-    public void setCopyright(String copyright)
+    public Media setCopyright(String copyright)
     {
         this.copyright = copyright;
+        return this;
     }
 
     // java serialization

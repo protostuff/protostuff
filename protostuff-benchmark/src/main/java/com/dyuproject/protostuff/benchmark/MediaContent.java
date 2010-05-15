@@ -49,9 +49,10 @@ public final class MediaContent implements Serializable, Message<MediaContent>
         return image;
     }
 
-    public void setImageList(List<Image> image)
+    public MediaContent setImageList(List<Image> image)
     {
         this.image = image;
+        return this;
     }
 
     // media
@@ -61,9 +62,10 @@ public final class MediaContent implements Serializable, Message<MediaContent>
         return media;
     }
 
-    public void setMedia(Media media)
+    public MediaContent setMedia(Media media)
     {
         this.media = media;
+        return this;
     }
 
     // java serialization

@@ -33,17 +33,17 @@ public abstract class AbstractProtostuffSerializer implements ObjectSerializer<M
     
     public MediaContent create()
     {
-        Image image1 = new Image("http://javaone.com/keynote_large.jpg");
-        image1.setTitle("Javaone Keynote");
-        image1.setHeight(0);
-        image1.setWidth(0);
-        image1.setSize(Size.LARGE);
+        Image image1 = new Image("http://javaone.com/keynote_large.jpg")
+            .setTitle("Javaone Keynote")
+            .setHeight(0)
+            .setWidth(0)
+            .setSize(Size.LARGE);
         
-        Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg");
-        image2.setTitle("Javaone Keynote");
-        image2.setHeight(0);
-        image2.setWidth(0);
-        image2.setSize(Size.SMALL);
+        Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg")
+            .setTitle("Javaone Keynote")
+            .setHeight(0)
+            .setWidth(0)
+            .setSize(Size.SMALL);
         
         ArrayList<Image> imageList = new ArrayList<Image>();
         imageList.add(image1);
@@ -53,16 +53,16 @@ public abstract class AbstractProtostuffSerializer implements ObjectSerializer<M
         personList.add("Bill Gates");
         personList.add("Steve Jobs");
         
-        Media media = new Media("http://javaone.com/keynote.mpg");
-        media.setTitle("Javaone Keynote");
-        media.setWidth(0);
-        media.setHeight(0);
-        media.setFormat("video/mpg4");
-        media.setDuration(1234567l);
-        media.setSize(123l);
-        media.setBitrate(123);
-        media.setPlayer(Player.JAVA);
-        media.setPersonList(personList);
+        Media media = new Media("http://javaone.com/keynote.mpg")
+            .setTitle("Javaone Keynote")
+            .setWidth(0)
+            .setHeight(0)
+            .setFormat("video/mpg4")
+            .setDuration(1234567l)
+            .setSize(123l)
+            .setBitrate(123)
+            .setPlayer(Player.JAVA)
+            .setPersonList(personList);
 
         MediaContent mediaContent = new MediaContent();
         mediaContent.setImageList(imageList);

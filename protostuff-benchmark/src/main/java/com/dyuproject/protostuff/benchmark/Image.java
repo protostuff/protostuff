@@ -87,9 +87,10 @@ public final class Image implements Serializable, Message<Image>
         return uri;
     }
 
-    public void setUri(String uri)
+    public Image setUri(String uri)
     {
         this.uri = uri;
+        return this;
     }
 
     // title
@@ -99,9 +100,10 @@ public final class Image implements Serializable, Message<Image>
         return title;
     }
 
-    public void setTitle(String title)
+    public Image setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     // width
@@ -111,9 +113,10 @@ public final class Image implements Serializable, Message<Image>
         return width;
     }
 
-    public void setWidth(Integer width)
+    public Image setWidth(Integer width)
     {
         this.width = width;
+        return this;
     }
 
     // height
@@ -123,9 +126,10 @@ public final class Image implements Serializable, Message<Image>
         return height;
     }
 
-    public void setHeight(Integer height)
+    public Image setHeight(Integer height)
     {
         this.height = height;
+        return this;
     }
 
     // size
@@ -135,9 +139,10 @@ public final class Image implements Serializable, Message<Image>
         return size == null ? Size.SMALL : size;
     }
 
-    public void setSize(Size size)
+    public Image setSize(Size size)
     {
         this.size = size;
+        return this;
     }
 
     // java serialization

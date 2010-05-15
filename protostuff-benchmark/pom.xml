@@ -34,6 +34,9 @@
                 <property>
                   <name>separate_schema</name>
                 </property>
+                <property>
+                  <name>builder_pattern</name>
+                </property>
               </options>
             </protoModule>
           </protoModules>

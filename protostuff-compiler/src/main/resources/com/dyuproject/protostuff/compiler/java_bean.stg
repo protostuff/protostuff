@@ -225,10 +225,24 @@ this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt
 
 message_getters_and_setters(message, options) ::= <<
 // getters and setters
-<message.fields:field_getters_and_setters(field=it, options=options)>
+<message.fields:field_getters_and_setters(field=it, options=options, message=message)>
 >>
 
-field_getters_and_setters(field, options) ::= <<
+builder_pattern_return_type(field, options, type) ::= <<
+<if(options.builder_pattern)>
+<type>
+<else>
+void
+<endif>
+>>
+
+builder_pattern_return(field, options) ::= <<
+<if(options.builder_pattern)>
+return this;
+<endif>
+>>
+
+field_getters_and_setters(field, options, message) ::= <<
 
 // <field.name; format="CC">
 <if(field.repeated)>
@@ -238,9 +252,10 @@ public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="
     return <var(val=field.name, fmt="CC", options=options)>;
 }
 
-public void set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
 }
 <if(options.generate_helper_methods)>
 
@@ -254,11 +269,12 @@ public int get<field.name; format="PC">Count()
     return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
 }
 
-public void add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
 {
     if(this.<var(val=field.name, fmt="CC", options=options)> == null)
         this.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
     this.<var(val=field.name, fmt="CC", options=options)>.add(<var(val=field.name, fmt="CC", options=options)>);
+    <field:builder_pattern_return(field=it, options=options)>
 }
 
 <endif>
@@ -278,9 +294,10 @@ public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
     <endif>
 }
 
-public void set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
 }
 
 <endif>
