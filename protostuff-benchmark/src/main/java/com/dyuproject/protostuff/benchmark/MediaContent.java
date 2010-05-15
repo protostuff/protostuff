@@ -3,10 +3,10 @@
 
 package com.dyuproject.protostuff.benchmark;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import com.dyuproject.protostuff.Input;
@@ -15,7 +15,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
 
-public final class MediaContent implements Serializable, Message<MediaContent>
+public final class MediaContent implements Externalizable, Message<MediaContent>
 {
 
     public static Schema<MediaContent> getSchema()
@@ -70,7 +70,7 @@ public final class MediaContent implements Serializable, Message<MediaContent>
 
     // java serialization
 
-    private void readObject(ObjectInputStream in) throws IOException
+    public void readExternal(ObjectInput in) throws IOException
     {
         int length = in.readInt();
         byte[] data = new byte[length];
@@ -79,7 +79,7 @@ public final class MediaContent implements Serializable, Message<MediaContent>
         IOUtil.mergeFrom(data, this);
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException
+    public void writeExternal(ObjectOutput out) throws IOException
     {
         byte[] data = IOUtil.toByteArray(this);
         out.writeInt(data.length);
