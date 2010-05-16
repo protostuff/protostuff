@@ -1,0 +1,7 @@
+package com.dyuproject.protostuff.parser;
+
+import "google/protobuf/unittest_import.proto";
+
+message TestMessage {
+    required int32 id = 1;
+}

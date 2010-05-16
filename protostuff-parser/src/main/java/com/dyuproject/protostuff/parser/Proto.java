@@ -39,12 +39,12 @@ public class Proto
     
     public Proto()
     {
-        this(null, DEFAULT_LOADER, null);
+        this(null, DefaultProtoLoader.DEFAULT_INSTANCE, null);
     }
     
     public Proto(File file)
     {
-        this(file, DEFAULT_LOADER, null);
+        this(file, DefaultProtoLoader.DEFAULT_INSTANCE, null);
     }
     
     public Proto(Loader loader)
@@ -191,32 +191,5 @@ public class Proto
     {
         public Proto load(String path, Proto importer) throws Exception;
     }
-    
-    public static final Loader DEFAULT_LOADER = new Loader()
-    {
-
-        public Proto load(String path, Proto importer) throws Exception
-        {
-            File importerFile = importer.getFile();
-            File protoFile;
-            if(importerFile==null)
-            {
-                protoFile = new File(path);
-                if(!protoFile.exists())
-                    throw new IllegalStateException("Imported proto " + path + " not found.");
-            }
-            else
-            {
-                protoFile = new File(importerFile.getParentFile(), path);
-                if(!protoFile.exists() && !(protoFile=new File(path)).exists())
-                    throw new IllegalStateException("Imported proto " + path + " not found.");
-            }
-            
-            Proto proto = new Proto(protoFile, this, importer);
-            ProtoUtil.loadFrom(protoFile, proto);
-            return proto;
-        }
-        
-    };
 
 }
