@@ -151,6 +151,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testEmptyMessageInner() throws Exception
@@ -162,6 +166,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessage() throws Exception
@@ -173,6 +181,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someInt\":1,\"someBaz\":{}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessageWithString() throws Exception
@@ -184,6 +196,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"someString\",\"someBaz\":{}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessageWithEmptyString() throws Exception
@@ -195,6 +211,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"\",\"someBaz\":{}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessageInner() throws Exception
@@ -206,6 +226,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"id\":2}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessageInnerWithString() throws Exception
@@ -217,6 +241,10 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"asdfsf\"}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
     }
     
     public void testPartialEmptyMessageInnerWithEmptyString() throws Exception
@@ -228,6 +256,54 @@ public class JsonCoreSerDeserTest extends TestCase
         
         byte[] data = JsonIOUtil.toByteArray(bar, false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"\"}}");
+        
+        Bar parsedBar = new Bar();
+        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        SerializableObjects.assertEquals(bar, parsedBar);
+    }
+    
+    public void testEmptyFoo() throws Exception
+    {
+        Foo foo = new Foo();
+        
+        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        assertEquals(new String(data, "UTF-8"), "{}");
+        
+        Foo parsedFoo = new Foo();
+        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        SerializableObjects.assertEquals(foo, parsedFoo);
+    }
+    
+    public void testEmptyFooInner() throws Exception
+    {
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(new Bar());
+        foo.setSomeBar(bars);
+        
+        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBar\":[{}]}");
+        
+        Foo parsedFoo = new Foo();
+        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        SerializableObjects.assertEquals(foo, parsedFoo);
+    }
+    
+    public void testEmptyFooDeeper() throws Exception
+    {
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        Bar bar = new Bar();
+        bar.setBaz(new Baz());
+        bars.add(bar);
+        foo.setSomeBar(bars);
+        
+        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBar\":[{\"someBaz\":{}}]}");
+        
+        Foo parsedFoo = new Foo();
+        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        SerializableObjects.assertEquals(foo, parsedFoo);
     }
 
 
