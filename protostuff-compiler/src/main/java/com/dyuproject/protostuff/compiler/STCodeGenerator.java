@@ -100,7 +100,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 
                 // regex replace
                 int eq = formatName.indexOf("==");
-                if(eq > 0 && eq+2 < str.length())
+                if(eq > 0 && eq+2 < formatName.length())
                 {
                     String toReplace = formatName.substring(0, eq);
                     String replacement = formatName.substring(eq+2);
