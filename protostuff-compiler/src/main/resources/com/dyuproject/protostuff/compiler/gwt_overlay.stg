@@ -64,42 +64,16 @@ public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScrip
         
     <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
     
-    private static native <eg.name> create(int number) /*-{
-        <if(options.dev_mode)>
-        return [number];
-        <else>
-        return number;
-        <endif>
-    }-*/;
+    <eg:enum_static_method_create(eg=it, options=options)>
     
-    protected <eg.name>() {}
+    <eg:enum_constructor(eg=it, options=options)>
     
-    public native int getNumber() /*-{
-        <if(options.dev_mode)>
-        return this[0];
-        <else>
-        return this;
-        <endif>
-    }-*/;
+    <eg:enum_method_get_number(eg=it, options=options)>
     
     <if(options.dev_mode)>
-    // dev mode
-    public static native JsArray\<<eg.name>\> getArray(JavaScriptObject obj, String key) /*-{
-        var v = obj[key];
-        if(v && v.length && !v[0].length) {
-            for(var i=0,l=v.length; i\<l; i++)
-                v[i] = [v[i]];
-        }
-        return v;
-    }-*/;
-    
-    public static native <eg.name> get(JavaScriptObject obj, String key) /*-{
-        var v = obj[key];
-        if(v == null)
-            return [<eg.firstValue.number>];
-        return v.length ? v : (obj[key] = [v]);
-    }-*/;
+    <eg:enum_dev_mode(eg=it, options=options)>
     <endif>
+
 }
 
 >>
@@ -115,6 +89,49 @@ import com.google.gwt.core.client.*;
 
 field_enum_value_declare(val, methodName) ::= <<
 public static final <val.enumGroup.name> <val.name> = <methodName>(<val.number>);
+>>
+
+enum_static_method_create(eg, options) ::= <<
+private static native <eg.name> create(int number) /*-{
+    <if(options.dev_mode)>
+    return [number];
+    <else>
+    return number;
+    <endif>
+}-*/;
+>>
+
+enum_constructor(eg, options) ::= <<
+protected <eg.name>() {}
+>>
+
+enum_method_get_number(eg, options) ::= <<
+public native int getNumber() /*-{
+    <if(options.dev_mode)>
+    return this[0];
+    <else>
+    return this;
+    <endif>
+}-*/;
+>>
+
+enum_dev_mode(eg, options) ::= <<
+// dev mode
+public static native JsArray\<<eg.name>\> getArray(JavaScriptObject obj, String key) /*-{
+    var v = obj[key];
+    if(v && v.length && !v[0].length) {
+        for(var i=0,l=v.length; i\<l; i++)
+            v[i] = [v[i]];
+    }
+    return v;
+}-*/;
+
+public static native <eg.name> get(JavaScriptObject obj, String key) /*-{
+    var v = obj[key];
+    if(v == null)
+        return [<eg.firstValue.number>];
+    return v.length ? v : (obj[key] = [v]);
+}-*/;
 >>
 
 message_block(message, module, options, includeHeader) ::= <<
