@@ -144,107 +144,23 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
     <message.nestedMessages:message_block(message=it, options=options)>
     <message.nestedEnumGroups:enum_block(eg=it, options=options)>
     
-    /**
-     * Creates a new <message.name> instance 
-     *
-     * @return new <message.name> instance
-     */
-    public static native <message.name> create() /*-{
-        return {
-                        
-        };
-    }-*/;
+    <message:message_static_method_create(message=it, options=options)>
 
-    /**
-     * Creates a new JsArray\<<message.name>\> instance 
-     *
-     * @return new JsArray\<<message.name>\> instance
-     */
-    public static native JsArray\<<message.name>\> createArray() /*-{
-        return [];
-    }-*/;
+    <message:message_static_method_create_array(message=it, options=options)>
 
-    /**
-     * Gets a <message.name> (casting) from a JavaScriptObject
-     *
-     * @param JavaScriptObject to cast
-     * @return <message.name>
-     */
-    public static native <message.name> get(JavaScriptObject jso) /*-{
-        return jso;
-    }-*/;
-
-    /**
-     * Gets a JsArray\<<message.name>\> (casting) from a JavaScriptObject
-     *
-     * @param JavaScriptObject to cast
-     * @return JsArray\<<message.name>\> 
-     */
-    public static native JsArray\<<message.name>\> getArray(JavaScriptObject jso) /*-{
-        return jso;
-    }-*/;
-
-    /**
-     * Parses a <message.name> from a json string
-     *
-     * @param json string to be parsed/evaluated
-     * @return <message.name> 
-     */
-    public static native <message.name> parse(String json) /*-{
-        <if(options.dev_mode)>
-        return eval("(" + json + ")");
-        <else>
-        <if(options.use_global_json)>
-        return $wnd.JSON.parse(json);
-        <else>
-        return eval("(" + json + ")");
-        <endif>
-        <endif>
-    }-*/;
-
-    /**
-     * Parses a JsArray\<<message.name>\> from a json string
-     *
-     * @param json string to be parsed/evaluated
-     * @return JsArray\<<message.name>\> 
-     */
-    public static native JsArray\<<message.name>\> parseArray(String json) /*-{
-        <if(options.dev_mode)>
-        return eval("(" + json + ")");
-        <else>
-        <if(options.use_global_json)>
-        return $wnd.JSON.parse(json);
-        <else>
-        return eval("(" + json + ")");
-        <endif>
-        <endif>
-    }-*/;
+    <message:message_static_method_get(message=it, options=options)>
     
-    /**
-     * Serializes a json object to a json string.
-     *
-     * @param <message.name> the object to serialize
-     * @return String the serialized json string
-     */
-    public static native String stringify(<message.name> obj) /*-{
-        <if(options.dev_mode)>
-        var buf = [];
-        <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
-        return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
-        <else>
-        <if(options.use_global_json)>
-        return $wnd.JSON.stringify(obj);
-        <else>
-        var buf = [];
-        <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
-        return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
-        <endif>
-        <endif>
-    }-*/;
+    <message:message_static_method_get_array(message=it, options=options)>
     
-    <message:message_is_initialized(message=it, options=options)>
-
-    protected <message.name>() {}
+    <message:message_static_method_parse(message=it, options=options)>
+    
+    <message:message_static_method_parse_array(message=it, options=options)>
+    
+    <message:message_static_method_stringify(message=it, options=options)>
+    
+    <message:message_static_method_is_initialized(message=it, options=options)>
+    
+    <message:message_constructor(message=it, options=options)>
 
     <message:message_getters_and_setters(message=it, options=options)>
 
@@ -258,6 +174,135 @@ package <message.proto.javaPackageName>;
 
 import com.google.gwt.core.client.*;
 
+>>
+
+message_static_method_create(message, options) ::= <<
+/**
+ * Creates a new <message.name> instance 
+ *
+ * @return new <message.name> instance
+ */
+public static native <message.name> create() /*-{
+    return {
+                    
+    };
+}-*/;
+>>
+
+message_static_method_create_array(message, options) ::= <<
+/**
+ * Creates a new JsArray\<<message.name>\> instance 
+ *
+ * @return new JsArray\<<message.name>\> instance
+ */
+public static native JsArray\<<message.name>\> createArray() /*-{
+    return [];
+}-*/;
+>>
+
+message_static_method_get(message, options) ::= <<
+/**
+ * Gets a <message.name> (casting) from a JavaScriptObject
+ *
+ * @param JavaScriptObject to cast
+ * @return <message.name>
+ */
+public static native <message.name> get(JavaScriptObject jso) /*-{
+    return jso;
+}-*/;
+>>
+
+message_static_method_get_array(message, options) ::= <<
+/**
+ * Gets a JsArray\<<message.name>\> (casting) from a JavaScriptObject
+ *
+ * @param JavaScriptObject to cast
+ * @return JsArray\<<message.name>\> 
+ */
+public static native JsArray\<<message.name>\> getArray(JavaScriptObject jso) /*-{
+    return jso;
+}-*/;
+>>
+
+message_static_method_parse(message, options) ::= <<
+/**
+ * Parses a <message.name> from a json string
+ *
+ * @param json string to be parsed/evaluated
+ * @return <message.name> 
+ */
+public static native <message.name> parse(String json) /*-{
+    <if(options.dev_mode)>
+    return eval("(" + json + ")");
+    <else>
+    <if(options.use_global_json)>
+    return $wnd.JSON.parse(json);
+    <else>
+    return eval("(" + json + ")");
+    <endif>
+    <endif>
+}-*/;
+>>
+
+message_constructor(message, options) ::= <<
+protected <message.name>() {}
+>>
+
+message_static_method_parse_array(message, options) ::= <<
+/**
+ * Parses a JsArray\<<message.name>\> from a json string
+ *
+ * @param json string to be parsed/evaluated
+ * @return JsArray\<<message.name>\> 
+ */
+public static native JsArray\<<message.name>\> parseArray(String json) /*-{
+    <if(options.dev_mode)>
+    return eval("(" + json + ")");
+    <else>
+    <if(options.use_global_json)>
+    return $wnd.JSON.parse(json);
+    <else>
+    return eval("(" + json + ")");
+    <endif>
+    <endif>
+}-*/;
+>>
+
+message_static_method_stringify(message, options) ::= <<
+/**
+ * Serializes a json object to a json string.
+ *
+ * @param <message.name> the object to serialize
+ * @return String the serialized json string
+ */
+public static native String stringify(<message.name> obj) /*-{
+    <if(options.dev_mode)>
+    var buf = [];
+    <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
+    return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
+    <else>
+    <if(options.use_global_json)>
+    return $wnd.JSON.stringify(obj);
+    <else>
+    var buf = [];
+    <message.fields:field_stringify(field=it, options=options, obj="obj", buf="buf")>
+    return buf.length == 0 ? "{}" : "{" + buf.join(",") + "}";
+    <endif>
+    <endif>
+}-*/;
+>>
+
+message_static_method_is_initialized(message, options) ::= <<
+<if(message.requiredFieldPresentOnCurrent)>
+public static native boolean isInitialized(<message.name> obj) /*-{
+    return 
+        <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" \n&& ">;
+}-*/;
+<else>
+public static native boolean isInitialized(<message.name> obj) /*-{
+    return true;
+}-*/;
+<endif>
 >>
 
 message_impl_declaration(message, options) ::= <<
@@ -317,19 +362,6 @@ field_stringify_singular_nonmessage(field, options, arg) ::= <<
 
 field_stringify_outercall(field, options, arg) ::= <<
 @<field.message.fullName>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.relativeName; format=".==$">;)<arg>
->>
-
-message_is_initialized(message, options) ::= <<
-<if(message.requiredFieldPresentOnCurrent)>
-public static native boolean isInitialized(<message.name> obj) /*-{
-    return 
-        <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" \n&& ">;
-}-*/;
-<else>
-public static native boolean isInitialized(<message.name> obj) /*-{
-    return true;
-}-*/;
-<endif>
 >>
 
 field_is_initialized(field, options, name) ::= <<
