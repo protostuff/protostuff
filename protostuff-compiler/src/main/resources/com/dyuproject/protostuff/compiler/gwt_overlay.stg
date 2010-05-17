@@ -144,8 +144,8 @@ message_block(message, module, options, includeHeader) ::= <<
 <endif>
 public <if(!includeHeader)>static <endif>final class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
 
-    <message.nestedMessages:message_block(message=it, options=options);separator="\n">
-    <message.nestedEnumGroups:enum_block(eg=it, options=options);separator="\n">
+    <message.nestedMessages:message_block(message=it, options=options); separator="\n">
+    <message.nestedEnumGroups:enum_block(eg=it, options=options); separator="\n">
     <message:message_static_method_create(message=it, options=options)>
 
     <message:message_static_method_create_array(message=it, options=options)>
