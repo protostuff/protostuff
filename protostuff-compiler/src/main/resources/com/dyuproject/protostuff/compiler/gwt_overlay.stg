@@ -296,23 +296,6 @@ public static native String stringify(<message.name> obj) /*-{
 }-*/;
 >>
 
-message_static_method_is_initialized(message, options) ::= <<
-<if(message.requiredFieldPresentOnCurrent)>
-public static native boolean isInitialized(<message.name> obj) /*-{
-    return 
-        <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" \n&& ">;
-}-*/;
-<else>
-public static native boolean isInitialized(<message.name> obj) /*-{
-    return true;
-}-*/;
-<endif>
->>
-
-message_constructor(message, options) ::= <<
-protected <message.name>() {}
->>
-
 field_stringify(field, options, obj, buf) ::= <<
 var _<field.number> = <obj>["<field:field_name_or_number(field=it,options=options)>"];
 <if(field.repeated)>
@@ -366,10 +349,27 @@ field_stringify_outercall(field, options, arg) ::= <<
 @<field.message.fullName>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.relativeName; format=".==$">;)<arg>
 >>
 
+message_static_method_is_initialized(message, options) ::= <<
+<if(message.requiredFieldPresentOnCurrent)>
+public static native boolean isInitialized(<message.name> obj) /*-{
+    return 
+        <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" \n&& ">;
+}-*/;
+<else>
+public static native boolean isInitialized(<message.name> obj) /*-{
+    return true;
+}-*/;
+<endif>
+>>
+
 field_is_initialized(field, options, name) ::= <<
 <if(field.required)>
 <name>["<field:field_name_or_number(field=it,options=options)>"] != null
 <endif>
+>>
+
+message_constructor(message, options) ::= <<
+protected <message.name>() {}
 >>
 
 message_getters_and_setters(message, options) ::= <<
