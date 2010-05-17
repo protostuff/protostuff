@@ -178,6 +178,12 @@ import com.google.gwt.core.client.*;
 
 >>
 
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+<options.(message.name + ".implements_declaration")>
+<endif>
+>>
+
 message_static_method_create(message, options) ::= <<
 /**
  * Creates a new <message.name> instance 
@@ -246,10 +252,6 @@ public static native <message.name> parse(String json) /*-{
 }-*/;
 >>
 
-message_constructor(message, options) ::= <<
-protected <message.name>() {}
->>
-
 message_static_method_parse_array(message, options) ::= <<
 /**
  * Parses a JsArray\<<message.name>\> from a json string
@@ -307,10 +309,8 @@ public static native boolean isInitialized(<message.name> obj) /*-{
 <endif>
 >>
 
-message_impl_declaration(message, options) ::= <<
-<if(options.(message.name + ".implements_declaration"))>
-<options.(message.name + ".implements_declaration")>
-<endif>
+message_constructor(message, options) ::= <<
+protected <message.name>() {}
 >>
 
 field_stringify(field, options, obj, buf) ::= <<
