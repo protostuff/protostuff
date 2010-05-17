@@ -65,7 +65,6 @@ enum_block(eg, module, options, includeHeader) ::= <<
 public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScriptObject {
         
     <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
-    
     <eg:enum_static_method_create(eg=it, options=options)>
     
     <eg:enum_constructor(eg=it, options=options)>
