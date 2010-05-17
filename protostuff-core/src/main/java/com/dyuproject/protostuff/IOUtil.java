@@ -77,6 +77,29 @@ public final class IOUtil
     }
     
     /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link DeferredOutput}.
+     */
+    public static <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
+    throws IOException
+    {
+        writeDelimitedTo(out, message, message.cachedSchema());
+    }
+    
+    /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
+     */
+    public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        DeferredOutput output = new DeferredOutput();
+        schema.writeTo(output, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
+        output.streamTo(out);
+    }
+    
+    /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
     public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema)
@@ -138,6 +161,33 @@ public final class IOUtil
     throws IOException
     {
         mergeFrom(in, message, message.cachedSchema());
+    }
+    
+    /**
+     * Merges the {@code message} (delimited) from the {@link InputStream} 
+     * using the given {@code schema}.
+     */
+    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
+    throws IOException
+    {
+        int size = in.read();
+        int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+        if(len != 0)
+        {
+            // not an empty message
+            CodedInput input = CodedInput.newInstance(new LimitedInputStream(in).limit(len));
+            schema.mergeFrom(input, message);
+            input.checkLastTagWas(0);
+        }
+    }
+    
+    /**
+     * Merges the {@code message} (delimited) from the {@link InputStream}.
+     */
+    public static <T extends Message<T>> void mergeDelimitedFrom(InputStream in, T message) 
+    throws IOException
+    {
+        mergeDelimitedFrom(in, message, message.cachedSchema());
     }
     
     /**

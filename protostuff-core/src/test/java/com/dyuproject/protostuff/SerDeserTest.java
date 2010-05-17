@@ -98,6 +98,130 @@ public class SerDeserTest extends TestCase
         }
     }
     
+    public void testFooDelimited() throws Exception
+    {
+        Foo fooCompare = SerializableObjects.foo;
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, fooCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Foo foo = new Foo();
+        IOUtil.mergeDelimitedFrom(in, foo);
+        
+        SerializableObjects.assertEquals(foo, fooCompare);
+    }
+    
+    public void testEmptyFooDelimited() throws Exception
+    {
+        Foo fooCompare = new Foo();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, fooCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Foo foo = new Foo();
+        IOUtil.mergeDelimitedFrom(in, foo);
+        
+        SerializableObjects.assertEquals(foo, fooCompare);
+    }
+    
+    public void testEmptyInnerFooDelimited() throws Exception
+    {
+        Foo fooCompare = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(new Bar());
+        fooCompare.setSomeBar(bars);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, fooCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Foo foo = new Foo();
+        IOUtil.mergeDelimitedFrom(in, foo);
+        
+        SerializableObjects.assertEquals(foo, fooCompare);
+    }
+    
+    public void testBarDelimited() throws Exception
+    {
+        Bar barCompare = SerializableObjects.bar;
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, barCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Bar bar = new Bar();
+        IOUtil.mergeDelimitedFrom(in, bar);
+        
+        SerializableObjects.assertEquals(bar, barCompare);
+    }
+    
+    public void testEmptyBarDelimited() throws Exception
+    {
+        Bar barCompare = new Bar();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, barCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Bar bar = new Bar();
+        IOUtil.mergeDelimitedFrom(in, bar);
+        
+        SerializableObjects.assertEquals(bar, barCompare);
+    }
+    
+    public void testEmptyInnerBarDelimited() throws Exception
+    {
+        Bar barCompare = new Bar();
+        barCompare.setBaz(new Baz());
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, barCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Bar bar = new Bar();
+        IOUtil.mergeDelimitedFrom(in, bar);
+        
+        SerializableObjects.assertEquals(bar, barCompare);
+    }
+    
+    public void testBazDelimited() throws Exception
+    {
+        Baz bazCompare = SerializableObjects.baz;
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, bazCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Baz baz = new Baz();
+        IOUtil.mergeDelimitedFrom(in, baz);
+        
+        SerializableObjects.assertEquals(baz, bazCompare);
+    }
+    
+    public void testEmptyBazDelimited() throws Exception
+    {
+        Baz bazCompare = new Baz();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtil.writeDelimitedTo(out, bazCompare);
+        byte[] data = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Baz baz = new Baz();
+        IOUtil.mergeDelimitedFrom(in, baz);
+        
+        SerializableObjects.assertEquals(baz, bazCompare);
+    }
+    
     /**
      * HasHasBar wraps an object without a schema.
      * That object will have to be serialized via the default java serialization 
