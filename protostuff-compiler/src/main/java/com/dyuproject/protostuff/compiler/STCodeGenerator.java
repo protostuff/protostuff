@@ -92,7 +92,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 
                 // underscore-case with trailing underscore
                 if("UCU".equals(formatName))
-                    return ProtoUtil.toUnderscoreCase(str).toString();
+                    return ProtoUtil.toUnderscoreCase(str).append('_').toString();
                 
                 // "upper-cased" underscore-case
                 if("UUC".equals(formatName))
