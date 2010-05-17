@@ -145,6 +145,90 @@ public class JsonCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(foos.get(i++), f);
     }
 
+    public void testEmptyMessage() throws Exception
+    {
+        Bar bar = new Bar();
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{}");
+    }
+    
+    public void testEmptyMessageInner() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        // method name is setBaz, should have been someBaz!
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{}}");
+    }
+    
+    public void testPartialEmptyMessage() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeInt(1);
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someInt\":1,\"someBaz\":{}}");
+    }
+    
+    public void testPartialEmptyMessageWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeString("someString");
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someString\":\"someString\",\"someBaz\":{}}");
+    }
+    
+    public void testPartialEmptyMessageWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setSomeString("");
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someString\":\"\",\"someBaz\":{}}");
+    }
+    
+    public void testPartialEmptyMessageInner() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setId(2);
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"id\":2}}");
+    }
+    
+    public void testPartialEmptyMessageInnerWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setName("asdfsf");
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"asdfsf\"}}");
+    }
+    
+    public void testPartialEmptyMessageInnerWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        baz.setName("");
+        bar.setBaz(baz);
+        
+        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"\"}}");
+    }
 
 
 }
