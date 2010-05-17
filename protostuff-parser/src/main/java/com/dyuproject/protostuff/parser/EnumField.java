@@ -26,7 +26,6 @@ public class EnumField extends Field<EnumGroup.Value>
 {
     
     java.lang.String javaType;
-    Message owner;
     EnumGroup enumGroup;
     
     public EnumField()
@@ -38,11 +37,6 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         this();
         this.enumGroup = enumGroup;
-    }
-    
-    public Message getOwner()
-    {
-        return owner;
     }
     
     public EnumGroup getEnumGroup()

@@ -38,6 +38,7 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     Modifier modifier;
     boolean packable;
     T defaultValue;
+    Message owner;
     
     public Field()
     {
@@ -166,6 +167,11 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     public java.lang.String getDefaultValueAsString()
     {
         return getDefaultValue().toString();
+    }
+    
+    public Message getOwner()
+    {
+        return owner;
     }
     
     static abstract class Number<T> extends Field<T>

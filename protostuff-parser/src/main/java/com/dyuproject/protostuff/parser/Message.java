@@ -212,6 +212,7 @@ public class Message implements HasName
         Proto p = getProto();
         for(Field<?> f : fields.values())
         {
+            f.owner = this;
             if(!root.repeatedFieldPresent && f.isRepeated())
                 root.repeatedFieldPresent = true;
             

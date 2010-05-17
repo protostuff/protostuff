@@ -25,7 +25,6 @@ public class MessageField extends Field<Message>
 {
     
     java.lang.String javaType;
-    Message owner;
     Message message;
     
     public MessageField()
@@ -37,11 +36,6 @@ public class MessageField extends Field<Message>
     {
         this();
         this.message = message;
-    }
-    
-    public Message getOwner()
-    {
-        return owner;
     }
     
     public Message getMessage()
