@@ -1,0 +1,199 @@
+group gwt_overlay_emulation_mode : gwt_overlay;
+
+//#enum begin
+
+enum_block(eg, module, options, includeHeader) ::= <<
+<if(includeHeader)>
+<eg:enum_header(eg=it, module=module, options=options)>
+
+<endif>
+public <if(!includeHeader)>static <endif>class <eg.name> extends JavaScriptObject {
+        
+    <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
+    
+    <eg:enum_static_method_create(eg=it, options=options)>
+    
+    <eg:enum_constructor(eg=it, options=options)>
+    
+    <eg:enum_method_get_number(eg=it, options=options)>
+    
+    <if(options.dev_mode)>
+    <eg:enum_dev_mode(eg=it, options=options)>
+    <endif>
+}
+
+>>
+
+enum_method_get_number(eg, options) ::= <<
+public final native int getNumber() /*-{
+    <if(options.dev_mode)>
+    return this[0];
+    <else>
+    return this;
+    <endif>
+}-*/;
+>>
+
+//#message begin
+
+message_block(message, module, options, includeHeader) ::= <<
+<if(includeHeader)>
+<message:message_header(message=it, module=module, options=options)>
+
+<endif>
+public <if(!includeHeader)>static <endif>class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
+
+    <message.nestedMessages:message_block(message=it, options=options); separator="\n">
+    <message.nestedEnumGroups:enum_block(eg=it, options=options); separator="\n">
+    <message:message_builder_class(message=it, options=options)>
+    
+    <message:message_static_method_new_builder(message=it, options=options)>
+    
+    <message:message_static_method_get_protocol_buffer_name(message=it, options=options)>
+    
+    <message:message_static_method_create(message=it, options=options)>
+
+    <message:message_static_method_create_array(message=it, options=options)>
+
+    <message:message_static_method_get(message=it, options=options)>
+    
+    <message:message_static_method_get_array(message=it, options=options)>
+    
+    <message:message_static_method_parse(message=it, options=options)>
+    
+    <message:message_static_method_parse_array(message=it, options=options)>
+    
+    <message:message_static_method_stringify(message=it, options=options)>
+    
+    <message:message_static_method_is_initialized(message=it, options=options)>
+    
+    <message:message_constructor(message=it, options=options)>
+
+    <message:message_getters_and_setters(message=it, options=options)>
+}
+
+>>
+
+message_builder_class(message, options) ::= <<
+public static class Builder extends <message.name> {
+    protected Builder() {}
+    public final <message.name> build() {
+        return (<message.name>)this;
+    }
+    public static native Builder create() /*-{
+        return {
+        };
+    }-*/;
+}
+>>
+
+message_static_method_new_builder(message, options) ::= <<
+public static final Builder newBuilder() {
+    return Builder.create();
+}
+>>
+
+message_static_method_get_protocol_buffer_name(message, options) ::= <<
+/**
+ * Returns the name of this protocol buffer.
+ */
+public static native String getProtocolBufferName(JavaScriptObject instance) /*-{
+    return instance._protoMessageName;
+}-*/;
+>>
+
+message_static_method_create(message, options) ::= <<
+/**
+ * Creates a new <message.name> instance 
+ *
+ * @return new <message.name> instance
+ */
+public static native <message.name> create() /*-{
+    return {
+        "_protoMessageName": "<message.name>"
+    };
+}-*/;
+>>
+
+field_getters_and_setters(field, options) ::= <<
+
+// <field.name; format="CC">
+<if(field.repeated)>
+
+public final native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">Array() /*-{
+    <if(field.enumField)>
+    <if(options.dev_mode)>
+    return @<field.enumGroup.fullName>::getArray(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
+    <else>
+    return this["<field:field_name_or_number(field=it,options=options)>"];
+    <endif>
+    <else>
+    return this["<field:field_name_or_number(field=it,options=options)>"];
+    <endif>
+}-*/;
+
+public final java.util.List\<<map_repeated_value.(field.javaType)>\> get<field.name; format="PC">List() {
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    if (array == null)
+        return null; 
+
+    int len = array.length();
+    if (len == 0)
+        return java.util.Collections.emptyList();
+    
+    java.util.List\<<map_repeated_value.(field.javaType)>\> list = new java.util.ArrayList\<<map_repeated_value.(field.javaType)>\>();
+    for (int i=0; i \< len; i++)
+        list.add(array.get(i));
+    
+    return list;
+}
+
+public final native <field.owner.name> set<field.name; format="PC">Array(<map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> <var(val=field.name, fmt="CC", options=options)>) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <var(val=field.name, fmt="CC", options=options)>;
+    return this;
+}-*/;
+
+public final native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> clear<field.name; format="PC">Array() /*-{
+    return (this["<field:field_name_or_number(field=it,options=options)>"] = []);
+}-*/;
+<if(options.generate_helper_methods)>
+
+public final <map_singular_value.(field.javaType)> get<field.name; format="PC">(int index) {
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    return array == null ? null : array.get(index);
+}
+
+public final int get<field.name; format="PC">Count() {
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    return array == null ? 0 : array.length();
+}
+
+public final void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) {
+    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
+    if(array == null)
+        array = clear<field.name; format="PC">Array();
+    array.push(<var(val=field.name, fmt="CC", options=options)>);
+}
+
+<endif>
+<else>
+
+public final native <map_singular_value.(field.javaType)> get<field.name; format="PC">() /*-{
+    <field:field_return_value(field=it,options=options)>
+}-*/;
+
+public final native <field.owner.name> set<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) /*-{
+    this["<field:field_name_or_number(field=it,options=options)>"] = <var(val=field.name, fmt="CC", options=options)>;
+    return this;
+}-*/;
+
+public final native void clear<field.name; format="PC">() /*-{
+    delete this["<field:field_name_or_number(field=it,options=options)>"];
+}-*/;
+
+public final native boolean has<field.name; format="PC">() /*-{
+    return this["<field:field_name_or_number(field=it,options=options)>"] != null;
+}-*/;
+
+<endif>
+>>

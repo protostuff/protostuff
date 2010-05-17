@@ -42,7 +42,9 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        StringTemplateGroup group = getSTG(getOutputId());
+        String template = module.getOption("emulation_mode")==null ? 
+                "gwt_overlay" : "gwt_overlay_emulation_mode";
+        StringTemplateGroup group = getSTG(template);
         
         for(EnumGroup eg : proto.getEnumGroups())
         {
