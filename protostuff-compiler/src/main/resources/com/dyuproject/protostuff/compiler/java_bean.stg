@@ -38,6 +38,8 @@ map_primitive_wrapper ::= [
     default: key
 ]
 
+//#enum begin
+
 enum_block(eg, module, options, includeHeader) ::= <<
 <if(includeHeader)>
 <eg:enum_header(eg=it, module=module, options=options)>
@@ -81,6 +83,8 @@ package <eg.proto.javaPackageName>;
 enum_switch_case(value, options) ::= <<
 case <value.number>: return <value.name>;
 >>
+
+//#message begin
 
 message_block(message, module, options, includeHeader, modifier) ::= <<
 <if(includeHeader)>
@@ -134,6 +138,15 @@ import com.dyuproject.protostuff.UninitializedMessageException;
 
 >>
 
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+<options.(message.name + ".implements_declaration")>, 
+<else>
+implements 
+<endif>
+Externalizable, Message\<<message.name>\>, Schema\<<message.name>\>
+>>
+
 message_default_instance(message, options) ::= <<
 
 public static Schema\<<message.name>\> getSchema()
@@ -148,15 +161,6 @@ public static <message.name> getDefaultInstance()
 
 static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
->>
-
-message_impl_declaration(message, options) ::= <<
-<if(options.(message.name + ".implements_declaration"))>
-<options.(message.name + ".implements_declaration")>, 
-<else>
-implements 
-<endif>
-Externalizable, Message\<<message.name>\>, Schema\<<message.name>\>
 >>
 
 field_defaults_declaration(field, options) ::= <<
@@ -228,20 +232,6 @@ message_getters_and_setters(message, options) ::= <<
 <message.fields:field_getters_and_setters(field=it, options=options, message=message)>
 >>
 
-builder_pattern_return_type(field, options, type) ::= <<
-<if(options.builder_pattern)>
-<type>
-<else>
-void
-<endif>
->>
-
-builder_pattern_return(field, options) ::= <<
-<if(options.builder_pattern)>
-return this;
-<endif>
->>
-
 field_getters_and_setters(field, options, message) ::= <<
 
 // <field.name; format="CC">
@@ -303,6 +293,20 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 <endif>
 >>
 
+builder_pattern_return_type(field, options, type) ::= <<
+<if(options.builder_pattern)>
+<type>
+<else>
+void
+<endif>
+>>
+
+builder_pattern_return(field, options) ::= <<
+<if(options.builder_pattern)>
+return this;
+<endif>
+>>
+
 message_impl_serializable(message, options) ::= <<
 // java serialization
 
@@ -347,13 +351,13 @@ public Class\<<message.name>\> typeClass()
     return <message.name>.class;
 }
 
-<message:message_is_initialized(message=it, options=options)>
+<message:message_method_is_initialized(message=it, options=options)>
 <message:message_field_merge(message=it, options=options, name="message")>
 <message:message_field_write(message=it, options=options, name="message")>
 <message:message_field_map(message=it, options=options)>
 >>
 
-message_is_initialized(message, options) ::= <<
+message_method_is_initialized(message, options) ::= <<
 <if(message.requiredFieldPresentOnCurrent)>
 public boolean isInitialized(<message.name> message)
 {
