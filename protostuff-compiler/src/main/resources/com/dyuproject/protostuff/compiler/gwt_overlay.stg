@@ -60,8 +60,8 @@ map_singular_value ::= [
 enum_block(eg, module, options, includeHeader) ::= <<
 <if(includeHeader)>
 <eg:enum_header(eg=it, module=module, options=options)>
-<endif>
 
+<endif>
 public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScriptObject {
         
     <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
@@ -75,7 +75,6 @@ public <if(!includeHeader)>static <endif>final class <eg.name> extends JavaScrip
     <if(options.dev_mode)>
     <eg:enum_dev_mode(eg=it, options=options)>
     <endif>
-
 }
 
 >>
@@ -141,13 +140,12 @@ public static native <eg.name> get(JavaScriptObject obj, String key) /*-{
 message_block(message, module, options, includeHeader) ::= <<
 <if(includeHeader)>
 <message:message_header(message=it, module=module, options=options)>
-<endif>
 
+<endif>
 public <if(!includeHeader)>static <endif>final class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
 
-    <message.nestedMessages:message_block(message=it, options=options)>
-    <message.nestedEnumGroups:enum_block(eg=it, options=options)>
-    
+    <message.nestedMessages:message_block(message=it, options=options);separator="\n">
+    <message.nestedEnumGroups:enum_block(eg=it, options=options);separator="\n">
     <message:message_static_method_create(message=it, options=options)>
 
     <message:message_static_method_create_array(message=it, options=options)>
@@ -167,8 +165,8 @@ public <if(!includeHeader)>static <endif>final class <message.name> extends Java
     <message:message_constructor(message=it, options=options)>
 
     <message:message_getters_and_setters(message=it, options=options)>
-
 }
+
 >>
 
 message_header(message, module, options) ::= <<
