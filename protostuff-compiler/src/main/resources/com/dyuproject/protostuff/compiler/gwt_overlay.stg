@@ -55,6 +55,8 @@ map_singular_value ::= [
     default: key
 ]
 
+//#enum begin
+
 enum_block(eg, module, options, includeHeader) ::= <<
 <if(includeHeader)>
 <eg:enum_header(eg=it, module=module, options=options)>
@@ -133,6 +135,8 @@ public static native <eg.name> get(JavaScriptObject obj, String key) /*-{
     return v.length ? v : (obj[key] = [v]);
 }-*/;
 >>
+
+//#message begin
 
 message_block(message, module, options, includeHeader) ::= <<
 <if(includeHeader)>
