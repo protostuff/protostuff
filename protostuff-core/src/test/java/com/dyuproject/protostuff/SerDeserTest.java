@@ -22,8 +22,10 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -36,6 +38,56 @@ import junit.framework.TestCase;
  */
 public class SerDeserTest extends TestCase
 {
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        DeferredOutput output = new DeferredOutput();
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return output.toByteArray();
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public <T extends Message<T>> byte[] toByteArray(T message)
+    {
+        return toByteArray(message, message.cachedSchema());
+    }
+    
+    /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link DeferredOutput}.
+     */
+    public <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
+    throws IOException
+    {
+        writeDelimitedTo(out, message, message.cachedSchema());
+    }
+    
+    /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
+     */
+    public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        DeferredOutput output = new DeferredOutput();
+        schema.writeTo(output, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
+        output.streamTo(out);
+    }
     
     public void testFoo() throws Exception
     {
@@ -50,7 +102,7 @@ public class SerDeserTest extends TestCase
         IOUtil.mergeFrom(coded, cfoo);      
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
-        byte[] deferred = IOUtil.toByteArray(fooCompare);
+        byte[] deferred = toByteArray(fooCompare);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dfoo);
         SerializableObjects.assertEquals(fooCompare, dfoo);
@@ -70,7 +122,7 @@ public class SerDeserTest extends TestCase
             IOUtil.mergeFrom(coded, cbar);        
             SerializableObjects.assertEquals(barCompare, cbar);
 
-            byte[] deferred = IOUtil.toByteArray(barCompare);
+            byte[] deferred = toByteArray(barCompare);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbar);
             SerializableObjects.assertEquals(barCompare, dbar);
@@ -91,7 +143,7 @@ public class SerDeserTest extends TestCase
             IOUtil.mergeFrom(coded, cbaz);        
             SerializableObjects.assertEquals(bazCompare, cbaz);
 
-            byte[] deferred = IOUtil.toByteArray(bazCompare);
+            byte[] deferred = toByteArray(bazCompare);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbaz);
             SerializableObjects.assertEquals(bazCompare, dbaz);
@@ -103,7 +155,7 @@ public class SerDeserTest extends TestCase
         Foo fooCompare = SerializableObjects.foo;
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, fooCompare);
+        writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -118,7 +170,7 @@ public class SerDeserTest extends TestCase
         Foo fooCompare = new Foo();
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, fooCompare);
+        writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -136,7 +188,7 @@ public class SerDeserTest extends TestCase
         fooCompare.setSomeBar(bars);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, fooCompare);
+        writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -151,7 +203,7 @@ public class SerDeserTest extends TestCase
         Bar barCompare = SerializableObjects.bar;
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, barCompare);
+        writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -166,7 +218,7 @@ public class SerDeserTest extends TestCase
         Bar barCompare = new Bar();
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, barCompare);
+        writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -182,7 +234,7 @@ public class SerDeserTest extends TestCase
         barCompare.setBaz(new Baz());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, barCompare);
+        writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -197,7 +249,7 @@ public class SerDeserTest extends TestCase
         Baz bazCompare = SerializableObjects.baz;
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, bazCompare);
+        writeDelimitedTo(out, bazCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -212,7 +264,7 @@ public class SerDeserTest extends TestCase
         Baz bazCompare = new Baz();
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeDelimitedTo(out, bazCompare);
+        writeDelimitedTo(out, bazCompare);
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -243,7 +295,7 @@ public class SerDeserTest extends TestCase
         IOUtil.mergeFrom(coded, chhb);      
         assertEquals(hhbCompare, chhb);
 
-        byte[] deferred = IOUtil.toByteArray(hhbCompare);
+        byte[] deferred = toByteArray(hhbCompare);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dhhb);
         assertEquals(hhbCompare, dhhb);
@@ -332,31 +384,31 @@ public class SerDeserTest extends TestCase
         SerializableObjects.assertEquals(parsedFoo, foo);
     }
     
-    public void testEmptyMessage() throws Exception
+    public void testEmptyBar() throws Exception
     {
         Bar bar = new Bar();
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testEmptyMessageInner() throws Exception
+    public void testEmptyBarInner() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessage() throws Exception
+    public void testPartialEmptyBar() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -364,13 +416,13 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessageWithString() throws Exception
+    public void testPartialEmptyBarWithString() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -378,13 +430,13 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessageWithEmptyString() throws Exception
+    public void testPartialEmptyBarWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -392,13 +444,13 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessageInner() throws Exception
+    public void testPartialEmptyBarInner() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -406,13 +458,13 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessageInnerWithString() throws Exception
+    public void testPartialEmptyBarInnerWithString() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -420,13 +472,13 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
     }
     
-    public void testPartialEmptyMessageInnerWithEmptyString() throws Exception
+    public void testPartialEmptyBarInnerWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
@@ -434,7 +486,142 @@ public class SerDeserTest extends TestCase
         bar.setBaz(baz);
         
         byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = IOUtil.toByteArray(bar);
+        byte[] deferred = toByteArray(bar);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    // empty foo
+    
+    public void testEmptyFoo() throws Exception
+    {
+        Foo foo = new Foo();
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testEmptyFooInner() throws Exception
+    {
+        Bar bar = new Bar();
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(bar);
+        foo.setSomeBar(bars);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFoo() throws Exception
+    {
+        Bar bar = new Bar();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(bar);
+        Foo foo = new Foo();
+        ArrayList<Integer> someInt = new ArrayList<Integer>();
+        someInt.add(1);
+        foo.setSomeInt(someInt);
+        
+        foo.setSomeBar(bars);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFooWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        foo.setSomeBar(bars);
+        ArrayList<String> strings = new ArrayList<String>();
+        strings.add("someString");
+        foo.setSomeString(strings);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFooWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        foo.setSomeBar(bars);
+        ArrayList<String> strings = new ArrayList<String>();
+        strings.add("");
+        foo.setSomeString(strings);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFooInner() throws Exception
+    {
+        Baz baz = new Baz();
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        foo.setSomeBar(bars);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFooInnerWithString() throws Exception
+    {
+        Baz baz = new Baz();
+        baz.setName("asdfsf");
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        foo.setSomeBar(bars);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
+        
+        assertTrue(coded.length == deferred.length);
+        assertEquals(new String(coded), new String(deferred));
+    }
+    
+    public void testPartialEmptyFooInnerWithEmptyString() throws Exception
+    {
+        Baz baz = new Baz();
+        baz.setName("");
+        Bar bar = new Bar();
+        bar.setBaz(baz);
+        Foo foo = new Foo();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        foo.setSomeBar(bars);
+        
+        byte[] coded = CodedOutput.toByteArray(foo);
+        byte[] deferred = toByteArray(foo);
         
         assertTrue(coded.length == deferred.length);
         assertEquals(new String(coded), new String(deferred));
