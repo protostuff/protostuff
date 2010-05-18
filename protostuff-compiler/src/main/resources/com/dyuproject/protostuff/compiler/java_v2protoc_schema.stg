@@ -1,12 +1,8 @@
 group java_v2protoc_schema : base;
 
 
-proto_outer_block(proto, module, options) ::= <<
-<header_text(prefix="// ", module=module)>
-
-package <proto.javaPackageName>;
-
-<proto:header_imports(proto=it, options=options)>
+proto_block(proto, module, options) ::= <<
+<proto:proto_header(proto=it, module=module, options=options)>
 
 public final class Schema<proto:derived_outer_name(proto=it, options=options)>
 {
@@ -15,7 +11,11 @@ public final class Schema<proto:derived_outer_name(proto=it, options=options)>
 
 >>
 
-header_imports(proto, options) ::= <<
+proto_header(proto, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
+
+package <proto.javaPackageName>;
+
 import java.io.IOException;
 
 import com.dyuproject.protostuff.Input;
