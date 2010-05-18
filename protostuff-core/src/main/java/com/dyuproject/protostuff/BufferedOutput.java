@@ -30,7 +30,8 @@ import java.io.OutputStream;
 public final class BufferedOutput implements Output
 {
 
-    static final int DEFAULT_BUFFER_SIZE = 1024;
+    static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
+            "bufferedoutput.default_buffer_size", 256);
     
     private final OutputBuffer root;
     private OutputBuffer current;
@@ -65,7 +66,7 @@ public final class BufferedOutput implements Output
         for(OutputBuffer node = root.next; node != null; node = node.next)
         {
             int len = node.offset - node.start;
-            if(len > 0)
+            //if(len > 0)
                 out.write(node.buffer, node.start, len);
         }
     }
@@ -80,11 +81,11 @@ public final class BufferedOutput implements Output
         for(OutputBuffer node = root.next; node != null; node = node.next)
         {
             int len = node.offset - node.start;
-            if(len > 0)
-            {
+            //if(len > 0)
+            //{
                 System.arraycopy(node.buffer, node.start, buffer, start, len);
                 start += len;
-            }
+            //}
         }
         return buffer;
     }

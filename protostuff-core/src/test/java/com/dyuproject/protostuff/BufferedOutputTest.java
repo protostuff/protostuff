@@ -16,6 +16,7 @@ package com.dyuproject.protostuff;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
  * Test case for {@code BufferedOutput}.
@@ -85,6 +86,129 @@ public class BufferedOutputTest extends SerDeserTest
         }
         System.err.println("(" + data.length + ")");
     }*/
+    
+    public void testEqualBufferSize() throws Exception
+    {
+        Bar bar = new Bar();
+        bar.setSomeString("................................................................" +
+                "...........................................................................");
+        
+        int expectedSize = ComputedSizeOutput.getSize(bar);
+        
+        BufferedOutput output = new BufferedOutput(expectedSize);
+        bar.cachedSchema().writeTo(output, bar);
+        byte[] data = output.toByteArray();
+        
+        assertTrue(data.length == expectedSize);
+        
+        Bar parsedBar = new Bar();
+        IOUtil.mergeFrom(data, parsedBar);
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testStringValueLimitCopy() throws Exception
+    {
+        Bar bar = new Bar();
+        bar.setSomeString("1234567890123456789012345678901234567890123456789012345678901234!");
+        
+        assertTrue(bar.getSomeString().length() == 65);
+        
+        int expectedSize = ComputedSizeOutput.getSize(bar);
+        
+        BufferedOutput output = new BufferedOutput(expectedSize);
+        bar.cachedSchema().writeTo(output, bar);
+        byte[] data = output.toByteArray();
+        
+        assertTrue(data.length == expectedSize);
+        
+        Bar parsedBar = new Bar();
+        IOUtil.mergeFrom(data, parsedBar);
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testSmallerBufferSize() throws Exception
+    {
+        Bar bar = new Bar();
+        bar.setSomeString("................................................................" +
+                "...........................................................................");
+        
+        int expectedSize = ComputedSizeOutput.getSize(bar);
+        
+        BufferedOutput output = new BufferedOutput(expectedSize-1);
+        bar.cachedSchema().writeTo(output, bar);
+        byte[] data = output.toByteArray();
+        
+        assertTrue(data.length == expectedSize);
+        
+        Bar parsedBar = new Bar();
+        IOUtil.mergeFrom(data, parsedBar);
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testSmallerBufferSize2() throws Exception
+    {
+        String str = "................................................................" +
+        "...........................................................................";
+        Baz baz = new Baz();
+        baz.setName(str);
+        baz.setTimestamp(System.currentTimeMillis());
+        
+        Bar bar = new Bar();
+        bar.setSomeString(str);
+        bar.setBaz(baz);
+        
+        int expectedSize = ComputedSizeOutput.getSize(bar);
+        
+        BufferedOutput output = new BufferedOutput(64);
+        bar.cachedSchema().writeTo(output, bar);
+        byte[] data = output.toByteArray();
+        
+        assertTrue(data.length == expectedSize);
+        
+        Bar parsedBar = new Bar();
+        IOUtil.mergeFrom(data, parsedBar);
+        SerializableObjects.assertEquals(parsedBar, bar);
+    }
+    
+    public void testSmallerBufferSize3() throws Exception
+    {
+        String str = "................................................................" +
+        "...........................................................................";
+        Baz baz = new Baz();
+        baz.setName(str);
+        baz.setTimestamp(System.currentTimeMillis());
+        
+        Bar bar = new Bar();
+        bar.setSomeString(str);
+        bar.setBaz(baz);
+        
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        bars.add(bar);
+        
+        Foo foo = new Foo();
+        ArrayList<String> someString = new ArrayList<String>();
+        someString.add(str);
+        
+        String test = "1234567890123456789012345678901234567890123456789012345678901234";
+        assertTrue(test.length() == 64);
+        
+        someString.add(test);
+        
+        foo.setSomeString(someString);
+        foo.setSomeBar(bars);
+        
+        int expectedSize = ComputedSizeOutput.getSize(foo);
+        
+        BufferedOutput output = new BufferedOutput(64);
+        foo.cachedSchema().writeTo(output, foo);
+        byte[] data = output.toByteArray();
+        
+        assertTrue(data.length == expectedSize);
+        
+        Foo parsedFoo = new Foo();
+        IOUtil.mergeFrom(data, parsedFoo);
+        SerializableObjects.assertEquals(parsedFoo, foo);
+    }
 
 
 }

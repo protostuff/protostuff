@@ -22,6 +22,9 @@ package com.dyuproject.protostuff;
  */
 final class OutputBuffer
 {
+    
+    static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
+            "outputbuffer.array_copy_size_limit", 64).intValue();
 
     final byte[] buffer;
     
@@ -61,24 +64,40 @@ final class OutputBuffer
     public static OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob, 
             int bufferSize)
     {
-        ob = writeTagAndRawVarInt32Bytes(tag, value.length, ob, bufferSize);
+        int valueLen = value.length;
+        OutputBuffer rb = writeTagAndRawVarInt32Bytes(tag, valueLen, ob, bufferSize);
         // delimited size + byte size 
-        int totalSize = ob.currentSize + value.length;
+        int totalSize = rb.currentSize + valueLen;
         
-        OutputBuffer rb = ob.offset + value.length < ob.buffer.length ? ob : 
-            new OutputBuffer(new byte[bufferSize], ob);
         
-        System.arraycopy(value, 0, rb.buffer, rb.offset, value.length);
+        if(valueLen > ARRAY_COPY_SIZE_LIMIT || rb.offset + valueLen > rb.buffer.length)
+        {
+            // huge string/byte array.
+            OutputBuffer wrap = new OutputBuffer(value, rb);
+            wrap.offset = valueLen;
+            
+            // view
+            OutputBuffer view = wrap.next = new OutputBuffer(rb);
+            
+            view.currentSize = totalSize;
+            
+            return view;
+        }
+        else
+        {
+            System.arraycopy(value, 0, rb.buffer, rb.offset, valueLen);
         
-        rb.offset += value.length;
+            rb.offset += valueLen;
+            
+            // view
+            OutputBuffer view = new OutputBuffer(rb);
         
-        OutputBuffer view = new OutputBuffer(rb);
+            view.currentSize = totalSize;
         
-        view.currentSize = totalSize;
-        
-        new OutputBuffer(value, rb).next = view;
-        
-        return view;
+            new OutputBuffer(value, rb).next = view;
+            
+            return view;
+        }
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
@@ -89,8 +108,8 @@ final class OutputBuffer
         int size = CodedOutput.computeRawVarint32Size(value);
         int totalSize = tagSize + size;
         
-        OutputBuffer rb = ob.offset + totalSize < ob.buffer.length ? ob : 
-            new OutputBuffer(new byte[bufferSize], ob);
+        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
+                new OutputBuffer(new byte[bufferSize], ob) : ob;
 
         byte[] buffer = rb.buffer;
         int offset = rb.offset;
@@ -128,8 +147,8 @@ final class OutputBuffer
         int size = CodedOutput.computeRawVarint64Size(value);
         int totalSize = tagSize + size;
         
-        OutputBuffer rb = ob.offset + totalSize < ob.buffer.length ? ob : 
-            new OutputBuffer(new byte[bufferSize], ob);
+        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
+                new OutputBuffer(new byte[bufferSize], ob) : ob;
 
         byte[] buffer = rb.buffer;
         int offset = rb.offset;
@@ -171,8 +190,8 @@ final class OutputBuffer
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
         int totalSize = tagSize + CodedOutput.LITTLE_ENDIAN_32_SIZE;
         
-        OutputBuffer rb = ob.offset + totalSize < ob.buffer.length ? ob : 
-            new OutputBuffer(new byte[bufferSize], ob);
+        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
+                new OutputBuffer(new byte[bufferSize], ob) : ob;
 
         byte[] buffer = rb.buffer;
         int offset = rb.offset;
@@ -203,8 +222,8 @@ final class OutputBuffer
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
         int totalSize = tagSize + CodedOutput.LITTLE_ENDIAN_64_SIZE;
         
-        OutputBuffer rb = ob.offset + totalSize < ob.buffer.length ? ob : 
-            new OutputBuffer(new byte[bufferSize], ob);
+        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
+                new OutputBuffer(new byte[bufferSize], ob) : ob;
 
         byte[] buffer = rb.buffer;
         int offset = rb.offset;
