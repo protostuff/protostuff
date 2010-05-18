@@ -59,6 +59,17 @@ public final class BufferedOutput implements Output
     }
     
     /**
+     * Resets this output for re-use.
+     */
+    public BufferedOutput reset()
+    {
+        root.next.offset = 0;
+        current = root.next;
+        size = 0;
+        return this;
+    }
+    
+    /**
      * Writes the raw bytes into the {@link OutputStream}.
      */
     public void streamTo(OutputStream out) throws IOException

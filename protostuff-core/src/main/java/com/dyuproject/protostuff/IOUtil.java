@@ -32,11 +32,11 @@ public final class IOUtil
     private IOUtil(){}
     
     /**
-     * Serializes the {@code message} into a byte array via {@link DeferredOutput}.
+     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        DeferredOutput output = new DeferredOutput();
+        BufferedOutput output = new BufferedOutput();
         try
         {
             schema.writeTo(output, message);
@@ -51,7 +51,7 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link DeferredOutput}.
+     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
      */
     public static <T extends Message<T>> byte[] toByteArray(T message)
     {
@@ -78,7 +78,7 @@ public final class IOUtil
     
     /**
      * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link DeferredOutput}.
+     * an {@link OutputStream} via {@link BufferedOutput}.
      */
     public static <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
     throws IOException
@@ -88,12 +88,12 @@ public final class IOUtil
     
     /**
      * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
+     * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
      */
     public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        DeferredOutput output = new DeferredOutput();
+        BufferedOutput output = new BufferedOutput();
         schema.writeTo(output, message);
         CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
         output.streamTo(out);
@@ -197,7 +197,7 @@ public final class IOUtil
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
     throws IOException
     {
-        final DeferredOutput output = new DeferredOutput();
+        final BufferedOutput output = new BufferedOutput();
         for(T m : messages)
         {
             schema.writeTo(output, m);
