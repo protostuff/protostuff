@@ -55,7 +55,7 @@ public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator
                 "Schema" + fileName + ".java");
         
         AutoIndentWriter out = new AutoIndentWriter(writer);
-        StringTemplate protoOuterBlock = group.getInstanceOf("proto_outer_block");
+        StringTemplate protoOuterBlock = group.getInstanceOf("proto_block");
         
         protoOuterBlock.setAttribute("proto", proto);
         protoOuterBlock.setAttribute("module", module);
