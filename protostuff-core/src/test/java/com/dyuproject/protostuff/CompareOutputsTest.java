@@ -19,17 +19,19 @@ import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
 /**
- * Benchmark to compare the serialization speed of 2 types.
+ * Benchmark to compare the serialization speed of 3 types. 
+ * CodedOutput, BufferedOutput and DeferredOutput.
  *
  * @author David Yu
  * @created Nov 13, 2009
  */
-public class ComputedVSDeferredTest extends TestCase
+public class CompareOutputsTest extends TestCase
 {
     
     public void testBenchmark() throws Exception
@@ -64,14 +66,17 @@ public class ComputedVSDeferredTest extends TestCase
     {
         serDeser(out, COMPUTED, "computed", warmups, loops);
         serDeser(out, DEFERRED, "deferred", warmups, loops);
+        serDeser(out, DEFERRED, "buffered", warmups, loops);
     }
     
     public static void serDeser(PrintStream out) throws Exception
     {
         String computed = STRING.deser(serDeser(COMPUTED));
         String deferred = STRING.deser(serDeser(DEFERRED));
+        String buffered = STRING.deser(serDeser(BUFFERED));
         
         assertEquals(computed, deferred);
+        assertEquals(computed, buffered);
         
         out.println(computed);
         out.println();
@@ -147,7 +152,39 @@ public class ComputedVSDeferredTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            return IOUtil.toByteArray(message);
+            DeferredOutput output = new DeferredOutput();
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput output = new BufferedOutput();
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
         }
         
     };
