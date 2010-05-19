@@ -2,7 +2,7 @@ package testmodel;
 
 option optimize_for = LITE_RUNTIME;
 option java_package = "com.dyuproject.protostuff.model";
-option java_outer_classname = "V22Lite";
+option java_outer_classname = "V2Lite";
 
 message Person {
   required int32 id = 1;

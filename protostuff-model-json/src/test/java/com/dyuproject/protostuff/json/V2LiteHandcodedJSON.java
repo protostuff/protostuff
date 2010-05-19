@@ -22,8 +22,8 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import com.dyuproject.protostuff.model.V22Lite.Person;
-import com.dyuproject.protostuff.model.V22Lite.Task;
+import com.dyuproject.protostuff.model.V2Lite.Person;
+import com.dyuproject.protostuff.model.V2Lite.Task;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
@@ -33,15 +33,15 @@ import com.google.protobuf.MessageLite.Builder;
  * @created Oct 2, 2009
  */
 
-public final class V22LiteHandcodedJSON extends ProtobufJSON
+public final class V2LiteHandcodedJSON extends ProtobufJSON
 {
     
-    public V22LiteHandcodedJSON()
+    public V2LiteHandcodedJSON()
     {
         super();
     }
     
-    public V22LiteHandcodedJSON(JsonFactory factory)
+    public V2LiteHandcodedJSON(JsonFactory factory)
     {
         super(factory);
     }

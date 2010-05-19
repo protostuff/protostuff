@@ -26,13 +26,13 @@ import junit.framework.TestCase;
  * @created Aug 25, 2009
  */
 
-public class V22Test extends TestCase
+public class V2Test extends TestCase
 {
     
     public void testPrintTypes() 
     {
-        Model<DefaultProperty> taskModel = Model.get(V22Lite.Task.class);
-        Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);
+        Model<DefaultProperty> taskModel = Model.get(V2Lite.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V2Lite.Person.class);
         
         System.err.println(taskModel.getProperty("id").getPropertyMeta().getTypeClass().getSimpleName());
         System.err.println(taskModel.getProperty("name").getPropertyMeta().getTypeClass().getSimpleName());
@@ -51,8 +51,8 @@ public class V22Test extends TestCase
     public void testLite() throws Exception
     {
 
-        Model<DefaultProperty> taskModel = Model.get(V22Lite.Task.class);
-        Model<DefaultProperty> personModel = Model.get(V22Lite.Person.class);        
+        Model<DefaultProperty> taskModel = Model.get(V2Lite.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V2Lite.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
@@ -64,25 +64,25 @@ public class V22Test extends TestCase
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
         assertTrue(personModel.getModelMeta().getMaxNumber()==10);        
         
-        V22Lite.Task task = V22Lite.Task.newBuilder()
+        V2Lite.Task task = V2Lite.Task.newBuilder()
             .setId(1)
             .build();
         
-        V22Lite.Task.Builder taskBuilder = task.toBuilder();
+        V2Lite.Task.Builder taskBuilder = task.toBuilder();
         
-        V22Lite.Person person = V22Lite.Person.newBuilder()
+        V2Lite.Person person = V2Lite.Person.newBuilder()
             .setId(2)
             .build();
         
-        V22Lite.Person.Builder personBuilder = person.toBuilder();
+        V2Lite.Person.Builder personBuilder = person.toBuilder();
         
         taskModel.getProperty("name").setValue(task, "foo");
         taskModel.getProperty("description").setValue(task, "bar");
-        taskModel.getProperty("status").setValue(task, V22Lite.Task.Status.STARTED);
+        taskModel.getProperty("status").setValue(task, V2Lite.Task.Status.STARTED);
         
         assertTrue(task.getName().equals("foo"));
         assertTrue(task.getDescription().equals("bar"));
-        assertTrue(task.getStatus() == V22Lite.Task.Status.STARTED);
+        assertTrue(task.getStatus() == V2Lite.Task.Status.STARTED);
         
         taskModel.getProperty("name").replaceValueIfNone(task, "foo1");
         taskModel.getProperty("description").removeValue(task);
@@ -101,7 +101,7 @@ public class V22Test extends TestCase
         taskModel.getProperty("id").setValue(taskBuilder, 3);
         taskModel.getProperty("name").setValue(taskBuilder, "foo1");
         taskModel.getProperty("description").setValue(taskBuilder, "bar1");
-        taskModel.getProperty("status").setValue(taskBuilder, V22Lite.Task.Status.COMPLETED);
+        taskModel.getProperty("status").setValue(taskBuilder, V2Lite.Task.Status.COMPLETED);
         taskModel.getProperty("attachment").setValue(taskBuilder, new byte[]{0x30});
         taskModel.getProperty("aboolean").setValue(taskBuilder, true);
         taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
@@ -111,7 +111,7 @@ public class V22Test extends TestCase
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
         assertTrue(taskBuilder.getDescription().equals("bar1"));
-        assertTrue(taskBuilder.getStatus() == V22Lite.Task.Status.COMPLETED);
+        assertTrue(taskBuilder.getStatus() == V2Lite.Task.Status.COMPLETED);
         assertTrue(taskBuilder.getAttachment().equals(ByteString.copyFrom(new byte[]{0x30})));
         assertTrue(taskBuilder.getAboolean()==true);
         assertTrue(taskBuilder.getAfloat()==10.101f);
@@ -150,7 +150,7 @@ public class V22Test extends TestCase
         assertTrue(personBuilder.getImage(0).equals(ByteString.copyFrom(new byte[]{0x31})));
         assertTrue(personBuilder.getImage(1).equals(ByteString.copyFrom(new byte[]{0x32})));
 
-        List<V22Lite.Task> taskList = new ArrayList<V22Lite.Task>();
+        List<V2Lite.Task> taskList = new ArrayList<V2Lite.Task>();
         taskList.add(task);
         
         personModel.getProperty("delegatedTask").setValue(personBuilder, taskList);
@@ -205,8 +205,8 @@ public class V22Test extends TestCase
     public void testSpeed() throws Exception
     {
 
-        Model<DefaultProperty> taskModel = Model.get(V22Speed.Task.class);
-        Model<DefaultProperty> personModel = Model.get(V22Speed.Person.class);        
+        Model<DefaultProperty> taskModel = Model.get(V2Speed.Task.class);
+        Model<DefaultProperty> personModel = Model.get(V2Speed.Person.class);        
         
         System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
@@ -218,25 +218,25 @@ public class V22Test extends TestCase
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
         assertTrue(personModel.getModelMeta().getMaxNumber()==10);        
         
-        V22Speed.Task task = V22Speed.Task.newBuilder()
+        V2Speed.Task task = V2Speed.Task.newBuilder()
             .setId(1)
             .build();
         
-        V22Speed.Task.Builder taskBuilder = task.toBuilder();
+        V2Speed.Task.Builder taskBuilder = task.toBuilder();
         
-        V22Speed.Person person = V22Speed.Person.newBuilder()
+        V2Speed.Person person = V2Speed.Person.newBuilder()
             .setId(2)
             .build();
         
-        V22Speed.Person.Builder personBuilder = person.toBuilder();
+        V2Speed.Person.Builder personBuilder = person.toBuilder();
         
         taskModel.getProperty("name").setValue(task, "foo");
         taskModel.getProperty("description").setValue(task, "bar");
-        taskModel.getProperty("status").setValue(task, V22Speed.Task.Status.STARTED);
+        taskModel.getProperty("status").setValue(task, V2Speed.Task.Status.STARTED);
         
         assertTrue(task.getName().equals("foo"));
         assertTrue(task.getDescription().equals("bar"));
-        assertTrue(task.getStatus() == V22Speed.Task.Status.STARTED);
+        assertTrue(task.getStatus() == V2Speed.Task.Status.STARTED);
         
         taskModel.getProperty("name").replaceValueIfNone(task, "foo1");
         taskModel.getProperty("description").removeValue(task);
@@ -255,7 +255,7 @@ public class V22Test extends TestCase
         taskModel.getProperty("id").setValue(taskBuilder, 3);
         taskModel.getProperty("name").setValue(taskBuilder, "foo1");
         taskModel.getProperty("description").setValue(taskBuilder, "bar1");
-        taskModel.getProperty("status").setValue(taskBuilder, V22Speed.Task.Status.COMPLETED);
+        taskModel.getProperty("status").setValue(taskBuilder, V2Speed.Task.Status.COMPLETED);
         taskModel.getProperty("attachment").setValue(taskBuilder, new byte[]{0x30});
         taskModel.getProperty("aboolean").setValue(taskBuilder, true);
         taskModel.getProperty("afloat").setValue(taskBuilder, 10.101f);
@@ -265,7 +265,7 @@ public class V22Test extends TestCase
         assertTrue(taskBuilder.getId()==3);
         assertTrue(taskBuilder.getName().equals("foo1"));
         assertTrue(taskBuilder.getDescription().equals("bar1"));
-        assertTrue(taskBuilder.getStatus() == V22Speed.Task.Status.COMPLETED);
+        assertTrue(taskBuilder.getStatus() == V2Speed.Task.Status.COMPLETED);
         assertTrue(taskBuilder.getAttachment().equals(ByteString.copyFrom(new byte[]{0x30})));
         assertTrue(taskBuilder.getAboolean()==true);
         assertTrue(taskBuilder.getAfloat()==10.101f);
@@ -304,7 +304,7 @@ public class V22Test extends TestCase
         assertTrue(personBuilder.getImage(0).equals(ByteString.copyFrom(new byte[]{0x31})));
         assertTrue(personBuilder.getImage(1).equals(ByteString.copyFrom(new byte[]{0x32})));
 
-        List<V22Speed.Task> taskList = new ArrayList<V22Speed.Task>();
+        List<V2Speed.Task> taskList = new ArrayList<V2Speed.Task>();
         taskList.add(task);
         
         personModel.getProperty("delegatedTask").setValue(personBuilder, taskList);

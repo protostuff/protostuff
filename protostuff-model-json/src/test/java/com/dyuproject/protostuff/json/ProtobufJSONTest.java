@@ -29,9 +29,9 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import com.dyuproject.protostuff.model.V22Lite;
-import com.dyuproject.protostuff.model.V22Lite.Person;
-import com.dyuproject.protostuff.model.V22Lite.Task;
+import com.dyuproject.protostuff.model.V2Lite;
+import com.dyuproject.protostuff.model.V2Lite.Person;
+import com.dyuproject.protostuff.model.V2Lite.Task;
 import com.google.protobuf.ByteString;
 
 /**
@@ -41,9 +41,9 @@ import com.google.protobuf.ByteString;
 
 public class ProtobufJSONTest extends TestCase
 {
-    static final ReflectionJSON REFLECTION_LITE = new ReflectionJSON(new Class[]{V22Lite.class});
-    static final ReflectionNumericJSON REFLECTION_LITE_NUM = new ReflectionNumericJSON(new Class[]{V22Lite.class});
-    static final V22LiteHandcodedJSON HANDCODED_LITE = new V22LiteHandcodedJSON();
+    static final ReflectionJSON REFLECTION_LITE = new ReflectionJSON(new Class[]{V2Lite.class});
+    static final ReflectionNumericJSON REFLECTION_LITE_NUM = new ReflectionNumericJSON(new Class[]{V2Lite.class});
+    static final V2LiteHandcodedJSON HANDCODED_LITE = new V2LiteHandcodedJSON();
     
     static final Charset utf8 = Charset.forName("UTF-8");
     
