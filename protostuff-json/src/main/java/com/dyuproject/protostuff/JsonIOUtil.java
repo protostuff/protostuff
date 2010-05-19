@@ -54,7 +54,8 @@ public final class JsonIOUtil
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link JsonOutput}.
+     * Serializes the {@code message} into a byte array via {@link JsonOutput} 
+     * using the given {@code schema}.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
@@ -73,6 +74,16 @@ public final class JsonIOUtil
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link JsonOutput}.
      */
+    public static <T extends Message<T>> void writeTo(OutputStream out, T message, boolean numeric)
+    throws IOException
+    {
+        writeTo(out, message, message.cachedSchema(), numeric);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link JsonOutput} 
+     * using the given {@code schema}.
+     */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
@@ -90,6 +101,16 @@ public final class JsonIOUtil
     /**
      * Serializes the {@code message} into a {@link Writer} via {@link JsonOutput}.
      */
+    public static <T extends Message<T>> void writeTo(Writer writer, T message, boolean numeric)
+    throws IOException
+    {
+        writeTo(writer, message, message.cachedSchema(), numeric);
+    }
+    
+    /**
+     * Serializes the {@code message} into a {@link Writer} via {@link JsonOutput} using 
+     * the given {@code schema}.
+     */
     public static <T> void writeTo(Writer writer, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
@@ -105,7 +126,8 @@ public final class JsonIOUtil
     }
     
     /**
-     * Serializes the {@code message} into a JsonGenerator via {@link JsonOutput}.
+     * Serializes the {@code message} into a JsonGenerator via {@link JsonOutput} 
+     * using the given {@code schema}.
      */
     public static <T> void writeTo(JsonGenerator generator, T message, Schema<T> schema, 
             boolean numeric) throws IOException
@@ -121,7 +143,7 @@ public final class JsonIOUtil
     }
     
     /**
-     * Merges the {@code message} with the byte array using the given {@code schema}.
+     * Merges the {@code message} with the byte array.
      */
     public static <T extends Message<T>> void mergeFrom(byte[] data, T message, boolean numeric) 
     throws IOException
@@ -156,6 +178,15 @@ public final class JsonIOUtil
     }
     
     /**
+     * Merges the {@code message} from the {@link InputStream}.
+     */
+    public static <T extends Message<T>> void mergeFrom(InputStream in, T message, boolean numeric)
+    throws IOException
+    {
+        mergeFrom(in, message, message.cachedSchema(), numeric);
+    }
+    
+    /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric)
@@ -170,6 +201,15 @@ public final class JsonIOUtil
         {
             parser.close();
         }
+    }
+    
+    /**
+     * Merges the {@code message} from the {@link Reader}.
+     */
+    public static <T extends Message<T>> void mergeFrom(Reader reader, T message, boolean numeric)
+    throws IOException
+    {
+        mergeFrom(reader, message, message.cachedSchema(), numeric);
     }
     
     /**
