@@ -89,13 +89,13 @@
     
     <junit.version>4.4</junit.version>
     <servlet.version>2.5-20081211</servlet.version>
-    <jetty.version>6.1.19</jetty.version>
-    <protobuf.version>2.2.0</protobuf.version>
+    <jetty.version>6.1.24</jetty.version>
+    <protobuf.version>2.3.0</protobuf.version>
     <jackson.version>1.2.1</jackson.version>
     <protostuff.version>1.0-SNAPSHOT</protostuff.version>
     
     <!--<google.webtoolkit.home>${env.GWT_HOME}</google.webtoolkit.home>-->
-    <gwt.version>2.0.0</gwt.version>
+    <gwt.version>2.0.3</gwt.version>
     <gwt.mojo.version>1.2</gwt.mojo.version>
   </properties>
   
