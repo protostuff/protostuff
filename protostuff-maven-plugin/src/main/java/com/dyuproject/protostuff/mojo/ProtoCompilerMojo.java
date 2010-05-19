@@ -33,6 +33,8 @@ import com.dyuproject.protostuff.compiler.CompilerMain;
  */
 public class ProtoCompilerMojo extends AbstractMojo
 {
+    
+    static final boolean SKIP = Boolean.getBoolean("protostuff.compiler.skip");
     /**
      * The properties file that contains the modules
      *
@@ -49,6 +51,9 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
+        if(SKIP)
+            return;
+        
         if(modulesFile==null)
         {
             if(protoModules==null)

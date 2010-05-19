@@ -37,6 +37,8 @@ import com.dyuproject.protostuff.codegen.GeneratorMain;
 public class CodeGeneratorMojo extends AbstractMojo
 {
     
+    static final boolean SKIP = Boolean.getBoolean("protostuff.codegen.skip");
+    
     /**
      * The properties file that contains the modules
      *
@@ -53,6 +55,9 @@ public class CodeGeneratorMojo extends AbstractMojo
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
+        if(SKIP)
+            return;
+        
         if(modulesFile==null)
         {
             if(modules==null)
