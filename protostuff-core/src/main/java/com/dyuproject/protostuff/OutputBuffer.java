@@ -89,14 +89,9 @@ final class OutputBuffer
         
             rb.offset += valueLen;
             
-            // view
-            OutputBuffer view = new OutputBuffer(rb);
-        
-            view.currentSize = totalSize;
-        
-            new OutputBuffer(value, rb).next = view;
+            rb.currentSize = totalSize;
             
-            return view;
+            return rb;
         }
     }
 

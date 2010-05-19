@@ -77,7 +77,7 @@ public final class BufferedOutput implements Output
         for(OutputBuffer node = root.next; node != null; node = node.next)
         {
             int len = node.offset - node.start;
-            //if(len > 0)
+            if(len > 0)
                 out.write(node.buffer, node.start, len);
         }
     }
@@ -92,11 +92,11 @@ public final class BufferedOutput implements Output
         for(OutputBuffer node = root.next; node != null; node = node.next)
         {
             int len = node.offset - node.start;
-            //if(len > 0)
-            //{
+            if(len > 0)
+            {
                 System.arraycopy(node.buffer, node.start, buffer, start, len);
                 start += len;
-            //}
+            }
         }
         return buffer;
     }
