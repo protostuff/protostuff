@@ -50,8 +50,15 @@
             <include>**/*</include>
           </includes>
         </fileSet>
-        <fileSet filtered="true" encoding="UTF-8">
+        <fileSet filtered="false" encoding="UTF-8">
           <directory>src/main/webapp</directory>
+          <includes>
+            <include>*.html</include>
+            <include>*.js</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/main/webapp/WEB-INF</directory>
           <includes>
             <include>**/*</include>
           </includes>
