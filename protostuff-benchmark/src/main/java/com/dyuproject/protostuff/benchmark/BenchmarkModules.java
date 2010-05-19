@@ -20,10 +20,6 @@ import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffJsonSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedLiteSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedNumericSerializer;
-import com.dyuproject.protostuff.benchmark.serializers.model.GeneratedSpeedSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
@@ -55,14 +51,17 @@ public class BenchmarkModules
         
         // json
         runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
-        runner.addObjectSerializer(new GeneratedSpeedNumericSerializer());
-        runner.addObjectSerializer(new GeneratedLiteNumericSerializer());
+        // deprecated
+        //runner.addObjectSerializer(new GeneratedSpeedNumericSerializer());
+        //runner.addObjectSerializer(new GeneratedLiteNumericSerializer());
         
         // numeric
         runner.addObjectSerializer(new ProtostuffJsonSerializer());
-        runner.addObjectSerializer(new GeneratedSpeedSerializer());
-        runner.addObjectSerializer(new GeneratedLiteSerializer());
+        // deprecated
+        //runner.addObjectSerializer(new GeneratedSpeedSerializer());
+        //runner.addObjectSerializer(new GeneratedLiteSerializer());
         
+        // deprecated
         //runner.addObjectSerializer(new ReflectionSpeedSerializer());
         //runner.addObjectSerializer(new ReflectionLiteSerializer());
         //runner.addObjectSerializer(new ReflectionSpeedNumericSerializer());
