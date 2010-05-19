@@ -43,11 +43,4 @@ Rapid development setup:
      This affects only gwt overlays that have enums as declared in the .proto file.
      
      If you want to test the compiled UI, execute:
-     $ mvn -Dgwt.compiler.skip=true jetty:run
-     
-     When jetty is started, open run configurations and uncheck 
-     "Run built-in server" and click "Run".
-     
-     That is done by right-clicking:
-     ${rootArtifactId}-gwt-client and selecting Run As->Run Configurations->Run
-
+     $ mvn -Dgwt.compiler.skip=true -Dprotostuff.compiler.skip=true jetty:run

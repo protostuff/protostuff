@@ -49,6 +49,8 @@
   </build>
 
   <modules>
+    <module>basic-webapp</module>
+    <module>basic-gwt-webapp</module>
     <module>simple-webapp</module>
     <module>simple-gwt-webapp</module>
   </modules>
