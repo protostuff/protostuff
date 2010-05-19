@@ -3,8 +3,8 @@
 
 package com.dyuproject.protostuff.benchmark;
 
-public final class V22LiteMedia {
-  private V22LiteMedia() {}
+public final class V2LiteMedia {
+  private V2LiteMedia() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -61,7 +61,7 @@ public final class V22LiteMedia {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:serializers.protobuf.Image.Size)
+      // @@protoc_insertion_point(enum_scope:serializers.protobuf.media.Image.Size)
     }
     
     // required string uri = 1;
@@ -78,32 +78,35 @@ public final class V22LiteMedia {
     public boolean hasTitle() { return hasTitle; }
     public java.lang.String getTitle() { return title_; }
     
-    // optional int32 width = 3;
+    // required int32 width = 3;
     public static final int WIDTH_FIELD_NUMBER = 3;
     private boolean hasWidth;
     private int width_ = 0;
     public boolean hasWidth() { return hasWidth; }
     public int getWidth() { return width_; }
     
-    // optional int32 height = 4;
+    // required int32 height = 4;
     public static final int HEIGHT_FIELD_NUMBER = 4;
     private boolean hasHeight;
     private int height_ = 0;
     public boolean hasHeight() { return hasHeight; }
     public int getHeight() { return height_; }
     
-    // optional .serializers.protobuf.Image.Size size = 5;
+    // required .serializers.protobuf.media.Image.Size size = 5;
     public static final int SIZE_FIELD_NUMBER = 5;
     private boolean hasSize;
-    private com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size size_;
+    private com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size size_;
     public boolean hasSize() { return hasSize; }
-    public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size getSize() { return size_; }
+    public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size getSize() { return size_; }
     
     private void initFields() {
-      size_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size.SMALL;
+      size_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size.SMALL;
     }
     public final boolean isInitialized() {
       if (!hasUri) return false;
+      if (!hasWidth) return false;
+      if (!hasHeight) return false;
+      if (!hasSize) return false;
       return true;
     }
     
@@ -157,41 +160,41 @@ public final class V22LiteMedia {
       return size;
     }
     
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -200,7 +203,7 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -211,12 +214,12 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Image parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -226,26 +229,26 @@ public final class V22LiteMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22LiteMedia.Image prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2LiteMedia.Image prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          com.dyuproject.protostuff.benchmark.V22LiteMedia.Image, Builder> {
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.Image result;
+          com.dyuproject.protostuff.benchmark.V2LiteMedia.Image, Builder> {
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.Image result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.Image();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.Image();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22LiteMedia.Image internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2LiteMedia.Image internalGetResult() {
         return result;
       }
       
@@ -254,7 +257,7 @@ public final class V22LiteMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.Image();
+        result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.Image();
         return this;
       }
       
@@ -262,21 +265,21 @@ public final class V22LiteMedia {
         return create().mergeFrom(result);
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image build() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.Image buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.Image buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -285,18 +288,18 @@ public final class V22LiteMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
         }
-        com.dyuproject.protostuff.benchmark.V22LiteMedia.Image returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2LiteMedia.Image returnMe = result;
         result = null;
         return returnMe;
       }
       
-      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V22LiteMedia.Image other) {
-        if (other == com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V2LiteMedia.Image other) {
+        if (other == com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.getDefaultInstance()) return this;
         if (other.hasUri()) {
           setUri(other.getUri());
         }
@@ -348,7 +351,7 @@ public final class V22LiteMedia {
             }
             case 40: {
               int rawValue = input.readEnum();
-              com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size value = com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size.valueOf(rawValue);
+              com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size value = com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size.valueOf(rawValue);
               if (value != null) {
                 setSize(value);
               }
@@ -401,7 +404,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int32 width = 3;
+      // required int32 width = 3;
       public boolean hasWidth() {
         return result.hasWidth();
       }
@@ -419,7 +422,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int32 height = 4;
+      // required int32 height = 4;
       public boolean hasHeight() {
         return result.hasHeight();
       }
@@ -437,14 +440,14 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Image.Size size = 5;
+      // required .serializers.protobuf.media.Image.Size size = 5;
       public boolean hasSize() {
         return result.hasSize();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size getSize() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size getSize() {
         return result.getSize();
       }
-      public Builder setSize(com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size value) {
+      public Builder setSize(com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -454,20 +457,20 @@ public final class V22LiteMedia {
       }
       public Builder clearSize() {
         result.hasSize = false;
-        result.size_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size.SMALL;
+        result.size_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size.SMALL;
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.Image)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.Image)
     }
     
     static {
       defaultInstance = new Image(true);
-      com.dyuproject.protostuff.benchmark.V22LiteMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2LiteMedia.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.Image)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.Image)
   }
   
   public static final class Media extends
@@ -523,7 +526,7 @@ public final class V22LiteMedia {
         this.value = value;
       }
       
-      // @@protoc_insertion_point(enum_scope:serializers.protobuf.Media.Player)
+      // @@protoc_insertion_point(enum_scope:serializers.protobuf.media.Media.Player)
     }
     
     // required string uri = 1;
@@ -540,35 +543,35 @@ public final class V22LiteMedia {
     public boolean hasTitle() { return hasTitle; }
     public java.lang.String getTitle() { return title_; }
     
-    // optional int32 width = 3;
+    // required int32 width = 3;
     public static final int WIDTH_FIELD_NUMBER = 3;
     private boolean hasWidth;
     private int width_ = 0;
     public boolean hasWidth() { return hasWidth; }
     public int getWidth() { return width_; }
     
-    // optional int32 height = 4;
+    // required int32 height = 4;
     public static final int HEIGHT_FIELD_NUMBER = 4;
     private boolean hasHeight;
     private int height_ = 0;
     public boolean hasHeight() { return hasHeight; }
     public int getHeight() { return height_; }
     
-    // optional string format = 5;
+    // required string format = 5;
     public static final int FORMAT_FIELD_NUMBER = 5;
     private boolean hasFormat;
     private java.lang.String format_ = "";
     public boolean hasFormat() { return hasFormat; }
     public java.lang.String getFormat() { return format_; }
     
-    // optional int64 duration = 6;
+    // required int64 duration = 6;
     public static final int DURATION_FIELD_NUMBER = 6;
     private boolean hasDuration;
     private long duration_ = 0L;
     public boolean hasDuration() { return hasDuration; }
     public long getDuration() { return duration_; }
     
-    // optional int64 size = 7;
+    // required int64 size = 7;
     public static final int SIZE_FIELD_NUMBER = 7;
     private boolean hasSize;
     private long size_ = 0L;
@@ -594,12 +597,12 @@ public final class V22LiteMedia {
       return person_.get(index);
     }
     
-    // optional .serializers.protobuf.Media.Player player = 10;
+    // required .serializers.protobuf.media.Media.Player player = 10;
     public static final int PLAYER_FIELD_NUMBER = 10;
     private boolean hasPlayer;
-    private com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player player_;
+    private com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player player_;
     public boolean hasPlayer() { return hasPlayer; }
-    public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player getPlayer() { return player_; }
+    public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player getPlayer() { return player_; }
     
     // optional string copyright = 11;
     public static final int COPYRIGHT_FIELD_NUMBER = 11;
@@ -609,10 +612,16 @@ public final class V22LiteMedia {
     public java.lang.String getCopyright() { return copyright_; }
     
     private void initFields() {
-      player_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player.JAVA;
+      player_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player.JAVA;
     }
     public final boolean isInitialized() {
       if (!hasUri) return false;
+      if (!hasWidth) return false;
+      if (!hasHeight) return false;
+      if (!hasFormat) return false;
+      if (!hasDuration) return false;
+      if (!hasSize) return false;
+      if (!hasPlayer) return false;
       return true;
     }
     
@@ -713,41 +722,41 @@ public final class V22LiteMedia {
       return size;
     }
     
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -756,7 +765,7 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -767,12 +776,12 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.Media parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -782,26 +791,26 @@ public final class V22LiteMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          com.dyuproject.protostuff.benchmark.V22LiteMedia.Media, Builder> {
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.Media result;
+          com.dyuproject.protostuff.benchmark.V2LiteMedia.Media, Builder> {
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.Media result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.Media();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.Media();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22LiteMedia.Media internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2LiteMedia.Media internalGetResult() {
         return result;
       }
       
@@ -810,7 +819,7 @@ public final class V22LiteMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.Media();
+        result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.Media();
         return this;
       }
       
@@ -818,21 +827,21 @@ public final class V22LiteMedia {
         return create().mergeFrom(result);
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media build() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.Media buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.Media buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -841,7 +850,7 @@ public final class V22LiteMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -850,13 +859,13 @@ public final class V22LiteMedia {
           result.person_ =
             java.util.Collections.unmodifiableList(result.person_);
         }
-        com.dyuproject.protostuff.benchmark.V22LiteMedia.Media returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2LiteMedia.Media returnMe = result;
         result = null;
         return returnMe;
       }
       
-      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media other) {
-        if (other == com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media other) {
+        if (other == com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.getDefaultInstance()) return this;
         if (other.hasUri()) {
           setUri(other.getUri());
         }
@@ -949,7 +958,7 @@ public final class V22LiteMedia {
             }
             case 80: {
               int rawValue = input.readEnum();
-              com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player value = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player.valueOf(rawValue);
+              com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player value = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player.valueOf(rawValue);
               if (value != null) {
                 setPlayer(value);
               }
@@ -1006,7 +1015,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int32 width = 3;
+      // required int32 width = 3;
       public boolean hasWidth() {
         return result.hasWidth();
       }
@@ -1024,7 +1033,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int32 height = 4;
+      // required int32 height = 4;
       public boolean hasHeight() {
         return result.hasHeight();
       }
@@ -1042,7 +1051,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional string format = 5;
+      // required string format = 5;
       public boolean hasFormat() {
         return result.hasFormat();
       }
@@ -1063,7 +1072,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int64 duration = 6;
+      // required int64 duration = 6;
       public boolean hasDuration() {
         return result.hasDuration();
       }
@@ -1081,7 +1090,7 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional int64 size = 7;
+      // required int64 size = 7;
       public boolean hasSize() {
         return result.hasSize();
       }
@@ -1157,14 +1166,14 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Media.Player player = 10;
+      // required .serializers.protobuf.media.Media.Player player = 10;
       public boolean hasPlayer() {
         return result.hasPlayer();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player getPlayer() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player getPlayer() {
         return result.getPlayer();
       }
-      public Builder setPlayer(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player value) {
+      public Builder setPlayer(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1174,7 +1183,7 @@ public final class V22LiteMedia {
       }
       public Builder clearPlayer() {
         result.hasPlayer = false;
-        result.player_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player.JAVA;
+        result.player_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player.JAVA;
         return this;
       }
       
@@ -1199,16 +1208,16 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.Media)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.Media)
     }
     
     static {
       defaultInstance = new Media(true);
-      com.dyuproject.protostuff.benchmark.V22LiteMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2LiteMedia.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.Media)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.Media)
   }
   
   public static final class MediaContent extends
@@ -1228,42 +1237,41 @@ public final class V22LiteMedia {
       return defaultInstance;
     }
     
-    // repeated .serializers.protobuf.Image image = 1;
+    // repeated .serializers.protobuf.media.Image image = 1;
     public static final int IMAGE_FIELD_NUMBER = 1;
-    private java.util.List<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image> image_ =
+    private java.util.List<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image> image_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image> getImageList() {
+    public java.util.List<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image> getImageList() {
       return image_;
     }
     public int getImageCount() { return image_.size(); }
-    public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image getImage(int index) {
+    public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image getImage(int index) {
       return image_.get(index);
     }
     
-    // optional .serializers.protobuf.Media media = 2;
+    // required .serializers.protobuf.media.Media media = 2;
     public static final int MEDIA_FIELD_NUMBER = 2;
     private boolean hasMedia;
-    private com.dyuproject.protostuff.benchmark.V22LiteMedia.Media media_;
+    private com.dyuproject.protostuff.benchmark.V2LiteMedia.Media media_;
     public boolean hasMedia() { return hasMedia; }
-    public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media getMedia() { return media_; }
+    public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media getMedia() { return media_; }
     
     private void initFields() {
-      media_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.getDefaultInstance();
+      media_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.getDefaultInstance();
     }
     public final boolean isInitialized() {
-      for (com.dyuproject.protostuff.benchmark.V22LiteMedia.Image element : getImageList()) {
+      if (!hasMedia) return false;
+      for (com.dyuproject.protostuff.benchmark.V2LiteMedia.Image element : getImageList()) {
         if (!element.isInitialized()) return false;
       }
-      if (hasMedia()) {
-        if (!getMedia().isInitialized()) return false;
-      }
+      if (!getMedia().isInitialized()) return false;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (com.dyuproject.protostuff.benchmark.V22LiteMedia.Image element : getImageList()) {
+      for (com.dyuproject.protostuff.benchmark.V2LiteMedia.Image element : getImageList()) {
         output.writeMessage(1, element);
       }
       if (hasMedia()) {
@@ -1277,7 +1285,7 @@ public final class V22LiteMedia {
       if (size != -1) return size;
     
       size = 0;
-      for (com.dyuproject.protostuff.benchmark.V22LiteMedia.Image element : getImageList()) {
+      for (com.dyuproject.protostuff.benchmark.V2LiteMedia.Image element : getImageList()) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, element);
       }
@@ -1289,41 +1297,41 @@ public final class V22LiteMedia {
       return size;
     }
     
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -1332,7 +1340,7 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1343,12 +1351,12 @@ public final class V22LiteMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1358,26 +1366,26 @@ public final class V22LiteMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent, Builder> {
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent result;
+          com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent, Builder> {
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent internalGetResult() {
         return result;
       }
       
@@ -1386,7 +1394,7 @@ public final class V22LiteMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent();
+        result = new com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent();
         return this;
       }
       
@@ -1394,21 +1402,21 @@ public final class V22LiteMedia {
         return create().mergeFrom(result);
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent build() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -1417,7 +1425,7 @@ public final class V22LiteMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -1426,16 +1434,16 @@ public final class V22LiteMedia {
           result.image_ =
             java.util.Collections.unmodifiableList(result.image_);
         }
-        com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent returnMe = result;
         result = null;
         return returnMe;
       }
       
-      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent other) {
-        if (other == com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent other) {
+        if (other == com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent.getDefaultInstance()) return this;
         if (!other.image_.isEmpty()) {
           if (result.image_.isEmpty()) {
-            result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image>();
+            result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image>();
           }
           result.image_.addAll(other.image_);
         }
@@ -1461,13 +1469,13 @@ public final class V22LiteMedia {
               break;
             }
             case 10: {
-              com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Builder subBuilder = com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.newBuilder();
+              com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Builder subBuilder = com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addImage(subBuilder.buildPartial());
               break;
             }
             case 18: {
-              com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Builder subBuilder = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.newBuilder();
+              com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Builder subBuilder = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.newBuilder();
               if (hasMedia()) {
                 subBuilder.mergeFrom(getMedia());
               }
@@ -1480,48 +1488,48 @@ public final class V22LiteMedia {
       }
       
       
-      // repeated .serializers.protobuf.Image image = 1;
-      public java.util.List<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image> getImageList() {
+      // repeated .serializers.protobuf.media.Image image = 1;
+      public java.util.List<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image> getImageList() {
         return java.util.Collections.unmodifiableList(result.image_);
       }
       public int getImageCount() {
         return result.getImageCount();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Image getImage(int index) {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Image getImage(int index) {
         return result.getImage(index);
       }
-      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V22LiteMedia.Image value) {
+      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V2LiteMedia.Image value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.image_.set(index, value);
         return this;
       }
-      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Builder builderForValue) {
+      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Builder builderForValue) {
         result.image_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addImage(com.dyuproject.protostuff.benchmark.V22LiteMedia.Image value) {
+      public Builder addImage(com.dyuproject.protostuff.benchmark.V2LiteMedia.Image value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image>();
         }
         result.image_.add(value);
         return this;
       }
-      public Builder addImage(com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Builder builderForValue) {
+      public Builder addImage(com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Builder builderForValue) {
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image>();
         }
         result.image_.add(builderForValue.build());
         return this;
       }
       public Builder addAllImage(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.benchmark.V22LiteMedia.Image> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.benchmark.V2LiteMedia.Image> values) {
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22LiteMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2LiteMedia.Image>();
         }
         super.addAll(values, result.image_);
         return this;
@@ -1531,14 +1539,14 @@ public final class V22LiteMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Media media = 2;
+      // required .serializers.protobuf.media.Media media = 2;
       public boolean hasMedia() {
         return result.hasMedia();
       }
-      public com.dyuproject.protostuff.benchmark.V22LiteMedia.Media getMedia() {
+      public com.dyuproject.protostuff.benchmark.V2LiteMedia.Media getMedia() {
         return result.getMedia();
       }
-      public Builder setMedia(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media value) {
+      public Builder setMedia(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1546,16 +1554,16 @@ public final class V22LiteMedia {
         result.media_ = value;
         return this;
       }
-      public Builder setMedia(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Builder builderForValue) {
+      public Builder setMedia(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Builder builderForValue) {
         result.hasMedia = true;
         result.media_ = builderForValue.build();
         return this;
       }
-      public Builder mergeMedia(com.dyuproject.protostuff.benchmark.V22LiteMedia.Media value) {
+      public Builder mergeMedia(com.dyuproject.protostuff.benchmark.V2LiteMedia.Media value) {
         if (result.hasMedia() &&
-            result.media_ != com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.getDefaultInstance()) {
+            result.media_ != com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.getDefaultInstance()) {
           result.media_ =
-            com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.newBuilder(result.media_).mergeFrom(value).buildPartial();
+            com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.newBuilder(result.media_).mergeFrom(value).buildPartial();
         } else {
           result.media_ = value;
         }
@@ -1564,20 +1572,20 @@ public final class V22LiteMedia {
       }
       public Builder clearMedia() {
         result.hasMedia = false;
-        result.media_ = com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.getDefaultInstance();
+        result.media_ = com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.getDefaultInstance();
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.MediaContent)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.MediaContent)
     }
     
     static {
       defaultInstance = new MediaContent(true);
-      com.dyuproject.protostuff.benchmark.V22LiteMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2LiteMedia.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.MediaContent)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.MediaContent)
   }
   
   

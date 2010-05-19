@@ -18,9 +18,9 @@ import java.io.ByteArrayOutputStream;
 
 import org.codehaus.jackson.JsonParser;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.generated.V22LiteMediaNumericJSON;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.generated.V2LiteMediaNumericJSON;
 import com.dyuproject.protostuff.benchmark.serializers.AbstractLiteMediaSerializer;
 
 /**
@@ -31,11 +31,11 @@ import com.dyuproject.protostuff.benchmark.serializers.AbstractLiteMediaSerializ
 public class GeneratedLiteNumericSerializer extends AbstractLiteMediaSerializer
 {
     
-    final V22LiteMediaNumericJSON pbJSON = new V22LiteMediaNumericJSON();
+    final V2LiteMediaNumericJSON pbJSON = new V2LiteMediaNumericJSON();
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
-        V22LiteMedia.MediaContent.Builder builder = V22LiteMedia.MediaContent.newBuilder();
+        V2LiteMedia.MediaContent.Builder builder = V2LiteMedia.MediaContent.newBuilder();
         JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
         pbJSON.mergeFrom(parser, builder);
         parser.close();

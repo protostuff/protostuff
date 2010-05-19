@@ -71,11 +71,17 @@ public final class Image implements Externalizable, Message<Image>
     }
 
     public Image(
-        String uri
+        String uri,
+        Integer width,
+        Integer height,
+        Size size
     )
     {
         this();
         this.uri = uri;
+        this.width = width;
+        this.height = height;
+        this.size = size;
     }
 
     // getters and setters
@@ -136,7 +142,7 @@ public final class Image implements Externalizable, Message<Image>
 
     public Size getSize()
     {
-        return size == null ? Size.SMALL : size;
+        return size;
     }
 
     public Image setSize(Size size)
@@ -187,7 +193,10 @@ public final class Image implements Externalizable, Message<Image>
         public boolean isInitialized(Image message)
         {
             return 
-                message.uri != null;
+                message.uri != null 
+                && message.width != null 
+                && message.height != null 
+                && message.size != null;
         }
 
         public void mergeFrom(Input input, Image message) throws IOException
@@ -230,14 +239,17 @@ public final class Image implements Externalizable, Message<Image>
             if(message.title != null)
                 output.writeString(2, message.title, false);
 
-            if(message.width != null)
-                output.writeInt32(3, message.width, false);
+            if(message.width == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(3, message.width, false);
 
-            if(message.height != null)
-                output.writeInt32(4, message.height, false);
+            if(message.height == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(4, message.height, false);
 
-            if(message.size != null)
-                 output.writeEnum(5, message.size.number, false);
+            if(message.size == null)
+                throw new UninitializedMessageException(message);
+            output.writeEnum(5, message.size.number, false);
         }
 
         public String getFieldName(int number)

@@ -3,7 +3,6 @@
 package com.dyuproject.protostuff.benchmark.generated;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -16,20 +15,20 @@ import com.google.protobuf.MessageLite.Builder;
 import com.dyuproject.protostuff.json.ProtobufConvertor;
 import com.dyuproject.protostuff.json.ProtobufJSON;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent;
 
 
-public final class V22LiteMediaJSON extends ProtobufJSON
+public final class V2LiteMediaNumericJSON extends ProtobufJSON
 {
 
-    public V22LiteMediaJSON()
+    public V2LiteMediaNumericJSON()
     {
         super();
     }
 
-    public V22LiteMediaJSON(JsonFactory factory)
+    public V2LiteMediaNumericJSON(JsonFactory factory)
     {
         super(factory);
     }
@@ -53,48 +52,25 @@ public final class V22LiteMediaJSON extends ProtobufJSON
     
     static final ProtobufConvertor<Image,Image.Builder> CONVERTOR_Image = new ProtobufConvertor<Image,Image.Builder>()
     {
-        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
-        {
-                        
-            fieldMap.put("uri", 1);
-                        
-            fieldMap.put("title", 2);
-                        
-            fieldMap.put("width", 3);
-                        
-            fieldMap.put("height", 4);
-                        
-            fieldMap.put("size", 5);
-            
-        }
-
-        final int getFieldNumber(String name) throws IOException
-        {
-            Integer num = fieldMap.get(name);
-            if(num==null)
-                throw new IOException("Field unknown: " + name + " on message " + Image.class);
-
-            return num.intValue();
-        }
 
         public final void generateTo(JsonGenerator generator, Image message) throws IOException
         {
             generator.writeStartObject();
                         
             if(message.hasUri())
-                generator.writeStringField("uri", message.getUri());
+                generator.writeStringField("1", message.getUri());
                                     
             if(message.hasTitle())
-                generator.writeStringField("title", message.getTitle());
+                generator.writeStringField("2", message.getTitle());
                                     
             if(message.hasWidth())
-                generator.writeNumberField("width", message.getWidth());
+                generator.writeNumberField("3", message.getWidth());
                                     
             if(message.hasHeight())
-                generator.writeNumberField("height", message.getHeight());
+                generator.writeNumberField("4", message.getHeight());
                                     
             if(message.hasSize())
-                generator.writeNumberField("size", message.getSize().getNumber());
+                generator.writeNumberField("5", message.getSize().getNumber());
                         
             generator.writeEndObject();
         }
@@ -117,7 +93,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                             Image.class);
                 }
                 String name = parser.getCurrentName();
-                switch( getFieldNumber(name) )
+                switch( Integer.parseInt(name) )
                 {
                     
                     case 1:
@@ -168,71 +144,36 @@ public final class V22LiteMediaJSON extends ProtobufJSON
     
     static final ProtobufConvertor<Media,Media.Builder> CONVERTOR_Media = new ProtobufConvertor<Media,Media.Builder>()
     {
-        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
-        {
-                        
-            fieldMap.put("uri", 1);
-                        
-            fieldMap.put("title", 2);
-                        
-            fieldMap.put("width", 3);
-                        
-            fieldMap.put("height", 4);
-                        
-            fieldMap.put("format", 5);
-                        
-            fieldMap.put("duration", 6);
-                        
-            fieldMap.put("size", 7);
-                        
-            fieldMap.put("bitrate", 8);
-                        
-            fieldMap.put("person", 9);
-                        
-            fieldMap.put("player", 10);
-                        
-            fieldMap.put("copyright", 11);
-            
-        }
-
-        final int getFieldNumber(String name) throws IOException
-        {
-            Integer num = fieldMap.get(name);
-            if(num==null)
-                throw new IOException("Field unknown: " + name + " on message " + Media.class);
-
-            return num.intValue();
-        }
 
         public final void generateTo(JsonGenerator generator, Media message) throws IOException
         {
             generator.writeStartObject();
                         
             if(message.hasUri())
-                generator.writeStringField("uri", message.getUri());
+                generator.writeStringField("1", message.getUri());
                                     
             if(message.hasTitle())
-                generator.writeStringField("title", message.getTitle());
+                generator.writeStringField("2", message.getTitle());
                                     
             if(message.hasWidth())
-                generator.writeNumberField("width", message.getWidth());
+                generator.writeNumberField("3", message.getWidth());
                                     
             if(message.hasHeight())
-                generator.writeNumberField("height", message.getHeight());
+                generator.writeNumberField("4", message.getHeight());
                                     
             if(message.hasFormat())
-                generator.writeStringField("format", message.getFormat());
+                generator.writeStringField("5", message.getFormat());
                                     
             if(message.hasDuration())
-                generator.writeNumberField("duration", message.getDuration());
+                generator.writeNumberField("6", message.getDuration());
                                     
             if(message.hasSize())
-                generator.writeNumberField("size", message.getSize());
+                generator.writeNumberField("7", message.getSize());
                                     
             if(message.hasBitrate())
-                generator.writeNumberField("bitrate", message.getBitrate());
+                generator.writeNumberField("8", message.getBitrate());
                                     
-            generator.writeFieldName("person");
+            generator.writeFieldName("9");
             generator.writeStartArray();
             
             for (String t : message.getPersonList())
@@ -241,10 +182,10 @@ public final class V22LiteMediaJSON extends ProtobufJSON
             generator.writeEndArray();
                                     
             if(message.hasPlayer())
-                generator.writeNumberField("player", message.getPlayer().getNumber());
+                generator.writeNumberField("10", message.getPlayer().getNumber());
                                     
             if(message.hasCopyright())
-                generator.writeStringField("copyright", message.getCopyright());
+                generator.writeStringField("11", message.getCopyright());
                         
             generator.writeEndObject();
         }
@@ -267,7 +208,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                             Media.class);
                 }
                 String name = parser.getCurrentName();
-                switch( getFieldNumber(name) )
+                switch( Integer.parseInt(name) )
                 {
                     
                     case 1:
@@ -374,29 +315,12 @@ public final class V22LiteMediaJSON extends ProtobufJSON
     
     static final ProtobufConvertor<MediaContent,MediaContent.Builder> CONVERTOR_MediaContent = new ProtobufConvertor<MediaContent,MediaContent.Builder>()
     {
-        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
-        {
-                        
-            fieldMap.put("image", 1);
-                        
-            fieldMap.put("media", 2);
-            
-        }
-
-        final int getFieldNumber(String name) throws IOException
-        {
-            Integer num = fieldMap.get(name);
-            if(num==null)
-                throw new IOException("Field unknown: " + name + " on message " + MediaContent.class);
-
-            return num.intValue();
-        }
 
         public final void generateTo(JsonGenerator generator, MediaContent message) throws IOException
         {
             generator.writeStartObject();
                         
-            generator.writeFieldName("image");
+            generator.writeFieldName("1");
             generator.writeStartArray();
             
             for (Image t : message.getImageList())
@@ -406,7 +330,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                                     
             if (message.hasMedia())
             {
-                generator.writeFieldName("media");
+                generator.writeFieldName("2");
                 CONVERTOR_Media.generateTo(generator, message.getMedia());
             }
                         
@@ -431,7 +355,7 @@ public final class V22LiteMediaJSON extends ProtobufJSON
                             MediaContent.class);
                 }
                 String name = parser.getCurrentName();
-                switch( getFieldNumber(name) )
+                switch( Integer.parseInt(name) )
                 {
                     
                     case 1:

@@ -14,11 +14,11 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Image.Size;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Media.Player;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Image.Size;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Media.Player;
 
 /**
  * @author David Yu
@@ -33,7 +33,6 @@ public abstract class AbstractSpeedMediaSerializer implements ObjectSerializer<M
         MediaContent contentProto = MediaContent
         .newBuilder().setMedia(
                 Media.newBuilder()
-                        .clearCopyright()
                         .setFormat("video/mpg4")
                         .setPlayer(Player.JAVA)
                         .setTitle("Javaone Keynote")

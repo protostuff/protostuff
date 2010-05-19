@@ -37,6 +37,9 @@
                 <property>
                   <name>builder_pattern</name>
                 </property>
+                <property>
+                  <name>generate_helper_methods</name>
+                </property>
               </options>
             </protoModule>
           </protoModules>

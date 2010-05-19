@@ -3,8 +3,8 @@
 
 package com.dyuproject.protostuff.benchmark;
 
-public final class V22CodeSizeMedia {
-  private V22CodeSizeMedia() {}
+public final class V2CodeSize {
+  private V2CodeSize() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
@@ -27,12 +27,12 @@ public final class V22CodeSizeMedia {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_Image_descriptor;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_Image_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_Image_fieldAccessorTable;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_Image_fieldAccessorTable;
     }
     
     public enum Size
@@ -74,7 +74,7 @@ public final class V22CodeSizeMedia {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.getDescriptor().getEnumTypes().get(0);
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Image.getDescriptor().getEnumTypes().get(0);
       }
       
       private static final Size[] VALUES = {
@@ -96,10 +96,10 @@ public final class V22CodeSizeMedia {
       }
       
       static {
-        com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.getDescriptor();
+        com.dyuproject.protostuff.benchmark.V2CodeSize.getDescriptor();
       }
       
-      // @@protoc_insertion_point(enum_scope:serializers.protobuf.Image.Size)
+      // @@protoc_insertion_point(enum_scope:serializers.protobuf.media.Image.Size)
     }
     
     // required string uri = 1;
@@ -116,65 +116,65 @@ public final class V22CodeSizeMedia {
     public boolean hasTitle() { return hasTitle; }
     public java.lang.String getTitle() { return title_; }
     
-    // optional int32 width = 3;
+    // required int32 width = 3;
     public static final int WIDTH_FIELD_NUMBER = 3;
     private boolean hasWidth;
     private int width_ = 0;
     public boolean hasWidth() { return hasWidth; }
     public int getWidth() { return width_; }
     
-    // optional int32 height = 4;
+    // required int32 height = 4;
     public static final int HEIGHT_FIELD_NUMBER = 4;
     private boolean hasHeight;
     private int height_ = 0;
     public boolean hasHeight() { return hasHeight; }
     public int getHeight() { return height_; }
     
-    // optional .serializers.protobuf.Image.Size size = 5;
+    // required .serializers.protobuf.media.Image.Size size = 5;
     public static final int SIZE_FIELD_NUMBER = 5;
     private boolean hasSize;
-    private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size size_;
+    private com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size size_;
     public boolean hasSize() { return hasSize; }
-    public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size getSize() { return size_; }
+    public com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size getSize() { return size_; }
     
     private void initFields() {
-      size_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size.SMALL;
+      size_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size.SMALL;
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -183,7 +183,7 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -194,12 +194,12 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Image parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -209,25 +209,25 @@ public final class V22CodeSizeMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2CodeSize.Image prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image result;
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.Image result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2CodeSize.Image.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2CodeSize.Image();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2CodeSize.Image internalGetResult() {
         return result;
       }
       
@@ -236,7 +236,7 @@ public final class V22CodeSizeMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image();
+        result = new com.dyuproject.protostuff.benchmark.V2CodeSize.Image();
         return this;
       }
       
@@ -246,24 +246,24 @@ public final class V22CodeSizeMedia {
       
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.getDescriptor();
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Image.getDescriptor();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Image getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Image.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image build() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Image build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.Image buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -272,12 +272,12 @@ public final class V22CodeSizeMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Image buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
         }
-        com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2CodeSize.Image returnMe = result;
         result = null;
         return returnMe;
       }
@@ -325,7 +325,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int32 width = 3;
+      // required int32 width = 3;
       public boolean hasWidth() {
         return result.hasWidth();
       }
@@ -343,7 +343,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int32 height = 4;
+      // required int32 height = 4;
       public boolean hasHeight() {
         return result.hasHeight();
       }
@@ -361,14 +361,14 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Image.Size size = 5;
+      // required .serializers.protobuf.media.Image.Size size = 5;
       public boolean hasSize() {
         return result.hasSize();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size getSize() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size getSize() {
         return result.getSize();
       }
-      public Builder setSize(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size value) {
+      public Builder setSize(com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -378,20 +378,20 @@ public final class V22CodeSizeMedia {
       }
       public Builder clearSize() {
         result.hasSize = false;
-        result.size_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size.SMALL;
+        result.size_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Size.SMALL;
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.Image)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.Image)
     }
     
     static {
       defaultInstance = new Image(true);
-      com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2CodeSize.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.Image)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.Image)
   }
   
   public static final class Media extends
@@ -413,12 +413,12 @@ public final class V22CodeSizeMedia {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_Media_descriptor;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_Media_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_Media_fieldAccessorTable;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_Media_fieldAccessorTable;
     }
     
     public enum Player
@@ -460,7 +460,7 @@ public final class V22CodeSizeMedia {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDescriptor().getEnumTypes().get(0);
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDescriptor().getEnumTypes().get(0);
       }
       
       private static final Player[] VALUES = {
@@ -482,10 +482,10 @@ public final class V22CodeSizeMedia {
       }
       
       static {
-        com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.getDescriptor();
+        com.dyuproject.protostuff.benchmark.V2CodeSize.getDescriptor();
       }
       
-      // @@protoc_insertion_point(enum_scope:serializers.protobuf.Media.Player)
+      // @@protoc_insertion_point(enum_scope:serializers.protobuf.media.Media.Player)
     }
     
     // required string uri = 1;
@@ -502,35 +502,35 @@ public final class V22CodeSizeMedia {
     public boolean hasTitle() { return hasTitle; }
     public java.lang.String getTitle() { return title_; }
     
-    // optional int32 width = 3;
+    // required int32 width = 3;
     public static final int WIDTH_FIELD_NUMBER = 3;
     private boolean hasWidth;
     private int width_ = 0;
     public boolean hasWidth() { return hasWidth; }
     public int getWidth() { return width_; }
     
-    // optional int32 height = 4;
+    // required int32 height = 4;
     public static final int HEIGHT_FIELD_NUMBER = 4;
     private boolean hasHeight;
     private int height_ = 0;
     public boolean hasHeight() { return hasHeight; }
     public int getHeight() { return height_; }
     
-    // optional string format = 5;
+    // required string format = 5;
     public static final int FORMAT_FIELD_NUMBER = 5;
     private boolean hasFormat;
     private java.lang.String format_ = "";
     public boolean hasFormat() { return hasFormat; }
     public java.lang.String getFormat() { return format_; }
     
-    // optional int64 duration = 6;
+    // required int64 duration = 6;
     public static final int DURATION_FIELD_NUMBER = 6;
     private boolean hasDuration;
     private long duration_ = 0L;
     public boolean hasDuration() { return hasDuration; }
     public long getDuration() { return duration_; }
     
-    // optional int64 size = 7;
+    // required int64 size = 7;
     public static final int SIZE_FIELD_NUMBER = 7;
     private boolean hasSize;
     private long size_ = 0L;
@@ -556,12 +556,12 @@ public final class V22CodeSizeMedia {
       return person_.get(index);
     }
     
-    // optional .serializers.protobuf.Media.Player player = 10;
+    // required .serializers.protobuf.media.Media.Player player = 10;
     public static final int PLAYER_FIELD_NUMBER = 10;
     private boolean hasPlayer;
-    private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player player_;
+    private com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player player_;
     public boolean hasPlayer() { return hasPlayer; }
-    public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player getPlayer() { return player_; }
+    public com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player getPlayer() { return player_; }
     
     // optional string copyright = 11;
     public static final int COPYRIGHT_FIELD_NUMBER = 11;
@@ -571,43 +571,43 @@ public final class V22CodeSizeMedia {
     public java.lang.String getCopyright() { return copyright_; }
     
     private void initFields() {
-      player_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player.JAVA;
+      player_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player.JAVA;
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -616,7 +616,7 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -627,12 +627,12 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.Media parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -642,25 +642,25 @@ public final class V22CodeSizeMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2CodeSize.Media prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media result;
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.Media result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2CodeSize.Media.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2CodeSize.Media();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2CodeSize.Media internalGetResult() {
         return result;
       }
       
@@ -669,7 +669,7 @@ public final class V22CodeSizeMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media();
+        result = new com.dyuproject.protostuff.benchmark.V2CodeSize.Media();
         return this;
       }
       
@@ -679,24 +679,24 @@ public final class V22CodeSizeMedia {
       
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDescriptor();
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDescriptor();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Media getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media build() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Media build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.Media buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -705,7 +705,7 @@ public final class V22CodeSizeMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Media buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -714,7 +714,7 @@ public final class V22CodeSizeMedia {
           result.person_ =
             java.util.Collections.unmodifiableList(result.person_);
         }
-        com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2CodeSize.Media returnMe = result;
         result = null;
         return returnMe;
       }
@@ -762,7 +762,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int32 width = 3;
+      // required int32 width = 3;
       public boolean hasWidth() {
         return result.hasWidth();
       }
@@ -780,7 +780,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int32 height = 4;
+      // required int32 height = 4;
       public boolean hasHeight() {
         return result.hasHeight();
       }
@@ -798,7 +798,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional string format = 5;
+      // required string format = 5;
       public boolean hasFormat() {
         return result.hasFormat();
       }
@@ -819,7 +819,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int64 duration = 6;
+      // required int64 duration = 6;
       public boolean hasDuration() {
         return result.hasDuration();
       }
@@ -837,7 +837,7 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional int64 size = 7;
+      // required int64 size = 7;
       public boolean hasSize() {
         return result.hasSize();
       }
@@ -913,14 +913,14 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Media.Player player = 10;
+      // required .serializers.protobuf.media.Media.Player player = 10;
       public boolean hasPlayer() {
         return result.hasPlayer();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player getPlayer() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player getPlayer() {
         return result.getPlayer();
       }
-      public Builder setPlayer(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player value) {
+      public Builder setPlayer(com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -930,7 +930,7 @@ public final class V22CodeSizeMedia {
       }
       public Builder clearPlayer() {
         result.hasPlayer = false;
-        result.player_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player.JAVA;
+        result.player_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Player.JAVA;
         return this;
       }
       
@@ -955,16 +955,16 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.Media)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.Media)
     }
     
     static {
       defaultInstance = new Media(true);
-      com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2CodeSize.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.Media)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.Media)
   }
   
   public static final class MediaContent extends
@@ -986,71 +986,71 @@ public final class V22CodeSizeMedia {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_MediaContent_descriptor;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_MediaContent_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internal_static_serializers_protobuf_MediaContent_fieldAccessorTable;
+      return com.dyuproject.protostuff.benchmark.V2CodeSize.internal_static_serializers_protobuf_media_MediaContent_fieldAccessorTable;
     }
     
-    // repeated .serializers.protobuf.Image image = 1;
+    // repeated .serializers.protobuf.media.Image image = 1;
     public static final int IMAGE_FIELD_NUMBER = 1;
-    private java.util.List<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image> image_ =
+    private java.util.List<com.dyuproject.protostuff.benchmark.V2CodeSize.Image> image_ =
       java.util.Collections.emptyList();
-    public java.util.List<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image> getImageList() {
+    public java.util.List<com.dyuproject.protostuff.benchmark.V2CodeSize.Image> getImageList() {
       return image_;
     }
     public int getImageCount() { return image_.size(); }
-    public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image getImage(int index) {
+    public com.dyuproject.protostuff.benchmark.V2CodeSize.Image getImage(int index) {
       return image_.get(index);
     }
     
-    // optional .serializers.protobuf.Media media = 2;
+    // required .serializers.protobuf.media.Media media = 2;
     public static final int MEDIA_FIELD_NUMBER = 2;
     private boolean hasMedia;
-    private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media media_;
+    private com.dyuproject.protostuff.benchmark.V2CodeSize.Media media_;
     public boolean hasMedia() { return hasMedia; }
-    public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media getMedia() { return media_; }
+    public com.dyuproject.protostuff.benchmark.V2CodeSize.Media getMedia() { return media_; }
     
     private void initFields() {
-      media_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDefaultInstance();
+      media_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDefaultInstance();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(byte[] data)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return newBuilder().mergeFrom(data, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input, extensionRegistry)
                .buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseDelimitedFrom(java.io.InputStream input)
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       Builder builder = newBuilder();
       if (builder.mergeDelimitedFrom(input)) {
@@ -1059,7 +1059,7 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseDelimitedFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1070,12 +1070,12 @@ public final class V22CodeSizeMedia {
         return null;
       }
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return newBuilder().mergeFrom(input).buildParsed();
     }
-    public static com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent parseFrom(
+    public static com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1085,25 +1085,25 @@ public final class V22CodeSizeMedia {
     
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent prototype) {
+    public static Builder newBuilder(com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
     
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent result;
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent result;
       
-      // Construct using com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent.newBuilder()
+      // Construct using com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent.newBuilder()
       private Builder() {}
       
       private static Builder create() {
         Builder builder = new Builder();
-        builder.result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent();
+        builder.result = new com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent();
         return builder;
       }
       
-      protected com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent internalGetResult() {
+      protected com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent internalGetResult() {
         return result;
       }
       
@@ -1112,7 +1112,7 @@ public final class V22CodeSizeMedia {
           throw new IllegalStateException(
             "Cannot call clear() after build().");
         }
-        result = new com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent();
+        result = new com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent();
         return this;
       }
       
@@ -1122,24 +1122,24 @@ public final class V22CodeSizeMedia {
       
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent.getDescriptor();
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent.getDescriptor();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent getDefaultInstanceForType() {
-        return com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent.getDefaultInstance();
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent getDefaultInstanceForType() {
+        return com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent.getDefaultInstance();
       }
       
       public boolean isInitialized() {
         return result.isInitialized();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent build() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent build() {
         if (result != null && !isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return buildPartial();
       }
       
-      private com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent buildParsed()
+      private com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
         if (!isInitialized()) {
           throw newUninitializedMessageException(
@@ -1148,7 +1148,7 @@ public final class V22CodeSizeMedia {
         return buildPartial();
       }
       
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent buildPartial() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent buildPartial() {
         if (result == null) {
           throw new IllegalStateException(
             "build() has already been called on this Builder.");
@@ -1157,54 +1157,54 @@ public final class V22CodeSizeMedia {
           result.image_ =
             java.util.Collections.unmodifiableList(result.image_);
         }
-        com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent returnMe = result;
+        com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent returnMe = result;
         result = null;
         return returnMe;
       }
       
       
-      // repeated .serializers.protobuf.Image image = 1;
-      public java.util.List<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image> getImageList() {
+      // repeated .serializers.protobuf.media.Image image = 1;
+      public java.util.List<com.dyuproject.protostuff.benchmark.V2CodeSize.Image> getImageList() {
         return java.util.Collections.unmodifiableList(result.image_);
       }
       public int getImageCount() {
         return result.getImageCount();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image getImage(int index) {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Image getImage(int index) {
         return result.getImage(index);
       }
-      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image value) {
+      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V2CodeSize.Image value) {
         if (value == null) {
           throw new NullPointerException();
         }
         result.image_.set(index, value);
         return this;
       }
-      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Builder builderForValue) {
+      public Builder setImage(int index, com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Builder builderForValue) {
         result.image_.set(index, builderForValue.build());
         return this;
       }
-      public Builder addImage(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image value) {
+      public Builder addImage(com.dyuproject.protostuff.benchmark.V2CodeSize.Image value) {
         if (value == null) {
           throw new NullPointerException();
         }
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2CodeSize.Image>();
         }
         result.image_.add(value);
         return this;
       }
-      public Builder addImage(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Builder builderForValue) {
+      public Builder addImage(com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Builder builderForValue) {
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2CodeSize.Image>();
         }
         result.image_.add(builderForValue.build());
         return this;
       }
       public Builder addAllImage(
-          java.lang.Iterable<? extends com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image> values) {
+          java.lang.Iterable<? extends com.dyuproject.protostuff.benchmark.V2CodeSize.Image> values) {
         if (result.image_.isEmpty()) {
-          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image>();
+          result.image_ = new java.util.ArrayList<com.dyuproject.protostuff.benchmark.V2CodeSize.Image>();
         }
         super.addAll(values, result.image_);
         return this;
@@ -1214,14 +1214,14 @@ public final class V22CodeSizeMedia {
         return this;
       }
       
-      // optional .serializers.protobuf.Media media = 2;
+      // required .serializers.protobuf.media.Media media = 2;
       public boolean hasMedia() {
         return result.hasMedia();
       }
-      public com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media getMedia() {
+      public com.dyuproject.protostuff.benchmark.V2CodeSize.Media getMedia() {
         return result.getMedia();
       }
-      public Builder setMedia(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media value) {
+      public Builder setMedia(com.dyuproject.protostuff.benchmark.V2CodeSize.Media value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1229,16 +1229,16 @@ public final class V22CodeSizeMedia {
         result.media_ = value;
         return this;
       }
-      public Builder setMedia(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Builder builderForValue) {
+      public Builder setMedia(com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Builder builderForValue) {
         result.hasMedia = true;
         result.media_ = builderForValue.build();
         return this;
       }
-      public Builder mergeMedia(com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media value) {
+      public Builder mergeMedia(com.dyuproject.protostuff.benchmark.V2CodeSize.Media value) {
         if (result.hasMedia() &&
-            result.media_ != com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDefaultInstance()) {
+            result.media_ != com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDefaultInstance()) {
           result.media_ =
-            com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.newBuilder(result.media_).mergeFrom(value).buildPartial();
+            com.dyuproject.protostuff.benchmark.V2CodeSize.Media.newBuilder(result.media_).mergeFrom(value).buildPartial();
         } else {
           result.media_ = value;
         }
@@ -1247,37 +1247,37 @@ public final class V22CodeSizeMedia {
       }
       public Builder clearMedia() {
         result.hasMedia = false;
-        result.media_ = com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.getDefaultInstance();
+        result.media_ = com.dyuproject.protostuff.benchmark.V2CodeSize.Media.getDefaultInstance();
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:serializers.protobuf.MediaContent)
+      // @@protoc_insertion_point(builder_scope:serializers.protobuf.media.MediaContent)
     }
     
     static {
       defaultInstance = new MediaContent(true);
-      com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.internalForceInit();
+      com.dyuproject.protostuff.benchmark.V2CodeSize.internalForceInit();
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:serializers.protobuf.MediaContent)
+    // @@protoc_insertion_point(class_scope:serializers.protobuf.media.MediaContent)
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_serializers_protobuf_Image_descriptor;
+    internal_static_serializers_protobuf_media_Image_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_serializers_protobuf_Image_fieldAccessorTable;
+      internal_static_serializers_protobuf_media_Image_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_serializers_protobuf_Media_descriptor;
+    internal_static_serializers_protobuf_media_Media_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_serializers_protobuf_Media_fieldAccessorTable;
+      internal_static_serializers_protobuf_media_Media_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_serializers_protobuf_MediaContent_descriptor;
+    internal_static_serializers_protobuf_media_MediaContent_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_serializers_protobuf_MediaContent_fieldAccessorTable;
+      internal_static_serializers_protobuf_media_MediaContent_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1287,52 +1287,52 @@ public final class V22CodeSizeMedia {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\036src/main/resources/media.proto\022\024serial" +
-      "izers.protobuf\"\220\001\n\005Image\022\013\n\003uri\030\001 \002(\t\022\r\n" +
-      "\005title\030\002 \001(\t\022\r\n\005width\030\003 \001(\005\022\016\n\006height\030\004 " +
-      "\001(\005\022.\n\004size\030\005 \001(\0162 .serializers.protobuf" +
-      ".Image.Size\"\034\n\004Size\022\t\n\005SMALL\020\000\022\t\n\005LARGE\020" +
-      "\001\"\371\001\n\005Media\022\013\n\003uri\030\001 \002(\t\022\r\n\005title\030\002 \001(\t\022" +
-      "\r\n\005width\030\003 \001(\005\022\016\n\006height\030\004 \001(\005\022\016\n\006format" +
-      "\030\005 \001(\t\022\020\n\010duration\030\006 \001(\003\022\014\n\004size\030\007 \001(\003\022\017" +
-      "\n\007bitrate\030\010 \001(\005\022\016\n\006person\030\t \003(\t\0222\n\006playe" +
-      "r\030\n \001(\0162\".serializers.protobuf.Media.Pla",
-      "yer\022\021\n\tcopyright\030\013 \001(\t\"\035\n\006Player\022\010\n\004JAVA" +
-      "\020\000\022\t\n\005FLASH\020\001\"f\n\014MediaContent\022*\n\005image\030\001" +
-      " \003(\0132\033.serializers.protobuf.Image\022*\n\005med" +
-      "ia\030\002 \001(\0132\033.serializers.protobuf.MediaB9\n" +
-      "#com.dyuproject.protostuff.benchmarkB\020V2" +
-      "2CodeSizeMediaH\002"
+      "\n\036src/main/resources/media.proto\022\032serial" +
+      "izers.protobuf.media\"\226\001\n\005Image\022\013\n\003uri\030\001 " +
+      "\002(\t\022\r\n\005title\030\002 \001(\t\022\r\n\005width\030\003 \002(\005\022\016\n\006hei" +
+      "ght\030\004 \002(\005\0224\n\004size\030\005 \002(\0162&.serializers.pr" +
+      "otobuf.media.Image.Size\"\034\n\004Size\022\t\n\005SMALL" +
+      "\020\000\022\t\n\005LARGE\020\001\"\377\001\n\005Media\022\013\n\003uri\030\001 \002(\t\022\r\n\005" +
+      "title\030\002 \001(\t\022\r\n\005width\030\003 \002(\005\022\016\n\006height\030\004 \002" +
+      "(\005\022\016\n\006format\030\005 \002(\t\022\020\n\010duration\030\006 \002(\003\022\014\n\004" +
+      "size\030\007 \002(\003\022\017\n\007bitrate\030\010 \001(\005\022\016\n\006person\030\t " +
+      "\003(\t\0228\n\006player\030\n \002(\0162(.serializers.protob",
+      "uf.media.Media.Player\022\021\n\tcopyright\030\013 \001(\t" +
+      "\"\035\n\006Player\022\010\n\004JAVA\020\000\022\t\n\005FLASH\020\001\"r\n\014Media" +
+      "Content\0220\n\005image\030\001 \003(\0132!.serializers.pro" +
+      "tobuf.media.Image\0220\n\005media\030\002 \002(\0132!.seria" +
+      "lizers.protobuf.media.MediaB3\n#com.dyupr" +
+      "oject.protostuff.benchmarkB\nV2CodeSizeH\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_serializers_protobuf_Image_descriptor =
+          internal_static_serializers_protobuf_media_Image_descriptor =
             getDescriptor().getMessageTypes().get(0);
-          internal_static_serializers_protobuf_Image_fieldAccessorTable = new
+          internal_static_serializers_protobuf_media_Image_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_serializers_protobuf_Image_descriptor,
+              internal_static_serializers_protobuf_media_Image_descriptor,
               new java.lang.String[] { "Uri", "Title", "Width", "Height", "Size", },
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.class,
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Builder.class);
-          internal_static_serializers_protobuf_Media_descriptor =
+              com.dyuproject.protostuff.benchmark.V2CodeSize.Image.class,
+              com.dyuproject.protostuff.benchmark.V2CodeSize.Image.Builder.class);
+          internal_static_serializers_protobuf_media_Media_descriptor =
             getDescriptor().getMessageTypes().get(1);
-          internal_static_serializers_protobuf_Media_fieldAccessorTable = new
+          internal_static_serializers_protobuf_media_Media_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_serializers_protobuf_Media_descriptor,
+              internal_static_serializers_protobuf_media_Media_descriptor,
               new java.lang.String[] { "Uri", "Title", "Width", "Height", "Format", "Duration", "Size", "Bitrate", "Person", "Player", "Copyright", },
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.class,
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Builder.class);
-          internal_static_serializers_protobuf_MediaContent_descriptor =
+              com.dyuproject.protostuff.benchmark.V2CodeSize.Media.class,
+              com.dyuproject.protostuff.benchmark.V2CodeSize.Media.Builder.class);
+          internal_static_serializers_protobuf_media_MediaContent_descriptor =
             getDescriptor().getMessageTypes().get(2);
-          internal_static_serializers_protobuf_MediaContent_fieldAccessorTable = new
+          internal_static_serializers_protobuf_media_MediaContent_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_serializers_protobuf_MediaContent_descriptor,
+              internal_static_serializers_protobuf_media_MediaContent_descriptor,
               new java.lang.String[] { "Image", "Media", },
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent.class,
-              com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent.Builder.class);
+              com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent.class,
+              com.dyuproject.protostuff.benchmark.V2CodeSize.MediaContent.Builder.class);
           return null;
         }
       };

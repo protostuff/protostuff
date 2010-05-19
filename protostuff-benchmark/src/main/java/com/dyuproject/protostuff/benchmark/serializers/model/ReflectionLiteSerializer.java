@@ -18,8 +18,8 @@ import java.io.ByteArrayOutputStream;
 
 import org.codehaus.jackson.JsonParser;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent;
 import com.dyuproject.protostuff.benchmark.serializers.AbstractLiteMediaSerializer;
 import com.dyuproject.protostuff.json.ReflectionJSON;
 
@@ -31,11 +31,11 @@ import com.dyuproject.protostuff.json.ReflectionJSON;
 public class ReflectionLiteSerializer extends AbstractLiteMediaSerializer
 {
     
-    final ReflectionJSON pbJSON = new ReflectionJSON(new Class[]{V22LiteMedia.class});
+    final ReflectionJSON pbJSON = new ReflectionJSON(new Class[]{V2LiteMedia.class});
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
-        V22LiteMedia.MediaContent.Builder builder = V22LiteMedia.MediaContent.newBuilder();
+        V2LiteMedia.MediaContent.Builder builder = V2LiteMedia.MediaContent.newBuilder();
         JsonParser parser = pbJSON.getJsonFactory().createJsonParser(array);
         pbJSON.mergeFrom(parser, builder);
         parser.close();

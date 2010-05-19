@@ -14,8 +14,6 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import java.util.ArrayList;
-
 import com.dyuproject.protostuff.benchmark.Image;
 import com.dyuproject.protostuff.benchmark.Media;
 import com.dyuproject.protostuff.benchmark.MediaContent;
@@ -23,7 +21,7 @@ import com.dyuproject.protostuff.benchmark.Image.Size;
 import com.dyuproject.protostuff.benchmark.Media.Player;
 
 /**
- * TODO
+ * Base serializer for protostuff.
  *
  * @author David Yu
  * @created Jan 14, 2010
@@ -33,40 +31,34 @@ public abstract class AbstractProtostuffSerializer implements ObjectSerializer<M
     
     public MediaContent create()
     {
-        Image image1 = new Image("http://javaone.com/keynote_large.jpg")
-            .setTitle("Javaone Keynote")
-            .setHeight(0)
-            .setWidth(0)
-            .setSize(Size.LARGE);
-        
-        Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg")
-            .setTitle("Javaone Keynote")
-            .setHeight(0)
-            .setWidth(0)
-            .setSize(Size.SMALL);
-        
-        ArrayList<Image> imageList = new ArrayList<Image>();
-        imageList.add(image1);
-        imageList.add(image2);
-
-        ArrayList<String> personList = new ArrayList<String>();
-        personList.add("Bill Gates");
-        personList.add("Steve Jobs");
-        
-        Media media = new Media("http://javaone.com/keynote.mpg")
-            .setTitle("Javaone Keynote")
-            .setWidth(0)
-            .setHeight(0)
-            .setFormat("video/mpg4")
-            .setDuration(1234567l)
-            .setSize(123l)
-            .setBitrate(123)
-            .setPlayer(Player.JAVA)
-            .setPersonList(personList);
-
-        MediaContent mediaContent = new MediaContent();
-        mediaContent.setImageList(imageList);
-        mediaContent.setMedia(media);
+        MediaContent mediaContent = new MediaContent(
+                new Media(
+                        "http://javaone.com/keynote.mpg", 
+                        0, 
+                        0, 
+                        "video/mpg4", 
+                        1234567l, 
+                        123l, 
+                        Player.JAVA)
+                    .setTitle("Javaone Keynote")
+                    .setBitrate(123)
+                    .addPerson("Bill Gates")
+                    .addPerson("Steve Jobs")
+            )
+            .addImage(new Image(
+                    "http://javaone.com/keynote_large.jpg", 
+                    0, 
+                    0, 
+                    Size.LARGE)
+                .setTitle("Javaone Keynote")
+            )
+            .addImage(new Image(
+                    "http://javaone.com/keynote_thumbnail.jpg", 
+                    0, 
+                    0, 
+                    Size.SMALL)
+                .setTitle("Javaone Keynote")
+            );
         
         return mediaContent;
     }

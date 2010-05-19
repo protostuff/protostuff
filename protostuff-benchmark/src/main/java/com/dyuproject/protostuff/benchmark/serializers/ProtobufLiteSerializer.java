@@ -16,7 +16,7 @@ package com.dyuproject.protostuff.benchmark.serializers;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent;
 
 /**
  * @author David Yu

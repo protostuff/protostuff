@@ -14,11 +14,11 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Image.Size;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Media.Player;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Image.Size;
+import com.dyuproject.protostuff.benchmark.V2LiteMedia.Media.Player;
 
 /**
  * @author David Yu
@@ -33,7 +33,6 @@ public abstract class AbstractLiteMediaSerializer implements ObjectSerializer<Me
         MediaContent contentProto = MediaContent
         .newBuilder().setMedia(
                 Media.newBuilder()
-                        .clearCopyright()
                         .setFormat("video/mpg4")
                         .setPlayer(Player.JAVA)
                         .setTitle("Javaone Keynote")

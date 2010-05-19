@@ -16,11 +16,11 @@ package com.dyuproject.protostuff.benchmark.serializers;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.MediaContent;
-import com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Image.Size;
-import com.dyuproject.protostuff.benchmark.V22CodeSizeMedia.Media.Player;
+import com.dyuproject.protostuff.benchmark.V2CodeSizeMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2CodeSizeMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2CodeSizeMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2CodeSizeMedia.Image.Size;
+import com.dyuproject.protostuff.benchmark.V2CodeSizeMedia.Media.Player;
 
 /**
  * @author David Yu
@@ -45,7 +45,6 @@ public class ProtobufCodeSizeSerializer implements ObjectSerializer<MediaContent
         MediaContent contentProto = MediaContent
         .newBuilder().setMedia(
                 Media.newBuilder()
-                        .clearCopyright()
                         .setFormat("video/mpg4")
                         .setPlayer(Player.JAVA)
                         .setTitle("Javaone Keynote")

@@ -79,11 +79,23 @@ public final class Media implements Externalizable, Message<Media>
     }
 
     public Media(
-        String uri
+        String uri,
+        Integer width,
+        Integer height,
+        String format,
+        Long duration,
+        Long size,
+        Player player
     )
     {
         this();
         this.uri = uri;
+        this.width = width;
+        this.height = height;
+        this.format = format;
+        this.duration = duration;
+        this.size = size;
+        this.player = player;
     }
 
     // getters and setters
@@ -205,11 +217,29 @@ public final class Media implements Externalizable, Message<Media>
         return this;
     }
 
+    public String getPerson(int index)
+    {
+        return person == null ? null : person.get(index);
+    }
+
+    public int getPersonCount()
+    {
+        return person == null ? 0 : person.size();
+    }
+
+    public Media addPerson(String person)
+    {
+        if(this.person == null)
+            this.person = new ArrayList<String>();
+        this.person.add(person);
+        return this;
+    }
+
     // player
 
     public Player getPlayer()
     {
-        return player == null ? Player.JAVA : player;
+        return player;
     }
 
     public Media setPlayer(Player player)
@@ -273,7 +303,13 @@ public final class Media implements Externalizable, Message<Media>
         public boolean isInitialized(Media message)
         {
             return 
-                message.uri != null;
+                message.uri != null 
+                && message.width != null 
+                && message.height != null 
+                && message.format != null 
+                && message.duration != null 
+                && message.size != null 
+                && message.player != null;
         }
 
         public void mergeFrom(Input input, Media message) throws IOException
@@ -336,20 +372,25 @@ public final class Media implements Externalizable, Message<Media>
             if(message.title != null)
                 output.writeString(2, message.title, false);
 
-            if(message.width != null)
-                output.writeInt32(3, message.width, false);
+            if(message.width == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(3, message.width, false);
 
-            if(message.height != null)
-                output.writeInt32(4, message.height, false);
+            if(message.height == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(4, message.height, false);
 
-            if(message.format != null)
-                output.writeString(5, message.format, false);
+            if(message.format == null)
+                throw new UninitializedMessageException(message);
+            output.writeString(5, message.format, false);
 
-            if(message.duration != null)
-                output.writeInt64(6, message.duration, false);
+            if(message.duration == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt64(6, message.duration, false);
 
-            if(message.size != null)
-                output.writeInt64(7, message.size, false);
+            if(message.size == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt64(7, message.size, false);
 
             if(message.bitrate != null)
                 output.writeInt32(8, message.bitrate, false);
@@ -363,8 +404,9 @@ public final class Media implements Externalizable, Message<Media>
                 }
             }
 
-            if(message.player != null)
-                 output.writeEnum(10, message.player.number, false);
+            if(message.player == null)
+                throw new UninitializedMessageException(message);
+            output.writeEnum(10, message.player.number, false);
 
             if(message.copyright != null)
                 output.writeString(11, message.copyright, false);

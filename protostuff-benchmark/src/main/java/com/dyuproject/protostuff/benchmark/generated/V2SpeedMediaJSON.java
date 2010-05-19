@@ -3,6 +3,7 @@
 package com.dyuproject.protostuff.benchmark.generated;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -15,20 +16,20 @@ import com.google.protobuf.MessageLite.Builder;
 import com.dyuproject.protostuff.json.ProtobufConvertor;
 import com.dyuproject.protostuff.json.ProtobufJSON;
 
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22LiteMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.MediaContent;
 
 
-public final class V22LiteMediaNumericJSON extends ProtobufJSON
+public final class V2SpeedMediaJSON extends ProtobufJSON
 {
 
-    public V22LiteMediaNumericJSON()
+    public V2SpeedMediaJSON()
     {
         super();
     }
 
-    public V22LiteMediaNumericJSON(JsonFactory factory)
+    public V2SpeedMediaJSON(JsonFactory factory)
     {
         super(factory);
     }
@@ -52,25 +53,48 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
     
     static final ProtobufConvertor<Image,Image.Builder> CONVERTOR_Image = new ProtobufConvertor<Image,Image.Builder>()
     {
+        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
+        {
+                        
+            fieldMap.put("uri", 1);
+                        
+            fieldMap.put("title", 2);
+                        
+            fieldMap.put("width", 3);
+                        
+            fieldMap.put("height", 4);
+                        
+            fieldMap.put("size", 5);
+            
+        }
+
+        final int getFieldNumber(String name) throws IOException
+        {
+            Integer num = fieldMap.get(name);
+            if(num==null)
+                throw new IOException("Field unknown: " + name + " on message " + Image.class);
+
+            return num.intValue();
+        }
 
         public final void generateTo(JsonGenerator generator, Image message) throws IOException
         {
             generator.writeStartObject();
                         
             if(message.hasUri())
-                generator.writeStringField("1", message.getUri());
+                generator.writeStringField("uri", message.getUri());
                                     
             if(message.hasTitle())
-                generator.writeStringField("2", message.getTitle());
+                generator.writeStringField("title", message.getTitle());
                                     
             if(message.hasWidth())
-                generator.writeNumberField("3", message.getWidth());
+                generator.writeNumberField("width", message.getWidth());
                                     
             if(message.hasHeight())
-                generator.writeNumberField("4", message.getHeight());
+                generator.writeNumberField("height", message.getHeight());
                                     
             if(message.hasSize())
-                generator.writeNumberField("5", message.getSize().getNumber());
+                generator.writeNumberField("size", message.getSize().getNumber());
                         
             generator.writeEndObject();
         }
@@ -93,7 +117,7 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
                             Image.class);
                 }
                 String name = parser.getCurrentName();
-                switch( Integer.parseInt(name) )
+                switch( getFieldNumber(name) )
                 {
                     
                     case 1:
@@ -144,36 +168,71 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
     
     static final ProtobufConvertor<Media,Media.Builder> CONVERTOR_Media = new ProtobufConvertor<Media,Media.Builder>()
     {
+        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
+        {
+                        
+            fieldMap.put("uri", 1);
+                        
+            fieldMap.put("title", 2);
+                        
+            fieldMap.put("width", 3);
+                        
+            fieldMap.put("height", 4);
+                        
+            fieldMap.put("format", 5);
+                        
+            fieldMap.put("duration", 6);
+                        
+            fieldMap.put("size", 7);
+                        
+            fieldMap.put("bitrate", 8);
+                        
+            fieldMap.put("person", 9);
+                        
+            fieldMap.put("player", 10);
+                        
+            fieldMap.put("copyright", 11);
+            
+        }
+
+        final int getFieldNumber(String name) throws IOException
+        {
+            Integer num = fieldMap.get(name);
+            if(num==null)
+                throw new IOException("Field unknown: " + name + " on message " + Media.class);
+
+            return num.intValue();
+        }
 
         public final void generateTo(JsonGenerator generator, Media message) throws IOException
         {
             generator.writeStartObject();
                         
             if(message.hasUri())
-                generator.writeStringField("1", message.getUri());
+                generator.writeStringField("uri", message.getUri());
                                     
             if(message.hasTitle())
-                generator.writeStringField("2", message.getTitle());
+                generator.writeStringField("title", message.getTitle());
                                     
             if(message.hasWidth())
-                generator.writeNumberField("3", message.getWidth());
+                generator.writeNumberField("width", message.getWidth());
                                     
             if(message.hasHeight())
-                generator.writeNumberField("4", message.getHeight());
+                generator.writeNumberField("height", message.getHeight());
                                     
             if(message.hasFormat())
-                generator.writeStringField("5", message.getFormat());
+                generator.writeStringField("format", message.getFormat());
                                     
             if(message.hasDuration())
-                generator.writeNumberField("6", message.getDuration());
+                generator.writeNumberField("duration", message.getDuration());
                                     
             if(message.hasSize())
-                generator.writeNumberField("7", message.getSize());
+                generator.writeNumberField("size", message.getSize());
                                     
             if(message.hasBitrate())
-                generator.writeNumberField("8", message.getBitrate());
+                generator.writeNumberField("bitrate", message.getBitrate());
                                     
-            generator.writeFieldName("9");
+            generator.writeFieldName("person");
             generator.writeStartArray();
             
             for (String t : message.getPersonList())
@@ -182,10 +241,10 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
             generator.writeEndArray();
                                     
             if(message.hasPlayer())
-                generator.writeNumberField("10", message.getPlayer().getNumber());
+                generator.writeNumberField("player", message.getPlayer().getNumber());
                                     
             if(message.hasCopyright())
-                generator.writeStringField("11", message.getCopyright());
+                generator.writeStringField("copyright", message.getCopyright());
                         
             generator.writeEndObject();
         }
@@ -208,7 +267,7 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
                             Media.class);
                 }
                 String name = parser.getCurrentName();
-                switch( Integer.parseInt(name) )
+                switch( getFieldNumber(name) )
                 {
                     
                     case 1:
@@ -315,12 +374,29 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
     
     static final ProtobufConvertor<MediaContent,MediaContent.Builder> CONVERTOR_MediaContent = new ProtobufConvertor<MediaContent,MediaContent.Builder>()
     {
+        final HashMap<String,Integer> fieldMap = new HashMap<String,Integer>();
+        {
+                        
+            fieldMap.put("image", 1);
+                        
+            fieldMap.put("media", 2);
+            
+        }
+
+        final int getFieldNumber(String name) throws IOException
+        {
+            Integer num = fieldMap.get(name);
+            if(num==null)
+                throw new IOException("Field unknown: " + name + " on message " + MediaContent.class);
+
+            return num.intValue();
+        }
 
         public final void generateTo(JsonGenerator generator, MediaContent message) throws IOException
         {
             generator.writeStartObject();
                         
-            generator.writeFieldName("1");
+            generator.writeFieldName("image");
             generator.writeStartArray();
             
             for (Image t : message.getImageList())
@@ -330,7 +406,7 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
                                     
             if (message.hasMedia())
             {
-                generator.writeFieldName("2");
+                generator.writeFieldName("media");
                 CONVERTOR_Media.generateTo(generator, message.getMedia());
             }
                         
@@ -355,7 +431,7 @@ public final class V22LiteMediaNumericJSON extends ProtobufJSON
                             MediaContent.class);
                 }
                 String name = parser.getCurrentName();
-                switch( Integer.parseInt(name) )
+                switch( getFieldNumber(name) )
                 {
                     
                     case 1:

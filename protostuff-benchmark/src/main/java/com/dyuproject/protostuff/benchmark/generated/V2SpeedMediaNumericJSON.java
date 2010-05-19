@@ -15,20 +15,20 @@ import com.google.protobuf.MessageLite.Builder;
 import com.dyuproject.protostuff.json.ProtobufConvertor;
 import com.dyuproject.protostuff.json.ProtobufJSON;
 
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Image;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.Media;
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Image;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.Media;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.MediaContent;
 
 
-public final class V22SpeedMediaNumericJSON extends ProtobufJSON
+public final class V2SpeedMediaNumericJSON extends ProtobufJSON
 {
 
-    public V22SpeedMediaNumericJSON()
+    public V2SpeedMediaNumericJSON()
     {
         super();
     }
 
-    public V22SpeedMediaNumericJSON(JsonFactory factory)
+    public V2SpeedMediaNumericJSON(JsonFactory factory)
     {
         super(factory);
     }

@@ -14,6 +14,7 @@ import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.UninitializedMessageException;
 
 public final class MediaContent implements Externalizable, Message<MediaContent>
 {
@@ -40,6 +41,14 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
     {
     }
 
+    public MediaContent(
+        Media media
+    )
+    {
+        this();
+        this.media = media;
+    }
+
     // getters and setters
 
     // image
@@ -52,6 +61,24 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
     public MediaContent setImageList(List<Image> image)
     {
         this.image = image;
+        return this;
+    }
+
+    public Image getImage(int index)
+    {
+        return image == null ? null : image.get(index);
+    }
+
+    public int getImageCount()
+    {
+        return image == null ? 0 : image.size();
+    }
+
+    public MediaContent addImage(Image image)
+    {
+        if(this.image == null)
+            this.image = new ArrayList<Image>();
+        this.image.add(image);
         return this;
     }
 
@@ -109,7 +136,8 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
 
         public boolean isInitialized(MediaContent message)
         {
-            return true;
+            return 
+                message.media != null;
         }
 
         public void mergeFrom(Input input, MediaContent message) throws IOException
@@ -152,8 +180,9 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
             }
 
 
-            if(message.media != null)
-                 output.writeMessage(2, message.media, false);
+            if(message.media == null)
+                throw new UninitializedMessageException(message);
+            output.writeMessage(2, message.media, false);
 
         }
 

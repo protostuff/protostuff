@@ -2,7 +2,7 @@ package com.dyuproject.protostuff.benchmark.serializers;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.benchmark.V22SpeedMedia.MediaContent;
+import com.dyuproject.protostuff.benchmark.V2SpeedMedia.MediaContent;
 
 public class ProtobufSpeedSerializer extends AbstractSpeedMediaSerializer
 {
