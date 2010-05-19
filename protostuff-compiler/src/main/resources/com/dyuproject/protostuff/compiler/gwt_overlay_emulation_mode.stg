@@ -2,12 +2,12 @@ group gwt_overlay_emulation_mode : gwt_overlay;
 
 //#enum begin
 
-enum_block(eg, module, options, includeHeader) ::= <<
-<if(includeHeader)>
+enum_block(eg, module, options, nested) ::= <<
+<if(!nested)>
 <eg:enum_header(eg=it, module=module, options=options)>
 
 <endif>
-public <if(!includeHeader)>static <endif>class <eg.name> extends JavaScriptObject {
+public <if(nested)>static <endif>class <eg.name> extends JavaScriptObject {
         
     <eg.values:field_enum_value_declare(val=it, methodName="create"); separator="\n">
     
@@ -36,15 +36,15 @@ public final native int getNumber() /*-{
 
 //#message begin
 
-message_block(message, module, options, includeHeader) ::= <<
-<if(includeHeader)>
+message_block(message, module, options, nested) ::= <<
+<if(!nested)>
 <message:message_header(message=it, module=module, options=options)>
 
 <endif>
-public <if(!includeHeader)>static <endif>class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
+public <if(nested)>static <endif>class <message.name> extends JavaScriptObject <message:message_impl_declaration(message=it, options=options); format=" ">{
 
-    <message.nestedMessages:message_block(message=it, options=options); separator="\n">
-    <message.nestedEnumGroups:enum_block(eg=it, options=options); separator="\n">
+    <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true"); separator="\n">
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options, nested="true"); separator="\n">
     <message:message_builder_class(message=it, options=options)>
     
     <message:message_static_method_new_builder(message=it, options=options)>

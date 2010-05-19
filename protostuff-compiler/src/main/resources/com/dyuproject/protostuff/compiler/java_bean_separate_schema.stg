@@ -1,14 +1,14 @@
 group java_bean_static_schema : java_bean;
 
-message_block(message, module, options, includeHeader, modifier) ::= <<
-<if(includeHeader)>
+message_block(message, module, options, nested) ::= <<
+<if(!nested)>
 <message:message_header(message=it, module=module, options=options)>
 <endif>
 
-public <modifier; format=" ">final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
+public <if(nested)>static <endif>final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
-    <message.nestedMessages:message_block(message=it, module=module, options=options, modifier="static")>
-    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options)>
+    <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options, nested="true")>
     <message:message_default_instance(message=it, options=options)>
     <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
     

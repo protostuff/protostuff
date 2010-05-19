@@ -56,7 +56,7 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
             enumBlock.setAttribute("eg", eg);
             enumBlock.setAttribute("module", module);
             enumBlock.setAttribute("options", module.getOptions());
-            enumBlock.setAttribute("includeHeader", Boolean.TRUE);
+
             enumBlock.write(out);
             writer.close();
         }
@@ -78,7 +78,7 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
             messageBlock.setAttribute("message", m);
             messageBlock.setAttribute("module", module);
             messageBlock.setAttribute("options", module.getOptions());
-            messageBlock.setAttribute("includeHeader", Boolean.TRUE);
+
             messageBlock.write(out);
             writer.close();
         }
