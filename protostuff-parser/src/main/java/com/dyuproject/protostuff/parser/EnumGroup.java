@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * TODO
+ * Represents an enum declared in either the {@link Proto} or nested in a {@link Message}.
  *
  * @author David Yu
  * @created Dec 21, 2009

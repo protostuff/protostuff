@@ -23,13 +23,15 @@ import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 
 /**
- * TODO
+ * Utility for loading protos from various input.
  *
  * @author David Yu
  * @created Dec 24, 2009
  */
-public class ProtoUtil
+public final class ProtoUtil
 {
+    
+    private ProtoUtil() {}
     
     public static void loadFrom(InputStream in, Proto target) throws Exception
     {

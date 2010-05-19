@@ -17,7 +17,7 @@ package com.dyuproject.protostuff.parser;
 
 
 /**
- * TODO
+ * Represents an enum field defined in a {@link Message}.
  *
  * @author David Yu
  * @created Dec 19, 2009

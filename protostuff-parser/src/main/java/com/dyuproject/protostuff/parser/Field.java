@@ -17,7 +17,7 @@ package com.dyuproject.protostuff.parser;
 import java.nio.ByteBuffer;
 
 /**
- * TODO
+ * Base class for fields defined in a {@link Message}.
  *
  * @author David Yu
  * @created Dec 19, 2009

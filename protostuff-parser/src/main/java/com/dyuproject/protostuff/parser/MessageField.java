@@ -16,7 +16,7 @@ package com.dyuproject.protostuff.parser;
 
 
 /**
- * TODO
+ * Represents a message field defined in a {@code Proto}.
  *
  * @author David Yu
  * @created Dec 19, 2009

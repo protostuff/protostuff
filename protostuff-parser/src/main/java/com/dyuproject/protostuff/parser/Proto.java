@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 
 /**
  * Contains the metadata of parsed protos.
+ * Basically repesents the .proto file.
  *
  * @author David Yu
  * @created Dec 18, 2009

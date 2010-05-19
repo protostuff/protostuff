@@ -15,7 +15,7 @@
 package com.dyuproject.protostuff.parser;
 
 /**
- * TODO
+ * Holds a reference to a {@link Field}.
  *
  * @author David Yu
  * @created Dec 21, 2009

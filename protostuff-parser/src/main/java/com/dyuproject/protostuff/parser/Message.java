@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
- * TODO
+ * Represents the message defined in the {@link Proto}.
  *
  * @author David Yu
  * @created Dec 19, 2009
