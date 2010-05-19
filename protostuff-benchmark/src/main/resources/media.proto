@@ -4,7 +4,7 @@
 package serializers.protobuf.media;
 
 option java_package = "com.dyuproject.protostuff.benchmark";
-option java_outer_classname = "V2Speed";
+option java_outer_classname = "V2SpeedMedia";
 option optimize_for = SPEED;
 
 message Image {
