@@ -34,8 +34,8 @@ public final class BufferedOutput implements Output
     
     private final OutputBuffer root;
     private OutputBuffer current;
-    private int size = 0;
     private final int bufferSize;
+    private int size = 0;
     
     public BufferedOutput()
     {
@@ -250,9 +250,10 @@ public final class BufferedOutput implements Output
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        OutputBuffer lastCurrent = current;
+        OutputBuffer lastBuffer = current;
         int lastSize = size;
-        lastCurrent.next = current = new OutputBuffer(lastCurrent);
+        // view
+        lastBuffer.next = current = new OutputBuffer(lastBuffer);
         
         schema.writeTo(this, value);
         
@@ -264,12 +265,12 @@ public final class BufferedOutput implements Output
         size += delimited.length;
         
         // the first tag of the inner message
-        OutputBuffer node = lastCurrent.next;
+        OutputBuffer inner = lastBuffer.next;
         
-        // insert the byte array (message size)
-        OutputBuffer ob = new OutputBuffer(delimited, lastCurrent);
-        ob.offset = delimited.length;
-        ob.next = node;
+        // wrap the byte array (delimited) and insert
+        OutputBuffer wrap = new OutputBuffer(delimited, lastBuffer);
+        wrap.offset = delimited.length;
+        wrap.next = inner;
     }
 
 }
