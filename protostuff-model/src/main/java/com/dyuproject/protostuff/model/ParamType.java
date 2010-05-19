@@ -20,6 +20,8 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.WireFormat.JavaType;
 
 /**
+ * Type basically for SPEED and LITE_RUNTIME.
+ * 
  * @author David Yu
  * @created Aug 27, 2009
  */

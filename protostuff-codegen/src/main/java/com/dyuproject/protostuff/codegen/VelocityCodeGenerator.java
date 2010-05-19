@@ -19,6 +19,8 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
 /**
+ * Base class for code generators using velocity templates.
+ * 
  * @author David Yu
  * @created Oct 16, 2009
  */

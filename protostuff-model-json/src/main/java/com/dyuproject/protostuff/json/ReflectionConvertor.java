@@ -35,6 +35,8 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
 /**
+ * Converts a message to/from json via java reflections.
+ * 
  * @author David Yu
  * @created Oct 1, 2009
  */

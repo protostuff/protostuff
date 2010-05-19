@@ -23,6 +23,9 @@ import com.dyuproject.protostuff.model.Model;
 import com.dyuproject.protostuff.model.ModelMeta.Factory;
 
 /**
+ * Same as {@link ReflectionJSON} but simply writes the message's field number 
+ * instead of field name.
+ * 
  * @author David Yu
  * @created Oct 2, 2009
  */

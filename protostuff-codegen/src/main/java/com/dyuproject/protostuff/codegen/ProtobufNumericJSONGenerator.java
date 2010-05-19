@@ -16,6 +16,9 @@ package com.dyuproject.protostuff.codegen;
 
 
 /**
+ * Generates code that enables the protoc-compiled classes to serialize to json.
+ * The message's field number is used instead of the field name.
+ * 
  * @author David Yu
  * @created Oct 14, 2009
  */

@@ -23,6 +23,9 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
 /**
+ * Converts a message to/from json.
+ * Handles the serialization and deserialization of a particular message.
+ * 
  * @author David Yu
  * @created Sep 30, 2009
  */

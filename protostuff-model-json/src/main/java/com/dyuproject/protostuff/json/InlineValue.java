@@ -26,6 +26,8 @@ import com.google.protobuf.Internal.EnumLite;
 import com.google.protobuf.WireFormat.JavaType;
 
 /**
+ * Represents scalar values from protobuf fields.
+ * 
  * @author David Yu
  * @created Oct 1, 2009
  */

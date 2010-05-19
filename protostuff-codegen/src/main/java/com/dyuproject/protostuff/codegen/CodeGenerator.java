@@ -27,6 +27,8 @@ import com.dyuproject.protostuff.model.Model;
 import com.google.protobuf.AbstractMessageLite;
 
 /**
+ * The base class for code generators.
+ * 
  * @author David Yu
  * @created Oct 14, 2009
  */

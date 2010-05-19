@@ -29,6 +29,9 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 
 /**
+ * The base class for json serialization of a module grouped by java_outer_classname.
+ * The conversion is based on java reflections.
+ * 
  * @author David Yu
  * @created Oct 2, 2009
  */

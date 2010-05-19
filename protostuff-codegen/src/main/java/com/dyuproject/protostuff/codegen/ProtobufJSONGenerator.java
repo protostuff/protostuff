@@ -22,6 +22,8 @@ import org.apache.velocity.VelocityContext;
 import com.dyuproject.protostuff.model.Model;
 
 /**
+ * Generates code that enables the protoc-compiled classes to serialize to json.
+ * 
  * @author David Yu
  * @created Oct 14, 2009
  */

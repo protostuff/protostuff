@@ -28,6 +28,8 @@ import com.dyuproject.protostuff.model.PropertyMeta;
 import com.google.protobuf.ByteString;
 
 /**
+ * Utility for velocity templates to use.
+ * 
  * @author David Yu
  * @created Oct 15, 2009
  */

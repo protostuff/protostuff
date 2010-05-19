@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
+ * Configuration for the protoc-compiled proto w/c ontains the compile options and arguments.
+ * 
  * @author David Yu
  * @created Oct 15, 2009
  */

@@ -15,6 +15,8 @@
 package com.dyuproject.protostuff.codegen;
 
 /**
+ * Generates gwt overlays.  The message's field number will be used instead of the field name.
+ * 
  * @author David Yu
  * @created Oct 17, 2009
  */

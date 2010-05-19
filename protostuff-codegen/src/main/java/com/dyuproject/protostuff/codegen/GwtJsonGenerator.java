@@ -22,6 +22,8 @@ import org.apache.velocity.VelocityContext;
 import com.dyuproject.protostuff.model.Model;
 
 /**
+ * Generates gwt overlays.
+ * 
  * @author David Yu
  * @created Oct 17, 2009
  */

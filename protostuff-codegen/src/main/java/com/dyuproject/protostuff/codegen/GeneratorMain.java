@@ -25,6 +25,8 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
+ * The main execution point for code generation.
+ * 
  * @author David Yu
  * @created Oct 16, 2009
  */
