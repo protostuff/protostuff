@@ -59,9 +59,7 @@ public class BenchmarkRunner
 
   public static void main(String... args) throws Exception
   {
-    BenchmarkRunner runner = new BenchmarkRunner();
-    System.out.println("Starting");
-    runner.start();
+    BenchmarkMain.main(args);
   }
 
   @SuppressWarnings("unchecked")
@@ -251,43 +249,72 @@ public class BenchmarkRunner
   {
     for (measurements m : values.keySet()) {
    	 Map<String, Double> map = values.get(m);
-   	 ArrayList<Entry> list = new ArrayList(map.entrySet());
-   	 Collections.sort(list, new Comparator<Entry>() {
-			public int compare (Entry o1, Entry o2) {
-				double diff = (Double)o1.getValue() - (Double)o2.getValue();
+   	 ArrayList<Entry<String,Double>> list = new ArrayList<Entry<String,Double>>(map.entrySet());
+   	 Collections.sort(list, new Comparator<Entry<String,Double>>() {
+			public int compare (Entry<String,Double> o1, Entry<String,Double> o2) {
+				double diff = o1.getValue() - o2.getValue();
 				return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
 			}
    	 });
-   	 LinkedHashMap sortedMap = new LinkedHashMap();
-   	 for (Entry entry : list)
+   	 LinkedHashMap<String,Double> sortedMap = new LinkedHashMap<String,Double>();
+   	 for (Entry<String,Double> entry : list)
    		 sortedMap.put(entry.getKey(), entry.getValue());
-      printImage(sortedMap, m);
+      if(!sortedMap.isEmpty())printImage(sortedMap, m);
     }
   }
 
   private void printImage(Map<String, Double> map, measurements m)
   {
-    StringBuilder valSb = new StringBuilder();
-    String names = "";
-    double sum = 0;
-    for (Entry<String, Double> entry : map.entrySet())
-    {
-      valSb.append(entry.getValue()).append(',');
-      sum += entry.getValue();
-      names = entry.getKey() + '|' + names;
-    }
-    int avg = (int) sum / map.size();
-    out.println("<img src='http://chart.apis.google.com/chart?chtt="
-        + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x390&chd=t:"
-        + valSb.toString().substring(0, valSb.length() - 1)
-        + "&chds="
-        + 0
-        + ","
-        + (avg * 2)
-        + "&chxl=0:|"
-        + names.substring(0, names.length() - 1)
-        + "&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=10&chxt=y&nonsense=aaa.png'/>");
+      StringBuilder valSb = new StringBuilder();
+      String names = "";
+      double max = Double.MIN_NORMAL;
+      for (Map.Entry<String, Double> entry : map.entrySet())
+      {
+              double value = entry.getValue();
+              valSb.append((int) value).append(',');
+              max = Math.max(max, entry.getValue());
+              names = entry.getKey() + '|' + names;
+      }
+
+      int headerSize = 30;
+
+      int maxPixels = 300 * 1000; // Limit set by Google's Chart API.
+      int width = 700;
+      int maxHeight = maxPixels / width;
+
+      int barThickness = 10;
+      int barSpacing = 10;
+
+      int height;
+
+      // Reduce bar thickness and spacing until we can fit in the maximum height.
+      while (true) {
+              height = headerSize + map.size()*(barThickness + barSpacing);
+              if (height <= maxHeight) break;
+              barSpacing--;
+              if (barSpacing == 1) break;
+
+              height = headerSize + map.size()*(barThickness + barSpacing);
+              if (height <= maxHeight) break;
+              barThickness--;
+              if (barThickness == 1) break;
+      }
+
+      if (height > maxHeight) {
+              System.err.println("WARNING: Not enough room to fit all bars in chart.");
+              height = maxHeight;
+      }
+
+      double scale = max * 1.1;
+      out.println("<br/><br/>");
+      out.println("<img src='http://chart.apis.google.com/chart?chtt="
+              + m.name()
+              + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs="+width+"x"+height+"&chd=t:"
+              + valSb.toString().substring(0, valSb.length() - 1)
+              + "&chds=0,"+ scale
+              + "&chxt=y"
+              + "&chxl=0:|" + names.substring(0, names.length() - 1)
+              + "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=" + barThickness + ",0," + barSpacing + "&nonsense=aaa.png'/>");
   }
 
   private void addValue(EnumMap<measurements, Map<String, Double>> values,
