@@ -61,7 +61,7 @@ final class OutputBuffer
     }
     
     /** Returns the output buffer encoded with the tag and byte array */
-    public static OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob, 
+    static OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob, 
             int bufferSize)
     {
         int valueLen = value.length;
@@ -96,7 +96,7 @@ final class OutputBuffer
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
-    public static OutputBuffer writeTagAndRawVarInt32Bytes(int tag, int value, OutputBuffer ob, 
+    static OutputBuffer writeTagAndRawVarInt32Bytes(int tag, int value, OutputBuffer ob, 
             int bufferSize)
     {
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -135,7 +135,7 @@ final class OutputBuffer
     }
 
     /** Returns the output buffer encoded with the tag and var int 64 */
-    public static OutputBuffer writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob, 
+    static OutputBuffer writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob, 
             int bufferSize)
     {
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -151,9 +151,7 @@ final class OutputBuffer
         rb.currentSize = totalSize;
         
         if (tagSize == 1)
-        {
             buffer[offset++] = (byte)tag;
-        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
@@ -163,9 +161,7 @@ final class OutputBuffer
         }
 
         if (size == 1)
-        {
             buffer[offset] = (byte)value;
-        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
@@ -179,7 +175,7 @@ final class OutputBuffer
     
 
     /** Returns the output buffer encoded with the tag and little endian 32 */
-    public static OutputBuffer writeTagAndRawLittleEndian32Bytes(int tag, int value, 
+    static OutputBuffer writeTagAndRawLittleEndian32Bytes(int tag, int value, 
             OutputBuffer ob, int bufferSize)
     {
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -194,9 +190,7 @@ final class OutputBuffer
         rb.currentSize = totalSize;
         
         if (tagSize == 1)
-        {
             buffer[offset++] = (byte)tag;
-        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
@@ -211,7 +205,7 @@ final class OutputBuffer
     }
 
     /** Returns the output buffer encoded with the tag and little endian 64 */
-    public static OutputBuffer writeTagAndRawLittleEndian64Bytes(int tag, long value, 
+    static OutputBuffer writeTagAndRawLittleEndian64Bytes(int tag, long value, 
             OutputBuffer ob, int bufferSize)
     {
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -226,9 +220,7 @@ final class OutputBuffer
         rb.currentSize = totalSize;
 
         if (tagSize == 1)
-        {
             buffer[offset++] = (byte)tag;
-        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
