@@ -32,11 +32,12 @@ public final class IOUtil
     private IOUtil(){}
     
     /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
+     * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
+     * supplied buffer size.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema)
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, int bufferSize)
     {
-        BufferedOutput output = new BufferedOutput();
+        final BufferedOutput output = new BufferedOutput(bufferSize);
         try
         {
             schema.writeTo(output, message);
@@ -53,37 +54,61 @@ public final class IOUtil
     /**
      * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
      */
-    public static <T extends Message<T>> byte[] toByteArray(T message)
+    public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return toByteArray(message, message.cachedSchema());
+        return toByteArray(message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
+     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
+     */
+    public static <T extends Message<T>> byte[] toByteArray(T message)
+    {
+        return toByteArray(message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
+     * with the supplied buffer size.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, int bufferSize)
+    throws IOException
+    {
+        final BufferedOutput output = new BufferedOutput(bufferSize);
+        schema.writeTo(output, message);
+        output.streamTo(out);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
      */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        schema.writeTo(CodedOutput.newInstance(out), message);
+        writeTo(out, message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link CodedOutput}.
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
      */
     public static <T extends Message<T>> void writeTo(OutputStream out, T message)
     throws IOException
     {
-        message.cachedSchema().writeTo(CodedOutput.newInstance(out), message);
+        writeTo(out, message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE);
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput}.
+     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
+     * with the supplied buffer size.
      */
-    public static <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
-    throws IOException
+    public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
+            int bufferSize) throws IOException
     {
-        writeDelimitedTo(out, message, message.cachedSchema());
+        final BufferedOutput output = new BufferedOutput(bufferSize);
+        schema.writeTo(output, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
+        output.streamTo(out);
     }
     
     /**
@@ -93,10 +118,17 @@ public final class IOUtil
     public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        BufferedOutput output = new BufferedOutput();
-        schema.writeTo(output, message);
-        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-        output.streamTo(out);
+        writeDelimitedTo(out, message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
+    }
+    
+    /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link BufferedOutput}.
+     */
+    public static <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
+    throws IOException
+    {
+        writeDelimitedTo(out, message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE);
     }
     
     /**
@@ -149,7 +181,7 @@ public final class IOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
-        CodedInput input = CodedInput.newInstance(in);
+        final CodedInput input = CodedInput.newInstance(in);
         schema.mergeFrom(input, message);
         input.checkLastTagWas(0);
     }
@@ -170,8 +202,8 @@ public final class IOUtil
     public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
-        int size = in.read();
-        int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+        final int size = in.read();
+        final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
         if(len != 0)
         {
             // not an empty message
@@ -192,12 +224,13 @@ public final class IOUtil
     
     /**
      * Serializes the {@code messages} (delimited) into 
-     * an {@link OutputStream} via {@link CodedOutput} using the given schema.
+     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
+     * with the supplied buffer size.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-    throws IOException
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
+            int bufferSize) throws IOException
     {
-        final BufferedOutput output = new BufferedOutput();
+        final BufferedOutput output = new BufferedOutput(bufferSize);
         for(T m : messages)
         {
             schema.writeTo(output, m);
@@ -205,6 +238,16 @@ public final class IOUtil
             output.streamTo(out);
             output.reset();
         }
+    }
+    
+    /**
+     * Serializes the {@code messages} (delimited) into 
+     * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+    throws IOException
+    {
+        writeListTo(out, messages, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
     }
     
     /**

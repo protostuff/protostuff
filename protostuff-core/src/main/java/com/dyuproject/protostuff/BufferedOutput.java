@@ -20,9 +20,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * More or less the same as {@code DeferredOutput} but it maintains a decent-sized byte buffer 
- * for writing.  {@code DeferredOutput} converts every field to a btye array whereas 
- * {@code BufferedOutput} writes it to the buffer.
+ * Maintains a decent-sized byte buffer for writing.  If the delimited field's byte-array-value 
+ * is too large, it is wrapped by another buffer and linked together.
  *
  * @author David Yu
  * @created May 18, 2010
