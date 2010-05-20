@@ -47,12 +47,14 @@ final class OutputBuffer
         offset = start = 0;
     }
     
+    // links this node to the given output buffer.
     OutputBuffer(byte[] buffer, OutputBuffer ob)
     {
         this(buffer);
         ob.next = this;
     }
     
+    // creates a root linked to another one which actually that holds the buffer.
     static OutputBuffer createRoot(int bufferSize)
     {
         OutputBuffer root = new OutputBuffer((byte[])null);
@@ -83,16 +85,14 @@ final class OutputBuffer
             
             return view;
         }
-        else
-        {
-            System.arraycopy(value, 0, rb.buffer, rb.offset, valueLen);
+
+        System.arraycopy(value, 0, rb.buffer, rb.offset, valueLen);
         
-            rb.offset += valueLen;
-            
-            rb.currentSize = totalSize;
-            
-            return rb;
-        }
+        rb.offset += valueLen;
+        
+        rb.currentSize = totalSize;
+        
+        return rb;
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
