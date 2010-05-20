@@ -32,9 +32,6 @@
                   <name>generate_field_map</name>
                 </property>
                 <property>
-                  <name>separate_schema</name>
-                </property>
-                <property>
                   <name>builder_pattern</name>
                 </property>
                 <property>
