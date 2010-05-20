@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
+
+protostuff-1.0.0.M1
 + completed Issue 18: Generated GWT Protobuffers - base class, name
 + fixed Issue 17: trying to compile google/protobuf/descriptor.proto from protobuf-2.3.0
 + fixed Issue 15: JsonIOUtil.writeListTo fails when inner messages contain repeated fields
