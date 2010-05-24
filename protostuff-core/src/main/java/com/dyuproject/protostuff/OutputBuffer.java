@@ -61,14 +61,6 @@ final class OutputBuffer
         ob.next = this;
     }
     
-    // creates a root linked to another one which actually that holds the buffer.
-    static OutputBuffer createRoot(int bufferSize)
-    {
-        OutputBuffer root = new OutputBuffer((byte[])null);
-        root.next = new OutputBuffer(new byte[bufferSize]);
-        return root;
-    }
-    
     /** Returns the output buffer encoded with the tag and byte array */
     static OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob, 
             int bufferSize)

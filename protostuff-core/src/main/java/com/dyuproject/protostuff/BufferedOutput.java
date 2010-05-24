@@ -16,7 +16,6 @@ package com.dyuproject.protostuff;
 
 import static com.dyuproject.protostuff.CodedOutput.encodeZigZag32;
 import static com.dyuproject.protostuff.CodedOutput.getTagAndRawVarInt32Bytes;
-import static com.dyuproject.protostuff.OutputBuffer.createRoot;
 import static com.dyuproject.protostuff.OutputBuffer.writeTagAndByteArray;
 import static com.dyuproject.protostuff.OutputBuffer.writeTagAndRawLittleEndian32Bytes;
 import static com.dyuproject.protostuff.OutputBuffer.writeTagAndRawLittleEndian64Bytes;
@@ -52,8 +51,7 @@ public final class BufferedOutput implements Output
     
     public BufferedOutput(int bufferSize)
     {
-        root = createRoot(bufferSize);
-        current = root.next;
+        current = root = new OutputBuffer(new byte[bufferSize]);
         this.bufferSize = bufferSize;
     }
     
@@ -70,9 +68,12 @@ public final class BufferedOutput implements Output
      */
     public BufferedOutput reset()
     {
-        root.next.offset = 0;
-        current = root.next;
-        size = 0;
+        // dereference for gc
+        root.next = null;
+        // reuse the byte array, offset reset to 0
+        root.offset = 0;
+        
+        current = root;
         return this;
     }
     
@@ -81,7 +82,7 @@ public final class BufferedOutput implements Output
      */
     public void streamTo(OutputStream out) throws IOException
     {
-        for(OutputBuffer node = root.next; node != null; node = node.next)
+        for(OutputBuffer node = root; node != null; node = node.next)
         {
             int len = node.offset - node.start;
             if(len > 0)
@@ -96,7 +97,7 @@ public final class BufferedOutput implements Output
     {
         int start = 0;
         byte[] buffer = new byte[size];        
-        for(OutputBuffer node = root.next; node != null; node = node.next)
+        for(OutputBuffer node = root; node != null; node = node.next)
         {
             int len = node.offset - node.start;
             if(len > 0)
