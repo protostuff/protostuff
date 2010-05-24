@@ -1,6 +1,6 @@
 protostuff-1.0-SNAPSHOT
 
-protostuff-1.0.0.M1
+protostuff-1.0.0.M1 2010-05-20
 + completed Issue 18: Generated GWT Protobuffers - base class, name
 + fixed Issue 17: trying to compile google/protobuf/descriptor.proto from protobuf-2.3.0
 + fixed Issue 15: JsonIOUtil.writeListTo fails when inner messages contain repeated fields
@@ -18,7 +18,7 @@ protostuff-1.0.0.M1
 + fixed Issue 2: Wrong enum type in generated code of GWT overlays
 + fixed benchmark deser bug on protostuff-json (duplicate parser created)
 
-protostuff-1.0.0.M0
+protostuff-1.0.0.M0 2009-10-24
 + code generator for json, numeric_json, gwt_json, gwt_numeric_json
 + maven archetypes for quick start and rapid development
 + benchmark module to relatively compare with protobuf
