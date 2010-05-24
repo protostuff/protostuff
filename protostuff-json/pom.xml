@@ -10,7 +10,7 @@
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-json</artifactId>
   <name>protostuff :: json</name>
-  <description>protobuf serialization on json format</description>
+  <description>protostuff serialization using json format</description>
   <packaging>jar</packaging>
   
   <build>
