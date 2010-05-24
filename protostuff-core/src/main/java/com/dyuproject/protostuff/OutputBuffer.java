@@ -14,6 +14,13 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.CodedOutput.LITTLE_ENDIAN_32_SIZE;
+import static com.dyuproject.protostuff.CodedOutput.LITTLE_ENDIAN_64_SIZE;
+import static com.dyuproject.protostuff.CodedOutput.computeRawVarint32Size;
+import static com.dyuproject.protostuff.CodedOutput.computeRawVarint64Size;
+import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian32;
+import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian64;
+
 /**
  * A buffer that wraps a byte array and has a reference to the next node.
  * 
@@ -99,8 +106,8 @@ final class OutputBuffer
     static OutputBuffer writeTagAndRawVarInt32Bytes(int tag, int value, OutputBuffer ob, 
             int bufferSize)
     {
-        int tagSize = CodedOutput.computeRawVarint32Size(tag);
-        int size = CodedOutput.computeRawVarint32Size(value);
+        int tagSize = computeRawVarint32Size(tag);
+        int size = computeRawVarint32Size(value);
         int totalSize = tagSize + size;
         
         OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
@@ -138,8 +145,8 @@ final class OutputBuffer
     static OutputBuffer writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob, 
             int bufferSize)
     {
-        int tagSize = CodedOutput.computeRawVarint32Size(tag);
-        int size = CodedOutput.computeRawVarint64Size(value);
+        int tagSize = computeRawVarint32Size(tag);
+        int size = computeRawVarint64Size(value);
         int totalSize = tagSize + size;
         
         OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
@@ -178,8 +185,8 @@ final class OutputBuffer
     static OutputBuffer writeTagAndRawLittleEndian32Bytes(int tag, int value, 
             OutputBuffer ob, int bufferSize)
     {
-        int tagSize = CodedOutput.computeRawVarint32Size(tag);
-        int totalSize = tagSize + CodedOutput.LITTLE_ENDIAN_32_SIZE;
+        int tagSize = computeRawVarint32Size(tag);
+        int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
         
         OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
                 new OutputBuffer(new byte[bufferSize], ob) : ob;
@@ -199,7 +206,7 @@ final class OutputBuffer
             buffer[offset++] = (byte)tag;
         }
 
-        CodedOutput.writeRawLittleEndian32(value, buffer, offset);
+        writeRawLittleEndian32(value, buffer, offset);
         
         return rb;
     }
@@ -208,8 +215,8 @@ final class OutputBuffer
     static OutputBuffer writeTagAndRawLittleEndian64Bytes(int tag, long value, 
             OutputBuffer ob, int bufferSize)
     {
-        int tagSize = CodedOutput.computeRawVarint32Size(tag);
-        int totalSize = tagSize + CodedOutput.LITTLE_ENDIAN_64_SIZE;
+        int tagSize = computeRawVarint32Size(tag);
+        int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
         
         OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
                 new OutputBuffer(new byte[bufferSize], ob) : ob;
@@ -229,7 +236,7 @@ final class OutputBuffer
             buffer[offset++] = (byte)tag;
         }
 
-        CodedOutput.writeRawLittleEndian64(value, buffer, offset);
+        writeRawLittleEndian64(value, buffer, offset);
 
         return rb;
     }
