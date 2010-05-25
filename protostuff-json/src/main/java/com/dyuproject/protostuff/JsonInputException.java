@@ -20,7 +20,7 @@ package com.dyuproject.protostuff;
  * @author David Yu
  * @created May 10, 2010
  */
-public class JsonInputException extends ProtobufException
+public class JsonInputException extends ProtostuffException
 {
     
     private static final long serialVersionUID = 8137903301860116023L;

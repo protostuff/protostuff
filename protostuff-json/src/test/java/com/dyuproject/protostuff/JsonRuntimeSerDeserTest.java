@@ -59,14 +59,6 @@ public class JsonRuntimeSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(barCompare, schema, false);
             JsonIOUtil.mergeFrom(data, dbar, schema, false);
             SerializableObjects.assertEquals(barCompare, dbar);
-            //System.err.println(dbar.getSomeInt());
-            //System.err.println(dbar.getSomeLong());
-            //System.err.println(dbar.getSomeFloat());
-            //System.err.println(dbar.getSomeDouble());
-            //System.err.println(dbar.getSomeBytes());
-            //System.err.println(dbar.getSomeString());
-            //System.err.println(dbar.getSomeEnum());
-            //System.err.println(dbar.getSomeBoolean());
         }
     }
     
@@ -81,9 +73,6 @@ public class JsonRuntimeSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, false);
             JsonIOUtil.mergeFrom(data, dbaz, schema, false);
             SerializableObjects.assertEquals(bazCompare, dbaz);
-            //System.err.println(dbaz.getId());
-            //System.err.println(dbaz.getName());
-            //System.err.println(dbaz.getTimestamp());
         }
     }
 

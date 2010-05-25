@@ -123,6 +123,26 @@ public class JsonCoreSerDeserTest extends TestCase
         for(Bar b : parsedBars)
             SerializableObjects.assertEquals(bars.get(i++), b);
     }
+    
+    public void testListEmpty() throws Exception
+    {
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JsonIOUtil.writeListTo(out, bars, 
+                SerializableObjects.bar.cachedSchema(), false);
+        byte[] data = out.toByteArray();
+        assertEquals(new String(data, "UTF-8"), "[]");
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        List<Bar> parsedBars = JsonIOUtil.parseListFrom(in, 
+                SerializableObjects.bar.cachedSchema(), false);
+        
+        assertTrue(parsedBars.size() == bars.size());
+        int i=0;
+        for(Bar b : parsedBars)
+            SerializableObjects.assertEquals(bars.get(i++), b);
+    }
 
     public void testListIOWithArrays() throws Exception
     {
