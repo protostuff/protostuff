@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ added protostuff-xml for fast xml ser/deser via stax api.
 
 protostuff-1.0.0.M1 2010-05-20
 + completed Issue 18: Generated GWT Protobuffers - base class, name
