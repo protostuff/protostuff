@@ -1,0 +1,239 @@
+//========================================================================
+//Copyright 2007-2010 David Yu dyuproject@gmail.com
+//------------------------------------------------------------------------
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at 
+//http://www.apache.org/licenses/LICENSE-2.0
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+//========================================================================
+
+package com.dyuproject.protostuff;
+
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+/**
+ * An input used for reading data with xml format.
+ * 
+ * @author David Yu
+ * @created May 24, 2010
+ */
+public final class XmlInput implements Input
+{
+
+    private final XMLStreamReader parser;
+    
+    public XmlInput(XMLStreamReader parser)
+    {
+        this.parser = parser;
+    }
+    
+    private int nextTag() throws IOException
+    {
+        try
+        {
+            return parser.nextTag();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlInputException(e);
+        }
+    }
+    
+    private void endAndNextTag() throws IOException
+    {
+        try
+        {
+            parser.nextTag();
+            parser.nextTag();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlInputException(e);
+        }
+    }
+    
+    private String getText() throws IOException
+    {
+        try
+        {
+            String text = parser.getElementText();
+            // move to next element
+            parser.nextTag();
+            return text;
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlInputException(e);
+        }
+    }
+    
+    public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
+    {
+        String name = parser.getLocalName();
+        if(nextTag() == END_ELEMENT)
+        {
+            // we can skip this unknown scalar field.
+            nextTag();
+            return;
+        }
+        
+        throw new XmlInputException("Unknown field: " + name + " on message " + schema.typeClass());
+    }
+    
+    public <T> int readFieldNumber(Schema<T> schema) throws IOException
+    {
+        if(parser.getEventType() == END_ELEMENT)
+            return 0;
+        
+        String name = parser.getLocalName();
+        int num = schema.getFieldNumber(name);
+
+        if(num == 0)
+        {
+            if(nextTag() == END_ELEMENT)
+            {
+                // we can skip this unknown scalar field
+                nextTag();
+                return readFieldNumber(schema);
+            }
+            // message field
+            // we do not know how deep this message is.
+            throw new XmlInputException("Unknown field: " + name + " on message " + schema.typeClass());
+        }
+
+        return num;
+    }
+    
+    public int readInt32() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+    
+    public int readUInt32() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+    
+    public int readSInt32() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+    
+    public int readFixed32() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+    
+    public int readSFixed32() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+
+    public long readInt64() throws IOException
+    {
+        return Long.parseLong(getText());
+    }
+
+    public long readUInt64() throws IOException
+    {
+        return Long.parseLong(getText());
+    }
+
+    public long readSInt64() throws IOException
+    {
+        return Long.parseLong(getText());
+    }
+
+    public long readFixed64() throws IOException
+    {
+        return Long.parseLong(getText());
+    }
+    
+    public long readSFixed64() throws IOException
+    {
+        return Long.parseLong(getText());
+    }
+    
+    public float readFloat() throws IOException
+    {
+        return Float.parseFloat(getText());
+    }
+    
+    public double readDouble() throws IOException
+    {
+        return Double.parseDouble(getText());
+    }
+    
+    public boolean readBool() throws IOException
+    {
+        return Boolean.parseBoolean(getText());
+    }
+    
+    public int readEnum() throws IOException
+    {
+        return Integer.parseInt(getText());
+    }
+    
+    public String readString() throws IOException
+    {
+        return getText();
+    }
+    
+    public ByteString readBytes() throws IOException
+    {
+        return ByteString.wrap(readByteArray());
+    }
+
+    public byte[] readByteArray() throws IOException
+    {
+        return STRING.ser(getText());
+    }
+    
+    public <T extends Message<T>> T mergeMessage(T message) throws IOException
+    {
+        return mergeObject(message, message.cachedSchema());
+    }
+    
+    public <T> T mergeObject(T value, Schema<T> schema) throws IOException
+    {
+        String simpleName = schema.typeClass().getSimpleName();
+        if(nextTag() != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
+            throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        
+        if(nextTag() == END_ELEMENT)
+        {
+            if(!simpleName.equals(parser.getLocalName()))
+                throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+            
+            // empty message
+            if(!schema.isInitialized(value))
+                throw new UninitializedMessageException(value, schema);
+            
+            // move to end element (field) then onto the next
+            endAndNextTag();
+            return value;
+        }
+        
+        schema.mergeFrom(this, value);
+        
+        if(!simpleName.equals(parser.getLocalName()))
+            throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        
+        // move to end element (field) then onto the next
+        endAndNextTag();
+        return value;
+    }
+
+}
