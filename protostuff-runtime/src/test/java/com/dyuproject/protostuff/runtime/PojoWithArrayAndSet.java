@@ -20,6 +20,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.runtime.Bar.Status;
 
 /**
@@ -205,12 +206,12 @@ public final class PojoWithArrayAndSet implements Serializable
             offset = in.read(data, offset, length);
         
         in.close();
-        RuntimeIOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(PojoWithArrayAndSet.class));
     }
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = RuntimeIOUtil.toByteArray(this);
+        byte[] data = IOUtil.toByteArray(this, RuntimeSchema.getSchema(PojoWithArrayAndSet.class));
         out.writeInt(data.length);
         out.write(data);
         out.close();

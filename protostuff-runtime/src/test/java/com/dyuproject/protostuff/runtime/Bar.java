@@ -20,6 +20,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import com.dyuproject.protostuff.ByteString;
+import com.dyuproject.protostuff.IOUtil;
 
 /**
  * Bar - for testing
@@ -252,12 +253,12 @@ public final class Bar implements Serializable
             offset = in.read(data, offset, length);
         
         in.close();
-        RuntimeIOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(Bar.class));
     }
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = RuntimeIOUtil.toByteArray(this);
+        byte[] data = IOUtil.toByteArray(this, RuntimeSchema.getSchema(Bar.class));
         out.writeInt(data.length);
         out.write(data);
         out.close();

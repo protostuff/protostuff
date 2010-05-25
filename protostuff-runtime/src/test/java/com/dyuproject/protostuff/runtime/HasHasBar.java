@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.dyuproject.protostuff.IOUtil;
+
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
  *
@@ -81,12 +83,12 @@ public final class HasHasBar
             offset = in.read(data, offset, length);
         
         in.close();
-        RuntimeIOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(HasHasBar.class));
     }
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = RuntimeIOUtil.toByteArray(this);
+        byte[] data =IOUtil.toByteArray(this, RuntimeSchema.getSchema(HasHasBar.class));
         out.writeInt(data.length);
         out.write(data);
         out.close();

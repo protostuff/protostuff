@@ -19,6 +19,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import com.dyuproject.protostuff.IOUtil;
+
 
 /**
  * Baz - for testing
@@ -104,12 +106,12 @@ public final class Baz implements Serializable
             offset = in.read(data, offset, length);
         
         in.close();
-        RuntimeIOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(Baz.class));
     }
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = RuntimeIOUtil.toByteArray(this);
+        byte[] data = IOUtil.toByteArray(this, RuntimeSchema.getSchema(Baz.class));
         out.writeInt(data.length);
         out.write(data);
         out.close();
