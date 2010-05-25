@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -37,6 +38,18 @@ public final class XmlInput implements Input
     public XmlInput(XMLStreamReader parser)
     {
         this.parser = parser;
+    }
+    
+    private int next() throws IOException
+    {
+        try
+        {
+            return parser.next();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlInputException(e);
+        }
     }
     
     private int nextTag() throws IOException
@@ -82,14 +95,28 @@ public final class XmlInput implements Input
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         String name = parser.getLocalName();
-        if(nextTag() == END_ELEMENT)
+        while(true)
         {
-            // we can skip this unknown scalar field.
-            nextTag();
-            return;
+            switch(next())
+            {
+                case END_ELEMENT:
+                    if(name.equals(parser.getLocalName()))
+                    {
+                        // we can skip this unknown scalar field.
+                        nextTag();
+                        return;
+                    }
+                    throw new XmlInputException("Unknown field: " + name + " on message " + 
+                            schema.typeClass());
+                case END_DOCUMENT:
+                    // malformed xml. 
+                case START_ELEMENT:
+                    // message field
+                    // we do not know how deep this message is
+                    throw new XmlInputException("Unknown field: " + name + " on message " + 
+                            schema.typeClass());
+            }
         }
-        
-        throw new XmlInputException("Unknown field: " + name + " on message " + schema.typeClass());
     }
     
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
@@ -101,16 +128,29 @@ public final class XmlInput implements Input
         int num = schema.getFieldNumber(name);
 
         if(num == 0)
-        {
-            if(nextTag() == END_ELEMENT)
+        {            
+            while(true)
             {
-                // we can skip this unknown scalar field
-                nextTag();
-                return readFieldNumber(schema);
+                switch(next())
+                {
+                    case END_ELEMENT:
+                        if(name.equals(parser.getLocalName()))
+                        {
+                            // we can skip this unknown scalar field.
+                            nextTag();
+                            return readFieldNumber(schema);
+                        }
+                        throw new XmlInputException("Unknown field: " + name + " on message " + 
+                                schema.typeClass());
+                    case END_DOCUMENT:
+                        // malformed xml. 
+                    case START_ELEMENT:
+                        // message field
+                        // we do not know how deep this message is
+                        throw new XmlInputException("Unknown field: " + name + " on message " + 
+                                schema.typeClass());
+                }
             }
-            // message field
-            // we do not know how deep this message is.
-            throw new XmlInputException("Unknown field: " + name + " on message " + schema.typeClass());
         }
 
         return num;

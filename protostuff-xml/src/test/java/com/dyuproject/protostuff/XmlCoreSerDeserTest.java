@@ -19,6 +19,7 @@ import static com.dyuproject.protostuff.SerializableObjects.baz;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -67,6 +68,33 @@ public class XmlCoreSerDeserTest extends TestCase
             byte[] data = XmlIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema());
             XmlIOUtil.mergeFrom(data, dbaz, dbaz.cachedSchema());
             SerializableObjects.assertEquals(bazCompare, dbaz);
+        }
+    }
+    
+    public void testUnknownScalarFields() throws Exception
+    {        
+        String[] regularMessages = new String[]{
+                "<?xml version='1.0' encoding='UTF-8'?>" +
+                "<Baz><int>1</int><string>string</string>" +
+                "<double>555.444</double><id>1</id></Baz>",
+                
+                "<?xml version='1.0' encoding='UTF-8'?>" +
+                "<Baz><int>1</int><string>string</string>" +
+                "<id>2</id><double>555.444</double></Baz>",
+                
+                "<?xml version='1.0' encoding='UTF-8'?>" +
+                "<Baz><id>3</id><int>1</int>" +
+                "<string>string</string><double>555.444</double>" +
+                "<bytes><![CDATA[b2]]></bytes></Baz>"
+        };
+                                              
+        
+        for(int i=0; i<regularMessages.length; i++)
+        {
+            Baz b = new Baz();
+            XmlIOUtil.mergeFrom(STRING.ser(regularMessages[i]), 
+                    b, b.cachedSchema());
+            assertTrue(i+1 == b.getId());
         }
     }
     
