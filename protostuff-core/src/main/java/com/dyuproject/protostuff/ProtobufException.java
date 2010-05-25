@@ -45,8 +45,6 @@
 
 package com.dyuproject.protostuff;
 
-import java.io.IOException;
-
 /**
  * Thrown when a protocol message being parsed is invalid in some way,
  * e.g. it contains a malformed varint or a negative byte length.
@@ -54,8 +52,8 @@ import java.io.IOException;
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
-public class ProtobufException extends IOException {
-  private static final long serialVersionUID = -1616151763072450476L;
+public class ProtobufException extends ProtostuffException {
+  private static final long serialVersionUID = 1616151763072450476L;
 
   public ProtobufException(final String description) {
     super(description);
