@@ -88,14 +88,8 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
-        try
-        {
-            writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
-        }
+        writeTo(generator, message, schema, numeric);
+        generator.close();
     }
     
     /**
@@ -115,14 +109,8 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        try
-        {
-            writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
-        }
+        writeTo(generator, message, schema, numeric);
+        generator.close();
     }
     
     /**
@@ -167,14 +155,8 @@ public final class JsonIOUtil
             Schema<T> schema, boolean numeric) throws IOException
     {
         JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length);
-        try
-        {
-            mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
-        }
+        mergeFrom(parser, message, schema, numeric);
+        parser.close();
     }
     
     /**
@@ -193,14 +175,8 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        try
-        {
-            mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
-        }
+        mergeFrom(parser, message, schema, numeric);
+        parser.close();
     }
     
     /**
@@ -219,14 +195,8 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        try
-        {
-            mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
-        }
+        mergeFrom(parser, message, schema, numeric);
+        parser.close();
     }
     
     /**
@@ -259,14 +229,8 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
-        try
-        {
-            writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
-        }
+        writeListTo(generator, messages, schema, numeric);
+        generator.close();
     }
     
     /**
@@ -276,14 +240,8 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        try
-        {
-            writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
-        }
+        writeListTo(generator, messages, schema, numeric);
+        generator.close();
     }
     
     /**
@@ -323,14 +281,9 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        try
-        {
-            return parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
-        }
+        List<T> list = parseListFrom(parser, schema, numeric);
+        parser.close();
+        return list;
     }
     
     /**
@@ -340,14 +293,9 @@ public final class JsonIOUtil
     throws IOException
     {
         JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        try
-        {
-            return parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
-        }
+        List<T> list = parseListFrom(parser, schema, numeric);
+        parser.close();
+        return list;
     }
     
     /**
