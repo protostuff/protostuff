@@ -422,13 +422,10 @@ public final class XmlIOUtil
         final ArrayList<T> list = new ArrayList<T>();
         final XmlInput input = new XmlInput(parser);
         
-        while(parser.nextTag() != END_ELEMENT)
+        for(int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())
         {
-            if(parser.getEventType() != START_ELEMENT || 
-                    !simpleName.equals(parser.getLocalName()))
-            {
+            if(tag != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
                 throw new XmlInputException("Expected token START_ELEMENT: " + simpleName);
-            }
             
             T message = schema.newMessage();
             
