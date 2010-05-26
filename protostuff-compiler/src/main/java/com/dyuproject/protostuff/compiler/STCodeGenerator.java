@@ -74,6 +74,12 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if(formatName==null)
                     return str;
                 
+                if("UPPER".equals(formatName))
+                    return str.toUpperCase();
+                
+                if("LOWER".equals(formatName))
+                    return str.toLowerCase();
+                
                 // camel-case
                 if("CC".equals(formatName))
                     return ProtoUtil.toCamelCase(str).toString();
@@ -100,7 +106,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 
                 // regex replace
                 int eq = formatName.indexOf("==");
-                if(eq > 0 && eq+2 < formatName.length())
+                if(eq > 0)
                 {
                     String toReplace = formatName.substring(0, eq);
                     String replacement = formatName.substring(eq+2);

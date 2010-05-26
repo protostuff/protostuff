@@ -157,23 +157,31 @@ public final class CompilerMain
         System.err.println("  -Doptions=key1:value1,key2:value2");
     }
     
-    public static void compile(ProtoModule m) throws Exception
+    public static void compile(ProtoModule module) throws Exception
     {
-        String options = m.getOptions().toString();
-        for(String g : COMMA.split(m.getOutput()))
+        String options = module.getOptions().toString();
+        for(String output : COMMA.split(module.getOutput()))
         {
-            g = g.trim();
-            ProtoCompiler cg = __compilers.get(g);
-            if(cg==null)
-                throw new IllegalStateException("unknown output: " + g);
+            output = output.trim();
+            ProtoCompiler compiler = __compilers.get(output);
+            if(compiler==null)
+            {
+                if(output.endsWith(".stg"))
+                {
+                    // custom code generator
+                    compiler = new GenericProtoCompiler(module);
+                }
+                else
+                    throw new IllegalStateException("unknown output: " + output);
+            }
             
-            cg.compile(m);
+            compiler.compile(module);
             
             StringBuilder buffer = new StringBuilder()
                 .append("Successfully compiled proto from ")
-                .append(m.getSource())
+                .append(module.getSource())
                 .append(" to output: ")
-                .append(g);
+                .append(output);
             
             if(options.length()>2)
                 buffer.append(' ').append(options);
