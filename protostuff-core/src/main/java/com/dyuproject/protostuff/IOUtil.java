@@ -16,6 +16,8 @@ package com.dyuproject.protostuff;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -273,6 +275,44 @@ public final class IOUtil
             list.add(message);
         }
         return list;
+    }
+    
+    /**
+     * Used by the code generated messages that implement {@link java.io.Externalizable}.
+     * Writes to the {@link ObjectOutput}.
+     */
+    public static <T> void writeTo(ObjectOutput out, T message, Schema<T> schema) 
+    throws IOException
+    {
+        if(out instanceof OutputStream)
+        {
+            final BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE);
+            schema.writeTo(output, message);
+            out.writeInt(output.getSize());
+            output.streamTo((OutputStream)out);
+        }
+        else
+        {
+            final byte[] data = toByteArray(message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
+            out.writeInt(data.length);
+            out.write(data);
+        }
+    }
+    
+    /**
+     * Used by the code generated messages that implement {@link java.io.Externalizable}.
+     * Merges from the {@link ObjectInput}.
+     */
+    public static <T> void mergeFrom(ObjectInput in, T message, Schema<T> schema) 
+    throws IOException
+    {
+        int length = in.readInt();
+        final byte[] data = new byte[length];
+        
+        for(int offset = 0; length > 0; length -= offset)
+            offset = in.read(data, offset, length);
+        
+        mergeFrom(data, message, schema);
     }
 
 }

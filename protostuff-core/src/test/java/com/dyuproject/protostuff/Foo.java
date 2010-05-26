@@ -14,10 +14,10 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
+public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 {
     
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
@@ -423,20 +423,14 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Serializable
         }
     }
     
-    private void readObject(ObjectInputStream in) throws IOException
+    public void readExternal(ObjectInput in) throws IOException
     {
-        int length = in.readInt();
-        byte[] data = new byte[length];
-        for(int offset = 0; length > 0; length -= offset)
-            offset = in.read(data, offset, length);
-        IOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(in, this, this);
     }
-    
-    private void writeObject(ObjectOutputStream out) throws IOException
+
+    public void writeExternal(ObjectOutput out) throws IOException
     {
-        byte[] data = IOUtil.toByteArray(this);
-        out.writeInt(data.length);
-        out.write(data);
+        IOUtil.writeTo(out, this, this);
     }
 
 }

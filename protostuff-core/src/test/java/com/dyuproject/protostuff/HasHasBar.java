@@ -16,10 +16,12 @@ package com.dyuproject.protostuff;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
@@ -27,7 +29,7 @@ import java.io.Serializable;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, Serializable
+public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, Externalizable
 {
     
     private String name;
@@ -134,23 +136,14 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, S
         writeHasBar(output, 2, message.hasBar, false);
     }
     
-    private void readObject(ObjectInputStream in) throws IOException
+    public void readExternal(ObjectInput in) throws IOException
     {
-        int length = in.readInt();
-        byte[] data = new byte[length];
-        for(int offset = 0; length > 0; length -= offset)
-            offset = in.read(data, offset, length);
-        
-        in.close();
-        IOUtil.mergeFrom(data, this);
+        IOUtil.mergeFrom(in, this, this);
     }
-    
-    private void writeObject(ObjectOutputStream out) throws IOException
+
+    public void writeExternal(ObjectOutput out) throws IOException
     {
-        byte[] data = IOUtil.toByteArray(this);
-        out.writeInt(data.length);
-        out.write(data);
-        out.close();
+        IOUtil.writeTo(out, this, this);
     }
     
     static HasBar readHasBar(Input input) throws IOException
