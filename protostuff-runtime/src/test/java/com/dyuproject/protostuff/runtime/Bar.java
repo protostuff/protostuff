@@ -14,10 +14,10 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.IOUtil;
@@ -28,7 +28,7 @@ import com.dyuproject.protostuff.IOUtil;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public final class Bar implements Serializable
+public final class Bar implements Externalizable
 {
     
     public enum Status
@@ -245,23 +245,14 @@ public final class Bar implements Serializable
         this.someLong = someLong;
     }
     
-    private void readObject(ObjectInputStream in) throws IOException
+    public void readExternal(ObjectInput in) throws IOException
     {
-        int length = in.readInt();
-        byte[] data = new byte[length];
-        for(int offset = 0; length > 0; length -= offset)
-            offset = in.read(data, offset, length);
-        
-        in.close();
-        IOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(Bar.class));
+        IOUtil.mergeFrom(in, this, RuntimeSchema.getSchema(Bar.class));
     }
     
-    private void writeObject(ObjectOutputStream out) throws IOException
+    public void writeExternal(ObjectOutput out) throws IOException
     {
-        byte[] data = IOUtil.toByteArray(this, RuntimeSchema.getSchema(Bar.class));
-        out.writeInt(data.length);
-        out.write(data);
-        out.close();
+        IOUtil.writeTo(out, this, RuntimeSchema.getSchema(Bar.class));
     }
 
 }
