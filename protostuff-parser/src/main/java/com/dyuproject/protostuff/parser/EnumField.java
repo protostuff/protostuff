@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.parser;
 
 
 
+
 /**
  * Represents an enum field defined in a {@link Message}.
  *
@@ -73,5 +74,23 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         return getJavaType() + "." + getDefaultValue().getName();
     }
+    
+    public boolean isSamePackage()
+    {
+        return getOwner().getProto() == getEnumGroup().getProto();
+    }
+    
+    public java.lang.String getRelativePath()
+    {
+        if(isSamePackage())
+            return "";
+        
+        java.lang.String currentPackage = getOwner().getProto().getPackageName();
+        java.lang.String targetPackage = getEnumGroup().getProto().getPackageName();
+        java.lang.String path = "../";
+        for(int idx=currentPackage.indexOf('.'); idx!=-1; idx=currentPackage.indexOf('.', idx+1))
+            path += "../";
 
+        return path + targetPackage.replace('.', '/') + "/";
+    }
 }

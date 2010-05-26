@@ -30,6 +30,11 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
         OPTIONAL,
         REQUIRED,
         REPEATED;
+        
+        public java.lang.String getName()
+        {
+            return name();
+        }
     }
    
     

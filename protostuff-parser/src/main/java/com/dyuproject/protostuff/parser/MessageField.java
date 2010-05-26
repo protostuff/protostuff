@@ -63,5 +63,24 @@ public class MessageField extends Field<Message>
     {
         return true;
     }
+    
+    public boolean isSamePackage()
+    {
+        return getOwner().getProto() == getMessage().getProto();
+    }
+    
+    public java.lang.String getRelativePath()
+    {
+        if(isSamePackage())
+            return "";
+        
+        java.lang.String currentPackage = getOwner().getProto().getPackageName();
+        java.lang.String targetPackage = getMessage().getProto().getPackageName();
+        java.lang.String path = "../";
+        for(int idx=currentPackage.indexOf('.'); idx!=-1; idx=currentPackage.indexOf('.', idx+1))
+            path += "../";
+
+        return path + targetPackage.replace('.', '/') + "/";
+    }
 
 }
