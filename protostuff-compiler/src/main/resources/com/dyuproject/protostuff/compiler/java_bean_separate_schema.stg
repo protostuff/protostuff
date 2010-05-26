@@ -52,6 +52,21 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
 >>
 
+message_impl_serializable(message, options) ::= <<
+// java serialization
+
+public void readExternal(ObjectInput in) throws IOException
+{
+    IOUtil.mergeFrom(in, this, SCHEMA);
+}
+
+public void writeExternal(ObjectOutput out) throws IOException
+{
+    IOUtil.writeTo(out, this, SCHEMA);
+}
+
+>>
+
 message_impl_message(message, options) ::= <<
 // message method
 
