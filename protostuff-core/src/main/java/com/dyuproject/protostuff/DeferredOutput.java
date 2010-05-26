@@ -19,7 +19,6 @@ import static com.dyuproject.protostuff.StringSerializer.STRING;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 
 /**
  * A protobuf output where the writing of bytes is deferred (buffered chunks).
@@ -32,33 +31,6 @@ import java.util.Iterator;
  */
 public final class DeferredOutput implements Output
 {
-    
-    
-    /**
-     * Returns an iterator for the binary values of the serialized message.
-     */
-    public static Iterator<byte[]> iterator(final DeferredOutput output)
-    {
-        return new Iterator<byte[]>()
-        {
-            ByteArrayNode node = output.root.next;
-            
-            public boolean hasNext()
-            {
-                return node!=null;
-            }
-            public byte[] next()
-            {
-                ByteArrayNode next = node;
-                node = node.next;
-                return next.bytes;
-            }
-            public void remove()
-            {                
-                throw new UnsupportedOperationException();
-            }            
-        };
-    }
 
     private final ByteArrayNode root = new ByteArrayNode(null);
     private ByteArrayNode current = root;
