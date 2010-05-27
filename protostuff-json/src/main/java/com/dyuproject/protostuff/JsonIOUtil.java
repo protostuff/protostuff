@@ -257,7 +257,7 @@ public final class JsonIOUtil
             return;
         }
         
-        JsonOutput output = new JsonOutput(generator, numeric);
+        final JsonOutput output = new JsonOutput(generator, numeric);
         
         for(T m : messages)
         {
@@ -311,8 +311,8 @@ public final class JsonIOUtil
                     schema.typeClass());
         }
         
-        JsonInput input = new JsonInput(parser, numeric);
-        List<T> list = new ArrayList<T>();
+        final JsonInput input = new JsonInput(parser, numeric);
+        final List<T> list = new ArrayList<T>();
         for(JsonToken t=parser.nextToken(); t!=JsonToken.END_ARRAY; t=parser.nextToken())
         {
             if(t != JsonToken.START_OBJECT)
