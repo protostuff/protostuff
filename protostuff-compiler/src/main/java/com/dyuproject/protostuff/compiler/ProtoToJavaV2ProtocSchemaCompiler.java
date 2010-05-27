@@ -41,8 +41,8 @@ public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator
     static String resolveFileName(Proto proto)
     {
         String outerClassname = proto.getExtraOption("java_outer_classname");
-        return outerClassname == null ? 
-                ProtoUtil.toPascalCase(proto.getFile().getName()).toString() : outerClassname;
+        return outerClassname == null ? ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(
+                ".proto", "")).toString() : outerClassname;
     }
 
     protected void compile(ProtoModule module, Proto proto) throws IOException

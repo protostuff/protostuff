@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import org.antlr.stringtemplate.AttributeRenderer;
 import org.antlr.stringtemplate.CommonGroupLoader;
@@ -42,6 +43,8 @@ public abstract class STCodeGenerator implements ProtoCompiler
     
     static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
         new ConcurrentHashMap<Class<?>, AttributeRenderer>();
+    
+    static final Pattern FORMAT_DELIM = Pattern.compile("&&");
     
     static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
             TEMPLATE_BASE, new StringTemplateErrorListener()
@@ -74,54 +77,70 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if(formatName==null)
                     return str;
                 
-                if("UPPER".equals(formatName))
-                    return str.toUpperCase();
-                
-                if("LOWER".equals(formatName))
-                    return str.toLowerCase();
-                
-                // camel-case
-                if("CC".equals(formatName))
-                    return ProtoUtil.toCamelCase(str).toString();
-                
-                // camel-case with trailing underscore
-                if("CCU".equals(formatName))
-                    return ProtoUtil.toCamelCase(str).append('_').toString();
-                
-                // pascal-case
-                if("PC".equals(formatName))
-                    return ProtoUtil.toPascalCase(str).toString();
-                
-                // underscore-case
-                if("UC".equals(formatName))
-                    return ProtoUtil.toUnderscoreCase(str).toString();
-                
-                // underscore-case with trailing underscore
-                if("UCU".equals(formatName))
-                    return ProtoUtil.toUnderscoreCase(str).append('_').toString();
-                
-                // "upper-cased" underscore-case
-                if("UUC".equals(formatName))
-                    return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
-                
-                // regex replace
-                int eq = formatName.indexOf("==");
-                if(eq > 0)
+                String[] formats = FORMAT_DELIM.split(formatName);
+                if(formats.length != 0)
                 {
-                    String toReplace = formatName.substring(0, eq);
-                    String replacement = formatName.substring(eq+2);
+                    // chained formatting
+                    String formatted = str;
+                    for(String f : formats)
+                        formatted = format(formatted, f);
                     
-                    if(toReplace.length()==1 && replacement.length()==1)
-                        return str.replace(toReplace.charAt(0), replacement.charAt(0));
-
-                    return str.replaceAll(toReplace, replacement);
+                    return formatted;
                 }
                 
-                return str + formatName;
+                return format(str, formatName);
             }
         });
         
         GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
+    }
+    
+    static String format(String str, String formatName)
+    {
+        if("UPPER".equals(formatName))
+            return str.toUpperCase();
+        
+        if("LOWER".equals(formatName))
+            return str.toLowerCase();
+        
+        // camel-case
+        if("CC".equals(formatName))
+            return ProtoUtil.toCamelCase(str).toString();
+        
+        // camel-case with trailing underscore
+        if("CCU".equals(formatName))
+            return ProtoUtil.toCamelCase(str).append('_').toString();
+        
+        // pascal-case
+        if("PC".equals(formatName))
+            return ProtoUtil.toPascalCase(str).toString();
+        
+        // underscore-case
+        if("UC".equals(formatName))
+            return ProtoUtil.toUnderscoreCase(str).toString();
+        
+        // underscore-case with trailing underscore
+        if("UCU".equals(formatName))
+            return ProtoUtil.toUnderscoreCase(str).append('_').toString();
+        
+        // "upper-cased" underscore-case
+        if("UUC".equals(formatName))
+            return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
+        
+        // regex replace
+        int eq = formatName.indexOf("==");
+        if(eq > 0)
+        {
+            String toReplace = formatName.substring(0, eq);
+            String replacement = formatName.substring(eq+2);
+            
+            if(toReplace.length()==1 && replacement.length()==1)
+                return str.replace(toReplace.charAt(0), replacement.charAt(0));
+
+            return str.replaceAll(toReplace, replacement);
+        }
+        
+        return str + formatName;
     }
     
     public static void setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar)

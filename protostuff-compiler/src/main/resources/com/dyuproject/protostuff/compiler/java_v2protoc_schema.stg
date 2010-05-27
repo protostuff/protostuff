@@ -27,7 +27,7 @@ derived_outer_name(proto, options) ::= <<
 <if(proto.extraOptions.java_outer_classname)>
 <proto.extraOptions.java_outer_classname>
 <else>
-<proto.file.name; format="PC">
+<proto.file.name; format=".proto==&&PC">
 <endif>
 >>
 
