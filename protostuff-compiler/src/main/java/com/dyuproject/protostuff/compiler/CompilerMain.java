@@ -169,7 +169,7 @@ public final class CompilerMain
                 if(output.endsWith(".stg"))
                 {
                     // custom code generator
-                    compiler = new GenericProtoCompiler(module);
+                    compiler = new PluginProtoCompiler(module);
                 }
                 else
                     throw new IllegalStateException("unknown output: " + output);
