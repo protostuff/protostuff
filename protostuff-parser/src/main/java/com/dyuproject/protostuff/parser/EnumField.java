@@ -70,6 +70,18 @@ public class EnumField extends Field<EnumGroup.Value>
         
     }
     
+    public java.lang.String getRegularType()
+    {
+        java.lang.String javaType = getJavaType();
+        Proto egProto = enumGroup.getProto();
+        java.lang.String javaPackage = egProto.getJavaPackageName();
+        java.lang.String protoPackage = egProto.getPackageName();
+        if(javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage))
+            return javaType.replace(javaPackage, protoPackage);
+        
+        return javaType;
+    }
+    
     public java.lang.String getDefaultValueAsString()
     {
         return getJavaType() + "." + getDefaultValue().getName();

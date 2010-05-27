@@ -54,6 +54,18 @@ public class MessageField extends Field<Message>
         return javaType=buffer.toString();
     }
     
+    public java.lang.String getRegularType()
+    {
+        java.lang.String javaType = getJavaType();
+        Proto messageProto = message.getProto();
+        java.lang.String javaPackage = messageProto.getJavaPackageName();
+        java.lang.String protoPackage = messageProto.getPackageName();
+        if(javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage))
+            return javaType.replace(javaPackage, protoPackage);
+        
+        return javaType;
+    }
+    
     public java.lang.String getDefaultValueAsString()
     {
         return "null";
