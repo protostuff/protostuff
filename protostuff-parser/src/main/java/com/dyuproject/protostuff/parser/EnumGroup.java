@@ -58,6 +58,11 @@ public class EnumGroup implements HasName
         return buffer.toString();
     }
     
+    public String getRelativeName()
+    {
+        return isNested() ? parentMessage.getRelativeName() + "." + name : name;
+    }
+    
     public Message getParentMessage()
     {
         return parentMessage;
