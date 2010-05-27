@@ -209,7 +209,7 @@ public final class IOUtil
         if(len != 0)
         {
             // not an empty message
-            CodedInput input = CodedInput.newInstance(new LimitedInputStream(in).limit(len));
+            CodedInput input = CodedInput.newInstance(getFilledBufferFrom(in, len));
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
@@ -260,7 +260,6 @@ public final class IOUtil
     throws IOException
     {
         final ArrayList<T> list = new ArrayList<T>();
-        final LimitedInputStream lis = new LimitedInputStream(in);
         for(int size=in.read(); size!=-1; size=in.read())
         {
             T message = schema.newMessage();
@@ -268,7 +267,7 @@ public final class IOUtil
             if(len != 0)
             {
                 // not an empty message
-                CodedInput input = CodedInput.newInstance(lis.limit(len));
+                CodedInput input = CodedInput.newInstance(getFilledBufferFrom(in, len));
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
             }
@@ -307,12 +306,45 @@ public final class IOUtil
     throws IOException
     {
         int length = in.readInt();
+        if(length == 0)
+        {
+            // empty message
+            if(!schema.isInitialized(message))
+                throw new UninitializedMessageException(message, schema);
+            
+            return;
+        }
+        
         final byte[] data = new byte[length];
         
         for(int offset = 0; length > 0; length -= offset)
+        {
             offset = in.read(data, offset, length);
+            if(offset == -1)
+                throw ProtobufException.truncatedMessage();
+        }
         
         mergeFrom(data, message, schema);
+        
+        if(!schema.isInitialized(message))
+            throw new UninitializedMessageException(message, schema);
+    }
+    
+    /**
+     * Fills the byte buffer from the {@link InputStream} with the specified length.
+     */
+    private static byte[] getFilledBufferFrom(InputStream in, int length) throws IOException
+    {
+        final byte[] data = new byte[length];
+        
+        for(int offset = 0; length > 0; length -= offset)
+        {
+            offset = in.read(data, offset, length);
+            if(offset == -1)
+                throw ProtobufException.truncatedMessage();
+        }
+        
+        return data;
     }
 
 }
