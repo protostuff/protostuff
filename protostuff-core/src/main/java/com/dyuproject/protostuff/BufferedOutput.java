@@ -72,7 +72,7 @@ public final class BufferedOutput implements Output
         root.next = null;
         // reuse the byte array, offset reset to 0
         root.offset = 0;
-        
+        size = 0;
         current = root;
         return this;
     }
