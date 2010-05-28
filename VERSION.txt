@@ -1,4 +1,7 @@
 protostuff-1.0-SNAPSHOT
++ added IO optimizations
++ added messageName() and messageFullName() methods to the schema to support full xml serialization of existing C++ protoc messages.
+  This also enables aliasing of the message names (especially for xml) by overriding the messageName() method.
 + added protostuff-xml for fast xml ser/deser via stax api.
 
 protostuff-1.0.0.M1 2010-05-20
