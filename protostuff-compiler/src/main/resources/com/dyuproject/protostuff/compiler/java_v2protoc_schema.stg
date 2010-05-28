@@ -78,6 +78,14 @@ public static class MessageSchema implements Schema\<<message:message_fullname(m
     {
         return <message:message_fullname(message=it, options=options)>.class;
     }
+    public String messageName()
+    {
+        return <message:message_fullname(message=it, options=options)>.class.getSimpleName();
+    }
+    public String messageFullName()
+    {
+        return <message:message_fullname(message=it, options=options)>.class.getName();
+    }
     //unused
     public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)> message) throws IOException {}
     public <message:message_fullname(message=it, options=options)> newMessage() { return null; }
@@ -114,6 +122,14 @@ public static class BuilderSchema implements Schema\<<message:message_fullname(m
     public Class\<<message:message_fullname(message=it, options=options)>.Builder\> typeClass()
     {
         return <message:message_fullname(message=it, options=options)>.Builder.class;
+    }
+    public String messageName()
+    {
+        return <message:message_fullname(message=it, options=options)>.class.getSimpleName();
+    }
+    public String messageFullName()
+    {
+        return <message:message_fullname(message=it, options=options)>.class.getName();
     }
     //unused
     public void writeTo(Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException {}

@@ -280,6 +280,16 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     {
         return Foo.class;
     }
+    
+    public String messageName()
+    {
+        return getClass().getSimpleName();
+    }
+    
+    public String messageFullName()
+    {
+        return getClass().getName();
+    }
 
     public String getFieldName(int number)
     {

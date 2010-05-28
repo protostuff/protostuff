@@ -87,7 +87,7 @@ public final class JsonInput implements Input
         if(parser.getCurrentToken().isScalarValue())
             return;
         
-        throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.typeClass());
+        throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.messageFullName());
     }    
 
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
@@ -102,7 +102,7 @@ public final class JsonInput implements Input
         if(jt != JsonToken.FIELD_NAME)
         {
             throw new JsonInputException("Expected token: $field: but was " + 
-                    jt + " on message " + schema.typeClass());
+                    jt + " on message " + schema.messageFullName());
         }
         String name = lastName = parser.getCurrentName();
         int number = lastNumber = numeric ? Integer.parseInt(name) : schema.getFieldNumber(name);
@@ -122,7 +122,7 @@ public final class JsonInput implements Input
             if(parser.getCurrentToken().isScalarValue())
                 return readFieldNumber(schema);
             
-            throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.typeClass());
+            throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.messageFullName());
         }
         
         return number;
@@ -311,7 +311,7 @@ public final class JsonInput implements Input
         {
             throw new JsonInputException("Expected token: { but was " + 
                     parser.getCurrentToken() + " on " + lastName + " of message " + 
-                    schema.typeClass());
+                    schema.messageFullName());
         }
         
         int lastNumber = this.lastNumber;
@@ -327,7 +327,7 @@ public final class JsonInput implements Input
         {
             throw new JsonInputException("Expected token: } but was " + 
                     parser.getCurrentToken() + " on " + lastName + " of message " + 
-                    schema.typeClass());
+                    schema.messageFullName());
         }
         
         if(!schema.isInitialized(value))

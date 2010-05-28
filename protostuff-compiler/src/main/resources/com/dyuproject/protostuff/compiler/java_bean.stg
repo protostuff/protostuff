@@ -345,6 +345,16 @@ public Class\<<message.name>\> typeClass()
     return <message.name>.class;
 }
 
+public String messageName()
+{
+    return <message.name>.class.getSimpleName();
+}
+
+public String messageFullName()
+{
+    return <message.name>.class.getName();
+}
+
 <message:message_method_is_initialized(message=it, options=options)>
 <message:message_field_merge(message=it, options=options, name="message")>
 <message:message_field_write(message=it, options=options, name="message")>

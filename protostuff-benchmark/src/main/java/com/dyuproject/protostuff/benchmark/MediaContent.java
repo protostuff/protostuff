@@ -124,6 +124,16 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
         return MediaContent.class;
     }
 
+    public String messageName()
+    {
+        return MediaContent.class.getSimpleName();
+    }
+
+    public String messageFullName()
+    {
+        return MediaContent.class.getName();
+    }
+
     public boolean isInitialized(MediaContent message)
     {
         return 

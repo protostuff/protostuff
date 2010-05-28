@@ -180,6 +180,16 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
         return Image.class;
     }
 
+    public String messageName()
+    {
+        return Image.class.getSimpleName();
+    }
+
+    public String messageFullName()
+    {
+        return Image.class.getName();
+    }
+
     public boolean isInitialized(Image message)
     {
         return 

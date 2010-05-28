@@ -290,6 +290,16 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
         return Media.class;
     }
 
+    public String messageName()
+    {
+        return Media.class.getSimpleName();
+    }
+
+    public String messageFullName()
+    {
+        return Media.class.getName();
+    }
+
     public boolean isInitialized(Media message)
     {
         return 

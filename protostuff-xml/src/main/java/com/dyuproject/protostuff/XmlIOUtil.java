@@ -174,7 +174,7 @@ public final class XmlIOUtil
     public static <T> void writeTo(XMLStreamWriter writer, T message, Schema<T> schema)
     throws IOException, XMLStreamException, XmlOutputException
     {
-        writer.writeStartElement(schema.typeClass().getSimpleName());
+        writer.writeStartElement(schema.messageName());
         
         schema.writeTo(new XmlOutput(writer).use(schema), message);
         
@@ -300,7 +300,7 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(XMLStreamReader parser, T message, Schema<T> schema)
     throws IOException, XMLStreamException, XmlInputException
     {
-        String simpleName = schema.typeClass().getSimpleName();
+        String simpleName = schema.messageName();
         
         if(parser.nextTag() != START_ELEMENT || 
                 !simpleName.equals(parser.getLocalName()))
@@ -361,7 +361,7 @@ public final class XmlIOUtil
     public static <T> void writeListTo(XMLStreamWriter writer, List<T> messages, Schema<T> schema) 
     throws IOException, XMLStreamException
     {
-        String simpleName = schema.typeClass().getSimpleName();
+        String simpleName = schema.messageName();
         writer.writeStartElement("list");
         
         if(messages.isEmpty())
@@ -418,7 +418,7 @@ public final class XmlIOUtil
         if(parser.nextTag() != START_ELEMENT || !"list".equals(parser.getLocalName()))
             throw new XmlInputException("Expected token START_ELEMENT: list");
         
-        final String simpleName = schema.typeClass().getSimpleName();
+        final String simpleName = schema.messageName();
         final ArrayList<T> list = new ArrayList<T>();
         final XmlInput input = new XmlInput(parser);
         

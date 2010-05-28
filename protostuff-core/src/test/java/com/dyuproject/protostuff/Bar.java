@@ -276,6 +276,16 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
     {
         return Bar.class;
     }
+    
+    public String messageName()
+    {
+        return getClass().getSimpleName();
+    }
+    
+    public String messageFullName()
+    {
+        return getClass().getName();
+    }
 
     public String getFieldName(int number)
     {

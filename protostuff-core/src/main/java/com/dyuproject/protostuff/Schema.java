@@ -64,6 +64,18 @@ public interface Schema<T>
     public T newMessage();
     
     /**
+     * Returns the simple name of the message tied to this schema.
+     * Allows custom schemas to provide a custom name other than typeClass().getSimpleName();
+     */
+    public String messageName();
+    
+    /**
+     * Returns the full name of the message tied to this schema.
+     * Allows custom schemas to provide a custom name other than typeClass().getName();
+     */
+    public String messageFullName();
+    
+    /**
      * Gets the class of the message.
      */
     public Class<T> typeClass();

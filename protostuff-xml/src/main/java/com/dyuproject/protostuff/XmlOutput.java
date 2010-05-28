@@ -168,7 +168,7 @@ public final class XmlOutput implements Output
         {
             writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
             
-            writer.writeStartElement(schema.typeClass().getSimpleName());
+            writer.writeStartElement(schema.messageName());
             schema.writeTo(this, value);
             writer.writeEndElement();
             

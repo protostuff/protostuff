@@ -125,6 +125,16 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
     {
         return Baz.class;
     }
+    
+    public String messageName()
+    {
+        return getClass().getSimpleName();
+    }
+    
+    public String messageFullName()
+    {
+        return getClass().getName();
+    }
 
     public String getFieldName(int number)
     {

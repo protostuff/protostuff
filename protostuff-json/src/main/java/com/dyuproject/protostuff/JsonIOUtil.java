@@ -209,7 +209,7 @@ public final class JsonIOUtil
         {
             throw new JsonInputException("Expected token: { but was " + 
                     parser.getCurrentToken() + " on message " + 
-                    schema.typeClass());
+                    schema.messageFullName());
         }
         
         schema.mergeFrom(new JsonInput(parser, numeric), message);
@@ -218,7 +218,7 @@ public final class JsonIOUtil
         {
             throw new JsonInputException("Expected token: } but was " + 
                     parser.getCurrentToken() + " on message " + 
-                    schema.typeClass());
+                    schema.messageFullName());
         }
     }
     
@@ -308,7 +308,7 @@ public final class JsonIOUtil
         {
             throw new JsonInputException("Expected token: [ but was " + 
                     parser.getCurrentToken() + " on message: " + 
-                    schema.typeClass());
+                    schema.messageFullName());
         }
         
         final JsonInput input = new JsonInput(parser, numeric);
@@ -319,7 +319,7 @@ public final class JsonIOUtil
             {
                 throw new JsonInputException("Expected token: { but was " + 
                         parser.getCurrentToken() + " on message " + 
-                        schema.typeClass());
+                        schema.messageFullName());
             }
             
             T message = schema.newMessage();
@@ -329,7 +329,7 @@ public final class JsonIOUtil
             {
                 throw new JsonInputException("Expected token: } but was " + 
                         parser.getCurrentToken() + " on message " + 
-                        schema.typeClass());
+                        schema.messageFullName());
             }
             
             list.add(message);

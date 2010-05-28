@@ -107,6 +107,16 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
     {
         return HasHasBar.class;
     }
+    
+    public String messageName()
+    {
+        return getClass().getSimpleName();
+    }
+    
+    public String messageFullName()
+    {
+        return getClass().getName();
+    }
 
     public void mergeFrom(Input input, HasHasBar message) throws IOException
     {

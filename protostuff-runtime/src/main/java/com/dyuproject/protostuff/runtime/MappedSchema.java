@@ -138,6 +138,16 @@ public abstract class MappedSchema<T> implements Schema<T>
         return typeClass;
     }
     
+    public String messageName()
+    {
+        return typeClass.getSimpleName();
+    }
+    
+    public String messageFullName()
+    {
+        return typeClass.getName();
+    }
+    
     public String getFieldName(int number)
     {
         return fieldsByNumber.length>number ? fieldsByNumber[number].name : null;

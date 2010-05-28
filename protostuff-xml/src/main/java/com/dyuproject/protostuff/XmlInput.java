@@ -107,14 +107,14 @@ public final class XmlInput implements Input
                         return;
                     }
                     throw new XmlInputException("Unknown field: " + name + " on message " + 
-                            schema.typeClass());
+                            schema.messageFullName());
                 case END_DOCUMENT:
                     // malformed xml. 
                 case START_ELEMENT:
                     // message field
                     // we do not know how deep this message is
                     throw new XmlInputException("Unknown field: " + name + " on message " + 
-                            schema.typeClass());
+                            schema.messageFullName());
             }
         }
     }
@@ -141,14 +141,14 @@ public final class XmlInput implements Input
                             return readFieldNumber(schema);
                         }
                         throw new XmlInputException("Unknown field: " + name + " on message " + 
-                                schema.typeClass());
+                                schema.messageFullName());
                     case END_DOCUMENT:
                         // malformed xml. 
                     case START_ELEMENT:
                         // message field
                         // we do not know how deep this message is
                         throw new XmlInputException("Unknown field: " + name + " on message " + 
-                                schema.typeClass());
+                                schema.messageFullName());
                 }
             }
         }
@@ -248,7 +248,7 @@ public final class XmlInput implements Input
     
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {
-        String simpleName = schema.typeClass().getSimpleName();
+        String simpleName = schema.messageName();
         if(nextTag() != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
             throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
         
