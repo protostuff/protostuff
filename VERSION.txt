@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ added an abstract helper class CustomSchema to easily customize how messages can be read/written and for adding filters/hooks as well.
 + added IO optimizations
 + added messageName() and messageFullName() methods to the schema to support full xml serialization of existing C++ protoc messages.
   This also enables aliasing of the message names (especially for xml) by overriding the messageName() method.
