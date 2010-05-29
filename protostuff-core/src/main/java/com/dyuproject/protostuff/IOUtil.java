@@ -209,7 +209,9 @@ public final class IOUtil
         if(len != 0)
         {
             // not an empty message
-            CodedInput input = CodedInput.newInstance(getFilledBufferFrom(in, len));
+            byte[] buf = new byte[len];
+            fillBufferFrom(in, buf, 0, len);
+            CodedInput input = CodedInput.newInstance(buf, 0, len);
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
@@ -260,6 +262,8 @@ public final class IOUtil
     throws IOException
     {
         final ArrayList<T> list = new ArrayList<T>();
+        byte[] buf = null;
+        int biggestLen = 0;
         for(int size=in.read(); size!=-1; size=in.read())
         {
             T message = schema.newMessage();
@@ -267,7 +271,15 @@ public final class IOUtil
             if(len != 0)
             {
                 // not an empty message
-                CodedInput input = CodedInput.newInstance(getFilledBufferFrom(in, len));
+                if(biggestLen < len)
+                {
+                    // cannot reuse buffer, allocate a bigger buffer
+                    // discard the last one for gc
+                    buf = new byte[len];
+                    biggestLen = len;
+                }
+                fillBufferFrom(in, buf, 0, len);
+                CodedInput input = CodedInput.newInstance(buf, 0, len);
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
             }
@@ -333,18 +345,15 @@ public final class IOUtil
     /**
      * Fills the byte buffer from the {@link InputStream} with the specified length.
      */
-    private static byte[] getFilledBufferFrom(InputStream in, int length) throws IOException
+    static void fillBufferFrom(InputStream in, byte[] buf, int offset, int len) 
+    throws IOException
     {
-        final byte[] data = new byte[length];
-        
-        for(int offset = 0; length > 0; length -= offset)
+        for(int read = 0; len > 0; len -= read, offset += read)
         {
-            offset = in.read(data, offset, length);
-            if(offset == -1)
+            read = in.read(buf, offset, len);
+            if(read == -1)
                 throw ProtobufException.truncatedMessage();
         }
-        
-        return data;
     }
 
 }
