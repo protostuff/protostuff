@@ -209,6 +209,15 @@ public final class IOUtil
         if(len != 0)
         {
             // not an empty message
+            if(len > CodedOutput.DEFAULT_BUFFER_SIZE)
+            {
+                // message too big
+                CodedInput input = CodedInput.newInstance(new LimitedInputStream(in, len));
+                schema.mergeFrom(input, message);
+                input.checkLastTagWas(0);
+                return;
+            }
+            
             byte[] buf = new byte[len];
             fillBufferFrom(in, buf, 0, len);
             CodedInput input = CodedInput.newInstance(buf, 0, len);
@@ -264,13 +273,26 @@ public final class IOUtil
         final ArrayList<T> list = new ArrayList<T>();
         byte[] buf = null;
         int biggestLen = 0;
+        LimitedInputStream lin = null;
         for(int size=in.read(); size!=-1; size=in.read())
         {
             T message = schema.newMessage();
+            list.add(message);
             int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
             if(len != 0)
             {
                 // not an empty message
+                if(len > CodedOutput.DEFAULT_BUFFER_SIZE)
+                {
+                    // message too big
+                    if(lin == null)
+                        lin = new LimitedInputStream(in);
+                    CodedInput input = CodedInput.newInstance(lin.limit(len));
+                    schema.mergeFrom(input, message);
+                    input.checkLastTagWas(0);
+                    continue;
+                }
+                
                 if(biggestLen < len)
                 {
                     // cannot reuse buffer, allocate a bigger buffer
@@ -283,7 +305,6 @@ public final class IOUtil
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
             }
-            list.add(message);
         }
         return list;
     }
