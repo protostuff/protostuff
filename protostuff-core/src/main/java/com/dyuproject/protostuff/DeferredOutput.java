@@ -18,7 +18,6 @@ import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 
 /**
  * A protobuf output where the writing of bytes is deferred (buffered chunks).
@@ -67,21 +66,6 @@ public final class DeferredOutput implements Output
     {
         for(ByteArrayNode node = root.next; node != null; node = node.next)
             out.write(node.bytes);
-    }
-    
-    /**
-     * Writes the raw bytes into the {@link ByteBuffer}.
-     */
-    public void streamTo(ByteBuffer buffer)
-    {
-        if(size>buffer.capacity())
-        {
-            throw new IllegalArgumentException("DeferredOutput size: " + size + 
-                    " is greater than the provided buffer capacity: " + buffer.capacity());
-        }
-        
-        for(ByteArrayNode node = root; node!=null; node = node.next)
-            buffer.put(node.bytes);
     }
     
     /**
