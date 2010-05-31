@@ -263,12 +263,12 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeFrom(in, this, this);
+        IOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeTo(out, this, this);
+        IOUtil.writeDelimitedTo(out, this, this);
     }
 
     // message method

@@ -45,6 +45,7 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -410,6 +411,35 @@ public final class CodedInput implements Input {
     // Keep reading up to 64 bits.
     for (; offset < 64; offset += 7) {
       final int b = input.read();
+      if (b == -1) {
+        throw ProtobufException.truncatedMessage();
+      }
+      if ((b & 0x80) == 0) {
+        return result;
+      }
+    }
+    throw ProtobufException.malformedVarint();
+  }
+  /**
+   * Reads a varint from the input one byte at a time from a {@link DataInput}, so that it 
+   * does not read any bytes after the end of the varint.
+   */
+  static int readRawVarint32(final DataInput input, int firstByte) throws IOException {
+    int result = firstByte & 0x7f;
+    int offset = 7;
+    for (; offset < 32; offset += 7) {
+      final int b = input.readByte();
+      if (b == -1) {
+        throw ProtobufException.truncatedMessage();
+      }
+      result |= (b & 0x7f) << offset;
+      if ((b & 0x80) == 0) {
+        return result;
+      }
+    }
+    // Keep reading up to 64 bits.
+    for (; offset < 64; offset += 7) {
+      final int b = input.readByte();
       if (b == -1) {
         throw ProtobufException.truncatedMessage();
       }

@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -205,6 +207,9 @@ public final class IOUtil
     throws IOException
     {
         final int size = in.read();
+        if(size == -1)
+            throw ProtobufException.truncatedMessage();
+        
         final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
         if(len != 0)
         {
@@ -313,20 +318,22 @@ public final class IOUtil
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link ObjectOutput}.
      */
-    public static <T> void writeTo(ObjectOutput out, T message, Schema<T> schema) 
+    public static <T> void writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
     {
         if(out instanceof OutputStream)
         {
+            // write the bytes directly to the OutputStream without allocating a byte array that 
+            // contains the whole message
             final BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE);
             schema.writeTo(output, message);
-            out.writeInt(output.getSize());
+            CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
             output.streamTo((OutputStream)out);
         }
         else
         {
             final byte[] data = toByteArray(message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE);
-            out.writeInt(data.length);
+            CodedOutput.writeRawVarInt32Bytes(out, data.length);
             out.write(data);
         }
     }
@@ -335,30 +342,37 @@ public final class IOUtil
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Merges from the {@link ObjectInput}.
      */
-    public static <T> void mergeFrom(ObjectInput in, T message, Schema<T> schema) 
+    public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
     throws IOException
     {
-        int length = in.readInt();
-        if(length == 0)
+        final int size = in.readByte();
+        if(size == -1)
+            throw ProtobufException.truncatedMessage();
+        
+        final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+        
+        if(len != 0)
         {
-            // empty message
-            if(!schema.isInitialized(message))
-                throw new UninitializedMessageException(message, schema);
-            
-            return;
+            // not an empty message
+            if(len > CodedOutput.DEFAULT_BUFFER_SIZE && in instanceof InputStream)
+            {
+                // message too big
+                CodedInput input = CodedInput.newInstance(new LimitedInputStream((InputStream)in, 
+                        len));
+                schema.mergeFrom(input, message);
+                input.checkLastTagWas(0);
+            }
+            else
+            {
+                byte[] buf = new byte[len];
+                in.readFully(buf, 0, len);
+                CodedInput input = CodedInput.newInstance(buf, 0, len);
+                schema.mergeFrom(input, message);
+                input.checkLastTagWas(0);
+            }
         }
-        
-        final byte[] data = new byte[length];
-        
-        for(int offset = 0; length > 0; length -= offset)
-        {
-            offset = in.read(data, offset, length);
-            if(offset == -1)
-                throw ProtobufException.truncatedMessage();
-        }
-        
-        mergeFrom(data, message, schema);
-        
+
+        // check it since this message is embedded in the DataInput.
         if(!schema.isInitialized(message))
             throw new UninitializedMessageException(message, schema);
     }

@@ -396,12 +396,12 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeFrom(in, this, this);
+        IOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeTo(out, this, this);
+        IOUtil.writeDelimitedTo(out, this, this);
     }
 
 }
