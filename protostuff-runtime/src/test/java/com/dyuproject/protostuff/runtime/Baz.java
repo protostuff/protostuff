@@ -100,12 +100,12 @@ public final class Baz implements Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeFrom(in, this, RuntimeSchema.getSchema(Baz.class));
+        IOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Baz.class));
     }
     
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeTo(out, this, RuntimeSchema.getSchema(Baz.class));
+        IOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Baz.class));
     }
 
 }
