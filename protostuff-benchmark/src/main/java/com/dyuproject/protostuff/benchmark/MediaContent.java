@@ -9,10 +9,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
-import com.dyuproject.protostuff.Input;
+
 import com.dyuproject.protostuff.IOUtil;
-import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
 
