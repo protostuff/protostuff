@@ -37,13 +37,13 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
 
     public MediaContent()
     {
+        
     }
 
     public MediaContent(
         Media media
     )
     {
-        this();
         this.media = media;
     }
 

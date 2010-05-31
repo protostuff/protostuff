@@ -74,6 +74,7 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
 
     public Media()
     {
+        
     }
 
     public Media(
@@ -86,7 +87,6 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
         Player player
     )
     {
-        this();
         this.uri = uri;
         this.width = width;
         this.height = height;

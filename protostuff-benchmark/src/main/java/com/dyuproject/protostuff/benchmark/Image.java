@@ -66,6 +66,7 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
 
     public Image()
     {
+        
     }
 
     public Image(
@@ -75,7 +76,6 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
         Size size
     )
     {
-        this();
         this.uri = uri;
         this.width = width;
         this.height = height;

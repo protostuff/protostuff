@@ -14,7 +14,7 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
-    <message.fields:field_declaration(field=it, options=options); separator=";\n">;
+    <message.fields:field_declaration(field=it, options=options); separator="\n">
     <message:message_constructor(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
     <message:message_impl_serializable(message=it, options=options)>

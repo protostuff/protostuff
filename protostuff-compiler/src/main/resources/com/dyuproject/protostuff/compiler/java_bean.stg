@@ -98,7 +98,7 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     <message:message_default_instance(message=it, options=options)>
     <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
     
-    <message.fields:field_declaration(field=it, options=options, modifier="private"); separator=";\n">;
+    <message.fields:field_declaration(field=it, options=options, modifier="private"); separator="\n">
     <message:message_constructor(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
     <message:message_impl_serializable(message=it, options=options)>
@@ -181,9 +181,17 @@ field_default_value(field, options) ::= <<
 
 field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
-<modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>
+<modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>;
 <else>
-<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
+<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
+<endif>
+>>
+
+field_assign_defaults(field, options) ::= <<
+<if(field.defaultValue)>
+<if(!field.enumField)>
+ = DEFAULT_<field.name; format="UUC">
+<endif>
 <endif>
 >>
 
@@ -191,7 +199,7 @@ message_constructor(message, options) ::= <<
 
 public <message.name>()
 {
-    <message.fields:field_assign_constructor_defaults(field=it, options=options); separator="\n">
+    
 }
 <if(message.requiredFieldPresentOnCurrent)>
 
@@ -199,20 +207,11 @@ public <message.name>(
     <message.fields:field_declare_constructor_singular(field=it, options=options); separator=",\n">
 )
 {
-    this();
     <message.fields:field_assign_constructor_singular(field=it, options=options); separator="\n">
 }
 
 <endif>
 
->>
-
-field_assign_constructor_defaults(field, options) ::= <<
-<if(field.defaultValue)>
-<if(!field.enumField)>
-this.<var(val=field.name, fmt="CC", options=options)> = DEFAULT_<field.name; format="UUC">;
-<endif>
-<endif>
 >>
 
 field_declare_constructor_singular(field, options) ::= <<
