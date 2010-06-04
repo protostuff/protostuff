@@ -908,7 +908,17 @@ public final class CodedInput implements Input {
 
   //START EXTRA
   public <T> int readFieldNumber(Schema<T> schema) throws IOException {
-    return WireFormat.getTagFieldNumber(readTag());
+    if (isAtEnd()) {
+      lastTag = 0;
+      return 0;
+    }
+
+    int fieldNumber = WireFormat.getTagFieldNumber(lastTag = readRawVarint32());
+    if (fieldNumber == 0) {
+      // If we actually read zero, that's not a valid tag.
+      throw ProtobufException.invalidTag();
+    }
+    return fieldNumber;
   }
   
   public byte[] readByteArray() throws IOException {
