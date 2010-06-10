@@ -55,8 +55,16 @@ public class PluginProtoCompiler extends STCodeGenerator
         group = resolveSTG(module);
         
         this.module = module;
-
-        protoBlock = group.lookupTemplate("proto_block") != null;
+        boolean protoBlock = false;
+        try
+        {
+            protoBlock = group.lookupTemplate("proto_block") != null;
+        }
+        catch(IllegalArgumentException e)
+        {
+            protoBlock = false;
+        }
+        this.protoBlock = protoBlock;
         fileExtension = getFileExtension(module.getOutput());
         javaOutput = ".java".equalsIgnoreCase(fileExtension);
     }
