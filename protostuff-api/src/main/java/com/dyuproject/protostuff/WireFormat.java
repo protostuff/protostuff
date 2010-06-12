@@ -133,9 +133,9 @@ public final class WireFormat {
     STRING  (JavaType.STRING     , WIRETYPE_LENGTH_DELIMITED) {
       public boolean isPackable() { return false; }
     },
-    /*GROUP   (JavaType.MESSAGE    , WIRETYPE_START_GROUP     ) {
+    GROUP   (JavaType.MESSAGE    , WIRETYPE_START_GROUP     ) {
       public boolean isPackable() { return false; }  
-    },*/
+    },
     MESSAGE (JavaType.MESSAGE    , WIRETYPE_LENGTH_DELIMITED) {
       public boolean isPackable() { return false; }  
     },
