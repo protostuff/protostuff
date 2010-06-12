@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-core</artifactId>
+      <artifactId>protostuff-api</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
