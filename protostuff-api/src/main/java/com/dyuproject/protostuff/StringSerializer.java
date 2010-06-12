@@ -22,6 +22,12 @@ public abstract class StringSerializer
      */
     public abstract String deser(byte[] nonNullValue);
     
+    /**
+     * Deserializes the bytes to a string.
+     */
+    public abstract String deser(byte[] nonNullValue, int offset, int len);
+    
+    
     private static final StringSerializer __utf8string = new StringSerializer()
     {
         public String deser(byte[] nonNullValue)
@@ -29,6 +35,18 @@ public abstract class StringSerializer
             try
             {
                 return new String(nonNullValue, "UTF-8");
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        public String deser(byte[] nonNullValue, int offset, int len)
+        {
+            try
+            {
+                return new String(nonNullValue, offset, len, "UTF-8");
             }
             catch (UnsupportedEncodingException e)
             {
@@ -57,6 +75,11 @@ public abstract class StringSerializer
         {
             return new String(nonNullValue, utf8);
         }
+        
+        public String deser(byte[] nonNullValue, int offset, int len)
+        {
+            return new String(nonNullValue, offset, len, utf8);
+        }
 
         public byte[] ser(String nonNullValue)
         {
@@ -69,6 +92,11 @@ public abstract class StringSerializer
         public String deser(byte[] nonNullValue)
         {
             return new String(nonNullValue);
+        }
+        
+        public String deser(byte[] nonNullValue, int offset, int len)
+        {
+            return new String(nonNullValue, offset, len);
         }
 
         public byte[] ser(String nonNullValue)
