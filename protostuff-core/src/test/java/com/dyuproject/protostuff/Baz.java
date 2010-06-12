@@ -36,7 +36,6 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         __fieldMap.put("id", 1);
         __fieldMap.put("name", 2);
         __fieldMap.put("timestamp", 3);
-        __fieldMap.put("hasBar", 4);
     }
     
     private int id;
