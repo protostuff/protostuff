@@ -176,6 +176,7 @@
   </dependencyManagement>
   
   <modules>
+    <module>protostuff-api</module>
     <module>protostuff-core</module>
     <module>protostuff-runtime</module>
     <module>protostuff-json</module>
