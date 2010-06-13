@@ -27,10 +27,15 @@ import java.util.ArrayList;
 public class BufferedOutputTest extends SerDeserTest
 {
     
+    public boolean isGroupEncoded()
+    {
+        return false;
+    }
+    
     /**
      * Serializes the {@code message} into a byte array.
      */
-    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    public static <T> byte[] getByteArray(T message, Schema<T> schema)
     {
         BufferedOutput output = new BufferedOutput();
         try
@@ -49,19 +54,9 @@ public class BufferedOutputTest extends SerDeserTest
     /**
      * Serializes the {@code message} into a byte array.
      */
-    public <T extends Message<T>> byte[] toByteArray(T message)
+    public <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return toByteArray(message, message.cachedSchema());
-    }
-    
-    /**
-     * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput}.
-     */
-    public <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
-    throws IOException
-    {
-        writeDelimitedTo(out, message, message.cachedSchema());
+        return getByteArray(message, schema);
     }
     
     /**

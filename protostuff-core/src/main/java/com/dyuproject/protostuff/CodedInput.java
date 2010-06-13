@@ -45,6 +45,11 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_BITS;
+import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_MASK;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
+
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +74,7 @@ public final class CodedInput implements Input {
    * Create a new CodedInputStream wrapping the given InputStream.
    */
   public static CodedInput newInstance(final InputStream input) {
-    return new CodedInput(input);
+    return new CodedInput(input, false);
   }
 
   /**
@@ -84,7 +89,7 @@ public final class CodedInput implements Input {
    */
   public static CodedInput newInstance(final byte[] buf, final int off,
                                              final int len) {
-    return new CodedInput(buf, off, len);
+    return new CodedInput(buf, off, len, false);
   }
 
   // -----------------------------------------------------------------
@@ -100,11 +105,12 @@ public final class CodedInput implements Input {
       return 0;
     }
 
-    int tag = lastTag = readRawVarint32();
-    if (tag >>> WireFormat.TAG_TYPE_BITS == 0) {
+    final int tag = readRawVarint32();
+    if (tag >>> TAG_TYPE_BITS == 0) {
       // If we actually read zero, that's not a valid tag.
       throw ProtobufException.invalidTag();
     }
+    lastTag = tag;
     return tag;
   }
 
@@ -217,29 +223,49 @@ public final class CodedInput implements Input {
     if (size <= (bufferSize - bufferPos) && size > 0) {
       // Fast path:  We already have the bytes in a contiguous buffer, so
       //   just copy directly from it.
-      final String result = new String(buffer, bufferPos, size, "UTF-8");
+      final String result = STRING.deser(buffer, bufferPos, size);
       bufferPos += size;
       return result;
     } else {
       // Slow path:  Build a byte array first then copy it.
-      return new String(readRawBytes(size), "UTF-8");
+      return STRING.deser(readRawBytes(size));
     }
   }
-
-  /*@ Read a {@code group} field value from the stream. */
-  /*@public void readGroup(final int fieldNumber,
-                        final MessageLite.Builder builder,
-                        final ExtensionRegistryLite extensionRegistry)
-      throws IOException {
+  
+  public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
+    if(encodeNestedMessageAsGroup)
+      return mergeObjectEncodedAsGroup(value, schema);
+    
+    final int length = readRawVarint32();
     if (recursionDepth >= recursionLimit) {
-      throw InvalidProtocolBufferException.recursionLimitExceeded();
+      throw ProtobufException.recursionLimitExceeded();
+    }
+    final int oldLimit = pushLimit(length);
+    ++recursionDepth;
+    schema.mergeFrom(this, value);
+    if(!schema.isInitialized(value)) {
+      throw new UninitializedMessageException(value, schema);
+    }
+    checkLastTagWas(0);
+    --recursionDepth;
+    popLimit(oldLimit);
+    return value;
+  }
+
+  /** Reads a message field value from the stream (using the {@code group} encoding). */
+  <T> T mergeObjectEncodedAsGroup(T value, Schema<T> schema) throws IOException {
+    if (recursionDepth >= recursionLimit) {
+      throw ProtobufException.recursionLimitExceeded();
     }
     ++recursionDepth;
-    builder.mergeFrom(this, extensionRegistry);
-    checkLastTagWas(
-      WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP));
+    schema.mergeFrom(this, value);
+    // handling is in #readFieldNumber
+    checkLastTagWas(0);
+    //if(WireFormat.WIRETYPE_END_GROUP != WireFormat.getTagWireType(lastTag))
+    //  throw ProtobufException.invalidEndTag();
     --recursionDepth;
-  }*/
+    return value;
+  }
 
   /*@
    * Reads a {@code group} field value from the stream and merges it into the
@@ -263,21 +289,7 @@ public final class CodedInput implements Input {
   /** Read an embedded message field value from the stream. */
   public <T extends Message<T>> T mergeMessage(final T message)
       throws IOException {
-    final int length = readRawVarint32();
-    if (recursionDepth >= recursionLimit) {
-      throw ProtobufException.recursionLimitExceeded();
-    }
-    final int oldLimit = pushLimit(length);
-    ++recursionDepth;
-    Schema<T> schema = message.cachedSchema();
-    schema.mergeFrom(this, message);
-    if(!schema.isInitialized(message)) {
-      throw new UninitializedMessageException(message, schema);
-    }
-    checkLastTagWas(0);
-    --recursionDepth;
-    popLimit(oldLimit);
-    return message;
+    return mergeObject(message, message.cachedSchema());
   }
 
   /** Read a {@code bytes} field value from the stream. */
@@ -549,6 +561,9 @@ public final class CodedInput implements Input {
   /** See setRecursionLimit() */
   private int recursionDepth;
   private int recursionLimit = DEFAULT_RECURSION_LIMIT;
+  
+  /** If true, the nested messages are group-encoded */
+  private final boolean encodeNestedMessageAsGroup;
 
   /** See setSizeLimit() */
   private int sizeLimit = DEFAULT_SIZE_LIMIT;
@@ -557,20 +572,23 @@ public final class CodedInput implements Input {
   private static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
   private static final int BUFFER_SIZE = 4096;
 
-  private CodedInput(final byte[] buffer, final int off, final int len) {
+  CodedInput(final byte[] buffer, final int off, final int len, 
+      boolean encodeNestedMessagesAsGroup) {
     this.buffer = buffer;
     bufferSize = off + len;
     bufferPos = off;
     totalBytesRetired = -off;
     input = null;
+    this.encodeNestedMessageAsGroup = encodeNestedMessagesAsGroup;
   }
 
-  private CodedInput(final InputStream input) {
+  CodedInput(final InputStream input, boolean encodeNestedMessagesAsGroup) {
     buffer = new byte[BUFFER_SIZE];
     bufferSize = 0;
     bufferPos = 0;
     totalBytesRetired = 0;
     this.input = input;
+    this.encodeNestedMessageAsGroup = encodeNestedMessagesAsGroup;
   }
 
   /**
@@ -912,12 +930,19 @@ public final class CodedInput implements Input {
       lastTag = 0;
       return 0;
     }
-
-    int fieldNumber = WireFormat.getTagFieldNumber(lastTag = readRawVarint32());
+    
+    final int tag = readRawVarint32();
+    final int fieldNumber = tag >>> TAG_TYPE_BITS;
     if (fieldNumber == 0) {
       // If we actually read zero, that's not a valid tag.
       throw ProtobufException.invalidTag();
     }
+    if(encodeNestedMessageAsGroup && WIRETYPE_END_GROUP == (tag & TAG_TYPE_MASK)) {
+      lastTag = 0;
+      return 0;
+    }
+    
+    lastTag = tag;
     return fieldNumber;
   }
   
@@ -934,23 +959,6 @@ public final class CodedInput implements Input {
       // Slow path:  Build a byte array first then copy it.
       return readRawBytes(size);
     }
-  }
-  
-  public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
-    final int length = readRawVarint32();
-    if (recursionDepth >= recursionLimit) {
-      throw ProtobufException.recursionLimitExceeded();
-    }
-    final int oldLimit = pushLimit(length);
-    ++recursionDepth;
-    schema.mergeFrom(this, value);
-    if(!schema.isInitialized(value)) {
-      throw new UninitializedMessageException(value, schema);
-    }
-    checkLastTagWas(0);
-    --recursionDepth;
-    popLimit(oldLimit);
-    return value;
   }
   
   public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException {

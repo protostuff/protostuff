@@ -36,27 +36,13 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public class SerDeserTest extends TestCase
+public abstract class SerDeserTest extends TestCase
 {
     
     /**
      * Serializes the {@code message} into a byte array.
      */
-    public <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        DeferredOutput output = new DeferredOutput();
-        try
-        {
-            schema.writeTo(output, message);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        
-        return output.toByteArray();
-    }
+    public abstract <T> byte[] toByteArray(T message, Schema<T> schema);
     
     /**
      * Serializes the {@code message} into a byte array.
@@ -80,31 +66,47 @@ public class SerDeserTest extends TestCase
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
      */
-    public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
-    throws IOException
+    public abstract <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException;
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public <T> byte[] toByteArrayViaCodedOutput(T message, Schema<T> schema)
     {
-        DeferredOutput output = new DeferredOutput();
-        schema.writeTo(output, message);
-        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-        output.streamTo(out);
+        return CodedOutput.toByteArray(message, schema);
     }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public <T extends Message<T>> byte[] toByteArrayViaCodedOutput(T message)
+    {
+        return toByteArrayViaCodedOutput(message, message.cachedSchema());
+    }
+    
+    /**
+     * If true, a nested message is encoded as a group.
+     */
+    public abstract boolean isGroupEncoded();
     
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
         Foo cfoo = new Foo();
-        Foo dfoo = new Foo();        
+        Foo dfoo = new Foo();
         
-        int expectedSize = ComputedSizeOutput.getSize(fooCompare);
+        int expectedSize = ComputedSizeOutput.getSize(fooCompare, fooCompare.cachedSchema(), 
+                isGroupEncoded());
         
-        byte[] coded = CodedOutput.toByteArray(fooCompare);
+        byte[] coded = toByteArrayViaCodedOutput(fooCompare);
         assertTrue(coded.length == expectedSize);
-        IOUtil.mergeFrom(coded, cfoo);      
+        IOUtil.mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema(), isGroupEncoded());
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
-        byte[] deferred = toByteArray(fooCompare);
-        assertTrue(deferred.length == expectedSize);
-        IOUtil.mergeFrom(deferred, dfoo);
+        byte[] output = toByteArray(fooCompare);
+        assertTrue(output.length == expectedSize);
+        IOUtil.mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema(), isGroupEncoded());
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
     
@@ -115,16 +117,17 @@ public class SerDeserTest extends TestCase
             Bar cbar = new Bar();
             Bar dbar = new Bar();            
             
-            int expectedSize = ComputedSizeOutput.getSize(barCompare);
+            int expectedSize = ComputedSizeOutput.getSize(barCompare, barCompare.cachedSchema(), 
+                    isGroupEncoded());
             
-            byte[] coded = CodedOutput.toByteArray(barCompare);
+            byte[] coded = toByteArrayViaCodedOutput(barCompare);
             assertTrue(coded.length == expectedSize);
-            IOUtil.mergeFrom(coded, cbar);        
+            IOUtil.mergeFrom(coded, 0, coded.length, cbar, cbar.cachedSchema(), isGroupEncoded());        
             SerializableObjects.assertEquals(barCompare, cbar);
 
-            byte[] deferred = toByteArray(barCompare);
-            assertTrue(deferred.length == expectedSize);
-            IOUtil.mergeFrom(deferred, dbar);
+            byte[] output = toByteArray(barCompare);
+            assertTrue(output.length == expectedSize);
+            IOUtil.mergeFrom(output, 0, output.length, dbar, dbar.cachedSchema(), isGroupEncoded());
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
@@ -136,19 +139,123 @@ public class SerDeserTest extends TestCase
             Baz cbaz = new Baz();
             Baz dbaz = new Baz();            
             
-            int expectedSize = ComputedSizeOutput.getSize(bazCompare);
+            int expectedSize = ComputedSizeOutput.getSize(bazCompare, bazCompare.cachedSchema(), 
+                    isGroupEncoded());
             
-            byte[] coded = CodedOutput.toByteArray(bazCompare);
+            byte[] coded = toByteArrayViaCodedOutput(bazCompare);
             assertTrue(coded.length == expectedSize);
-            IOUtil.mergeFrom(coded, cbaz);        
+            IOUtil.mergeFrom(coded, 0, coded.length, cbaz, cbaz.cachedSchema(), isGroupEncoded());        
             SerializableObjects.assertEquals(bazCompare, cbaz);
 
-            byte[] deferred = toByteArray(bazCompare);
-            assertTrue(deferred.length == expectedSize);
-            IOUtil.mergeFrom(deferred, dbaz);
+            byte[] output = toByteArray(bazCompare);
+            assertTrue(output.length == expectedSize);
+            IOUtil.mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema(), isGroupEncoded());
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
+    
+    public void testFooSkipMessage() throws Exception
+    {
+        final CustomSchema<Foo> fooSchema = new CustomSchema<Foo>(foo.cachedSchema())
+        {
+            public void writeTo(Output output, Foo message) throws IOException
+            {
+                // 10 is an unknown field
+                output.writeMessage(10, baz, false);
+                super.writeTo(output, message);
+            }
+        };
+        
+        Foo fooCompare = foo;
+        Foo cfoo = new Foo();
+        Foo dfoo = new Foo();
+        
+        int expectedSize = ComputedSizeOutput.getSize(fooCompare, fooSchema, isGroupEncoded());
+        
+        byte[] coded = toByteArrayViaCodedOutput(fooCompare, fooSchema);
+        assertTrue(coded.length == expectedSize);
+        IOUtil.mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema(), isGroupEncoded());
+        SerializableObjects.assertEquals(fooCompare, cfoo);
+
+        byte[] output = toByteArray(fooCompare, fooSchema);
+        assertTrue(output.length == expectedSize);
+        IOUtil.mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema(), isGroupEncoded());
+        SerializableObjects.assertEquals(fooCompare, dfoo);
+    }
+    
+    public void testBarSkipMessage() throws Exception
+    {
+        final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
+        {
+            public void writeTo(Output output, Bar message) throws IOException
+            {
+                // 10 is an unknown field
+                output.writeMessage(10, baz, false);
+                super.writeTo(output, message);
+            }
+        };
+        
+        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        {
+            Bar cbar = new Bar();
+            Bar dbar = new Bar();            
+            
+            int expectedSize = ComputedSizeOutput.getSize(barCompare, barSchema, 
+                    isGroupEncoded());
+            
+            byte[] coded = toByteArrayViaCodedOutput(barCompare, barSchema);
+            assertTrue(coded.length == expectedSize);
+            IOUtil.mergeFrom(coded, 0, coded.length, cbar, barSchema, isGroupEncoded());        
+            SerializableObjects.assertEquals(barCompare, cbar);
+
+            byte[] output = toByteArray(barCompare, barSchema);
+            assertTrue(output.length == expectedSize);
+            IOUtil.mergeFrom(output, 0, output.length, dbar, barSchema, isGroupEncoded());
+            SerializableObjects.assertEquals(barCompare, dbar);
+        }
+    }
+    
+    /**
+     * Foo shares field numbers (and type) with Bar except that foo's fields are 
+     * all repeated (w/c is alright).
+     * Bar also shares the same field and type (1&2) with Baz.
+     */
+    public void testShareFieldNumberAndTypeAndSkipMessage() throws Exception
+    {
+        final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
+        {
+            public void writeTo(Output output, Bar message) throws IOException
+            {
+                output.writeMessage(10, baz, false);
+                super.writeTo(output, message);
+            }
+        };
+        
+        final Baz baz = new Baz();
+        baz.setId(1);
+        baz.setName("baz");
+        final Bar bar = new Bar();
+        bar.setBaz(baz);
+        bar.setSomeInt(2);
+        bar.setSomeString("bar");
+        bar.setSomeDouble(100.001d);
+        bar.setSomeFloat(10.01f);
+        
+        byte[] coded = toByteArrayViaCodedOutput(bar, barSchema);
+        byte[] output = toByteArray(bar, barSchema);
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded, "UTF-8"), new String(output, "UTF-8"));
+        
+        Foo foo = new Foo();
+        // we expect this to succeed, skipping the baz field.
+        IOUtil.mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema(), isGroupEncoded());
+        
+        assertTrue(bar.getSomeInt() == foo.getSomeInt().get(0));
+        assertEquals(bar.getSomeString(), foo.getSomeString().get(0));
+        assertTrue(bar.getSomeDouble() == foo.getSomeDouble().get(0));
+        assertTrue(bar.getSomeFloat() == foo.getSomeFloat().get(0));
+    }
+    
     
     public void testFooDelimited() throws Exception
     {
@@ -160,7 +267,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo);
+        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -175,7 +282,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo);
+        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -193,7 +300,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo);
+        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -208,7 +315,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar);
+        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -223,7 +330,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar);
+        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -239,7 +346,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar);
+        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -254,7 +361,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
-        IOUtil.mergeDelimitedFrom(in, baz);
+        IOUtil.mergeDelimitedFrom(in, baz, baz.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(baz, bazCompare);
     }
@@ -269,7 +376,7 @@ public class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
-        IOUtil.mergeDelimitedFrom(in, baz);
+        IOUtil.mergeDelimitedFrom(in, baz, baz.cachedSchema(), isGroupEncoded());
         
         SerializableObjects.assertEquals(baz, bazCompare);
     }
@@ -288,16 +395,17 @@ public class SerDeserTest extends TestCase
         HasHasBar chhb = new HasHasBar();
         HasHasBar dhhb = new HasHasBar();        
         
-        int expectedSize = ComputedSizeOutput.getSize(hhbCompare);
+        int expectedSize = ComputedSizeOutput.getSize(hhbCompare, hhbCompare.cachedSchema(), 
+                isGroupEncoded());
         
-        byte[] coded = CodedOutput.toByteArray(hhbCompare);
+        byte[] coded = toByteArrayViaCodedOutput(hhbCompare);
         assertTrue(coded.length == expectedSize);
-        IOUtil.mergeFrom(coded, chhb);      
+        IOUtil.mergeFrom(coded, 0, coded.length, chhb, chhb.cachedSchema(), isGroupEncoded());      
         assertEquals(hhbCompare, chhb);
 
-        byte[] deferred = toByteArray(hhbCompare);
-        assertTrue(deferred.length == expectedSize);
-        IOUtil.mergeFrom(deferred, dhhb);
+        byte[] output = toByteArray(hhbCompare);
+        assertTrue(output.length == expectedSize);
+        IOUtil.mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema(), isGroupEncoded());
         assertEquals(hhbCompare, dhhb);
     }
     
@@ -388,11 +496,11 @@ public class SerDeserTest extends TestCase
     {
         Bar bar = new Bar();
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testEmptyBarInner() throws Exception
@@ -401,11 +509,11 @@ public class SerDeserTest extends TestCase
         Bar bar = new Bar();
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBar() throws Exception
@@ -415,11 +523,11 @@ public class SerDeserTest extends TestCase
         bar.setSomeInt(1);
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBarWithString() throws Exception
@@ -429,11 +537,11 @@ public class SerDeserTest extends TestCase
         bar.setSomeString("someString");
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBarWithEmptyString() throws Exception
@@ -443,11 +551,11 @@ public class SerDeserTest extends TestCase
         bar.setSomeString("");
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBarInner() throws Exception
@@ -457,11 +565,11 @@ public class SerDeserTest extends TestCase
         baz.setId(2);
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBarInnerWithString() throws Exception
@@ -471,11 +579,11 @@ public class SerDeserTest extends TestCase
         baz.setName("asdfsf");
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyBarInnerWithEmptyString() throws Exception
@@ -485,11 +593,11 @@ public class SerDeserTest extends TestCase
         baz.setName("");
         bar.setBaz(baz);
         
-        byte[] coded = CodedOutput.toByteArray(bar);
-        byte[] deferred = toByteArray(bar);
+        byte[] coded = toByteArrayViaCodedOutput(bar);
+        byte[] output = toByteArray(bar);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     // empty foo
@@ -498,11 +606,11 @@ public class SerDeserTest extends TestCase
     {
         Foo foo = new Foo();
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testEmptyFooInner() throws Exception
@@ -513,11 +621,11 @@ public class SerDeserTest extends TestCase
         bars.add(bar);
         foo.setSomeBar(bars);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFoo() throws Exception
@@ -532,11 +640,11 @@ public class SerDeserTest extends TestCase
         
         foo.setSomeBar(bars);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFooWithString() throws Exception
@@ -551,11 +659,11 @@ public class SerDeserTest extends TestCase
         strings.add("someString");
         foo.setSomeString(strings);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFooWithEmptyString() throws Exception
@@ -570,11 +678,11 @@ public class SerDeserTest extends TestCase
         strings.add("");
         foo.setSomeString(strings);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFooInner() throws Exception
@@ -586,11 +694,11 @@ public class SerDeserTest extends TestCase
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFooInnerWithString() throws Exception
@@ -603,11 +711,11 @@ public class SerDeserTest extends TestCase
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     public void testPartialEmptyFooInnerWithEmptyString() throws Exception
@@ -620,11 +728,11 @@ public class SerDeserTest extends TestCase
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
         
-        byte[] coded = CodedOutput.toByteArray(foo);
-        byte[] deferred = toByteArray(foo);
+        byte[] coded = toByteArrayViaCodedOutput(foo);
+        byte[] output = toByteArray(foo);
         
-        assertTrue(coded.length == deferred.length);
-        assertEquals(new String(coded), new String(deferred));
+        assertTrue(coded.length == output.length);
+        assertEquals(new String(coded), new String(output));
     }
     
     static void assertEquals(HasHasBar h1, HasHasBar h2)

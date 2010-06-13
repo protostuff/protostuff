@@ -15,7 +15,9 @@
 package com.dyuproject.protostuff;
 
 import static com.dyuproject.protostuff.StringSerializer.STRING;
-import junit.framework.TestCase;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * DeferredOutput test for the size of the bytes written.
@@ -23,7 +25,7 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class DeferredOutputTest extends TestCase
+public class DeferredOutputTest extends SerDeserTest
 {
     
     DeferredOutput output;
@@ -31,6 +33,51 @@ public class DeferredOutputTest extends TestCase
     public void setUp()
     {
         output = new DeferredOutput();
+    }
+    
+    public boolean isGroupEncoded()
+    {
+        return false;
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public static <T> byte[] getByteArray(T message, Schema<T> schema)
+    {
+        DeferredOutput output = new DeferredOutput();
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        byte[] result = output.toByteArray();
+        return result;
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        return getByteArray(message, schema);
+    }
+    
+    /**
+     * Serializes the {@code message} (delimited) into 
+     * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
+     */
+    public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        DeferredOutput output = new DeferredOutput();
+        schema.writeTo(output, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
+        output.streamTo(out);
     }
     
     public void testInt32() throws Exception

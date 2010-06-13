@@ -14,8 +14,9 @@
 
 package com.dyuproject.protostuff;
 
+import static com.dyuproject.protostuff.SerializableObjects.bar;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
-import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +35,74 @@ import junit.framework.TestCase;
 public class CompareOutputsTest extends TestCase
 {
     
+    public void testFoo() throws Exception
+    {
+        Foo fooCompare = foo;
+        
+        byte[] coded = CodedOutput.toByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] deferred = DeferredOutputTest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] buffered = BufferedOutputTest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        
+        //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
+        assertTrue(coded.length == deferred.length);
+        assertTrue(coded.length == buffered.length);
+        
+        assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
+        assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
+    }
+    
+    public void testFooGE() throws Exception
+    {
+        boolean groupEncoded = true;
+        Foo fooCompare = foo;
+        
+        byte[] coded = CodedOutput.toByteArray(fooCompare, fooCompare.cachedSchema(), groupEncoded);
+        byte[] deferred = DeferredOutputGETest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] buffered = BufferedOutputGETest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        
+        //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
+        assertTrue(coded.length == deferred.length);
+        assertTrue(coded.length == buffered.length);
+        
+        assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
+        assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
+    }
+    
+    public void testBar() throws Exception
+    {
+        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        {
+            byte[] coded = CodedOutput.toByteArray(barCompare, barCompare.cachedSchema());
+            byte[] deferred = DeferredOutputTest.getByteArray(barCompare, barCompare.cachedSchema());
+            byte[] buffered = BufferedOutputTest.getByteArray(barCompare, barCompare.cachedSchema());
+            
+            //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
+            assertTrue(coded.length == deferred.length);
+            assertTrue(coded.length == buffered.length);
+            
+            assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
+            assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
+        }
+    }
+    
+    public void testBarGE() throws Exception
+    {
+        boolean groupEncoded = true;
+        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        {
+            byte[] coded = CodedOutput.toByteArray(barCompare, barCompare.cachedSchema(), groupEncoded);
+            byte[] deferred = DeferredOutputGETest.getByteArray(barCompare, barCompare.cachedSchema());
+            byte[] buffered = BufferedOutputGETest.getByteArray(barCompare, barCompare.cachedSchema());
+            
+            //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
+            assertTrue(coded.length == deferred.length);
+            assertTrue(coded.length == buffered.length);
+            
+            assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
+            assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
+        }
+    }
+    
     public void testBenchmark() throws Exception
     {
         if(!"false".equals(System.getProperty("benchmark.skip")))
@@ -43,19 +112,15 @@ public class CompareOutputsTest extends TestCase
         
         PrintStream out = dir==null ? System.out : 
             new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-core-"+System.currentTimeMillis()+".html"), true));
+                    "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 200000);
-        int loops = Integer.getInteger("benchmark.loops", 2000000);
-        String title = "protostuff-core ser/deser benchmark for " + loops + " runs";
-        out.println("<html><head><title>");
+        int warmups = Integer.getInteger("benchmark.warmups", 100000);
+        int loops = Integer.getInteger("benchmark.loops", 1000000);
+        
+        String title = "protostuff-core serialization benchmark for " + loops + " runs";
         out.println(title);
-        out.println("</title></head><body><p>");
-        out.println(title);        
-        out.println("</p><pre>\n\n");
-        
-        serDeser(out);
-        out.println("\n\n</pre><hr/><pre>");
+        out.println();
+
         start(out, warmups, loops);
         
         if(System.out!=out)
@@ -64,42 +129,19 @@ public class CompareOutputsTest extends TestCase
     
     public static void start(PrintStream out, int warmups, int loops) throws Exception
     {
-        serDeser(out, COMPUTED, "computed", warmups, loops);
-        serDeser(out, DEFERRED, "deferred", warmups, loops);
-        serDeser(out, DEFERRED, "buffered", warmups, loops);
+        for(Serializer s : SERIALIZERS)
+            ser(out, s, s.getName(), warmups, loops);
     }
     
-    public static void serDeser(PrintStream out) throws Exception
-    {
-        String computed = STRING.deser(serDeser(COMPUTED));
-        String deferred = STRING.deser(serDeser(DEFERRED));
-        String buffered = STRING.deser(serDeser(BUFFERED));
-        
-        assertEquals(computed, deferred);
-        assertEquals(computed, buffered);
-        
-        out.println(computed);
-        out.println();
-        out.println(deferred);
-    }
-    
-    public static byte[] serDeser(Serializer serializer) throws Exception
-    {
-        byte[] data = serializer.serialize(foo);
-        Foo f = new Foo();
-        IOUtil.mergeFrom(data, f);
-        return data;
-    }
-    
-    static void serDeser(PrintStream out, Serializer serializer, String name, int warmups, 
+    static void ser(PrintStream out, Serializer serializer, String name, int warmups, 
             int loops) throws Exception
     {
-        int len = serDeser(serializer).length;
+        int len = serializer.serialize(foo).length;
         for(int i=0; i<warmups; i++)
-            serDeser(serializer);
+            serializer.serialize(foo);
         long start = System.currentTimeMillis();
         for(int i=0; i<loops; i++)
-            serDeser(serializer);
+            serializer.serialize(foo);
         long finish = System.currentTimeMillis();
         long elapsed = finish - start;
         out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
@@ -111,69 +153,119 @@ public class CompareOutputsTest extends TestCase
         
         PrintStream out = dir==null ? System.out : 
             new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-core-"+System.currentTimeMillis()+".html"), true));
+                    "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
         int loops = Integer.getInteger("benchmark.loops", 2000000);
-        String title = "protostuff-core ser/deser benchmark for " + loops + " runs";
-        out.println("<html><head><title>");
-        out.println(title);
-        out.println("</title></head><body><p>");
-        out.println(title);        
-        out.println("</p><pre>\n\n");
         
-        serDeser(out);
-        out.println("\n\n</pre><hr/><pre>");
+        String title = "protostuff-core serialization benchmark for " + loops + " runs";
+        out.println(title);
+        out.println();
+
         start(out, warmups, loops);
         
         if(System.out!=out)
             out.close();
     }
     
+    
     public interface Serializer
     {
         
         public <T extends Message<T>> byte[] serialize(T message);
         
+        public String getName();
+        
     }
     
-    public static final Serializer COMPUTED = new Serializer()
+    public static final Serializer CODED_OUTPUT = new Serializer()
     {
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            return CodedOutput.toByteArray(message);
+            return CodedOutput.toByteArray(message, message.cachedSchema(), false);
         }
-        
-    };
 
-    public static final Serializer DEFERRED = new Serializer()
-    {
-
-        public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            DeferredOutput output = new DeferredOutput();
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
+        public String getName()
+        {
+            return "codedoutput";
         }
         
     };
     
-    public static final Serializer BUFFERED = new Serializer()
+    public static final Serializer CODED_OUTPUT_GE = new Serializer()
     {
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            BufferedOutput output = new BufferedOutput();
+            return CodedOutput.toByteArray(message, message.cachedSchema(), true);
+        }
+
+        public String getName()
+        {
+            return "codedoutput-ge";
+        }
+        
+    };
+
+    public static final Serializer DEFERRED_OUTPUT = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            DeferredOutput output = new DeferredOutput(false);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+
+        public String getName()
+        {
+            return "deferredoutput";
+        }
+
+    };
+    
+    public static final Serializer DEFERRED_OUTPUT_GE = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            DeferredOutput output = new DeferredOutput(true);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+
+        public String getName()
+        {
+            return "deferredoutput-ge";
+        }
+
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE, false);
             try
             {
                 message.cachedSchema().writeTo(output, message);
@@ -187,6 +279,43 @@ public class CompareOutputsTest extends TestCase
             return output.toByteArray();
         }
         
+        public String getName()
+        {
+            return "bufferedoutput";
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT_GE = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-ge";
+        }
+        
+    };
+    
+    static final Serializer[] SERIALIZERS = new Serializer[]{
+        CODED_OUTPUT, CODED_OUTPUT_GE,
+        DEFERRED_OUTPUT, DEFERRED_OUTPUT_GE,
+        BUFFERED_OUTPUT, BUFFERED_OUTPUT_GE
     };
 
 }

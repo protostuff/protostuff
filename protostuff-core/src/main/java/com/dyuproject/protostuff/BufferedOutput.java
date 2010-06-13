@@ -37,26 +37,33 @@ import java.io.OutputStream;
 public final class BufferedOutput implements Output
 {
 
-    static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
+    public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
             "bufferedoutput.default_buffer_size", 256);
     
-    static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
+    public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
             "bufferedoutput.array_copy_size_limit", 64);
     
     private final OutputBuffer root;
     private OutputBuffer current;
     private final int bufferSize;
     private int size = 0;
+    private final boolean encodeNestedMessageAsGroup;
     
     public BufferedOutput()
     {
-        this(DEFAULT_BUFFER_SIZE);
+        this(DEFAULT_BUFFER_SIZE, false);
     }
     
     public BufferedOutput(int bufferSize)
     {
+        this(bufferSize, false);
+    }
+    
+    public BufferedOutput(int bufferSize, boolean encodeNestedMessageAsGroup)
+    {
         current = root = new OutputBuffer(new byte[bufferSize]);
         this.bufferSize = bufferSize;
+        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
     /**
@@ -265,6 +272,12 @@ public final class BufferedOutput implements Output
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
+        if(encodeNestedMessageAsGroup)
+        {
+            writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
+            return;
+        }
+        
         OutputBuffer lastBuffer = current;
         int lastSize = size;
         // view
@@ -288,7 +301,49 @@ public final class BufferedOutput implements Output
         wrap.next = inner;
     }
     
+    /**
+     * Write the nested message encoded as group.
+     */
+    <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
+            boolean repeated) throws IOException
+    {
+        current = writeTag(
+                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP), 
+                current);
+        
+        schema.writeTo(this, value);
+        
+        current = writeTag(
+                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP), 
+                current);
+    }
+    
     /* ----------------------------------------------------------------- */
+    
+    private OutputBuffer writeTag(int tag, OutputBuffer ob)
+    {
+        int tagSize = computeRawVarint32Size(tag);
+        
+        OutputBuffer rb = ob.offset + tagSize > ob.buffer.length ? 
+                new OutputBuffer(new byte[bufferSize], ob) : ob;
+
+        byte[] buffer = rb.buffer;
+        int offset = rb.offset;
+        rb.offset += tagSize;
+        this.size += tagSize;
+        
+        if (tagSize == 1)
+            buffer[offset] = (byte)tag;
+        else
+        {
+            for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+                buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+
+            buffer[offset] = (byte)tag;
+        }
+        
+        return rb;
+    }
     
     /** Returns the output buffer encoded with the tag and byte array */
     private OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob)

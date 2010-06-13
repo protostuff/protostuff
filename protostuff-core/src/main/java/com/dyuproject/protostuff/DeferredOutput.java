@@ -34,10 +34,16 @@ public final class DeferredOutput implements Output
     private final ByteArrayNode root = new ByteArrayNode(null);
     private ByteArrayNode current = root;
     private int size = 0;
+    private final boolean encodeNestedMessageAsGroup;
 
     public DeferredOutput()
     {
-        
+        this(false);
+    }
+    
+    public DeferredOutput(boolean encodeNestedMessageAsGroup)
+    {
+        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
     /**
@@ -231,6 +237,12 @@ public final class DeferredOutput implements Output
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
+        if(encodeNestedMessageAsGroup)
+        {
+            writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
+            return;
+        }
+        
         ByteArrayNode lastCurrent = current;
         int lastSize = size;
         
@@ -249,6 +261,40 @@ public final class DeferredOutput implements Output
         // insert the byte array (message size)
         new ByteArrayNode(delimited, lastCurrent).next = node;
         
+    }
+    
+    /**
+     * Write the nested message encoded as group.
+     */
+    <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
+            boolean repeated) throws IOException
+    {
+        int startTag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP);
+        byte[] startBytes = getTagBytes(startTag);
+        current = new ByteArrayNode(startBytes, current);
+        
+        schema.writeTo(this, value);
+        
+        int endTag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP);
+        byte[] endBytes = getTagBytes(endTag);
+        current = new ByteArrayNode(endBytes, current);
+        
+        size += (startBytes.length + endBytes.length);
+    }
+    
+    static byte[] getTagBytes(int tag)
+    {
+        int tagSize = CodedOutput.computeRawVarint32Size(tag);
+        if (tagSize == 1)
+            return new byte[]{(byte)tag};
+
+        byte[] buffer = new byte[tagSize];
+        int offset = 0;
+        for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+
+        buffer[offset++] = (byte)tag;
+        return buffer;
     }
 
 }

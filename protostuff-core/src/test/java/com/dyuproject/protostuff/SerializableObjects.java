@@ -35,7 +35,7 @@ public final class SerializableObjects
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
 
     
-    public static final Baz baz = new Baz(567, "baz", 202020202);    
+    public static final Baz baz = new Baz(567, "baz", 202020202);  
     public static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
     

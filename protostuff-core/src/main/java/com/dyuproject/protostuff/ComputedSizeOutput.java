@@ -34,15 +34,23 @@ public final class ComputedSizeOutput implements Output
      */
     public static <T extends Message<T>> int getSize(T message)
     {
-        return getSize(message, message.cachedSchema());
+        return getSize(message, message.cachedSchema(), false);
     }
     
     /**
-     * Computes the serialized size of a message.
+     * Computes the serialized size of a message tied to a schema.
      */
     public static <T> int getSize(T message, Schema<T> schema)
     {
-        ComputedSizeOutput sizeCount = new ComputedSizeOutput();
+        return getSize(message, schema, false);
+    }
+    
+    /**
+     * Computes the serialized size of a message tied to a schema.
+     */
+    public static <T> int getSize(T message, Schema<T> schema, boolean encodeNestedMessageAsGroup)
+    {
+        ComputedSizeOutput sizeCount = new ComputedSizeOutput(encodeNestedMessageAsGroup);
         try
         {
             schema.writeTo(sizeCount, message);
@@ -56,10 +64,16 @@ public final class ComputedSizeOutput implements Output
     }
     
     private int size = 0;
+    private final boolean encodeNestedMessageAsGroup;
     
     public ComputedSizeOutput()
     {
-        
+        this(false);
+    }
+    
+    public ComputedSizeOutput(boolean encodeNestedMessageAsGroup)
+    {
+        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
     /**
@@ -205,11 +219,29 @@ public final class ComputedSizeOutput implements Output
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException
     {
+        if(encodeNestedMessageAsGroup)
+        {
+            writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
+            return;
+        }
+        
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         int last = size;
         schema.writeTo(this, value);
         size += CodedOutput.computeRawVarint32Size(size - last);
+    }
+    
+    <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
+            boolean repeated) throws IOException
+    {
+        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                    WireFormat.WIRETYPE_START_GROUP));
+        
+        schema.writeTo(this, value);
+        
+        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_END_GROUP));
     }
 
 }

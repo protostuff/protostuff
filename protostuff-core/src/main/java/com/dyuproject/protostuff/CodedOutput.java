@@ -243,7 +243,7 @@ public final class CodedOutput implements Output {
    * a byte array.
    */
   public static <T extends Message<T>> byte[] toByteArray(T message) {
-    return toByteArray(message, message.cachedSchema());
+    return toByteArray(message, message.cachedSchema(), false);
   }
   
   /**
@@ -251,11 +251,21 @@ public final class CodedOutput implements Output {
    * a byte array.
    */
   public static <T> byte[] toByteArray(T message, Schema<T> schema) {
+    return toByteArray(message, schema, false);
+  }
+  
+  /**
+   * Computes the buffer size and serializes the {@code message} tied to a schema into 
+   * a byte array.
+   */
+  public static <T> byte[] toByteArray(T message, Schema<T> schema, 
+    boolean encodeNestedMessageAsGroup) {
     try {
-      ComputedSizeOutput sizeCount = new ComputedSizeOutput();
+      final ComputedSizeOutput sizeCount = new ComputedSizeOutput(encodeNestedMessageAsGroup);
       schema.writeTo(sizeCount, message);
-      byte[] result = new byte[sizeCount.getSize()];
-      CodedOutput output = CodedOutput.newInstance(result, sizeCount);
+      final byte[] result = new byte[sizeCount.getSize()];
+      final CodedOutput output = new CodedOutput(result, 0, result.length, sizeCount, 
+              encodeNestedMessageAsGroup);
       schema.writeTo(output, message);
       output.checkNoSpaceLeft();
       return result;
@@ -272,6 +282,7 @@ public final class CodedOutput implements Output {
 
   private final OutputStream output;
   private final ComputedSizeOutput computedSize;
+  private final boolean encodeNestedMessageAsGroup;
 
   /**
    * The buffer size used in {@link #newInstance(OutputStream)}.
@@ -290,31 +301,34 @@ public final class CodedOutput implements Output {
     return dataLength;
   }
 
-  private CodedOutput(final byte[] buffer, final int offset, final int length, 
-      final ComputedSizeOutput computedSize) {
+  CodedOutput(final byte[] buffer, final int offset, final int length, 
+      final ComputedSizeOutput computedSize, final boolean encodeNestedMessageAsGroup) {
     int size = computedSize.getSize();
     if(size == 0) {
-      this.computedSize = computedSize;
+      this.computedSize = encodeNestedMessageAsGroup ? null : computedSize;
     }
     else if(size != length) {
       throw new IllegalArgumentException("The computed size is not equal to the buffer size.");
     }
     else {
-      this.computedSize = computedSize.reset();
+      this.computedSize = encodeNestedMessageAsGroup ? null : computedSize.reset();
     }
     
     output = null;
     this.buffer = buffer;
     position = offset;
     limit = offset + length;
+    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
   }
 
-  private CodedOutput(final OutputStream output, final byte[] buffer) {
+  CodedOutput(final OutputStream output, final byte[] buffer, 
+      final boolean encodeNestedMessageAsGroup) {
     this.output = output;
     this.buffer = buffer;
     position = 0;
     limit = buffer.length;
-    computedSize = new ComputedSizeOutput();
+    computedSize = encodeNestedMessageAsGroup ? null : new ComputedSizeOutput(false);
+    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
   }
 
   /**
@@ -322,7 +336,7 @@ public final class CodedOutput implements Output {
    * {@code OutputStream}.
    */
   public static CodedOutput newInstance(final OutputStream output) {
-    return new CodedOutput(output, new byte[DEFAULT_BUFFER_SIZE]);
+    return new CodedOutput(output, new byte[DEFAULT_BUFFER_SIZE], false);
   }
 
   /**
@@ -330,7 +344,7 @@ public final class CodedOutput implements Output {
    * {@code OutputStream} with a given buffer size.
    */
   public static CodedOutput newInstance(final OutputStream output, final int bufferSize) {
-    return new CodedOutput(output, new byte[bufferSize]);
+    return new CodedOutput(output, new byte[bufferSize], false);
   }
 
   /**
@@ -342,11 +356,11 @@ public final class CodedOutput implements Output {
    */
   public static CodedOutput newInstance(final byte[] flatArray) {
     return new CodedOutput(flatArray, 0, flatArray.length, 
-            new ComputedSizeOutput());
+            new ComputedSizeOutput(false), false);
   }
   
   static CodedOutput newInstance(final byte[] flatArray, final ComputedSizeOutput computedSize) {
-    return new CodedOutput(flatArray, 0, flatArray.length, computedSize);
+    return new CodedOutput(flatArray, 0, flatArray.length, computedSize, false);
   }
   /*@
   /**
@@ -471,8 +485,7 @@ public final class CodedOutput implements Output {
   /** Write an embedded message field, including tag, to the stream. */
   public <T extends Message<T>> void writeMessage(final int fieldNumber, final T value, 
                          boolean repeated) throws IOException {
-    writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-    writeMessageNoTag(value);
+    writeObject(fieldNumber, value, value.cachedSchema(), repeated);
   }
 
   /** Write a {@code bytes} field, including tag, to the stream. */
@@ -1291,8 +1304,17 @@ public final class CodedOutput implements Output {
   
   public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException {
+    if(encodeNestedMessageAsGroup) {
+      writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
+      return;
+    }
+    
     writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-    writeObjectNoTag(value, schema);
+    ComputedSizeOutput cs = computedSize;
+    int last = cs.getSize();
+    schema.writeTo(cs, value);
+    writeRawVarint32(cs.getSize() - last);
+    schema.writeTo(this, value);
   }
   
   public void writeByteArrayNoTag(byte[] value) throws IOException {
@@ -1300,13 +1322,8 @@ public final class CodedOutput implements Output {
     writeRawBytes(value);
   }
 
-  public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
-    Schema<T> schema = value.cachedSchema();
-    ComputedSizeOutput cs = computedSize;
-    int last = cs.getSize();
-    schema.writeTo(cs, value);
-    writeRawVarint32(cs.getSize() - last);
-    schema.writeTo(this, value);
+  /*public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException {
+    writeObjectNoTag(value, value.cachedSchema());
   }
   
   public <T> void writeObjectNoTag(T value, Schema<T> schema) throws IOException {
@@ -1315,6 +1332,14 @@ public final class CodedOutput implements Output {
     schema.writeTo(cs, value);
     writeRawVarint32(cs.getSize() - last);
     schema.writeTo(this, value);
+  }*/
+  
+  /** Write the nested message encoded as group. */
+  <T> void writeObjectEncodedAsGroup(final int fieldNumber, final T value, final Schema<T> schema, 
+    boolean repeated) throws IOException {
+    writeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP);
+    schema.writeTo(this, value);
+    writeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP);
   }
   //END EXTRA
 }

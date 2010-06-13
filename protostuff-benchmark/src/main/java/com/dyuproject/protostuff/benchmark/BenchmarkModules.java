@@ -16,9 +16,11 @@ package com.dyuproject.protostuff.benchmark;
 
 import java.net.URL;
 
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreGESerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffJsonSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeGESerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
@@ -47,8 +49,9 @@ public class BenchmarkModules
     {
         // protobuf-encoded
         runner.addObjectSerializer(new ProtostuffCoreSerializer());
+        runner.addObjectSerializer(new ProtostuffCoreGESerializer());
         runner.addObjectSerializer(new ProtostuffRuntimeSerializer());
-        
+        runner.addObjectSerializer(new ProtostuffRuntimeGESerializer());
         // json
         runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
         // deprecated
