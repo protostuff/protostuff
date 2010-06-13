@@ -1,5 +1,5 @@
 protostuff-1.0-SNAPSHOT
-+ added an option for nested messages to be "group-encoded" for faster serialization.
++ added a runtime option for nested messages to be "group-encoded" for faster serialization. (pretty efficient when used for rpc).
 + added an abstract helper class CustomSchema to easily customize how messages can be read/written and for adding filters/hooks as well.
 + added IO optimizations
 + added messageName() and messageFullName() methods to the schema to support full xml serialization of existing C++ protoc messages.
