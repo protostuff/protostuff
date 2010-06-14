@@ -23,6 +23,12 @@ import static com.dyuproject.protostuff.CodedOutput.getTagAndRawVarInt32Bytes;
 import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian32;
 import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian64;
 import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,28 +47,35 @@ public final class BufferedOutput implements Output
             "bufferedoutput.default_buffer_size", 256);
     
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "bufferedoutput.array_copy_size_limit", 64);
+            "bufferedoutput.array_copy_size_limit", 127);
     
     private final OutputBuffer root;
     private OutputBuffer current;
-    private final int bufferSize;
+    private final int nextBufferSize;
     private int size = 0;
     private final boolean encodeNestedMessageAsGroup;
     
     public BufferedOutput()
     {
-        this(DEFAULT_BUFFER_SIZE, false);
+        this(DEFAULT_BUFFER_SIZE);
     }
     
     public BufferedOutput(int bufferSize)
     {
-        this(bufferSize, false);
+        this(new OutputBuffer(bufferSize), bufferSize, false);
     }
     
     public BufferedOutput(int bufferSize, boolean encodeNestedMessageAsGroup)
     {
-        current = root = new OutputBuffer(new byte[bufferSize]);
-        this.bufferSize = bufferSize;
+        this(new OutputBuffer(bufferSize), bufferSize, encodeNestedMessageAsGroup);
+    }
+    
+    public BufferedOutput(OutputBuffer root, int nextBufferSize, 
+            boolean encodeNestedMessageAsGroup)
+    {
+        current = root;
+        this.root = root;
+        this.nextBufferSize = nextBufferSize;
         this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
@@ -124,15 +137,15 @@ public final class BufferedOutput implements Output
     {
         if(value < 0)
         {
-            current = writeTagAndRawVarInt64Bytes(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+            writeTagAndRawVarInt64Bytes(
+                    WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
         }
         else
         {
-            current = writeTagAndRawVarInt32Bytes(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+            writeTagAndRawVarInt32Bytes(
+                    WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
         }
@@ -140,112 +153,112 @@ public final class BufferedOutput implements Output
     
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
     
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 encodeZigZag32(value), 
                 current);
     }
     
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32), 
+        writeTagAndRawLittleEndian32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
     }
     
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32), 
+        writeTagAndRawLittleEndian32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
     }
 
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
     
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
     
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
     
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64), 
+        writeTagAndRawLittleEndian64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
     }
     
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64), 
+        writeTagAndRawLittleEndian64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
     }
 
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32), 
+        writeTagAndRawLittleEndian32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 Float.floatToRawIntBits(value), 
                 current);
     }
 
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawLittleEndian64Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64), 
+        writeTagAndRawLittleEndian64Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 Double.doubleToRawLongBits(value), 
                 current);
     }
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value ? 1 : 0, 
                 current);
     }
 
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
-        current = writeTagAndRawVarInt32Bytes(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), 
+        writeTagAndRawVarInt32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 number, 
                 current);
     }
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        current = writeTagAndByteArray(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED), 
+        writeTagAndByteArray(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
                 STRING.ser(value), 
                 current);
     }
@@ -257,8 +270,8 @@ public final class BufferedOutput implements Output
     
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
-        current = writeTagAndByteArray(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED), 
+        writeTagAndByteArray(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
                 bytes, 
                 current);
     }
@@ -278,27 +291,24 @@ public final class BufferedOutput implements Output
             return;
         }
         
-        OutputBuffer lastBuffer = current;
-        int lastSize = size;
+        final OutputBuffer lastBuffer = current;
+        final int lastSize = size;
         // view
         lastBuffer.next = current = new OutputBuffer(lastBuffer);
         
         schema.writeTo(this, value);
         
-        int msgSize = size - lastSize;
-        
-        int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        byte[] delimited = getTagAndRawVarInt32Bytes(tag, msgSize);
+        final byte[] delimited = getTagAndRawVarInt32Bytes(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
+                size - lastSize);
         
         size += delimited.length;
         
         // the first tag of the inner message
-        OutputBuffer inner = lastBuffer.next;
+        final OutputBuffer inner = lastBuffer.next;
         
         // wrap the byte array (delimited) and insert
-        OutputBuffer wrap = new OutputBuffer(delimited, lastBuffer);
-        wrap.offset = delimited.length;
-        wrap.next = inner;
+        new OutputBuffer(delimited, 0, delimited.length, lastBuffer).next = inner;
     }
     
     /**
@@ -307,29 +317,29 @@ public final class BufferedOutput implements Output
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        current = writeTag(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP), 
+        writeTag(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_START_GROUP), 
                 current);
         
         schema.writeTo(this, value);
         
-        current = writeTag(
-                WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP), 
+        writeTag(
+                WireFormat.makeTag(fieldNumber, WIRETYPE_END_GROUP), 
                 current);
     }
     
     /* ----------------------------------------------------------------- */
     
-    private OutputBuffer writeTag(int tag, OutputBuffer ob)
+    private void writeTag(int tag, OutputBuffer ob)
     {
-        int tagSize = computeRawVarint32Size(tag);
-        
-        OutputBuffer rb = ob.offset + tagSize > ob.buffer.length ? 
-                new OutputBuffer(new byte[bufferSize], ob) : ob;
+        final int tagSize = computeRawVarint32Size(tag);
 
-        byte[] buffer = rb.buffer;
-        int offset = rb.offset;
-        rb.offset += tagSize;
+        if(ob.offset + tagSize > ob.buffer.length)
+            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        
+        final byte[] buffer = ob.buffer;
+        int offset = ob.offset;
+        ob.offset += tagSize;
         this.size += tagSize;
         
         if (tagSize == 1)
@@ -341,15 +351,13 @@ public final class BufferedOutput implements Output
 
             buffer[offset] = (byte)tag;
         }
-        
-        return rb;
     }
     
     /** Returns the output buffer encoded with the tag and byte array */
-    private OutputBuffer writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob)
+    private void writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob)
     {
-        int valueLen = value.length;
-        OutputBuffer rb = writeTagAndRawVarInt32Bytes(tag, valueLen, ob);
+        final int valueLen = value.length;
+        final OutputBuffer rb = writeTagAndRawVarInt32Bytes(tag, valueLen, ob);
 
         this.size += valueLen;
         
@@ -360,29 +368,28 @@ public final class BufferedOutput implements Output
             wrap.offset = valueLen;
             
             // view
-            return (wrap.next = new OutputBuffer(rb));
+            current = wrap.next = new OutputBuffer(rb);
+            return;
         }
 
         System.arraycopy(value, 0, rb.buffer, rb.offset, valueLen);
         
         rb.offset += valueLen;
-        
-        return rb;
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
     private OutputBuffer writeTagAndRawVarInt32Bytes(int tag, int value, OutputBuffer ob)
     {
-        int tagSize = computeRawVarint32Size(tag);
-        int size = computeRawVarint32Size(value);
-        int totalSize = tagSize + size;
-        
-        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
-                new OutputBuffer(new byte[bufferSize], ob) : ob;
+        final int tagSize = computeRawVarint32Size(tag);
+        final int size = computeRawVarint32Size(value);
+        final int totalSize = tagSize + size;
 
-        byte[] buffer = rb.buffer;
-        int offset = rb.offset;
-        rb.offset += totalSize;
+        if(ob.offset + totalSize > ob.buffer.length)
+            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        
+        final byte[] buffer = ob.buffer;
+        int offset = ob.offset;
+        ob.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -405,22 +412,22 @@ public final class BufferedOutput implements Output
             buffer[offset] = (byte)value;
         }
         
-        return rb;
+        return ob;
     }
 
     /** Returns the output buffer encoded with the tag and var int 64 */
-    private OutputBuffer writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob)
     {
-        int tagSize = computeRawVarint32Size(tag);
-        int size = computeRawVarint64Size(value);
-        int totalSize = tagSize + size;
+        final int tagSize = computeRawVarint32Size(tag);
+        final int size = computeRawVarint64Size(value);
+        final int totalSize = tagSize + size;
         
-        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
-                new OutputBuffer(new byte[bufferSize], ob) : ob;
-
-        byte[] buffer = rb.buffer;
-        int offset = rb.offset;
-        rb.offset += totalSize;
+        if(ob.offset + totalSize > ob.buffer.length)
+            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        
+        final byte[] buffer = ob.buffer;
+        int offset = ob.offset;
+        ob.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -442,23 +449,21 @@ public final class BufferedOutput implements Output
 
             buffer[offset] = (byte)value;
         }
-        
-        return rb;
     }
     
 
     /** Returns the output buffer encoded with the tag and little endian 32 */
-    private OutputBuffer writeTagAndRawLittleEndian32Bytes(int tag, int value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian32Bytes(int tag, int value, OutputBuffer ob)
     {
-        int tagSize = computeRawVarint32Size(tag);
-        int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
+        final int tagSize = computeRawVarint32Size(tag);
+        final int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
         
-        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
-                new OutputBuffer(new byte[bufferSize], ob) : ob;
-
-        byte[] buffer = rb.buffer;
-        int offset = rb.offset;
-        rb.offset += totalSize;
+        if(ob.offset + totalSize > ob.buffer.length)
+            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        
+        final byte[] buffer = ob.buffer;
+        int offset = ob.offset;
+        ob.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -472,22 +477,20 @@ public final class BufferedOutput implements Output
         }
 
         writeRawLittleEndian32(value, buffer, offset);
-        
-        return rb;
     }
 
     /** Returns the output buffer encoded with the tag and little endian 64 */
-    private OutputBuffer writeTagAndRawLittleEndian64Bytes(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian64Bytes(int tag, long value, OutputBuffer ob)
     {
-        int tagSize = computeRawVarint32Size(tag);
-        int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
-        
-        OutputBuffer rb = ob.offset + totalSize > ob.buffer.length ? 
-                new OutputBuffer(new byte[bufferSize], ob) : ob;
+        final int tagSize = computeRawVarint32Size(tag);
+        final int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
 
-        byte[] buffer = rb.buffer;
-        int offset = rb.offset;
-        rb.offset += totalSize;
+        if(ob.offset + totalSize > ob.buffer.length)
+            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        
+        final byte[] buffer = ob.buffer;
+        int offset = ob.offset;
+        ob.offset += totalSize;
         this.size += totalSize;
 
         if (tagSize == 1)
@@ -501,8 +504,6 @@ public final class BufferedOutput implements Output
         }
 
         writeRawLittleEndian64(value, buffer, offset);
-
-        return rb;
     }
 
 }

@@ -16,12 +16,12 @@ package com.dyuproject.protostuff;
 
 
 /**
- * A buffer that wraps a byte array and has a reference to the next node.
+ * A buffer that wraps a byte array and has a reference to the next node for dynamic increase.
  * 
  * @author David Yu
  * @created May 18, 2010
  */
-final class OutputBuffer
+public final class OutputBuffer
 {
 
     final byte[] buffer;
@@ -39,19 +39,81 @@ final class OutputBuffer
         offset = start = viewSource.offset;
     }
     
-    OutputBuffer(byte[] buffer)
+    public OutputBuffer(int size)
+    {
+        this(new byte[size], 0, 0);
+    }
+    
+    public OutputBuffer(byte[] buffer)
+    {
+        this(buffer, 0, 0);
+    }
+    
+    public OutputBuffer(byte[] buffer, int offset)
+    {
+        this(buffer, offset, offset);
+    }
+
+    OutputBuffer(byte[] buffer, int start, int offset)
     {
         this.buffer = buffer;
-        offset = start = 0;
+        this.start = start;
+        this.offset = offset;
     }
     
     // links this node to the given output buffer.
-    OutputBuffer(byte[] buffer, OutputBuffer ob)
+    public OutputBuffer(byte[] buffer, OutputBuffer ob)
     {
-        this(buffer);
+        this(buffer, 0, 0);
         ob.next = this;
     }
     
-
-
+    OutputBuffer(byte[] buffer, int start, int offset, OutputBuffer ob)
+    {
+        this(buffer, start, offset);
+        ob.next = this;
+    }
+    
+    /*//Wraps the byte array buffer as a read only buffer.
+    public static OutputBuffer asReadOnlyBuffer(byte[] array, int offset, int length)
+    {
+        return new OutputBuffer(array, offset, offset + length);
+    }
+    
+    //Returns the start index of the internal buffer.
+    public int start()
+    {
+        return start;
+    }
+    
+    //Returns the actual length of the internal buffer.
+    public int length()
+    {
+        return offset - start;
+    }
+    
+    //Returns the byte array buffer.
+    public byte[] buffer()
+    {
+        return buffer;
+    }
+    
+    //Returns the next node.
+    public OutputBuffer next()
+    {
+        return next;
+    }
+    
+    //Returns the number of elements remaining in this buffer.
+    public int remaining()
+    {
+        return buffer.length - offset;
+    }
+    
+    //Links this to the provided {@code buffer}.
+    public OutputBuffer linkTo(OutputBuffer buffer)
+    {
+        buffer.next = this;
+        return this;
+    }*/
 }
