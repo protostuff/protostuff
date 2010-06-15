@@ -82,6 +82,27 @@ public class BufferedOutputTest extends SerDeserTest
         System.err.println("(" + data.length + ")");
     }*/
     
+    //128-byte string
+    static final String STRING_128_BYTES = 
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567890" +
+        "1234567!";
+    
+    public void testString128Bytes() throws Exception
+    {
+        assertTrue(StringSerializer.STRING.ser(STRING_128_BYTES).length == 128);
+    }
+    
     public void testEqualBufferSize() throws Exception
     {
         Bar bar = new Bar();
@@ -104,9 +125,7 @@ public class BufferedOutputTest extends SerDeserTest
     public void testStringValueLimitCopy() throws Exception
     {
         Bar bar = new Bar();
-        bar.setSomeString("1234567890123456789012345678901234567890123456789012345678901234!");
-        
-        assertTrue(bar.getSomeString().length() == 65);
+        bar.setSomeString(STRING_128_BYTES);
         
         int expectedSize = ComputedSizeOutput.getSize(bar);
         
@@ -184,8 +203,7 @@ public class BufferedOutputTest extends SerDeserTest
         ArrayList<String> someString = new ArrayList<String>();
         someString.add(str);
         
-        String test = "1234567890123456789012345678901234567890123456789012345678901234";
-        assertTrue(test.length() == 64);
+        String test = STRING_128_BYTES;
         
         someString.add(test);
         
