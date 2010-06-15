@@ -137,14 +137,14 @@ public final class BufferedOutput implements Output
     {
         if(value < 0)
         {
-            writeTagAndRawVarInt64Bytes(
+            writeTagAndRawVarInt64(
                     WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
         }
         else
         {
-            writeTagAndRawVarInt32Bytes(
+            writeTagAndRawVarInt32(
                     WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
@@ -153,7 +153,7 @@ public final class BufferedOutput implements Output
     
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt32Bytes(
+        writeTagAndRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
@@ -161,7 +161,7 @@ public final class BufferedOutput implements Output
     
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt32Bytes(
+        writeTagAndRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 encodeZigZag32(value), 
                 current);
@@ -169,7 +169,7 @@ public final class BufferedOutput implements Output
     
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian32Bytes(
+        writeTagAndRawLittleEndian32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
@@ -177,7 +177,7 @@ public final class BufferedOutput implements Output
     
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian32Bytes(
+        writeTagAndRawLittleEndian32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
@@ -185,7 +185,7 @@ public final class BufferedOutput implements Output
 
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt64Bytes(
+        writeTagAndRawVarInt64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
@@ -193,7 +193,7 @@ public final class BufferedOutput implements Output
     
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt64Bytes(
+        writeTagAndRawVarInt64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
@@ -201,7 +201,7 @@ public final class BufferedOutput implements Output
     
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt64Bytes(
+        writeTagAndRawVarInt64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
@@ -209,7 +209,7 @@ public final class BufferedOutput implements Output
     
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian64Bytes(
+        writeTagAndRawLittleEndian64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
@@ -217,7 +217,7 @@ public final class BufferedOutput implements Output
     
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian64Bytes(
+        writeTagAndRawLittleEndian64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
@@ -225,7 +225,7 @@ public final class BufferedOutput implements Output
 
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian32Bytes(
+        writeTagAndRawLittleEndian32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 Float.floatToRawIntBits(value), 
                 current);
@@ -233,7 +233,7 @@ public final class BufferedOutput implements Output
 
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        writeTagAndRawLittleEndian64Bytes(
+        writeTagAndRawLittleEndian64(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 Double.doubleToRawLongBits(value), 
                 current);
@@ -241,7 +241,7 @@ public final class BufferedOutput implements Output
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt32Bytes(
+        writeTagAndRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value ? 1 : 0, 
                 current);
@@ -249,7 +249,7 @@ public final class BufferedOutput implements Output
 
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt32Bytes(
+        writeTagAndRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
                 number, 
                 current);
@@ -317,20 +317,20 @@ public final class BufferedOutput implements Output
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        writeRawVarInt32Bytes(
+        writeRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_START_GROUP), 
                 current);
         
         schema.writeTo(this, value);
         
-        writeRawVarInt32Bytes(
+        writeRawVarInt32(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_END_GROUP), 
                 current);
     }
     
     /* ----------------------------------------------------------------- */
     
-    private void writeRawVarInt32Bytes(int value, OutputBuffer ob)
+    private void writeRawVarInt32(int value, OutputBuffer ob)
     {
         final int size = computeRawVarint32Size(value);
 
@@ -357,7 +357,7 @@ public final class BufferedOutput implements Output
     private void writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob)
     {
         final int valueLen = value.length;
-        final OutputBuffer rb = writeTagAndRawVarInt32Bytes(tag, valueLen, ob);
+        final OutputBuffer rb = writeTagAndRawVarInt32(tag, valueLen, ob);
 
         this.size += valueLen;
         
@@ -378,7 +378,7 @@ public final class BufferedOutput implements Output
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
-    private OutputBuffer writeTagAndRawVarInt32Bytes(int tag, int value, OutputBuffer ob)
+    private OutputBuffer writeTagAndRawVarInt32(int tag, int value, OutputBuffer ob)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int size = computeRawVarint32Size(value);
@@ -416,7 +416,7 @@ public final class BufferedOutput implements Output
     }
 
     /** Returns the output buffer encoded with the tag and var int 64 */
-    private void writeTagAndRawVarInt64Bytes(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawVarInt64(int tag, long value, OutputBuffer ob)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int size = computeRawVarint64Size(value);
@@ -453,7 +453,7 @@ public final class BufferedOutput implements Output
     
 
     /** Returns the output buffer encoded with the tag and little endian 32 */
-    private void writeTagAndRawLittleEndian32Bytes(int tag, int value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian32(int tag, int value, OutputBuffer ob)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
@@ -480,7 +480,7 @@ public final class BufferedOutput implements Output
     }
 
     /** Returns the output buffer encoded with the tag and little endian 64 */
-    private void writeTagAndRawLittleEndian64Bytes(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian64(int tag, long value, OutputBuffer ob)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
