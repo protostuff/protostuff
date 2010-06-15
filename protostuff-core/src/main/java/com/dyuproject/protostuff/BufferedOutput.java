@@ -317,39 +317,39 @@ public final class BufferedOutput implements Output
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        writeTag(
+        writeRawVarInt32Bytes(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_START_GROUP), 
                 current);
         
         schema.writeTo(this, value);
         
-        writeTag(
+        writeRawVarInt32Bytes(
                 WireFormat.makeTag(fieldNumber, WIRETYPE_END_GROUP), 
                 current);
     }
     
     /* ----------------------------------------------------------------- */
     
-    private void writeTag(int tag, OutputBuffer ob)
+    private void writeRawVarInt32Bytes(int value, OutputBuffer ob)
     {
-        final int tagSize = computeRawVarint32Size(tag);
+        final int size = computeRawVarint32Size(value);
 
-        if(ob.offset + tagSize > ob.buffer.length)
+        if(ob.offset + size > ob.buffer.length)
             current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
         
         final byte[] buffer = ob.buffer;
         int offset = ob.offset;
-        ob.offset += tagSize;
-        this.size += tagSize;
+        ob.offset += size;
+        this.size += size;
         
-        if (tagSize == 1)
-            buffer[offset] = (byte)tag;
+        if (size == 1)
+            buffer[offset] = (byte)value;
         else
         {
-            for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
-                buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+            for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+                buffer[offset++] = (byte)((value & 0x7F) | 0x80);
 
-            buffer[offset] = (byte)tag;
+            buffer[offset] = (byte)value;
         }
     }
     
