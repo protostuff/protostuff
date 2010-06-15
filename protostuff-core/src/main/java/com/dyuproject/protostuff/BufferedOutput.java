@@ -49,9 +49,9 @@ public final class BufferedOutput implements Output
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
             "bufferedoutput.array_copy_size_limit", 127);
     
-    private final OutputBuffer root;
-    private OutputBuffer current;
-    private final int nextBufferSize;
+    private final LinkedBuffer root;
+    private LinkedBuffer current;
+    private final int nextBufferSize, arrayCopySizeLimit;
     private int size = 0;
     private final boolean encodeNestedMessageAsGroup;
     
@@ -62,20 +62,22 @@ public final class BufferedOutput implements Output
     
     public BufferedOutput(int bufferSize)
     {
-        this(new OutputBuffer(bufferSize), bufferSize, false);
+        this(new LinkedBuffer(bufferSize), bufferSize, ARRAY_COPY_SIZE_LIMIT, false);
     }
     
     public BufferedOutput(int bufferSize, boolean encodeNestedMessageAsGroup)
     {
-        this(new OutputBuffer(bufferSize), bufferSize, encodeNestedMessageAsGroup);
+        this(new LinkedBuffer(bufferSize), bufferSize, ARRAY_COPY_SIZE_LIMIT, 
+                encodeNestedMessageAsGroup);
     }
     
-    public BufferedOutput(OutputBuffer root, int nextBufferSize, 
+    public BufferedOutput(LinkedBuffer root, int nextBufferSize, int arrayCopySizeLimit, 
             boolean encodeNestedMessageAsGroup)
     {
         current = root;
         this.root = root;
         this.nextBufferSize = nextBufferSize;
+        this.arrayCopySizeLimit = arrayCopySizeLimit;
         this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
@@ -106,9 +108,9 @@ public final class BufferedOutput implements Output
      */
     public void streamTo(OutputStream out) throws IOException
     {
-        for(OutputBuffer node = root; node != null; node = node.next)
+        for(LinkedBuffer node = root; node != null; node = node.next)
         {
-            int len = node.offset - node.start;
+            final int len = node.offset - node.start;
             if(len > 0)
                 out.write(node.buffer, node.start, len);
         }
@@ -120,10 +122,10 @@ public final class BufferedOutput implements Output
     public byte[] toByteArray()
     {
         int start = 0;
-        byte[] buffer = new byte[size];        
-        for(OutputBuffer node = root; node != null; node = node.next)
+        final byte[] buffer = new byte[size];        
+        for(LinkedBuffer node = root; node != null; node = node.next)
         {
-            int len = node.offset - node.start;
+            final int len = node.offset - node.start;
             if(len > 0)
             {
                 System.arraycopy(node.buffer, node.start, buffer, start, len);
@@ -291,10 +293,10 @@ public final class BufferedOutput implements Output
             return;
         }
         
-        final OutputBuffer lastBuffer = current;
+        final LinkedBuffer lastBuffer = current;
         final int lastSize = size;
         // view
-        lastBuffer.next = current = new OutputBuffer(lastBuffer);
+        current = new LinkedBuffer(lastBuffer, lastBuffer);
         
         schema.writeTo(this, value);
         
@@ -305,10 +307,10 @@ public final class BufferedOutput implements Output
         size += delimited.length;
         
         // the first tag of the inner message
-        final OutputBuffer inner = lastBuffer.next;
+        final LinkedBuffer inner = lastBuffer.next;
         
         // wrap the byte array (delimited) and insert
-        new OutputBuffer(delimited, 0, delimited.length, lastBuffer).next = inner;
+        new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = inner;
     }
     
     /**
@@ -330,16 +332,16 @@ public final class BufferedOutput implements Output
     
     /* ----------------------------------------------------------------- */
     
-    private void writeRawVarInt32(int value, OutputBuffer ob)
+    private void writeRawVarInt32(int value, LinkedBuffer lb)
     {
         final int size = computeRawVarint32Size(value);
 
-        if(ob.offset + size > ob.buffer.length)
-            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        if(lb.offset + size > lb.buffer.length)
+            current = lb = new LinkedBuffer(new byte[nextBufferSize], 0, lb);
         
-        final byte[] buffer = ob.buffer;
-        int offset = ob.offset;
-        ob.offset += size;
+        final byte[] buffer = lb.buffer;
+        int offset = lb.offset;
+        lb.offset += size;
         this.size += size;
         
         if (size == 1)
@@ -354,21 +356,20 @@ public final class BufferedOutput implements Output
     }
     
     /** Returns the output buffer encoded with the tag and byte array */
-    private void writeTagAndByteArray(int tag, byte[] value, OutputBuffer ob)
+    private void writeTagAndByteArray(int tag, byte[] value, LinkedBuffer lb)
     {
         final int valueLen = value.length;
-        final OutputBuffer rb = writeTagAndRawVarInt32(tag, valueLen, ob);
+        final LinkedBuffer rb = writeTagAndRawVarInt32(tag, valueLen, lb);
 
         this.size += valueLen;
         
-        if(valueLen > ARRAY_COPY_SIZE_LIMIT || rb.offset + valueLen > rb.buffer.length)
+        if(valueLen > arrayCopySizeLimit || rb.offset + valueLen > rb.buffer.length)
         {
             // huge string/byte array.
-            OutputBuffer wrap = new OutputBuffer(value, rb);
-            wrap.offset = valueLen;
+            final LinkedBuffer wrap = new LinkedBuffer(value, 0, valueLen, rb);
             
             // view
-            current = wrap.next = new OutputBuffer(rb);
+            current = new LinkedBuffer(rb, wrap);
             return;
         }
 
@@ -378,18 +379,18 @@ public final class BufferedOutput implements Output
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */
-    private OutputBuffer writeTagAndRawVarInt32(int tag, int value, OutputBuffer ob)
+    private LinkedBuffer writeTagAndRawVarInt32(int tag, int value, LinkedBuffer lb)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int size = computeRawVarint32Size(value);
         final int totalSize = tagSize + size;
 
-        if(ob.offset + totalSize > ob.buffer.length)
-            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        if(lb.offset + totalSize > lb.buffer.length)
+            current = lb = new LinkedBuffer(new byte[nextBufferSize], 0, lb);
         
-        final byte[] buffer = ob.buffer;
-        int offset = ob.offset;
-        ob.offset += totalSize;
+        final byte[] buffer = lb.buffer;
+        int offset = lb.offset;
+        lb.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -412,22 +413,22 @@ public final class BufferedOutput implements Output
             buffer[offset] = (byte)value;
         }
         
-        return ob;
+        return lb;
     }
 
     /** Returns the output buffer encoded with the tag and var int 64 */
-    private void writeTagAndRawVarInt64(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawVarInt64(int tag, long value, LinkedBuffer lb)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int size = computeRawVarint64Size(value);
         final int totalSize = tagSize + size;
         
-        if(ob.offset + totalSize > ob.buffer.length)
-            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        if(lb.offset + totalSize > lb.buffer.length)
+            current = lb = new LinkedBuffer(new byte[nextBufferSize], 0, lb);
         
-        final byte[] buffer = ob.buffer;
-        int offset = ob.offset;
-        ob.offset += totalSize;
+        final byte[] buffer = lb.buffer;
+        int offset = lb.offset;
+        lb.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -453,17 +454,17 @@ public final class BufferedOutput implements Output
     
 
     /** Returns the output buffer encoded with the tag and little endian 32 */
-    private void writeTagAndRawLittleEndian32(int tag, int value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian32(int tag, int value, LinkedBuffer lb)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
         
-        if(ob.offset + totalSize > ob.buffer.length)
-            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        if(lb.offset + totalSize > lb.buffer.length)
+            current = lb = new LinkedBuffer(new byte[nextBufferSize], 0, lb);
         
-        final byte[] buffer = ob.buffer;
-        int offset = ob.offset;
-        ob.offset += totalSize;
+        final byte[] buffer = lb.buffer;
+        int offset = lb.offset;
+        lb.offset += totalSize;
         this.size += totalSize;
         
         if (tagSize == 1)
@@ -480,17 +481,17 @@ public final class BufferedOutput implements Output
     }
 
     /** Returns the output buffer encoded with the tag and little endian 64 */
-    private void writeTagAndRawLittleEndian64(int tag, long value, OutputBuffer ob)
+    private void writeTagAndRawLittleEndian64(int tag, long value, LinkedBuffer lb)
     {
         final int tagSize = computeRawVarint32Size(tag);
         final int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
 
-        if(ob.offset + totalSize > ob.buffer.length)
-            current = ob = new OutputBuffer(new byte[nextBufferSize], ob);
+        if(lb.offset + totalSize > lb.buffer.length)
+            current = lb = new LinkedBuffer(new byte[nextBufferSize], 0, lb);
         
-        final byte[] buffer = ob.buffer;
-        int offset = ob.offset;
-        ob.offset += totalSize;
+        final byte[] buffer = lb.buffer;
+        int offset = lb.offset;
+        lb.offset += totalSize;
         this.size += totalSize;
 
         if (tagSize == 1)
