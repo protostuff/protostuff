@@ -312,12 +312,12 @@ message_impl_serializable(message, options) ::= <<
 
 public void readExternal(ObjectInput in) throws IOException
 {
-    IOUtil.mergeDelimitedFrom(in, this, this);
+    IOUtil.mergeDelimitedFrom(in, this, this<if(options.group_encoded)>, true<endif>);
 }
 
 public void writeExternal(ObjectOutput out) throws IOException
 {
-    IOUtil.writeDelimitedTo(out, this, this);
+    IOUtil.writeDelimitedTo(out, this, this<if(options.group_encoded)>, true<endif>);
 }
 
 >>
