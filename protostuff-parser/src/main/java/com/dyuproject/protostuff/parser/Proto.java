@@ -167,6 +167,9 @@ public class Proto
     
     void postParse()
     {
+        if(packageName == null)
+            throw new IllegalStateException("proto package not defined.");
+        
         String javaPkg = extraOptions.get("java_package");
         String javaPackageName = javaPkg==null || javaPkg.length()==0 ? 
                 packageName.getValue() : javaPkg;

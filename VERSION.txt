@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 20: Compiler throws NPE if no package defined in proto file 
 + added protostuff-api (protostuff-core, protostuff-json and protostuff-xml will only contain their respective IO impl).
 + added a runtime option for nested messages to be "group-encoded" for more efficient serialization. (especially for rpc).
 + added an abstract helper class CustomSchema to easily customize how messages can be read/written and for adding filters/hooks as well.
