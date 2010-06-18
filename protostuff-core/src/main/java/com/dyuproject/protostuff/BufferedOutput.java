@@ -35,7 +35,7 @@ import java.io.OutputStream;
 
 /**
  * Maintains a decent-sized byte buffer for writing.  If the delimited field's byte-array-value 
- * is too large, it is wrapped by another buffer and linked together.
+ * is too large, it is wrapped by another buffer and linked together (basically zero copy).
  *
  * @author David Yu
  * @created May 18, 2010
@@ -366,10 +366,8 @@ public final class BufferedOutput implements Output
         if(valueLen > arrayCopySizeLimit || rb.offset + valueLen > rb.buffer.length)
         {
             // huge string/byte array.
-            final LinkedBuffer wrap = new LinkedBuffer(value, 0, valueLen, rb);
-            
-            // view
-            current = new LinkedBuffer(rb, wrap);
+            // wrap, insert and create a view (e.g zero copy)
+            current = new LinkedBuffer(rb, new LinkedBuffer(value, 0, valueLen, rb));
             return;
         }
 
