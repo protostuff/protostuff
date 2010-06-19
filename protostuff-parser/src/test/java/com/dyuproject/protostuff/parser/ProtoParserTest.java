@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import com.dyuproject.protostuff.parser.Field.Modifier;
 
 /**
- * TODO
+ * Various tests for the proto parser.
  *
  * @author David Yu
  * @created Dec 18, 2009

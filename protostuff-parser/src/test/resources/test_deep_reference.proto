@@ -1,0 +1,102 @@
+package test_deep_reference;
+
+import "test_imported_inner.proto";
+import "test_java_package_imported_inner.proto";
+
+message Request {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  optional Foo foo1 = 3;
+  optional test_imported_inner.Foo foo2 = 4;
+  optional test.imported.jp.JPFoo foo3 = 5;
+    
+  optional Foo.Inner inner1 = 6;
+  optional test_imported_inner.Foo.Inner inner2 = 7;
+  optional test.imported.jp.JPFoo.Inner inner3 = 8;
+    
+  optional Foo.Inner.Deeper deeper1 = 9;
+  optional test_imported_inner.Foo.Inner.Deeper deeper2 = 10;
+  optional test.imported.jp.JPFoo.Inner.Deeper deeper3 = 11;
+  
+  message Inner {
+    required string name = 1;
+    
+    optional Foo foo1 = 3;
+    optional test_imported_inner.Foo foo2 = 4;
+    optional test.imported.jp.JPFoo foo3 = 5;
+    
+    optional Foo.Inner inner1 = 6;
+    optional test_imported_inner.Foo.Inner inner2 = 7;
+    optional test.imported.jp.JPFoo.Inner inner3 = 8;
+    
+    optional Foo.Inner.Deeper deeper1 = 9;
+    optional test_imported_inner.Foo.Inner.Deeper deeper2 = 10;
+    optional test.imported.jp.JPFoo.Inner.Deeper deeper3 = 11;
+    
+    message Deeper {
+      required string name = 1;
+      
+      optional Foo foo1 = 3;
+      optional test_imported_inner.Foo foo2 = 4;
+      optional test.imported.jp.JPFoo foo3 = 5;
+      
+      optional Foo.Inner inner1 = 6;
+      optional test_imported_inner.Foo.Inner inner2 = 7;
+      optional test.imported.jp.JPFoo.Inner inner3 = 8;
+      
+      optional Foo.Inner.Deeper deeper1 = 9;
+      optional test_imported_inner.Foo.Inner.Deeper deeper2 = 10;
+      optional test.imported.jp.JPFoo.Inner.Deeper deeper3 = 11;
+    }
+  }
+}
+
+message Response {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  optional Bar bar1 = 3;
+  optional test_imported_inner.Bar bar2 = 4;
+  optional test.imported.jp.JPBar bar3 = 5;
+    
+  optional Bar.Inner inner1 = 6;
+  optional test_imported_inner.Bar.Inner inner2 = 7;
+  optional test.imported.jp.JPBar.Inner inner3 = 8;
+    
+  optional Bar.Inner.Deeper deeper1 = 9;
+  optional test_imported_inner.Bar.Inner.Deeper deeper2 = 10;
+  optional test.imported.jp.JPBar.Inner.Deeper deeper3 = 11;
+  
+  message Inner {
+    required string name = 1;
+    
+    optional Bar bar1 = 3;
+    optional test_imported_inner.Bar bar2 = 4;
+    optional test.imported.jp.JPBar bar3 = 5;
+    
+    optional Bar.Inner inner1 = 6;
+    optional test_imported_inner.Bar.Inner inner2 = 7;
+    optional test.imported.jp.JPBar.Inner inner3 = 8;
+    
+    optional Bar.Inner.Deeper deeper1 = 9;
+    optional test_imported_inner.Bar.Inner.Deeper deeper2 = 10;
+    optional test.imported.jp.JPBar.Inner.Deeper deeper3 = 11;
+    
+    message Deeper {
+      required string name = 1;
+      
+      optional Bar bar1 = 3;
+      optional test_imported_inner.Bar bar2 = 4;
+      optional test.imported.jp.JPBar bar3 = 5;
+      
+      optional Bar.Inner inner1 = 6;
+      optional test_imported_inner.Bar.Inner inner2 = 7;
+      optional test.imported.jp.JPBar.Inner inner3 = 8;
+      
+      optional Bar.Inner.Deeper deeper1 = 9;
+      optional test_imported_inner.Bar.Inner.Deeper deeper2 = 10;
+      optional test.imported.jp.JPBar.Inner.Deeper deeper3 = 11;
+    }
+  }
+}

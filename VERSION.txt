@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
++ Issue 22: Enable parsing of service/rpc in proto for code generation
++ Issue 21: Support java-style compilation mode where imported messages do not need to be referenced by full name
 + Issue 20: Compiler throws NPE if no package defined in proto file 
 + added protostuff-api (protostuff-core, protostuff-json and protostuff-xml will only contain their respective IO impl).
 + added a runtime option for nested messages to be "group-encoded" for more efficient serialization. (especially for rpc).

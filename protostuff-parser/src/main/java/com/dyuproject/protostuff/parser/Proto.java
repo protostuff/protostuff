@@ -37,6 +37,7 @@ public class Proto
     final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
+    final LinkedHashMap<String, Service> services = new LinkedHashMap<String, Service>();
     
     public Proto()
     {
@@ -138,6 +139,16 @@ public class Proto
         enumGroup.proto = this;
     }
     
+    public Collection<Service> getServices()
+    {
+        return services.values();
+    }
+    
+    public Service getService(String name)
+    {
+        return services.get(name);
+    }
+    
     public Collection<Proto> getImportedProtos()
     {
         return importedProtos.values();
@@ -177,6 +188,9 @@ public class Proto
         
         for(Message m : getMessages())
             m.resolveReferences(m);
+        
+        for(Service s : getServices())
+            s.resolveReferences();
     }
     
     public String toString()

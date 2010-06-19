@@ -1,0 +1,27 @@
+package test.imported.jp;
+
+message JPFoo {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}
+
+message JPBar {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+package test_imported_inner;
+
+message Foo {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}
+
+message Bar {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}

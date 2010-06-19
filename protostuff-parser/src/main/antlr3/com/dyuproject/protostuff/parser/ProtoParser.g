@@ -441,9 +441,30 @@ enum_field [Proto proto, Message message, EnumGroup enumGroup]
     ;
     
 service_block [Proto proto]
-    :   SERVICE ID ignore_block {
-            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            warn("ignoring 'service' block atm @ line " + $SERVICE.line + suffix);
+@init {
+    Service service = null;
+}
+    :   SERVICE ID { service = new Service($ID.text, proto); } LEFTCURLY
+        (rpc_block[proto, service])+ RIGHTCURLY (SEMICOLON?)!
+    ;
+    
+rpc_block [Proto proto, Service service]
+@init {
+    String argName = null, argPackage = null, retName = null, retPackage = null;
+}
+    :   RPC n=ID LEFTPAREN (ap=FULL_ID {  
+            String argFull = $ap.text;
+            int lastDot = argFull.lastIndexOf('.');
+            argPackage = argFull.substring(0, lastDot); 
+            argName = argFull.substring(lastDot+1);
+        } | a=ID { argName = $a.text; }) RIGHTPAREN 
+        RETURNS LEFTPAREN (rp=FULL_ID {  
+            String retFull = $rp.text;
+            int lastDot = retFull.lastIndexOf('.');
+            retPackage = retFull.substring(0, lastDot); 
+            retName = retFull.substring(lastDot+1);
+        } | r=ID { retName = $r.text; }) RIGHTPAREN ignore_block? SEMICOLON! {
+            service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
         }
     ;
     

@@ -248,7 +248,9 @@ public class Message implements HasName
                     }
                     
                     Message msg = findMessageFrom(fr.message, refName);
-                    if(msg!=null || (msg=p.getMessage(refName))!=null)
+                    if(msg!=null 
+                            || (msg=p.getMessage(refName))!=null 
+                            || (msg=getImportedMessage(refName, p)) != null)
                     {
                         MessageField mf = newMessageField(msg, fr, this);
                         fields.put(mf.name, mf);
@@ -256,7 +258,9 @@ public class Message implements HasName
                     }
 
                     EnumGroup eg = fr.message.getNestedEnumGroup(refName);
-                    if(eg!=null || (eg=p.getEnumGroup(refName))!=null)
+                    if(eg!=null 
+                            || (eg=p.getEnumGroup(refName))!=null 
+                            || (eg=getImportedEnumGroup(refName, p)) != null)
                     {
                         EnumField ef = newEnumField(eg, fr, this);
                         fields.put(ef.name, ef);
@@ -271,7 +275,9 @@ public class Message implements HasName
                 {
                     // could be a nested message/enum
                     Message msg = findMessageFrom(fr.message, packageName);
-                    if(msg!=null || (msg=p.getMessage(packageName))!=null)
+                    if(msg!=null 
+                            || (msg=p.getMessage(packageName))!=null 
+                            || (msg=getImportedMessage(packageName, p)) != null)
                     {
                         Message nestedMsg = msg.getNestedMessage(refName);
                         if(nestedMsg!=null)
@@ -291,58 +297,67 @@ public class Message implements HasName
                 }
                 else
                 {
-                    Message m = null;
-                    int last = -1;
-                    boolean found = false;;
-                    while(true)
+                    final String name = packageName.substring(0, dotIdx);
+                    // could be a local message
+                    Message msg = resolveLocalMessage(name, packageName, dotIdx, proto);
+                    if(msg != null)
                     {
-                        String name = packageName.substring(last+1, dotIdx);
-                        if(m==null)
+                        Message nestedMsg = msg.getNestedMessage(refName);
+                        if(nestedMsg!=null)
                         {
-                            // first iteration
-                            m = findMessageFrom(fr.message, name);
-                            if(m==null)
-                                m = proto.getMessage(name);
+                            MessageField mf = newMessageField(nestedMsg, fr, this);
+                            fields.put(mf.name, mf);
+                            continue;
                         }
-                        else
-                            m = m.getNestedMessage(name);
-                        
-                        if(m==null)
-                            break;
-                        
-                        last = dotIdx;
-                        dotIdx = packageName.indexOf('.', dotIdx+1);
-                        if(dotIdx == -1)
+                        EnumGroup eg = msg.getNestedEnumGroup(refName);
+                        if(eg!=null)
                         {
-                            // last
-                            m = m.getNestedMessage(packageName.substring(last+1));
-                            if(m==null)
-                                break;
-                            
-                            Message nestedMsg = m.getNestedMessage(refName);
-                            if(nestedMsg!=null)
-                            {
-                                MessageField mf = newMessageField(nestedMsg, fr, this);
-                                fields.put(mf.name, mf);
-                                found = true;
-                            }
-                            else
-                            {
-                                EnumGroup eg = m.getNestedEnumGroup(refName);
-                                if(eg!=null)
-                                {
-                                    EnumField ef = newEnumField(eg, fr, this);
-                                    fields.put(ef.name, ef);
-                                    found = true;
-                                }
-                            }
-                            break;
+                            EnumField ef = newEnumField(eg, fr, this);
+                            fields.put(ef.name, ef);
+                            continue;
                         }
                     }
-                    if(found)
-                        continue;
-                }
+                    
+                    // could be a foreign (imported) message
+                    msg = resolveImportedMessage(name, packageName, dotIdx, proto);
+                    if(msg != null)
+                    {
+                        Message nestedMsg = msg.getNestedMessage(refName);
+                        if(nestedMsg!=null)
+                        {
+                            MessageField mf = newMessageField(nestedMsg, fr, this);
+                            fields.put(mf.name, mf);
+                            continue;
+                        }
+                        EnumGroup eg = msg.getNestedEnumGroup(refName);
+                        if(eg!=null)
+                        {
+                            EnumField ef = newEnumField(eg, fr, this);
+                            fields.put(ef.name, ef);
+                            continue;
+                        }
+                    }
 
+                    // try to resolve the fully referenced message (prefixed with package).
+                    msg = resolveFullyReferencedMessage(packageName, dotIdx+1, proto);
+                    if(msg != null)
+                    {
+                        Message nestedMsg = msg.getNestedMessage(refName);
+                        if(nestedMsg!=null)
+                        {
+                            MessageField mf = newMessageField(nestedMsg, fr, this);
+                            fields.put(mf.name, mf);
+                            continue;
+                        }
+                        EnumGroup eg = msg.getNestedEnumGroup(refName);
+                        if(eg!=null)
+                        {
+                            EnumField ef = newEnumField(eg, fr, this);
+                            fields.put(ef.name, ef);
+                            continue;
+                        }
+                    }
+                }
                 
                 Proto proto = p.getImportedProto(packageName);
                 if(proto==null)
@@ -457,6 +472,193 @@ public class Message implements HasName
     static Message getRoot(Message parent)
     {
         return parent.parentMessage==null ? parent: getRoot(parent.parentMessage);
+    }
+    
+    private static Message resolveLocalMessage(String name, String packageName, 
+            int dotIdx, Proto proto)
+    {
+        Message m = proto.getMessage(name);
+        if(m != null && (m=resolveNestedMessage(packageName, dotIdx+1, m)) != null)
+            return m;
+        
+        if(!name.equals(proto.getPackageName()))
+            return null;
+
+        // could be a full reference to a local message
+        int idx = packageName.indexOf('.', dotIdx+1);
+        if(idx == -1)
+        {
+            // at end
+            return proto.getMessage(packageName.substring(dotIdx+1));
+        }
+
+        // check if local message
+        String n = packageName.substring(dotIdx+1, idx);
+        m = proto.getMessage(n);
+        return m == null ? null : resolveNestedMessage(packageName, idx+1, m);
+    }
+    
+    private static Message resolveImportedMessage(String name, String packageName, 
+            int dotIdx, Proto proto)
+    {
+        Message m = getImportedMessage(name, proto);
+        if(m != null && (m=resolveNestedMessage(packageName, dotIdx+1, m)) != null)
+            return m;
+        
+        final Proto importedProto = proto.getImportedProto(name);
+        if(importedProto == null)
+            return null;
+        
+        // could be a full reference to an imported message
+        int idx = packageName.indexOf('.', dotIdx+1);
+        if(idx == -1)
+        {
+            // at end
+            return importedProto.getMessage(packageName.substring(dotIdx+1));
+        }
+
+        // check if local message of imported proto
+        String n = packageName.substring(dotIdx+1, idx);
+        m = importedProto.getMessage(n);
+        return m == null ? null : resolveNestedMessage(packageName, idx+1, m);
+    }
+    
+    private static Message resolveFullyReferencedMessage(String packageName, int start, 
+            Proto proto)
+    {
+        for(int idx = packageName.indexOf('.', start); idx != -1; 
+                start = idx+1, idx = packageName.indexOf('.', start))
+        {
+            String name = packageName.substring(0, idx);
+            Proto p = name.equals(proto.getPackageName()) ? proto : proto.getImportedProto(name);
+            if(p != null)
+            {
+                int i = packageName.indexOf('.', idx+1);
+                if(i == -1)
+                {
+                    // last
+                    return p.getMessage(packageName.substring(idx+1));
+                }
+                
+                Message m = p.getMessage(packageName.substring(idx+1, i));
+                if(m != null && (m=resolveNestedMessage(packageName, i+1, m)) != null)
+                    return m;
+            }
+        }
+        
+        return null;
+    }
+    
+    private static Message resolveNestedMessage(String packageName, int start, Message parent)
+    {
+        Message m = parent;
+        for(int idx = packageName.indexOf('.', start); idx != -1; 
+                start = idx+1, idx = packageName.indexOf('.', start))
+        {
+            String name = packageName.substring(start, idx);
+            if((m=m.getNestedMessage(name)) == null)
+                return null;
+        }
+        
+        return m.getNestedMessage(packageName.substring(start));
+    }
+    
+    static Proto resolveProto(String packageName, Proto proto)
+    {
+        return packageName.equals(proto.getPackageName()) ? proto : 
+            proto.getImportedProto(packageName);
+    }
+    
+    static Message getImportedMessage(String name, Proto proto)
+    {
+        for(Proto p : proto.getImportedProtos())
+        {
+            Message m = p.getMessage(name);
+            if(m != null)
+                return m;
+        }
+        return null;
+    }
+    
+    static EnumGroup getImportedEnumGroup(String name, Proto proto)
+    {
+        for(Proto p : proto.getImportedProtos())
+        {
+            EnumGroup eg = p.getEnumGroup(name);
+            if(eg != null)
+                return eg;
+        }
+        return null;
+    }
+    
+    /**
+     * Finds a message from the provided {@link Proto} or any of its imports.
+     */
+    public static Message findMessage(final String refName, final String packageName, 
+            final Proto proto)
+    {
+        if(packageName == null)
+        {
+            // could be a local message
+            Message m = proto.getMessage(refName);
+            if(m != null)
+                return m;
+            
+            // could be a foreign (imported) message
+            for(Proto p : proto.getImportedProtos())
+            {
+                m = p.getMessage(refName);
+                if(m != null)
+                    return m;
+            }
+            
+            return null;
+        }
+        
+        final int dotIdx = packageName.indexOf('.');
+        if(dotIdx == -1)
+        {
+            // could be a local nested message
+            Message m = proto.getMessage(packageName);
+            if(m != null && (m=m.getNestedMessage(refName)) != null)
+                return m;
+            
+            // could be a foreign (imported) nested message
+            m = Message.getImportedMessage(packageName, proto);
+            if(m != null && (m=m.getNestedMessage(refName)) != null)
+                return m;
+
+            // could be a full reference to a local or foreign (imported) message
+            Proto p = Message.resolveProto(packageName, proto);
+            if(p != null && (m=p.getMessage(refName))!= null)
+                return m;
+            
+            return null;
+        }
+        
+        final String name = packageName.substring(0, dotIdx);
+        
+        // could be a local message
+        Message m = Message.resolveLocalMessage(name, packageName, dotIdx, proto);
+        if(m != null && (m=m.getNestedMessage(refName)) != null)
+            return m;
+        
+        // could be a foreign (imported) message
+        m = Message.resolveImportedMessage(name, packageName, dotIdx, proto);
+        if(m != null && (m=m.getNestedMessage(refName)) != null)
+            return m;
+
+        // try to resolve the fully referenced message (prefixed with package).
+        m = Message.resolveFullyReferencedMessage(packageName, dotIdx+1, proto);
+        if(m != null && (m=m.getNestedMessage(refName)) != null)
+            return m;
+        
+        // last resort
+        Proto importedProto = proto.getImportedProto(packageName);
+        if(importedProto != null && (m=importedProto.getMessage(refName)) != null)
+            return m;
+        
+        return null;
     }
 
 }

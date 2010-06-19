@@ -1,0 +1,71 @@
+package testrpc;
+
+import "test_imported_inner.proto";
+import "test_java_package_imported_inner.proto";
+
+message Request {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}
+
+message Response {
+  required int32 id = 1;
+  required bytes content = 2;
+  
+  message Inner {
+    required string name = 1;
+    
+    message Deeper {
+      required string name = 1;
+    }
+  }
+}
+
+service SimpleRpc {
+  rpc Local (Request) returns (Response) {
+    // rpc options are ignored by protostuff-parser
+    option (rpc.is_streaming_rpc) = true;
+  };
+  
+  rpc LocalFull (testrpc.Request) returns (testrpc.Response);
+  
+  rpc LocalInner (Request.Inner) returns (Response.Inner);
+  
+  rpc LocalInnerFull (testrpc.Request.Inner) returns (testrpc.Response.Inner);
+  
+  rpc LocalDeeper (Request.Inner.Deeper) returns (Response.Inner.Deeper);
+  
+  rpc LocalDeeperFull (testrpc.Request.Inner.Deeper) returns (testrpc.Response.Inner.Deeper);
+  
+  rpc Foreign (Foo) returns (Bar);
+  
+  rpc ForeignFull (test_imported_inner.Foo) returns (test_imported_inner.Bar);
+  
+  rpc ForeignInner (Foo.Inner) returns (Bar.Inner);
+  
+  rpc ForeignInnerFull (test_imported_inner.Foo.Inner) returns (test_imported_inner.Bar.Inner);
+  
+  rpc ForeignDeeper (Foo.Inner.Deeper) returns (Bar.Inner.Deeper);
+  
+  rpc ForeignDeeperFull (test_imported_inner.Foo.Inner.Deeper) returns (test_imported_inner.Bar.Inner.Deeper);
+  
+  rpc JPForeign (JPFoo) returns (JPBar);
+  
+  rpc JPForeignFull (test.imported.jp.JPFoo) returns (test.imported.jp.JPBar);
+  
+  rpc JPForeignInner (JPFoo.Inner) returns (JPBar.Inner);
+  
+  rpc JPForeignInnerFull (test.imported.jp.JPFoo.Inner) returns (test.imported.jp.JPBar.Inner);
+  
+  rpc JPForeignDeeper (JPFoo.Inner.Deeper) returns (JPBar.Inner.Deeper);
+  
+  rpc JPForeignDeeperFull (test.imported.jp.JPFoo.Inner.Deeper) returns (test.imported.jp.JPBar.Inner.Deeper);
+}
