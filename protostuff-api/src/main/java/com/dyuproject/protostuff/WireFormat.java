@@ -88,8 +88,7 @@ public final class WireFormat {
   }
 
   /**
-   * Lite equivalent to {@link Descriptors.FieldDescriptor.JavaType}.  This is
-   * only here to support the lite runtime and should not be used by users.
+   * This is here to support runtime schemas.
    */
   public enum JavaType {
     INT(0),
@@ -118,8 +117,7 @@ public final class WireFormat {
   }
 
   /**
-   * Lite equivalent to {@link Descriptors.FieldDescriptor.Type}.  This is
-   * only here to support the lite runtime and should not be used by users.
+   * This is here to support runtime schemas.
    */
   public enum FieldType {
     DOUBLE  (JavaType.DOUBLE     , WIRETYPE_FIXED64         ),

@@ -50,12 +50,7 @@ package com.dyuproject.protostuff;
  * Thrown when attempting to build a protocol message that is missing required
  * fields.  This is a {@code RuntimeException} because it normally represents
  * a programming error:  it happens when some code which constructs a message
- * fails to set all the fields.  {@code parseFrom()} methods <b>do not</b>
- * throw this; they throw an {@link InvalidProtocolBufferException} if
- * required fields are missing, because it is not a programming error to
- * receive an incomplete message.  In other words,
- * {@code UninitializedMessageException} should never be thrown by correct
- * code, but {@code InvalidProtocolBufferException} might be.
+ * fails to set all the fields. 
  *
  * @author kenton@google.com Kenton Varda
  * @author David Yu
