@@ -71,21 +71,21 @@ import java.util.List;
  */
 public final class CodedInput implements Input {
   /**
-   * Create a new CodedInputStream wrapping the given InputStream.
+   * Create a new CodedInput wrapping the given InputStream.
    */
   public static CodedInput newInstance(final InputStream input) {
     return new CodedInput(input, false);
   }
 
   /**
-   * Create a new CodedInputStream wrapping the given byte array.
+   * Create a new CodedInput wrapping the given byte array.
    */
   public static CodedInput newInstance(final byte[] buf) {
     return newInstance(buf, 0, buf.length);
   }
 
   /**
-   * Create a new CodedInputStream wrapping the given byte array slice.
+   * Create a new CodedInput wrapping the given byte array slice.
    */
   public static CodedInput newInstance(final byte[] buf, final int off,
                                              final int len) {
@@ -384,9 +384,9 @@ public final class CodedInput implements Input {
   /**
    * Reads a varint from the input one byte at a time, so that it does not
    * read any bytes after the end of the varint.  If you simply wrapped the
-   * stream in a CodedInputStream and used {@link #readRawVarint32(InputStream)}
+   * stream in a CodedInput and used {@link #readRawVarint32(InputStream)}
    * then you would probably end up reading past the end of the varint since
-   * CodedInputStream buffers its input.
+   * CodedInput buffers its input.
    */
   static int readRawVarint32(final InputStream input) throws IOException {
     final int firstByte = input.read();
@@ -403,9 +403,9 @@ public final class CodedInput implements Input {
   /**
    * Reads a varint from the input one byte at a time, so that it does not
    * read any bytes after the end of the varint.  If you simply wrapped the
-   * stream in a CodedInputStream and used {@link #readRawVarint32(InputStream)}
+   * stream in a CodedInput and used {@link #readRawVarint32(InputStream)}
    * then you would probably end up reading past the end of the varint since
-   * CodedInputStream buffers its input.
+   * CodedInput buffers its input.
    */
   static int readRawVarint32(final InputStream input, int firstByte) throws IOException {
     int result = firstByte & 0x7f;
@@ -593,7 +593,7 @@ public final class CodedInput implements Input {
 
   /**
    * Set the maximum message recursion depth.  In order to prevent malicious
-   * messages from causing stack overflows, {@code CodedInputStream} limits
+   * messages from causing stack overflows, {@code CodedInput} limits
    * how deeply messages may be nested.  The default limit is 64.
    *
    * @return the old limit.
@@ -611,14 +611,13 @@ public final class CodedInput implements Input {
   /**
    * Set the maximum message size.  In order to prevent malicious
    * messages from exhausting memory or causing integer overflows,
-   * {@code CodedInputStream} limits how large a message may be.
+   * {@code CodedInput} limits how large a message may be.
    * The default limit is 64MB.  You should set this limit as small
    * as you can without harming your app's functionality.  Note that
    * size limits only apply when reading from an {@code InputStream}, not
-   * when constructed around a raw byte array (nor with
-   * {@link ByteString#newCodedInput}).
+   * when constructed around a raw byte array.
    * <p>
-   * If you want to read several messages from a single CodedInputStream, you
+   * If you want to read several messages from a single CodedInput, you
    * could call {@link #resetSizeCounter()} after each one to avoid hitting the
    * size limit.
    *

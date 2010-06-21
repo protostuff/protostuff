@@ -291,10 +291,10 @@ public final class CodedOutput implements Output {
 
   /**
    * Returns the buffer size to efficiently write dataLength bytes to this
-   * CodedOutputStream. Used by AbstractMessageLite.
+   * CodedOutput. Used by AbstractMessageLite.
    *
    * @return the buffer size to efficiently write dataLength bytes to this
-   *         CodedOutputStream.
+   *         CodedOutput.
    */
   static int computePreferredBufferSize(int dataLength) {
     if (dataLength > DEFAULT_BUFFER_SIZE) return DEFAULT_BUFFER_SIZE;
@@ -332,7 +332,7 @@ public final class CodedOutput implements Output {
   }
 
   /**
-   * Create a new {@code CodedOutputStream} wrapping the given
+   * Create a new {@code CodedOutput} wrapping the given
    * {@code OutputStream}.
    */
   public static CodedOutput newInstance(final OutputStream output) {
@@ -340,7 +340,7 @@ public final class CodedOutput implements Output {
   }
 
   /**
-   * Create a new {@code CodedOutputStream} wrapping the given
+   * Create a new {@code CodedOutput} wrapping the given
    * {@code OutputStream} with a given buffer size.
    */
   public static CodedOutput newInstance(final OutputStream output, final int bufferSize) {
@@ -348,11 +348,10 @@ public final class CodedOutput implements Output {
   }
 
   /**
-   * Create a new {@code CodedOutputStream} that writes directly to the given
+   * Create a new {@code CodedOutput} that writes directly to the given
    * byte array.  If more bytes are written than fit in the array,
    * {@link OutOfSpaceException} will be thrown.  Writing directly to a flat
-   * array is faster than writing to an {@code OutputStream}.  See also
-   * {@link ByteString#newCodedBuilder}.
+   * array is faster than writing to an {@code OutputStream}.
    */
   public static CodedOutput newInstance(final byte[] flatArray) {
     return new CodedOutput(flatArray, 0, flatArray.length, 
@@ -364,7 +363,7 @@ public final class CodedOutput implements Output {
   }
   /*@
   /**
-   * Create a new {@code CodedOutputStream} that writes directly to the given
+   * Create a new {@code CodedOutput} that writes directly to the given
    * byte array slice.  If more bytes are written than fit in the slice,
    * {@link OutOfSpaceException} will be thrown.  Writing directly to a flat
    * array is faster than writing to an {@code OutputStream}.  See also
@@ -378,7 +377,7 @@ public final class CodedOutput implements Output {
   }
   
   /**
-   * Create a new {@code CodedOutputStream} that writes directly to the given
+   * Create a new {@code CodedOutput} that writes directly to the given
    * byte array slice.  If more bytes are written than fit in the slice,
    * {@link OutOfSpaceException} will be thrown.  Writing directly to a flat
    * array is faster than writing to an {@code OutputStream}.  See also
@@ -1091,7 +1090,7 @@ public final class CodedOutput implements Output {
       return limit - position;
     } else {
       throw new UnsupportedOperationException(
-        "spaceLeft() can only be called on CodedOutputStreams that are " +
+        "spaceLeft() can only be called on CodedOutputs that are " +
         "writing to a flat array.");
     }
   }
@@ -1099,7 +1098,7 @@ public final class CodedOutput implements Output {
   /**
    * Verifies that {@link #spaceLeft()} returns zero.  It's common to create
    * a byte array that is exactly big enough to hold a message, then write to
-   * it with a {@code CodedOutputStream}.  Calling {@code checkNoSpaceLeft()}
+   * it with a {@code CodedOutput}.  Calling {@code checkNoSpaceLeft()}
    * after writing verifies that the message was actually as big as expected,
    * which can help catch bugs.
    */
@@ -1111,7 +1110,7 @@ public final class CodedOutput implements Output {
   }
 
   /**
-   * If you create a CodedOutputStream around a simple flat array, you must
+   * If you create a CodedOutput around a simple flat array, you must
    * not attempt to write more bytes than the array has space.  Otherwise,
    * this exception will be thrown.
    */
@@ -1119,7 +1118,7 @@ public final class CodedOutput implements Output {
     private static final long serialVersionUID = -6947486886997889499L;
 
     OutOfSpaceException() {
-      super("CodedOutputStream was writing to a flat byte array and ran " +
+      super("CodedOutput was writing to a flat byte array and ran " +
             "out of space.");
     }
   }
