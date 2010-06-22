@@ -1,3 +1,5 @@
+protostuff-1.0.0-SNAPSHOT
+
 protostuff-1.0.0.M2 2010-06-22
 + more IO optimizations
 + Issue 22: Enable parsing of service/rpc in proto for code generation
