@@ -23,6 +23,7 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -90,6 +91,20 @@ public abstract class SerDeserTest extends TestCase
      */
     public abstract boolean isGroupEncoded();
     
+    public <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
+    throws IOException
+    {
+        final CodedInput input = new CodedInput(data, offset, length, isGroupEncoded());
+        schema.mergeFrom(input, message);
+        input.checkLastTagWas(0);
+    }
+    
+    public <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
+    throws IOException
+    {
+        IOUtil.mergeDelimitedFrom(in, message, schema, isGroupEncoded());
+    }
+    
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
@@ -101,12 +116,12 @@ public abstract class SerDeserTest extends TestCase
         
         byte[] coded = toByteArrayViaCodedOutput(fooCompare);
         assertTrue(coded.length == expectedSize);
-        IOUtil.mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema(), isGroupEncoded());
+        mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
         byte[] output = toByteArray(fooCompare);
         assertTrue(output.length == expectedSize);
-        IOUtil.mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema(), isGroupEncoded());
+        mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
     
@@ -122,12 +137,12 @@ public abstract class SerDeserTest extends TestCase
             
             byte[] coded = toByteArrayViaCodedOutput(barCompare);
             assertTrue(coded.length == expectedSize);
-            IOUtil.mergeFrom(coded, 0, coded.length, cbar, cbar.cachedSchema(), isGroupEncoded());        
+            mergeFrom(coded, 0, coded.length, cbar, cbar.cachedSchema());        
             SerializableObjects.assertEquals(barCompare, cbar);
 
             byte[] output = toByteArray(barCompare);
             assertTrue(output.length == expectedSize);
-            IOUtil.mergeFrom(output, 0, output.length, dbar, dbar.cachedSchema(), isGroupEncoded());
+            mergeFrom(output, 0, output.length, dbar, dbar.cachedSchema());
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
@@ -144,12 +159,12 @@ public abstract class SerDeserTest extends TestCase
             
             byte[] coded = toByteArrayViaCodedOutput(bazCompare);
             assertTrue(coded.length == expectedSize);
-            IOUtil.mergeFrom(coded, 0, coded.length, cbaz, cbaz.cachedSchema(), isGroupEncoded());        
+            mergeFrom(coded, 0, coded.length, cbaz, cbaz.cachedSchema());        
             SerializableObjects.assertEquals(bazCompare, cbaz);
 
             byte[] output = toByteArray(bazCompare);
             assertTrue(output.length == expectedSize);
-            IOUtil.mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema(), isGroupEncoded());
+            mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema());
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
@@ -170,16 +185,16 @@ public abstract class SerDeserTest extends TestCase
         Foo cfoo = new Foo();
         Foo dfoo = new Foo();
         
-        int expectedSize = ComputedSizeOutput.getSize(fooCompare, fooSchema, isGroupEncoded());
+        int expectedSize = ComputedSizeOutput.getSize(fooCompare, fooSchema);
         
         byte[] coded = toByteArrayViaCodedOutput(fooCompare, fooSchema);
         assertTrue(coded.length == expectedSize);
-        IOUtil.mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema(), isGroupEncoded());
+        mergeFrom(coded, 0, coded.length, cfoo, cfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, cfoo);
 
         byte[] output = toByteArray(fooCompare, fooSchema);
         assertTrue(output.length == expectedSize);
-        IOUtil.mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema(), isGroupEncoded());
+        mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
     
@@ -205,12 +220,12 @@ public abstract class SerDeserTest extends TestCase
             
             byte[] coded = toByteArrayViaCodedOutput(barCompare, barSchema);
             assertTrue(coded.length == expectedSize);
-            IOUtil.mergeFrom(coded, 0, coded.length, cbar, barSchema, isGroupEncoded());        
+            mergeFrom(coded, 0, coded.length, cbar, barSchema);        
             SerializableObjects.assertEquals(barCompare, cbar);
 
             byte[] output = toByteArray(barCompare, barSchema);
             assertTrue(output.length == expectedSize);
-            IOUtil.mergeFrom(output, 0, output.length, dbar, barSchema, isGroupEncoded());
+            mergeFrom(output, 0, output.length, dbar, barSchema);
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
@@ -248,7 +263,7 @@ public abstract class SerDeserTest extends TestCase
         
         Foo foo = new Foo();
         // we expect this to succeed, skipping the baz field.
-        IOUtil.mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema(), isGroupEncoded());
+        mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema());
         
         assertTrue(bar.getSomeInt() == foo.getSomeInt().get(0));
         assertEquals(bar.getSomeString(), foo.getSomeString().get(0));
@@ -267,7 +282,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, foo, foo.cachedSchema());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -282,7 +297,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, foo, foo.cachedSchema());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -300,7 +315,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
-        IOUtil.mergeDelimitedFrom(in, foo, foo.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, foo, foo.cachedSchema());
         
         SerializableObjects.assertEquals(foo, fooCompare);
     }
@@ -315,7 +330,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, bar, bar.cachedSchema());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -330,7 +345,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, bar, bar.cachedSchema());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -346,7 +361,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
-        IOUtil.mergeDelimitedFrom(in, bar, bar.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, bar, bar.cachedSchema());
         
         SerializableObjects.assertEquals(bar, barCompare);
     }
@@ -361,7 +376,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
-        IOUtil.mergeDelimitedFrom(in, baz, baz.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, baz, baz.cachedSchema());
         
         SerializableObjects.assertEquals(baz, bazCompare);
     }
@@ -376,7 +391,7 @@ public abstract class SerDeserTest extends TestCase
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
-        IOUtil.mergeDelimitedFrom(in, baz, baz.cachedSchema(), isGroupEncoded());
+        mergeDelimitedFrom(in, baz, baz.cachedSchema());
         
         SerializableObjects.assertEquals(baz, bazCompare);
     }
@@ -400,12 +415,12 @@ public abstract class SerDeserTest extends TestCase
         
         byte[] coded = toByteArrayViaCodedOutput(hhbCompare);
         assertTrue(coded.length == expectedSize);
-        IOUtil.mergeFrom(coded, 0, coded.length, chhb, chhb.cachedSchema(), isGroupEncoded());      
+        mergeFrom(coded, 0, coded.length, chhb, chhb.cachedSchema());      
         assertEquals(hhbCompare, chhb);
 
         byte[] output = toByteArray(hhbCompare);
         assertTrue(output.length == expectedSize);
-        IOUtil.mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema(), isGroupEncoded());
+        mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema());
         assertEquals(hhbCompare, dhhb);
     }
     
