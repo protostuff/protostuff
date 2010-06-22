@@ -568,9 +568,9 @@ public final class CodedInput implements Input {
   /** See setSizeLimit() */
   private int sizeLimit = DEFAULT_SIZE_LIMIT;
 
-  private static final int DEFAULT_RECURSION_LIMIT = 64;
-  private static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
-  private static final int BUFFER_SIZE = 4096;
+  static final int DEFAULT_RECURSION_LIMIT = 64;
+  static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
+  static final int BUFFER_SIZE = 4096;
 
   CodedInput(final byte[] buffer, final int off, final int len, 
       boolean encodeNestedMessageAsGroup) {

@@ -281,7 +281,7 @@ public final class IOUtil
         if(len != 0)
         {
             // not an empty message
-            if(len > CodedOutput.DEFAULT_BUFFER_SIZE)
+            if(len > CodedInput.BUFFER_SIZE)
             {
                 // message too big
                 final CodedInput input = new CodedInput(new LimitedInputStream(in, len), 
@@ -384,7 +384,7 @@ public final class IOUtil
             if(len != 0)
             {
                 // not an empty message
-                if(len > CodedOutput.DEFAULT_BUFFER_SIZE)
+                if(len > CodedInput.BUFFER_SIZE)
                 {
                     // message too big
                     if(lin == null)
@@ -482,7 +482,7 @@ public final class IOUtil
         if(len != 0)
         {
             // not an empty message
-            if(len > CodedOutput.DEFAULT_BUFFER_SIZE && in instanceof InputStream)
+            if(len > CodedInput.BUFFER_SIZE && in instanceof InputStream)
             {
                 // message too big
                 final CodedInput input = new CodedInput(new LimitedInputStream((InputStream)in, len), 
