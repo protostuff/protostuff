@@ -573,22 +573,22 @@ public final class CodedInput implements Input {
   private static final int BUFFER_SIZE = 4096;
 
   CodedInput(final byte[] buffer, final int off, final int len, 
-      boolean encodeNestedMessagesAsGroup) {
+      boolean encodeNestedMessageAsGroup) {
     this.buffer = buffer;
     bufferSize = off + len;
     bufferPos = off;
     totalBytesRetired = -off;
     input = null;
-    this.encodeNestedMessageAsGroup = encodeNestedMessagesAsGroup;
+    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
   }
 
-  CodedInput(final InputStream input, boolean encodeNestedMessagesAsGroup) {
+  CodedInput(final InputStream input, boolean encodeNestedMessageAsGroup) {
     buffer = new byte[BUFFER_SIZE];
     bufferSize = 0;
     bufferPos = 0;
     totalBytesRetired = 0;
     this.input = input;
-    this.encodeNestedMessageAsGroup = encodeNestedMessagesAsGroup;
+    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
   }
 
   /**
