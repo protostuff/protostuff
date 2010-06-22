@@ -193,10 +193,15 @@ public final class IOUtil
     {
         try
         {
-            final CodedInput input = new CodedInput(data, offset, length, 
+            final ByteArrayInput input = new ByteArrayInput(data, offset, length, 
                     encodeNestedMessageAsGroup);
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
+        }
+        catch(ArrayIndexOutOfBoundsException ae)
+        {
+            throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
+                    "never happen).", ProtobufException.truncatedMessage(ae));
         }
         catch (IOException e)
         {
@@ -288,8 +293,16 @@ public final class IOUtil
             
             byte[] buf = new byte[len];
             fillBufferFrom(in, buf, 0, len);
-            final CodedInput input = new CodedInput(buf, 0, len, encodeNestedMessageAsGroup);
-            schema.mergeFrom(input, message);
+            final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
+                    encodeNestedMessageAsGroup);
+            try
+            {
+                schema.mergeFrom(input, message);
+            }
+            catch(ArrayIndexOutOfBoundsException e)
+            {
+                throw ProtobufException.truncatedMessage(e);
+            }
             input.checkLastTagWas(0);
         }
     }
@@ -365,9 +378,9 @@ public final class IOUtil
         LimitedInputStream lin = null;
         for(int size=in.read(); size!=-1; size=in.read())
         {
-            T message = schema.newMessage();
+            final T message = schema.newMessage();
             list.add(message);
-            int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+            final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
             if(len != 0)
             {
                 // not an empty message
@@ -391,8 +404,16 @@ public final class IOUtil
                     biggestLen = len;
                 }
                 fillBufferFrom(in, buf, 0, len);
-                final CodedInput input = new CodedInput(buf, 0, len, encodeNestedMessageAsGroup);
-                schema.mergeFrom(input, message);
+                final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
+                        encodeNestedMessageAsGroup);
+                try
+                {
+                    schema.mergeFrom(input, message);
+                }
+                catch(ArrayIndexOutOfBoundsException e)
+                {
+                    throw ProtobufException.truncatedMessage(e);
+                }
                 input.checkLastTagWas(0);
             }
         }
@@ -473,8 +494,16 @@ public final class IOUtil
             {
                 final byte[] buf = new byte[len];
                 in.readFully(buf, 0, len);
-                final CodedInput input = new CodedInput(buf, 0, len, encodeNestedMessageAsGroup);
-                schema.mergeFrom(input, message);
+                final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
+                        encodeNestedMessageAsGroup);
+                try
+                {
+                    schema.mergeFrom(input, message);
+                }
+                catch(ArrayIndexOutOfBoundsException e)
+                {
+                    throw ProtobufException.truncatedMessage(e);
+                }
                 input.checkLastTagWas(0);
             }
         }

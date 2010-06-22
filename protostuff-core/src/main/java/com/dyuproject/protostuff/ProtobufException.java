@@ -54,17 +54,27 @@ package com.dyuproject.protostuff;
  */
 public class ProtobufException extends ProtostuffException {
   private static final long serialVersionUID = 1616151763072450476L;
+  
+  private static final String ERR_TRUNCATED_MESSAGE = 
+      "While parsing a protocol message, the input ended unexpectedly " +
+      "in the middle of a field.  This could mean either than the " +
+      "input has been truncated or that an embedded message " +
+      "misreported its own length.";
 
   public ProtobufException(final String description) {
     super(description);
   }
+  
+  public ProtobufException(final String description, final Throwable cause) {
+    super(description, cause);
+  }
+  
+  static ProtobufException truncatedMessage(final Throwable cause) {
+    return new ProtobufException(ERR_TRUNCATED_MESSAGE, cause);
+  }
 
   static ProtobufException truncatedMessage() {
-    return new ProtobufException(
-      "While parsing a protocol message, the input ended unexpectedly " +
-      "in the middle of a field.  This could mean either than the " +
-      "input has been truncated or that an embedded message " +
-      "misreported its own length.");
+    return new ProtobufException(ERR_TRUNCATED_MESSAGE);
   }
 
   static ProtobufException negativeSize() {
