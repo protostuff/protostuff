@@ -233,7 +233,7 @@ public final class CodedInput implements Input {
   }
   
   public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException {
-    if(encodeNestedMessageAsGroup)
+    if(decodeNestedMessageAsGroup)
       return mergeObjectEncodedAsGroup(value, schema);
     
     final int length = readRawVarint32();
@@ -564,7 +564,7 @@ public final class CodedInput implements Input {
   private int recursionLimit = DEFAULT_RECURSION_LIMIT;
   
   /** If true, the nested messages are group-encoded */
-  private final boolean encodeNestedMessageAsGroup;
+  private final boolean decodeNestedMessageAsGroup;
 
   /** See setSizeLimit() */
   private int sizeLimit = DEFAULT_SIZE_LIMIT;
@@ -574,22 +574,22 @@ public final class CodedInput implements Input {
   static final int BUFFER_SIZE = 4096;
 
   CodedInput(final byte[] buffer, final int off, final int len, 
-      boolean encodeNestedMessageAsGroup) {
+      boolean decodeNestedMessageAsGroup) {
     this.buffer = buffer;
     bufferSize = off + len;
     bufferPos = off;
     totalBytesRetired = -off;
     input = null;
-    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
+    this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
   }
 
-  CodedInput(final InputStream input, boolean encodeNestedMessageAsGroup) {
+  CodedInput(final InputStream input, boolean decodeNestedMessageAsGroup) {
     buffer = new byte[BUFFER_SIZE];
     bufferSize = 0;
     bufferPos = 0;
     totalBytesRetired = 0;
     this.input = input;
-    this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
+    this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
   }
 
   /**
@@ -937,7 +937,7 @@ public final class CodedInput implements Input {
       // If we actually read zero, that's not a valid tag.
       throw ProtobufException.invalidTag();
     }
-    if(encodeNestedMessageAsGroup && WIRETYPE_END_GROUP == (tag & TAG_TYPE_MASK)) {
+    if(decodeNestedMessageAsGroup && WIRETYPE_END_GROUP == (tag & TAG_TYPE_MASK)) {
       lastTag = 0;
       return 0;
     }

@@ -189,12 +189,12 @@ public final class IOUtil
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
     public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema, boolean encodeNestedMessageAsGroup)
+            Schema<T> schema, boolean decodeNestedMessageAsGroup)
     {
         try
         {
             final ByteArrayInput input = new ByteArrayInput(data, offset, length, 
-                    encodeNestedMessageAsGroup);
+                    decodeNestedMessageAsGroup);
             schema.mergeFrom(input, message);
             input.checkLastTagWas(0);
         }
@@ -231,9 +231,9 @@ public final class IOUtil
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
+            boolean decodeNestedMessageAsGroup) throws IOException
     {
-        final CodedInput input = new CodedInput(in, encodeNestedMessageAsGroup);
+        final CodedInput input = new CodedInput(in, decodeNestedMessageAsGroup);
         schema.mergeFrom(input, message);
         input.checkLastTagWas(0);
     }
@@ -271,7 +271,7 @@ public final class IOUtil
      * using the given {@code schema}.
      */
     public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
+            boolean decodeNestedMessageAsGroup) throws IOException
     {
         final int size = in.read();
         if(size == -1)
@@ -285,7 +285,7 @@ public final class IOUtil
             {
                 // message too big
                 final CodedInput input = new CodedInput(new LimitedInputStream(in, len), 
-                        encodeNestedMessageAsGroup);
+                        decodeNestedMessageAsGroup);
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
                 return;
@@ -294,7 +294,7 @@ public final class IOUtil
             byte[] buf = new byte[len];
             fillBufferFrom(in, buf, 0, len);
             final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
-                    encodeNestedMessageAsGroup);
+                    decodeNestedMessageAsGroup);
             try
             {
                 schema.mergeFrom(input, message);
@@ -370,7 +370,7 @@ public final class IOUtil
      * {@link InputStream} using the given {@code schema}.
      */
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
+            boolean decodeNestedMessageAsGroup) throws IOException
     {
         final ArrayList<T> list = new ArrayList<T>();
         byte[] buf = null;
@@ -390,7 +390,7 @@ public final class IOUtil
                     if(lin == null)
                         lin = new LimitedInputStream(in);
                     final CodedInput input = new CodedInput(lin.limit(len), 
-                            encodeNestedMessageAsGroup);
+                            decodeNestedMessageAsGroup);
                     schema.mergeFrom(input, message);
                     input.checkLastTagWas(0);
                     continue;
@@ -405,7 +405,7 @@ public final class IOUtil
                 }
                 fillBufferFrom(in, buf, 0, len);
                 final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
-                        encodeNestedMessageAsGroup);
+                        decodeNestedMessageAsGroup);
                 try
                 {
                     schema.mergeFrom(input, message);
@@ -471,7 +471,7 @@ public final class IOUtil
      * Merges from the {@link ObjectInput}.
      */
     public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
+            boolean decodeNestedMessageAsGroup) throws IOException
     {
         final int size = in.readByte();
         if(size == -1)
@@ -486,7 +486,7 @@ public final class IOUtil
             {
                 // message too big
                 final CodedInput input = new CodedInput(new LimitedInputStream((InputStream)in, len), 
-                        encodeNestedMessageAsGroup);
+                        decodeNestedMessageAsGroup);
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
             }
@@ -495,7 +495,7 @@ public final class IOUtil
                 final byte[] buf = new byte[len];
                 in.readFully(buf, 0, len);
                 final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
-                        encodeNestedMessageAsGroup);
+                        decodeNestedMessageAsGroup);
                 try
                 {
                     schema.mergeFrom(input, message);

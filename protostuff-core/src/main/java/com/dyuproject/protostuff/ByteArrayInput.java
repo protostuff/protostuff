@@ -43,19 +43,19 @@ public final class ByteArrayInput implements Input
     
     private final byte[] buffer;
     private int offset, limit, lastTag = 0;
-    private final boolean encodeNestedMessageAsGroup;
+    private final boolean decodeNestedMessageAsGroup;
     
-    public ByteArrayInput(byte[] buffer, boolean encodeNestedMessageAsGroup)
+    public ByteArrayInput(byte[] buffer, boolean decodeNestedMessageAsGroup)
     {
-        this(buffer, 0, buffer.length, encodeNestedMessageAsGroup);
+        this(buffer, 0, buffer.length, decodeNestedMessageAsGroup);
     }
     
-    public ByteArrayInput(byte[] buffer, int offset, int len, boolean encodeNestedMessageAsGroup)
+    public ByteArrayInput(byte[] buffer, int offset, int len, boolean decodeNestedMessageAsGroup)
     {
         this.buffer = buffer;
         this.offset = offset;
         this.limit = offset + len;
-        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
+        this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
     }
     
     /**
@@ -199,7 +199,7 @@ public final class ByteArrayInput implements Input
             // If we actually read zero, that's not a valid tag.
             throw ProtobufException.invalidTag();
         }
-        if (encodeNestedMessageAsGroup && WIRETYPE_END_GROUP == (tag & TAG_TYPE_MASK))
+        if (decodeNestedMessageAsGroup && WIRETYPE_END_GROUP == (tag & TAG_TYPE_MASK))
         {
             lastTag = 0;
             return 0;
@@ -337,7 +337,7 @@ public final class ByteArrayInput implements Input
 
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {
-        if(encodeNestedMessageAsGroup)
+        if(decodeNestedMessageAsGroup)
             return mergeObjectEncodedAsGroup(value, schema);
         
         final int length = readRawVarint32();
