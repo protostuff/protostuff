@@ -1,4 +1,5 @@
 protostuff-1.0.0-SNAPSHOT
++ Issue 23: Validation missing (for required fields) when nested messages are "group_encoded"
 
 protostuff-1.0.0.M2 2010-06-22
 + more IO optimizations

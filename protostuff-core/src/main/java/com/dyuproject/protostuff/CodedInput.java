@@ -232,7 +232,7 @@ public final class CodedInput implements Input {
     }
   }
   
-  public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
+  public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException {
     if(encodeNestedMessageAsGroup)
       return mergeObjectEncodedAsGroup(value, schema);
     
@@ -253,16 +253,17 @@ public final class CodedInput implements Input {
   }
 
   /** Reads a message field value from the stream (using the {@code group} encoding). */
-  <T> T mergeObjectEncodedAsGroup(T value, Schema<T> schema) throws IOException {
+  <T> T mergeObjectEncodedAsGroup(final T value, final Schema<T> schema) throws IOException {
     if (recursionDepth >= recursionLimit) {
       throw ProtobufException.recursionLimitExceeded();
     }
     ++recursionDepth;
     schema.mergeFrom(this, value);
+    if(!schema.isInitialized(value)) {
+      throw new UninitializedMessageException(value, schema);
+    }
     // handling is in #readFieldNumber
     checkLastTagWas(0);
-    //if(WireFormat.WIRETYPE_END_GROUP != WireFormat.getTagWireType(lastTag))
-    //  throw ProtobufException.invalidEndTag();
     --recursionDepth;
     return value;
   }
