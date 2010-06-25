@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * TODO
+ * Json IO tests for the {@link StringMapSchema}.
  *
  * @author David Yu
  * @created Jun 25, 2010
