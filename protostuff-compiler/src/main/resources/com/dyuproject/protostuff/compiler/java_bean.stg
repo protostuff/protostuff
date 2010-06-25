@@ -388,7 +388,7 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
     while(true)
     {
-        int number = input.readFieldNumber(this);
+        final int number = input.readFieldNumber(this);
         switch(number)
         {
             case 0:
@@ -541,7 +541,7 @@ public String getFieldName(int number)
 
 public int getFieldNumber(String name)
 {
-    Integer number = __fieldMap.get(name);
+    final Integer number = __fieldMap.get(name);
     return number == null ? 0 : number.intValue();
 }
 

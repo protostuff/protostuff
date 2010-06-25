@@ -90,7 +90,7 @@ public String getFieldName(int number)
 
 public int getFieldNumber(String name)
 {
-    Integer number = fieldMap.get(name);
+    final Integer number = fieldMap.get(name);
     return number == null ? 0 : number.intValue();
 }
 
