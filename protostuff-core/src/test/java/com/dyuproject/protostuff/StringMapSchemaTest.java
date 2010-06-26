@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 public class StringMapSchemaTest extends TestCase
 {
     
-    public static final StringMapSchema SCHEMA = StringMapSchema.INSTANCE;
+    public static final StringMapSchema<String> SCHEMA = StringMapSchema.VALUE_STRING;
     
     public <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
     throws IOException

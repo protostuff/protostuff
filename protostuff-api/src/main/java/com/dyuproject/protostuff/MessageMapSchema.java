@@ -18,58 +18,44 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * A utility schema for a {@link Map} with {@link String} keys and single-type object values.
+ * A utility schema for a {@link Map} with single-typed message/pojo keys and 
+ * single-typed message/pojo values.
  * Keys cannot be null otherwise the entry is ignored (not serialized).
  * Values however can be null.
  *
  * @author David Yu
- * @created Jun 25, 2010
+ * @created Jun 26, 2010
  */
-public class StringMapSchema<V> extends MapSchema<String,V>
+public final class MessageMapSchema<K,V> extends MapSchema<K,V>
 {
     
-    /**
-     * The schema for Map<String,String>
-     */
-    public static final StringMapSchema<String> VALUE_STRING = new StringMapSchema<String>(null)
-    {
-        protected String readValueFrom(Input input) throws IOException
-        {
-            return input.readString();
-        }
-
-        protected void writeValueTo(Output output, int fieldNumber, String value, 
-                boolean repeated) throws IOException
-        {
-            output.writeString(fieldNumber, value, repeated);
-        }
-    };
+    final Schema<K> kSchema;
+    final Schema<V> vSchema;
     
-    protected final Schema<V> vSchema;
-    
-    public StringMapSchema(Schema<V> vSchema)
+    public MessageMapSchema(Schema<K> kSchema, Schema<V> vSchema)
     {
+        this.kSchema = kSchema;
         this.vSchema = vSchema;
     }
 
-    protected final String readKeyFrom(Input input) throws IOException
+    protected K readKeyFrom(Input input) throws IOException
     {
-        return input.readString();
+        return input.mergeObject(kSchema.newMessage(), kSchema);
     }
-    
+
     protected V readValueFrom(Input input) throws IOException
     {
         return input.mergeObject(vSchema.newMessage(), vSchema);
     }
 
-    protected final void writeKeyTo(Output output, int fieldNumber, String value, 
-            boolean repeated) throws IOException
+    protected void writeKeyTo(Output output, int fieldNumber, K value, boolean repeated) 
+    throws IOException
     {
-        output.writeString(fieldNumber, value, repeated);
+        output.writeObject(fieldNumber, value, kSchema, repeated);
     }
-    
-    protected void writeValueTo(Output output, int fieldNumber, V value, 
-            boolean repeated) throws IOException
+
+    protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated) 
+    throws IOException
     {
         output.writeObject(fieldNumber, value, vSchema, repeated);
     }
