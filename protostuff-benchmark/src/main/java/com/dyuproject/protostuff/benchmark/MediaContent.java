@@ -145,7 +145,7 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
     {
         while(true)
         {
-            int number = input.readFieldNumber(this);
+            final int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:
@@ -199,7 +199,7 @@ public final class MediaContent implements Externalizable, Message<MediaContent>
 
     public int getFieldNumber(String name)
     {
-        Integer number = __fieldMap.get(name);
+        final Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 

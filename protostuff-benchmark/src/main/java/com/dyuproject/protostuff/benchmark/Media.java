@@ -317,7 +317,7 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
     {
         while(true)
         {
-            int number = input.readFieldNumber(this);
+            final int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:
@@ -434,7 +434,7 @@ public final class Media implements Externalizable, Message<Media>, Schema<Media
 
     public int getFieldNumber(String name)
     {
-        Integer number = __fieldMap.get(name);
+        final Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
