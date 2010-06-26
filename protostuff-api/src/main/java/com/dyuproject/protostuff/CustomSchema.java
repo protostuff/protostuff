@@ -68,7 +68,7 @@ public abstract class CustomSchema<T> implements Schema<T>
         return schema.newMessage();
     }
 
-    public Class<T> typeClass()
+    public Class<? super T> typeClass()
     {
         return schema.typeClass();
     }

@@ -78,7 +78,7 @@ public interface Schema<T>
     /**
      * Gets the class of the message.
      */
-    public Class<T> typeClass();
+    public Class<? super T> typeClass();
     
     /**
      * Deserializes a message/object from the {@link Input input}.
