@@ -103,6 +103,37 @@ public class JsonCoreSerDeserTest extends TestCase
         }
     }
     
+    public void testUnknownScalarFieldsWithArray() throws Exception
+    {
+        String[] regularMessages = new String[]{
+                "{\"int\":[1],\"string\":\"string\",\"double\":[555.444],\"id\":1}",
+                "{\"int\":1,\"string\":[\"string\"],\"id\":2,\"double\":[555.444]}",
+                "{\"id\":3,\"int\":[1],\"string\":[\"string\"],\"double\":555.444}"
+        };
+        
+        for(int i=0; i<regularMessages.length; i++)
+        {
+            Baz b = new Baz();
+            JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(regularMessages[i]), 
+                    b, b.cachedSchema(), false);
+            assertTrue(i+1 == b.getId());
+        }
+        
+        String[] numericMessages = new String[]{
+                "{\"4\":[1],\"5\":\"string\",\"6\":[555.444],\"1\":1}",
+                "{\"4\":1,\"5\":[\"string\"],\"1\":2,\"6\":[555.444]}",
+                "{\"1\":3,\"4\":[1],\"5\":[\"string\"],\"6\":555.444}"
+        };
+        
+        for(int i=0; i<numericMessages.length; i++)
+        {
+            Baz b = new Baz();
+            JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(numericMessages[i]), 
+                    b, b.cachedSchema(), true);
+            assertTrue(i+1 == b.getId());
+        }
+    }
+    
     public void testListIO() throws Exception
     {
         ArrayList<Bar> bars = new ArrayList<Bar>();

@@ -87,18 +87,30 @@ public final class JsonInput implements Input
 
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
-        // we can skip this unknown field
         if(parser.getCurrentToken().isScalarValue())
+        {
+            // numeric json
+            // we can skip this unknown field
+            if(lastRepeated)
+            {
+                lastRepeated = false;
+                // skip the scalar elements
+                while(parser.nextToken() != END_ARRAY);
+            }
             return;
+        }
         
         throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.messageFullName());
-    }    
-
+    }
+    
     public <T> int readFieldNumber(final Schema<T> schema) throws IOException
     {
-        if(lastRepeated)
-            return lastNumber;
-        
+        return lastRepeated ? lastNumber : readFieldNumber(schema, parser);
+    }
+
+    private <T> int readFieldNumber(final Schema<T> schema, final JsonParser parser) 
+    throws IOException
+    {
         final JsonToken jt = parser.nextToken();
         if(jt == END_OBJECT)
             return 0;
@@ -108,26 +120,51 @@ public final class JsonInput implements Input
             throw new JsonInputException("Expected token: $field: but was " + 
                     jt + " on message " + schema.messageFullName());
         }
-        final String name = lastName = parser.getCurrentName();
-        final int number = lastNumber = numeric ? Integer.parseInt(name) : schema.getFieldNumber(name);
+        
+        final String name = parser.getCurrentName();
+        final int number = numeric ? Integer.parseInt(name) : schema.getFieldNumber(name);
+        
         // move to the next token
         if(parser.nextToken() == START_ARRAY)
         {
             // if empty array, read the next field
             if(parser.nextToken() == END_ARRAY)
-                return readFieldNumber(schema);
+                return readFieldNumber(schema, parser);
+
+            if(number == 0)
+            {
+                // unknown field
+                if(parser.getCurrentToken().isScalarValue())
+                {
+                    // skip the scalar elements
+                    while(parser.nextToken() != END_ARRAY);
+                    
+                    return readFieldNumber(schema, parser);
+                }
+                
+                throw new JsonInputException("Unknown field: " + name + " on message " + 
+                        schema.messageFullName());
+            }
             
             lastRepeated = true;
+            lastName = name;
+            lastNumber = number;
+            
+            return number;
         }
         
         if(number == 0)
         {
             // we can skip this unknown field
             if(parser.getCurrentToken().isScalarValue())
-                return readFieldNumber(schema);
+                return readFieldNumber(schema, parser);
             
-            throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.messageFullName());
+            throw new JsonInputException("Unknown field: " + name + " on message " + 
+                    schema.messageFullName());
         }
+        
+        lastName = name;
+        lastNumber = number;
         
         return number;
     }
