@@ -60,62 +60,62 @@ public final class XmlOutput implements Output
     
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Float.toString(value));
     }
     
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Double.toString(value));
     }
     
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
@@ -125,7 +125,7 @@ public final class XmlOutput implements Output
     
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
