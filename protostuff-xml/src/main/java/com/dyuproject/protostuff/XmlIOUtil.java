@@ -69,7 +69,7 @@ public final class XmlIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, XMLOutputFactory outFactory)
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         try
         {
             writeTo(out, message, schema, outFactory);
@@ -109,7 +109,7 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
+            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
@@ -152,7 +152,7 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamWriter writer = outFactory.createXMLStreamWriter(w);
+            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(w);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
@@ -211,7 +211,7 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int len, T message, 
             Schema<T> schema, XMLInputFactory inFactory)
     {
-        ByteArrayInputStream in = new ByteArrayInputStream(data, offset, len);
+        final ByteArrayInputStream in = new ByteArrayInputStream(data, offset, len);
         try
         {
             mergeFrom(in, message, schema, inFactory);
@@ -248,7 +248,7 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamReader parser = inFactory.createXMLStreamReader(in, XML_ENCODING);
+            final XMLStreamReader parser = inFactory.createXMLStreamReader(in, XML_ENCODING);
             mergeFrom(parser, message, schema);
             parser.close();
         }
@@ -284,7 +284,7 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamReader parser = inFactory.createXMLStreamReader(r);
+            final XMLStreamReader parser = inFactory.createXMLStreamReader(r);
             mergeFrom(parser, message, schema);
             parser.close();
         }
@@ -300,7 +300,7 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(XMLStreamReader parser, T message, Schema<T> schema)
     throws IOException, XMLStreamException, XmlInputException
     {
-        String simpleName = schema.messageName();
+        final String simpleName = schema.messageName();
         
         if(parser.nextTag() != START_ELEMENT || 
                 !simpleName.equals(parser.getLocalName()))
@@ -340,7 +340,7 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
+            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeListTo(writer, messages, schema);
@@ -361,7 +361,7 @@ public final class XmlIOUtil
     public static <T> void writeListTo(XMLStreamWriter writer, List<T> messages, Schema<T> schema) 
     throws IOException, XMLStreamException
     {
-        String simpleName = schema.messageName();
+        final String simpleName = schema.messageName();
         writer.writeStartElement("list");
         
         if(messages.isEmpty())
@@ -398,8 +398,8 @@ public final class XmlIOUtil
     {
         try
         {
-            XMLStreamReader parser = inFactory.createXMLStreamReader(in);
-            List<T> list = parseListFrom(parser, schema);
+            final XMLStreamReader parser = inFactory.createXMLStreamReader(in);
+            final List<T> list = parseListFrom(parser, schema);
             parser.close();
             return list;
         }
@@ -427,7 +427,7 @@ public final class XmlIOUtil
             if(tag != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
                 throw new XmlInputException("Expected token START_ELEMENT: " + simpleName);
             
-            T message = schema.newMessage();
+            final T message = schema.newMessage();
             
             if(parser.nextTag() == END_ELEMENT)
             {

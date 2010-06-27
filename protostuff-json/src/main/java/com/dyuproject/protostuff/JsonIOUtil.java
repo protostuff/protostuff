@@ -59,7 +59,7 @@ public final class JsonIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try
         {
             writeTo(baos, message, schema, numeric);
@@ -87,7 +87,8 @@ public final class JsonIOUtil
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
-        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
+                JsonEncoding.UTF8);
         writeTo(generator, message, schema, numeric);
         generator.close();
     }
@@ -108,7 +109,7 @@ public final class JsonIOUtil
     public static <T> void writeTo(Writer writer, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
-        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
         writeTo(generator, message, schema, numeric);
         generator.close();
     }
@@ -122,7 +123,7 @@ public final class JsonIOUtil
     {
         generator.writeStartObject();
         
-        JsonOutput output = new JsonOutput(generator, numeric).use(schema);
+        final JsonOutput output = new JsonOutput(generator, numeric).use(schema);
         schema.writeTo(output, message);
         if(output.isLastRepeated())
             generator.writeEndArray();
@@ -154,7 +155,7 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema, boolean numeric) throws IOException
     {
-        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length);
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
@@ -174,7 +175,7 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
-        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
@@ -194,7 +195,7 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(Reader reader, T message, Schema<T> schema, boolean numeric)
     throws IOException
     {
-        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
@@ -228,7 +229,8 @@ public final class JsonIOUtil
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
             boolean numeric) throws IOException
     {
-        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
+                JsonEncoding.UTF8);
         writeListTo(generator, messages, schema, numeric);
         generator.close();
     }
@@ -239,7 +241,7 @@ public final class JsonIOUtil
     public static <T> void writeListTo(Writer writer, List<T> messages, Schema<T> schema, 
             boolean numeric) throws IOException
     {
-        JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
         writeListTo(generator, messages, schema, numeric);
         generator.close();
     }
@@ -280,8 +282,8 @@ public final class JsonIOUtil
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) 
     throws IOException
     {
-        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        List<T> list = parseListFrom(parser, schema, numeric);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        final List<T> list = parseListFrom(parser, schema, numeric);
         parser.close();
         return list;
     }
@@ -292,8 +294,8 @@ public final class JsonIOUtil
     public static <T> List<T> parseListFrom(Reader reader, Schema<T> schema, boolean numeric) 
     throws IOException
     {
-        JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        List<T> list = parseListFrom(parser, schema, numeric);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
+        final List<T> list = parseListFrom(parser, schema, numeric);
         parser.close();
         return list;
     }
@@ -322,7 +324,7 @@ public final class JsonIOUtil
                         schema.messageFullName());
             }
             
-            T message = schema.newMessage();
+            final T message = schema.newMessage();
             schema.mergeFrom(input, message);
             
             if(parser.getCurrentToken() != JsonToken.END_OBJECT)
