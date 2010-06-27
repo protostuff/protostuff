@@ -123,7 +123,7 @@ public final class JsonIOUtil
     {
         generator.writeStartObject();
         
-        final JsonOutput output = new JsonOutput(generator, numeric).use(schema);
+        final JsonOutput output = new JsonOutput(generator, numeric, schema);
         schema.writeTo(output, message);
         if(output.isLastRepeated())
             generator.writeEndArray();

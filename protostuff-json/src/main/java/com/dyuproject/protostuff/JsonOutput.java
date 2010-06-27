@@ -49,6 +49,12 @@ public final class JsonOutput implements Output
         this.numeric = numeric;
     }
     
+    public JsonOutput(JsonGenerator generator, boolean numeric, Schema<?> schema)
+    {
+        this(generator, numeric);
+        this.schema = schema;
+    }
+    
     /**
      * Before serializing a message/object tied to a schema, this should be called.
      */
