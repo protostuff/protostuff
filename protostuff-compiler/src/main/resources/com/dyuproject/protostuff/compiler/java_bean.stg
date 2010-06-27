@@ -564,9 +564,17 @@ public int getFieldNumber(String name)
 >>
 
 field_switch_case(field, options) ::= <<
+<if(options.alphanumeric)>
+case <field.number>: return "f<field.number>";
+<else>
 case <field.number>: return "<field.name; format="CC">";
+<endif>
 >>
 
 field_map(field, options, mapVar) ::= <<
+<if(options.alphanumeric)>
+<mapVar>.put("f<field.number>", <field.number>);
+<else>
 <mapVar>.put("<field.name; format="CC">", <field.number>);
+<endif>
 >>
