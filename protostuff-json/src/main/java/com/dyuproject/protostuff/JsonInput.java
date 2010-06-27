@@ -210,32 +210,17 @@ public final class JsonInput implements Input
 
     public int readEnum() throws IOException
     {
-        final int value = parser.getIntValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt32();
     }
 
     public int readFixed32() throws IOException
     {
-        final int value = parser.getIntValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt32();
     }
 
     public long readFixed64() throws IOException
     {
-        final long value = parser.getLongValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt64();
     }
 
     public float readFloat() throws IOException
@@ -270,42 +255,22 @@ public final class JsonInput implements Input
 
     public int readSFixed32() throws IOException
     {
-        final int value = parser.getIntValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt32();
     }
 
     public long readSFixed64() throws IOException
     {
-        final long value = parser.getLongValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt64();
     }
 
     public int readSInt32() throws IOException
     {
-        final int value = parser.getIntValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt32();
     }
 
     public long readSInt64() throws IOException
     {
-        final long value = parser.getLongValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt64();
     }
 
     public String readString() throws IOException
@@ -323,22 +288,12 @@ public final class JsonInput implements Input
 
     public int readUInt32() throws IOException
     {
-        final int value = parser.getIntValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt32();
     }
 
     public long readUInt64() throws IOException
     {
-        final long value = parser.getLongValue();
-        
-        if(lastRepeated && parser.nextToken()==END_ARRAY)
-            lastRepeated = false;
-        
-        return value;
+        return readInt64();
     }
 
     public <T extends Message<T>> T mergeMessage(T message) throws IOException
