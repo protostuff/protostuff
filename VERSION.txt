@@ -1,5 +1,5 @@
 protostuff-1.0.0-SNAPSHOT
-+ Issue 24: JsonInput not able to skip repeated scalar fields
++ Issue 24: JsonInput not able to skip repeated scalar fields that are unknown
 + support serializing Map fields via the MapSchema.
 + make Schema.typeClass() return the super type.
 + Issue 23: Validation missing (for required fields) when nested messages are "group_encoded"
