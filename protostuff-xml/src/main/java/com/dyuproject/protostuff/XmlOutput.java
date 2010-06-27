@@ -142,6 +142,7 @@ public final class XmlOutput implements Output
     {
         try
         {
+            final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(schema.getFieldName(fieldNumber));
             writer.writeCData(STRING.deser(value));
             writer.writeEndElement();
@@ -158,14 +159,15 @@ public final class XmlOutput implements Output
         writeObject(fieldNumber, value, value.cachedSchema(), repeated);
     }
     
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+            final boolean repeated) throws IOException
     {
         final Schema<?> lastSchema = this.schema;
         this.schema = schema;
         
         try
         {
+            final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
             
             writer.writeStartElement(schema.messageName());

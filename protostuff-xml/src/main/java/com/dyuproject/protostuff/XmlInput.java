@@ -81,7 +81,7 @@ public final class XmlInput implements Input
     {
         try
         {
-            String text = parser.getElementText();
+            final String text = parser.getElementText();
             // move to next element
             parser.nextTag();
             return text;
@@ -94,7 +94,7 @@ public final class XmlInput implements Input
     
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
-        String name = parser.getLocalName();
+        final String name = parser.getLocalName();
         while(true)
         {
             switch(next())
@@ -119,13 +119,13 @@ public final class XmlInput implements Input
         }
     }
     
-    public <T> int readFieldNumber(Schema<T> schema) throws IOException
+    public <T> int readFieldNumber(final Schema<T> schema) throws IOException
     {
         if(parser.getEventType() == END_ELEMENT)
             return 0;
         
-        String name = parser.getLocalName();
-        int num = schema.getFieldNumber(name);
+        final String name = parser.getLocalName();
+        final int num = schema.getFieldNumber(name);
 
         if(num == 0)
         {            
@@ -246,9 +246,9 @@ public final class XmlInput implements Input
         return mergeObject(message, message.cachedSchema());
     }
     
-    public <T> T mergeObject(T value, Schema<T> schema) throws IOException
+    public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException
     {
-        String simpleName = schema.messageName();
+        final String simpleName = schema.messageName();
         if(nextTag() != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
             throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
         

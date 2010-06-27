@@ -94,12 +94,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -121,12 +121,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -156,12 +156,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -198,12 +198,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {            
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -225,12 +225,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -252,12 +252,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -299,12 +299,12 @@ public final class JsonOutput implements Output
     {
         if(lastNumber != fieldNumber)
         {
-            JsonGenerator generator = this.generator;
+            final JsonGenerator generator = this.generator;
             
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 schema.getFieldName(fieldNumber);
             
             if(repeated)
@@ -338,18 +338,18 @@ public final class JsonOutput implements Output
         writeObject(fieldNumber, value, value.cachedSchema(), repeated);
     }
 
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+            final boolean repeated) throws IOException
     {
-        JsonGenerator generator = this.generator;
-        Schema<?> lastSchema = this.schema;
+        final JsonGenerator generator = this.generator;
+        final Schema<?> lastSchema = this.schema;
         
         if(lastNumber != fieldNumber)
         {            
             if(lastRepeated)
                 generator.writeEndArray();
             
-            String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? String.valueOf(fieldNumber) : 
                 lastSchema.getFieldName(fieldNumber);
             if(repeated)
                 generator.writeArrayFieldStart(name);
@@ -372,8 +372,8 @@ public final class JsonOutput implements Output
         }
         else
         {
-            int lastNumber = this.lastNumber;
-            boolean lastRepeated = this.lastRepeated;
+            final int lastNumber = this.lastNumber;
+            final boolean lastRepeated = this.lastRepeated;
             
             // reset
             this.schema = schema;
