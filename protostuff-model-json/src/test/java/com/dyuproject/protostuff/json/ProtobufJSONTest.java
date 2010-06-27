@@ -238,21 +238,24 @@ public class ProtobufJSONTest extends TestCase
         personList.add(person);
         personList.add(person);
         
-        System.err.println(generatedAndParse(HANDCODED_LITE, personList, parsedPersonList));
+        //System.err.println(generatedAndParse(HANDCODED_LITE, personList, parsedPersonList));
         parsedPersonList.clear();
         
-        System.err.println(generatedAndParse(REFLECTION_LITE, personList, parsedPersonList));
+        //System.err.println(generatedAndParse(REFLECTION_LITE, personList, parsedPersonList));
         parsedPersonList.clear();
         
-        System.err.println(generatedAndParse(REFLECTION_LITE_NUM, personList, parsedPersonList));
+        //System.err.println(generatedAndParse(REFLECTION_LITE_NUM, personList, parsedPersonList));
         parsedPersonList.clear();
     }
     
     public void testGenerateAndParse() throws Exception
     {
-        System.err.println(generateAndParse(HANDCODED_LITE));
-        System.err.println(generateAndParse(REFLECTION_LITE));
-        System.err.println(generateAndParse(REFLECTION_LITE_NUM));
+        generateAndParse(HANDCODED_LITE);
+        generateAndParse(REFLECTION_LITE);
+        generateAndParse(REFLECTION_LITE_NUM);
+        //System.err.println(generateAndParse(HANDCODED_LITE));
+        //System.err.println(generateAndParse(REFLECTION_LITE));
+        //System.err.println(generateAndParse(REFLECTION_LITE_NUM));
     }
     
     public void testBenchmark() throws Exception

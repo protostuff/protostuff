@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 public class V2Test extends TestCase
 {
     
-    public void testPrintTypes() 
+    public void $testPrintTypes() 
     {
         Model<DefaultProperty> taskModel = Model.get(V2Lite.Task.class);
         Model<DefaultProperty> personModel = Model.get(V2Lite.Person.class);
@@ -54,12 +54,12 @@ public class V2Test extends TestCase
         Model<DefaultProperty> taskModel = Model.get(V2Lite.Task.class);
         Model<DefaultProperty> personModel = Model.get(V2Lite.Person.class);        
         
-        System.err.println(taskModel.getModelMeta());        
+        //System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
         assertTrue(taskModel.getModelMeta().getMaxNumber()==9);
         
-        System.err.println(personModel.getModelMeta());
+        //System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
         assertTrue(personModel.getModelMeta().getMaxNumber()==10);        
@@ -208,12 +208,12 @@ public class V2Test extends TestCase
         Model<DefaultProperty> taskModel = Model.get(V2Speed.Task.class);
         Model<DefaultProperty> personModel = Model.get(V2Speed.Person.class);        
         
-        System.err.println(taskModel.getModelMeta());        
+        //System.err.println(taskModel.getModelMeta());        
         assertTrue(taskModel.getModelMeta().getPropertyCount()==9);
         assertTrue(taskModel.getModelMeta().getMinNumber()==1);
         assertTrue(taskModel.getModelMeta().getMaxNumber()==9);
         
-        System.err.println(personModel.getModelMeta());
+        //System.err.println(personModel.getModelMeta());
         assertTrue(personModel.getModelMeta().getPropertyCount()==10);
         assertTrue(personModel.getModelMeta().getMinNumber()==1);
         assertTrue(personModel.getModelMeta().getMaxNumber()==10);        

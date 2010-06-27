@@ -206,25 +206,29 @@ public class GeneratedProtobufJSONTest extends TestCase
         fooList.add(foo);
         fooList.add(foo);
         
-        System.err.println(generatedAndParse(GENERATED_LITE, fooList, parsedFooList));
+        //System.err.println(generatedAndParse(GENERATED_LITE, fooList, parsedFooList));
         parsedFooList.clear();
 
-        System.err.println(generatedAndParse(REFLECTION_LITE, fooList, parsedFooList));
+        //System.err.println(generatedAndParse(REFLECTION_LITE, fooList, parsedFooList));
         parsedFooList.clear();
         
-        System.err.println(generatedAndParse(GENERATED_LITE_NUM, fooList, parsedFooList));
+        //System.err.println(generatedAndParse(GENERATED_LITE_NUM, fooList, parsedFooList));
         parsedFooList.clear();
         
-        System.err.println(generatedAndParse(REFLECTION_LITE_NUM, fooList, parsedFooList));
+        //System.err.println(generatedAndParse(REFLECTION_LITE_NUM, fooList, parsedFooList));
         parsedFooList.clear();
     }
     
     public void testGenerateAndParse() throws Exception
     {
-        System.err.println(generateAndParse(GENERATED_LITE));
-        System.err.println(generateAndParse(REFLECTION_LITE));
-        System.err.println(generateAndParse(GENERATED_LITE_NUM));
-        System.err.println(generateAndParse(REFLECTION_LITE_NUM));
+        generateAndParse(GENERATED_LITE);
+        generateAndParse(REFLECTION_LITE);
+        generateAndParse(GENERATED_LITE_NUM);
+        generateAndParse(REFLECTION_LITE_NUM);
+        //System.err.println(generateAndParse(GENERATED_LITE));
+        //System.err.println(generateAndParse(REFLECTION_LITE));
+        //System.err.println(generateAndParse(GENERATED_LITE_NUM));
+        //System.err.println(generateAndParse(REFLECTION_LITE_NUM));
     }
     
     public void testBenchmark() throws Exception
