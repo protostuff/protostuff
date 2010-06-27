@@ -345,52 +345,36 @@ public final class JsonOutput implements Output
         final Schema<?> lastSchema = this.schema;
         
         if(lastNumber != fieldNumber)
-        {            
+        {
             if(lastRepeated)
                 generator.writeEndArray();
             
             final String name = numeric ? String.valueOf(fieldNumber) : 
                 lastSchema.getFieldName(fieldNumber);
+            
             if(repeated)
                 generator.writeArrayFieldStart(name);
             else
                 generator.writeFieldName(name);
-            
-            // reset
-            this.schema = schema;
-            lastNumber = 0;
-            lastRepeated = false;
-            // recursive write
-            generator.writeStartObject();
-            schema.writeTo(this, value);
-            if(lastRepeated)
-                generator.writeEndArray();
-            generator.writeEndObject();
-            // restore state
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
-        }
-        else
-        {
-            final int lastNumber = this.lastNumber;
-            final boolean lastRepeated = this.lastRepeated;
-            
-            // reset
-            this.schema = schema;
-            this.lastNumber = 0;
-            this.lastRepeated = false;
-            // recursive write
-            generator.writeStartObject();
-            schema.writeTo(this, value);
-            if(this.lastRepeated)
-                generator.writeEndArray();
-            generator.writeEndObject();
-            // restore state
-            this.lastNumber = lastNumber;
-            this.lastRepeated = lastRepeated;
         }
         
+        // reset
+        this.schema = schema;
+        lastNumber = 0;
+        lastRepeated = false;
+        
+        generator.writeStartObject();
+        // recursive write
+        schema.writeTo(this, value);
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        generator.writeEndObject();
+        
         // restore state
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
         this.schema = lastSchema;
     }
 
