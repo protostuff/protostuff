@@ -101,7 +101,7 @@ final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<Stri
 <else>
 public String getFieldName(int number)
 {
-    return String.valueOf(number);
+    return Integer.toString(number);
 }
 
 public int getFieldNumber(String name)
