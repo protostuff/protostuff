@@ -1,4 +1,5 @@
 protostuff-1.0.0-SNAPSHOT
++ added protostuf-yaml for yaml serialization
 + Issue 24: JsonInput not able to skip repeated scalar fields that are unknown
 + support serializing Map fields via the MapSchema.
 + make Schema.typeClass() return the super type.
