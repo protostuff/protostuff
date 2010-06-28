@@ -92,59 +92,63 @@ public final class JsonOutput implements Output
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeBoolean(value);
-            }
-            else
-                generator.writeBooleanField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeBoolean(value);
+            return;
+        }
+        
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeBoolean(value);
         }
         else
-            generator.writeBoolean(value);
+            generator.writeBooleanField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeBinary(value);
-            }
-            else
-            {
-                generator.writeFieldName(name);
-                generator.writeBinary(value);
-            }
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeBinary(value);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeBinary(value);
         }
         else
+        {
+            generator.writeFieldName(name);
             generator.writeBinary(value);
+        }
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
@@ -154,29 +158,31 @@ public final class JsonOutput implements Output
 
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeNumber(value);
-            }
-            else
-                generator.writeNumberField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeNumber(value);
+            return;
+        }
+        
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(value);
         }
         else
-            generator.writeNumber(value);
+            generator.writeNumberField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
@@ -196,83 +202,89 @@ public final class JsonOutput implements Output
 
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
-        {            
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeNumber(value);
-            }
-            else
-                generator.writeNumberField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+        if(lastNumber == fieldNumber)
+        {
+            // repeated field
+            generator.writeNumber(value);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(value);
         }
         else
-            generator.writeNumber(value);
+            generator.writeNumberField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeNumber(value);
-            }
-            else
-                generator.writeNumberField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeNumber(value);
+            return;
+        }
+        
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(value);
         }
         else
-            generator.writeNumber(value);
+            generator.writeNumberField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeNumber(value);
-            }
-            else
-                generator.writeNumberField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeNumber(value);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(value);
         }
         else
-            generator.writeNumber(value);
+            generator.writeNumberField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
@@ -297,29 +309,31 @@ public final class JsonOutput implements Output
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        if(lastNumber != fieldNumber)
+        if(lastNumber == fieldNumber)
         {
-            final JsonGenerator generator = this.generator;
-            
-            if(lastRepeated)
-                generator.writeEndArray();
-            
-            final String name = numeric ? String.valueOf(fieldNumber) : 
-                schema.getFieldName(fieldNumber);
-            
-            if(repeated)
-            {
-                generator.writeArrayFieldStart(name);
-                generator.writeString(value);
-            }
-            else
-                generator.writeStringField(name, value);
-            
-            lastNumber = fieldNumber;
-            lastRepeated = repeated;
+            // repeated field
+            generator.writeString(value);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? String.valueOf(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeString(value);
         }
         else
-            generator.writeString(value);
+            generator.writeStringField(name, value);
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
