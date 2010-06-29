@@ -45,10 +45,10 @@ public final class BufferedOutput implements Output
 {
 
     public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
-            "bufferedoutput.default_buffer_size", 256);
+            "bufferedoutput.default_buffer_size", 512);
     
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "bufferedoutput.array_copy_size_limit", 127);
+            "bufferedoutput.array_copy_size_limit", 350);
     
     private final LinkedBuffer root;
     private LinkedBuffer current;
@@ -357,21 +357,21 @@ public final class BufferedOutput implements Output
     private void writeTagAndByteArray(int tag, byte[] value, LinkedBuffer lb)
     {
         final int valueLen = value.length;
-        final LinkedBuffer rb = writeTagAndRawVarInt32(tag, valueLen, lb);
+        lb = writeTagAndRawVarInt32(tag, valueLen, lb);
 
         this.size += valueLen;
         
-        if(valueLen > arrayCopySizeLimit || rb.offset + valueLen > rb.buffer.length)
+        if(valueLen > arrayCopySizeLimit || lb.offset + valueLen > lb.buffer.length)
         {
             // huge string/byte array.
             // wrap, insert and create a view (e.g zero copy)
-            current = new LinkedBuffer(rb, new LinkedBuffer(value, 0, valueLen, rb));
+            current = new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
             return;
         }
 
-        System.arraycopy(value, 0, rb.buffer, rb.offset, valueLen);
+        System.arraycopy(value, 0, lb.buffer, lb.offset, valueLen);
         
-        rb.offset += valueLen;
+        lb.offset += valueLen;
     }
 
     /** Returns the output buffer encoded with the tag and var int 32 */

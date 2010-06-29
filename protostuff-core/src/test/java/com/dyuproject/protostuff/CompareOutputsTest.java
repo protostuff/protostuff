@@ -14,16 +14,14 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.SerializableObjects.bar;
-import static com.dyuproject.protostuff.SerializableObjects.foo;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
 import junit.framework.TestCase;
+
+import com.dyuproject.protostuff.Foo.EnumSample;
 
 /**
  * Benchmark to compare the serialization speed of 3 types. 
@@ -34,6 +32,31 @@ import junit.framework.TestCase;
  */
 public class CompareOutputsTest extends TestCase
 {
+    
+    static final Baz negativeBaz = new Baz(-567, null, -202020202);
+    static final Bar negativeBar = new Bar(-12, null, negativeBaz, Bar.Status.STARTED, 
+            ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
+    
+    static final Baz baz = new Baz(567, null, 202020202);  
+    static final Bar bar = new Bar(890, null, baz, Bar.Status.STARTED, 
+            ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
+
+    // a total of 915 bytes
+    public static final Foo foo = SerializableObjects.newFoo(
+            new Integer[]{90210,-90210, 0}, 
+            new String[]{}, 
+            new Bar[]{bar, negativeBar},
+            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
+            new ByteString[]{
+                    ByteString.copyFromUtf8("ef"), 
+                    ByteString.copyFromUtf8("gh"),
+                    // two 350-byte bytestring.
+                    ByteString.copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"),
+                    ByteString.copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")}, 
+            new Boolean[]{true, false}, 
+            new Float[]{1234.4321f, -1234.4321f, 0f}, 
+            new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
+            new Long[]{7060504030201l, -7060504030201l, 0l});
     
     public void testFoo() throws Exception
     {
@@ -265,7 +288,7 @@ public class CompareOutputsTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE, false);
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 351, false);
             try
             {
                 message.cachedSchema().writeTo(output, message);
@@ -291,7 +314,7 @@ public class CompareOutputsTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 351, true);
             try
             {
                 message.cachedSchema().writeTo(output, message);
@@ -312,10 +335,63 @@ public class CompareOutputsTest extends TestCase
         
     };
     
+    public static final Serializer BUFFERED_OUTPUT_ZC = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 339, false);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-zc";
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT_GE_ZC = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 339, true);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-ge-zc";
+        }
+        
+    };
+    
     static final Serializer[] SERIALIZERS = new Serializer[]{
         CODED_OUTPUT, CODED_OUTPUT_GE,
         DEFERRED_OUTPUT, DEFERRED_OUTPUT_GE,
-        BUFFERED_OUTPUT, BUFFERED_OUTPUT_GE
+        BUFFERED_OUTPUT, BUFFERED_OUTPUT_GE,
+        BUFFERED_OUTPUT_ZC, BUFFERED_OUTPUT_GE_ZC
     };
 
 }
