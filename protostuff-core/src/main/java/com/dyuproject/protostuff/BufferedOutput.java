@@ -29,6 +29,7 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
+import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -140,14 +141,14 @@ public final class BufferedOutput implements Output
         if(value < 0)
         {
             writeTagAndRawVarInt64(
-                    WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                    makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
         }
         else
         {
             writeTagAndRawVarInt32(
-                    WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                    makeTag(fieldNumber, WIRETYPE_VARINT), 
                     value, 
                     current);
         }
@@ -156,7 +157,7 @@ public final class BufferedOutput implements Output
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
@@ -164,7 +165,7 @@ public final class BufferedOutput implements Output
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 encodeZigZag32(value), 
                 current);
     }
@@ -172,7 +173,7 @@ public final class BufferedOutput implements Output
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
+                makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
     }
@@ -180,7 +181,7 @@ public final class BufferedOutput implements Output
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
+                makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 current);
     }
@@ -188,7 +189,7 @@ public final class BufferedOutput implements Output
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
@@ -196,7 +197,7 @@ public final class BufferedOutput implements Output
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
@@ -204,7 +205,7 @@ public final class BufferedOutput implements Output
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value, 
                 current);
     }
@@ -212,7 +213,7 @@ public final class BufferedOutput implements Output
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
+                makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
     }
@@ -220,7 +221,7 @@ public final class BufferedOutput implements Output
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
+                makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 value, 
                 current);
     }
@@ -228,7 +229,7 @@ public final class BufferedOutput implements Output
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED32), 
+                makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 Float.floatToRawIntBits(value), 
                 current);
     }
@@ -236,7 +237,7 @@ public final class BufferedOutput implements Output
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         writeTagAndRawLittleEndian64(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_FIXED64), 
+                makeTag(fieldNumber, WIRETYPE_FIXED64), 
                 Double.doubleToRawLongBits(value), 
                 current);
     }
@@ -244,23 +245,20 @@ public final class BufferedOutput implements Output
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         writeTagAndRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 value ? 1 : 0, 
                 current);
     }
 
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
-        writeTagAndRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_VARINT), 
-                number, 
-                current);
+        writeInt32(fieldNumber, number, repeated);
     }
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         writeTagAndByteArray(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
+                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
                 STRING.ser(value), 
                 current);
     }
@@ -273,7 +271,7 @@ public final class BufferedOutput implements Output
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         writeTagAndByteArray(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
+                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
                 bytes, 
                 current);
     }
@@ -284,8 +282,8 @@ public final class BufferedOutput implements Output
         writeObject(fieldNumber, value, value.cachedSchema(), repeated);
     }
     
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
-            boolean repeated) throws IOException
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+            final boolean repeated) throws IOException
     {
         if(encodeNestedMessageAsGroup)
         {
@@ -301,7 +299,7 @@ public final class BufferedOutput implements Output
         schema.writeTo(this, value);
         
         final byte[] delimited = getTagAndRawVarInt32Bytes(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
+                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
                 size - lastSize);
         
         size += delimited.length;
@@ -316,17 +314,17 @@ public final class BufferedOutput implements Output
     /**
      * Write the nested message encoded as group.
      */
-    <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
-            boolean repeated) throws IOException
+    <T> void writeObjectEncodedAsGroup(final int fieldNumber, final T value, 
+            final Schema<T> schema, final boolean repeated) throws IOException
     {
         writeRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_START_GROUP), 
+                makeTag(fieldNumber, WIRETYPE_START_GROUP), 
                 current);
         
         schema.writeTo(this, value);
         
         writeRawVarInt32(
-                WireFormat.makeTag(fieldNumber, WIRETYPE_END_GROUP), 
+                makeTag(fieldNumber, WIRETYPE_END_GROUP), 
                 current);
     }
     

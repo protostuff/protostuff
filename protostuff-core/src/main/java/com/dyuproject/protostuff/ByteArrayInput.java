@@ -335,7 +335,7 @@ public final class ByteArrayInput implements Input
         return mergeObject(message, message.cachedSchema());
     }
 
-    public <T> T mergeObject(T value, Schema<T> schema) throws IOException
+    public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException
     {
         if(decodeNestedMessageAsGroup)
             return mergeObjectEncodedAsGroup(value, schema);
@@ -359,7 +359,7 @@ public final class ByteArrayInput implements Input
         return value;
     }
     
-    <T> T mergeObjectEncodedAsGroup(T value, Schema<T> schema) throws IOException
+    <T> T mergeObjectEncodedAsGroup(final T value, final Schema<T> schema) throws IOException
     {
         schema.mergeFrom(this, value);
         if(!schema.isInitialized(value))
