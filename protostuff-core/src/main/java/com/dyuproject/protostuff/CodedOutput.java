@@ -663,7 +663,7 @@ public final class CodedOutput implements Output {
    * for converting the enum value to its numeric value.
    */
   public void writeEnumNoTag(final int value) throws IOException {
-    writeRawVarint32(value);
+    writeInt32NoTag(value);
   }
 
   /** Write an {@code sfixed32} field to the stream. */
@@ -1301,8 +1301,8 @@ public final class CodedOutput implements Output {
     writeByteArrayNoTag(value);
   }
   
-  public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException {
+  public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+    final boolean repeated) throws IOException {
     if(encodeNestedMessageAsGroup) {
       writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
       return;
