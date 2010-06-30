@@ -185,16 +185,13 @@ public final class ComputedSizeOutput implements Output
     {
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        byte[] bytes = STRING.ser(value);
+        final byte[] bytes = STRING.ser(value);
         size += CodedOutput.computeRawVarint32Size(bytes.length) + bytes.length;
     }
 
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        byte[] bytes = value.getBytes();
-        size += CodedOutput.computeRawVarint32Size(bytes.length) + bytes.length;
+        writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
     
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
@@ -207,17 +204,11 @@ public final class ComputedSizeOutput implements Output
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
     throws IOException
     {
-        Schema<T> schema = value.cachedSchema();
-
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        int last = size;
-        schema.writeTo(this, value);
-        size += CodedOutput.computeRawVarint32Size(size - last);
+        writeObject(fieldNumber, value, value.cachedSchema(), repeated);
     }
     
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+            final boolean repeated) throws IOException
     {
         if(encodeNestedMessageAsGroup)
         {
@@ -227,9 +218,11 @@ public final class ComputedSizeOutput implements Output
         
         size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        int last = size;
+        final int last = size;
         schema.writeTo(this, value);
-        size += CodedOutput.computeRawVarint32Size(size - last);
+        
+        final int actualSize = CodedOutput.computeRawVarint32Size(size - last);
+        size += actualSize;
     }
     
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
