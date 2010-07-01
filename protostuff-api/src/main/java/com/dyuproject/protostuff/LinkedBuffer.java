@@ -43,7 +43,7 @@ public final class LinkedBuffer
     /**
      * Creates a buffer with the specified {@code size}.
      */
-    LinkedBuffer(int size)
+    public LinkedBuffer(int size)
     {
         this(new byte[size], 0, 0);
     }
