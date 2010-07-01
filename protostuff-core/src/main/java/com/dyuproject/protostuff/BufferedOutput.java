@@ -97,8 +97,8 @@ public final class BufferedOutput implements Output
     {
         // dereference for gc
         root.next = null;
-        // reuse the byte array, offset reset to 0
-        root.offset = 0;
+        // reuse the byte array, reset the offset
+        root.offset = root.start;
         size = 0;
         current = root;
         return this;

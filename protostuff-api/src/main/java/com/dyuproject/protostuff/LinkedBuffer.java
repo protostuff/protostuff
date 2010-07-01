@@ -43,7 +43,7 @@ public final class LinkedBuffer
     /**
      * Creates a buffer with the specified {@code size}.
      */
-    public LinkedBuffer(int size)
+    LinkedBuffer(int size)
     {
         this(new byte[size], 0, 0);
     }
@@ -51,7 +51,7 @@ public final class LinkedBuffer
     /**
      * Uses the buffer starting at the specified {@code offset}.
      */
-    public LinkedBuffer(byte[] buffer, int offset)
+    LinkedBuffer(byte[] buffer, int offset)
     {
         this(buffer, offset, offset);
     }
@@ -67,7 +67,7 @@ public final class LinkedBuffer
      * Uses the buffer starting at the specified {@code offset} and appends to the 
      * provided buffer {@code appendTarget}.
      */
-    public LinkedBuffer(byte[] buffer, int offset, LinkedBuffer appendTarget)
+    LinkedBuffer(byte[] buffer, int offset, LinkedBuffer appendTarget)
     {
         this(buffer, offset, offset);
         appendTarget.next = this;
@@ -83,11 +83,22 @@ public final class LinkedBuffer
      * Creates a view from the buffer {@code viewSource} and appends the view to the 
      * provided buffer {@code appendTarget}.
      */
-    public LinkedBuffer(LinkedBuffer viewSource, LinkedBuffer appendTarget)
+    LinkedBuffer(LinkedBuffer viewSource, LinkedBuffer appendTarget)
     {
         buffer = viewSource.buffer;
         offset = start = viewSource.offset;
         appendTarget.next = this;
+    }
+    
+    /**
+     * The buffer next to this will be dereferenced and the offset will be reset to 
+     * its starting position.
+     */
+    public LinkedBuffer reset()
+    {
+        next = null;
+        offset = start;
+        return this;
     }
 
 }
