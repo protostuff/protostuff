@@ -37,39 +37,43 @@ public final class LinkedBuffer
     }
     
     /**
-     * Returns the amount of bytes written into the {@link OutputStream}.
+     * Writes the contents of the {@link LinkedBuffer} into the {@link OutputStream}.
+     * 
+     * @return the total content size of the buffer.
      */
     public static int writeTo(OutputStream out, LinkedBuffer root) throws IOException
     {
-        int written = 0;
+        int contentSize = 0;
         for(LinkedBuffer node = root; node != null; node = node.next)
         {
             final int len = node.offset - node.start;
             if(len > 0)
             {
                 out.write(node.buffer, node.start, len);
-                written += len;
+                contentSize += len;
             }
         }
-        return written;
+        return contentSize;
     }
     
     /**
-     * Returns the amount of bytes written into the {@link DataOutput}.
+     * Writes the contents of the {@link LinkedBuffer} into the {@link DataOutput}.
+     * 
+     * @return the total content size of the buffer.
      */
     public static int writeTo(DataOutput out, LinkedBuffer root) throws IOException
     {
-        int written = 0;
+        int contentSize = 0;
         for(LinkedBuffer node = root; node != null; node = node.next)
         {
             final int len = node.offset - node.start;
             if(len > 0)
             {
                 out.write(node.buffer, node.start, len);
-                written += len;
+                contentSize += len;
             }
         }
-        return written;
+        return contentSize;
     }
 
     final byte[] buffer;
