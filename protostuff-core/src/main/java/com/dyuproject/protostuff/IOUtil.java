@@ -78,6 +78,22 @@ public final class IOUtil
     }
     
     /**
+     * Writes the {@code message} into the {@link LinkedBuffer} via {@link BufferedOutput}.
+     * 
+     * @return the size of the message
+     */
+    public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema, 
+            boolean encodeNestedMessageAsGroup) throws IOException
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
+        schema.writeTo(output, message);
+        return output.getSize();
+    }
+    
+    /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
      * with the supplied buffer.
      * 
