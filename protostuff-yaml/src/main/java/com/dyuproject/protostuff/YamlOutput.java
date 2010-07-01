@@ -32,14 +32,14 @@ public final class YamlOutput implements Output
      * The default buffer size used by the internal buffer.
      */
     public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
-            "yamloutput.default_buffer_size", 256);
+            "yamloutput.default_buffer_size", 512);
     
     /**
      * Large strings greater that this limit will be either zero-copied to the 
      * internal buffer or flushed to the {@link OutputStream} if streaming.  
      */
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "yamloutput.array_copy_size_limit", 127);
+            "yamloutput.array_copy_size_limit", 255);
     
     /**
      * Returns 2 if line break is using CRLF ("\r\n"), 1 if using LF ("\n")
