@@ -14,6 +14,10 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.OutputStream;
+
 
 /**
  * A buffer that wraps a byte array and has a reference to the next node for dynamic increase.
@@ -30,6 +34,42 @@ public final class LinkedBuffer
     public static LinkedBuffer wrap(byte[] array, int offset, int length)
     {
         return new LinkedBuffer(array, offset, offset + length);
+    }
+    
+    /**
+     * Returns the amount of bytes written into the {@link OutputStream}.
+     */
+    public static int writeTo(OutputStream out, LinkedBuffer root) throws IOException
+    {
+        int written = 0;
+        for(LinkedBuffer node = root; node != null; node = node.next)
+        {
+            final int len = node.offset - node.start;
+            if(len > 0)
+            {
+                out.write(node.buffer, node.start, len);
+                written += len;
+            }
+        }
+        return written;
+    }
+    
+    /**
+     * Returns the amount of bytes written into the {@link DataOutput}.
+     */
+    public static int writeTo(DataOutput out, LinkedBuffer root) throws IOException
+    {
+        int written = 0;
+        for(LinkedBuffer node = root; node != null; node = node.next)
+        {
+            final int len = node.offset - node.start;
+            if(len > 0)
+            {
+                out.write(node.buffer, node.start, len);
+                written += len;
+            }
+        }
+        return written;
     }
 
     final byte[] buffer;

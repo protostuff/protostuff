@@ -116,14 +116,9 @@ public final class YamlOutput implements Output
     public YamlOutput flushRemaining() throws IOException
     {
         if(out == null)
-            throw new IllegalStateException("Nothing to flush");
+            throw new IllegalStateException("Nothing to flush.");
         
-        for(LinkedBuffer node = root; node != null; node = node.next)
-        {
-            final int len = node.offset - node.start;
-            if(len > 0)
-                out.write(node.buffer, node.start, len);
-        }
+        LinkedBuffer.writeTo(out, root);
         
         return this;
     }
