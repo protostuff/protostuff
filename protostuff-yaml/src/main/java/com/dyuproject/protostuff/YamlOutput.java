@@ -156,10 +156,7 @@ public final class YamlOutput implements Output
      */
     public YamlOutput use(Schema<?> schema)
     {
-        // dereference for gc
-        root.next = null;
-        // reuse the byte array, reset the offset
-        root.offset = root.start;
+        root.reset();
         
         indent = 0;
         lastNumber = 0;
