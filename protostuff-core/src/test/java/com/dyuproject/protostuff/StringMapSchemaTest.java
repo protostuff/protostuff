@@ -44,7 +44,8 @@ public class StringMapSchemaTest extends TestCase
     
     public <T extends Map<String,String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
     {
-        return IOUtil.toByteArray(message, schema);
+        return IOUtil.toByteArray(message, schema, 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
     }
     
     protected Map<String,String> newMap()

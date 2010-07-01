@@ -28,8 +28,10 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.ComputedSizeOutput;
 import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.Bar.Status;
 
@@ -42,6 +44,12 @@ import com.dyuproject.protostuff.runtime.Bar.Status;
 public class SerDeserTest extends TestCase
 {
     
+    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        return IOUtil.toByteArray(message, schema, 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
     public void testFoo() throws Exception
     {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
@@ -51,7 +59,7 @@ public class SerDeserTest extends TestCase
         
         int expectedSize = ComputedSizeOutput.getSize(fooCompare, schema);
 
-        byte[] deferred = IOUtil.toByteArray(fooCompare, schema);
+        byte[] deferred = toByteArray(fooCompare, schema);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dfoo, schema);
         SerializableObjects.assertEquals(fooCompare, dfoo);
@@ -67,7 +75,7 @@ public class SerDeserTest extends TestCase
             
             int expectedSize = ComputedSizeOutput.getSize(barCompare, schema);
 
-            byte[] deferred = IOUtil.toByteArray(barCompare, schema);
+            byte[] deferred = toByteArray(barCompare, schema);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbar, schema);
             SerializableObjects.assertEquals(barCompare, dbar);
@@ -92,7 +100,7 @@ public class SerDeserTest extends TestCase
             
             int expectedSize = ComputedSizeOutput.getSize(bazCompare, schema);
 
-            byte[] deferred = IOUtil.toByteArray(bazCompare, schema);
+            byte[] deferred = toByteArray(bazCompare, schema);
             assertTrue(deferred.length == expectedSize);
             IOUtil.mergeFrom(deferred, dbaz, schema);
             SerializableObjects.assertEquals(bazCompare, dbaz);
@@ -119,7 +127,7 @@ public class SerDeserTest extends TestCase
         
         int expectedSize = ComputedSizeOutput.getSize(hhbCompare, schema);
 
-        byte[] deferred = IOUtil.toByteArray(hhbCompare, schema);
+        byte[] deferred = toByteArray(hhbCompare, schema);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dhhb, schema);
         assertEquals(hhbCompare, dhhb);
@@ -155,7 +163,7 @@ public class SerDeserTest extends TestCase
         
         int expectedSize = ComputedSizeOutput.getSize(pojoCompare, schema);
 
-        byte[] deferred = IOUtil.toByteArray(pojoCompare, schema);
+        byte[] deferred = toByteArray(pojoCompare, schema);
         assertTrue(deferred.length == expectedSize);
         IOUtil.mergeFrom(deferred, dpojo, schema);
         assertEquals(pojoCompare, dpojo);

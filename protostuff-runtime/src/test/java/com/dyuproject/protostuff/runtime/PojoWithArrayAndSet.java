@@ -20,7 +20,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.runtime.Bar.Status;
 
 /**
@@ -211,7 +213,9 @@ public final class PojoWithArrayAndSet implements Serializable
     
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = IOUtil.toByteArray(this, RuntimeSchema.getSchema(PojoWithArrayAndSet.class));
+        byte[] data = IOUtil.toByteArray(this, 
+                RuntimeSchema.getSchema(PojoWithArrayAndSet.class), 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
         out.writeInt(data.length);
         out.write(data);
         out.close();

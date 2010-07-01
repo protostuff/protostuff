@@ -14,8 +14,8 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.benchmark.MediaContent;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -45,7 +45,7 @@ public class ProtostuffRuntimeGESerializer extends AbstractProtostuffSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return IOUtil.toByteArray(content, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+        return IOUtil.toByteArray(content, schema, new LinkedBuffer(256), true);
     }
 
 }

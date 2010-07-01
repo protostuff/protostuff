@@ -36,6 +36,15 @@ public final class IOUtil
     private IOUtil(){}
     
     /**
+     * Serializes the {@code message} into a byte array via {@link BufferedOutput} with 
+     * the supplied buffer.
+     */
+    public static <T extends Message<T>> byte[] toByteArray(T message, LinkedBuffer buffer)
+    {
+        return toByteArray(message, message.cachedSchema(), buffer, false);
+    }
+    
+    /**
      * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
      * supplied buffer.
      */
@@ -66,24 +75,6 @@ public final class IOUtil
         }
         
         return output.toByteArray();
-    }
-    
-    /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
-     */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        return toByteArray(message, schema, new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), 
-                false);
-    }
-    
-    /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput}.
-     */
-    public static <T extends Message<T>> byte[] toByteArray(T message)
-    {
-        return toByteArray(message, message.cachedSchema(), 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**

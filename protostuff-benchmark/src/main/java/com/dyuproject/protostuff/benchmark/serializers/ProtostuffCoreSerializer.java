@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.benchmark.serializers;
 
 import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.benchmark.MediaContent;
 
 /**
@@ -40,7 +41,7 @@ public class ProtostuffCoreSerializer extends AbstractProtostuffSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return IOUtil.toByteArray(content);
+        return IOUtil.toByteArray(content, new LinkedBuffer(256));
     }
 
 }
