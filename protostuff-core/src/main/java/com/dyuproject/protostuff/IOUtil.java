@@ -37,21 +37,24 @@ public final class IOUtil
     
     /**
      * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
-     * supplied buffer size.
+     * supplied buffer.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, int bufferSize)
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
-        return toByteArray(message, schema, bufferSize, false);
+        return toByteArray(message, schema, buffer, false);
     }
     
     /**
      * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
-     * supplied buffer size.
+     * supplied buffer.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, int bufferSize, 
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer, 
             boolean encodeNestedMessageAsGroup)
     {
-        final BufferedOutput output = new BufferedOutput(bufferSize, encodeNestedMessageAsGroup);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
         try
         {
             schema.writeTo(output, message);
@@ -70,7 +73,8 @@ public final class IOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return toByteArray(message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, false);
+        return toByteArray(message, schema, new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), 
+                false);
     }
     
     /**
@@ -78,94 +82,104 @@ public final class IOUtil
      */
     public static <T extends Message<T>> byte[] toByteArray(T message)
     {
-        return toByteArray(message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE, 
+        return toByteArray(message, message.cachedSchema(), 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
+     * with the supplied buffer.
+     */
+    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
+            LinkedBuffer buffer) throws IOException
+    {
+        return writeTo(out, message, schema, buffer, false);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
+     * with the supplied buffer.
+     */
+    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
+            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
+        schema.writeTo(output, message);
+        return LinkedBuffer.writeTo(out, buffer);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
+     */
+    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        return writeTo(out, message, schema, new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), 
                 false);
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
-     * with the supplied buffer size.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, int bufferSize)
-    throws IOException
-    {
-        writeTo(out, message, schema, bufferSize, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
-     * with the supplied buffer size.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, int bufferSize, 
-            boolean encodeNestedMessageAsGroup) throws IOException
-    {
-        final BufferedOutput output = new BufferedOutput(bufferSize, encodeNestedMessageAsGroup);
-        schema.writeTo(output, message);
-        output.streamTo(out);
-    }
-    
-    /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
      */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
+    public static <T extends Message<T>> int writeTo(OutputStream out, T message)
     throws IOException
     {
-        writeTo(out, message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
-     */
-    public static <T extends Message<T>> void writeTo(OutputStream out, T message)
-    throws IOException
-    {
-        writeTo(out, message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE, false);
+        return writeTo(out, message, message.cachedSchema(), 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer size.
+     * with the supplied buffer.
      */
-    public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
-            int bufferSize) throws IOException
+    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
+            LinkedBuffer buffer) throws IOException
     {
-        writeDelimitedTo(out, message, schema, bufferSize, false);
+        return writeDelimitedTo(out, message, schema, buffer, false);
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer size.
+     * with the supplied buffer.
      */
-    public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
-            int bufferSize, boolean encodeNestedMessageAsGroup) throws IOException
+    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
+            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
     {
-        final BufferedOutput output = new BufferedOutput(bufferSize, encodeNestedMessageAsGroup);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
         schema.writeTo(output, message);
-        CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-        output.streamTo(out);
+        final int size = output.getSize();
+        CodedOutput.writeRawVarInt32Bytes(out, size);
+        return size + LinkedBuffer.writeTo(out, buffer);
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
      */
-    public static <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
+    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        writeDelimitedTo(out, message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, false);
+        return writeDelimitedTo(out, message, schema, 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput}.
      */
-    public static <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
+    public static <T extends Message<T>> int writeDelimitedTo(OutputStream out, T message)
     throws IOException
     {
-        writeDelimitedTo(out, message, message.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE, 
-                false);
+        return writeDelimitedTo(out, message, message.cachedSchema(), 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**
@@ -319,40 +333,47 @@ public final class IOUtil
     /**
      * Serializes the {@code messages} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer size.
+     * with the supplied buffer.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            int bufferSize) throws IOException
+    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
+            LinkedBuffer buffer) throws IOException
     {
-        writeListTo(out, messages, schema, bufferSize, false);
+        return writeListTo(out, messages, schema, buffer, false);
     }
     
     /**
      * Serializes the {@code messages} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer size.
+     * with the supplied buffer.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            int bufferSize, boolean encodeNestedMessageAsGroup) throws IOException
+    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
+            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
     {
-        final BufferedOutput output = new BufferedOutput(bufferSize, encodeNestedMessageAsGroup);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
+        int written = 0;
         for(T m : messages)
         {
             schema.writeTo(output, m);
-            CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-            output.streamTo(out);
+            final int size = output.getSize();
+            CodedOutput.writeRawVarInt32Bytes(out, size);
+            written += (size + LinkedBuffer.writeTo(out, buffer));
             output.reset();
         }
+        return written;
     }
     
     /**
      * Serializes the {@code messages} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
     throws IOException
     {
-        writeListTo(out, messages, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, false);
+        return writeListTo(out, messages, schema, 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**
@@ -424,36 +445,25 @@ public final class IOUtil
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link ObjectOutput}.
      */
-    public static <T> void writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
+    public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
     {
-        writeDelimitedTo(out, message, schema, false);
+        return writeDelimitedTo(out, message, schema, false);
     }
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link ObjectOutput}.
      */
-    public static <T> void writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
+    public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
             boolean encodeNestedMessageAsGroup) throws IOException
     {
-        if(out instanceof OutputStream)
-        {
-            // write the bytes directly to the OutputStream without allocating a byte array that 
-            // contains the whole message
-            final BufferedOutput output = new BufferedOutput(BufferedOutput.DEFAULT_BUFFER_SIZE, 
-                    encodeNestedMessageAsGroup);
-            schema.writeTo(output, message);
-            CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-            output.streamTo((OutputStream)out);
-        }
-        else
-        {
-            final byte[] data = toByteArray(message, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, 
-                    encodeNestedMessageAsGroup);
-            CodedOutput.writeRawVarInt32Bytes(out, data.length);
-            out.write(data);
-        }
+        final LinkedBuffer buffer = new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE);
+        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
+        schema.writeTo(output, message);
+        final int size = output.getSize();
+        CodedOutput.writeRawVarInt32Bytes(out, size);
+        return size + LinkedBuffer.writeTo(out, buffer);
     }
     
     /**

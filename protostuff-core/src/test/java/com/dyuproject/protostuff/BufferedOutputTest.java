@@ -37,7 +37,8 @@ public class BufferedOutputTest extends SerDeserTest
      */
     public static <T> byte[] getByteArray(T message, Schema<T> schema)
     {
-        BufferedOutput output = new BufferedOutput();
+        BufferedOutput output = new BufferedOutput(
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
         try
         {
             schema.writeTo(output, message);
@@ -66,10 +67,11 @@ public class BufferedOutputTest extends SerDeserTest
     public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
     throws IOException
     {
-        BufferedOutput output = new BufferedOutput();
+        BufferedOutput output = new BufferedOutput(
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
         schema.writeTo(output, message);
         CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-        output.streamTo(out);
+        LinkedBuffer.writeTo(out, output.getBuffer());
     }
     
     /*static void print(byte[] data)
@@ -111,7 +113,7 @@ public class BufferedOutputTest extends SerDeserTest
         
         int expectedSize = ComputedSizeOutput.getSize(bar);
         
-        BufferedOutput output = new BufferedOutput(expectedSize);
+        BufferedOutput output = new BufferedOutput(new LinkedBuffer(expectedSize), false);
         bar.cachedSchema().writeTo(output, bar);
         byte[] data = output.toByteArray();
         
@@ -129,7 +131,7 @@ public class BufferedOutputTest extends SerDeserTest
         
         int expectedSize = ComputedSizeOutput.getSize(bar);
         
-        BufferedOutput output = new BufferedOutput(expectedSize);
+        BufferedOutput output = new BufferedOutput(new LinkedBuffer(expectedSize), false);
         bar.cachedSchema().writeTo(output, bar);
         byte[] data = output.toByteArray();
         
@@ -148,7 +150,7 @@ public class BufferedOutputTest extends SerDeserTest
         
         int expectedSize = ComputedSizeOutput.getSize(bar);
         
-        BufferedOutput output = new BufferedOutput(expectedSize-1);
+        BufferedOutput output = new BufferedOutput(new LinkedBuffer(expectedSize-1), false);
         bar.cachedSchema().writeTo(output, bar);
         byte[] data = output.toByteArray();
         
@@ -173,7 +175,7 @@ public class BufferedOutputTest extends SerDeserTest
         
         int expectedSize = ComputedSizeOutput.getSize(bar);
         
-        BufferedOutput output = new BufferedOutput(64);
+        BufferedOutput output = new BufferedOutput(new LinkedBuffer(64), false);
         bar.cachedSchema().writeTo(output, bar);
         byte[] data = output.toByteArray();
         
@@ -212,7 +214,7 @@ public class BufferedOutputTest extends SerDeserTest
         
         int expectedSize = ComputedSizeOutput.getSize(foo);
         
-        BufferedOutput output = new BufferedOutput(64);
+        BufferedOutput output = new BufferedOutput(new LinkedBuffer(64), false);
         foo.cachedSchema().writeTo(output, foo);
         byte[] data = output.toByteArray();
         

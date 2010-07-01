@@ -32,7 +32,6 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Maintains a decent-sized byte buffer for writing.  If the delimited field's byte-array-value 
@@ -56,20 +55,9 @@ public final class BufferedOutput implements Output
     private int size = 0;
     private final boolean encodeNestedMessageAsGroup;
     
-    public BufferedOutput()
+    public BufferedOutput(LinkedBuffer buffer, boolean encodeNestedMessageAsGroup)
     {
-        this(DEFAULT_BUFFER_SIZE);
-    }
-    
-    public BufferedOutput(int bufferSize)
-    {
-        this(new LinkedBuffer(bufferSize), bufferSize, ARRAY_COPY_SIZE_LIMIT, false);
-    }
-    
-    public BufferedOutput(int bufferSize, boolean encodeNestedMessageAsGroup)
-    {
-        this(new LinkedBuffer(bufferSize), bufferSize, ARRAY_COPY_SIZE_LIMIT, 
-                encodeNestedMessageAsGroup);
+        this(buffer, DEFAULT_BUFFER_SIZE, ARRAY_COPY_SIZE_LIMIT, encodeNestedMessageAsGroup);
     }
     
     public BufferedOutput(LinkedBuffer root, int nextBufferSize, int arrayCopySizeLimit, 
@@ -80,6 +68,14 @@ public final class BufferedOutput implements Output
         this.nextBufferSize = nextBufferSize;
         this.arrayCopySizeLimit = arrayCopySizeLimit;
         this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
+    }
+    
+    /**
+     * Gets the buffer used by this output.
+     */
+    public LinkedBuffer getBuffer()
+    {
+        return root;
     }
     
     /**
@@ -95,26 +91,10 @@ public final class BufferedOutput implements Output
      */
     public BufferedOutput reset()
     {
-        // dereference for gc
-        root.next = null;
-        // reuse the byte array, reset the offset
-        root.offset = root.start;
+        root.reset();
         size = 0;
         current = root;
         return this;
-    }
-    
-    /**
-     * Writes the raw bytes into the {@link OutputStream}.
-     */
-    public void streamTo(OutputStream out) throws IOException
-    {
-        for(LinkedBuffer node = root; node != null; node = node.next)
-        {
-            final int len = node.offset - node.start;
-            if(len > 0)
-                out.write(node.buffer, node.start, len);
-        }
     }
     
     /**
