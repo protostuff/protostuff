@@ -22,7 +22,10 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -35,14 +38,30 @@ import junit.framework.TestCase;
 public class YamlSerTest extends TestCase
 {
     
+    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        return YamlIOUtil.toByteArray(message, schema, 
+                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
+    public <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
+    {
+        YamlIOUtil.writeTo(out, message, schema, new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
+    public <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException
+    {
+        YamlIOUtil.writeListTo(out, messages, schema, new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
         
-        byte[] data = YamlIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] data = toByteArray(fooCompare, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, fooCompare, fooCompare.cachedSchema());
+        writeTo(out, fooCompare, fooCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -55,10 +74,10 @@ public class YamlSerTest extends TestCase
     {
         Foo fooCompare = new Foo();
         
-        byte[] data = YamlIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] data = toByteArray(fooCompare, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, fooCompare, fooCompare.cachedSchema());
+        writeTo(out, fooCompare, fooCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -77,7 +96,7 @@ public class YamlSerTest extends TestCase
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
-        YamlIOUtil.writeListTo(out, list, fooCompare.cachedSchema());
+        writeListTo(out, list, fooCompare.cachedSchema());
         
         byte[] data = out.toByteArray();
         print(STRING.deser(data));
@@ -87,10 +106,10 @@ public class YamlSerTest extends TestCase
     {
         for(Bar barCompare : new Bar[]{bar, negativeBar})
         {
-            byte[] data = YamlIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
+            byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            YamlIOUtil.writeTo(out, barCompare, barCompare.cachedSchema());
+            writeTo(out, barCompare, barCompare.cachedSchema());
             byte[] data2 = out.toByteArray();
 
             String text = STRING.deser(data);
@@ -104,10 +123,10 @@ public class YamlSerTest extends TestCase
     {
         Bar barCompare = new Bar();
         
-        byte[] data = YamlIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
+        byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, barCompare, barCompare.cachedSchema());
+        writeTo(out, barCompare, barCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -126,7 +145,7 @@ public class YamlSerTest extends TestCase
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
-        YamlIOUtil.writeListTo(out, list, barCompare.cachedSchema());
+        writeListTo(out, list, barCompare.cachedSchema());
         
         byte[] data = out.toByteArray();
         print(STRING.deser(data));
@@ -136,10 +155,10 @@ public class YamlSerTest extends TestCase
     {
         for(Baz bazCompare : new Baz[]{baz, negativeBaz})
         {
-            byte[] data = YamlIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema());
+            byte[] data = toByteArray(bazCompare, bazCompare.cachedSchema());
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            YamlIOUtil.writeTo(out, bazCompare, bazCompare.cachedSchema());
+            writeTo(out, bazCompare, bazCompare.cachedSchema());
             byte[] data2 = out.toByteArray();
 
             String text = STRING.deser(data);
@@ -153,10 +172,10 @@ public class YamlSerTest extends TestCase
     {
         Baz bazCompare = new Baz();
         
-        byte[] data = YamlIOUtil.toByteArray(bazCompare, bazCompare.cachedSchema());
+        byte[] data = toByteArray(bazCompare, bazCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, bazCompare, bazCompare.cachedSchema());
+        writeTo(out, bazCompare, bazCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -175,7 +194,7 @@ public class YamlSerTest extends TestCase
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
-        YamlIOUtil.writeListTo(out, list, bazCompare.cachedSchema());
+        writeListTo(out, list, bazCompare.cachedSchema());
         
         byte[] data = out.toByteArray();
         print(STRING.deser(data));
@@ -187,10 +206,10 @@ public class YamlSerTest extends TestCase
         Baz baz = new Baz();
         barCompare.setBaz(baz);
         
-        byte[] data = YamlIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
+        byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, barCompare, barCompare.cachedSchema());
+        writeTo(out, barCompare, barCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -207,10 +226,10 @@ public class YamlSerTest extends TestCase
         bars.add(new Bar());
         fooCompare.setSomeBar(bars);
         
-        byte[] data = YamlIOUtil.toByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] data = toByteArray(fooCompare, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, fooCompare, fooCompare.cachedSchema());
+        writeTo(out, fooCompare, fooCompare.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
@@ -230,10 +249,10 @@ public class YamlSerTest extends TestCase
         Foo foo = new Foo();
         foo.setSomeBar(bars);
         
-        byte[] data = YamlIOUtil.toByteArray(foo, foo.cachedSchema());
+        byte[] data = toByteArray(foo, foo.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YamlIOUtil.writeTo(out, foo, foo.cachedSchema());
+        writeTo(out, foo, foo.cachedSchema());
         byte[] data2 = out.toByteArray();
 
         String text = STRING.deser(data);
