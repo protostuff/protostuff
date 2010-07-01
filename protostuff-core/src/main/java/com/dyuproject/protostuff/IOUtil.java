@@ -80,6 +80,8 @@ public final class IOUtil
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
      * with the supplied buffer.
+     * 
+     * @return the size of the message
      */
     public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
@@ -90,6 +92,8 @@ public final class IOUtil
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
      * with the supplied buffer.
+     * 
+     * @return the size of the message
      */
     public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
@@ -105,6 +109,8 @@ public final class IOUtil
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} with 
      * the supplied buffer.
+     * 
+     * @return the size of the message.
      */
     public static <T extends Message<T>> int writeTo(OutputStream out, T message, 
             LinkedBuffer buffer) throws IOException
@@ -116,6 +122,8 @@ public final class IOUtil
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
      * with the supplied buffer.
+     * 
+     * @return the size of the message
      */
     public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
@@ -127,6 +135,8 @@ public final class IOUtil
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
      * with the supplied buffer.
+     * 
+     * @return the size of the message
      */
     public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
@@ -138,12 +148,18 @@ public final class IOUtil
         schema.writeTo(output, message);
         final int size = output.getSize();
         CodedOutput.writeRawVarInt32Bytes(out, size);
-        return size + LinkedBuffer.writeTo(out, buffer);
+        final int msgSize = LinkedBuffer.writeTo(out, buffer);
+        
+        assert size == msgSize;
+        
+        return size;
     }
     
     /**
      * Serializes the {@code message} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} with the supplied buffer.
+     * 
+     * @return the size of the message
      */
     public static <T extends Message<T>> int writeDelimitedTo(OutputStream out, T message, 
             LinkedBuffer buffer) throws IOException
@@ -303,6 +319,8 @@ public final class IOUtil
      * Serializes the {@code messages} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
      * with the supplied buffer.
+     * 
+     * @return the total size of the messages
      */
     public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
@@ -314,6 +332,8 @@ public final class IOUtil
      * Serializes the {@code messages} (delimited) into 
      * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
      * with the supplied buffer.
+     * 
+     * @return the total size of the messages
      */
     public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
             LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
@@ -322,16 +342,20 @@ public final class IOUtil
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
         final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        int written = 0;
+        int totalSize = 0;
         for(T m : messages)
         {
             schema.writeTo(output, m);
             final int size = output.getSize();
             CodedOutput.writeRawVarInt32Bytes(out, size);
-            written += (size + LinkedBuffer.writeTo(out, buffer));
+            final int msgSize = LinkedBuffer.writeTo(out, buffer);
+            
+            assert size == msgSize;
+            
+            totalSize += size;
             output.reset();
         }
-        return written;
+        return totalSize;
     }
     
     /**
@@ -402,6 +426,8 @@ public final class IOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link ObjectOutput}.
+     * 
+     * @return the size of the message.
      */
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
@@ -412,6 +438,8 @@ public final class IOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link ObjectOutput}.
+     * 
+     * @return the size of the message.
      */
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
             boolean encodeNestedMessageAsGroup) throws IOException
@@ -421,7 +449,12 @@ public final class IOUtil
         schema.writeTo(output, message);
         final int size = output.getSize();
         CodedOutput.writeRawVarInt32Bytes(out, size);
-        return size + LinkedBuffer.writeTo(out, buffer);
+        
+        final int msgSize = LinkedBuffer.writeTo(out, buffer);
+        
+        assert size == msgSize;
+        
+        return size;
     }
     
     /**
