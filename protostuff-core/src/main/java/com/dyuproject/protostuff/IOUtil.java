@@ -112,23 +112,13 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
+     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} with 
+     * the supplied buffer.
      */
-    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema)
-    throws IOException
+    public static <T extends Message<T>> int writeTo(OutputStream out, T message, 
+            LinkedBuffer buffer) throws IOException
     {
-        return writeTo(out, message, schema, new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), 
-                false);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput}.
-     */
-    public static <T extends Message<T>> int writeTo(OutputStream out, T message)
-    throws IOException
-    {
-        return writeTo(out, message, message.cachedSchema(), 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
+        return writeTo(out, message, message.cachedSchema(), buffer, false);
     }
     
     /**
@@ -162,24 +152,12 @@ public final class IOUtil
     
     /**
      * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
+     * an {@link OutputStream} via {@link BufferedOutput} with the supplied buffer.
      */
-    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
-    throws IOException
+    public static <T extends Message<T>> int writeDelimitedTo(OutputStream out, T message, 
+            LinkedBuffer buffer) throws IOException
     {
-        return writeDelimitedTo(out, message, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
-    }
-    
-    /**
-     * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput}.
-     */
-    public static <T extends Message<T>> int writeDelimitedTo(OutputStream out, T message)
-    throws IOException
-    {
-        return writeDelimitedTo(out, message, message.cachedSchema(), 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
+        return writeDelimitedTo(out, message, message.cachedSchema(), buffer, false);
     }
     
     /**
@@ -363,17 +341,6 @@ public final class IOUtil
             output.reset();
         }
         return written;
-    }
-    
-    /**
-     * Serializes the {@code messages} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema.
-     */
-    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-    throws IOException
-    {
-        return writeListTo(out, messages, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
     }
     
     /**

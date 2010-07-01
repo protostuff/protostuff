@@ -16,6 +16,8 @@ package com.dyuproject.protostuff;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,13 @@ import junit.framework.TestCase;
 public class DelimitedTest extends TestCase
 {
     
+    public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
+    throws IOException
+    {
+        return IOUtil.writeListTo(out, messages, schema, 
+                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
     public void testBar() throws Exception
     {
         ArrayList<Bar> bars = new ArrayList<Bar>();
@@ -37,7 +46,7 @@ public class DelimitedTest extends TestCase
         bars.add(SerializableObjects.negativeBar);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -56,7 +65,7 @@ public class DelimitedTest extends TestCase
         bars.add(new Bar());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
 
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -74,7 +83,7 @@ public class DelimitedTest extends TestCase
         bars.add(new Bar());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -94,7 +103,7 @@ public class DelimitedTest extends TestCase
         bars.add(bar);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -113,7 +122,7 @@ public class DelimitedTest extends TestCase
         foos.add(SerializableObjects.foo);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -132,7 +141,7 @@ public class DelimitedTest extends TestCase
         foos.add(new Foo());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -150,7 +159,7 @@ public class DelimitedTest extends TestCase
         foos.add(new Foo());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -174,7 +183,7 @@ public class DelimitedTest extends TestCase
         foos.add(foo);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -200,7 +209,7 @@ public class DelimitedTest extends TestCase
         foos.add(foo);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
