@@ -96,7 +96,7 @@ public final class YamlOutput implements Output
     
     public YamlOutput(LinkedBuffer root, OutputStream out)
     {
-        if(root.buffer.length < 64)
+        if(root.buffer.length < 512)
             throw new IllegalArgumentException("buffer size too small.");
         
         current = root;
@@ -151,7 +151,7 @@ public final class YamlOutput implements Output
      */
     public YamlOutput use(Schema<?> schema)
     {
-        root.reset();
+        current = root.reset();
         
         indent = 0;
         lastNumber = 0;
@@ -428,7 +428,7 @@ public final class YamlOutput implements Output
             else
             {
                 // flush
-                // note that the buffer must be big enough to store the key, space and colon
+                // the buffer will be big enough (at least 512 bytes) to store the key, space and colon
                 out.write(lb.buffer, lb.start, lb.offset - lb.start);
                 // reset
                 lb.offset = lb.start;
@@ -459,7 +459,7 @@ public final class YamlOutput implements Output
         {
             if(out != null)
             {
-                // write it directly
+                // flush
                 out.write(lb.buffer, lb.start, lb.offset - lb.start);
                 // reset
                 lb.offset = lb.start;
@@ -482,7 +482,9 @@ public final class YamlOutput implements Output
         for(int i=0; i < indent; i++)
             buffer[offset++] = (byte)' ';
         
-        lb.offset += totalSize;
+        assert offset == lb.offset + totalSize;
+        
+        lb.offset = offset;
         
         return lb;
     }
@@ -495,7 +497,7 @@ public final class YamlOutput implements Output
         {
             if(out != null)
             {
-                // write it directly
+                // flush
                 out.write(lb.buffer, lb.start, lb.offset - lb.start);
                 out.write(value);
                 // reset
