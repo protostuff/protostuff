@@ -507,7 +507,7 @@ public final class YamlOutput implements Output
             return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
         }
 
-        System.arraycopy(value, 0, lb.buffer, lb.offset, value.length);
+        System.arraycopy(value, 0, lb.buffer, lb.offset, valueLen);
         
         lb.offset += valueLen;
         
