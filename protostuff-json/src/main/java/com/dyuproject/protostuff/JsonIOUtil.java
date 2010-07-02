@@ -259,11 +259,10 @@ public final class JsonIOUtil
             return;
         }
         
-        final JsonOutput output = new JsonOutput(generator, numeric);
+        final JsonOutput output = new JsonOutput(generator, numeric, schema);
         
         for(T m : messages)
         {
-            output.use(schema);
             generator.writeStartObject();
             
             schema.writeTo(output, m);
@@ -271,6 +270,7 @@ public final class JsonIOUtil
                 generator.writeEndArray();
             
             generator.writeEndObject();
+            output.reset();
         }
         
         generator.writeEndArray();

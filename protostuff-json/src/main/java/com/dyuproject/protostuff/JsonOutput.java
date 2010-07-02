@@ -56,14 +56,23 @@ public final class JsonOutput implements Output
     }
     
     /**
+     * Resets this output for re-use.
+     */
+    public JsonOutput reset()
+    {
+        lastRepeated = false;
+        lastNumber = 0;
+        return this;
+    }
+    
+    /**
      * Before serializing a message/object tied to a schema, this should be called.
+     * This also resets the internal state of this output.
      */
     public JsonOutput use(Schema<?> schema)
     {
         this.schema = schema;
-        lastRepeated = false;
-        lastNumber = 0;
-        return this;
+        return reset();
     }
     
     /**
@@ -104,7 +113,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -133,7 +142,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -170,7 +179,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -214,7 +223,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -243,7 +252,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -272,7 +281,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -321,7 +330,7 @@ public final class JsonOutput implements Output
         if(lastRepeated)
             generator.writeEndArray();
         
-        final String name = numeric ? String.valueOf(fieldNumber) : 
+        final String name = numeric ? Integer.toString(fieldNumber) : 
             schema.getFieldName(fieldNumber);
         
         if(repeated)
@@ -363,7 +372,7 @@ public final class JsonOutput implements Output
             if(lastRepeated)
                 generator.writeEndArray();
             
-            final String name = numeric ? String.valueOf(fieldNumber) : 
+            final String name = numeric ? Integer.toString(fieldNumber) : 
                 lastSchema.getFieldName(fieldNumber);
             
             if(repeated)
