@@ -47,7 +47,7 @@ public class SerDeserTest extends TestCase
     public <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return IOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
+                LinkedBuffer.allocate(BufferedOutput.DEFAULT_BUFFER_SIZE));
     }
     
     public void testFoo() throws Exception

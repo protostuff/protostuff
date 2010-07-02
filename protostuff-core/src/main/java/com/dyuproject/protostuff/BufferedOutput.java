@@ -91,7 +91,7 @@ public final class BufferedOutput implements Output
      */
     public BufferedOutput reset()
     {
-        current = root.reset();
+        current = root.clear();
         size = 0;
         return this;
     }

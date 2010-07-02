@@ -20,7 +20,7 @@ import java.io.OutputStream;
 
 
 /**
- * A buffer that wraps a byte array and has a reference to the next node for dynamic increase.
+ * A buffer that wraps a byte array and has a reference to the next buffer for dynamic increase.
  * 
  * @author David Yu
  * @created May 18, 2010
@@ -29,11 +29,33 @@ public final class LinkedBuffer
 {
     
     /**
+     * Allocates a new buffer with the specified size.
+     */
+    public static LinkedBuffer allocate(int size)
+    {
+        if(size < 1)
+            throw new IllegalArgumentException("invalid size.");
+        
+        return new LinkedBuffer(size);
+    }
+    
+    /**
      * Wraps the byte array buffer as a read-only buffer.
      */
     public static LinkedBuffer wrap(byte[] array, int offset, int length)
     {
         return new LinkedBuffer(array, offset, offset + length);
+    }
+    
+    /**
+     * Uses the existing byte array as the internal buffer.
+     */
+    public static LinkedBuffer use(byte[] buffer)
+    {
+        if(buffer.length < 1)
+            throw new IllegalArgumentException("invalid buffer size.");
+        
+        return new LinkedBuffer(buffer, 0, 0);
     }
     
     /**
@@ -87,7 +109,7 @@ public final class LinkedBuffer
     /**
      * Creates a buffer with the specified {@code size}.
      */
-    public LinkedBuffer(int size)
+    LinkedBuffer(int size)
     {
         this(new byte[size], 0, 0);
     }
@@ -135,10 +157,10 @@ public final class LinkedBuffer
     }
     
     /**
-     * The buffer next to this will be dereferenced and the offset will be reset to 
-     * its starting position.
+     * The offset will be reset to its starting position.
+     * The buffer next to this will be dereferenced.
      */
-    public LinkedBuffer reset()
+    public LinkedBuffer clear()
     {
         next = null;
         offset = start;

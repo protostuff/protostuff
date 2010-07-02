@@ -45,7 +45,7 @@ public class ProtostuffRuntimeSerializer extends AbstractProtostuffSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return IOUtil.toByteArray(content, schema, new LinkedBuffer(256));
+        return IOUtil.toByteArray(content, schema, LinkedBuffer.allocate(256));
     }
 
 }

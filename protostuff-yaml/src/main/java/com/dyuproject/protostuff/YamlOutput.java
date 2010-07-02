@@ -151,7 +151,7 @@ public final class YamlOutput implements Output
      */
     public YamlOutput use(Schema<?> schema)
     {
-        current = root.reset();
+        current = root.clear();
         
         indent = 0;
         lastNumber = 0;

@@ -42,7 +42,7 @@ public class ProtostuffCoreGESerializer extends AbstractProtostuffSerializer
     public byte[] serialize(MediaContent content) throws Exception
     {
         return IOUtil.toByteArray(content, content.cachedSchema(), 
-                new LinkedBuffer(256), true);
+                LinkedBuffer.allocate(256), true);
     }
 
 }
