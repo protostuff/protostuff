@@ -47,7 +47,7 @@ public final class BufferedOutput implements Output
             "bufferedoutput.default_buffer_size", 512);
     
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "bufferedoutput.array_copy_size_limit", 255);
+            "protostuff.array_copy_size_limit", 255);
     
     private final LinkedBuffer root;
     private LinkedBuffer current;

@@ -39,7 +39,7 @@ public final class YamlOutput implements Output
      * internal buffer or flushed to the {@link OutputStream} if streaming.  
      */
     public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "yamloutput.array_copy_size_limit", 255);
+            "protostuff.array_copy_size_limit", 255);
     
     /**
      * Returns 2 if line break is using CRLF ("\r\n"), 1 if using LF ("\n")
