@@ -147,19 +147,27 @@ public final class YamlOutput implements Output
     }
     
     /**
-     * Before serializing a message/object tied to a schema, this should be called.
+     * Resets this output for re-use.
      */
-    public YamlOutput use(Schema<?> schema)
+    public YamlOutput reset(boolean resetBuffer)
     {
-        current = root.clear();
+        if(resetBuffer)
+            current = root.clear();
         
         indent = 0;
         lastNumber = 0;
         lastTag = null;
         
-        this.schema = schema;
-        
         return this;
+    }
+    
+    /**
+     * Before serializing a message/object tied to a schema, this should be called.
+     */
+    public YamlOutput use(Schema<?> schema, boolean resetBuffer)
+    {
+        this.schema = schema;
+        return reset(resetBuffer);
     }
     
     YamlOutput writeSequenceDelim() throws IOException

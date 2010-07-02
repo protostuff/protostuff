@@ -71,6 +71,34 @@ public final class YamlIOUtil
     }
     
     /**
+     * Serializes the {@code message} into the {@link LinkedBuffer} via {@link YamlOutput}.
+     */
+    public static <T> void writeTo(LinkedBuffer buffer, T message, Schema<T> schema) 
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
+        
+        final byte[] tag = YamlOutput.makeTag(schema.messageName(), false);
+        System.arraycopy(tag, 0, buffer.buffer, START_DIRECTIVE.length, tag.length);
+        
+        buffer.offset = START_DIRECTIVE.length + tag.length;
+        
+        final YamlOutput output = new YamlOutput(buffer, null, schema);
+        
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
+                    "(should never happen).", e);
+        }
+    }
+    
+    /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link YamlOutput} 
      * with the supplied buffer.
      */
@@ -105,9 +133,41 @@ public final class YamlIOUtil
     }
     
     /**
-     * Serializes the {@code messages} (delimited) into 
-     * an {@link OutputStream} via {@link YamlOutput} using the given schema 
-     * with the supplied buffer.
+     * Serializes the {@code messages} a {@link LinkedBuffer} via {@link YamlOutput} 
+     * using the given schema.
+     */
+    public static <T> void writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
+    throws IOException
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
+        
+        final byte[] tag = YamlOutput.makeTag(schema.messageName(), true);
+        System.arraycopy(tag, 0, buffer.buffer, START_DIRECTIVE.length, tag.length);
+        
+        buffer.offset = START_DIRECTIVE.length + tag.length;
+
+        final YamlOutput output = new YamlOutput(buffer, null, schema);
+        try
+        {
+            for(T m : messages)
+            {
+                schema.writeTo(output.writeSequenceDelim(), m);
+                output.reset(false);
+            }
+        }
+        catch(IOException e)
+        {
+            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
+                    "(should never happen).", e);
+        }
+    }
+    
+    /**
+     * Serializes the {@code messages} into an {@link OutputStream} via {@link YamlOutput} 
+     * using the given schema with the supplied buffer.
      */
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
@@ -126,7 +186,7 @@ public final class YamlIOUtil
         for(T m : messages)
         {
             schema.writeTo(output.writeSequenceDelim(), m);
-            output.flushRemaining().use(schema);
+            output.flushRemaining().reset(true);
         }
     }
 

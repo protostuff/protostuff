@@ -46,12 +46,21 @@ public class YamlSerTest extends TestCase
     
     public <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
-        YamlIOUtil.writeTo(out, message, schema, new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+        YamlIOUtil.writeTo(out, message, schema, 
+                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
     }
     
-    public <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException
+    public <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
+    throws IOException
     {
-        YamlIOUtil.writeListTo(out, messages, schema, new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+        YamlIOUtil.writeListTo(out, messages, schema, 
+                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+    }
+    
+    public <T> void writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
+    throws IOException
+    {
+        YamlIOUtil.writeListTo(buffer, messages, schema);
     }
     
     public void testFoo() throws Exception
@@ -95,11 +104,21 @@ public class YamlSerTest extends TestCase
         list.add(fooCompare);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
         writeListTo(out, list, fooCompare.cachedSchema());
         
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+        LinkedBuffer buffer = new LinkedBuffer(512);
+        writeListTo(buffer, list, fooCompare.cachedSchema());
+        LinkedBuffer.writeTo(out2, buffer);
+        
         byte[] data = out.toByteArray();
-        print(STRING.deser(data));
+        byte[] data2 = out2.toByteArray();
+        
+        String text = STRING.deser(data);
+        String text2 = STRING.deser(data2);
+        
+        assertEquals(text, text2);
+        print(text);
     }
     
     public void testBar() throws Exception
@@ -144,11 +163,21 @@ public class YamlSerTest extends TestCase
         list.add(negativeBar);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
         writeListTo(out, list, barCompare.cachedSchema());
         
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+        LinkedBuffer buffer = new LinkedBuffer(512);
+        writeListTo(buffer, list, barCompare.cachedSchema());
+        LinkedBuffer.writeTo(out2, buffer);
+        
         byte[] data = out.toByteArray();
-        print(STRING.deser(data));
+        byte[] data2 = out2.toByteArray();
+        
+        String text = STRING.deser(data);
+        String text2 = STRING.deser(data2);
+        
+        assertEquals(text, text2);
+        print(text);
     }
     
     public void testBaz() throws Exception
@@ -193,11 +222,21 @@ public class YamlSerTest extends TestCase
         list.add(negativeBaz);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
         writeListTo(out, list, bazCompare.cachedSchema());
         
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+        LinkedBuffer buffer = new LinkedBuffer(512);
+        writeListTo(buffer, list, bazCompare.cachedSchema());
+        LinkedBuffer.writeTo(out2, buffer);
+        
         byte[] data = out.toByteArray();
-        print(STRING.deser(data));
+        byte[] data2 = out2.toByteArray();
+        
+        String text = STRING.deser(data);
+        String text2 = STRING.deser(data2);
+        
+        assertEquals(text, text2);
+        print(text);
     }
     
     public void testEmptyInnerBar() throws Exception
