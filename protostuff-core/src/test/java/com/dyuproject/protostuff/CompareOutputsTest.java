@@ -144,30 +144,10 @@ public class CompareOutputsTest extends TestCase
         out.println(title);
         out.println();
 
-        start(out, warmups, loops);
+        start(foo, SERIALIZERS, out, warmups, loops);
         
         if(System.out!=out)
             out.close();
-    }
-    
-    public static void start(PrintStream out, int warmups, int loops) throws Exception
-    {
-        for(Serializer s : SERIALIZERS)
-            ser(out, s, s.getName(), warmups, loops);
-    }
-    
-    static void ser(PrintStream out, Serializer serializer, String name, int warmups, 
-            int loops) throws Exception
-    {
-        int len = serializer.serialize(foo).length;
-        for(int i=0; i<warmups; i++)
-            serializer.serialize(foo);
-        long start = System.currentTimeMillis();
-        for(int i=0; i<loops; i++)
-            serializer.serialize(foo);
-        long finish = System.currentTimeMillis();
-        long elapsed = finish - start;
-        out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
     }
     
     public static void main(String[] args) throws Exception
@@ -185,12 +165,32 @@ public class CompareOutputsTest extends TestCase
         out.println(title);
         out.println();
 
-        start(out, warmups, loops);
+        start(foo, SERIALIZERS, out, warmups, loops);
         
         if(System.out!=out)
             out.close();
     }
     
+    public static  <T extends Message<T>> void start(T message, Serializer[] serializers, 
+            PrintStream out, int warmups, int loops) throws Exception
+    {
+        for(Serializer s : serializers)
+            ser(message, s, out, s.getName(), warmups, loops);
+    }
+    
+    static <T extends Message<T>> void ser(T message, Serializer serializer, PrintStream out, 
+            String name, int warmups, int loops) throws Exception
+    {
+        int len = serializer.serialize(message).length;
+        for(int i=0; i<warmups; i++)
+            serializer.serialize(message);
+        long start = System.currentTimeMillis();
+        for(int i=0; i<loops; i++)
+            serializer.serialize(message);
+        long finish = System.currentTimeMillis();
+        long elapsed = finish - start;
+        out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
+    }
     
     public interface Serializer
     {
