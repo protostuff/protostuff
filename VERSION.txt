@@ -1,7 +1,7 @@
 protostuff-1.0.0-SNAPSHOT
 + write operations on IOUtil now require a buffer as an extra arg.
   This allows the developer to determine the appropriate buffer size needed for a particular message (to avoid buffer allocation overhead).
-  The LinkedBuffer can be re-used by calling LinkedBuffer.reset() ... w/c is applicable to application/thread-local/network buffers.
+  The LinkedBuffer can be re-used by calling LinkedBuffer.clear() ... w/c is applicable to application/thread-local/network buffers.
 + added protostuf-yaml for yaml serialization (zero-copy capable).
 + Issue 24: JsonInput not able to skip repeated scalar fields that are unknown
 + support serializing Map fields via the MapSchema.
