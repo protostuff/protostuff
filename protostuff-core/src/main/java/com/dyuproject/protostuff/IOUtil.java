@@ -83,13 +83,22 @@ public final class IOUtil
      * @return the size of the message
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
+            boolean encodeNestedMessageAsGroup)
     {
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
         final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        schema.writeTo(output, message);
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
         return output.getSize();
     }
     
