@@ -499,11 +499,11 @@ public final class IOUtil
     public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
-        final int size = in.readByte();
+        final byte size = in.readByte();
         if(size == -1)
             throw ProtobufException.truncatedMessage();
         
-        final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+        final int len = (size & 0x80)==0 ? size : CodedInput.readRawVarint32(in, size);
         
         if(len != 0)
         {

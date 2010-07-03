@@ -408,7 +408,7 @@ public final class CodedInput implements Input {
    * then you would probably end up reading past the end of the varint since
    * CodedInput buffers its input.
    */
-  static int readRawVarint32(final InputStream input, int firstByte) throws IOException {
+  static int readRawVarint32(final InputStream input, final int firstByte) throws IOException {
     int result = firstByte & 0x7f;
     int offset = 7;
     for (; offset < 32; offset += 7) {
@@ -437,11 +437,11 @@ public final class CodedInput implements Input {
    * Reads a varint from the input one byte at a time from a {@link DataInput}, so that it 
    * does not read any bytes after the end of the varint.
    */
-  static int readRawVarint32(final DataInput input, int firstByte) throws IOException {
+  static int readRawVarint32(final DataInput input, final byte firstByte) throws IOException {
     int result = firstByte & 0x7f;
     int offset = 7;
     for (; offset < 32; offset += 7) {
-      final int b = input.readByte();
+      final byte b = input.readByte();
       if (b == -1) {
         throw ProtobufException.truncatedMessage();
       }
@@ -452,7 +452,7 @@ public final class CodedInput implements Input {
     }
     // Keep reading up to 64 bits.
     for (; offset < 64; offset += 7) {
-      final int b = input.readByte();
+      final byte b = input.readByte();
       if (b == -1) {
         throw ProtobufException.truncatedMessage();
       }
