@@ -71,7 +71,7 @@ public class BufferedOutputTest extends SerDeserTest
                 new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
         schema.writeTo(output, message);
         CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
-        LinkedBuffer.writeTo(out, output.getBuffer());
+        LinkedBuffer.writeTo(out, output.head);
     }
     
     /*static void print(byte[] data)

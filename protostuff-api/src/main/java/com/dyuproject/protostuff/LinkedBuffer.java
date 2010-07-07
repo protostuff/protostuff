@@ -63,10 +63,10 @@ public final class LinkedBuffer
      * 
      * @return the total content size of the buffer.
      */
-    public static int writeTo(OutputStream out, LinkedBuffer root) throws IOException
+    public static int writeTo(final OutputStream out, final LinkedBuffer head) throws IOException
     {
         int contentSize = 0;
-        for(LinkedBuffer node = root; node != null; node = node.next)
+        for(LinkedBuffer node = head; node != null; node = node.next)
         {
             final int len = node.offset - node.start;
             if(len > 0)
@@ -83,10 +83,10 @@ public final class LinkedBuffer
      * 
      * @return the total content size of the buffer.
      */
-    public static int writeTo(DataOutput out, LinkedBuffer root) throws IOException
+    public static int writeTo(final DataOutput out, final LinkedBuffer head) throws IOException
     {
         int contentSize = 0;
-        for(LinkedBuffer node = root; node != null; node = node.next)
+        for(LinkedBuffer node = head; node != null; node = node.next)
         {
             final int len = node.offset - node.start;
             if(len > 0)
@@ -115,7 +115,16 @@ public final class LinkedBuffer
     }
     
     /**
-     * Uses the buffer starting at the specified {@code offset}.
+     * Creates a buffer with the specified {@code size} and appends to the 
+     * provided buffer {@code appendTarget}.
+     */
+    LinkedBuffer(int size, LinkedBuffer appendTarget)
+    {
+        this(new byte[size], 0, 0, appendTarget);
+    }
+    
+    /**
+     * Uses the buffer starting at the specified {@code offset} 
      */
     LinkedBuffer(byte[] buffer, int offset)
     {
@@ -165,6 +174,88 @@ public final class LinkedBuffer
         next = null;
         offset = start;
         return this;
+    }
+    
+    /**
+     * This is used when objects need to be serialzied/written into a {@code LinkedBuffer}.
+     *
+     */
+    public static class WriteSession
+    {
+        
+        public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
+                "writesession.default_buffer_size", 512);
+        
+        public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
+                "writesession.array_copy_size_limit", 255);
+        
+        public final LinkedBuffer head;
+        protected LinkedBuffer tail;
+        
+        protected int size = 0;
+        //protected int physicalBufferCount = 0;
+        //protected int virtualBufferCount = 0;
+        
+        public final int nextBufferSize;
+        public final int arrayCopySizeLimit;
+        
+        public WriteSession(LinkedBuffer head)
+        {
+            this(head, DEFAULT_BUFFER_SIZE, ARRAY_COPY_SIZE_LIMIT);
+        }
+        
+        public WriteSession(LinkedBuffer head, int nextBufferSize, int arrayCopySizeLimit)
+        {
+            tail = head;
+            this.head = head;
+            this.nextBufferSize = nextBufferSize;
+            this.arrayCopySizeLimit = arrayCopySizeLimit;
+        }
+        
+        /**
+         * The tail will be point to the head and the size will be reset to zero.
+         */
+        public WriteSession clear()
+        {
+            tail = head.clear();
+            size = 0;
+            return this;
+        }
+        
+        /**
+         * Returns the amount of bytes written in this session.
+         */
+        public final int getSize()
+        {
+            return size;
+        }
+        
+        /**
+         * Returns a single byte array containg all the contents written to the buffer(s).
+         */
+        public final byte[] toByteArray()
+        {
+            final LinkedBuffer head = this.head;
+
+            final byte[] buf = new byte[size];
+            
+            int offset = head.offset - head.start;
+            
+            System.arraycopy(head.buffer, 0, buf, 0, offset);
+            
+            for(LinkedBuffer node = head.next; node != null; node = node.next)
+            {
+                final int len = node.offset - node.start;
+                if(len > 0)
+                {
+                    System.arraycopy(node.buffer, node.start, buf, offset, len);
+                    offset += len;
+                }
+            }
+            
+            return buf;
+        }
+
     }
 
 }

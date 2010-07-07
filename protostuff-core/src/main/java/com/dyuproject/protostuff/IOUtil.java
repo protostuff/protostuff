@@ -378,7 +378,7 @@ public final class IOUtil
             assert size == msgSize;
             
             totalSize += size;
-            output.reset();
+            output.clear();
         }
         return totalSize;
     }

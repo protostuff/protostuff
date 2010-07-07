@@ -33,18 +33,18 @@ import com.dyuproject.protostuff.Foo.EnumSample;
 public class CompareOutputsTest extends TestCase
 {
     
-    static final Baz negativeBaz = new Baz(-567, null, -202020202);
-    static final Bar negativeBar = new Bar(-12, null, negativeBaz, Bar.Status.STARTED, 
+    static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
+    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
     
-    static final Baz baz = new Baz(567, null, 202020202);  
-    static final Bar bar = new Bar(890, null, baz, Bar.Status.STARTED, 
+    static final Baz baz = new Baz(567, "baz", 202020202);  
+    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
 
-    // a total of 915 bytes
+    // a total of 1000 bytes
     public static final Foo foo = SerializableObjects.newFoo(
             new Integer[]{90210,-90210, 0}, 
-            new String[]{}, 
+            new String[]{"foo", "123456789012345678901234567890123456789012"}, 
             new Bar[]{bar, negativeBar},
             new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
             new ByteString[]{
@@ -387,11 +387,117 @@ public class CompareOutputsTest extends TestCase
         
     };
     
+    public static final Serializer BUFFERED_OUTPUT2 = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 351, false);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput2";
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT_GE2 = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 351, true);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-ge2";
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT_ZC2 = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {
+            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 339, false);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-zc2";
+        }
+        
+    };
+    
+    public static final Serializer BUFFERED_OUTPUT_GE_ZC2 = new Serializer()
+    {
+
+        public <T extends Message<T>> byte[] serialize(T message)
+        {            
+            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 339, true);
+            try
+            {
+                message.cachedSchema().writeTo(output, message);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                        "(should never happen).", e);
+            }
+            
+            return output.toByteArray();
+        }
+        
+        public String getName()
+        {
+            return "bufferedoutput-ge-zc2";
+        }
+        
+    };
+    
     static final Serializer[] SERIALIZERS = new Serializer[]{
         CODED_OUTPUT, CODED_OUTPUT_GE,
         DEFERRED_OUTPUT, DEFERRED_OUTPUT_GE,
-        BUFFERED_OUTPUT, BUFFERED_OUTPUT_GE,
-        BUFFERED_OUTPUT_ZC, BUFFERED_OUTPUT_GE_ZC
+        BUFFERED_OUTPUT, BUFFERED_OUTPUT2,
+        BUFFERED_OUTPUT_GE, BUFFERED_OUTPUT_GE2,
+        BUFFERED_OUTPUT_ZC, BUFFERED_OUTPUT_ZC2,
+        BUFFERED_OUTPUT_GE_ZC, BUFFERED_OUTPUT_GE_ZC2
     };
 
 }

@@ -1,4 +1,5 @@
 protostuff-1.0.0-SNAPSHOT
++ faster utf8 string serialization
 + write operations on IOUtil now require a buffer as an extra arg.
   This allows the developer to determine the appropriate buffer size needed for a particular message (to avoid buffer allocation overhead).
   The LinkedBuffer can be re-used by calling LinkedBuffer.clear() ... w/c is applicable to application/thread-local/network buffers.
