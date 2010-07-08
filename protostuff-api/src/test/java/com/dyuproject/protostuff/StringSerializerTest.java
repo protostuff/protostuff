@@ -64,55 +64,40 @@ public class StringSerializerTest extends TestCase
         foo,
     };
     
-    public void test3ByteUtf8() throws Exception
-    {
-        check(three_byte_utf8);
-    }
-    
-    public void test2ByteUtf8() throws Exception
-    {
-        check(two_byte_utf8);
-    }
-    
-    public void testAlphabet() throws Exception
-    {
-        check(alphabet);
-    }
-    
-    public void testNumeric() throws Exception
-    {
-        check(numeric);
-    }
-    
-    public void testWhitespace() throws Exception
-    {
-        check(whitespace);
-    }
-    
-    public void testFoo() throws Exception
-    {
-        check(foo);
-    }
-    
-    public void testEmptyString() throws Exception
-    {
-        check("");
-    }
-    
-    public void testBigString() throws Exception
-    {
-        String moreThan2048 = str_len_130;
-        for(int i=0; i<20; i++)
-            moreThan2048 += str_len_130;
-        
-        check(moreThan2048);
-    }
-    
-    public void testVarDelimited() throws Exception
+    public void testUTF8() throws Exception
     {
         for(String s : targets)
             check(s);
         
+        check("");
+        check(str_len_130);
+        
+        String lessThan2048 = str_len_130;
+        for(int i=0; i<14; i++)
+            lessThan2048 += str_len_130;
+        
+        int lt2048Len = 130 * 15;
+        assertTrue(lessThan2048.length() == lt2048Len);
+        check(lessThan2048);
+        
+        String moreThan2048 = str_len_130;
+        for(int i=0; i<20; i++)
+            moreThan2048 += str_len_130;
+        
+        int expectedLen = 130 * 21;
+        assertTrue(moreThan2048.length() == expectedLen);
+        
+        check(moreThan2048);
+    }
+    
+    public void testUTF8VarDelimited() throws Exception
+    {
+        checkVarDelimited(foo, 1, 59);
+        checkVarDelimited(whitespace, 1, 3);
+        checkVarDelimited(numeric, 1, 10);
+        checkVarDelimited(alphabet, 1, 26);
+        checkVarDelimited(two_byte_utf8, 1, 4*2);
+        checkVarDelimited(three_byte_utf8, 1, 4*3);
         checkVarDelimited("1234567890123456789012345678901234567890", 1, 40);
         checkVarDelimited("", 1, 0);
         checkVarDelimited(str_len_130, 2, 130);
@@ -136,7 +121,7 @@ public class StringSerializerTest extends TestCase
         checkVarDelimited(moreThan2048, 3, expectedLen);
     }
     
-    public void testFixedDelimited() throws Exception
+    public void testUTF8FixedDelimited() throws Exception
     {
         for(String s : targets)
             checkFixedDelimited(s);
