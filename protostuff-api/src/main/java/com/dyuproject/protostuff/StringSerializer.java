@@ -15,22 +15,6 @@ public final class StringSerializer
     
     private StringSerializer() {}
     
-    private static final int ONE_BYTE_EXCLUSIVE = 0x00000080/3 + 1;
-    
-    private static final int TWO_BYTE_LOWER_LIMIT = 0x00000080;
-
-    private static final int TWO_BYTE_EXCLUSIVE = 0x00000800/3 + 1;
-    
-    private static final int THREE_BYTE_LOWER_LIMIT = 0x00000800;
-
-    private static final int THREE_BYTE_EXCLUSIVE = 0x00008000/3 + 1;
-    
-    private static final int FOUR_BYTE_LOWER_LIMIT = 0x00008000;
-
-    private static final int FOUR_BYTE_EXCLUSIVE = 0x00080000/3 + 1;
-    
-    private static final int FIVE_BYTE_LOWER_LIMIT = 0x00080000;
-    
     /**
      * From {@link java.lang.Integer#toString(int)}
      */
@@ -81,6 +65,33 @@ public final class StringSerializer
         (byte)'6', (byte)'4', (byte)'8'
     };
     
+    private static final byte[] LONG_MIN_VALUE = new byte[]{
+        (byte)'-', 
+        (byte)'9', 
+        (byte)'2', (byte)'2', (byte)'3', 
+        (byte)'3', (byte)'7', (byte)'2', 
+        (byte)'0', (byte)'3', (byte)'6', 
+        (byte)'8', (byte)'5', (byte)'4', 
+        (byte)'7', (byte)'7', (byte)'5', 
+        (byte)'8', (byte)'0', (byte)'8'
+    };
+    
+    private static final int ONE_BYTE_EXCLUSIVE = 0x00000080/3 + 1;
+    
+    private static final int TWO_BYTE_LOWER_LIMIT = 0x00000080;
+
+    private static final int TWO_BYTE_EXCLUSIVE = 0x00000800/3 + 1;
+    
+    private static final int THREE_BYTE_LOWER_LIMIT = 0x00000800;
+
+    private static final int THREE_BYTE_EXCLUSIVE = 0x00008000/3 + 1;
+    
+    private static final int FOUR_BYTE_LOWER_LIMIT = 0x00008000;
+
+    private static final int FOUR_BYTE_EXCLUSIVE = 0x00080000/3 + 1;
+    
+    private static final int FIVE_BYTE_LOWER_LIMIT = 0x00080000;
+    
     private static void putBytesFromInt(int i, final int index, final byte[] buf)
     {
         int q, r;
@@ -120,6 +131,60 @@ public final class StringSerializer
             buf[--charPos] = (byte)sign;
         }
     }
+    
+    private static void putBytesFromLong(long i, int index, final byte[] buf)
+    {
+        long q;
+        int r;
+        int charPos = index;
+        char sign = 0;
+
+        if (i < 0)
+        {
+            sign = '-';
+            i = -i;
+        }
+
+        // Get 2 digits/iteration using longs until quotient fits into an int
+        while (i > Integer.MAX_VALUE)
+        {
+            q = i / 100;
+            // really: r = i - (q * 100);
+            r = (int)(i - ((q << 6) + (q << 5) + (q << 2)));
+            i = q;
+            buf[--charPos] = (byte)DigitOnes[r];
+            buf[--charPos] = (byte)DigitTens[r];
+        }
+
+        // Get 2 digits/iteration using ints
+        int q2;
+        int i2 = (int)i;
+        while (i2 >= 65536)
+        {
+            q2 = i2 / 100;
+            // really: r = i2 - (q * 100);
+            r = i2 - ((q2 << 6) + (q2 << 5) + (q2 << 2));
+            i2 = q2;
+            buf[--charPos] = (byte)DigitOnes[r];
+            buf[--charPos] = (byte)DigitTens[r];
+        }
+
+        // Fall thru to fast mode for smaller numbers
+        // assert(i2 <= 65536, i2);
+        for (;;)
+        {
+            q2 = (i2 * 52429) >>> (16 + 3);
+            r = i2 - ((q2 << 3) + (q2 << 1)); // r = i2-(q2*10) ...
+            buf[--charPos] = (byte)digits[r];
+            i2 = q2;
+            if (i2 == 0)
+                break;
+        }
+        if (sign != 0)
+        {
+            buf[--charPos] = (byte)sign;
+        }
+    }
 
     // Requires positive x
     private static int stringSize(int x)
@@ -129,6 +194,19 @@ public final class StringSerializer
             if (x <= sizeTable[i])
                 return i + 1;
         }
+    }
+    
+    // Requires positive x
+    private static int stringSize(long x)
+    {
+        long p = 10;
+        for (int i = 1; i < 19; i++)
+        {
+            if (x < p)
+                return i;
+            p = 10 * p;
+        }
+        return 19;
     }
     
     /**
@@ -164,6 +242,46 @@ public final class StringSerializer
         }
         
         putBytesFromInt(value, size, lb.buffer);
+        
+        lb.offset += size;
+        session.size += size;
+        
+        return lb;
+    }
+    
+    /**
+     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
+     * written to the buffer.
+     */
+    public static LinkedBuffer writeUTF8FromLong(final long value, final WriteSession session, 
+            LinkedBuffer lb)
+    {
+        if(value == Long.MIN_VALUE)
+        {
+            final int valueLen = LONG_MIN_VALUE.length;
+            if(lb.offset + valueLen > lb.buffer.length)
+            {
+                // not enough size
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+            
+            System.arraycopy(LONG_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
+            
+            lb.offset += valueLen;
+            session.size += valueLen;
+            
+            return lb;
+        }
+        
+        final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
+        
+        if(lb.offset + size > lb.buffer.length)
+        {
+            // not enough size
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
+        
+        putBytesFromLong(value, size, lb.buffer);
         
         lb.offset += size;
         session.size += size;

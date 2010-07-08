@@ -87,6 +87,36 @@ public class StringSerializerTest extends TestCase
             Integer.MIN_VALUE,
     };
     
+    static final long[] long_targets = new long[]{
+        0l,
+        1l,
+        -1l,
+        10l,
+        -10l,
+        100l,
+        -100l,
+        1000l,
+        -1000l,
+        10001l,
+        -10001l,
+        1110001l,
+        -1110001l,
+        111110001l,
+        -111110001l,
+        11111110001l,
+        -11111110001l,
+        1111111110001l,
+        -1111111110001l,
+        111111111110001l,
+        -111111111110001l,
+        11111111111110001l,
+        -11111111111110001l,
+        1234567890123456789l,
+        -1234567890123456789l,
+        Long.MAX_VALUE,
+        Long.MIN_VALUE,
+};
+    
     public void testUTF8FromInt() throws Exception
     {
         for(int i : int_targets)
@@ -102,6 +132,27 @@ public class StringSerializerTest extends TestCase
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();
             byte[] builtin = STRING.ser(Integer.toString(i));
+
+            assertEquals(builtin, buffered);
+            assertEquals(builtin, buffered_needed_to_grow);
+        }
+    }
+    
+    public void testUTF8FromLong() throws Exception
+    {
+        for(long i : int_targets)
+        {
+            LinkedBuffer lb = new LinkedBuffer(256);
+            WriteSession session = new WriteSession(lb);
+            StringSerializer.writeUTF8FromLong(i, session, lb);
+            
+            LinkedBuffer lb2 = new LinkedBuffer(1);
+            WriteSession session2 = new WriteSession(lb2);
+            StringSerializer.writeUTF8FromLong(i, session2, lb2);
+            
+            byte[] buffered = session.toByteArray();
+            byte[] buffered_needed_to_grow = session2.toByteArray();
+            byte[] builtin = STRING.ser(Long.toString(i));
 
             assertEquals(builtin, buffered);
             assertEquals(builtin, buffered_needed_to_grow);
