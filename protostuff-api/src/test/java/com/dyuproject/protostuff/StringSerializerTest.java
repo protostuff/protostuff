@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
 import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 import junit.framework.TestCase;
 
@@ -63,6 +64,49 @@ public class StringSerializerTest extends TestCase
         whitespace,
         foo,
     };
+    
+    static final int[] int_targets = new int[]{
+            0,
+            1,
+            -1,
+            10,
+            -10,
+            100,
+            -100,
+            1000,
+            -1000,
+            10001,
+            -10001,
+            1110001,
+            -1110001,
+            111110001,
+            -111110001,
+            1234567890,
+            -1234567890,
+            Integer.MAX_VALUE,
+            Integer.MIN_VALUE,
+    };
+    
+    public void testUTF8FromInt() throws Exception
+    {
+        for(int i : int_targets)
+        {
+            LinkedBuffer lb = new LinkedBuffer(256);
+            WriteSession session = new WriteSession(lb);
+            StringSerializer.writeUTF8FromInt(i, session, lb);
+            
+            LinkedBuffer lb2 = new LinkedBuffer(1);
+            WriteSession session2 = new WriteSession(lb2);
+            StringSerializer.writeUTF8FromInt(i, session2, lb2);
+            
+            byte[] buffered = session.toByteArray();
+            byte[] buffered_needed_to_grow = session2.toByteArray();
+            byte[] builtin = STRING.ser(Integer.toString(i));
+
+            assertEquals(builtin, buffered);
+            assertEquals(builtin, buffered_needed_to_grow);
+        }
+    }
     
     public void testUTF8() throws Exception
     {

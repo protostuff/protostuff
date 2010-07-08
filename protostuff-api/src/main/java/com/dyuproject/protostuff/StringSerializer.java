@@ -32,6 +32,146 @@ public final class StringSerializer
     private static final int FIVE_BYTE_LOWER_LIMIT = 0x00080000;
     
     /**
+     * From {@link java.lang.Integer#toString(int)}
+     */
+    private static final int[] sizeTable = new int[]{ 
+        9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE 
+    };
+    
+    private static final char [] DigitTens = {
+        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
+        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
+        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
+        '7', '7', '7', '7', '7', '7', '7', '7', '7', '7',
+        '8', '8', '8', '8', '8', '8', '8', '8', '8', '8',
+        '9', '9', '9', '9', '9', '9', '9', '9', '9', '9',
+    }; 
+
+    private static final char [] DigitOnes = { 
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    };
+    
+    private static final char[] digits = {
+        '0' , '1' , '2' , '3' , '4' , '5' ,
+        '6' , '7' , '8' , '9' , 'a' , 'b' ,
+        'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
+        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
+    };
+    
+    private static final byte[] INT_MIN_VALUE = new byte[]{
+        (byte)'-', 
+        (byte)'2', 
+        (byte)'1', (byte)'4', (byte)'7', 
+        (byte)'4', (byte)'8', (byte)'3', 
+        (byte)'6', (byte)'4', (byte)'8'
+    };
+    
+    private static void putBytesFromInt(int i, final int index, final byte[] buf)
+    {
+        int q, r;
+        int charPos = index;
+        char sign = 0;
+
+        if (i < 0)
+        {
+            sign = '-';
+            i = -i;
+        }
+
+        // Generate two digits per iteration
+        while (i >= 65536)
+        {
+            q = i / 100;
+            // really: r = i - (q * 100);
+            r = i - ((q << 6) + (q << 5) + (q << 2));
+            i = q;
+            buf[--charPos] = (byte)DigitOnes[r];
+            buf[--charPos] = (byte)DigitTens[r];
+        }
+
+        // Fall thru to fast mode for smaller numbers
+        // assert(i <= 65536, i);
+        for (;;)
+        {
+            q = (i * 52429) >>> (16 + 3);
+            r = i - ((q << 3) + (q << 1)); // r = i-(q*10) ...
+            buf[--charPos] = (byte)digits[r];
+            i = q;
+            if (i == 0)
+                break;
+        }
+        if (sign != 0)
+        {
+            buf[--charPos] = (byte)sign;
+        }
+    }
+
+    // Requires positive x
+    private static int stringSize(int x)
+    {
+        for (int i = 0;; i++)
+        {
+            if (x <= sizeTable[i])
+                return i + 1;
+        }
+    }
+    
+    /**
+     * Encodes the int to utf8 bytes (like converting an int to a string) and is directly
+     * written to the buffer.
+     */
+    public static LinkedBuffer writeUTF8FromInt(final int value, final WriteSession session, 
+            LinkedBuffer lb)
+    {
+        if(value == Integer.MIN_VALUE)
+        {
+            final int valueLen = INT_MIN_VALUE.length;
+            if(lb.offset + valueLen > lb.buffer.length)
+            {
+                // not enough size
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+            
+            System.arraycopy(INT_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
+            
+            lb.offset += valueLen;
+            session.size += valueLen;
+            
+            return lb;
+        }
+        
+        final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
+        
+        if(lb.offset + size > lb.buffer.length)
+        {
+            // not enough size
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
+        
+        putBytesFromInt(value, size, lb.buffer);
+        
+        lb.offset += size;
+        session.size += size;
+        
+        return lb;
+    }
+    
+    /**
      * Computes the size of the utf8 string beginning at the specified {@code index} with the 
      * specified {@code length}.
      */
