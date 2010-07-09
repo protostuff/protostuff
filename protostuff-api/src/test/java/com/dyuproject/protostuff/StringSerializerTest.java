@@ -45,6 +45,8 @@ public class StringSerializerTest extends TestCase
     // 26 total
     static final String alphabet = "abcdefghijklmnopqrstuvwyxz";
     
+    static final String alphabet_to_upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
     // 10 total
     static final String numeric = "0123456789";
     
@@ -60,6 +62,7 @@ public class StringSerializerTest extends TestCase
         three_byte_utf8,
         two_byte_utf8,
         alphabet,
+        alphabet_to_upper,
         numeric,
         whitespace,
         foo,
@@ -259,6 +262,7 @@ public class StringSerializerTest extends TestCase
         checkVarDelimited(whitespace, 1, 3);
         checkVarDelimited(numeric, 1, 10);
         checkVarDelimited(alphabet, 1, 26);
+        checkVarDelimited(alphabet_to_upper, 1, 26);
         checkVarDelimited(two_byte_utf8, 1, 4*2);
         checkVarDelimited(three_byte_utf8, 1, 4*3);
         checkVarDelimited("1234567890123456789012345678901234567890", 1, 40);
