@@ -92,10 +92,10 @@ public final class StringSerializer
     
     private static final int FIVE_BYTE_LOWER_LIMIT = 0x00080000;
     
-    private static void putBytesFromInt(int i, final int index, final byte[] buf)
+    private static void putBytesFromInt(int i, final int offset, final int size, final byte[] buf)
     {
         int q, r;
-        int charPos = index;
+        int charPos = offset + size;
         char sign = 0;
 
         if (i < 0)
@@ -132,11 +132,11 @@ public final class StringSerializer
         }
     }
     
-    private static void putBytesFromLong(long i, int index, final byte[] buf)
+    private static void putBytesFromLong(long i, final int offset, int size, final byte[] buf)
     {
         long q;
         int r;
-        int charPos = index;
+        int charPos = offset + size;
         char sign = 0;
 
         if (i < 0)
@@ -241,7 +241,7 @@ public final class StringSerializer
             lb = new LinkedBuffer(session.nextBufferSize, lb);
         }
         
-        putBytesFromInt(value, size, lb.buffer);
+        putBytesFromInt(value, lb.offset, size, lb.buffer);
         
         lb.offset += size;
         session.size += size;
@@ -283,7 +283,7 @@ public final class StringSerializer
             lb = new LinkedBuffer(session.nextBufferSize, lb);
         }
         
-        putBytesFromLong(value, size, lb.buffer);
+        putBytesFromLong(value, lb.offset, size, lb.buffer);
         
         lb.offset += size;
         session.size += size;
