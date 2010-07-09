@@ -146,17 +146,17 @@ public class StringSerializerTest extends TestCase
         Double.MIN_VALUE
     };
     
-    public void testUTF8FromInt() throws Exception
+    public void testInt() throws Exception
     {
         for(int i : int_targets)
         {
             LinkedBuffer lb = new LinkedBuffer(256);
             WriteSession session = new WriteSession(lb);
-            StringSerializer.writeUTF8FromInt(i, session, lb);
+            StringSerializer.writeInt(i, session, lb);
             
             LinkedBuffer lb2 = new LinkedBuffer(1);
             WriteSession session2 = new WriteSession(lb2);
-            StringSerializer.writeUTF8FromInt(i, session2, lb2);
+            StringSerializer.writeInt(i, session2, lb2);
             
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();
@@ -167,17 +167,17 @@ public class StringSerializerTest extends TestCase
         }
     }
     
-    public void testUTF8FromLong() throws Exception
+    public void testLong() throws Exception
     {
         for(long i : long_targets)
         {
             LinkedBuffer lb = new LinkedBuffer(256);
             WriteSession session = new WriteSession(lb);
-            StringSerializer.writeUTF8FromLong(i, session, lb);
+            StringSerializer.writeLong(i, session, lb);
             
             LinkedBuffer lb2 = new LinkedBuffer(1);
             WriteSession session2 = new WriteSession(lb2);
-            StringSerializer.writeUTF8FromLong(i, session2, lb2);
+            StringSerializer.writeLong(i, session2, lb2);
             
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();
@@ -188,17 +188,17 @@ public class StringSerializerTest extends TestCase
         }
     }
     
-    public void testUTF8FromFloat() throws Exception
+    public void testFloat() throws Exception
     {
         for(float i : float_targets)
         {
             LinkedBuffer lb = new LinkedBuffer(256);
             WriteSession session = new WriteSession(lb);
-            StringSerializer.writeUTF8FromFloat(i, session, lb);
+            StringSerializer.writeFloat(i, session, lb);
             
             LinkedBuffer lb2 = new LinkedBuffer(1);
             WriteSession session2 = new WriteSession(lb2);
-            StringSerializer.writeUTF8FromFloat(i, session2, lb2);
+            StringSerializer.writeFloat(i, session2, lb2);
             
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();
@@ -209,17 +209,17 @@ public class StringSerializerTest extends TestCase
         }
     }
     
-    public void testUTF8FromDouble() throws Exception
+    public void testDouble() throws Exception
     {
         for(double i : double_targets)
         {
             LinkedBuffer lb = new LinkedBuffer(256);
             WriteSession session = new WriteSession(lb);
-            StringSerializer.writeUTF8FromDouble(i, session, lb);
+            StringSerializer.writeDouble(i, session, lb);
             
             LinkedBuffer lb2 = new LinkedBuffer(1);
             WriteSession session2 = new WriteSession(lb2);
-            StringSerializer.writeUTF8FromDouble(i, session2, lb2);
+            StringSerializer.writeDouble(i, session2, lb2);
             
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();

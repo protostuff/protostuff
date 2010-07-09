@@ -210,10 +210,9 @@ public final class StringSerializer
     }
     
     /**
-     * Encodes the int to utf8 bytes (like converting an int to a string) and is directly
-     * written to the buffer.
+     * Writes the stringified int into the {@link LinkedBuffer}.
      */
-    public static LinkedBuffer writeUTF8FromInt(final int value, final WriteSession session, 
+    public static LinkedBuffer writeInt(final int value, final WriteSession session, 
             LinkedBuffer lb)
     {
         if(value == Integer.MIN_VALUE)
@@ -250,10 +249,9 @@ public final class StringSerializer
     }
     
     /**
-     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
-     * written to the buffer.
+     * Writes the stringified long into the {@link LinkedBuffer}.
      */
-    public static LinkedBuffer writeUTF8FromLong(final long value, final WriteSession session, 
+    public static LinkedBuffer writeLong(final long value, final WriteSession session, 
             LinkedBuffer lb)
     {
         if(value == Long.MIN_VALUE)
@@ -292,69 +290,23 @@ public final class StringSerializer
     }
     
     /**
-     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
-     * written to the buffer.
+     * Writes the stringified float into the {@link LinkedBuffer}.
      * TODO - skip string conversion and write directly to buffer
      */
-    public static LinkedBuffer writeUTF8FromFloat(final float value, final WriteSession session, 
-            LinkedBuffer lb)
+    public static LinkedBuffer writeFloat(final float value, final WriteSession session, 
+            final LinkedBuffer lb)
     {
-        final String str = Float.toString(value);
-        final int len = str.length();
-        session.size += len;
-        
-        int offset = lb.offset;
-        
-        if(offset + len > lb.buffer.length)
-        {
-            //TODO space efficiency (slower path)
-            // not enough size
-            lb = new LinkedBuffer(session.nextBufferSize, lb);
-            offset = 0;
-        }
-        
-        final byte[] buffer = lb.buffer;
-        
-        // we know its an ascii
-        for(int i = 0; i < len; i++)
-            buffer[offset++] = (byte)str.charAt(i);
-        
-        lb.offset = offset;
-        
-        return lb;
+        return writeAscii(Float.toString(value), session, lb);
     }
     
     /**
-     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
-     * written to the buffer.
+     * Writes the stringified double into the {@link LinkedBuffer}.
      * TODO - skip string conversion and write directly to buffer
      */
-    public static LinkedBuffer writeUTF8FromDouble(final double value, final WriteSession session, 
-            LinkedBuffer lb)
+    public static LinkedBuffer writeDouble(final double value, final WriteSession session, 
+            final LinkedBuffer lb)
     {
-        final String str = Double.toString(value);
-        final int len = str.length();
-        session.size += len;
-        
-        int offset = lb.offset;
-        
-        if(offset + len > lb.buffer.length)
-        {
-            //TODO space efficiency (slower path)
-            // not enough size
-            lb = new LinkedBuffer(session.nextBufferSize, lb);
-            offset = 0;
-        }
-        
-        final byte[] buffer = lb.buffer;
-        
-        // we know its an ascii
-        for(int i = 0; i < len; i++)
-            buffer[offset++] = (byte)str.charAt(i);
-        
-        lb.offset = offset;
-        
-        return lb;
+        return writeAscii(Double.toString(value), session, lb);
     }
     
     /**
@@ -398,9 +350,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -414,9 +366,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -428,9 +380,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -444,9 +396,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -458,9 +410,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -472,9 +424,9 @@ public final class StringSerializer
                     lb.offset = offset;
                     session.size += (offset - start);
                     // reset
-                    start = offset = 0;
-                    buffer = new byte[session.nextBufferSize];
+                    offset = start = 0;
                     limit = session.nextBufferSize;
+                    buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
@@ -544,7 +496,7 @@ public final class StringSerializer
     }
     
     /**
-     * Writes the utf8-encoded bytes into the {@link LinkedBuffer}.
+     * Writes the utf8-encoded bytes from the string into the {@link LinkedBuffer}.
      */
     public static LinkedBuffer writeUTF8(final String str, final WriteSession session, 
             final LinkedBuffer lb)
@@ -553,10 +505,58 @@ public final class StringSerializer
         if(len == 0)
             return lb;
         
-        final int remaining = lb.buffer.length - lb.offset;
+        return lb.offset + len > lb.buffer.length ? writeUTF8(str, 0, len, lb.buffer, lb.offset, 
+                lb.buffer.length, session, lb) : writeUTF8(str, 0, len, session, lb);
+    }
+    
+    /**
+     * Writes the ascii bytes from the string into the {@link LinkedBuffer}.
+     * It is the responsibility of the caller to know in advance that the string is 100% ascii.
+     * E.g if you convert a double/float to a string, you are sure it only contains ascii chars.
+     */
+    public static LinkedBuffer writeAscii(final String str, final WriteSession session, 
+            LinkedBuffer lb)
+    {
+        final int len = str.length();
+        if(len == 0)
+            return lb;
         
-        return len > remaining ? writeUTF8(str, 0, len, lb.buffer, lb.offset, lb.buffer.length, 
-                session, lb) : writeUTF8(str, 0, len, session, lb);
+        int offset = lb.offset;
+        int limit = lb.buffer.length;
+        byte[] buffer = lb.buffer;
+        
+        // actual size
+        session.size += len;
+        
+        if(offset + len > limit)
+        {
+            //slow path
+            for(int i = 0; i < len; i++)
+            {
+                if(offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    lb.offset = offset;
+                    // reset
+                    offset = 0;
+                    limit = session.nextBufferSize;
+                    buffer = new byte[limit];
+                    // grow
+                    lb = new LinkedBuffer(buffer, 0, lb);
+                }
+                buffer[offset++] = (byte)str.charAt(i);
+            }
+        }
+        else
+        {
+            // fast path
+            for(int i = 0; i < len; i++)
+                buffer[offset++] = (byte)str.charAt(i);
+        }
+        
+        lb.offset = offset;
+        
+        return lb;
     }
     
     private static void writeFixed2ByteInt(final int value, final byte[] buffer, int offset)
