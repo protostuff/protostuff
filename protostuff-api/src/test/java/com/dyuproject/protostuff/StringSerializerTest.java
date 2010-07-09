@@ -169,7 +169,7 @@ public class StringSerializerTest extends TestCase
     
     public void testUTF8FromLong() throws Exception
     {
-        for(long i : int_targets)
+        for(long i : long_targets)
         {
             LinkedBuffer lb = new LinkedBuffer(256);
             WriteSession session = new WriteSession(lb);
@@ -352,6 +352,7 @@ public class StringSerializerTest extends TestCase
     {
         String s1 = new String(b1, "UTF-8");
         String s2 = new String(b2, "UTF-8");
+        //System.err.println(s1 + " == " + s2);
         assertEquals(s1, s2);
     }
     
