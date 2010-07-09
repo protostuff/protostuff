@@ -115,7 +115,33 @@ public class StringSerializerTest extends TestCase
         -1234567890123456789l,
         Long.MAX_VALUE,
         Long.MIN_VALUE,
-};
+    };
+    
+    static final float[] float_targets = new float[]{
+        0.0f,
+        10.01f,
+        -10.01f,
+        1234.4321f
+        -1234.4321f,
+        56789.98765f,
+        -56789.98765f,
+        Float.MAX_VALUE,
+        Float.MIN_VALUE
+    };
+    
+    static final double[] double_targets = new double[]{
+        0.0d,
+        10.01d,
+        -10.01d,
+        1234.4321d
+        -1234.4321d,
+        56789.98765d,
+        -56789.98765d,
+        1234567890.0987654321d,
+        -1234567890.0987654321d,
+        Double.MAX_VALUE,
+        Double.MIN_VALUE
+    };
     
     public void testUTF8FromInt() throws Exception
     {
@@ -153,6 +179,48 @@ public class StringSerializerTest extends TestCase
             byte[] buffered = session.toByteArray();
             byte[] buffered_needed_to_grow = session2.toByteArray();
             byte[] builtin = STRING.ser(Long.toString(i));
+
+            assertEquals(builtin, buffered);
+            assertEquals(builtin, buffered_needed_to_grow);
+        }
+    }
+    
+    public void testUTF8FromFloat() throws Exception
+    {
+        for(float i : float_targets)
+        {
+            LinkedBuffer lb = new LinkedBuffer(256);
+            WriteSession session = new WriteSession(lb);
+            StringSerializer.writeUTF8FromFloat(i, session, lb);
+            
+            LinkedBuffer lb2 = new LinkedBuffer(1);
+            WriteSession session2 = new WriteSession(lb2);
+            StringSerializer.writeUTF8FromFloat(i, session2, lb2);
+            
+            byte[] buffered = session.toByteArray();
+            byte[] buffered_needed_to_grow = session2.toByteArray();
+            byte[] builtin = STRING.ser(Float.toString(i));
+
+            assertEquals(builtin, buffered);
+            assertEquals(builtin, buffered_needed_to_grow);
+        }
+    }
+    
+    public void testUTF8FromDouble() throws Exception
+    {
+        for(double i : double_targets)
+        {
+            LinkedBuffer lb = new LinkedBuffer(256);
+            WriteSession session = new WriteSession(lb);
+            StringSerializer.writeUTF8FromDouble(i, session, lb);
+            
+            LinkedBuffer lb2 = new LinkedBuffer(1);
+            WriteSession session2 = new WriteSession(lb2);
+            StringSerializer.writeUTF8FromDouble(i, session2, lb2);
+            
+            byte[] buffered = session.toByteArray();
+            byte[] buffered_needed_to_grow = session2.toByteArray();
+            byte[] builtin = STRING.ser(Double.toString(i));
 
             assertEquals(builtin, buffered);
             assertEquals(builtin, buffered_needed_to_grow);

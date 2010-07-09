@@ -261,6 +261,7 @@ public final class StringSerializer
             final int valueLen = LONG_MIN_VALUE.length;
             if(lb.offset + valueLen > lb.buffer.length)
             {
+                //TODO space efficiency (slower path)
                 // not enough size
                 lb = new LinkedBuffer(session.nextBufferSize, lb);
             }
@@ -277,6 +278,7 @@ public final class StringSerializer
         
         if(lb.offset + size > lb.buffer.length)
         {
+            //TODO space efficiency (slower path)
             // not enough size
             lb = new LinkedBuffer(session.nextBufferSize, lb);
         }
@@ -285,6 +287,72 @@ public final class StringSerializer
         
         lb.offset += size;
         session.size += size;
+        
+        return lb;
+    }
+    
+    /**
+     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
+     * written to the buffer.
+     * TODO - skip string conversion and write directly to buffer
+     */
+    public static LinkedBuffer writeUTF8FromFloat(final float value, final WriteSession session, 
+            LinkedBuffer lb)
+    {
+        final String str = Float.toString(value);
+        final int len = str.length();
+        session.size += len;
+        
+        int offset = lb.offset;
+        
+        if(offset + len > lb.buffer.length)
+        {
+            //TODO space efficiency (slower path)
+            // not enough size
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+            offset = 0;
+        }
+        
+        final byte[] buffer = lb.buffer;
+        
+        // we know its an ascii
+        for(int i = 0; i < len; i++)
+            buffer[offset++] = (byte)str.charAt(i);
+        
+        lb.offset = offset;
+        
+        return lb;
+    }
+    
+    /**
+     * Encodes the long to utf8 bytes (like converting a long to a string) and is directly
+     * written to the buffer.
+     * TODO - skip string conversion and write directly to buffer
+     */
+    public static LinkedBuffer writeUTF8FromDouble(final double value, final WriteSession session, 
+            LinkedBuffer lb)
+    {
+        final String str = Double.toString(value);
+        final int len = str.length();
+        session.size += len;
+        
+        int offset = lb.offset;
+        
+        if(offset + len > lb.buffer.length)
+        {
+            //TODO space efficiency (slower path)
+            // not enough size
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+            offset = 0;
+        }
+        
+        final byte[] buffer = lb.buffer;
+        
+        // we know its an ascii
+        for(int i = 0; i < len; i++)
+            buffer[offset++] = (byte)str.charAt(i);
+        
+        lb.offset = offset;
         
         return lb;
     }
