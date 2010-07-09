@@ -317,13 +317,42 @@ public final class BufferedOutput extends WriteSession implements Output
 
         session.size += valueLen;
         
-        if(valueLen > session.arrayCopySizeLimit || lb.offset + valueLen > lb.buffer.length)
+        if(lb.offset + valueLen > lb.buffer.length)
         {
-            // huge string/byte array.
-            // wrap, insert and create a view (e.g zero copy)
-            return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
+            final int remaining = lb.buffer.length - lb.offset;
+            if(remaining + session.nextBufferSize < valueLen)
+            {
+                // too large ... so we wrap and insert (zero-copy)
+                if(remaining == 0)
+                {
+                    // buffer was actually full ... return a fresh buffer 
+                    return new LinkedBuffer(session.nextBufferSize, 
+                            new LinkedBuffer(value, 0, valueLen, lb));
+                }
+                
+                // continue with the existing byte array of the previous buffer
+                return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
+            }
+            
+            // copy what can fit
+            System.arraycopy(value, 0, lb.buffer, lb.offset, remaining);
+            
+            lb.offset += remaining;
+            
+            // grow
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+            
+            final int leftover = value.length - remaining;
+            
+            // copy what's left
+            System.arraycopy(value, remaining, lb.buffer, 0, leftover);
+            
+            lb.offset += leftover;
+            
+            return lb;
         }
 
+        // it fits
         System.arraycopy(value, 0, lb.buffer, lb.offset, valueLen);
         
         lb.offset += valueLen;
