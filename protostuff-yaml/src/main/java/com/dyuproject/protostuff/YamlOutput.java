@@ -815,10 +815,10 @@ public final class YamlOutput extends WriteSession implements Output
                 return lb;
             }
             
-            int remaining = lb.buffer.length - lb.offset;
+            final int remaining = lb.buffer.length - lb.offset;
             if(remaining + session.nextBufferSize < valueLen)
             {
-                // too large ... must wrap and insert
+                // too large ... must wrap and insert (zero copy)
                 return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
             }
             
@@ -830,12 +830,12 @@ public final class YamlOutput extends WriteSession implements Output
             // grow
             lb = new LinkedBuffer(session.nextBufferSize, lb);
             
-            remaining = value.length - remaining;
+            final int leftover = value.length - remaining;
             
             // copy what's left
-            System.arraycopy(value, remaining, lb.buffer, 0, remaining);
+            System.arraycopy(value, remaining, lb.buffer, 0, leftover);
             
-            lb.offset += remaining;
+            lb.offset += leftover;
             
             return lb;
         }
