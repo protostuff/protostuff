@@ -19,7 +19,6 @@ import static com.dyuproject.protostuff.SerializableObjects.baz;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
-import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+
+import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Serialization tests for yaml.
@@ -44,23 +46,23 @@ public class YamlSerTest extends TestCase
                 new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
     }
     
-    public <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
+    public <T> int writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
-        YamlIOUtil.writeTo(out, message, schema, 
+        return YamlIOUtil.writeTo(out, message, schema, 
                 new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
     }
     
-    public <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
+    public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
     throws IOException
     {
-        YamlIOUtil.writeListTo(out, messages, schema, 
+        return YamlIOUtil.writeListTo(out, messages, schema, 
                 new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
     }
     
-    public <T> void writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
+    public <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
     throws IOException
     {
-        YamlIOUtil.writeListTo(buffer, messages, schema);
+        return YamlIOUtil.writeListTo(buffer, messages, schema);
     }
     
     public void testFoo() throws Exception
@@ -70,13 +72,19 @@ public class YamlSerTest extends TestCase
         byte[] data = toByteArray(fooCompare, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeTo(out, fooCompare, fooCompare.cachedSchema());
+        int total = writeTo(out, fooCompare, fooCompare.cachedSchema());
+        
+        assertTrue(data.length == total);
+        
         byte[] data2 = out.toByteArray();
+        
+        assertTrue(data.length == data2.length);
 
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
 
         assertEquals(text, text2);
+        print(text);
     }
     
     public void testFooEmpty() throws Exception
@@ -86,8 +94,13 @@ public class YamlSerTest extends TestCase
         byte[] data = toByteArray(fooCompare, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeTo(out, fooCompare, fooCompare.cachedSchema());
+        int total = writeTo(out, fooCompare, fooCompare.cachedSchema());
+        
+        assertTrue(data.length == total);
+        
         byte[] data2 = out.toByteArray();
+        
+        assertTrue(data.length == data2.length);
 
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
@@ -104,21 +117,26 @@ public class YamlSerTest extends TestCase
         list.add(fooCompare);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeListTo(out, list, fooCompare.cachedSchema());
+        int total = writeListTo(out, list, fooCompare.cachedSchema());
         
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         LinkedBuffer buffer = new LinkedBuffer(512);
-        writeListTo(buffer, list, fooCompare.cachedSchema());
+        int total2 = writeListTo(buffer, list, fooCompare.cachedSchema());
         LinkedBuffer.writeTo(out2, buffer);
         
         byte[] data = out.toByteArray();
         byte[] data2 = out2.toByteArray();
+        
+        assertTrue(data.length == total);
+        assertTrue(data2.length == total2);
+        assertTrue(total == total2);
         
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
         
         assertEquals(text, text2);
         print(text);
+        //System.err.println(text);
     }
     
     public void testBar() throws Exception
@@ -128,8 +146,13 @@ public class YamlSerTest extends TestCase
             byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            writeTo(out, barCompare, barCompare.cachedSchema());
+            int total = writeTo(out, barCompare, barCompare.cachedSchema());
+            
+            assertTrue(data.length == total);
+            
             byte[] data2 = out.toByteArray();
+            
+            assertTrue(data.length == data2.length);
 
             String text = STRING.deser(data);
             String text2 = STRING.deser(data2);
@@ -145,14 +168,18 @@ public class YamlSerTest extends TestCase
         byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeTo(out, barCompare, barCompare.cachedSchema());
+        int total = writeTo(out, barCompare, barCompare.cachedSchema());
+        
+        assertTrue(data.length == total);
+        
         byte[] data2 = out.toByteArray();
+        
+        assertTrue(data.length == data2.length);
 
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
 
         assertEquals(text, text2);
-        print(text);
     }
     
     public void testBarList() throws Exception
@@ -163,15 +190,19 @@ public class YamlSerTest extends TestCase
         list.add(negativeBar);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeListTo(out, list, barCompare.cachedSchema());
+        int total = writeListTo(out, list, barCompare.cachedSchema());
         
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         LinkedBuffer buffer = new LinkedBuffer(512);
-        writeListTo(buffer, list, barCompare.cachedSchema());
+        int total2 = writeListTo(buffer, list, barCompare.cachedSchema());
         LinkedBuffer.writeTo(out2, buffer);
         
         byte[] data = out.toByteArray();
         byte[] data2 = out2.toByteArray();
+        
+        assertTrue(data.length == total);
+        assertTrue(data2.length == total2);
+        assertTrue(total == total2);
         
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
@@ -187,8 +218,13 @@ public class YamlSerTest extends TestCase
             byte[] data = toByteArray(bazCompare, bazCompare.cachedSchema());
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            writeTo(out, bazCompare, bazCompare.cachedSchema());
+            int total = writeTo(out, bazCompare, bazCompare.cachedSchema());
+            
+            assertTrue(data.length == total);
+            
             byte[] data2 = out.toByteArray();
+            
+            assertTrue(data.length == data2.length);
 
             String text = STRING.deser(data);
             String text2 = STRING.deser(data2);
@@ -204,14 +240,18 @@ public class YamlSerTest extends TestCase
         byte[] data = toByteArray(bazCompare, bazCompare.cachedSchema());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeTo(out, bazCompare, bazCompare.cachedSchema());
+        int total = writeTo(out, bazCompare, bazCompare.cachedSchema());
+        
+        assertTrue(data.length == total);
+        
         byte[] data2 = out.toByteArray();
+        
+        assertTrue(data.length == data2.length);
 
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
 
         assertEquals(text, text2);
-        print(text);
     }
     
     public void testBazList() throws Exception
@@ -222,15 +262,19 @@ public class YamlSerTest extends TestCase
         list.add(negativeBaz);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeListTo(out, list, bazCompare.cachedSchema());
+        int total = writeListTo(out, list, bazCompare.cachedSchema());
         
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         LinkedBuffer buffer = new LinkedBuffer(512);
-        writeListTo(buffer, list, bazCompare.cachedSchema());
+        int total2 = writeListTo(buffer, list, bazCompare.cachedSchema());
         LinkedBuffer.writeTo(out2, buffer);
         
         byte[] data = out.toByteArray();
         byte[] data2 = out2.toByteArray();
+        
+        assertTrue(data.length == total);
+        assertTrue(data2.length == total2);
+        assertTrue(total == total2);
         
         String text = STRING.deser(data);
         String text2 = STRING.deser(data2);
@@ -299,6 +343,55 @@ public class YamlSerTest extends TestCase
 
         assertEquals(text, text2);
         print(text);
+    }
+    
+    public void testByteArray() throws Exception
+    {
+        ByteString b1 = ByteString.copyFromUtf8("b1");
+        ByteString b2 = ByteString.copyFromUtf8("1234567890");
+        
+        LinkedBuffer lb = new LinkedBuffer(10);
+        WriteSession session = new WriteSession(lb, 5, 5);
+        
+        LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
+        
+        assertTrue(lb.offset == 2);
+        
+        tail = YamlOutput.writeRaw(b2.getBytes(), null, session, tail);
+        
+        assertTrue(lb.offset == lb.buffer.length);
+        
+        assertTrue(lb.next != null);
+        
+        assertTrue(lb.next.offset == 2);
+    }
+    
+    public void testByteArrayZeroCopy() throws Exception
+    {
+        ByteString b1 = ByteString.copyFromUtf8("b1");
+        ByteString b2 = ByteString.copyFromUtf8("123456789012345");
+        
+        LinkedBuffer lb = new LinkedBuffer(10);
+        WriteSession session = new WriteSession(lb, 5, 5);
+        
+        LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
+        
+        assertTrue(lb.offset == 2);
+        
+        tail = YamlOutput.writeRaw(b2.getBytes(), null, session, tail);
+        
+        assertTrue(lb.offset == 2);
+        
+        assertTrue(lb.next != null);
+        
+        assertTrue(lb.next.offset == 15);
+        
+        assertTrue(lb.next.next != null);
+        
+        assertTrue(lb.next.next.offset == 2);
+        
+        // view
+        assertTrue(lb.buffer == lb.next.next.buffer);
     }
     
     static void print(String str)

@@ -14,10 +14,11 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
+
 
 /**
  * An output used for writing data with yaml format.
@@ -25,21 +26,8 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Jun 27, 2010
  */
-public final class YamlOutput implements Output
+public final class YamlOutput extends WriteSession implements Output
 {
-    
-    /**
-     * The default buffer size used by the internal buffer.
-     */
-    public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
-            "yamloutput.default_buffer_size", 512);
-    
-    /**
-     * Large strings greater that this limit will be either zero-copied to the 
-     * internal buffer or flushed to the {@link OutputStream} if streaming.  
-     */
-    public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-            "protostuff.array_copy_size_limit", 255);
     
     /**
      * Returns 2 if line break is using CRLF ("\r\n"), 1 if using LF ("\n")
@@ -53,60 +41,40 @@ public final class YamlOutput implements Output
     public static final int EXTRA_INDENT = Integer.getInteger(
             "yamloutput.extra_indent", 0);
     
-    private static final byte[] COLON_SPACE = new byte[]{
-        (byte)':', (byte)' '
-    };
-    
-    private static final byte[] TRUE = new byte[]{
-        (byte)'t', (byte)'r', (byte)'u', (byte)'e'
-    };
-    
-    private static final byte[] FALSE = new byte[]{
-        (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e'
-    };
-    
-    private static final byte[] BINARY_TAG = new byte[]{
-        (byte)'!', (byte)'!', 
-        (byte)'b', (byte)'i', (byte)'n', (byte)'a', (byte)'r', (byte)'y',
-        (byte)' ', (byte)'|'
-    };
-    
-    private static final byte[] DELIM_REPEATED = new byte[]{
-        (byte)'-', (byte)' '
-    };
-    
-    private final LinkedBuffer root;
-    private LinkedBuffer current;
     private final OutputStream out;
     
     private int indent = 0, lastNumber = 0;
-    private byte[] lastTag;
     
     private Schema<?> schema;
     
-    public YamlOutput(LinkedBuffer root)
+    public YamlOutput(LinkedBuffer buffer)
     {
-        this(root, null);
+        this(buffer, null);
     }
     
-    public YamlOutput(OutputStream out)
+    public YamlOutput(LinkedBuffer buffer, OutputStream out)
     {
-        this(new LinkedBuffer(DEFAULT_BUFFER_SIZE), out);
-    }
-    
-    public YamlOutput(LinkedBuffer root, OutputStream out)
-    {
-        if(root.buffer.length < 512)
-            throw new IllegalArgumentException("buffer size too small.");
-        
-        current = root;
-        this.root = root;
+        super(buffer);
         this.out = out;
     }
     
-    public YamlOutput(LinkedBuffer root, OutputStream out, Schema<?> schema)
+    public YamlOutput(LinkedBuffer buffer, OutputStream out, Schema<?> schema)
     {
-        this(root, out);
+        this(buffer, out);
+        this.schema = schema;
+    }
+    
+    public YamlOutput(LinkedBuffer buffer, int nextBufferSize, int arrayCopySizeLimit, 
+            OutputStream out)
+    {
+        super(buffer, nextBufferSize, arrayCopySizeLimit);
+        this.out = out;
+    }
+    
+    public YamlOutput(LinkedBuffer head, int nextBufferSize, int arrayCopySizeLimit, 
+            OutputStream out, Schema<?> schema)
+    {
+        this(head, nextBufferSize, arrayCopySizeLimit, out);
         this.schema = schema;
     }
     
@@ -117,46 +85,24 @@ public final class YamlOutput implements Output
     {
         if(out == null)
             throw new IllegalStateException("Nothing to flush.");
-        
-        LinkedBuffer.writeTo(out, root);
+
+        LinkedBuffer.writeTo(out, head);
         
         return this;
     }
     
     /**
-     * Returns the data written to this output as a single byte array.
-     */
-    byte[] toByteArray()
-    {
-        int size = 0;
-        for(LinkedBuffer node = root; node != null; node = node.next)
-            size += (node.offset - node.start);
-        
-        int start = 0;
-        final byte[] buffer = new byte[size];     
-        for(LinkedBuffer node = root; node != null; node = node.next)
-        {
-            final int len = node.offset - node.start;
-            if(len > 0)
-            {
-                System.arraycopy(node.buffer, node.start, buffer, start, len);
-                start += len;
-            }
-        }
-        return buffer;
-    }
-    
-    /**
      * Resets this output for re-use.
      */
-    public YamlOutput reset(boolean resetBuffer)
+    public YamlOutput clear(boolean clearBuffer, boolean clearSize)
     {
-        if(resetBuffer)
-            current = root.clear();
+        if(clearBuffer)
+            tail = head.clear();
+        if(clearSize)
+            size = 0;
         
         indent = 0;
         lastNumber = 0;
-        lastTag = null;
         
         return this;
     }
@@ -164,31 +110,17 @@ public final class YamlOutput implements Output
     /**
      * Before serializing a message/object tied to a schema, this should be called.
      */
-    public YamlOutput use(Schema<?> schema, boolean resetBuffer)
+    public YamlOutput use(Schema<?> schema, boolean clearBuffer, boolean clearSize)
     {
         this.schema = schema;
-        return reset(resetBuffer);
+        return clear(clearBuffer, clearSize);
     }
     
     YamlOutput writeSequenceDelim() throws IOException
     {
-        current = writeRaw(
-                DELIM_REPEATED,
-                out,
-                newLine(indent, out, current));
-        
+        tail = writeSequenceDelim(indent, out, this, tail);
         indent = inc(indent, 2);
         return this;
-    }
-    
-    static byte[] makeTag(String name, boolean repeated)
-    {
-        return STRING.ser(repeated ? ("!" + name + "[]") : ("!" + name));
-    }
-    
-    private byte[] currentTag(int fieldNumber, boolean repeated, String name)
-    {
-        return lastNumber == fieldNumber ? lastTag : (lastTag = makeTag(name, repeated));
     }
     
     private static int inc(int target, int byAmount)
@@ -196,40 +128,145 @@ public final class YamlOutput implements Output
         return target + byAmount + EXTRA_INDENT;
     }
 
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
+    public void writeBool(int fieldNumber, boolean bvalue, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                value ? TRUE : FALSE, 
+        final OutputStream out = this.out;
+        final String value = bvalue ? "true" : "false";
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeAscii(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeAscii(value, this, lb);
     }
 
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
+    public void writeDouble(int fieldNumber, double dvalue, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                STRING.ser(Double.toString(value)),
+        final OutputStream out = this.out;
+        final String value = Double.toString(dvalue);
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeAscii(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeAscii(value, this, lb);
     }
 
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
+    public void writeFloat(int fieldNumber, float fvalue, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                STRING.ser(Float.toString(value)),
+        final OutputStream out = this.out;
+        final String value = Float.toString(fvalue);
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeAscii(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + value.length()) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeAscii(value, this, lb);
     }
     
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
@@ -244,14 +281,49 @@ public final class YamlOutput implements Output
     
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                STRING.ser(Integer.toString(value)),
+        final OutputStream out = this.out;
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            // 11 is the largest possible size of the stringied int
+            if(out != null && (lb.offset + 11) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeInt(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + 11) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeInt(value, this, lb);
     }
 
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
@@ -276,14 +348,49 @@ public final class YamlOutput implements Output
 
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                STRING.ser(Long.toString(value)),
+        final OutputStream out = this.out;
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            // 20 is the largest possible size of the stringied long
+            if(out != null && (lb.offset + 20) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeLong(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + 20) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeLong(value, this, lb);
     }
 
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
@@ -303,14 +410,48 @@ public final class YamlOutput implements Output
     
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        current = writeScalar(
-                fieldNumber, 
-                STRING.ser(value),
+        final OutputStream out = this.out;
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated
+            final LinkedBuffer lb = writeSequenceDelim(inc(indent, 2), out, this, tail);
+            
+            if(out != null && (lb.offset + (value.length()*3)) > lb.buffer.length)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+
+            tail = StringSerializer.writeUTF8(
+                    value, 
+                    this, 
+                    lb);
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeFieldName(
+                schema.getFieldName(fieldNumber), 
+                indent, 
                 repeated, 
                 out, 
-                current, 
-                indent, 
-                schema);
+                this, 
+                tail);
+        
+        if(out != null && (lb.offset + value.length()*30) > lb.buffer.length)
+        {
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+        }
+        
+        tail = StringSerializer.writeUTF8(value, this, lb);
     }
     
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
@@ -321,14 +462,73 @@ public final class YamlOutput implements Output
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
         final OutputStream out = this.out;
-        final LinkedBuffer current = writeKV(
+        
+        if(lastNumber == fieldNumber)
+        {
+            // TODO Base64 encode
+            // repeated
+            tail = writeRaw(
+                    value, 
+                    out, 
+                    this, 
+                    writeSequenceDelim(inc(indent, 2), out, this, tail));
+
+            return;
+        }
+        
+        lastNumber = fieldNumber;
+
+        LinkedBuffer lb = writeTag(
+                "!binary", 
+                false, 
+                out, 
+                this, 
+                writeFieldName(
+                        schema.getFieldName(fieldNumber),
+                        indent,
+                        false,
+                        out,
+                        this,
+                        tail));
+        
+        lb = newLine(inc(indent, 2), out, this, lb);
+        if(repeated)
+        {
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                if(out != null)
+                {
+                    // flush
+                    out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                    // reset
+                    lb.offset = lb.start;
+                }
+                else
+                {
+                    // dash and space doesn't fit buffer
+                    lb = new LinkedBuffer(nextBufferSize, lb);
+                }
+            }
+            
+            lb.buffer[lb.offset++] = (byte)'-';
+            lb.buffer[lb.offset++] = (byte)' ';
+            
+            // dash and space
+            size += 2;
+        }
+        
+        tail = writeRaw(value, out, this, lb);
+        
+        /*final OutputStream out = this.out;
+        final LinkedBuffer tail = writeKV(
                 STRING.ser(schema.getFieldName(fieldNumber)), 
                 BINARY_TAG,
                 true,
                 out, 
-                newLine(indent, out, this.current));
+                this, 
+                newLine(indent, out, this, this.tail));
         
-        this.current = writeRaw(value, out, newLine(inc(indent, 2), out, current));
+        this.tail = writeRaw(value, out, this, newLine(inc(indent, 2), out, this, tail));*/
     }
     
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
@@ -342,28 +542,53 @@ public final class YamlOutput implements Output
     {
         final OutputStream out = this.out;
         final int lastIndent = indent;
-        final byte[] lastTag = this.lastTag;
         final Schema<?> lastSchema = this.schema;
         
         if(lastNumber != fieldNumber)
         {
-            current = writeKV(
-                    STRING.ser(lastSchema.getFieldName(fieldNumber)), 
-                    currentTag(fieldNumber, repeated, schema.messageName()), 
-                    true,
+            tail = writeTag(
+                    schema.messageName(), 
+                    repeated, 
                     out, 
-                    newLine(lastIndent, out, current));
+                    this, 
+                    writeFieldName(
+                            lastSchema.getFieldName(fieldNumber),
+                            lastIndent,
+                            false,
+                            out,
+                            this,
+                            tail));
         }
         
         if(repeated)
         {
             final int indentRepeated = inc(lastIndent, 2);
-            current = writeRaw(
-                    DELIM_REPEATED, 
-                    out, 
-                    newLine(indentRepeated, out, current));
+            LinkedBuffer lb = newLine(indentRepeated, out, this, tail);
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                if(out != null)
+                {
+                    // flush
+                    out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                    // reset
+                    lb.offset = lb.start;
+                }
+                else
+                {
+                    // dash and space doesn't fit buffer
+                    lb = new LinkedBuffer(nextBufferSize, lb);
+                }
+            }
+            
+            lb.buffer[lb.offset++] = (byte)'-';
+            lb.buffer[lb.offset++] = (byte)' ';
+            
+            size += 2;
             
             indent = inc(indentRepeated, 2);
+            
+            tail = lb;
         }
         else
             indent = inc(lastIndent, 2);
@@ -375,94 +600,169 @@ public final class YamlOutput implements Output
         this.schema = lastSchema;
         lastNumber = fieldNumber;
         indent = lastIndent;
-        this.lastTag = lastTag;
     }
     
-    private LinkedBuffer writeScalar(int fieldNumber, byte[] value, boolean repeated, 
-            OutputStream out, LinkedBuffer current, int indent, Schema<?> schema) 
+    static LinkedBuffer writeTag(final String name, final boolean repeated, 
+            final OutputStream out, final WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        if(lastNumber == fieldNumber)
+        boolean flushed = false;
+        if(lb.offset == lb.buffer.length)
         {
-            // repeated
-            return writeKV(
-                    DELIM_REPEATED, 
-                    value, 
-                    false,
-                    out, 
-                    newLine(inc(indent, 2), out, current));
-        }
-        
-        lastNumber = fieldNumber;
-        
-        if(repeated)
-        {
-            current = writeKV(
-                    STRING.ser(schema.getFieldName(fieldNumber)),
-                    null, 
-                    true, 
-                    out,
-                    newLine(indent, out, current));
-            
-            return writeKV(
-                    DELIM_REPEATED, 
-                    value, 
-                    false, 
-                    out, 
-                    newLine(inc(indent, 2), out, current));
-        }
-        
-        return writeKV( 
-                STRING.ser(schema.getFieldName(fieldNumber)), 
-                value, 
-                true, 
-                out, 
-                newLine(indent, out, current));
-    }
-    
-    private static LinkedBuffer writeKV(byte[] key, byte[] value, boolean includeColon, 
-            OutputStream out, LinkedBuffer lb) throws IOException
-    {
-        final int totalSize = includeColon ? key.length + 2 : key.length; 
-        
-        if(lb.offset + totalSize > lb.buffer.length)
-        {
-            // does not fit in buffer
-            if(out == null)
-            {
-                // link it
-                lb = new LinkedBuffer(new byte[lb.buffer.length], 0, lb);
-            }
-            else
+            if(out != null)
             {
                 // flush
-                // the buffer will be big enough (at least 512 bytes) to store the key, space and colon
                 out.write(lb.buffer, lb.start, lb.offset - lb.start);
                 // reset
                 lb.offset = lb.start;
+                flushed = true;
+            }
+            else
+            {
+                // grow
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
             }
         }
         
-        int offset = lb.offset;
-        final byte[] buffer = lb.buffer;
+        lb.buffer[lb.offset++] = (byte)'!';
         
-        System.arraycopy(key, 0, buffer, offset, key.length);
-        
-        if(includeColon)
+        if(out != null && !flushed && lb.offset + name.length() > lb.buffer.length)
         {
-            offset += key.length;
-            System.arraycopy(COLON_SPACE, 0, buffer, offset, 2);
+            // flush
+            out.write(lb.buffer, lb.start, lb.offset - lb.start);
+            // reset
+            lb.offset = lb.start;
+            flushed = true;
         }
         
-        lb.offset += totalSize;
+        lb = StringSerializer.writeAscii(name, session, lb);
         
-        return value == null ? lb : writeRaw(value, out, lb);
+        if(repeated)
+        {
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                if(out != null)
+                {
+                    // flush
+                    out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                    // reset
+                    lb.offset = lb.start;
+                }
+                else
+                {
+                    // grow
+                    lb = new LinkedBuffer(session.nextBufferSize, lb);
+                }
+            }
+            
+            lb.buffer[lb.offset++] = (byte)'[';
+            lb.buffer[lb.offset++] = (byte)']';
+            
+            // ! + [ + ]
+            session.size += 3;
+        }
+        else
+            session.size++;
+        
+        return lb;
     }
     
-    private static LinkedBuffer newLine(int indent, OutputStream out, LinkedBuffer lb) 
-    throws IOException
+    private static LinkedBuffer writeFieldName(final String name, final int indent, 
+            final boolean repeated, final OutputStream out, 
+            final WriteSession session, LinkedBuffer lb) throws IOException
     {
-        final int totalSize = LINE_BREAK_LEN + indent; 
+        lb = newLine(indent, out, session, lb);
+        
+        if(out != null)
+        {
+            if(lb.offset + name.length() > lb.buffer.length)
+            {
+                // we avoid allocating another buffer if there's an outputstream.
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // restart
+                lb.offset = lb.start;
+                
+                // field name surely cannot reach 511 bytes (minimum buffer size is 512)
+                lb = StringSerializer.writeAscii(
+                        name, 
+                        session, 
+                        lb);
+            }
+            else
+            {
+                lb = StringSerializer.writeAscii(
+                        name, 
+                        session, 
+                        lb);
+                
+                if(lb.offset + 2 > lb.buffer.length)
+                {
+                    // flush
+                    out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                    // reset
+                    lb.offset = lb.start;
+                }
+            }
+            
+            lb.buffer[lb.offset++] = (byte)':';
+            lb.buffer[lb.offset++] = (byte)' ';
+        }
+        else
+        {
+            lb = StringSerializer.writeAscii(
+                    name, 
+                    session, 
+                    lb);
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                // colon and space doesn't fit buffer
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+            
+            lb.buffer[lb.offset++] = (byte)':';
+            lb.buffer[lb.offset++] = (byte)' ';
+        }
+        
+        // colon and space
+        session.size += 2;
+        
+        if(repeated)
+        {
+            lb = newLine(inc(indent, 2), out, session, lb);
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                if(out != null)
+                {
+                    // flush
+                    out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                    // reset
+                    lb.offset = lb.start;
+                }
+                else
+                {
+                    // dash and space doesn't fit buffer
+                    lb = new LinkedBuffer(session.nextBufferSize, lb);
+                }
+            }
+            
+            lb.buffer[lb.offset++] = (byte)'-';
+            lb.buffer[lb.offset++] = (byte)' ';
+            
+            // dash and space
+            session.size += 2;
+        }
+        
+        return lb;
+    }
+    
+    private static LinkedBuffer newLine(final int indent, final OutputStream out, 
+            final WriteSession session, LinkedBuffer lb) throws IOException
+    {
+        final int totalSize = LINE_BREAK_LEN + indent;
+        session.size += totalSize;
+        
         if(lb.offset + totalSize > lb.buffer.length)
         {
             if(out != null)
@@ -497,11 +797,13 @@ public final class YamlOutput implements Output
         return lb;
     }
     
-    private static LinkedBuffer writeRaw(byte[] value, OutputStream out, LinkedBuffer lb)
-    throws IOException
+    static LinkedBuffer writeRaw(final byte[] value, final OutputStream out, 
+            final WriteSession session, LinkedBuffer lb) throws IOException
     {
         final int valueLen = value.length;
-        if(valueLen > ARRAY_COPY_SIZE_LIMIT || lb.offset + valueLen > lb.buffer.length)
+        session.size += valueLen;
+        
+        if(lb.offset + valueLen > lb.buffer.length)
         {
             if(out != null)
             {
@@ -513,14 +815,65 @@ public final class YamlOutput implements Output
                 return lb;
             }
             
-            // wrap and insert
-            return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
+            int remaining = lb.buffer.length - lb.offset;
+            if(remaining + session.nextBufferSize < valueLen)
+            {
+                // too large ... must wrap and insert
+                return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
+            }
+            
+            // copy what can fit
+            System.arraycopy(value, 0, lb.buffer, lb.offset, remaining);
+            
+            lb.offset += remaining;
+            
+            // grow
+            lb = new LinkedBuffer(session.nextBufferSize, lb);
+            
+            remaining = value.length - remaining;
+            
+            // copy what's left
+            System.arraycopy(value, remaining, lb.buffer, 0, remaining);
+            
+            lb.offset += remaining;
+            
+            return lb;
         }
 
+        // it fits
         System.arraycopy(value, 0, lb.buffer, lb.offset, valueLen);
         
         lb.offset += valueLen;
         
+        return lb;
+    }
+    
+    private static LinkedBuffer writeSequenceDelim(final int indent, final OutputStream out, 
+            final WriteSession session, LinkedBuffer lb) throws IOException
+    {
+        lb = newLine(indent, out, session, lb);
+
+        if(lb.offset + 2 > lb.buffer.length)
+        {
+            if(out != null)
+            {
+                // flush
+                out.write(lb.buffer, lb.start, lb.offset - lb.start);
+                // reset
+                lb.offset = lb.start;
+            }
+            else
+            {
+                // dash and space doesn't fit buffer
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+        }
+        
+        lb.buffer[lb.offset++] = (byte)'-';
+        lb.buffer[lb.offset++] = (byte)' ';
+        
+        session.size += 2;
+
         return lb;
     }
 
