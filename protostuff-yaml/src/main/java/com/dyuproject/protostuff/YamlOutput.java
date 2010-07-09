@@ -818,7 +818,15 @@ public final class YamlOutput extends WriteSession implements Output
             final int remaining = lb.buffer.length - lb.offset;
             if(remaining + session.nextBufferSize < valueLen)
             {
-                // too large ... must wrap and insert (zero copy)
+                // too large ... so we wrap and insert (zero-copy)
+                if(remaining == 0)
+                {
+                    // buffer was actually full ... return a fresh buffer 
+                    return new LinkedBuffer(session.nextBufferSize, 
+                            new LinkedBuffer(value, 0, valueLen, lb));
+                }
+                
+                // continue with the existing byte array of the previous buffer
                 return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
             }
             
