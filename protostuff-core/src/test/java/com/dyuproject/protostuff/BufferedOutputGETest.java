@@ -29,7 +29,7 @@ public class BufferedOutputGETest extends GroupEncodedNestedMessageTest
     public static <T> byte[] getByteArray(T message, Schema<T> schema)
     {
         byte[] result = IOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
         return result;
     }
     
@@ -42,7 +42,7 @@ public class BufferedOutputGETest extends GroupEncodedNestedMessageTest
     public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         IOUtil.writeDelimitedTo(out, message, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
     }
 
 }

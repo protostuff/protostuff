@@ -38,7 +38,7 @@ public class BufferedOutputTest extends SerDeserTest
     public static <T> byte[] getByteArray(T message, Schema<T> schema)
     {
         BufferedOutput output = new BufferedOutput(
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), false);
         try
         {
             schema.writeTo(output, message);
@@ -68,7 +68,7 @@ public class BufferedOutputTest extends SerDeserTest
     throws IOException
     {
         BufferedOutput output = new BufferedOutput(
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE), false);
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), false);
         schema.writeTo(output, message);
         CodedOutput.writeRawVarInt32Bytes(out, output.getSize());
         LinkedBuffer.writeTo(out, output.head);

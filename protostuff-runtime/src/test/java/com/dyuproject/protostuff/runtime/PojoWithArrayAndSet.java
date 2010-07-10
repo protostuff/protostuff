@@ -215,7 +215,7 @@ public final class PojoWithArrayAndSet implements Serializable
     {
         byte[] data = IOUtil.toByteArray(this, 
                 RuntimeSchema.getSchema(PojoWithArrayAndSet.class), 
-                LinkedBuffer.allocate(BufferedOutput.DEFAULT_BUFFER_SIZE));
+                LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE));
         out.writeInt(data.length);
         out.write(data);
         out.close();

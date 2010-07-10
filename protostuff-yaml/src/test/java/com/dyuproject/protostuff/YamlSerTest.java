@@ -43,20 +43,20 @@ public class YamlSerTest extends TestCase
     public <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return YamlIOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
     }
     
     public <T> int writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         return YamlIOUtil.writeTo(out, message, schema, 
-                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
     }
     
     public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
     throws IOException
     {
         return YamlIOUtil.writeListTo(out, messages, schema, 
-                new LinkedBuffer(YamlOutput.DEFAULT_BUFFER_SIZE));
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
     }
     
     public <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 

@@ -36,7 +36,7 @@ public class DelimitedTest extends TestCase
     throws IOException
     {
         return IOUtil.writeListTo(out, messages, schema, 
-                new LinkedBuffer(BufferedOutput.DEFAULT_BUFFER_SIZE));
+                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
     }
     
     public void testBar() throws Exception

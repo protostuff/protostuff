@@ -29,14 +29,35 @@ public final class LinkedBuffer
 {
     
     /**
+     * The minimum buffer size for a {@link LinkedBuffer}.
+     */
+    public static final int MIN_BUFFER_SIZE = 256;
+    
+    /**
+     * The default buffer size for a {@link LinkedBuffer}.
+     */
+    public static final int DEFAULT_BUFFER_SIZE = 512;
+    
+    /**
      * Allocates a new buffer with the specified size.
      */
     public static LinkedBuffer allocate(int size)
     {
-        if(size < 1)
-            throw new IllegalArgumentException("invalid size.");
+        if(size < MIN_BUFFER_SIZE)
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
         
         return new LinkedBuffer(size);
+    }
+    
+    /**
+     * Allocates a new buffer with the specified size and appends it to the previous buffer.
+     */
+    public static LinkedBuffer allocate(int size, LinkedBuffer buffer)
+    {
+        if(size < MIN_BUFFER_SIZE)
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+        
+        return new LinkedBuffer(size, buffer);
     }
     
     /**
@@ -52,8 +73,8 @@ public final class LinkedBuffer
      */
     public static LinkedBuffer use(byte[] buffer)
     {
-        if(buffer.length < 1)
-            throw new IllegalArgumentException("invalid buffer size.");
+        if(buffer.length < MIN_BUFFER_SIZE)
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
         
         return new LinkedBuffer(buffer, 0, 0);
     }
@@ -183,19 +204,20 @@ public final class LinkedBuffer
     public static class WriteSession
     {
         
-        public static final int DEFAULT_BUFFER_SIZE = Integer.getInteger(
-                "writesession.default_buffer_size", 512);
-        
         public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
                 "writesession.array_copy_size_limit", 255);
         
+        /**
+         * The main/root/head buffer of this write session.
+         */
         public final LinkedBuffer head;
         protected LinkedBuffer tail;
         
         protected int size = 0;
-        //protected int physicalBufferCount = 0;
-        //protected int virtualBufferCount = 0;
         
+        /**
+         * The next buffer size used when growing the buffer.
+         */
         public final int nextBufferSize;
         public final int arrayCopySizeLimit;
         
