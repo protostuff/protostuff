@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility for the serialization/deserialization of messages and objects tied to a schema.
+ * Utility for the protobuf serialization/deserialization of messages and objects tied to a schema.
+ * To use the native binary encoding (group-encoded), call the utility methods with the
+ * boolean flags "encodeNestedMessageAsGroup" and "decodeNestedMessageAsGroup" set to true.
  *
  * @author David Yu
  * @created Nov 12, 2009
