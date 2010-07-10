@@ -59,14 +59,15 @@ public final class JsonIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
         try
         {
             writeTo(baos, message, schema, numeric);
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
         }
         return baos.toByteArray();
     }
