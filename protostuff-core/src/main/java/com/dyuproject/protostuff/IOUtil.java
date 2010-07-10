@@ -18,8 +18,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -450,7 +448,7 @@ public final class IOUtil
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Writes to the {@link ObjectOutput}.
+     * Writes to the {@link DataOutput}.
      * 
      * @return the size of the message.
      */
@@ -462,7 +460,7 @@ public final class IOUtil
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Writes to the {@link ObjectOutput}.
+     * Writes to the {@link DataOutput}.
      * 
      * @return the size of the message.
      */
@@ -485,7 +483,7 @@ public final class IOUtil
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Merges from the {@link ObjectInput}.
+     * Merges from the {@link DataInput}.
      */
     public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
     throws IOException
@@ -495,7 +493,7 @@ public final class IOUtil
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Merges from the {@link ObjectInput}.
+     * Merges from the {@link DataInput}.
      */
     public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException

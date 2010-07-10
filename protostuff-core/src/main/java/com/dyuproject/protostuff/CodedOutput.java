@@ -45,11 +45,11 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
-
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Encodes and writes protocol message fields.
