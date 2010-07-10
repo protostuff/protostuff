@@ -37,6 +37,12 @@
                 <property>
                   <name>generate_helper_methods</name>
                 </property>
+                <property>
+                  <name>alphanumeric</name>
+                </property>
+                <property>
+                  <name>separate_schema</name>
+                </property>
               </options>
             </protoModule>
           </protoModules>

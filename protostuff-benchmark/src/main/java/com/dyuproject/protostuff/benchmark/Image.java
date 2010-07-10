@@ -15,7 +15,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
 
-public final class Image implements Externalizable, Message<Image>, Schema<Image>
+public final class Image implements Externalizable, Message<Image>
 {
     public enum Size implements com.dyuproject.protostuff.EnumLite<Size>
     {
@@ -48,7 +48,7 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
 
     public static Schema<Image> getSchema()
     {
-        return DEFAULT_INSTANCE;
+        return SCHEMA;
     }
 
     public static Image getDefaultInstance()
@@ -59,11 +59,13 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
     static final Image DEFAULT_INSTANCE = new Image();
 
     
-    private String uri;
-    private String title;
-    private Integer width;
-    private Integer height;
-    private Size size;
+    // non-private fields
+    // see http://developer.android.com/guide/practices/design/performance.html#package_inner
+    String uri;
+    String title;
+    Integer width;
+    Integer height;
+    Size size;
 
     public Image()
     {
@@ -154,131 +156,133 @@ public final class Image implements Externalizable, Message<Image>, Schema<Image
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, this);
+        IOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, this);
+        IOUtil.writeDelimitedTo(out, this, SCHEMA);
     }
 
     // message method
 
     public Schema<Image> cachedSchema()
     {
-        return this;
+        return SCHEMA;
     }
 
-    // schema methods
-
-    public Image newMessage()
+    static final Schema<Image> SCHEMA = new Schema<Image>()
     {
-        return new Image();
-    }
+        // schema methods
 
-    public Class<Image> typeClass()
-    {
-        return Image.class;
-    }
-
-    public String messageName()
-    {
-        return Image.class.getSimpleName();
-    }
-
-    public String messageFullName()
-    {
-        return Image.class.getName();
-    }
-
-    public boolean isInitialized(Image message)
-    {
-        return 
-            message.uri != null 
-            && message.width != null 
-            && message.height != null 
-            && message.size != null;
-    }
-
-    public void mergeFrom(Input input, Image message) throws IOException
-    {
-        while(true)
+        public Image newMessage()
         {
-            final int number = input.readFieldNumber(this);
+            return new Image();
+        }
+
+        public Class<Image> typeClass()
+        {
+            return Image.class;
+        }
+
+        public String messageName()
+        {
+            return Image.class.getSimpleName();
+        }
+
+        public String messageFullName()
+        {
+            return Image.class.getName();
+        }
+
+        public boolean isInitialized(Image message)
+        {
+            return 
+                message.uri != null 
+                && message.width != null 
+                && message.height != null 
+                && message.size != null;
+        }
+
+        public void mergeFrom(Input input, Image message) throws IOException
+        {
+            while(true)
+            {
+                final int number = input.readFieldNumber(this);
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        message.uri = input.readString();
+                        break;
+                    case 2:
+                        message.title = input.readString();
+                        break;
+                    case 3:
+                        message.width = input.readInt32();
+                        break;
+                    case 4:
+                        message.height = input.readInt32();
+                        break;
+                    case 5:
+                        message.size = Size.valueOf(input.readEnum());
+                        break;
+                    default:
+                        input.handleUnknownField(number, this);
+                }   
+            }
+        }
+
+
+        public void writeTo(Output output, Image message) throws IOException
+        {
+            if(message.uri == null)
+                throw new UninitializedMessageException(message);
+            output.writeString(1, message.uri, false);
+
+            if(message.title != null)
+                output.writeString(2, message.title, false);
+
+            if(message.width == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(3, message.width, false);
+
+            if(message.height == null)
+                throw new UninitializedMessageException(message);
+            output.writeInt32(4, message.height, false);
+
+            if(message.size == null)
+                throw new UninitializedMessageException(message);
+            output.writeEnum(5, message.size.number, false);
+        }
+
+        public String getFieldName(int number)
+        {
             switch(number)
             {
-                case 0:
-                    return;
-                case 1:
-                    message.uri = input.readString();
-                    break;
-                case 2:
-                    message.title = input.readString();
-                    break;
-                case 3:
-                    message.width = input.readInt32();
-                    break;
-                case 4:
-                    message.height = input.readInt32();
-                    break;
-                case 5:
-                    message.size = Size.valueOf(input.readEnum());
-                    break;
-                default:
-                    input.handleUnknownField(number, this);
-            }   
+                case 1: return "f1";
+                case 2: return "f2";
+                case 3: return "f3";
+                case 4: return "f4";
+                case 5: return "f5";
+                default: return null;
+            }
         }
-    }
 
-
-    public void writeTo(Output output, Image message) throws IOException
-    {
-        if(message.uri == null)
-            throw new UninitializedMessageException(message);
-        output.writeString(1, message.uri, false);
-
-        if(message.title != null)
-            output.writeString(2, message.title, false);
-
-        if(message.width == null)
-            throw new UninitializedMessageException(message);
-        output.writeInt32(3, message.width, false);
-
-        if(message.height == null)
-            throw new UninitializedMessageException(message);
-        output.writeInt32(4, message.height, false);
-
-        if(message.size == null)
-            throw new UninitializedMessageException(message);
-        output.writeEnum(5, message.size.number, false);
-    }
-
-    public String getFieldName(int number)
-    {
-        switch(number)
+        public int getFieldNumber(String name)
         {
-            case 1: return "uri";
-            case 2: return "title";
-            case 3: return "width";
-            case 4: return "height";
-            case 5: return "size";
-            default: return null;
+            final Integer number = fieldMap.get(name);
+            return number == null ? 0 : number.intValue();
         }
-    }
 
-    public int getFieldNumber(String name)
-    {
-        final Integer number = __fieldMap.get(name);
-        return number == null ? 0 : number.intValue();
-    }
-
-    private static final java.util.HashMap<String,Integer> __fieldMap = new java.util.HashMap<String,Integer>();
-    static
-    {
-        __fieldMap.put("uri", 1);
-        __fieldMap.put("title", 2);
-        __fieldMap.put("width", 3);
-        __fieldMap.put("height", 4);
-        __fieldMap.put("size", 5);
-    }
+        final java.util.HashMap<String,Integer> fieldMap = new java.util.HashMap<String,Integer>();
+        {
+            fieldMap.put("f1", 1);
+            fieldMap.put("f2", 2);
+            fieldMap.put("f3", 3);
+            fieldMap.put("f4", 4);
+            fieldMap.put("f5", 5);
+        }
+    };
 }
