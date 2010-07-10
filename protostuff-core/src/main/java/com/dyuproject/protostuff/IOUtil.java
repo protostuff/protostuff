@@ -469,8 +469,9 @@ public final class IOUtil
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
             boolean encodeNestedMessageAsGroup) throws IOException
     {
-        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE);
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
+        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
+        final BufferedOutput output = new BufferedOutput(buffer, LinkedBuffer.MIN_BUFFER_SIZE, 
+                encodeNestedMessageAsGroup);
         schema.writeTo(output, message);
         final int size = output.getSize();
         CodedOutput.writeRawVarInt32Bytes(out, size);
