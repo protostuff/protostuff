@@ -351,7 +351,7 @@ public class YamlSerTest extends TestCase
         ByteString b2 = ByteString.copyFromUtf8("1234567890");
         
         LinkedBuffer lb = new LinkedBuffer(10);
-        WriteSession session = new WriteSession(lb, 5, 5);
+        WriteSession session = new WriteSession(lb, 5);
         
         LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
         
@@ -372,7 +372,7 @@ public class YamlSerTest extends TestCase
         ByteString b2 = ByteString.copyFromUtf8("123456789012345");
         
         LinkedBuffer lb = new LinkedBuffer(10);
-        WriteSession session = new WriteSession(lb, 5, 5);
+        WriteSession session = new WriteSession(lb, 5);
         
         LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
         

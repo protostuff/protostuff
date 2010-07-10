@@ -288,7 +288,7 @@ public class CompareOutputsTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 351, false);
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, false);
             try
             {
                 message.cachedSchema().writeTo(output, message);
@@ -314,7 +314,7 @@ public class CompareOutputsTest extends TestCase
 
         public <T extends Message<T>> byte[] serialize(T message)
         {            
-            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, 351, true);
+            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, true);
             try
             {
                 message.cachedSchema().writeTo(output, message);

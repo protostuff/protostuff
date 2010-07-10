@@ -64,17 +64,15 @@ public final class YamlOutput extends WriteSession implements Output
         this.schema = schema;
     }
     
-    public YamlOutput(LinkedBuffer buffer, int nextBufferSize, int arrayCopySizeLimit, 
-            OutputStream out)
+    public YamlOutput(LinkedBuffer buffer, int nextBufferSize, OutputStream out)
     {
-        super(buffer, nextBufferSize, arrayCopySizeLimit);
+        super(buffer, nextBufferSize);
         this.out = out;
     }
     
-    public YamlOutput(LinkedBuffer head, int nextBufferSize, int arrayCopySizeLimit, 
-            OutputStream out, Schema<?> schema)
+    public YamlOutput(LinkedBuffer head, int nextBufferSize, OutputStream out, Schema<?> schema)
     {
-        this(head, nextBufferSize, arrayCopySizeLimit, out);
+        this(head, nextBufferSize, out);
         this.schema = schema;
     }
     

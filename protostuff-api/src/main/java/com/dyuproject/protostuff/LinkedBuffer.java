@@ -52,12 +52,12 @@ public final class LinkedBuffer
     /**
      * Allocates a new buffer with the specified size and appends it to the previous buffer.
      */
-    public static LinkedBuffer allocate(int size, LinkedBuffer buffer)
+    public static LinkedBuffer allocate(int size, LinkedBuffer previous)
     {
         if(size < MIN_BUFFER_SIZE)
             throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
         
-        return new LinkedBuffer(size, buffer);
+        return new LinkedBuffer(size, previous);
     }
     
     /**
@@ -204,38 +204,41 @@ public final class LinkedBuffer
     public static class WriteSession
     {
         
-        public static final int ARRAY_COPY_SIZE_LIMIT = Integer.getInteger(
-                "writesession.array_copy_size_limit", 255);
-        
         /**
          * The main/root/head buffer of this write session.
          */
         public final LinkedBuffer head;
+        
+        /**
+         * The last buffer of this write session (This points to head if growing not needed).
+         */
         protected LinkedBuffer tail;
         
+        /**
+         * The actual number of bytes written to the buffer.
+         */
         protected int size = 0;
         
         /**
          * The next buffer size used when growing the buffer.
          */
         public final int nextBufferSize;
-        public final int arrayCopySizeLimit;
         
         public WriteSession(LinkedBuffer head)
         {
-            this(head, DEFAULT_BUFFER_SIZE, ARRAY_COPY_SIZE_LIMIT);
+            this(head, DEFAULT_BUFFER_SIZE);
         }
         
-        public WriteSession(LinkedBuffer head, int nextBufferSize, int arrayCopySizeLimit)
+        public WriteSession(LinkedBuffer head, int nextBufferSize)
         {
             tail = head;
             this.head = head;
             this.nextBufferSize = nextBufferSize;
-            this.arrayCopySizeLimit = arrayCopySizeLimit;
         }
         
         /**
-         * The tail will be point to the head and the size will be reset to zero.
+         * The buffer will be cleared (tail will point to the head) and the size 
+         * will be reset to zero.
          */
         public WriteSession clear()
         {

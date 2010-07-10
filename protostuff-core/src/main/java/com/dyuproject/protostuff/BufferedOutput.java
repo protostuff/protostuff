@@ -52,10 +52,10 @@ public final class BufferedOutput extends WriteSession implements Output
         this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
-    public BufferedOutput(LinkedBuffer buffer, int nextBufferSize, int arrayCopySizeLimit, 
+    public BufferedOutput(LinkedBuffer buffer, int nextBufferSize, 
             boolean encodeNestedMessageAsGroup)
     {
-        super(buffer, nextBufferSize, arrayCopySizeLimit);
+        super(buffer, nextBufferSize);
         this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
