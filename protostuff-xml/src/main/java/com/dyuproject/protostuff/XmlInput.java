@@ -14,7 +14,6 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
 import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -23,6 +22,8 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * An input used for reading data with xml format.

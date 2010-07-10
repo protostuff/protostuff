@@ -14,7 +14,6 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
 import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_BITS;
 import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_MASK;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
@@ -28,6 +27,8 @@ import static com.dyuproject.protostuff.WireFormat.getTagWireType;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Reads and decodes protocol buffer message fields from an internal byte array buffer.

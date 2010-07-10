@@ -45,7 +45,6 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
 import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_BITS;
 import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_MASK;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
@@ -55,6 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Reads and decodes protocol message fields.
