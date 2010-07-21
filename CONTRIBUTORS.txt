@@ -1,0 +1,6 @@
+Patch contributors:
+  J.D. Zamfirescu
+    * protostuff-parser - supplied code to parse protobuf "syntax2" header. (Issue 6)
+
+  Philippe Laflamme
+    * protostuff-parser - supplied code to parse protobuf extensions and allow generated code to access its metadata. (Issue 25)
