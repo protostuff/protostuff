@@ -357,7 +357,20 @@ public class ProtoParserTest extends TestCase
                 Field.Int64.class);
         assertNotNull(small_int64);
         assertTrue(-Long.MAX_VALUE == small_int64.getDefaultValue().longValue());
+        
+        Message testAllExtensions = proto.getMessage("TestAllExtensions");
+        assertNotNull(proto.getExtensions());
+        assertTrue(proto.getExtensions().size() > 0);
+        Extension extension = proto.getExtensions().iterator().next();
+        assertEquals(testAllExtensions, extension.extendedMessage);
+        assertNotNull(extension.getFields());
+        assertTrue(extension.getFields().size() > 0);
 
+        Message testNestedExtension = proto.getMessage("TestNestedExtension");
+        assertNotNull(testNestedExtension.getNestedExtensions());
+        assertEquals(1, testNestedExtension.getNestedExtensions().size());
+        extension = testNestedExtension.getNestedExtensions().iterator().next();
+        assertTrue(extension.isNested());
     }
     
     public void testEnumWithTrailingSemicolon() throws Exception

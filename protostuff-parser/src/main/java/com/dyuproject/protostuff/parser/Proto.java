@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.parser;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
@@ -38,6 +39,7 @@ public class Proto
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
     final LinkedHashMap<String, Service> services = new LinkedHashMap<String, Service>();
+    final ArrayList<Extension> extensions = new ArrayList<Extension>();
     
     public Proto()
     {
@@ -148,7 +150,17 @@ public class Proto
     {
         return services.get(name);
     }
-    
+
+    public void addExtension(Extension extension)
+    {
+        extensions.add(extension);
+    }
+
+    public Collection<Extension> getExtensions()
+    {
+        return extensions;
+    }
+
     public Collection<Proto> getImportedProtos()
     {
         return importedProtos.values();
@@ -191,6 +203,9 @@ public class Proto
         
         for(Service s : getServices())
             s.resolveReferences();
+
+        for(Extension e : getExtensions())
+          e.resolveReferences();
     }
     
     public String toString()
@@ -209,5 +224,6 @@ public class Proto
     {
         public Proto load(String path, Proto importer) throws Exception;
     }
+
 
 }

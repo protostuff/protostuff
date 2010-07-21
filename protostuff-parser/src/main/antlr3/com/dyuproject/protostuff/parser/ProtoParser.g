@@ -62,13 +62,13 @@ statement [Proto proto]
     |   header_option[proto]
     |   message_block[proto, null]
     |   enum_block[proto, null]
-    |   extend_block[proto]
+    |   extend_block[proto, null]
     |   service_block[proto]
     ;
 
 // some keywords that might possibly be used as a variable
 var
-    :   PKG | SYNTAX | MESSAGE | SERVICE | GROUP | RPC | ID
+    :   PKG | SYNTAX | MESSAGE | SERVICE | GROUP | RPC | ID | MAX
     ;
 
 header_syntax [Proto proto]
@@ -131,19 +131,31 @@ message_body [Proto proto, Message message]
     :   message_block[proto, message]
     |   message_field[proto, message]
     |   enum_block[proto, message]
-    |   extend_block[proto]
+    |   extend_block[proto, message]
     |   extensions_range[proto, message]
     ;
     
 extensions_range [Proto proto, Message message]
-    :   EXTENSIONS first=(NUMINT | ID)
-        (SEMICOLON! | (TO last=(NUMINT | ID)) {
-            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            warn("ignoring 'extensions' atm @ line " + $EXTENSIONS.line + suffix);
-        } SEMICOLON!)
+@init {
+  int first = -1;
+  int last = -1;
+}
+    :   EXTENSIONS f=NUMINT {
+          first = Integer.parseInt($f.text);
+        }
+        TO 
+        ( l=NUMINT {
+            last = Integer.parseInt($l.text);
+          }         
+        | MAX {
+            last = 536870911;
+          }
+         ) {
+            message.defineExtensionRange(first, last);
+        } SEMICOLON!
     ;
     
-message_field [Proto proto, Message message]
+message_field [Proto proto, HasFields message]
 @init {
     Field.Modifier modifier = null;
     FieldHolder fieldHolder = null;
@@ -168,7 +180,7 @@ message_field [Proto proto, Message message]
         (SEMICOLON! | ignore_block)
     ;
     
-field_type [Proto proto, Message message, FieldHolder fieldHolder]
+field_type [Proto proto, HasFields message, FieldHolder fieldHolder]
     :   INT32 { fieldHolder.setField(new Field.Int32()); }
     |   UINT32 { fieldHolder.setField(new Field.UInt32()); }
     |   SINT32 { fieldHolder.setField(new Field.SInt32()); }
@@ -201,12 +213,12 @@ field_type [Proto proto, Message message, FieldHolder fieldHolder]
         }
     ;
     
-field_options [Proto proto, Message message, Field field]
+field_options [Proto proto, HasFields message, Field field]
     :   LEFTSQUARE field_options_keyval[proto, message, field] 
         (COMMA field_options_keyval[proto, message, field])* RIGHTSQUARE
     ;
     
-field_options_keyval [Proto proto, Message message, Field field]
+field_options_keyval [Proto proto, HasFields message, Field field]
     :   key=(DEFAULT|ID) ASSIGN (STRING_LITERAL {
             if("default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
@@ -392,7 +404,7 @@ field_options_keyval [Proto proto, Message message, Field field]
         )
     ;
     
-signed_constant [Proto proto, Message message, Field field, String key]
+signed_constant [Proto proto, HasFields message, Field field, String key]
     :   MINUS ID {
             if("default".equals(key)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
@@ -468,11 +480,29 @@ rpc_block [Proto proto, Service service]
         }
     ;
     
-extend_block [Proto proto]
-    :   EXTEND t=(FULL_ID | ID) ignore_block {
-            String suffix = proto.getFile()==null ? "" : " of " + proto.getFile().getName();
-            warn("ignoring 'extend' block atm @ line " + $EXTEND.line + suffix);
+extend_block [Proto proto, Message parent]
+@init {
+    Extension extension = null;
+}
+    :   EXTEND (
+        FULL_ID {
+            String fullType = $FULL_ID.text;
+            int lastDot = fullType.lastIndexOf('.');
+            String packageName = fullType.substring(0, lastDot); 
+            String type = fullType.substring(lastDot+1);
+            extension = new Extension(proto, parent, packageName, type);
         }
+    |   ID { 
+            String type = $ID.text;
+            extension = new Extension(proto, parent, null, type);
+        } )
+        
+        LEFTCURLY (message_field[proto, extension])* RIGHTCURLY {
+            if(parent==null)
+                proto.addExtension(extension);
+            else
+                parent.addNestedExtension(extension);
+        } (SEMICOLON?)!
     ;
     
 ignore_block

@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public class Message implements HasName
+public class Message implements HasName, HasFields
 {
     
     String name;
@@ -34,10 +34,14 @@ public class Message implements HasName
     final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String,EnumGroup> nestedEnumGroups = new LinkedHashMap<String,EnumGroup>();
     final LinkedHashMap<String,Field<?>> fields = new LinkedHashMap<String,Field<?>>();
+    final ArrayList<Extension> nestedExtensions = new ArrayList<Extension>();
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
     // code generator helpers
-    boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent;
+    boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent, extensible;
     boolean requiredFieldPresentOnCurrent;
+    
+    final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
+    final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
     
     public Message()
     {
@@ -58,7 +62,7 @@ public class Message implements HasName
     {
         Proto p = proto;
         if(p==null)
-            p = proto = parentMessage.getProto();
+            proto = p = parentMessage.getProto();
         return p;
     }
     
@@ -150,7 +154,7 @@ public class Message implements HasName
         return (T)fields.get(name);
     }
     
-    void addField(Field<?> field)
+    public void addField(Field<?> field)
     {
         if(field.number<1)
         {
@@ -160,12 +164,63 @@ public class Message implements HasName
         fields.put(field.name, field);
     }
     
+    public void defineExtensionRange(int first, int last)
+    {
+        extensionRanges.add(new int[]{ first, last });
+        this.extensible = true;
+    }
+
+    public void addNestedExtension(Extension extension) 
+    {
+        this.nestedExtensions.add(extension);
+    }
+
+    public Collection<Extension> getNestedExtensions()
+    {
+        return this.nestedExtensions;
+    }
+    
+    public void extend(Extension extension)
+    {
+        if (isExtensible() == false)
+        {
+            throw new IllegalStateException("Message " + getFullName()
+                    + " does not define extension range.");
+        }
+
+        for (Field<?> field : extension.getFields())
+        {
+            int number = field.getNumber();
+            boolean inRange = false;
+            for (int[] range : extensionRanges)
+            {
+                if (number >= range[0] && number <= range[1])
+                {
+                    inRange = true;
+                    break;
+                }
+            }
+            if (inRange == false)
+            {
+                throw new IllegalStateException("Extension '" + field.getName()
+                        + "' is outside extension range.");
+            }
+            if (this.extensions.containsKey(number))
+            {
+                throw new IllegalStateException("Extension already defined for number '" + number
+                        + "'.");
+            }
+            this.extensions.put(number, field);
+        }
+    }
+    
     public String toString()
     {
         return new StringBuilder()
             .append('{')
             .append("name:").append(name)
             .append(',').append("enumGroups:").append(nestedEnumGroups.values())
+            .append(',').append("extensions:").append(nestedExtensions)
             .append(',').append("fields:").append(fields.values())
             .append('}')
             .toString();
@@ -203,6 +258,11 @@ public class Message implements HasName
     public boolean isRequiredFieldPresentOnCurrent()
     {
         return requiredFieldPresentOnCurrent;
+    }
+    
+    public boolean isExtensible() 
+    {
+        return extensible;
     }
     
     // post parse
@@ -247,7 +307,7 @@ public class Message implements HasName
                         continue;
                     }
                     
-                    Message msg = findMessageFrom(fr.message, refName);
+                    Message msg = findMessageFrom((Message)fr.hasFields, refName);
                     if(msg!=null 
                             || (msg=p.getMessage(refName))!=null 
                             || (msg=getImportedMessage(refName, p)) != null)
@@ -257,7 +317,7 @@ public class Message implements HasName
                         continue;
                     }
 
-                    EnumGroup eg = fr.message.getNestedEnumGroup(refName);
+                    EnumGroup eg = findEnumGroupFrom((Message)fr.hasFields, refName);
                     if(eg!=null 
                             || (eg=p.getEnumGroup(refName))!=null 
                             || (eg=getImportedEnumGroup(refName, p)) != null)
@@ -274,7 +334,7 @@ public class Message implements HasName
                 if(dotIdx==-1)
                 {
                     // could be a nested message/enum
-                    Message msg = findMessageFrom(fr.message, packageName);
+                    Message msg = findMessageFrom((Message)fr.hasFields, packageName);
                     if(msg!=null 
                             || (msg=p.getMessage(packageName))!=null 
                             || (msg=getImportedMessage(packageName, p)) != null)
@@ -384,6 +444,10 @@ public class Message implements HasName
         }
         sortedFields.addAll(fields.values());
         Collections.sort(sortedFields);
+        
+        for(Extension extension : this.nestedExtensions)
+            extension.resolveReferences();
+        
         for(Message m : nestedMessages.values())
             m.resolveReferences(root);
     }
@@ -433,6 +497,14 @@ public class Message implements HasName
         if(m==null && message.isNested())
             return findMessageFrom(message.parentMessage, name);
         return m;
+    }
+    
+    static EnumGroup findEnumGroupFrom(Message message, String name)
+    {
+        EnumGroup eg = message.getNestedEnumGroup(name);
+        if(eg==null && message.isNested())
+            return findEnumGroupFrom(message.parentMessage, name);
+        return eg;
     }
     
     static void resolveFullName(Message message, StringBuilder buffer)

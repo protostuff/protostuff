@@ -338,14 +338,14 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
     public static class Reference extends Field<Object>
     {
         java.lang.String refName, packageName;
-        Message message;
+        HasFields hasFields;
         
         public Reference(java.lang.String packageName, java.lang.String refName, 
-                Message message)
+                HasFields hasFields)
         {
             this.packageName = packageName;
             this.refName = refName;
-            this.message = message;
+            this.hasFields = hasFields;
         }
         
         public java.lang.String getRefName()
@@ -356,11 +356,6 @@ public abstract class Field<T> implements Comparable<Field<?>>, HasName
         public java.lang.String getPackageName()
         {
             return packageName;
-        }
-        
-        public Message getMessage()
-        {
-            return message;
         }
         
         public java.lang.String getJavaType()

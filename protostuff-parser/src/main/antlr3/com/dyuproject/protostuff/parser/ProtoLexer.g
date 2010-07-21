@@ -211,6 +211,10 @@ DEFAULT
     :   'default'
     ;
 
+MAX
+    :   'max'
+    ;    
+
 FULL_ID
     : ID ('.' ID)+
     ;
