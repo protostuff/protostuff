@@ -121,18 +121,21 @@ public class Service implements HasName
         
         void resolveReferences()
         {
-            argType = Message.findMessage(argName, argPackage, proto);
-            returnType = Message.findMessage(retName, retPackage, proto);
-            if(argType == null)
+            Message argType = Message.findMessage(argName, argPackage, proto);
+            if((argType = Message.findMessage(argName, argPackage, proto)) == null)
             {
                 String type = argPackage == null ? argName : argPackage + "." + argName;
                 throw new IllegalStateException("The message " + type + " is not defined.");
             }
+            this.argType = argType;
+            
+            Message returnType = Message.findMessage(retName, retPackage, proto);
             if(returnType == null)
             {
                 String type = retPackage == null ? retName : retPackage + "." + retName;
                 throw new IllegalStateException("The message " + type + " is not defined.");
             }
+            this.returnType = returnType;
         }
         
     }
