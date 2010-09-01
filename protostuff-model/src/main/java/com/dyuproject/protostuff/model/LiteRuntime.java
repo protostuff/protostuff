@@ -40,11 +40,19 @@ public final class LiteRuntime
     public static final ModelMeta.Factory MODEL_META_FACTORY = new ModelMeta.Factory()
     {
         @SuppressWarnings("unchecked")
+        protected Class<? extends Builder<?>> getBuilderClass(Class<? extends AbstractMessageLite> messageClass)
+        {
+            for (Class clazz : messageClass.getDeclaredClasses()) {
+                if (Builder.class.isAssignableFrom(clazz)) {
+                    return clazz;
+                }
+            }
+            throw new RuntimeException("Could not find builder class for " + messageClass);
+        }
+      
         public ModelMeta create(Class<? extends AbstractMessageLite> messageClass)
         {
-            Class<? extends Builder<?>> builderClass = 
-                (Class<? extends Builder<?>>)messageClass.getDeclaredClasses()[0];
-            
+            Class<? extends Builder<?>> builderClass = getBuilderClass(messageClass);
             Map<String,PropMeta> propertyMetaMap = new HashMap<String,PropMeta>();
             int[] minMax = parse(messageClass, builderClass, propertyMetaMap);        
             return new ModelMeta(messageClass, builderClass, propertyMetaMap, minMax[0], minMax[1]);

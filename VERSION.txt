@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 26: Bug in the reflection compiler with nested protobuf types
 + Issue 25: Allow generating code for message extensions (patch by Philippe Laflamme)
 
 protostuff-1.0.0.M3 2010-07-10

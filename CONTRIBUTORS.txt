@@ -4,3 +4,6 @@ Patch contributors:
 
   Philippe Laflamme
     * protostuff-parser - supplied code to parse protobuf extensions and allow generated code to access its metadata. (Issue 25)
+    
+  Joseph Gentle
+    * protostuff-model - fixed bug in the reflection compiler with nested protobuf types. (Issue 26)
