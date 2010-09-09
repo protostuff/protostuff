@@ -313,6 +313,12 @@ public final class BufferedOutput extends WriteSession implements Output
             final WriteSession session, LinkedBuffer lb)
     {
         final int valueLen = value.length;
+        if(valueLen == 0)
+        {
+            // write only the tag and delimiter
+            return writeTagAndRawVarInt32(tag, valueLen, session, lb);
+        }
+        
         lb = writeTagAndRawVarInt32(tag, valueLen, session, lb);
 
         session.size += valueLen;
