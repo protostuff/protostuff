@@ -92,7 +92,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.INT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -159,7 +159,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.INT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -226,7 +226,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.INT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -293,7 +293,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.INT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -361,7 +361,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.UINT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -428,7 +428,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.SINT32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -495,7 +495,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.FIXED32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -562,7 +562,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.SFIXED32, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -629,7 +629,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.INT64, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -697,7 +697,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.UINT64, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -764,7 +764,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.SINT64, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -831,7 +831,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.FIXED64, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -898,7 +898,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.SFIXED64, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -965,7 +965,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.FLOAT, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -1033,7 +1033,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.DOUBLE, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
@@ -1101,7 +1101,7 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.BOOL, number, name)
             {
-                boolean primitive = f.getType().isPrimitive();
+                final boolean primitive = f.getType().isPrimitive();
                 {
                     f.setAccessible(true);
                 }                    
