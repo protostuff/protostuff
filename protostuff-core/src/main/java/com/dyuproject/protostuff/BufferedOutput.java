@@ -308,6 +308,27 @@ public final class BufferedOutput extends WriteSession implements Output
         return lb;
     }
     
+    /** Returns the buffer encoded with the tag and LinkedBuffer (zero-copy) */
+    public static LinkedBuffer writeTagAndLinkedBuffer(int tag, 
+            final LinkedBuffer buffer, final WriteSession session, LinkedBuffer lb)
+    {
+        final int valueLen = buffer.offset - buffer.start;
+        if(valueLen == 0)
+        {
+            // write only the tag and delimiter
+            return writeTagAndRawVarInt32(tag, valueLen, session, lb);
+        }
+        
+        lb = writeTagAndRawVarInt32(tag, valueLen, session, lb);
+        // zero copy
+        lb.next = buffer;
+        
+        final int remaining = lb.buffer.length - lb.offset;
+        // if all filled up, return a fresh buffer.
+        return remaining == 0 ? new LinkedBuffer(session.nextBufferSize, buffer) : 
+            new LinkedBuffer(lb, buffer);
+    }
+    
     /** Returns the buffer encoded with the tag and byte array */
     public static LinkedBuffer writeTagAndByteArray(int tag, final byte[] value, 
             final WriteSession session, LinkedBuffer lb)
