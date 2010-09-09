@@ -17,6 +17,8 @@ package com.dyuproject.protostuff.runtime;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -2176,6 +2178,115 @@ public abstract class RuntimeFieldFactory<V>
         }
     };
     
+    public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>()
+    {
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        {
+            return new Field<T>(FieldType.STRING, number, name)
+            {               
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    try
+                    {
+                        f.set(message, new BigDecimal(input.readString()));
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    try
+                    {
+                        BigDecimal value = (BigDecimal)f.get(message);
+                        if(value!=null)
+                            output.writeString(this.number, value.toString(), false);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }                    
+            };
+        }
+        public BigDecimal readFrom(Input input) throws IOException
+        {
+            return new BigDecimal(input.readString());
+        }
+        public void writeTo(Output output, int number, BigDecimal value, boolean repeated) 
+        throws IOException
+        {
+            output.writeString(number, value.toString(), repeated);
+        }
+        public FieldType getFieldType()
+        {
+            return FieldType.STRING;
+        }
+    };
+    
+    public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>()
+    {
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        {
+            return new Field<T>(FieldType.BYTES, number, name)
+            {               
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    try
+                    {
+                        f.set(message, new BigInteger(input.readByteArray()));
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    try
+                    {
+                        BigInteger value = (BigInteger)f.get(message);
+                        if(value!=null)
+                            output.writeByteArray(this.number, value.toByteArray(), false);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }                    
+            };
+        }
+        public BigInteger readFrom(Input input) throws IOException
+        {
+            return new BigInteger(input.readByteArray());
+        }
+        public void writeTo(Output output, int number, BigInteger value, boolean repeated) 
+        throws IOException
+        {
+            output.writeByteArray(number, value.toByteArray(), repeated);
+        }
+        public FieldType getFieldType()
+        {
+            return FieldType.BYTES;
+        }
+    };
     
     private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = 
         new HashMap<String, RuntimeFieldFactory<?>>();
@@ -2201,6 +2312,8 @@ public abstract class RuntimeFieldFactory<V>
         __inlineValues.put(String.class.getName(), STRING);
         __inlineValues.put(ByteString.class.getName(), BYTES);
         __inlineValues.put(byte[].class.getName(), BYTE_ARRAY);
+        __inlineValues.put(BigInteger.class.getName(), BIGINTEGER);
+        __inlineValues.put(BigDecimal.class.getName(), BIGDECIMAL);
     }
     
     @SuppressWarnings("unchecked")
