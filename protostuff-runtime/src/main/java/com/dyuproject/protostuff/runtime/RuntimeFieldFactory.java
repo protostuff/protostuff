@@ -84,6 +84,9 @@ public abstract class RuntimeFieldFactory<V>
         if(Set.class.isAssignableFrom(clazz))
             return SET;
         
+        if(Collection.class == clazz)
+            return LIST;
+        
         RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
         return inline==null ? POJO : inline;
     }
