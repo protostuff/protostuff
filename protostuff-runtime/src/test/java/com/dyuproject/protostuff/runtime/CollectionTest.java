@@ -34,6 +34,7 @@ public class CollectionTest extends TestCase
     
     static
     {
+        // this is necessary to be able to map interfaces to their respective implementations.
         RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(Task.class));
         RuntimeSchema.register(IEmployee.class, RuntimeSchema.getSchema(Employee.class));
     }
