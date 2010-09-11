@@ -2,6 +2,7 @@ protostuff-1.0-SNAPSHOT
 + Add support for BigInteger and BigDecimal in protostuff-runtime
 + Issue 26: Bug in the reflection compiler with nested protobuf types
 + Issue 25: Allow generating code for message extensions (patch by Philippe Laflamme)
++ Issue 5: Ignore "target" working directories in Subversion
 
 protostuff-1.0.0.M3 2010-07-10
 + faster utf8 string serialization
