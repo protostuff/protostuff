@@ -20,7 +20,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.runtime.Bar.Status;

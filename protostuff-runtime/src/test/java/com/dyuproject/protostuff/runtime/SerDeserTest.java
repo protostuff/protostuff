@@ -28,7 +28,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.ComputedSizeOutput;
 import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
