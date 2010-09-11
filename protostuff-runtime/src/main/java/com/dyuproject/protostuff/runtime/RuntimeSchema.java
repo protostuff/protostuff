@@ -45,7 +45,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      * Registers the schema which overrides any existing schema mapped with the 
      * given class.
      */
-    public static <T> void register(Class<T> typeClass, Schema<T> schema)
+    public static <T> void register(Class<? super T> typeClass, Schema<T> schema)
     {
         __schemaWrappers.put(typeClass.getName(), new Registered<T>(schema));
     }
