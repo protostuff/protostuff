@@ -7,3 +7,6 @@ Patch contributors:
     
   Joseph Gentle
     * protostuff-model - fixed bug in the reflection compiler with nested protobuf types. (Issue 26)
+    
+  Tim Underwood
+    * protostuff-api - Issue 27: ArrayIndexOutOfBoundsException in StringSerializer.writeUTF8

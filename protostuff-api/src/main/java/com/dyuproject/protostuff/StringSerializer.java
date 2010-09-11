@@ -732,7 +732,7 @@ public final class StringSerializer
         {
             // not enough space for the varint.
             // create a new buffer.
-            lb = new LinkedBuffer(len+1 > session.nextBufferSize ? len+1 : session.nextBufferSize, 
+            lb = new LinkedBuffer(len+expectedSize > session.nextBufferSize ? len+expectedSize : session.nextBufferSize,
                     lb);
             offset = 0;
             lb.offset = expectedSize;

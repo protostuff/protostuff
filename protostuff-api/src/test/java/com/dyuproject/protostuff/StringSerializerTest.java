@@ -145,7 +145,74 @@ public class StringSerializerTest extends TestCase
         Double.MAX_VALUE,
         Double.MIN_VALUE
     };
-    
+
+    public void testVarDelimitedBoundryTwoByte() throws Exception
+    {
+        int size = 0x800-16; // takes 2 bytes for size and is larger than buffer
+
+        checkVarDelimitedBoundry(1, size);
+        checkVarDelimitedBoundry(2, size);
+        checkVarDelimitedBoundry(3, size);
+    }
+
+    public void testVarDelimitedBoundryThreeByte() throws Exception
+    {
+        int size = 0x800+16; // takes 3 bytes for size
+
+        checkVarDelimitedBoundry(1, size);
+        checkVarDelimitedBoundry(2, size);
+        checkVarDelimitedBoundry(3, size);
+        checkVarDelimitedBoundry(4, size);
+    }
+
+    public void testVarDelimitedBoundryFourByte() throws Exception
+    {
+        int size = 0x8000+16; // takes 4 bytes for size
+
+        checkVarDelimitedBoundry(1, size);
+        checkVarDelimitedBoundry(2, size);
+        checkVarDelimitedBoundry(3, size);
+        checkVarDelimitedBoundry(4, size);
+        checkVarDelimitedBoundry(5, size);
+    }
+
+    public void testVarDelimitedBoundryFiveByte() throws Exception
+    {
+        int size = 0x80000+16; // takes 5 bytes for size
+
+        checkVarDelimitedBoundry(1, size);
+        checkVarDelimitedBoundry(2, size);
+        checkVarDelimitedBoundry(3, size);
+        checkVarDelimitedBoundry(4, size);
+        checkVarDelimitedBoundry(5, size);
+        checkVarDelimitedBoundry(6, size);
+    }
+
+    public String repeatChar(char ch, int times)
+    {
+        StringBuilder sb = new StringBuilder(times);
+        for(int i = 0; i < times; i++)
+        {
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
+
+    public void checkVarDelimitedBoundry(int initialGap, int secondWriteSize)
+    {
+        int bufferSize = 256;
+        final LinkedBuffer lb = LinkedBuffer.allocate(bufferSize);
+        WriteSession session = new WriteSession(lb, bufferSize);
+
+        // Should fill up the buffer with initialGap byte(s) left
+        StringSerializer.writeUTF8(repeatChar('a', bufferSize-initialGap), session, lb);
+
+        // Write a string of length secondWriteSize that should be larger
+        // than the next buffer size
+        assertTrue(secondWriteSize > bufferSize);
+        StringSerializer.writeUTF8VarDelimited(repeatChar('a', secondWriteSize), session, lb);
+    }
+
     public void testInt() throws Exception
     {
         for(int i : int_targets)
