@@ -262,9 +262,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             {
                 synchronized(this)
                 {
-                    schema = this.schema;
-                    if(schema==null)
-                        schema = this.schema = createFrom(typeClass);
+                    if((schema = this.schema) == null)
+                        this.schema = schema = createFrom(typeClass);
                 }
             }
 
