@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
+
+protostuff-1.0.0.M4 2010-09-14
 + Issue 28: Class member with signature of interface causes NullPointerException
 + Issue 27: ArrayIndexOutOfBoundsException in StringSerializer.writeUTF8 (patch by Tim Underwood)
 + Add support for BigInteger and BigDecimal in protostuff-runtime
