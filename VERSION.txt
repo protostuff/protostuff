@@ -4,7 +4,7 @@ protostuff-1.0.0.M4 2010-09-14
 + Issue 28: Class member with signature of interface causes NullPointerException
 + Issue 27: ArrayIndexOutOfBoundsException in StringSerializer.writeUTF8 (patch by Tim Underwood)
 + Add support for BigInteger and BigDecimal in protostuff-runtime
-+ Issue 26: Bug in the reflection compiler with nested protobuf types
++ Issue 26: Bug in the reflection compiler with nested protobuf types (patch by Joseph Gentle)
 + Issue 25: Allow generating code for message extensions (patch by Philippe Laflamme)
 + Issue 5: Ignore "target" working directories in Subversion
 
