@@ -85,7 +85,7 @@ public abstract class RuntimeFieldFactory<V>
             return SET;
         
         if(Collection.class == clazz)
-            return LIST;
+            return COLLECTION;
         
         RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
         return inline==null ? POJO : inline;
@@ -1548,6 +1548,210 @@ public abstract class RuntimeFieldFactory<V>
             throw new UnsupportedOperationException();
         }
         public void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        public FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+    };
+    
+    /**
+     * Mapped to {@link ArrayList}.
+     */
+    static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>()
+    {
+        @SuppressWarnings("unchecked")
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        {
+            Class<?> clazz;
+            try
+            {
+                clazz = 
+                    (Class<?>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+            final Class<?> genericType = clazz;
+            
+            if(genericType.isEnum())
+            {
+                return new Field<T>(FieldType.ENUM, number, name)
+                {
+                    final Object[] constants = genericType.getEnumConstants();
+                    {
+                        f.setAccessible(true);
+                    }
+                    protected void mergeFrom(Input input, T message) throws IOException
+                    {
+                        Object value = constants[input.readEnum()];
+                        try
+                        {
+                            Collection<Object> existing = (Collection<Object>)f.get(message);
+                            if(existing==null)
+                            {
+                                ArrayList<Object> list = new ArrayList<Object>();
+                                list.add(value);
+                                f.set(message, list);
+                            }
+                            else
+                                existing.add(value);
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    protected void writeTo(Output output, T message) throws IOException
+                    {
+                        try
+                        {
+                            Collection<Enum<?>> list = (Collection<Enum<?>>)f.get(message);
+                            if(list!=null && !list.isEmpty())
+                            {
+                                for(Enum<?> en : list)
+                                    output.writeInt32(this.number, en.ordinal(), true);
+                            }
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+            }
+            
+            final RuntimeFieldFactory<Object> inline = 
+                (RuntimeFieldFactory<Object>)__inlineValues.get(genericType.getName());
+            
+            if(inline==null)
+            {
+                if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
+                    return null;
+                
+                return new Field<T>(FieldType.MESSAGE, number, name)
+                {
+                    final Schema<Object> targetSchema = 
+                        (Schema<Object>)RuntimeSchema.getSchema(genericType);
+                    {
+                        f.setAccessible(true);
+                    }
+                    protected void mergeFrom(Input input, T message) throws IOException
+                    {
+                        Object value = input.mergeObject(targetSchema.newMessage(), targetSchema);
+                        try
+                        {
+                            Collection<Object> existing = (Collection<Object>)f.get(message);
+                            if(existing==null)
+                            {
+                                ArrayList<Object> list = new ArrayList<Object>();
+                                list.add(value);
+                                f.set(message, list);
+                            }
+                            else
+                                existing.add(value);
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    protected void writeTo(Output output, T message) throws IOException
+                    {
+                        try
+                        {
+                            Collection<Object> list = (Collection<Object>)f.get(message);
+                            if(list!=null && !list.isEmpty())
+                            {
+                                for(Object o : list)
+                                    output.writeObject(this.number, o, targetSchema, true);
+                            }
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+            }
+            
+            return new Field<T>(inline.getFieldType(), number, name)
+            {
+                {
+                    f.setAccessible(true);
+                }
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    Object value = inline.readFrom(input);
+                    try
+                    {
+                        Collection<Object> existing = (Collection<Object>)f.get(message);
+                        if(existing==null)
+                        {
+                            ArrayList<Object> list = new ArrayList<Object>();
+                            list.add(value);
+                            f.set(message, list);
+                        }
+                        else
+                            existing.add(value);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    try
+                    {
+                        Collection<Object> list = (Collection<Object>)f.get(message);
+                        if(list!=null && !list.isEmpty())
+                        {
+                            for(Object o : list)
+                                inline.writeTo(output, this.number, o, true);
+                        }
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        }
+        public Collection<?> readFrom(Input input) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public void writeTo(Output output, int number, Collection<?> value, boolean repeated) 
         throws IOException
         {
             throw new UnsupportedOperationException();
