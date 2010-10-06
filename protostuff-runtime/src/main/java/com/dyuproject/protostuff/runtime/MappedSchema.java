@@ -22,7 +22,6 @@ import java.util.Map;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.WireFormat;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
 /**
@@ -63,7 +62,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             }
             
             fieldsByNumber[f.number] = f;
-            f.schema = this;
+            //f.owner = this;
         }
     }
     
@@ -91,7 +90,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             }
             
             fieldsByNumber[f.number] = f;
-            f.schema = this;
+            //f.owner = this;
         }
         
         this.fields = (Field<T>[])new Field<?>[fields.size()];
@@ -122,7 +121,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             }
             
             fieldsByNumber[f.number] = f;
-            f.schema = this;
+            //f.owner = this;
         }
         
         this.fields = (Field<T>[])new Field<?>[fields.size()];
@@ -181,31 +180,15 @@ public abstract class MappedSchema<T> implements Schema<T>
     {
         public final FieldType type;
         public final int number;
-        public final int tag;
         public final String name;
-        private MappedSchema<T> schema;
-        
-        Field(int tag, FieldType type)
-        {
-            this.tag = tag;
-            this.type = type;
-            number = WireFormat.getTagFieldNumber(tag);
-            name = String.valueOf(number);
-        }
         
         public Field(FieldType type, int number, String name)
         {
             this.type = type;
             this.number = number;
-            this.tag = WireFormat.makeTag(number, type.getWireType());
             this.name = name;
         }
-        
-        protected MappedSchema<T> getSchema()
-        {
-            return schema;
-        }
-        
+
         /**
          * Writes the value of a field to the {@code output}.
          */
