@@ -46,106 +46,81 @@ public final class JsonIOUtil
     public static final JsonFactory DEFAULT_JSON_FACTORY = new JsonFactory();
     
     /**
-     * Serializes the {@code message} into a byte array via {@link JsonOutput}.
+     * Creates a json pipe from a byte array.
      */
-    public static <T extends Message<T>> byte[] toByteArray(T message, boolean numeric)
+    public static Pipe newPipe(byte[] data, boolean numeric) throws IOException
     {
-        return toByteArray(message, message.cachedSchema(), numeric);
+        return newPipe(data, 0, data.length, numeric);
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link JsonOutput} 
-     * using the given {@code schema}.
+     * Creates a json pipe from a byte array.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
+    public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) 
+    throws IOException
     {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
-        try
+        return newPipe(DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length), 
+                numeric);
+    }
+    
+    /**
+     * Creates a json pipe from an {@link InputStream}.
+     */
+    public static Pipe newPipe(InputStream in, boolean numeric) throws IOException
+    {
+        return newPipe(DEFAULT_JSON_FACTORY.createJsonParser(in), numeric);
+    }
+    
+    /**
+     * Creates a json pipe from a {@link Reader}.
+     */
+    public static Pipe newPipe(Reader reader, boolean numeric) throws IOException
+    {
+        return newPipe(DEFAULT_JSON_FACTORY.createJsonParser(reader), numeric);
+    }
+    
+    /**
+     * Creates a json pipe from a {@link JsonParser}.
+     */
+    public static Pipe newPipe(final JsonParser parser, boolean numeric) throws IOException
+    {
+        final JsonInput jsonInput = new JsonInput(parser, numeric);
+        return new Pipe()
         {
-            writeTo(baos, message, schema, numeric);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        return baos.toByteArray();
+            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            {
+                if(parser.nextToken() != JsonToken.START_OBJECT)
+                {
+                    throw new JsonInputException("Expected token: { but was " + 
+                            parser.getCurrentToken() + " on message " + 
+                            pipeSchema.wrappedSchema.messageFullName());
+                }
+                
+                return jsonInput;
+            }
+            
+            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            {
+                assert input == jsonInput;
+                
+                if(parser.getCurrentToken() != JsonToken.END_OBJECT)
+                {
+                    throw new JsonInputException("Expected token: } but was " + 
+                            parser.getCurrentToken() + " on message " + 
+                            pipeSchema.wrappedSchema.messageFullName());
+                }
+                
+                parser.close();
+            }
+        };
     }
     
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link JsonOutput}.
-     */
-    public static <T extends Message<T>> void writeTo(OutputStream out, T message, boolean numeric)
-    throws IOException
-    {
-        writeTo(out, message, message.cachedSchema(), numeric);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link JsonOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric)
-    throws IOException
-    {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
-                JsonEncoding.UTF8);
-        writeTo(generator, message, schema, numeric);
-        generator.close();
-    }
-    
-    /**
-     * Serializes the {@code message} into a {@link Writer} via {@link JsonOutput}.
-     */
-    public static <T extends Message<T>> void writeTo(Writer writer, T message, boolean numeric)
-    throws IOException
-    {
-        writeTo(writer, message, message.cachedSchema(), numeric);
-    }
-    
-    /**
-     * Serializes the {@code message} into a {@link Writer} via {@link JsonOutput} using 
-     * the given {@code schema}.
-     */
-    public static <T> void writeTo(Writer writer, T message, Schema<T> schema, boolean numeric)
-    throws IOException
-    {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        writeTo(generator, message, schema, numeric);
-        generator.close();
-    }
-    
-    /**
-     * Serializes the {@code message} into a JsonGenerator via {@link JsonOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(JsonGenerator generator, T message, Schema<T> schema, 
-            boolean numeric) throws IOException
-    {
-        generator.writeStartObject();
-        
-        final JsonOutput output = new JsonOutput(generator, numeric, schema);
-        schema.writeTo(output, message);
-        if(output.isLastRepeated())
-            generator.writeEndArray();
-        
-        generator.writeEndObject();
-    }
-    
-    /**
-     * Merges the {@code message} with the byte array.
-     */
-    public static <T extends Message<T>> void mergeFrom(byte[] data, T message, boolean numeric) 
-    throws IOException
-    {
-        mergeFrom(data, 0, data.length, message, message.cachedSchema(), numeric);
-    }
     
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema, boolean numeric) 
-    throws IOException
+    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         mergeFrom(data, 0, data.length, message, schema, numeric);
     }
@@ -156,25 +131,18 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema, boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length);
+        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, 
+                length);
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
     
     /**
-     * Merges the {@code message} from the {@link InputStream}.
+     * Merges the {@code message} from the {@link InputStream} using the 
+     * given {@code schema}.
      */
-    public static <T extends Message<T>> void mergeFrom(InputStream in, T message, boolean numeric)
-    throws IOException
-    {
-        mergeFrom(in, message, message.cachedSchema(), numeric);
-    }
-    
-    /**
-     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric)
-    throws IOException
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
         mergeFrom(parser, message, schema, numeric);
@@ -182,19 +150,10 @@ public final class JsonIOUtil
     }
     
     /**
-     * Merges the {@code message} from the {@link Reader}.
-     */
-    public static <T extends Message<T>> void mergeFrom(Reader reader, T message, boolean numeric)
-    throws IOException
-    {
-        mergeFrom(reader, message, message.cachedSchema(), numeric);
-    }
-    
-    /**
      * Merges the {@code message} from the {@link Reader} using the given {@code schema}.
      */
-    public static <T> void mergeFrom(Reader reader, T message, Schema<T> schema, boolean numeric)
-    throws IOException
+    public static <T> void mergeFrom(Reader reader, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
         mergeFrom(parser, message, schema, numeric);
@@ -225,10 +184,71 @@ public final class JsonIOUtil
     }
     
     /**
+     * Serializes the {@code message} into a byte array 
+     * using the given {@code schema}.
+     */
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
+    {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            writeTo(baos, message, schema, numeric);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        return baos.toByteArray();
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
+                JsonEncoding.UTF8);
+        writeTo(generator, message, schema, numeric);
+        generator.close();
+    }
+    
+    /**
+     * Serializes the {@code message} into a {@link Writer} using 
+     * the given {@code schema}.
+     */
+    public static <T> void writeTo(Writer writer, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
+        writeTo(generator, message, schema, numeric);
+        generator.close();
+    }
+    
+    /**
+     * Serializes the {@code message} into a JsonGenerator 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(JsonGenerator generator, T message, Schema<T> schema, 
+            boolean numeric) throws IOException
+    {
+        generator.writeStartObject();
+        
+        final JsonOutput output = new JsonOutput(generator, numeric, schema);
+        schema.writeTo(output, message);
+        if(output.isLastRepeated())
+            generator.writeEndArray();
+        
+        generator.writeEndObject();
+    }
+    
+    /**
      * Serializes the {@code messages} into the stream using the given schema.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            boolean numeric) throws IOException
+    public static <T> void writeListTo(OutputStream out, List<T> messages, 
+            Schema<T> schema, boolean numeric) throws IOException
     {
         final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
                 JsonEncoding.UTF8);
@@ -250,8 +270,8 @@ public final class JsonIOUtil
     /**
      * Serializes the {@code messages} into the generator using the given schema.
      */
-    public static <T> void writeListTo(JsonGenerator generator, List<T> messages, Schema<T> schema, 
-            boolean numeric) throws IOException
+    public static <T> void writeListTo(JsonGenerator generator, List<T> messages, 
+            Schema<T> schema, boolean numeric) throws IOException
     {
         generator.writeStartArray();
         if(messages.isEmpty())
@@ -280,8 +300,8 @@ public final class JsonIOUtil
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) 
-    throws IOException
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
         final List<T> list = parseListFrom(parser, schema, numeric);
@@ -292,8 +312,8 @@ public final class JsonIOUtil
     /**
      * Parses the {@code messages} from the reader using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(Reader reader, Schema<T> schema, boolean numeric) 
-    throws IOException
+    public static <T> List<T> parseListFrom(Reader reader, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
         final List<T> list = parseListFrom(parser, schema, numeric);
@@ -304,8 +324,8 @@ public final class JsonIOUtil
     /**
      * Parses the {@code messages} from the parser using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(JsonParser parser, Schema<T> schema, boolean numeric) 
-    throws IOException
+    public static <T> List<T> parseListFrom(JsonParser parser, Schema<T> schema, 
+            boolean numeric) throws IOException
     {
         if(parser.nextToken()!=JsonToken.START_ARRAY)
         {

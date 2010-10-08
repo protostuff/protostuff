@@ -22,6 +22,7 @@ import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * An output used for writing data with json format.
@@ -154,6 +155,46 @@ public final class JsonOutput implements Output
         {
             generator.writeFieldName(name);
             generator.writeBinary(value);
+        }
+        
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
+    }
+    
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        if(utf8String)
+        {
+            // TODO optimize? jackson has char buffers ...
+            writeString(fieldNumber, STRING.deser(value, offset, length), repeated);
+            return;
+        }
+        
+        if(lastNumber == fieldNumber)
+        {
+            // repeated field
+            generator.writeBinary(value, offset, length);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+        
+        if(lastRepeated)
+            generator.writeEndArray();
+        
+        final String name = numeric ? Integer.toString(fieldNumber) : 
+            schema.getFieldName(fieldNumber);
+        
+        if(repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeBinary(value, offset, length);
+        }
+        else
+        {
+            generator.writeFieldName(name);
+            generator.writeBinary(value, offset, length);
         }
         
         lastNumber = fieldNumber;
