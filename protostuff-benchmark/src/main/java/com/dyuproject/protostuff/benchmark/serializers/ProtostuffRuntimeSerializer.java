@@ -14,8 +14,8 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.benchmark.MediaContent;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -34,7 +34,7 @@ public class ProtostuffRuntimeSerializer extends AbstractProtostuffSerializer
     public MediaContent deserialize(byte[] array) throws Exception
     {
         MediaContent mediaContent = new MediaContent();
-        IOUtil.mergeFrom(array, mediaContent, schema);
+        ProtobufIOUtil.mergeFrom(array, mediaContent, schema);
         return mediaContent;
     }
 
@@ -45,7 +45,7 @@ public class ProtostuffRuntimeSerializer extends AbstractProtostuffSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return IOUtil.toByteArray(content, schema, LinkedBuffer.allocate(256));
+        return ProtobufIOUtil.toByteArray(content, schema, LinkedBuffer.allocate(256));
     }
 
 }

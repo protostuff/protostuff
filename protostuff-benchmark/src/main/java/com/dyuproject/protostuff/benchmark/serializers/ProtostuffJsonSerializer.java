@@ -29,7 +29,7 @@ public class ProtostuffJsonSerializer extends AbstractProtostuffSerializer
     public MediaContent deserialize(byte[] array) throws Exception
     {
         MediaContent mediaContent = new MediaContent();
-        JsonIOUtil.mergeFrom(array, mediaContent, false);
+        JsonIOUtil.mergeFrom(array, mediaContent, mediaContent.cachedSchema(), false);
         return mediaContent;
     }
 
@@ -40,7 +40,7 @@ public class ProtostuffJsonSerializer extends AbstractProtostuffSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return JsonIOUtil.toByteArray(content, false);
+        return JsonIOUtil.toByteArray(content, content.cachedSchema(), false);
     }
 
 }

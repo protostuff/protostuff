@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
@@ -156,12 +156,12 @@ public final class Image implements Externalizable, Message<Image>
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, SCHEMA);
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, SCHEMA);
+        ProtostuffIOUtil.writeDelimitedTo(out, this, SCHEMA);
     }
 
     // message method
