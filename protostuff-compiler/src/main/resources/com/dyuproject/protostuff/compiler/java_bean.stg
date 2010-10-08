@@ -127,10 +127,10 @@ import java.util.List;
 import com.dyuproject.protostuff.ByteString;
 <endif>
 
-import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 <if(message.requiredFieldPresent)>
 import com.dyuproject.protostuff.UninitializedMessageException;
@@ -312,12 +312,12 @@ message_impl_serializable(message, options) ::= <<
 
 public void readExternal(ObjectInput in) throws IOException
 {
-    IOUtil.mergeDelimitedFrom(in, this, this<if(options.group_encoded)>, true<endif>);
+    ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
 }
 
 public void writeExternal(ObjectOutput out) throws IOException
 {
-    IOUtil.writeDelimitedTo(out, this, this<if(options.group_encoded)>, true<endif>);
+    ProtostuffIOUtil.writeDelimitedTo(out, this, this);
 }
 
 >>
