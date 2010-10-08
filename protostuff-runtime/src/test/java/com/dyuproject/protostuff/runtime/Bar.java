@@ -20,7 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Bar - for testing
@@ -247,12 +247,12 @@ public final class Bar implements Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Bar.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Bar.class));
     }
     
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Bar.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Bar.class));
     }
 
 }

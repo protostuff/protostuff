@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 
@@ -305,10 +305,10 @@ public class CollectionTest extends TestCase
         
         Task p = filledTask();
         
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         Task p2 = new Task();
-        IOUtil.mergeFrom(data, p2, schema);
+        ProtostuffIOUtil.mergeFrom(data, p2, schema);
         System.err.println(p2);
 
         assertEquals(p, p2);
@@ -320,10 +320,10 @@ public class CollectionTest extends TestCase
         
         ITask p = filledTask();
         
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         ITask p2 = new Task();
-        IOUtil.mergeFrom(data, p2, schema);
+        ProtostuffIOUtil.mergeFrom(data, p2, schema);
         System.err.println(p2);
 
         assertEquals(p, p2);
@@ -346,10 +346,10 @@ public class CollectionTest extends TestCase
         p.setDepartments(departments);
         p.setTasks(tasks);
 
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         Employee p2 = new Employee();
-        IOUtil.mergeFrom(data, p2, schema);
+        ProtostuffIOUtil.mergeFrom(data, p2, schema);
         System.err.println(p2);
         
         assertEquals(p, p2);
@@ -372,10 +372,10 @@ public class CollectionTest extends TestCase
         p.setDepartments(departments);
         p.setTasks(tasks);
 
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         IEmployee p2 = new Employee();
-        IOUtil.mergeFrom(data, p2, schema);
+        ProtostuffIOUtil.mergeFrom(data, p2, schema);
         System.err.println(p2);
         
         assertEquals(p, p2);

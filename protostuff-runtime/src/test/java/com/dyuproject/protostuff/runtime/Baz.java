@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 
 /**
@@ -100,12 +100,12 @@ public final class Baz implements Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Baz.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Baz.class));
     }
     
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Baz.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Baz.class));
     }
 
 }

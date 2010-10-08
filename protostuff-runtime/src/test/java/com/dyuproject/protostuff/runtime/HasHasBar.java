@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
@@ -78,12 +78,12 @@ public final class HasHasBar implements Externalizable
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(HasHasBar.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(HasHasBar.class));
     }
     
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(HasHasBar.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(HasHasBar.class));
     }
     
     

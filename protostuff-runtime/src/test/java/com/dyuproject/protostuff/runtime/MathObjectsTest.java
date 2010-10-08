@@ -21,8 +21,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtobufIOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -204,10 +205,10 @@ public class MathObjectsTest extends TestCase
         bdList.add(new BigDecimal("123456789"));
         bdList.add(new BigDecimal("987654321"));
 
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtobufIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         Payment p2 = new Payment();
-        IOUtil.mergeFrom(data, p2, schema);
+        ProtostuffIOUtil.mergeFrom(data, p2, schema);
         System.err.println(p2.getId());
         System.err.println(p2.getBd());
         System.err.println(p2.getBi());
@@ -217,9 +218,8 @@ public class MathObjectsTest extends TestCase
         assertEquals(p, p2);
     }
     
-    public void testNative() throws Exception
+    public void testProtostuff() throws Exception
     {
-        boolean nestedMessageAsGroup = true;
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = new Payment();
         ArrayList<BigInteger> biList = new ArrayList<BigInteger>();
@@ -237,10 +237,10 @@ public class MathObjectsTest extends TestCase
         bdList.add(new BigDecimal("123456789"));
         bdList.add(new BigDecimal("987654321"));
 
-        byte[] data = IOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512), nestedMessageAsGroup);
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
         Payment p2 = new Payment();
-        IOUtil.mergeFrom(data, 0, data.length, p2, schema, nestedMessageAsGroup);
+        ProtostuffIOUtil.mergeFrom(data, 0, data.length, p2, schema);
         System.err.println(p2.getId());
         System.err.println(p2.getBd());
         System.err.println(p2.getBi());

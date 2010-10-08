@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Foo - for testing
@@ -251,12 +251,12 @@ public final class Foo implements Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Foo.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Foo.class));
     }
     
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        IOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Foo.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Foo.class));
     }
 
 }
