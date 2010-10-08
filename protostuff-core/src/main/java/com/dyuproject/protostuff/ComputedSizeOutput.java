@@ -200,6 +200,14 @@ public final class ComputedSizeOutput implements Output
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         size += CodedOutput.computeRawVarint32Size(value.length) + value.length;
     }
+    
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_LENGTH_DELIMITED));
+        size += CodedOutput.computeRawVarint32Size(length) + length;
+    }
 
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
     throws IOException

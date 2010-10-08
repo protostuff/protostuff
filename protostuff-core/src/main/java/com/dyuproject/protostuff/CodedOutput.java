@@ -1301,6 +1301,13 @@ public final class CodedOutput implements Output {
     writeByteArrayNoTag(value);
   }
   
+  public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+    int offset, int length, boolean repeated) throws IOException {
+    writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+    writeRawVarint32(length);
+    writeRawBytes(value, offset, length);
+  }
+  
   public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
     final boolean repeated) throws IOException {
     if(encodeNestedMessageAsGroup) {

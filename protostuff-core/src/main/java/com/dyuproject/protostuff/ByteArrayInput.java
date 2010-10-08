@@ -21,6 +21,7 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
+import static com.dyuproject.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
 import static com.dyuproject.protostuff.WireFormat.getTagFieldNumber;
 import static com.dyuproject.protostuff.WireFormat.getTagWireType;
@@ -197,6 +198,14 @@ public final class ByteArrayInput implements Input
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
         {
+            if (decodeNestedMessageAsGroup && 
+                    WIRETYPE_TAIL_DELIMITER == (tag & TAG_TYPE_MASK))
+            {
+                // protostuff's tail delimiter for streaming
+                // 2 options: length-delimited or tail-delimited.
+                lastTag = 0;
+                return 0;
+            }
             // If we actually read zero, that's not a valid tag.
             throw ProtobufException.invalidTag();
         }
@@ -485,6 +494,18 @@ public final class ByteArrayInput implements Input
              (((long)b6 & 0xff) << 40) |
              (((long)b7 & 0xff) << 48) |
              (((long)b8 & 0xff) << 56);
+    }
+
+    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
+            boolean repeated) throws IOException
+    {
+        final int length = readRawVarint32();
+        if(length < 0)
+            throw ProtobufException.negativeSize();
+        
+        output.writeByteRange(utf8String, fieldNumber, buffer, offset, length, repeated);
+        
+        offset += length;
     }
     
 }

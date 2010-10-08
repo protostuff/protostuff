@@ -33,8 +33,6 @@ import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
-
 /**
  * Maintains a decent-sized byte buffer for writing.  If the delimited field's byte-array-value 
  * is too large, it is wrapped by another buffer and linked together (basically zero copy).
@@ -218,7 +216,17 @@ public final class BufferedOutput extends WriteSession implements Output
     {
         tail = writeTagAndByteArray(
                 makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
-                bytes, 
+                bytes, 0, bytes.length,
+                this, 
+                tail);
+    }
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        tail = writeTagAndByteArray(
+                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
+                value, offset, length,
                 this, 
                 tail);
     }
@@ -331,9 +339,9 @@ public final class BufferedOutput extends WriteSession implements Output
     
     /** Returns the buffer encoded with the tag and byte array */
     public static LinkedBuffer writeTagAndByteArray(int tag, final byte[] value, 
+            int offset, int valueLen, 
             final WriteSession session, LinkedBuffer lb)
     {
-        final int valueLen = value.length;
         if(valueLen == 0)
         {
             // write only the tag and delimiter
@@ -344,43 +352,44 @@ public final class BufferedOutput extends WriteSession implements Output
 
         session.size += valueLen;
         
-        if(lb.offset + valueLen > lb.buffer.length)
+        final int available = lb.buffer.length - lb.offset;
+        if(valueLen > available)
         {
-            final int remaining = lb.buffer.length - lb.offset;
-            if(remaining + session.nextBufferSize < valueLen)
+            if(available + session.nextBufferSize < valueLen)
             {
                 // too large ... so we wrap and insert (zero-copy)
-                if(remaining == 0)
+                if(available == 0)
                 {
                     // buffer was actually full ... return a fresh buffer 
                     return new LinkedBuffer(session.nextBufferSize, 
-                            new LinkedBuffer(value, 0, valueLen, lb));
+                            new LinkedBuffer(value, offset, offset+valueLen, lb));
                 }
                 
                 // continue with the existing byte array of the previous buffer
-                return new LinkedBuffer(lb, new LinkedBuffer(value, 0, valueLen, lb));
+                return new LinkedBuffer(lb, 
+                        new LinkedBuffer(value, offset, offset+valueLen, lb));
             }
             
             // copy what can fit
-            System.arraycopy(value, 0, lb.buffer, lb.offset, remaining);
+            System.arraycopy(value, offset, lb.buffer, lb.offset, available);
             
-            lb.offset += remaining;
+            lb.offset += available;
             
             // grow
             lb = new LinkedBuffer(session.nextBufferSize, lb);
             
-            final int leftover = value.length - remaining;
+            final int leftover = valueLen - available;
             
             // copy what's left
-            System.arraycopy(value, remaining, lb.buffer, 0, leftover);
+            System.arraycopy(value, offset+available, lb.buffer, 0, leftover);
             
             lb.offset += leftover;
             
             return lb;
         }
-
+        
         // it fits
-        System.arraycopy(value, 0, lb.buffer, lb.offset, valueLen);
+        System.arraycopy(value, offset, lb.buffer, lb.offset, valueLen);
         
         lb.offset += valueLen;
         

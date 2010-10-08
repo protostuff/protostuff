@@ -19,45 +19,23 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Utility for the protobuf serialization/deserialization of messages and objects tied to a schema.
- * To use the native binary encoding (group-encoded), call the utility methods with the
- * boolean flags "encodeNestedMessageAsGroup" and "decodeNestedMessageAsGroup" set to true.
+ * Common io utils for between protostuff and protobuf formats.
  *
  * @author David Yu
  * @created Nov 12, 2009
  */
-public final class IOUtil
+final class IOUtil
 {
     
     private IOUtil(){}
     
     /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput} with 
-     * the supplied buffer.
-     */
-    public static <T extends Message<T>> byte[] toByteArray(T message, LinkedBuffer buffer)
-    {
-        return toByteArray(message, message.cachedSchema(), buffer, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
+     * Serializes the {@code message} into a byte array with the 
      * supplied buffer.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
-    {
-        return toByteArray(message, schema, buffer, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into a byte array via {@link BufferedOutput} with the 
-     * supplied buffer.
-     */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer, 
+    static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer, 
             boolean encodeNestedMessageAsGroup)
     {
         if(buffer.start != buffer.offset)
@@ -78,11 +56,11 @@ public final class IOUtil
     }
     
     /**
-     * Writes the {@code message} into the {@link LinkedBuffer} via {@link BufferedOutput}.
+     * Writes the {@code message} into the {@link LinkedBuffer}.
      * 
      * @return the size of the message
      */
-    public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema, 
+    static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema, 
             boolean encodeNestedMessageAsGroup)
     {
         if(buffer.start != buffer.offset)
@@ -103,24 +81,11 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
-     * with the supplied buffer.
+     * Serializes the {@code message} into an {@link OutputStream}.
      * 
      * @return the size of the message
      */
-    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeTo(out, message, schema, buffer, false);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} 
-     * with the supplied buffer.
-     * 
-     * @return the size of the message
-     */
-    public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
+    static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
     {
         if(buffer.start != buffer.offset)
@@ -132,38 +97,12 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link BufferedOutput} with 
-     * the supplied buffer.
-     * 
-     * @return the size of the message.
-     */
-    public static <T extends Message<T>> int writeTo(OutputStream out, T message, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeTo(out, message, message.cachedSchema(), buffer, false);
-    }
-    
-    /**
      * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer.
+     * an {@link OutputStream} using the given schema.
      * 
      * @return the size of the message
      */
-    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeDelimitedTo(out, message, schema, buffer, false);
-    }
-    
-    /**
-     * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer.
-     * 
-     * @return the size of the message
-     */
-    public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
+    static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
     {
         if(buffer.start != buffer.offset)
@@ -181,38 +120,9 @@ public final class IOUtil
     }
     
     /**
-     * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} with the supplied buffer.
-     * 
-     * @return the size of the message
-     */
-    public static <T extends Message<T>> int writeDelimitedTo(OutputStream out, T message, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeDelimitedTo(out, message, message.cachedSchema(), buffer, false);
-    }
-    
-    /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema)
-    {
-        mergeFrom(data, 0, data.length, message, schema, false);
-    }
-    
-    /**
-     * Merges the {@code message} with the byte array using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema)
-    {
-        mergeFrom(data, offset, length, message, schema, false);
-    }
-    
-    /**
-     * Merges the {@code message} with the byte array using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
+    static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema, boolean decodeNestedMessageAsGroup)
     {
         try
@@ -235,26 +145,9 @@ public final class IOUtil
     }
     
     /**
-     * Merges the {@code message} with the byte array.
-     */
-    public static <T extends Message<T>> void mergeFrom(byte[] data, T message)
-    {
-        mergeFrom(data, 0, data.length, message, message.cachedSchema(), false);
-    }
-    
-    /**
-     * Merges the {@code message} with the byte array.
-     */
-    public static <T extends Message<T>> void mergeFrom(byte[] data, int offset, int length, 
-            T message)
-    {
-        mergeFrom(data, offset, length, message, message.cachedSchema(), false);
-    }
-    
-    /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+    static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final CodedInput input = new CodedInput(in, decodeNestedMessageAsGroup);
@@ -263,45 +156,17 @@ public final class IOUtil
     }
     
     /**
-     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
-    throws IOException
-    {
-        mergeFrom(in, message, schema, false);
-    }
-    
-    /**
-     * Merges the {@code message} from the {@link InputStream}.
-     */
-    public static <T extends Message<T>> void mergeFrom(InputStream in, T message) 
-    throws IOException
-    {
-        mergeFrom(in, message, message.cachedSchema(), false);
-    }
-    
-    /**
      * Merges the {@code message} (delimited) from the {@link InputStream} 
      * using the given {@code schema}.
      */
-    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
-    throws IOException
-    {
-        mergeDelimitedFrom(in, message, schema, false);
-    }
-    
-    /**
-     * Merges the {@code message} (delimited) from the {@link InputStream} 
-     * using the given {@code schema}.
-     */
-    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
+    static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final int size = in.read();
         if(size == -1)
             throw ProtobufException.truncatedMessage();
         
-        final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
+        final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
         if(len != 0)
         {
             // not an empty message
@@ -332,141 +197,12 @@ public final class IOUtil
     }
     
     /**
-     * Merges the {@code message} (delimited) from the {@link InputStream}.
-     */
-    public static <T extends Message<T>> void mergeDelimitedFrom(InputStream in, T message) 
-    throws IOException
-    {
-        mergeDelimitedFrom(in, message, message.cachedSchema(), false);
-    }
-    
-    /**
-     * Serializes the {@code messages} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer.
-     * 
-     * @return the total size of the messages
-     */
-    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeListTo(out, messages, schema, buffer, false);
-    }
-    
-    /**
-     * Serializes the {@code messages} (delimited) into 
-     * an {@link OutputStream} via {@link BufferedOutput} using the given schema 
-     * with the supplied buffer.
-     * 
-     * @return the total size of the messages
-     */
-    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        int totalSize = 0;
-        for(T m : messages)
-        {
-            schema.writeTo(output, m);
-            final int size = output.getSize();
-            CodedOutput.writeRawVarInt32Bytes(out, size);
-            final int msgSize = LinkedBuffer.writeTo(out, buffer);
-            
-            assert size == msgSize;
-            
-            totalSize += size;
-            output.clear();
-        }
-        return totalSize;
-    }
-    
-    /**
-     * Parses the {@code messages} (delimited) from the 
-     * {@link InputStream} using the given {@code schema}.
-     */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) 
-    throws IOException
-    {
-        return parseListFrom(in, schema, false);
-    }
-    
-    /**
-     * Parses the {@code messages} (delimited) from the 
-     * {@link InputStream} using the given {@code schema}.
-     */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
-            boolean decodeNestedMessageAsGroup) throws IOException
-    {
-        final ArrayList<T> list = new ArrayList<T>();
-        byte[] buf = null;
-        int biggestLen = 0;
-        LimitedInputStream lin = null;
-        for(int size=in.read(); size!=-1; size=in.read())
-        {
-            final T message = schema.newMessage();
-            list.add(message);
-            final int len = (size & 0x80)==0 ? (size & 0x7f) : CodedInput.readRawVarint32(in, size);
-            if(len != 0)
-            {
-                // not an empty message
-                if(len > CodedInput.BUFFER_SIZE)
-                {
-                    // message too big
-                    if(lin == null)
-                        lin = new LimitedInputStream(in);
-                    final CodedInput input = new CodedInput(lin.limit(len), 
-                            decodeNestedMessageAsGroup);
-                    schema.mergeFrom(input, message);
-                    input.checkLastTagWas(0);
-                    continue;
-                }
-                
-                if(biggestLen < len)
-                {
-                    // cannot reuse buffer, allocate a bigger buffer
-                    // discard the last one for gc
-                    buf = new byte[len];
-                    biggestLen = len;
-                }
-                fillBufferFrom(in, buf, 0, len);
-                final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
-                        decodeNestedMessageAsGroup);
-                try
-                {
-                    schema.mergeFrom(input, message);
-                }
-                catch(ArrayIndexOutOfBoundsException e)
-                {
-                    throw ProtobufException.truncatedMessage(e);
-                }
-                input.checkLastTagWas(0);
-            }
-        }
-        return list;
-    }
-    
-    /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Writes to the {@link DataOutput}.
      * 
      * @return the size of the message.
      */
-    public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
-    throws IOException
-    {
-        return writeDelimitedTo(out, message, schema, false);
-    }
-    
-    /**
-     * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Writes to the {@link DataOutput}.
-     * 
-     * @return the size of the message.
-     */
-    public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
+    static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
             boolean encodeNestedMessageAsGroup) throws IOException
     {
         final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
@@ -482,29 +218,19 @@ public final class IOUtil
         
         return size;
     }
-    
+
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Merges from the {@link DataInput}.
      */
-    public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
-    throws IOException
-    {
-        mergeDelimitedFrom(in, message, schema, false);
-    }
-    
-    /**
-     * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Merges from the {@link DataInput}.
-     */
-    public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
+    static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final byte size = in.readByte();
         if(size == -1)
             throw ProtobufException.truncatedMessage();
         
-        final int len = (size & 0x80)==0 ? size : CodedInput.readRawVarint32(in, size);
+        final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
         
         if(len != 0)
         {
