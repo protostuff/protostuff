@@ -32,7 +32,7 @@ public final class YamlIOUtil
     };
     
     /**
-     * Serializes the {@code message} into a byte array via {@link YamlOutput} with the 
+     * Serializes the {@code message} into a byte array with the 
      * supplied buffer.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
@@ -40,17 +40,20 @@ public final class YamlIOUtil
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
-        final YamlOutput output = new YamlOutput(buffer, null, schema);
-        
-        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
-        
-        buffer.offset += START_DIRECTIVE.length;
-        
-        output.size += START_DIRECTIVE.length;
+        final YamlOutput output = new YamlOutput(buffer, schema);
 
         try
         {
-            output.tail = YamlOutput.writeTag(schema.messageName(), false, null, output, buffer);
+            output.tail = YamlOutput.writeTag(
+                    schema.messageName(), 
+                    false, 
+                    output.sink, 
+                    output, 
+                    output.sink.writeByteArray(
+                            START_DIRECTIVE, 
+                            output, 
+                            buffer));
+            
             schema.writeTo(output, message);
         }
         catch (IOException e)
@@ -63,17 +66,7 @@ public final class YamlIOUtil
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link YamlOutput} with the 
-     * supplied buffer.
-     * 
-     */
-    public static <T extends Message<T>> byte[] toByteArray(T message, LinkedBuffer buffer)
-    {
-        return toByteArray(message, message.cachedSchema(), buffer);
-    }
-    
-    /**
-     * Serializes the {@code message} into the {@link LinkedBuffer} via {@link YamlOutput}.
+     * Serializes the {@code message} into the {@link LinkedBuffer}.
      * 
      * @return the total bytes written to the output.
      */
@@ -82,17 +75,20 @@ public final class YamlIOUtil
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
-        final YamlOutput output = new YamlOutput(buffer, null, schema);
-        
-        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
-        
-        buffer.offset += START_DIRECTIVE.length;
-        
-        output.size += START_DIRECTIVE.length;
+        final YamlOutput output = new YamlOutput(buffer, schema);
 
         try
         {
-            output.tail = YamlOutput.writeTag(schema.messageName(), false, null, output, buffer);
+            output.tail = YamlOutput.writeTag(
+                    schema.messageName(), 
+                    false, 
+                    output.sink, 
+                    output, 
+                    output.sink.writeByteArray(
+                            START_DIRECTIVE, 
+                            output, 
+                            buffer));
+            
             schema.writeTo(output, message);
         }
         catch (IOException e)
@@ -105,7 +101,7 @@ public final class YamlIOUtil
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link YamlOutput} 
+     * Serializes the {@code message} into an {@link OutputStream} 
      * with the supplied buffer.
      * 
      * @return the total bytes written to the output.
@@ -118,54 +114,46 @@ public final class YamlIOUtil
         
         final YamlOutput output = new YamlOutput(buffer, out, schema);
         
-        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
-        
-        buffer.offset += START_DIRECTIVE.length;
-        
-        output.size += START_DIRECTIVE.length;
-        
-        output.tail = YamlOutput.writeTag(schema.messageName(), false, out, output, buffer);
+        output.tail = YamlOutput.writeTag(
+                schema.messageName(), 
+                false, 
+                output.sink, 
+                output, 
+                output.sink.writeByteArray(
+                        START_DIRECTIVE, 
+                        output, 
+                        buffer));
         
         schema.writeTo(output, message);
 
-        output.flushRemaining();
+        LinkedBuffer.writeTo(out, buffer);
         
         return output.getSize();
     }
     
     /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link YamlOutput} with 
-     * the supplied buffer.
-     * 
-     * @return the total bytes written to the output.
-     */
-    public static <T extends Message<T>> int writeTo(OutputStream out, T message, 
-            LinkedBuffer buffer) throws IOException
-    {
-        return writeTo(out, message, message.cachedSchema(), buffer);
-    }
-    
-    /**
-     * Serializes the {@code messages} a {@link LinkedBuffer} via {@link YamlOutput} 
+     * Serializes the {@code messages} a {@link LinkedBuffer} 
      * using the given schema.
      * 
      * @return the total bytes written to the output.
      */
-    public static <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
-    throws IOException
+    public static <T> int writeListTo(LinkedBuffer buffer, List<T> messages, 
+            Schema<T> schema) throws IOException
     {
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
-        final YamlOutput output = new YamlOutput(buffer, null, schema);
+        final YamlOutput output = new YamlOutput(buffer, schema);
         
-        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
-        
-        buffer.offset += START_DIRECTIVE.length;
-        
-        output.size += START_DIRECTIVE.length;
-        
-        output.tail = YamlOutput.writeTag(schema.messageName(), true, null, output, buffer);
+        output.tail = YamlOutput.writeTag(
+                schema.messageName(), 
+                true, 
+                output.sink, 
+                output, 
+                output.sink.writeByteArray(
+                        START_DIRECTIVE, 
+                        output, 
+                        buffer));
         
         try
         {
@@ -185,31 +173,34 @@ public final class YamlIOUtil
     }
     
     /**
-     * Serializes the {@code messages} into an {@link OutputStream} via {@link YamlOutput} 
+     * Serializes the {@code messages} into an {@link OutputStream} 
      * using the given schema with the supplied buffer.
      * 
      * @return the total bytes written to the output.
      */
-    public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
-            LinkedBuffer buffer) throws IOException
+    public static <T> int writeListTo(OutputStream out, List<T> messages, 
+            Schema<T> schema, LinkedBuffer buffer) throws IOException
     {
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
         final YamlOutput output = new YamlOutput(buffer, out, schema);
-        
-        System.arraycopy(START_DIRECTIVE, 0, buffer.buffer, 0, START_DIRECTIVE.length);
-        
-        buffer.offset += START_DIRECTIVE.length;
-        
-        output.size += START_DIRECTIVE.length;
-        
-        output.tail = YamlOutput.writeTag(schema.messageName(), true, out, output, buffer);
+
+        output.tail = YamlOutput.writeTag(
+                schema.messageName(), 
+                true, 
+                output.sink, 
+                output, 
+                output.sink.writeByteArray(
+                        START_DIRECTIVE, 
+                        output, 
+                        buffer));
         
         for(T m : messages)
         {
             schema.writeTo(output.writeSequenceDelim(), m);
-            output.flushRemaining().clear(true, false);
+            LinkedBuffer.writeTo(out, buffer);
+            output.clear(true, false);
         }
         
         return output.getSize();

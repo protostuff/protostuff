@@ -26,9 +26,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
@@ -37,26 +34,23 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created Jun 28, 2010
  */
-public class YamlSerTest extends TestCase
+public class YamlSerTest extends AbstractTest
 {
     
     public <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return YamlIOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
+        return YamlIOUtil.toByteArray(message, schema, buf());
     }
     
     public <T> int writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
-        return YamlIOUtil.writeTo(out, message, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
+        return YamlIOUtil.writeTo(out, message, schema, buf());
     }
     
     public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
     throws IOException
     {
-        return YamlIOUtil.writeListTo(out, messages, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
+        return YamlIOUtil.writeListTo(out, messages, schema, buf());
     }
     
     public <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) 
@@ -344,56 +338,7 @@ public class YamlSerTest extends TestCase
         assertEquals(text, text2);
         print(text);
     }
-    
-    public void testByteArray() throws Exception
-    {
-        ByteString b1 = ByteString.copyFromUtf8("b1");
-        ByteString b2 = ByteString.copyFromUtf8("1234567890");
-        
-        LinkedBuffer lb = new LinkedBuffer(10);
-        WriteSession session = new WriteSession(lb, 5);
-        
-        LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
-        
-        assertTrue(lb.offset == 2);
-        
-        tail = YamlOutput.writeRaw(b2.getBytes(), null, session, tail);
-        
-        assertTrue(lb.offset == lb.buffer.length);
-        
-        assertTrue(lb.next != null);
-        
-        assertTrue(lb.next.offset == 2);
-    }
-    
-    public void testByteArrayZeroCopy() throws Exception
-    {
-        ByteString b1 = ByteString.copyFromUtf8("b1");
-        ByteString b2 = ByteString.copyFromUtf8("123456789012345");
-        
-        LinkedBuffer lb = new LinkedBuffer(10);
-        WriteSession session = new WriteSession(lb, 5);
-        
-        LinkedBuffer tail = YamlOutput.writeRaw(b1.getBytes(), null, session, lb);
-        
-        assertTrue(lb.offset == 2);
-        
-        tail = YamlOutput.writeRaw(b2.getBytes(), null, session, tail);
-        
-        assertTrue(lb.offset == 2);
-        
-        assertTrue(lb.next != null);
-        
-        assertTrue(lb.next.offset == 15);
-        
-        assertTrue(lb.next.next != null);
-        
-        assertTrue(lb.next.next.offset == 2);
-        
-        // view
-        assertTrue(lb.buffer == lb.next.next.buffer);
-    }
-    
+
     static void print(String str)
     {
         //System.err.println(str);
