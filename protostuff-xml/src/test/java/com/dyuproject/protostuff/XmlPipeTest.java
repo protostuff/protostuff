@@ -28,7 +28,7 @@ public class XmlPipeTest extends AbstractTest
 {
     
     static <T> void protobufRoundTrip(T message, Schema<T> schema, 
-            Pipe.Schema<T> pipeSchema, boolean numeric) throws Exception
+            Pipe.Schema<T> pipeSchema) throws Exception
     {
         byte[] protobuf = ProtobufIOUtil.toByteArray(message, schema, buf());
         
@@ -67,7 +67,7 @@ public class XmlPipeTest extends AbstractTest
     }
     
     static <T> void protostuffRoundTrip(T message, Schema<T> schema, 
-            Pipe.Schema<T> pipeSchema, boolean numeric) throws Exception
+            Pipe.Schema<T> pipeSchema) throws Exception
     {
         byte[] protostuff = ProtostuffIOUtil.toByteArray(message, schema, buf());
         
@@ -108,34 +108,23 @@ public class XmlPipeTest extends AbstractTest
     public void testFoo() throws Exception
     {
         Foo foo = SerializableObjects.foo;
-        protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema(), false);
-        protostuffRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema(), false);
-        
-        // numeric
-        protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema(), true);
-        protostuffRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema(), true);
+        protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
+        protostuffRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
+
     }
     
     public void testBar() throws Exception
     {
         Bar bar = SerializableObjects.bar;
-        protobufRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema(), false);
-        protostuffRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema(), false);
-        
-        // numeric
-        protobufRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema(), true);
-        protostuffRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema(), true);
+        protobufRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
+        protostuffRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
     }
     
     public void testBaz() throws Exception
     {
         Baz baz = SerializableObjects.baz;
-        protobufRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema(), false);
-        protostuffRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema(), false);
-        
-        // numeric
-        protobufRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema(), true);
-        protostuffRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema(), true);
+        protobufRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
+        protostuffRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
     }
 
 }
