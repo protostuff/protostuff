@@ -49,145 +49,109 @@ public final class XmlIOUtil
     public static final String XML_ENCODING = "UTF-8", XML_VERSION = "1.0";
     
     /**
-     * Serializes the {@code message} into a byte array via {@link XmlOutput}.
+     * Creates an xml pipe from a byte array.
      */
-    public static <T extends Message<T>> byte[] toByteArray(T message)
+    public static Pipe newPipe(byte[] data) throws IOException
     {
-        return toByteArray(message, message.cachedSchema(), DEFAULT_OUTPUT_FACTORY);
+        return newPipe(data, 0, data.length);
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link XmlOutput}.
+     * Creates an xml pipe from a byte array.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema)
+    public static Pipe newPipe(byte[] data, int offset, int length) throws IOException
     {
-        return toByteArray(message, schema, DEFAULT_OUTPUT_FACTORY);
+        return newPipe(new ByteArrayInputStream(data, offset, length));
     }
     
     /**
-     * Serializes the {@code message} into a byte array via {@link XmlOutput}.
+     * Creates an xml pipe from an {@link InputStream}.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, XMLOutputFactory outFactory)
-    {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(512);
-        try
-        {
-            writeTo(out, message, schema, outFactory);
-        }
-        catch(IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        return out.toByteArray();
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link XmlOutput}.
-     */
-    public static <T extends Message<T>> void writeTo(OutputStream out, T message)
-    throws IOException
-    {
-        writeTo(out, message, message.cachedSchema(), DEFAULT_OUTPUT_FACTORY);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link XmlOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
-    throws IOException
-    {
-        writeTo(out, message, schema, DEFAULT_OUTPUT_FACTORY);
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} via {@link XmlOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
-            XMLOutputFactory outFactory) throws IOException
+    public static Pipe newPipe(InputStream in) throws IOException
     {
         try
         {
-            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
-            
-            writer.writeStartDocument(XML_ENCODING, XML_VERSION);
-            writeTo(writer, message, schema);
-            writer.writeEndDocument();
-            
-            writer.flush();
-            writer.close();
+            return newPipe(DEFAULT_INPUT_FACTORY.createXMLStreamReader(in, XML_ENCODING));
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
-            throw new XmlOutputException(e);
+            throw new XmlInputException(e);
         }
     }
     
     /**
-     * Serializes the {@code message} into a {@link Writer} via {@link XmlOutput}.
+     * Creates an xml pipe from a {@link Reader}.
      */
-    public static <T extends Message<T>> void writeTo(Writer w, T message)
-    throws IOException
-    {
-        writeTo(w, message, message.cachedSchema(), DEFAULT_OUTPUT_FACTORY);
-    }
-    
-    /**
-     * Serializes the {@code message} into a {@link Writer} via {@link XmlOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(Writer w, T message, Schema<T> schema)
-    throws IOException
-    {
-        writeTo(w, message, schema, DEFAULT_OUTPUT_FACTORY);
-    }
-    
-    /**
-     * Serializes the {@code message} into a {@link Writer} via {@link XmlOutput} 
-     * using the given {@code schema}.
-     */
-    public static <T> void writeTo(Writer w, T message, Schema<T> schema, 
-            XMLOutputFactory outFactory) throws IOException
+    public static Pipe newPipe(Reader reader) throws IOException
     {
         try
         {
-            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(w);
-            
-            writer.writeStartDocument(XML_ENCODING, XML_VERSION);
-            writeTo(writer, message, schema);
-            writer.writeEndDocument();
-            
-            writer.flush();
-            writer.close();
+            return newPipe(DEFAULT_INPUT_FACTORY.createXMLStreamReader(reader));
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
-            throw new XmlOutputException(e);
+            throw new XmlInputException(e);
         }
     }
     
     /**
-     * Serializes the {@code message} into an {@link XMLStreamWriter} via {@link XmlOutput} 
-     * using the given {@code schema}.
+     * Creates an xml pipe from an {@link XMLStreamReader}.
      */
-    public static <T> void writeTo(XMLStreamWriter writer, T message, Schema<T> schema)
-    throws IOException, XMLStreamException, XmlOutputException
+    public static Pipe newPipe(final XMLStreamReader parser)
     {
-        writer.writeStartElement(schema.messageName());
-        
-        schema.writeTo(new XmlOutput(writer).use(schema), message);
-        
-        writer.writeEndElement();
-    }
-    
-    /**
-     * Merges the {@code message} with the byte array.
-     */
-    public static <T extends Message<T>> void mergeFrom(byte[] data, T message)
-    {
-        mergeFrom(data, 0, data.length, message, message.cachedSchema(), DEFAULT_INPUT_FACTORY);
+        final XmlInput xmlInput = new XmlInput(parser);
+        return new Pipe()
+        {
+            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            {
+                final String simpleName = pipeSchema.wrappedSchema.messageName();
+
+                try
+                {
+                    if(parser.nextTag() != START_ELEMENT || 
+                            !simpleName.equals(parser.getLocalName()))
+                    {
+                        throw new XmlInputException("Expected token START_ELEMENT: " + 
+                                simpleName);
+                    }
+                    
+                    if(parser.nextTag() == END_ELEMENT)
+                    {
+                        if(!simpleName.equals(parser.getLocalName()))
+                            throw new XmlInputException("Expecting token END_ELEMENT: " + 
+                                    simpleName);
+                        
+                        // empty message;
+                        return null;
+                    }
+                }
+                catch(XMLStreamException e)
+                {
+                    throw new XmlInputException(e);
+                }
+                
+                return xmlInput;
+            }
+            
+            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            {
+                assert input == xmlInput;
+                
+                final String simpleName = pipeSchema.wrappedSchema.messageName();
+                if(!simpleName.equals(parser.getLocalName()))
+                    throw new XmlInputException("Expecting token END_ELEMENT: " + 
+                            simpleName);
+                
+                try
+                {
+                    parser.close();
+                }
+                catch (XMLStreamException e)
+                {
+                    // end of pipe transfer ... ignore
+                }
+            }
+        };
     }
     
     /**
@@ -201,7 +165,8 @@ public final class XmlIOUtil
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, int offset, int len, T message, Schema<T> schema)
+    public static <T> void mergeFrom(byte[] data, int offset, int len, T message, 
+            Schema<T> schema)
     {
         mergeFrom(data, 0, data.length, message, schema, DEFAULT_INPUT_FACTORY);
     }
@@ -224,16 +189,8 @@ public final class XmlIOUtil
     }
     
     /**
-     * Merges the {@code message} from the {@link InputStream}.
-     */
-    public static <T extends Message<T>> void mergeFrom(InputStream in, T message)
-    throws IOException
-    {
-        mergeFrom(in, message, message.cachedSchema(), DEFAULT_INPUT_FACTORY);
-    }
-    
-    /**
-     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+     * Merges the {@code message} from the {@link InputStream} 
+     * using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
     throws IOException
@@ -242,14 +199,16 @@ public final class XmlIOUtil
     }
     
     /**
-     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+     * Merges the {@code message} from the {@link InputStream} 
+     * using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
             XMLInputFactory inFactory) throws IOException
     {
         try
         {
-            final XMLStreamReader parser = inFactory.createXMLStreamReader(in, XML_ENCODING);
+            final XMLStreamReader parser = inFactory.createXMLStreamReader(in, 
+                    XML_ENCODING);
             mergeFrom(parser, message, schema);
             parser.close();
         }
@@ -257,15 +216,6 @@ public final class XmlIOUtil
         {
             throw new XmlInputException(e);
         }
-    }
-    
-    /**
-     * Merges the {@code message} from the {@link Reader}.
-     */
-    public static <T extends Message<T>> void mergeFrom(Reader r, T message)
-    throws IOException
-    {
-        mergeFrom(r, message, message.cachedSchema(), DEFAULT_INPUT_FACTORY);
     }
     
     /**
@@ -296,7 +246,8 @@ public final class XmlIOUtil
     }
     
     /**
-     * Merges the {@code message} from the {@link XMLStreamReader} using the given {@code schema}.
+     * Merges the {@code message} from the {@link XMLStreamReader} 
+     * using the given {@code schema}.
      */
     public static <T> void mergeFrom(XMLStreamReader parser, T message, Schema<T> schema)
     throws IOException, XMLStreamException, XmlInputException
@@ -322,6 +273,116 @@ public final class XmlIOUtil
         
         if(!simpleName.equals(parser.getLocalName()))
             throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public static <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        return toByteArray(message, schema, DEFAULT_OUTPUT_FACTORY);
+    }
+    
+    /**
+     * Serializes the {@code message} into a byte array.
+     */
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, 
+            XMLOutputFactory outFactory)
+    {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try
+        {
+            writeTo(out, message, schema, outFactory);
+        }
+        catch(IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        return out.toByteArray();
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
+    throws IOException
+    {
+        writeTo(out, message, schema, DEFAULT_OUTPUT_FACTORY);
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+            XMLOutputFactory outFactory) throws IOException
+    {
+        try
+        {
+            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, 
+                    XML_ENCODING);
+            
+            writer.writeStartDocument(XML_ENCODING, XML_VERSION);
+            writeTo(writer, message, schema);
+            writer.writeEndDocument();
+            
+            writer.flush();
+            writer.close();
+        }
+        catch(XMLStreamException e)
+        {
+            throw new XmlOutputException(e);
+        }
+    }
+    
+    /**
+     * Serializes the {@code message} into a {@link Writer} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(Writer w, T message, Schema<T> schema)
+    throws IOException
+    {
+        writeTo(w, message, schema, DEFAULT_OUTPUT_FACTORY);
+    }
+    
+    /**
+     * Serializes the {@code message} into a {@link Writer} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(Writer w, T message, Schema<T> schema, 
+            XMLOutputFactory outFactory) throws IOException
+    {
+        try
+        {
+            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(w);
+            
+            writer.writeStartDocument(XML_ENCODING, XML_VERSION);
+            writeTo(writer, message, schema);
+            writer.writeEndDocument();
+            
+            writer.flush();
+            writer.close();
+        }
+        catch(XMLStreamException e)
+        {
+            throw new XmlOutputException(e);
+        }
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link XMLStreamWriter} 
+     * using the given {@code schema}.
+     */
+    public static <T> void writeTo(XMLStreamWriter writer, T message, Schema<T> schema)
+    throws IOException, XMLStreamException, XmlOutputException
+    {
+        writer.writeStartElement(schema.messageName());
+        
+        schema.writeTo(new XmlOutput(writer).use(schema), message);
+        
+        writer.writeEndElement();
     }
     
     /**

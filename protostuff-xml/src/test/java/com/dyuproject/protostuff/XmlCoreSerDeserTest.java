@@ -19,7 +19,6 @@ import static com.dyuproject.protostuff.SerializableObjects.baz;
 import static com.dyuproject.protostuff.SerializableObjects.foo;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
-import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Testing for xml ser/deser against messages.
@@ -167,13 +168,13 @@ public class XmlCoreSerDeserTest extends TestCase
     {
         Bar bar = new Bar();
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar/>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -184,7 +185,7 @@ public class XmlCoreSerDeserTest extends TestCase
         // method name is setBaz, should have been someBaz!
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -194,7 +195,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -205,7 +206,7 @@ public class XmlCoreSerDeserTest extends TestCase
         bar.setSomeInt(1);
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -216,7 +217,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -227,7 +228,7 @@ public class XmlCoreSerDeserTest extends TestCase
         bar.setSomeString("someString");
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -238,7 +239,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -249,7 +250,7 @@ public class XmlCoreSerDeserTest extends TestCase
         bar.setSomeString("");
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -260,7 +261,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -271,7 +272,7 @@ public class XmlCoreSerDeserTest extends TestCase
         baz.setId(2);
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -283,7 +284,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -294,7 +295,7 @@ public class XmlCoreSerDeserTest extends TestCase
         baz.setName("asdfsf");
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -306,7 +307,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -317,7 +318,7 @@ public class XmlCoreSerDeserTest extends TestCase
         baz.setName("");
         bar.setBaz(baz);
         
-        byte[] data = XmlIOUtil.toByteArray(bar);
+        byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Bar>" +
@@ -329,7 +330,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Bar>");*/
         
         Bar parsedBar = new Bar();
-        XmlIOUtil.mergeFrom(data, parsedBar);
+        XmlIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema());
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -337,13 +338,13 @@ public class XmlCoreSerDeserTest extends TestCase
     {
         Foo foo = new Foo();
         
-        byte[] data = XmlIOUtil.toByteArray(foo);
+        byte[] data = XmlIOUtil.toByteArray(foo, foo.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Foo/>");*/
         
         Foo parsedFoo = new Foo();
-        XmlIOUtil.mergeFrom(data, parsedFoo);
+        XmlIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema());
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
     
@@ -354,7 +355,7 @@ public class XmlCoreSerDeserTest extends TestCase
         bars.add(new Bar());
         foo.setSomeBar(bars);
         
-        byte[] data = XmlIOUtil.toByteArray(foo);
+        byte[] data = XmlIOUtil.toByteArray(foo, foo.cachedSchema());
 
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
@@ -366,7 +367,7 @@ public class XmlCoreSerDeserTest extends TestCase
         
         
         Foo parsedFoo = new Foo();
-        XmlIOUtil.mergeFrom(data, parsedFoo);
+        XmlIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema());
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
     
@@ -379,7 +380,7 @@ public class XmlCoreSerDeserTest extends TestCase
         bars.add(bar);
         foo.setSomeBar(bars);
         
-        byte[] data = XmlIOUtil.toByteArray(foo);
+        byte[] data = XmlIOUtil.toByteArray(foo, foo.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
                 "<?xml version='1.0' encoding='UTF-8'?>" +
                 "<Foo>" +
@@ -393,7 +394,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 "</Foo>");*/
 
         Foo parsedFoo = new Foo();
-        XmlIOUtil.mergeFrom(data, parsedFoo);
+        XmlIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema());
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
 

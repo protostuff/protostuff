@@ -14,12 +14,12 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
-
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * An output used for writing data with xml format.
@@ -145,6 +145,28 @@ public final class XmlOutput implements Output
             final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(schema.getFieldName(fieldNumber));
             writer.writeCData(STRING.deser(value));
+            writer.writeEndElement();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlOutputException(e);
+        }
+    }
+    
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        if(utf8String)
+        {
+            writeString(fieldNumber, STRING.deser(value, offset, length), repeated);
+            return;
+        }
+
+        try
+        {
+            final XMLStreamWriter writer = this.writer;
+            writer.writeStartElement(schema.getFieldName(fieldNumber));
+            writer.writeCData(STRING.deser(value, offset, length));
             writer.writeEndElement();
         }
         catch (XMLStreamException e)

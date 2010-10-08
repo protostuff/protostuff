@@ -19,14 +19,13 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
+import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.runtime.Bar;
 import com.dyuproject.protostuff.runtime.Baz;
 import com.dyuproject.protostuff.runtime.Foo;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.dyuproject.protostuff.runtime.SerializableObjects;
-
-import junit.framework.TestCase;
 
 /**
  * Testing for xml ser/deser against runtime messages.
