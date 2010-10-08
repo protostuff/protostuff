@@ -84,10 +84,10 @@ public final class LinkedBuffer
      * 
      * @return the total content size of the buffer.
      */
-    public static int writeTo(final OutputStream out, final LinkedBuffer head) throws IOException
+    public static int writeTo(final OutputStream out, LinkedBuffer node) throws IOException
     {
         int contentSize = 0;
-        for(LinkedBuffer node = head; node != null; node = node.next)
+        do
         {
             final int len = node.offset - node.start;
             if(len > 0)
@@ -96,6 +96,8 @@ public final class LinkedBuffer
                 contentSize += len;
             }
         }
+        while((node=node.next) != null);
+        
         return contentSize;
     }
     
@@ -104,10 +106,10 @@ public final class LinkedBuffer
      * 
      * @return the total content size of the buffer.
      */
-    public static int writeTo(final DataOutput out, final LinkedBuffer head) throws IOException
+    public static int writeTo(final DataOutput out, LinkedBuffer node) throws IOException
     {
         int contentSize = 0;
-        for(LinkedBuffer node = head; node != null; node = node.next)
+        do
         {
             final int len = node.offset - node.start;
             if(len > 0)
@@ -116,6 +118,8 @@ public final class LinkedBuffer
                 contentSize += len;
             }
         }
+        while((node=node.next) != null);
+        
         return contentSize;
     }
 
@@ -195,92 +199,6 @@ public final class LinkedBuffer
         next = null;
         offset = start;
         return this;
-    }
-    
-    /**
-     * This is used when objects need to be serialzied/written into a {@code LinkedBuffer}.
-     *
-     */
-    public static class WriteSession
-    {
-        
-        /**
-         * The main/root/head buffer of this write session.
-         */
-        public final LinkedBuffer head;
-        
-        /**
-         * The last buffer of this write session (This points to head if growing not needed).
-         */
-        protected LinkedBuffer tail;
-        
-        /**
-         * The actual number of bytes written to the buffer.
-         */
-        protected int size = 0;
-        
-        /**
-         * The next buffer size used when growing the buffer.
-         */
-        public final int nextBufferSize;
-        
-        public WriteSession(LinkedBuffer head)
-        {
-            this(head, DEFAULT_BUFFER_SIZE);
-        }
-        
-        public WriteSession(LinkedBuffer head, int nextBufferSize)
-        {
-            tail = head;
-            this.head = head;
-            this.nextBufferSize = nextBufferSize;
-        }
-        
-        /**
-         * The buffer will be cleared (tail will point to the head) and the size 
-         * will be reset to zero.
-         */
-        public WriteSession clear()
-        {
-            tail = head.clear();
-            size = 0;
-            return this;
-        }
-        
-        /**
-         * Returns the amount of bytes written in this session.
-         */
-        public final int getSize()
-        {
-            return size;
-        }
-        
-        /**
-         * Returns a single byte array containg all the contents written to the buffer(s).
-         */
-        public final byte[] toByteArray()
-        {
-            final LinkedBuffer head = this.head;
-
-            final byte[] buf = new byte[size];
-            
-            int offset = head.offset - head.start;
-            
-            System.arraycopy(head.buffer, 0, buf, 0, offset);
-            
-            for(LinkedBuffer node = head.next; node != null; node = node.next)
-            {
-                final int len = node.offset - node.start;
-                if(len > 0)
-                {
-                    System.arraycopy(node.buffer, node.start, buf, offset, len);
-                    offset += len;
-                }
-            }
-            
-            return buf;
-        }
-
     }
 
 }

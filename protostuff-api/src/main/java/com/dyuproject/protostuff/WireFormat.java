@@ -68,6 +68,7 @@ public final class WireFormat {
   public static final int WIRETYPE_START_GROUP      = 3;
   public static final int WIRETYPE_END_GROUP        = 4;
   public static final int WIRETYPE_FIXED32          = 5;
+  public static final int WIRETYPE_TAIL_DELIMITER   = 7;
 
   static final int TAG_TYPE_BITS = 3;
   static final int TAG_TYPE_MASK = (1 << TAG_TYPE_BITS) - 1;

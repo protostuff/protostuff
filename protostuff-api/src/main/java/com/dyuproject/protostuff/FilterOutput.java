@@ -42,6 +42,12 @@ public class FilterOutput implements Output
     {
         output.writeByteArray(fieldNumber, value, repeated);
     }
+    
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        output.writeByteRange(utf8String, fieldNumber, value, offset, length, repeated);
+    }
 
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {

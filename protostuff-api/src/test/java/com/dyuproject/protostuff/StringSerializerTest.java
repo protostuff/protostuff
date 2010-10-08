@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import com.dyuproject.protostuff.LinkedBuffer.WriteSession;
-import com.dyuproject.protostuff.StringSerializer.STRING;
-
 import junit.framework.TestCase;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for UTF-8 Encoding
@@ -66,6 +65,23 @@ public class StringSerializerTest extends TestCase
         numeric,
         whitespace,
         foo,
+        str_len_130,
+        repeatChar('a', 0x800-16),
+        repeatChar('a', 0x800+16),
+        repeatChar('a', 0x8000-16),
+        repeatChar('a', 0x8000+16)
+    };
+    
+    static final String[] ascii_targets = new String[]{
+        alphabet,
+        alphabet_to_upper,
+        numeric,
+        whitespace,
+        str_len_130,
+        repeatChar('b', 0x800-16),
+        repeatChar('b', 0x800+16),
+        repeatChar('b', 0x8000-16),
+        repeatChar('b', 0x8000+16)
     };
     
     static final int[] int_targets = new int[]{
@@ -188,7 +204,7 @@ public class StringSerializerTest extends TestCase
         checkVarDelimitedBoundry(6, size);
     }
 
-    public String repeatChar(char ch, int times)
+    public static String repeatChar(char ch, int times)
     {
         StringBuilder sb = new StringBuilder(times);
         for(int i = 0; i < times; i++)
@@ -198,7 +214,7 @@ public class StringSerializerTest extends TestCase
         return sb.toString();
     }
 
-    public void checkVarDelimitedBoundry(int initialGap, int secondWriteSize)
+    public static void checkVarDelimitedBoundry(int initialGap, int secondWriteSize)
     {
         int bufferSize = 256;
         final LinkedBuffer lb = LinkedBuffer.allocate(bufferSize);
@@ -295,6 +311,12 @@ public class StringSerializerTest extends TestCase
             assertEquals(builtin, buffered);
             assertEquals(builtin, buffered_needed_to_grow);
         }
+    }
+    
+    public void testAscii() throws Exception
+    {
+        for(String s : ascii_targets)
+            checkAscii(s);
     }
     
     public void testUTF8() throws Exception
@@ -421,6 +443,28 @@ public class StringSerializerTest extends TestCase
         String s2 = new String(b2, "UTF-8");
         //System.err.println(s1 + " == " + s2);
         assertEquals(s1, s2);
+    }
+    
+    static void checkAscii(String str) throws Exception
+    {
+        byte[] builtin = BUILT_IN_SERIALIZER.serialize(str);
+        LinkedBuffer lb = new LinkedBuffer(512);
+        WriteSession session = new WriteSession(lb);
+        
+        StringSerializer.writeAscii(str, session, lb);
+        
+        assertTrue(builtin.length == session.size);
+        
+        byte[] buffered = session.toByteArray();
+        
+        assertTrue(builtin.length == buffered.length);
+        
+        String strBuiltin = new String(builtin, "ASCII");
+        String strBuffered = new String(buffered, "ASCII");
+
+        assertEquals(strBuiltin, strBuffered);
+        print(strBuiltin);
+        print("len: " + builtin.length);
     }
     
     static void check(String str) throws Exception

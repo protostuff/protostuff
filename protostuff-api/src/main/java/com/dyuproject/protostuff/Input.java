@@ -95,6 +95,13 @@ public interface Input
      * The provided {@link Schema schema} handles the deserialization for the object.
      */
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException;
+    
+    /**
+     * Transfer the byte range to the output.
+     * Capable of zero-copy transfer depending on the type of input.
+     */
+    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber, 
+            boolean repeated) throws IOException;
 
 
 }

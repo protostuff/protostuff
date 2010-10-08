@@ -77,6 +77,10 @@ public interface Output
     /** Writes a byte array field. */
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException;
     
+    /** Writes a binary or a pre-encoded utf8 string. */
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException;
+    
     /** Writes a message field. */
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
     throws IOException;

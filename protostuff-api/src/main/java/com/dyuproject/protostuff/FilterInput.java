@@ -138,4 +138,10 @@ public class FilterInput implements Input
         return input.mergeObject(value, schema);
     }
 
+    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
+            boolean repeated) throws IOException
+    {
+        input.transferByteRangeTo(output, utf8String, fieldNumber, repeated);
+    }
+
 }
