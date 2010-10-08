@@ -31,10 +31,10 @@ import java.util.List;
 public abstract class RepeatedMessagesTest extends AbstractTest
 {
     
-    public abstract <T> int writeListTo(OutputStream out, List<T> messages, 
+    protected abstract <T> void writeListTo(OutputStream out, List<T> messages, 
             Schema<T> schema) throws IOException;
 
-    public abstract <T> List<T> parseListFrom(InputStream in, Schema<T> schema)
+    protected abstract <T> List<T> parseListFrom(InputStream in, Schema<T> schema)
     throws IOException;
     
     public void testBar() throws Exception

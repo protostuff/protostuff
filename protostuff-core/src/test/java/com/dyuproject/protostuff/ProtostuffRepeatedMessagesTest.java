@@ -28,15 +28,15 @@ import java.util.List;
 public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest
 {
 
-    public <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
+    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return ProtostuffIOUtil.parseListFrom(in, schema);
     }
 
-    public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
             throws IOException
     {
-        return ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
+        ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
     }
 
 }
