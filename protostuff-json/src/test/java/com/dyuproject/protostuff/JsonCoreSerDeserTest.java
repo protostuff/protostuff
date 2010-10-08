@@ -200,11 +200,11 @@ public class JsonCoreSerDeserTest extends TestCase
     {
         Bar bar = new Bar();
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -215,11 +215,11 @@ public class JsonCoreSerDeserTest extends TestCase
         // method name is setBaz, should have been someBaz!
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -230,11 +230,11 @@ public class JsonCoreSerDeserTest extends TestCase
         bar.setSomeInt(1);
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someInt\":1,\"someBaz\":{}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -245,11 +245,11 @@ public class JsonCoreSerDeserTest extends TestCase
         bar.setSomeString("someString");
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"someString\",\"someBaz\":{}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -260,11 +260,11 @@ public class JsonCoreSerDeserTest extends TestCase
         bar.setSomeString("");
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"\",\"someBaz\":{}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -275,11 +275,11 @@ public class JsonCoreSerDeserTest extends TestCase
         baz.setId(2);
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"id\":2}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -290,11 +290,11 @@ public class JsonCoreSerDeserTest extends TestCase
         baz.setName("asdfsf");
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"asdfsf\"}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -305,11 +305,11 @@ public class JsonCoreSerDeserTest extends TestCase
         baz.setName("");
         bar.setBaz(baz);
         
-        byte[] data = JsonIOUtil.toByteArray(bar, false);
+        byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"\"}}");
         
         Bar parsedBar = new Bar();
-        JsonIOUtil.mergeFrom(data, parsedBar, false);
+        JsonIOUtil.mergeFrom(data, parsedBar, parsedBar.cachedSchema(), false);
         SerializableObjects.assertEquals(bar, parsedBar);
     }
     
@@ -317,11 +317,11 @@ public class JsonCoreSerDeserTest extends TestCase
     {
         Foo foo = new Foo();
         
-        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        byte[] data = JsonIOUtil.toByteArray(foo, foo.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{}");
         
         Foo parsedFoo = new Foo();
-        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        JsonIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema(), false);
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
     
@@ -332,11 +332,11 @@ public class JsonCoreSerDeserTest extends TestCase
         bars.add(new Bar());
         foo.setSomeBar(bars);
         
-        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        byte[] data = JsonIOUtil.toByteArray(foo, foo.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBar\":[{}]}");
         
         Foo parsedFoo = new Foo();
-        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        JsonIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema(), false);
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
     
@@ -349,11 +349,11 @@ public class JsonCoreSerDeserTest extends TestCase
         bars.add(bar);
         foo.setSomeBar(bars);
         
-        byte[] data = JsonIOUtil.toByteArray(foo, false);
+        byte[] data = JsonIOUtil.toByteArray(foo, foo.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBar\":[{\"someBaz\":{}}]}");
         
         Foo parsedFoo = new Foo();
-        JsonIOUtil.mergeFrom(data, parsedFoo, false);
+        JsonIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema(), false);
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
 
