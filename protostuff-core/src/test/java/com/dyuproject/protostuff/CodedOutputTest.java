@@ -16,15 +16,13 @@ package com.dyuproject.protostuff;
 
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
-import junit.framework.TestCase;
-
 /**
  * CodedOutput test for the size of the bytes written.
  *
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class CodedOutputTest extends TestCase
+public class CodedOutputTest extends AbstractTest
 {
     
     static final int[][] int32values = new int[][]{

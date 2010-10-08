@@ -14,30 +14,22 @@
 
 package com.dyuproject.protostuff;
 
+import junit.framework.TestCase;
 
 /**
- * Test for group-encoded nested messages.
+ * Helper class for tests.
  *
  * @author David Yu
- * @created Jun 13, 2010
+ * @created Oct 8, 2010
  */
-public abstract class GroupEncodedNestedMessageTest extends SerDeserTest
+public abstract class AbstractTest extends TestCase
 {
     
-    public static final boolean GROUP_ENCODED = true;
-
-    public boolean isGroupEncoded()
-    {
-        return GROUP_ENCODED;
-    }
+    static final int BUF_SIZE = 256;
     
-    /**
-     * Serializes the {@code message} into a byte array.
-     */
-    public <T> byte[] toByteArrayViaCodedOutput(T message, Schema<T> schema)
+    public static LinkedBuffer buf()
     {
-        byte[] result = CodedOutput.toByteArray(message, schema, GROUP_ENCODED);
-        return result;
+        return LinkedBuffer.allocate(BUF_SIZE);
     }
 
 }

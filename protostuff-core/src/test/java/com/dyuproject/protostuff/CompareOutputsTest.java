@@ -14,12 +14,11 @@
 
 package com.dyuproject.protostuff;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.Foo.EnumSample;
 
@@ -30,7 +29,7 @@ import com.dyuproject.protostuff.Foo.EnumSample;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public class CompareOutputsTest extends TestCase
+public class CompareOutputsTest extends AbstractTest
 {
     
     static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
@@ -58,72 +57,38 @@ public class CompareOutputsTest extends TestCase
             new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
             new Long[]{7060504030201l, -7060504030201l, 0l});
     
-    public void testFoo() throws Exception
+    public void testFooProtobuf() throws Exception
     {
         Foo fooCompare = foo;
         
-        byte[] coded = CodedOutput.toByteArray(fooCompare, fooCompare.cachedSchema());
-        byte[] deferred = DeferredOutputTest.getByteArray(fooCompare, fooCompare.cachedSchema());
-        byte[] buffered = BufferedOutputTest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] computed = toByteArrayComputedProtobuf(fooCompare, fooCompare.cachedSchema());
+        byte[] buffered = toByteArrayBufferedProtobuf(fooCompare, fooCompare.cachedSchema());
+        byte[] streamed = toByteArrayStreamedProtobuf(fooCompare, fooCompare.cachedSchema());
         
-        //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
-        assertTrue(coded.length == deferred.length);
-        assertTrue(coded.length == buffered.length);
+        assertTrue(computed.length == buffered.length);
+        assertTrue(computed.length == streamed.length);
         
-        assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
-        assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
+        String strComputed = new String(computed, "UTF-8");
+        
+        assertEquals(strComputed, new String(buffered, "UTF-8"));
+        assertEquals(strComputed, new String(streamed, "UTF-8"));
     }
     
-    public void testFooGE() throws Exception
+    public void testFooProtostuff() throws Exception
     {
-        boolean groupEncoded = true;
         Foo fooCompare = foo;
         
-        byte[] coded = CodedOutput.toByteArray(fooCompare, fooCompare.cachedSchema(), groupEncoded);
-        byte[] deferred = DeferredOutputGETest.getByteArray(fooCompare, fooCompare.cachedSchema());
-        byte[] buffered = BufferedOutputGETest.getByteArray(fooCompare, fooCompare.cachedSchema());
+        byte[] computed = toByteArrayComputedProtostuff(fooCompare, fooCompare.cachedSchema());
+        byte[] buffered = toByteArrayBufferedProtostuff(fooCompare, fooCompare.cachedSchema());
+        byte[] streamed = toByteArrayStreamedProtostuff(fooCompare, fooCompare.cachedSchema());
         
-        //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
-        assertTrue(coded.length == deferred.length);
-        assertTrue(coded.length == buffered.length);
+        assertTrue(computed.length == buffered.length);
+        assertTrue(computed.length == streamed.length);
         
-        assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
-        assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
-    }
-    
-    public void testBar() throws Exception
-    {
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
-        {
-            byte[] coded = CodedOutput.toByteArray(barCompare, barCompare.cachedSchema());
-            byte[] deferred = DeferredOutputTest.getByteArray(barCompare, barCompare.cachedSchema());
-            byte[] buffered = BufferedOutputTest.getByteArray(barCompare, barCompare.cachedSchema());
-            
-            //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
-            assertTrue(coded.length == deferred.length);
-            assertTrue(coded.length == buffered.length);
-            
-            assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
-            assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
-        }
-    }
-    
-    public void testBarGE() throws Exception
-    {
-        boolean groupEncoded = true;
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
-        {
-            byte[] coded = CodedOutput.toByteArray(barCompare, barCompare.cachedSchema(), groupEncoded);
-            byte[] deferred = DeferredOutputGETest.getByteArray(barCompare, barCompare.cachedSchema());
-            byte[] buffered = BufferedOutputGETest.getByteArray(barCompare, barCompare.cachedSchema());
-            
-            //System.err.println(coded.length + " == " + deferred.length + " == " + buffered.length);
-            assertTrue(coded.length == deferred.length);
-            assertTrue(coded.length == buffered.length);
-            
-            assertEquals(new String(coded, "UTF-8"), new String(deferred, "UTF-8"));
-            assertEquals(new String(coded, "UTF-8"), new String(buffered, "UTF-8"));
-        }
+        String strComputed = new String(computed, "UTF-8");
+        
+        assertEquals(strComputed, new String(buffered, "UTF-8"));
+        assertEquals(strComputed, new String(streamed, "UTF-8"));
     }
     
     public void testBenchmark() throws Exception
@@ -192,6 +157,104 @@ public class CompareOutputsTest extends TestCase
         out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
     }
     
+    static <T> byte[] toByteArrayComputedProtobuf(T message, Schema<T> schema)
+    {
+        return CodedOutput.toByteArray(message, schema, false);
+    }
+    
+    static <T> byte[] toByteArrayBufferedProtobuf(T message, Schema<T> schema)
+    {
+        //return ProtobufIOUtil.toByteArray(message, schema, new LinkedBuffer(BUF_SIZE));
+        final BufferedOutput output = new BufferedOutput(
+                new LinkedBuffer(BUF_SIZE), false);
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return output.toByteArray();
+    }
+    
+    static <T> byte[] toByteArrayStreamedProtobuf(T message, Schema<T> schema)
+    {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final CodedOutput output = new CodedOutput(out, new byte[BUF_SIZE], false);
+        try
+        {
+            schema.writeTo(output, message);
+            output.flush();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return out.toByteArray();
+    }
+    
+    static <T> byte[] toByteArrayComputedProtostuff(T message, Schema<T> schema)
+    {
+        return CodedOutput.toByteArray(message, schema, true);
+    }
+    
+    static <T> byte[] toByteArrayBufferedProtostuff(T message, Schema<T> schema)
+    {
+        //return ProtostuffIOUtil.toByteArray(message, schema, new LinkedBuffer(BUF_SIZE));
+        final ProtostuffOutput output = new ProtostuffOutput(
+                new LinkedBuffer(BUF_SIZE));
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return output.toByteArray();
+    }
+    
+    static <T> byte[] toByteArrayStreamedProtostuff(T message, Schema<T> schema)
+    {
+        /*final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try
+        {
+            ProtostuffIOUtil.writeTo(out, message, schema, new LinkedBuffer(BUF_SIZE));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        return out.toByteArray();*/
+        
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final LinkedBuffer buffer = new LinkedBuffer(BUF_SIZE);
+        final ProtostuffOutput output = new ProtostuffOutput(buffer, out);
+        
+        try
+        {
+            schema.writeTo(output, message);
+            LinkedBuffer.writeTo(out, buffer);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return out.toByteArray();
+    }
+    
+    static final int BUF_SIZE = 256;
+    
     public interface Serializer
     {
         
@@ -200,198 +263,86 @@ public class CompareOutputsTest extends TestCase
         public String getName();
         
     }
-    
-    public static final Serializer CODED_OUTPUT = new Serializer()
+
+    static final Serializer PROTOBUF_COMPUTED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            return CodedOutput.toByteArray(message, message.cachedSchema(), false);
+        {
+            return toByteArrayComputedProtobuf(message, message.cachedSchema());
         }
-
         public String getName()
         {
-            return "codedoutput";
+            return "protobuf-computed-output";
         }
-        
     };
     
-    public static final Serializer CODED_OUTPUT_GE = new Serializer()
+    static final Serializer PROTOBUF_BUFFERED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            return CodedOutput.toByteArray(message, message.cachedSchema(), true);
+        {
+            return toByteArrayBufferedProtobuf(message, message.cachedSchema());
         }
-
         public String getName()
         {
-            return "codedoutput-ge";
+            return "protobuf-buffered-output";
         }
-        
-    };
-
-    public static final Serializer DEFERRED_OUTPUT = new Serializer()
-    {
-
-        public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            DeferredOutput output = new DeferredOutput(false);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
-        }
-
-        public String getName()
-        {
-            return "deferredoutput";
-        }
-
     };
     
-    public static final Serializer DEFERRED_OUTPUT_GE = new Serializer()
+    static final Serializer PROTOBUF_STREAMED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            DeferredOutput output = new DeferredOutput(true);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
+        {
+            return toByteArrayStreamedProtobuf(message, message.cachedSchema());
         }
-
         public String getName()
         {
-            return "deferredoutput-ge";
+            return "protobuf-streamed-output";
         }
-
     };
     
-    public static final Serializer BUFFERED_OUTPUT = new Serializer()
+    static final Serializer PROTOSTUFF_COMPUTED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, false);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
+        {
+            return toByteArrayComputedProtostuff(message, message.cachedSchema());
         }
-        
         public String getName()
         {
-            return "bufferedoutput";
+            return "protostuff-computed-output";
         }
-        
     };
     
-    public static final Serializer BUFFERED_OUTPUT_GE = new Serializer()
+    static final Serializer PROTOSTUFF_BUFFERED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            BufferedOutput output = new BufferedOutput(new LinkedBuffer(1024), 256, true);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
+        {
+            return toByteArrayBufferedProtostuff(message, message.cachedSchema());
         }
-        
         public String getName()
         {
-            return "bufferedoutput-ge";
+            return "protostuff-buffered-output";
         }
-        
     };
     
-    public static final Serializer BUFFERED_OUTPUT2 = new Serializer()
+    static final Serializer PROTOSTUFF_STREAMED_OUTPUT = new Serializer()
     {
-
         public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 351, false);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
+        {
+            return toByteArrayStreamedProtostuff(message, message.cachedSchema());
         }
-        
         public String getName()
         {
-            return "bufferedoutput2";
+            return "protostuff-streamed-output";
         }
-        
-    };
-    
-    public static final Serializer BUFFERED_OUTPUT_GE2 = new Serializer()
-    {
-
-        public <T extends Message<T>> byte[] serialize(T message)
-        {            
-            BufferedOutput2 output = new BufferedOutput2(new LinkedBuffer(1024), 256, 351, true);
-            try
-            {
-                message.cachedSchema().writeTo(output, message);
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                        "(should never happen).", e);
-            }
-            
-            return output.toByteArray();
-        }
-        
-        public String getName()
-        {
-            return "bufferedoutput-ge2";
-        }
-        
     };
     
     static final Serializer[] SERIALIZERS = new Serializer[]{
-        CODED_OUTPUT, CODED_OUTPUT_GE,
-        DEFERRED_OUTPUT, DEFERRED_OUTPUT_GE,
-        BUFFERED_OUTPUT, BUFFERED_OUTPUT2,
-        BUFFERED_OUTPUT_GE, BUFFERED_OUTPUT_GE2
+        PROTOBUF_COMPUTED_OUTPUT,
+        PROTOBUF_BUFFERED_OUTPUT,
+        PROTOBUF_STREAMED_OUTPUT,
+        PROTOSTUFF_COMPUTED_OUTPUT,
+        PROTOSTUFF_BUFFERED_OUTPUT,
+        PROTOSTUFF_STREAMED_OUTPUT
     };
 
 }

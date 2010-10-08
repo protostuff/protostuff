@@ -17,27 +17,25 @@ package com.dyuproject.protostuff;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
- * Testcase for multiple messages written as delimited bytes.
+ * Testcase for ser/deser of multiple messages.
  *
  * @author David Yu
  * @created Jan 14, 2010
  */
-public class DelimitedTest extends TestCase
+public abstract class RepeatedMessagesTest extends AbstractTest
 {
     
-    public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
-    throws IOException
-    {
-        return IOUtil.writeListTo(out, messages, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
-    }
+    public abstract <T> int writeListTo(OutputStream out, List<T> messages, 
+            Schema<T> schema) throws IOException;
+
+    public abstract <T> List<T> parseListFrom(InputStream in, Schema<T> schema)
+    throws IOException;
     
     public void testBar() throws Exception
     {
@@ -50,7 +48,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Bar> parsedBars = IOUtil.parseListFrom(in, SerializableObjects.bar.cachedSchema());
+        List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
         
         assertTrue(parsedBars.size() == bars.size());
         int i=0;
@@ -69,7 +67,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
 
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Bar> parsedBars = IOUtil.parseListFrom(in, SerializableObjects.bar.cachedSchema());
+        List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
         
         assertTrue(parsedBars.size() == bars.size());
         int i=0;
@@ -87,7 +85,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Bar> parsedBars = IOUtil.parseListFrom(in, SerializableObjects.bar.cachedSchema());
+        List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
         
         assertTrue(parsedBars.size() == bars.size());
         int i=0;
@@ -107,7 +105,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Bar> parsedBars = IOUtil.parseListFrom(in, SerializableObjects.bar.cachedSchema());
+        List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
         
         assertTrue(parsedBars.size() == bars.size());
         int i=0;
@@ -126,7 +124,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Foo> parsedFoos = IOUtil.parseListFrom(in, SerializableObjects.foo.cachedSchema());
+        List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
         
         assertTrue(parsedFoos.size() == foos.size());
         int i=0;
@@ -145,7 +143,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Foo> parsedFoos = IOUtil.parseListFrom(in, SerializableObjects.foo.cachedSchema());
+        List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
         
         assertTrue(parsedFoos.size() == foos.size());
         int i=0;
@@ -163,7 +161,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Foo> parsedFoos = IOUtil.parseListFrom(in, SerializableObjects.foo.cachedSchema());
+        List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
         
         assertTrue(parsedFoos.size() == foos.size());
         int i=0;
@@ -187,7 +185,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Foo> parsedFoos = IOUtil.parseListFrom(in, SerializableObjects.foo.cachedSchema());
+        List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
         
         assertTrue(parsedFoos.size() == foos.size());
         int i=0;
@@ -213,7 +211,7 @@ public class DelimitedTest extends TestCase
         byte[] data = out.toByteArray();
         
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        List<Foo> parsedFoos = IOUtil.parseListFrom(in, SerializableObjects.foo.cachedSchema());
+        List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
         
         assertTrue(parsedFoos.size() == foos.size());
         int i=0;

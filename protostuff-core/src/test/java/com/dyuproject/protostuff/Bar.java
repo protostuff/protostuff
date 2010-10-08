@@ -29,6 +29,13 @@ import java.util.HashMap;
 public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
 {
     
+    static final Bar DEFAULT_INSTANCE = new Bar();
+    
+    public static Bar getSchema()
+    {
+        return DEFAULT_INSTANCE;
+    }
+    
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
     static
     {
@@ -319,6 +326,46 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
+    
+    public void readExternal(ObjectInput in) throws IOException
+    {
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+    }
+
+    public void writeTo(Output output, Bar message) throws IOException
+    {
+        if(message.someInt != 0)
+            output.writeInt32(1, message.someInt, false);
+        
+        if(message.someString != null)
+            output.writeString(2, message.someString, false);
+        
+        if(message.baz != null)
+            output.writeMessage(3, message.baz, false);
+        
+        if(message.someEnum != null) 
+            output.writeEnum(4, message.someEnum.number, false);
+        
+        if(message.someBytes != null)
+            output.writeBytes(5, message.someBytes, false);
+        
+        if(message.someBoolean)
+            output.writeBool(6, message.someBoolean, false);
+        
+        if(message.someFloat != 0f)
+            output.writeFloat(7, message.someFloat, false);
+        
+        if(message.someDouble != 0d)
+            output.writeDouble(8, message.someDouble, false);
+        
+        if(message.someLong != 0l)
+            output.writeInt64(9, message.someLong, false);
+    }
 
     public void mergeFrom(Input input, Bar message) throws IOException
     {
@@ -363,45 +410,125 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
             }
         }
     }
-
-    public void writeTo(Output output, Bar message) throws IOException
+    
+    static final Pipe.Schema<Bar> PIPE_SCHEMA = new Pipe.Schema<Bar>(DEFAULT_INSTANCE)
     {
-        if(message.someInt != 0)
-            output.writeInt32(1, message.someInt, false);
-        
-        if(message.someString != null)
-            output.writeString(2, message.someString, false);
-        
-        if(message.baz != null)
-            output.writeMessage(3, message.baz, false);
-        
-        if(message.someEnum != null) 
-            output.writeEnum(4, message.someEnum.number, false);
-        
-        if(message.someBytes != null)
-            output.writeBytes(5, message.someBytes, false);
-        
-        if(message.someBoolean)
-            output.writeBool(6, message.someBoolean, false);
-        
-        if(message.someFloat != 0f)
-            output.writeFloat(7, message.someFloat, false);
-        
-        if(message.someDouble != 0d)
-            output.writeDouble(8, message.someDouble, false);
-        
-        if(message.someLong != 0l)
-            output.writeInt64(9, message.someLong, false);
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            while(true)
+            {
+                int number = input.readFieldNumber(wrappedSchema);
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        output.writeInt32(number, input.readInt32(), false);
+                        break;
+                    case 2:
+                        input.transferByteRangeTo(output, true, number, false);
+                        break;
+                    case 3:
+                        output.writeObject(number, pipe, Baz.getPipeSchema(), false);
+                        break;
+                    case 4:
+                        output.writeEnum(number, input.readEnum(), false);
+                        break;
+                    case 5:
+                        input.transferByteRangeTo(output, false, number, false);
+                        break;
+                    case 6:
+                        output.writeBool(number, input.readBool(), false);
+                        break;
+                    case 7:
+                        output.writeFloat(number, input.readFloat(), false);
+                        break;
+                    case 8:
+                        output.writeDouble(number, input.readDouble(), false);
+                        break;
+                    case 9:
+                        output.writeInt64(number, input.readInt64(), false);
+                        break;
+                    default:
+                        input.handleUnknownField(number, wrappedSchema);
+                }
+            }
+        }
+    };
+    
+    public static Pipe.Schema<Bar> getPipeSchema()
+    {
+        return PIPE_SCHEMA;
     }
 
-    public void readExternal(ObjectInput in) throws IOException
+    public int hashCode()
     {
-        IOUtil.mergeDelimitedFrom(in, this, this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((baz == null) ? 0 : baz.hashCode());
+        result = prime * result + (someBoolean ? 1231 : 1237);
+        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(someDouble);
+        result = prime * result + (int)(temp ^ (temp >>> 32));
+        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result + Float.floatToIntBits(someFloat);
+        result = prime * result + someInt;
+        result = prime * result + (int)(someLong ^ (someLong >>> 32));
+        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        return result;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
+    public boolean equals(Object obj)
     {
-        IOUtil.writeDelimitedTo(out, this, this);
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Bar other = (Bar)obj;
+        if (baz == null)
+        {
+            if (other.baz != null)
+                return false;
+        }
+        else if (!baz.equals(other.baz))
+            return false;
+        if (someBoolean != other.someBoolean)
+            return false;
+        if (someBytes == null)
+        {
+            if (other.someBytes != null)
+                return false;
+        }
+        else if (!someBytes.equals(other.someBytes))
+            return false;
+        if (Double.doubleToLongBits(someDouble) != Double.doubleToLongBits(other.someDouble))
+            return false;
+        if (someEnum == null)
+        {
+            if (other.someEnum != null)
+                return false;
+        }
+        else if (!someEnum.equals(other.someEnum))
+            return false;
+        if (Float.floatToIntBits(someFloat) != Float.floatToIntBits(other.someFloat))
+            return false;
+        if (someInt != other.someInt)
+            return false;
+        if (someLong != other.someLong)
+            return false;
+        if (someString == null)
+        {
+            if (other.someString != null)
+                return false;
+        }
+        else if (!someString.equals(other.someString))
+            return false;
+        return true;
     }
-
+    
+    
 }

@@ -15,34 +15,27 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.Map;
 
 /**
- * Test for group-encoded nested messages via {@link BufferedOutput}.
+ * Tests for the {@link StringMapSchema} via protostuff.
  *
  * @author David Yu
- * @created Jun 13, 2010
+ * @created Oct 7, 2010
  */
-public class BufferedOutputGETest extends GroupEncodedNestedMessageTest
+public class StringMapSchemaProtostuffTest extends StringMapSchemaTest
 {
 
-    public static <T> byte[] getByteArray(T message, Schema<T> schema)
+    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length,
+            T message, Schema<T> schema) throws IOException
     {
-        byte[] result = IOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
-        return result;
-    }
-    
-
-    public <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        return getByteArray(message, schema);
+        ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
-    public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException
+    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema)
+            throws IOException
     {
-        IOUtil.writeDelimitedTo(out, message, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE), GROUP_ENCODED);
+        return ProtostuffIOUtil.toByteArray(message, schema, buf());
     }
 
 }

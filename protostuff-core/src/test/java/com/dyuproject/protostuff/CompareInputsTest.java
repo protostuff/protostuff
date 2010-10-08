@@ -23,8 +23,6 @@ import java.io.PrintStream;
 
 import com.dyuproject.protostuff.CompareOutputsTest.Serializer;
 
-import junit.framework.TestCase;
-
 /**
  * Benchmark to compare the deserialization speed of 2 types. 
  * CodedInput and ByteArrayInput.
@@ -32,7 +30,7 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Jun 22, 2010
  */
-public class CompareInputsTest extends TestCase
+public class CompareInputsTest extends AbstractTest
 {
     
     public void testBenchmark() throws Exception
@@ -117,7 +115,7 @@ public class CompareInputsTest extends TestCase
         public Serializer getSerializer();
     }
     
-    public static final Deserializer CODED_INPUT = new Deserializer()
+    public static final Deserializer PROTOBUF_CODED_INPUT = new Deserializer()
     {
         
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
@@ -129,17 +127,17 @@ public class CompareInputsTest extends TestCase
         
         public String getName()
         {
-            return "codedinput";
+            return "protobuf-coded-input";
         }
         
         public Serializer getSerializer()
         {
-            return CompareOutputsTest.CODED_OUTPUT;
+            return CompareOutputsTest.PROTOBUF_COMPUTED_OUTPUT;
         }
         
     };
     
-    public static final Deserializer CODED_INPUT_GE = new Deserializer()
+    public static final Deserializer PROTOSTUFF_CODED_INPUT = new Deserializer()
     {
         
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
@@ -151,17 +149,17 @@ public class CompareInputsTest extends TestCase
         
         public String getName()
         {
-            return "codedinput-ge";
+            return "protostuff-coded-input";
         }
         
         public Serializer getSerializer()
         {
-            return CompareOutputsTest.CODED_OUTPUT_GE;
+            return CompareOutputsTest.PROTOSTUFF_COMPUTED_OUTPUT;
         }
         
     };
     
-    public static final Deserializer BYTE_ARRAY_INPUT = new Deserializer()
+    public static final Deserializer PROTOBUF_BYTE_ARRAY_INPUT = new Deserializer()
     {
         
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
@@ -180,17 +178,17 @@ public class CompareInputsTest extends TestCase
         
         public String getName()
         {
-            return "bytearrayinput";
+            return "protobuf-bytearray-input";
         }
         
         public Serializer getSerializer()
         {
-            return CompareOutputsTest.CODED_OUTPUT;
+            return CompareOutputsTest.PROTOBUF_BUFFERED_OUTPUT;
         }
         
     };
     
-    public static final Deserializer BYTE_ARRAY_INPUT_GE = new Deserializer()
+    public static final Deserializer PROTOSTUFF_BYTE_ARRAY_INPUT = new Deserializer()
     {
         
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
@@ -209,19 +207,21 @@ public class CompareInputsTest extends TestCase
         
         public String getName()
         {
-            return "bytearrayinput-ge";
+            return "protostuff-bytearray-input";
         }
         
         public Serializer getSerializer()
         {
-            return CompareOutputsTest.CODED_OUTPUT_GE;
+            return CompareOutputsTest.PROTOSTUFF_BUFFERED_OUTPUT;
         }
         
     };
     
     static final Deserializer[] DESERIALIZERS = new Deserializer[]{
-        CODED_INPUT, CODED_INPUT_GE,
-        BYTE_ARRAY_INPUT, BYTE_ARRAY_INPUT_GE
+        PROTOBUF_CODED_INPUT, 
+        PROTOSTUFF_CODED_INPUT,
+        PROTOBUF_BYTE_ARRAY_INPUT, 
+        PROTOSTUFF_BYTE_ARRAY_INPUT
     };
 
 }

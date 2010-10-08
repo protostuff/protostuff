@@ -15,40 +15,28 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
- * Test for group-encoded nested messages via {@link CodedOutput}.
+ * Testcase for ser/deser of multiple messages using protostuff
  *
  * @author David Yu
- * @created Jun 13, 2010
+ * @created Oct 7, 2010
  */
-public class CodedOutputGETest extends GroupEncodedNestedMessageTest
+public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest
 {
-    
-    public static <T> byte[] getByteArray(T message, Schema<T> schema)
+
+    public <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
-        byte[] result = CodedOutput.toByteArray(message, schema, GROUP_ENCODED);
-        return result;
+        return ProtostuffIOUtil.parseListFrom(in, schema);
     }
 
-    public <T> byte[] toByteArray(T message, Schema<T> schema)
+    public <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+            throws IOException
     {
-        return getByteArray(message, schema);
+        return ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
     }
-
-    public <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException
-    {
-        int size = ComputedSizeOutput.getSize(message, schema, GROUP_ENCODED);
-        CodedOutput.writeRawVarInt32Bytes(out, size);
-        
-        CodedOutput output = new CodedOutput(out, new byte[CodedOutput.DEFAULT_BUFFER_SIZE], 
-                GROUP_ENCODED);
-        
-        schema.writeTo(output, message);
-        output.flush();
-    }
-
-
 
 }

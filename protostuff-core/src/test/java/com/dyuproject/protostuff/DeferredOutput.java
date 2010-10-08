@@ -227,6 +227,14 @@ public final class DeferredOutput implements Output
         
         current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
+    
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+            int offset, int length, boolean repeated) throws IOException
+    {
+        final byte[] bytes = new byte[length];
+        System.arraycopy(value, offset, bytes, 0, length);
+        writeByteArray(fieldNumber, bytes, repeated);
+    }
 
     public <T extends Message<T>> void writeMessage(int fieldNumber, T value, 
             boolean repeated) throws IOException

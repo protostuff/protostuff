@@ -18,35 +18,27 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the {@link StringMapSchema}.
  *
  * @author David Yu
  * @created Jun 25, 2010
  */
-public class StringMapSchemaTest extends TestCase
+public abstract class StringMapSchemaTest extends AbstractTest
 {
     
     public static final StringMapSchema<String> SCHEMA = StringMapSchema.VALUE_STRING;
     
-    public <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
-    throws IOException
-    {
-        IOUtil.mergeFrom(data, offset, length, message, schema);
-    }
+    public abstract <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, 
+            int length, T message, Schema<T> schema) throws IOException;
     
     private <T extends Map<String,String>> void mergeFrom(byte[] data, T message, Schema<T> schema) throws IOException
     {
         mergeFrom(data, 0, data.length, message, schema);
     }
     
-    public <T extends Map<String,String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
-    {
-        return IOUtil.toByteArray(message, schema, 
-                new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
-    }
+    public abstract <T extends Map<String,String>> byte[] toByteArray(T message, 
+            Schema<T> schema) throws IOException;
     
     protected Map<String,String> newMap()
     {

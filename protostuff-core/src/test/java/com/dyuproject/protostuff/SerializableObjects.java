@@ -15,7 +15,6 @@
 package com.dyuproject.protostuff;
 
 import java.util.Arrays;
-import java.util.List;
 
 import junit.framework.Assert;
 
@@ -75,7 +74,12 @@ public final class SerializableObjects
                 Arrays.asList(someLong));
     }
     
-    public static void assertEquals(Baz baz1, Baz baz2)
+    public static <T> void assertEquals(T m1, T m2)
+    {
+        Assert.assertEquals(m1, m2);
+    }
+    
+    /*public static void assertEquals(Baz baz1, Baz baz2)
     {
         // true if both are null
         if(baz1 == baz2)
@@ -128,6 +132,6 @@ public final class SerializableObjects
         Assert.assertEquals(f1.getSomeFloat(), f2.getSomeFloat());
         Assert.assertEquals(f1.getSomeDouble(), f2.getSomeDouble());
         Assert.assertEquals(f1.getSomeLong(), f2.getSomeLong());
-    }
+    }*/
 
 }

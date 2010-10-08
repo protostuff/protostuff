@@ -30,6 +30,13 @@ import java.util.HashMap;
 public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
 {
     
+    static final Baz DEFAULT_INSTANCE = new Baz();
+    
+    public static Schema<Baz> getSchema()
+    {
+        return DEFAULT_INSTANCE;
+    }
+    
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
     static
     {
@@ -157,6 +164,29 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
+    
+    public void readExternal(ObjectInput in) throws IOException
+    {
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+    }
+
+    public void writeTo(Output output, Baz message) throws IOException
+    {
+        if(message.id != 0)
+            output.writeInt32(1, message.id, false);
+        
+        if(message.name != null)
+            output.writeString(2, message.name, false);
+        
+        if(message.timestamp != 0l)
+            output.writeInt64(3, message.timestamp, false);
+    }
+    
 
     public void mergeFrom(Input input, Baz message) throws IOException
     {
@@ -182,26 +212,73 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         }
     }
 
-    public void writeTo(Output output, Baz message) throws IOException
+    static final Pipe.Schema<Baz> PIPE_SCHEMA = new Pipe.Schema<Baz>(DEFAULT_INSTANCE)
     {
-        if(message.id != 0)
-            output.writeInt32(1, message.id, false);
-        
-        if(message.name != null)
-            output.writeString(2, message.name, false);
-        
-        if(message.timestamp != 0l)
-            output.writeInt64(3, message.timestamp, false);
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            while(true)
+            {
+                int number = input.readFieldNumber(wrappedSchema);
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        output.writeInt32(number, input.readInt32(), false);
+                        break;
+                    case 2:
+                        input.transferByteRangeTo(output, true, number, false);
+                        break;
+                    case 3:
+                        output.writeInt64(number, input.readInt64(), false);
+                        break;
+                    default:
+                        input.handleUnknownField(number, wrappedSchema);
+                }
+            }
+            
+        }
+
+    };
+    
+    public static Pipe.Schema<Baz> getPipeSchema()
+    {
+        return PIPE_SCHEMA;
+    }
+
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + (int)(timestamp ^ (timestamp >>> 32));
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Baz other = (Baz)obj;
+        if (id != other.id)
+            return false;
+        if (name == null)
+        {
+            if (other.name != null)
+                return false;
+        }
+        else if (!name.equals(other.name))
+            return false;
+        if (timestamp != other.timestamp)
+            return false;
+        return true;
     }
     
-    public void readExternal(ObjectInput in) throws IOException
-    {
-        IOUtil.mergeDelimitedFrom(in, this, this);
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        IOUtil.writeDelimitedTo(out, this, this);
-    }
-
+    
 }

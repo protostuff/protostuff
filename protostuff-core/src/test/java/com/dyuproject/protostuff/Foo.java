@@ -31,6 +31,13 @@ import java.util.List;
 public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 {
     
+    static final Foo DEFAULT_INSTANCE = new Foo();
+    
+    public static Foo getSchema()
+    {
+        return DEFAULT_INSTANCE;
+    }
+    
     private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
     static
     {
@@ -323,7 +330,66 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         Integer number = __fieldMap.get(name);
         return number==null ? 0 : number.intValue();
     }
+    
+    public void readExternal(ObjectInput in) throws IOException
+    {
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+    }
 
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+    }
+
+    public void writeTo(Output output, Foo message) throws IOException
+    {
+        if(message.someInt!=null)
+        {
+            for(int value : message.someInt)
+                output.writeInt32(1, value, true);
+        }
+        if(message.someString!=null)
+        {
+            for(String value : message.someString)
+                output.writeString(2, value, true);
+        }
+        if(message.someBar!=null)
+        {
+            for(Bar value : message.someBar)
+                output.writeMessage(3, value, true);
+        }
+        if(message.someEnum!=null)
+        {
+            for(EnumSample value : message.someEnum)
+                output.writeEnum(4, value.number, true);
+        }
+        if(message.someBytes!=null)
+        {
+            for(ByteString value : message.someBytes)
+                output.writeBytes(5, value, true);
+        }
+        if(message.someBoolean!=null)
+        {
+            for(boolean value : message.someBoolean)
+                output.writeBool(6, value, true);
+        }
+        if(message.someFloat!=null)
+        {
+            for(Float value : message.someFloat)
+                output.writeFloat(7, value, true);
+        }
+        if(message.someDouble!=null)
+        {
+            for(Double value : message.someDouble)
+                output.writeDouble(8, value, true);
+        }
+        if(message.someLong!=null)
+        {
+            for(Long value : message.someLong)
+                output.writeInt64(9, value, true);
+        }
+    }
+    
     public void mergeFrom(Input input, Foo message) throws IOException
     {
         while(true)
@@ -383,64 +449,149 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             }
         }        
     }
-
-    public void writeTo(Output output, Foo message) throws IOException
+    
+    static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE)
     {
-        if(message.someInt!=null)
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int value : message.someInt)
-                output.writeInt32(1, value, true);
+            while(true)
+            {
+                int number = input.readFieldNumber(wrappedSchema);
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        output.writeInt32(number, input.readInt32(), true);
+                        break;
+                    case 2:
+                        input.transferByteRangeTo(output, true, number, true);
+                        break;
+                    case 3:
+                        output.writeObject(number, pipe, Bar.getPipeSchema(), true);
+                        break;
+                    case 4:
+                        output.writeEnum(number, input.readEnum(), true);
+                        break;
+                    case 5:
+                        input.transferByteRangeTo(output, false, number, true);
+                        break;
+                    case 6:
+                        output.writeBool(number, input.readBool(), true);
+                        break;
+                    case 7:
+                        output.writeFloat(number, input.readFloat(), true);
+                        break;
+                    case 8:
+                        output.writeDouble(number, input.readDouble(), true);
+                        break;
+                    case 9:
+                        output.writeInt64(number, input.readInt64(), true);
+                        break;
+                    default:
+                        input.handleUnknownField(number, wrappedSchema);
+                }
+            }
         }
-        if(message.someString!=null)
+    };
+    
+    public static Pipe.Schema<Foo> getPipeSchema()
+    {
+        return PIPE_SCHEMA;
+    }
+
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((someBar == null) ? 0 : someBar.hashCode());
+        result = prime * result + ((someBoolean == null) ? 0 : someBoolean.hashCode());
+        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
+        result = prime * result + ((someDouble == null) ? 0 : someDouble.hashCode());
+        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result + ((someFloat == null) ? 0 : someFloat.hashCode());
+        result = prime * result + ((someInt == null) ? 0 : someInt.hashCode());
+        result = prime * result + ((someLong == null) ? 0 : someLong.hashCode());
+        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Foo other = (Foo)obj;
+        if (someBar == null)
         {
-            for(String value : message.someString)
-                output.writeString(2, value, true);
+            if (other.someBar != null)
+                return false;
         }
-        if(message.someBar!=null)
+        else if (!someBar.equals(other.someBar))
+            return false;
+        if (someBoolean == null)
         {
-            for(Bar value : message.someBar)
-                output.writeMessage(3, value, true);
+            if (other.someBoolean != null)
+                return false;
         }
-        if(message.someEnum!=null)
+        else if (!someBoolean.equals(other.someBoolean))
+            return false;
+        if (someBytes == null)
         {
-            for(EnumSample value : message.someEnum)
-                output.writeEnum(4, value.number, true);
+            if (other.someBytes != null)
+                return false;
         }
-        if(message.someBytes!=null)
+        else if (!someBytes.equals(other.someBytes))
+            return false;
+        if (someDouble == null)
         {
-            for(ByteString value : message.someBytes)
-                output.writeBytes(5, value, true);
+            if (other.someDouble != null)
+                return false;
         }
-        if(message.someBoolean!=null)
+        else if (!someDouble.equals(other.someDouble))
+            return false;
+        if (someEnum == null)
         {
-            for(boolean value : message.someBoolean)
-                output.writeBool(6, value, true);
+            if (other.someEnum != null)
+                return false;
         }
-        if(message.someFloat!=null)
+        else if (!someEnum.equals(other.someEnum))
+            return false;
+        if (someFloat == null)
         {
-            for(Float value : message.someFloat)
-                output.writeFloat(7, value, true);
+            if (other.someFloat != null)
+                return false;
         }
-        if(message.someDouble!=null)
+        else if (!someFloat.equals(other.someFloat))
+            return false;
+        if (someInt == null)
         {
-            for(Double value : message.someDouble)
-                output.writeDouble(8, value, true);
+            if (other.someInt != null)
+                return false;
         }
-        if(message.someLong!=null)
+        else if (!someInt.equals(other.someInt))
+            return false;
+        if (someLong == null)
         {
-            for(Long value : message.someLong)
-                output.writeInt64(9, value, true);
+            if (other.someLong != null)
+                return false;
         }
+        else if (!someLong.equals(other.someLong))
+            return false;
+        if (someString == null)
+        {
+            if (other.someString != null)
+                return false;
+        }
+        else if (!someString.equals(other.someString))
+            return false;
+        return true;
     }
     
-    public void readExternal(ObjectInput in) throws IOException
-    {
-        IOUtil.mergeDelimitedFrom(in, this, this);
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        IOUtil.writeDelimitedTo(out, this, this);
-    }
+    
 
 }
