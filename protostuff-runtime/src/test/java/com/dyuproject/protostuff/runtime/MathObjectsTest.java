@@ -186,9 +186,8 @@ public class MathObjectsTest extends TestCase
         
     }
     
-    public void testProtobuf() throws Exception
+    static Payment filledPayment()
     {
-        Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = new Payment();
         ArrayList<BigInteger> biList = new ArrayList<BigInteger>();
         ArrayList<BigDecimal> bdList = new ArrayList<BigDecimal>();
@@ -204,6 +203,14 @@ public class MathObjectsTest extends TestCase
         
         bdList.add(new BigDecimal("123456789"));
         bdList.add(new BigDecimal("987654321"));
+        
+        return p;
+    }
+    
+    public void testProtobuf() throws Exception
+    {
+        Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
+        Payment p = filledPayment();
 
         byte[] data = ProtobufIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
@@ -221,21 +228,7 @@ public class MathObjectsTest extends TestCase
     public void testProtostuff() throws Exception
     {
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
-        Payment p = new Payment();
-        ArrayList<BigInteger> biList = new ArrayList<BigInteger>();
-        ArrayList<BigDecimal> bdList = new ArrayList<BigDecimal>();
-        p.setId(1);
-        p.setBd(new BigDecimal("123456789.987654321"));
-        p.setBi(BigInteger.valueOf(System.currentTimeMillis()));
-        
-        p.setBdList(bdList);
-        p.setBiList(biList);
-        
-        biList.add(BigInteger.valueOf(123456789));
-        biList.add(BigInteger.valueOf(987654321));
-        
-        bdList.add(new BigDecimal("123456789"));
-        bdList.add(new BigDecimal("987654321"));
+        Payment p = filledPayment();
 
         byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         

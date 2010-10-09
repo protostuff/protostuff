@@ -259,4 +259,95 @@ public final class Foo implements Externalizable
         ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Foo.class));
     }
 
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((someBar == null) ? 0 : someBar.hashCode());
+        result = prime * result + ((someBoolean == null) ? 0 : someBoolean.hashCode());
+        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
+        result = prime * result + ((someDouble == null) ? 0 : someDouble.hashCode());
+        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result + ((someFloat == null) ? 0 : someFloat.hashCode());
+        result = prime * result + ((someInt == null) ? 0 : someInt.hashCode());
+        result = prime * result + ((someLong == null) ? 0 : someLong.hashCode());
+        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Foo other = (Foo)obj;
+        if (someBar == null)
+        {
+            if (other.someBar != null)
+                return false;
+        }
+        else if (!someBar.equals(other.someBar))
+            return false;
+        if (someBoolean == null)
+        {
+            if (other.someBoolean != null)
+                return false;
+        }
+        else if (!someBoolean.equals(other.someBoolean))
+            return false;
+        if (someBytes == null)
+        {
+            if (other.someBytes != null)
+                return false;
+        }
+        else if (!someBytes.equals(other.someBytes))
+            return false;
+        if (someDouble == null)
+        {
+            if (other.someDouble != null)
+                return false;
+        }
+        else if (!someDouble.equals(other.someDouble))
+            return false;
+        if (someEnum == null)
+        {
+            if (other.someEnum != null)
+                return false;
+        }
+        else if (!someEnum.equals(other.someEnum))
+            return false;
+        if (someFloat == null)
+        {
+            if (other.someFloat != null)
+                return false;
+        }
+        else if (!someFloat.equals(other.someFloat))
+            return false;
+        if (someInt == null)
+        {
+            if (other.someInt != null)
+                return false;
+        }
+        else if (!someInt.equals(other.someInt))
+            return false;
+        if (someLong == null)
+        {
+            if (other.someLong != null)
+                return false;
+        }
+        else if (!someLong.equals(other.someLong))
+            return false;
+        if (someString == null)
+        {
+            if (other.someString != null)
+                return false;
+        }
+        else if (!someString.equals(other.someString))
+            return false;
+        return true;
+    }
+
 }

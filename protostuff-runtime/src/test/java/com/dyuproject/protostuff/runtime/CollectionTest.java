@@ -329,10 +329,8 @@ public class CollectionTest extends TestCase
         assertEquals(p, p2);
     }
     
-    public void testEmployee() throws Exception
+    static Employee filledEmployee()
     {
-        Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
-        
         Collection<String> departments = new ArrayList<String>();
         departments.add("Engineering");
         departments.add("IT");
@@ -345,6 +343,15 @@ public class CollectionTest extends TestCase
         p.setId(1);
         p.setDepartments(departments);
         p.setTasks(tasks);
+        
+        return p;
+    }
+    
+    public void testEmployee() throws Exception
+    {
+        Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
+        
+        Employee p = filledEmployee();
 
         byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         

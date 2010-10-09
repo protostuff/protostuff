@@ -255,4 +255,72 @@ public final class Bar implements Externalizable
         ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Bar.class));
     }
 
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((baz == null) ? 0 : baz.hashCode());
+        result = prime * result + (someBoolean ? 1231 : 1237);
+        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(someDouble);
+        result = prime * result + (int)(temp ^ (temp >>> 32));
+        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result + Float.floatToIntBits(someFloat);
+        result = prime * result + someInt;
+        result = prime * result + (int)(someLong ^ (someLong >>> 32));
+        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Bar other = (Bar)obj;
+        if (baz == null)
+        {
+            if (other.baz != null)
+                return false;
+        }
+        else if (!baz.equals(other.baz))
+            return false;
+        if (someBoolean != other.someBoolean)
+            return false;
+        if (someBytes == null)
+        {
+            if (other.someBytes != null)
+                return false;
+        }
+        else if (!someBytes.equals(other.someBytes))
+            return false;
+        if (Double.doubleToLongBits(someDouble) != Double.doubleToLongBits(other.someDouble))
+            return false;
+        if (someEnum == null)
+        {
+            if (other.someEnum != null)
+                return false;
+        }
+        else if (!someEnum.equals(other.someEnum))
+            return false;
+        if (Float.floatToIntBits(someFloat) != Float.floatToIntBits(other.someFloat))
+            return false;
+        if (someInt != other.someInt)
+            return false;
+        if (someLong != other.someLong)
+            return false;
+        if (someString == null)
+        {
+            if (other.someString != null)
+                return false;
+        }
+        else if (!someString.equals(other.someString))
+            return false;
+        return true;
+    }
+
 }

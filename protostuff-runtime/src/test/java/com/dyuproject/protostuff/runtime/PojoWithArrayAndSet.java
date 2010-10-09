@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 
 import com.dyuproject.protostuff.LinkedBuffer;
@@ -219,5 +220,65 @@ public final class PojoWithArrayAndSet implements Serializable
         out.write(data);
         out.close();
     }
+
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(someBarAsArray);
+        result = prime * result + ((someBarAsSet == null) ? 0 : someBarAsSet.hashCode());
+        result = prime * result + Arrays.hashCode(someDoubleAsArray);
+        result = prime * result + Arrays.hashCode(someEnumAsArray);
+        result = prime * result + ((someEnumAsSet == null) ? 0 : someEnumAsSet.hashCode());
+        result = prime * result + Arrays.hashCode(someFloatAsArray);
+        result = prime * result + ((someFloatAsSet == null) ? 0 : someFloatAsSet.hashCode());
+        result = prime * result + Arrays.hashCode(somePrimitiveDoubleAsArray);
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PojoWithArrayAndSet other = (PojoWithArrayAndSet)obj;
+        if (!Arrays.equals(someBarAsArray, other.someBarAsArray))
+            return false;
+        if (someBarAsSet == null)
+        {
+            if (other.someBarAsSet != null)
+                return false;
+        }
+        else if (!someBarAsSet.equals(other.someBarAsSet))
+            return false;
+        if (!Arrays.equals(someDoubleAsArray, other.someDoubleAsArray))
+            return false;
+        if (!Arrays.equals(someEnumAsArray, other.someEnumAsArray))
+            return false;
+        if (someEnumAsSet == null)
+        {
+            if (other.someEnumAsSet != null)
+                return false;
+        }
+        else if (!someEnumAsSet.equals(other.someEnumAsSet))
+            return false;
+        if (!Arrays.equals(someFloatAsArray, other.someFloatAsArray))
+            return false;
+        if (someFloatAsSet == null)
+        {
+            if (other.someFloatAsSet != null)
+                return false;
+        }
+        else if (!someFloatAsSet.equals(other.someFloatAsSet))
+            return false;
+        if (!Arrays.equals(somePrimitiveDoubleAsArray, other.somePrimitiveDoubleAsArray))
+            return false;
+        return true;
+    }
+    
+    
 
 }

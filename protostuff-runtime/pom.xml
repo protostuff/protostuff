@@ -46,6 +46,13 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-api</artifactId>
       <version>${project.version}</version>
     </dependency>

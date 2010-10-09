@@ -66,8 +66,16 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public static <T> Schema<T> getSchema(Class<T> typeClass)
     {
         HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(typeClass.getName());
-        if(hs==null)
+        if(hs == null)
         {
+            if(typeClass.isInterface())
+            {
+                throw new RuntimeException("The interface \"" + typeClass.getName() + 
+                        "\" must be pre-mapped to its respective impl.  E.g. " + 
+                        "RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(TaskImpl.class));");
+            }
+            
+            
             hs = new Lazy<T>(typeClass);
             HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(typeClass.getName(), hs);
             if(last!=null)

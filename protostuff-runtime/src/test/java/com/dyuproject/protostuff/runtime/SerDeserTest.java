@@ -138,7 +138,7 @@ public class SerDeserTest extends TestCase
         assertEquals(hhbCompare, dhhb);
     }
     
-    public void testPojoWithArrayAndSet() throws Exception
+    static PojoWithArrayAndSet filledPojoWithArrayAndSet()
     {
         LinkedHashSet<Status> someEnumAsSet = new LinkedHashSet<Status>();
         someEnumAsSet.add(Status.PENDING);
@@ -153,7 +153,7 @@ public class SerDeserTest extends TestCase
         someFloatAsSet.add(123.321f);
         someFloatAsSet.add(-456.654f);
         
-        PojoWithArrayAndSet pojoCompare = new PojoWithArrayAndSet(someEnumAsSet, 
+        return new PojoWithArrayAndSet(someEnumAsSet, 
                 someEnumAsSet.toArray(new Status[someEnumAsSet.size()]),
                 someBarAsSet,
                 someBarAsSet.toArray(new Bar[someBarAsSet.size()]),
@@ -161,6 +161,11 @@ public class SerDeserTest extends TestCase
                 someFloatAsSet.toArray(new Float[someFloatAsSet.size()]), 
                 new Double[]{112233.332211d, 445566.665544d},
                 new double[]{-112233.332211d, -445566.665544d});
+    }
+    
+    public void testPojoWithArrayAndSet() throws Exception
+    {
+        PojoWithArrayAndSet pojoCompare = filledPojoWithArrayAndSet();
         
         Schema<PojoWithArrayAndSet> schema = RuntimeSchema.getSchema(PojoWithArrayAndSet.class);
         

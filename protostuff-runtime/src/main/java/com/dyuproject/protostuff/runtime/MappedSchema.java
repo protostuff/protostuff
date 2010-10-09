@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
@@ -36,6 +37,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     protected final Class<T> typeClass;
     protected final Field<T>[] fields, fieldsByNumber;
     protected final Map<String,Field<T>> fieldsByName;
+    protected final Pipe.Schema<T> pipeSchema;
     
     @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Field<T>[] fields)
@@ -64,6 +66,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             fieldsByNumber[f.number] = f;
             //f.owner = this;
         }
+        pipeSchema = new PipeSchema();
     }
     
     @SuppressWarnings("unchecked")
@@ -99,6 +102,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             if(fieldsByNumber[i]!=null)
                 this.fields[j++] = fieldsByNumber[i];
         }
+        pipeSchema = new PipeSchema();
     }
     
     @SuppressWarnings("unchecked")
@@ -130,6 +134,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             if(fieldsByNumber[i]!=null)
                 this.fields[j++] = fieldsByNumber[i];
         }
+        pipeSchema = new PipeSchema();
     }
     
     public Class<T> typeClass()
@@ -154,16 +159,19 @@ public abstract class MappedSchema<T> implements Schema<T>
     
     public int getFieldNumber(String name)
     {
-        Field<T> field = fieldsByName.get(name);
-        return field==null ? 0 : field.number;
+        final Field<T> field = fieldsByName.get(name);
+        return field == null ? 0 : field.number;
     }
     
     public final void mergeFrom(Input input, T message) throws IOException
     {
-        for(int number=input.readFieldNumber(this); number!=0; number=input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this); number != 0; 
+                number = input.readFieldNumber(this))
         {
-            Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number] : null;
-            if(field==null)
+            final Field<T> field = number < fieldsByNumber.length ? 
+                    fieldsByNumber[number] : null;
+
+            if(field == null)
                 input.handleUnknownField(number, this);
             else
                 field.mergeFrom(input, message);
@@ -176,17 +184,55 @@ public abstract class MappedSchema<T> implements Schema<T>
             f.writeTo(output, message);
     }
     
+    /**
+     * Returns the pipe schema linked to this.
+     */
+    public Pipe.Schema<T> getPipeSchema()
+    {
+        return pipeSchema;
+    }
+    
+    final class PipeSchema extends Pipe.Schema<T>
+    {
+        public PipeSchema()
+        {
+            super(MappedSchema.this);
+        }
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            for(int number = input.readFieldNumber(MappedSchema.this); number != 0; 
+                    number = input.readFieldNumber(MappedSchema.this))
+            {
+                final Field<T> field = number < fieldsByNumber.length ? 
+                        fieldsByNumber[number] : null;
+                
+                if(field == null)
+                    input.handleUnknownField(number, MappedSchema.this);
+                else
+                    field.transfer(pipe, input, output, field.repeated);
+            }
+        }
+    }
+    
     public static abstract class Field<T>
     {
         public final FieldType type;
         public final int number;
         public final String name;
+        public final boolean repeated;
         
-        public Field(FieldType type, int number, String name)
+        public Field(FieldType type, int number, String name, boolean repeated)
         {
             this.type = type;
             this.number = number;
             this.name = name;
+            this.repeated = repeated;
+        }
+        
+        public Field(FieldType type, int number, String name)
+        {
+            this(type, number, name, false);
         }
 
         /**
@@ -198,6 +244,12 @@ public abstract class MappedSchema<T> implements Schema<T>
          * Reads the field value into the {@code message}.
          */
         protected abstract void mergeFrom(Input input, T message) throws IOException;
+        
+        /**
+         * Transfer the input field to the output field.
+         */
+        protected abstract void transfer(Pipe pipe, Input input, Output output, 
+                boolean repeated) throws IOException;
     }
 
 }
