@@ -27,8 +27,8 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 public class ProtostuffPipeTest extends AbstractTest
 {
 
-    static <T> void roundTrip(T message, Schema<T> schema, Pipe.Schema<T> pipeSchema) 
-    throws Exception
+    public static <T> void roundTrip(T message, Schema<T> schema, 
+            Pipe.Schema<T> pipeSchema) throws Exception
     {
         byte[] protobuf = ProtobufIOUtil.toByteArray(message, schema, buf());
         
