@@ -102,7 +102,7 @@ public final class XmlIOUtil
         final XmlInput xmlInput = new XmlInput(parser);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 final String simpleName = pipeSchema.wrappedSchema.messageName();
 
@@ -133,7 +133,7 @@ public final class XmlIOUtil
                 return xmlInput;
             }
             
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == xmlInput;
                 

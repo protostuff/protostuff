@@ -87,7 +87,7 @@ public final class JsonIOUtil
         final JsonInput jsonInput = new JsonInput(parser, numeric);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 if(parser.nextToken() != JsonToken.START_OBJECT)
                 {
@@ -99,7 +99,7 @@ public final class JsonIOUtil
                 return jsonInput;
             }
             
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == jsonInput;
                 

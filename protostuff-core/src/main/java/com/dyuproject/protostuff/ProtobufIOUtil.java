@@ -49,11 +49,11 @@ public final class ProtobufIOUtil
         final ByteArrayInput byteArrayInput = new ByteArrayInput(data, offset, len, false);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return byteArrayInput;
             }
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == byteArrayInput;
             }
@@ -68,11 +68,11 @@ public final class ProtobufIOUtil
         final CodedInput codedInput = new CodedInput(in, false);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return codedInput;
             }
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == codedInput;
             }

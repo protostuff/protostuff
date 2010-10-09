@@ -37,7 +37,7 @@ public abstract class Pipe
     /**
      * Resets this pipe for re-use.
      */
-    public Pipe reset()
+    protected Pipe reset()
     {
         output = null;
         input = null;
@@ -47,12 +47,12 @@ public abstract class Pipe
     /**
      * Begin preliminary input processing.
      */
-    public abstract Input begin(Pipe.Schema<?> pipeSchema) throws IOException;
+    protected abstract Input begin(Pipe.Schema<?> pipeSchema) throws IOException;
     
     /**
      * End input processing.
      */
-    public abstract void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException;
+    protected abstract void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException;
     
     /**
      * Schema for transferring data from a source ({@link Input}) to a 

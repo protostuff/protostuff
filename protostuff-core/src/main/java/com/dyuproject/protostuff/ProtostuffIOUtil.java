@@ -50,11 +50,11 @@ public final class ProtostuffIOUtil
         final ByteArrayInput byteArrayInput = new ByteArrayInput(data, offset, len, true);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return byteArrayInput;
             }
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == byteArrayInput;
             }
@@ -69,11 +69,11 @@ public final class ProtostuffIOUtil
         final CodedInput codedInput = new CodedInput(in, true);
         return new Pipe()
         {
-            public Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return codedInput;
             }
-            public void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
             {
                 assert input == codedInput;
             }
