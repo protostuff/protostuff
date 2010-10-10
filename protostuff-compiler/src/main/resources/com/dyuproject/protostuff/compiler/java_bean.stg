@@ -104,6 +104,10 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     <message:message_impl_serializable(message=it, options=options)>
     <message:message_impl_message(message=it, options=options)>
     <message:message_impl_schema(message=it, options=options)>
+    
+    <if(options.generate_pipe_schema)>
+    <message:message_pipe_schema(message=it, options=options)>
+    <endif>
 }
 
 >>
@@ -130,6 +134,10 @@ import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
+<if(options.generate_pipe_schema)>
+import com.dyuproject.protostuff.Pipe;
+<endif>
+
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 <if(message.requiredFieldPresent)>
@@ -576,5 +584,60 @@ field_map(field, options, mapVar) ::= <<
 <mapVar>.put("f<field.number>", <field.number>);
 <else>
 <mapVar>.put("<field.name; format="CC">", <field.number>);
+<endif>
+>>
+
+message_static_schema_ref(message, options) ::= <<
+DEFAULT_INSTANCE
+>>
+
+message_pipe_schema(message, options) ::= <<
+static final Pipe.Schema\<<message.name>\> PIPE_SCHEMA = new Pipe.Schema\<<message.name>\>(<message:message_static_schema_ref(message=it, options=options)>)
+{
+    protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+    {
+        while(true)
+        {
+            final int number = input.readFieldNumber(wrappedSchema);
+            switch(number)
+            {
+                case 0:
+                    return;
+                <message.fields:field_transfer_switch(field=it, options=options); separator="\n">
+                default:
+                    input.handleUnknownField(number, wrappedSchema);
+            }
+        }
+    }
+};
+
+public static Pipe.Schema\<<message.name>\> getPipeSchema()
+{
+    return PIPE_SCHEMA;
+}
+
+>>
+
+field_transfer_switch(field, options) ::= <<
+case <field.number>:
+    <field:field_transfer_switch_body(field=it, options=options)>
+>>
+
+field_transfer_switch_body(field, options) ::= <<
+<if(field.messageField)>
+output.writeObject(number, pipe, <field.javaType>.getPipeSchema(), <field.repeated>);
+break;
+<elseif(field.enumField)>
+output.writeEnum(number, input.readEnum(), <field.repeated>); 
+break;
+<elseif(field.stringField)>
+input.transferByteRangeTo(output, true, number, <field.repeated>);
+break;
+<elseif(field.bytesField)>
+input.transferByteRangeTo(output, false, number, <field.repeated>);
+break;
+<else>
+output.write<field.class.simpleName>(number, input.read<field.class.simpleName>(), <field.repeated>);
+break;
 <endif>
 >>

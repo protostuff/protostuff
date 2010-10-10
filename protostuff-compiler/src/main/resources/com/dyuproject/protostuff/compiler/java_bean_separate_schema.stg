@@ -23,6 +23,10 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     {
         <message:message_impl_schema(message=it, options=options)>
     };
+    
+    <if(options.generate_pipe_schema)>
+    <message:message_pipe_schema(message=it, options=options)>
+    <endif>
 }
 
 >>
@@ -109,4 +113,8 @@ public int getFieldNumber(String name)
     return Integer.parseInt(name);
 }
 <endif>
+>>
+
+message_static_schema_ref(message, options) ::= <<
+SCHEMA
 >>
