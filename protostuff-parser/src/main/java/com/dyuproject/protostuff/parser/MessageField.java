@@ -51,7 +51,7 @@ public class MessageField extends Field<Message>
         StringBuilder buffer = new StringBuilder();
         Message.computeName(message, owner, buffer);
 
-        return javaType=buffer.toString();
+        return (javaType=buffer.toString());
     }
     
     public java.lang.String getRegularType()

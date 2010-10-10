@@ -66,7 +66,7 @@ public class EnumField extends Field<EnumGroup.Value>
         else
             buffer.append(enumGroup.getProto().getJavaPackageName()).append('.').append(enumGroup.getName());
         
-        return javaType=buffer.toString();
+        return (javaType=buffer.toString());
         
     }
     
