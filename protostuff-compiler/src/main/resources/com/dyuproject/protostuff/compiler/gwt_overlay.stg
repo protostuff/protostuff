@@ -352,8 +352,7 @@ field_stringify_outercall(field, options, arg) ::= <<
 message_static_method_is_initialized(message, options) ::= <<
 <if(message.requiredFieldPresentOnCurrent)>
 public static native boolean isInitialized(<message.name> obj) /*-{
-    return 
-        <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" \n&& ">;
+    return <message.fields:field_is_initialized(field=it, options=options, name="obj"); separator=" && ">;
 }-*/;
 <else>
 public static native boolean isInitialized(<message.name> obj) /*-{
