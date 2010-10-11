@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
 
@@ -285,4 +285,5 @@ public final class Image implements Externalizable, Message<Image>
             fieldMap.put("f5", 5);
         }
     };
+    
 }

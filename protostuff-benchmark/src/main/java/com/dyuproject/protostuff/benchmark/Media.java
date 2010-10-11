@@ -10,10 +10,10 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.UninitializedMessageException;
 
@@ -457,4 +457,5 @@ public final class Media implements Externalizable, Message<Media>
             fieldMap.put("f11", 11);
         }
     };
+    
 }
