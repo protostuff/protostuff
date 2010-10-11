@@ -19,10 +19,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- * Json serialization via {@link JsonXOutput} using byte buffers as opposed to 
- * char buffers being used by jackson.
- * 
- * This is optimized for numeric json.
+ * Json serialization via {@link JsonXOutput}.
  * 
  *
  * @author David Yu
