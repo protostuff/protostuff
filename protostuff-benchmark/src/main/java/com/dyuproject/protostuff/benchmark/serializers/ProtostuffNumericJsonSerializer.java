@@ -15,6 +15,8 @@
 package com.dyuproject.protostuff.benchmark.serializers;
 
 import com.dyuproject.protostuff.JsonIOUtil;
+import com.dyuproject.protostuff.JsonXIOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.benchmark.MediaContent;
 
 /**
@@ -40,7 +42,8 @@ public class ProtostuffNumericJsonSerializer extends AbstractProtostuffSerialize
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        return JsonIOUtil.toByteArray(content, content.cachedSchema(), true);
+        return JsonXIOUtil.toByteArray(content, content.cachedSchema(), true, 
+                LinkedBuffer.allocate(512));
     }
 
 }
