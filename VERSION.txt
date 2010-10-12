@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
+
+protostuff-1.0.0.M5 2010-10-12
 + add IO pipes w/c can transfer/transcode streams efficiently.
 + full streaming capability on protostuff format.
 + update jackson-core-asl to 1.6.1
