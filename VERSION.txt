@@ -1,6 +1,7 @@
 protostuff-1.0-SNAPSHOT
 + add IO pipes w/c can transfer/transcode streams efficiently.
 + full streaming capability on protostuff format.
++ update jackson-core-asl to 1.6.1
 + add JsonXOutput for efficient writing of numeric keys and pre-encoded utf8 strings.
 + add base64 encoding/decoding support in protostuff-api
 + Issue 33: GWT json compiler produces unnecessary line wrap
