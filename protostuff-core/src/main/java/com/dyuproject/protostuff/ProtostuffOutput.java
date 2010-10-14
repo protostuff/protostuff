@@ -285,8 +285,8 @@ public final class ProtostuffOutput extends WriteSession implements Output
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        tail = sink.writeVarInt32(
-                value ? 1 : 0, 
+        tail = sink.writeByte(
+                value ? (byte)0x01 : 0x00, 
                 this, 
                 sink.writeVarInt32(
                         makeTag(fieldNumber, WIRETYPE_VARINT), 
