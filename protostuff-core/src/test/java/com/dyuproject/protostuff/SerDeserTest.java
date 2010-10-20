@@ -122,7 +122,7 @@ public abstract class SerDeserTest extends StandardTest
         baz.setId(1);
         baz.setName("baz");
         final Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         bar.setSomeInt(2);
         bar.setSomeString("bar");
         bar.setSomeDouble(100.001d);
@@ -222,7 +222,7 @@ public abstract class SerDeserTest extends StandardTest
     public void testEmptyInnerBarDelimited() throws Exception
     {
         Bar barCompare = new Bar();
-        barCompare.setBaz(new Baz());
+        barCompare.setSomeBaz(new Baz());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, barCompare);
@@ -301,7 +301,7 @@ public abstract class SerDeserTest extends StandardTest
     public void testJavaSerializableEmptyBarInner() throws Exception
     {
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ObjectOutputStream oout = new ObjectOutputStream(out);
@@ -351,7 +351,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         bars.add(bar);
         Foo foo = new Foo();
 

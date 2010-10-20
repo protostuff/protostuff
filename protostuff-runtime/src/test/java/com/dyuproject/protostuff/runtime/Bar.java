@@ -64,7 +64,7 @@ public final class Bar implements Externalizable
     
     private int someInt;
     private String someString;
-    private Baz baz;
+    private Baz someBaz;
     private Status someEnum;
     private ByteString someBytes;
     private boolean someBoolean;
@@ -90,7 +90,7 @@ public final class Bar implements Externalizable
     {
         this.someInt = someInt;
         this.someString = someString;
-        this.baz = baz;
+        this.someBaz = baz;
         this.someEnum = someEnum;
         this.someBytes = someBytes;
         this.someBoolean = someBoolean;
@@ -136,17 +136,17 @@ public final class Bar implements Externalizable
     /**
      * @return the someBaz
      */
-    public Baz getBaz()
+    public Baz getSomeBaz()
     {
-        return baz;
+        return someBaz;
     }
 
     /**
      * @param baz the someBaz to set
      */
-    public void setBaz(Baz baz)
+    public void setSomeBaz(Baz baz)
     {
-        this.baz = baz;
+        this.someBaz = baz;
     }
 
     /**
@@ -259,7 +259,7 @@ public final class Bar implements Externalizable
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((baz == null) ? 0 : baz.hashCode());
+        result = prime * result + ((someBaz == null) ? 0 : someBaz.hashCode());
         result = prime * result + (someBoolean ? 1231 : 1237);
         result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
         long temp;
@@ -282,12 +282,12 @@ public final class Bar implements Externalizable
         if (getClass() != obj.getClass())
             return false;
         Bar other = (Bar)obj;
-        if (baz == null)
+        if (someBaz == null)
         {
-            if (other.baz != null)
+            if (other.someBaz != null)
                 return false;
         }
-        else if (!baz.equals(other.baz))
+        else if (!someBaz.equals(other.someBaz))
             return false;
         if (someBoolean != other.someBoolean)
             return false;

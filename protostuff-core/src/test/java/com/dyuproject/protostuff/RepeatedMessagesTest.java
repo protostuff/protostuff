@@ -96,7 +96,7 @@ public abstract class RepeatedMessagesTest extends AbstractTest
     public void testEmptyBarInner() throws Exception
     {
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(bar);
         
@@ -197,7 +197,7 @@ public abstract class RepeatedMessagesTest extends AbstractTest
     {
         ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         bars.add(bar);
         
         ArrayList<Foo> foos = new ArrayList<Foo>();

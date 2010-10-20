@@ -133,7 +133,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
@@ -151,7 +151,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
@@ -169,7 +169,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
@@ -185,7 +185,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         baz.setName("asdfsf");
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
@@ -201,7 +201,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         baz.setName("");
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
@@ -228,7 +228,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -241,7 +241,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeInt(1);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -254,7 +254,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("someString");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -267,7 +267,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -280,7 +280,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setId(2);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -293,7 +293,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("asdfsf");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         
@@ -306,7 +306,7 @@ public abstract class StandardTest extends AbstractTest
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] output = toByteArray(bar);
         

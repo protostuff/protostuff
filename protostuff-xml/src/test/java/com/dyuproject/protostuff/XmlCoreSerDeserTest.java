@@ -182,8 +182,8 @@ public class XmlCoreSerDeserTest extends TestCase
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        // method name is setBaz, should have been someBaz!
-        bar.setBaz(baz);
+        // method name is setSomeBaz, should have been someBaz!
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -204,7 +204,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeInt(1);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -226,7 +226,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("someString");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -248,7 +248,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -270,7 +270,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setId(2);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -293,7 +293,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("asdfsf");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -316,7 +316,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = XmlIOUtil.toByteArray(bar, bar.cachedSchema());
         /*assertEquals(new String(data, "UTF-8"), 
@@ -376,7 +376,7 @@ public class XmlCoreSerDeserTest extends TestCase
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         bars.add(bar);
         foo.setSomeBar(bars);
         

@@ -281,7 +281,7 @@ public class YamlSerTest extends AbstractTest
     {
         Bar barCompare = new Bar();
         Baz baz = new Baz();
-        barCompare.setBaz(baz);
+        barCompare.setSomeBaz(baz);
         
         byte[] data = toByteArray(barCompare, barCompare.cachedSchema());
         
@@ -320,7 +320,7 @@ public class YamlSerTest extends AbstractTest
     {
         Bar bar = new Bar();
         Baz baz = new Baz();
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(bar);
         Foo foo = new Foo();

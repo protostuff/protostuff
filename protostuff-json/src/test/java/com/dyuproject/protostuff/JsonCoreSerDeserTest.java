@@ -212,8 +212,8 @@ public class JsonCoreSerDeserTest extends TestCase
     {
         Baz baz = new Baz();
         Bar bar = new Bar();
-        // method name is setBaz, should have been someBaz!
-        bar.setBaz(baz);
+        // method name is setSomeBaz, should have been someBaz!
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{}}");
@@ -228,7 +228,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeInt(1);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someInt\":1,\"someBaz\":{}}");
@@ -243,7 +243,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("someString");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"someString\",\"someBaz\":{}}");
@@ -258,7 +258,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         bar.setSomeString("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someString\":\"\",\"someBaz\":{}}");
@@ -273,7 +273,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setId(2);
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"id\":2}}");
@@ -288,7 +288,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("asdfsf");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"asdfsf\"}}");
@@ -303,7 +303,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Baz baz = new Baz();
         Bar bar = new Bar();
         baz.setName("");
-        bar.setBaz(baz);
+        bar.setSomeBaz(baz);
         
         byte[] data = JsonIOUtil.toByteArray(bar, bar.cachedSchema(), false);
         assertEquals(new String(data, "UTF-8"), "{\"someBaz\":{\"name\":\"\"}}");
@@ -345,7 +345,7 @@ public class JsonCoreSerDeserTest extends TestCase
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
-        bar.setBaz(new Baz());
+        bar.setSomeBaz(new Baz());
         bars.add(bar);
         foo.setSomeBar(bars);
         
