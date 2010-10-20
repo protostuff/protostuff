@@ -1027,12 +1027,24 @@ public abstract class RuntimeFieldFactory<V>
                 final Schema<Message<?>> schema = (Schema<Message<?>>)RuntimeSchema.getSchema(
                         f.getType());
                 
-                final Pipe.Schema<?> pipeSchema = 
-                    (schema instanceof MappedSchema) ? 
-                            ((MappedSchema<?>)schema).pipeSchema : null;
+                final Pipe.Schema<?> pipeSchema;
                             
                 {
                     f.setAccessible(true);
+                    Pipe.Schema<?> pipeSchema = null;
+                    try
+                    {
+                        // use the pipe schema of code-generated messages if available.
+                        java.lang.reflect.Method m = f.getType().getDeclaredMethod("getPipeSchema", new Class[]{});
+                        pipeSchema = (Pipe.Schema<?>)m.invoke(null, new Object[]{});
+                    }
+                    catch(Exception e)
+                    {
+                        // ignore
+                    }
+                    
+                    this.pipeSchema = pipeSchema != null ? pipeSchema : 
+                        (schema instanceof MappedSchema ? ((MappedSchema<?>)schema).pipeSchema : null);
                 }
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
