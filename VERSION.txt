@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 34: Allow schema generated from protostuff-runtime to write enums by their name
 
 protostuff-1.0.0.M5 2010-10-12
 + add IO pipes w/c can transfer/transcode streams efficiently.

@@ -932,15 +932,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return new Field<T>(FieldType.ENUM, number, name)
             {
-                final Object[] constants = f.getType().getEnumConstants();
-                {
-                    f.setAccessible(true);
-                }                    
+                final EnumIO<?> eio = EnumIO.create(f.getType(), f);
+                
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
-                        f.set(message, constants[input.readEnum()]);
+                        eio.mergeFrom(input, message);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -955,9 +953,7 @@ public abstract class RuntimeFieldFactory<V>
                 {
                     try
                     {
-                        Enum<?> en = (Enum<?>)f.get(message);
-                        if(en!=null)
-                            output.writeEnum(this.number, en.ordinal(), false);
+                        eio.writeTo(output, number, repeated, message);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -971,26 +967,26 @@ public abstract class RuntimeFieldFactory<V>
                 protected void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
-                    output.writeEnum(number, input.readEnum(), repeated);
+                    eio.transfer(pipe, input, output, number, repeated);
                 }
             };
         }
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
-            output.writeEnum(number, input.readEnum(), repeated);
+            throw new UnsupportedOperationException();
         }
         protected Integer readFrom(Input input) throws IOException
         {
-            return new Integer(input.readInt32());
+            throw new UnsupportedOperationException();
         }
         protected void writeTo(Output output, int number, Integer value, boolean repeated) throws IOException
         {
-            output.writeInt32(number, value.intValue(), repeated);
+            throw new UnsupportedOperationException();
         }
         protected FieldType getFieldType()
         {
-            return FieldType.INT32;
+            throw new UnsupportedOperationException();
         }
     };
     
@@ -1220,13 +1216,13 @@ public abstract class RuntimeFieldFactory<V>
             {
                 return new Field<T>(FieldType.ENUM, number, name, true)
                 {
-                    final Object[] constants = genericType.getEnumConstants();
+                    final EnumIO<?> eio = EnumIO.create(genericType, null);
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = constants[input.readEnum()];
+                        Object value = eio.readFrom(input);
                         try
                         {
                             Collection<Object> existing = (Collection<Object>)f.get(message);
@@ -1256,7 +1252,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Enum<?> en : list)
-                                    output.writeEnum(this.number, en.ordinal(), true);
+                                    eio.writeTo(output, number, true, en);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1271,7 +1267,7 @@ public abstract class RuntimeFieldFactory<V>
                     protected void transfer(Pipe pipe, Input input, Output output, 
                             boolean repeated) throws IOException
                     {
-                        output.writeEnum(number, input.readEnum(), repeated);
+                        eio.transfer(pipe, input, output, number, repeated);
                     }
                 };
             }
@@ -1448,13 +1444,13 @@ public abstract class RuntimeFieldFactory<V>
             {
                 return new Field<T>(FieldType.ENUM, number, name, true)
                 {
-                    final Object[] constants = genericType.getEnumConstants();
+                    final EnumIO<?> eio = EnumIO.create(genericType, null);
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = constants[input.readEnum()];
+                        Object value = eio.readFrom(input);
                         try
                         {
                             List<Object> existing = (List<Object>)f.get(message);
@@ -1484,7 +1480,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Enum<?> en : list)
-                                    output.writeEnum(this.number, en.ordinal(), true);
+                                    eio.writeTo(output, number, repeated, en);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1499,7 +1495,7 @@ public abstract class RuntimeFieldFactory<V>
                     protected void transfer(Pipe pipe, Input input, Output output, 
                             boolean repeated) throws IOException
                     {
-                        output.writeEnum(number, input.readEnum(), repeated);
+                        eio.transfer(pipe, input, output, number, repeated);
                     }
                 };
             }
@@ -1675,13 +1671,13 @@ public abstract class RuntimeFieldFactory<V>
             {
                 return new Field<T>(FieldType.ENUM, number, name, true)
                 {
-                    final Object[] constants = genericType.getEnumConstants();
+                    final EnumIO<?> eio = EnumIO.create(genericType, null);
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = constants[input.readEnum()];
+                        Object value = eio.readFrom(input);
                         try
                         {
                             Set<Object> existing = (Set<Object>)f.get(message);
@@ -1711,7 +1707,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Enum<?> en : list)
-                                    output.writeEnum(this.number, en.ordinal(), true);
+                                    eio.writeTo(output, number, repeated, en);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1726,7 +1722,7 @@ public abstract class RuntimeFieldFactory<V>
                     protected void transfer(Pipe pipe, Input input, Output output, 
                             boolean repeated) throws IOException
                     {
-                        output.writeEnum(number, input.readEnum(), repeated);
+                        eio.transfer(pipe, input, output, number, repeated);
                     }
                 };
             }
@@ -1897,13 +1893,13 @@ public abstract class RuntimeFieldFactory<V>
             {
                 return new Field<T>(FieldType.ENUM, number, name, true)
                 {
-                    final Object[] constants = componentType.getEnumConstants();
+                    final EnumIO<?> eio = EnumIO.create(componentType, null);
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = constants[input.readEnum()];
+                        Object value = eio.readFrom(input);
                         try
                         {
                             Object existing = f.get(message);
@@ -1941,8 +1937,7 @@ public abstract class RuntimeFieldFactory<V>
                                 int len = Array.getLength(array);
                                 for(int i=0; i<len; i++)
                                 {
-                                    output.writeInt32(this.number, 
-                                            ((Enum<?>)Array.get(array, i)).ordinal(), true);
+                                    eio.writeTo(output, number, repeated, (Enum<?>)Array.get(array, i));
                                 }
                             }
                         }
@@ -1958,7 +1953,7 @@ public abstract class RuntimeFieldFactory<V>
                     protected void transfer(Pipe pipe, Input input, Output output, 
                             boolean repeated) throws IOException
                     {
-                        output.writeEnum(number, input.readEnum(), repeated);
+                        eio.transfer(pipe, input, output, number, repeated);
                     }
                 };
             }
