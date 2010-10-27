@@ -402,22 +402,23 @@ public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.
 }-*/;
 <if(options.generate_helper_methods)>
 
-public <map_singular_value.(field.javaType)> get<field.name; format="PC">(int index) {
-    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
-    return array == null ? null : array.get(index);
-}
+public native <map_singular_value.(field.javaType)> get<field.name; format="PC">(int index) /*-{
+    var array = this["<field:field_name_or_number(field=it,options=options)>"];
+    return array && array.length ? array[index] : null;
+}-*/;
 
-public int get<field.name; format="PC">Count() {
-    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
-    return array == null ? 0 : array.length();
-}
+public native int get<field.name; format="PC">Count() /*-{
+    var array = this["<field:field_name_or_number(field=it,options=options)>"];
+    return array ? array.length : 0;
+}-*/;
 
-public void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) {
-    <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> array = get<field.name; format="PC">Array();
-    if(array == null)
-        array = clear<field.name; format="PC">Array();
+public native void add<field.name; format="PC">(<map_singular_value.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) /*-{
+    var array = this["<field:field_name_or_number(field=it,options=options)>"];
+    if (!array) {
+        this["<field:field_name_or_number(field=it,options=options)>"] = array = [];
+    }
     array.push(<var(val=field.name, fmt="CC", options=options)>);
-}
+}-*/;
 
 <endif>
 <else>
