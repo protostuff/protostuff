@@ -103,7 +103,7 @@ public final class ProtobufIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, message, schema, false);
+        IOUtil.mergeFrom(in, message, schema, false);
     }
     
     /**
