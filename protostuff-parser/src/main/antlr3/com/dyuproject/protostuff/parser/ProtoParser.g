@@ -140,19 +140,11 @@ extensions_range [Proto proto, Message message]
   int first = -1;
   int last = -1;
 }
-    :   EXTENSIONS f=NUMINT {
-          first = Integer.parseInt($f.text);
-        }
-        TO 
-        ( l=NUMINT {
-            last = Integer.parseInt($l.text);
-          }         
-        | MAX {
-            last = 536870911;
-          }
-         ) {
+    :   EXTENSIONS f=NUMINT { first = Integer.parseInt($f.text); last = first;}
+        ( TO ( l=NUMINT { last = Integer.parseInt($l.text); } | MAX {last = 536870911; } ) )?
+        SEMICOLON! {
             message.defineExtensionRange(first, last);
-        } SEMICOLON!
+        }
     ;
     
 message_field [Proto proto, HasFields message]

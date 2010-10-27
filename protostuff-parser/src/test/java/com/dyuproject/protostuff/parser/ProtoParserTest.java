@@ -371,6 +371,17 @@ public class ProtoParserTest extends TestCase
         assertEquals(1, testNestedExtension.getNestedExtensions().size());
         extension = testNestedExtension.getNestedExtensions().iterator().next();
         assertTrue(extension.isNested());
+        
+        Message testMultipleExtensionRanges = proto.getMessage("TestMultipleExtensionRanges");
+        assertNotNull(testMultipleExtensionRanges);
+        assertTrue(3 == testMultipleExtensionRanges.extensionRanges.size());
+        int[] first = testMultipleExtensionRanges.extensionRanges.get(0);
+        int[] second = testMultipleExtensionRanges.extensionRanges.get(1);
+        int[] third = testMultipleExtensionRanges.extensionRanges.get(2);
+        
+        assertTrue(first[0] == first[1] && first[0] == 42);
+        assertTrue(second[0] == 4143 && second[1] == 4243);
+        assertTrue(third[0] == 65536 && third[1] == 536870911);
     }
     
     public void testEnumWithTrailingSemicolon() throws Exception
