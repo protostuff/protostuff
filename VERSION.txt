@@ -1,6 +1,7 @@
 protostuff-1.0-SNAPSHOT
 + Issue 37: The proto parser doesn't parse extensions without ranges
 + Issue 36: Incorrect deserialization when ProtobufIOUtil merges from InputStream
++ Issue 35: Native methods for repeated fields (patch by nordlig.ulv)
 + Issue 34: Allow schema generated from protostuff-runtime to write enums by their name
 
 protostuff-1.0.0.M5 2010-10-12
