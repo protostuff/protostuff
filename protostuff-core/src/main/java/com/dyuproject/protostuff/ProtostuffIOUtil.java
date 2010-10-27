@@ -85,7 +85,7 @@ public final class ProtostuffIOUtil
      */
     public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema)
     {
-        mergeFrom(data, 0, data.length, message, schema);
+        IOUtil.mergeFrom(data, 0, data.length, message, schema, true);
     }
     
     /**
@@ -94,22 +94,7 @@ public final class ProtostuffIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema)
     {
-        try
-        {
-            final ByteArrayInput input = new ByteArrayInput(data, offset, length, true);
-            schema.mergeFrom(input, message);
-            input.checkLastTagWas(0);
-        }
-        catch(ArrayIndexOutOfBoundsException ae)
-        {
-            throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
-                    "never happen).", ProtobufException.truncatedMessage(ae));
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
-                    "never happen).",e);
-        }
+        IOUtil.mergeFrom(data, offset, length, message, schema, true);
     }
     
     /**
@@ -119,9 +104,7 @@ public final class ProtostuffIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
-        final CodedInput input = new CodedInput(in, true);
-        schema.mergeFrom(input, message);
-        input.checkLastTagWas(0);
+        IOUtil.mergeFrom(in, message, schema, true);
     }
     
     /**
