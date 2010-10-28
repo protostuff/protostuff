@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
+
+protostuff-1.0.0.M6 2010-10-28
 + Backward-forward compatibility support for runtime schemas via append-only fields in the pojo.
   To add new fields, append the field in the declaration.  To remove existing fields, annotate with @Deprecated.
 + Issue 37: The proto parser doesn't parse extensions without ranges
