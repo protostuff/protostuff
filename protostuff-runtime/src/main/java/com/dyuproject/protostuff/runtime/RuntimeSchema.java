@@ -112,6 +112,15 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         {
             if(!exclusions.contains(f.getName()))
             {
+                if(f.getAnnotation(Deprecated.class) != null)
+                {
+                    // this field is deprecated and should be skipped.
+                    // reserver its field number for backward-forward compat
+                    i++;
+                    System.err.println("GG: " + f.getName());
+                    continue;
+                }
+                
                 RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(f.getType());
                 if(rff!=null)
                 {
@@ -132,7 +141,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             		"Collection fields whose generic type is a collection " +
             		"or another generic type, are excluded.");
         }
-        return new RuntimeSchema<T>(typeClass, fields);
+        return new RuntimeSchema<T>(typeClass, fields, i);
     }
     
     /**
@@ -180,7 +189,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                         "Collection fields whose generic type is a collection " +
                         "or another generic type, are excluded.");
         }
-        return new RuntimeSchema<T>(typeClass, fields);
+        return new RuntimeSchema<T>(typeClass, fields, i);
     }
 
     static Map<String,java.lang.reflect.Field> findInstanceFields(Class<?> typeClass)
@@ -204,9 +213,10 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
-    public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields)
+    public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, 
+            int lastFieldNumber)
     {
-        super(typeClass, fields);
+        super(typeClass, fields, lastFieldNumber);
     }
     
     /**

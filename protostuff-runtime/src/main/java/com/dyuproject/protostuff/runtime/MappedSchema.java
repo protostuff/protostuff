@@ -27,6 +27,7 @@ import com.dyuproject.protostuff.WireFormat.FieldType;
 
 /**
  * Base class for schemas that maps fields by number and name.
+ * For fast initialization, the last field number is provided in the constructor.
  *
  * @author David Yu
  * @created Nov 10, 2009
@@ -40,7 +41,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     protected final Pipe.Schema<T> pipeSchema;
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Field<T>[] fields)
+    public MappedSchema(Class<T> typeClass, Field<T>[] fields, int lastFieldNumber)
     {
         if(fields.length==0)
             throw new IllegalStateException("At least one field is required.");
@@ -48,7 +49,7 @@ public abstract class MappedSchema<T> implements Schema<T>
         this.typeClass = typeClass;
         this.fields = fields;
         fieldsByName = new HashMap<String,Field<T>>();
-        fieldsByNumber = (Field<T>[])new Field<?>[fields.length + 1];
+        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
         for(Field<T> f : fields)
         {
             Field<T> last = this.fieldsByName.put(f.name, f);
@@ -70,14 +71,15 @@ public abstract class MappedSchema<T> implements Schema<T>
     }
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields)
+    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields, 
+            int lastFieldNumber)
     {
         if(fields.isEmpty())
             throw new IllegalStateException("At least one field is required.");
         
         this.typeClass = typeClass;
         fieldsByName = new HashMap<String,Field<T>>();
-        fieldsByNumber = (Field<T>[])new Field<?>[fields.size() + 1];
+        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
         for(Field<T> f : fields)
         {
             Field<T> last = this.fieldsByName.put(f.name, f);
@@ -106,7 +108,8 @@ public abstract class MappedSchema<T> implements Schema<T>
     }
     
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Map<String,Field<T>> fieldsByName)
+    public MappedSchema(Class<T> typeClass, Map<String,Field<T>> fieldsByName, 
+            int lastFieldNumber)
     {
         if(fieldsByName.isEmpty())
             throw new IllegalStateException("At least one field is required.");
@@ -114,7 +117,7 @@ public abstract class MappedSchema<T> implements Schema<T>
         this.typeClass = typeClass;
         this.fieldsByName = fieldsByName;
         Collection<Field<T>> fields = fieldsByName.values();
-        fieldsByNumber = (Field<T>[])new Field<?>[fields.size() + 1];
+        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
         
         for(Field<T> f : fields)
         {
