@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Add support for java.util.Date in protostuff-runtime
 
 protostuff-1.0.0.M6 2010-10-28
 + Backward-forward compatibility support for runtime schemas via append-only fields in the pojo.
