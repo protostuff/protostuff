@@ -100,7 +100,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     {
         if(typeClass.isInterface())
         {
-            throw new RuntimeException("The interface \"" + typeClass.getName() + 
+            throw new RuntimeException("The interface \"" + typeClass + 
                     "\" must be pre-mapped to its respective impl.  E.g. " + 
                     "RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(TaskImpl.class));");
         }
@@ -134,7 +134,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
         if(fields.isEmpty())
         {
-            throw new RuntimeException("All fields are either transient/static.  " +
+            throw new RuntimeException("Not able to map any fields from " + typeClass + 
+                        ".  All fields are either transient/static.  " +
             		"Note that Map fields are excluded.  " +
             		"Two dimensional array fields are excluded.  " +
             		"Collection fields whose generic type is a collection " +
@@ -151,6 +152,13 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
             Map<String,String> declaredFields)
     {
+        if(typeClass.isInterface())
+        {
+            throw new RuntimeException("The interface \"" + typeClass + 
+                    "\" must be pre-mapped to its respective impl.  E.g. " + 
+                    "RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(TaskImpl.class));");
+        }
+        
         ArrayList<Field<T>> fields = new ArrayList<Field<T>>(declaredFields.size());
         int i = 0;
         for(Map.Entry<String, String> entry : declaredFields.entrySet())
@@ -182,7 +190,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
         if(fields.isEmpty())
         {
-            throw new RuntimeException("All fields are either transient/static.  " +
+            throw new RuntimeException("Not able to map any fields from " + typeClass + 
+                        ".  All fields are either transient/static.  " +
                         "Note that Map fields are excluded.  " +
                         "Two dimensional array fields are excluded.  " +
                         "Collection fields whose generic type is a collection " +
