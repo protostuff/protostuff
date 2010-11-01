@@ -117,7 +117,6 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     // this field is deprecated and should be skipped.
                     // reserver its field number for backward-forward compat
                     i++;
-                    System.err.println("GG: " + f.getName());
                     continue;
                 }
                 
