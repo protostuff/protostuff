@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -2256,6 +2257,71 @@ public abstract class RuntimeFieldFactory<V>
         }
     };
     
+    public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>()
+    {
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        {
+            return new Field<T>(FieldType.BYTES, number, name)
+            {               
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    try
+                    {
+                        f.set(message, new Date(input.readFixed64()));
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    try
+                    {
+                        Date value = (Date)f.get(message);
+                        if(value!=null)
+                            output.writeFixed64(this.number, value.getTime(), false);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                protected void transfer(Pipe pipe, Input input, Output output, 
+                        boolean repeated) throws IOException
+                {
+                    output.writeFixed64(number, input.readFixed64(), repeated);
+                }
+            };
+        }
+        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+                boolean repeated) throws IOException
+        {
+            input.transferByteRangeTo(output, false, number, repeated);
+        }
+        protected Date readFrom(Input input) throws IOException
+        {
+            return new Date(input.readFixed64());
+        }
+        protected void writeTo(Output output, int number, Date value, boolean repeated) 
+        throws IOException
+        {
+            output.writeFixed64(number, value.getTime(), repeated);
+        }
+        protected FieldType getFieldType()
+        {
+            return FieldType.FIXED64;
+        }
+    };
+    
     private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = 
         new HashMap<String, RuntimeFieldFactory<?>>();
     
@@ -2282,6 +2348,7 @@ public abstract class RuntimeFieldFactory<V>
         __inlineValues.put(byte[].class.getName(), BYTE_ARRAY);
         __inlineValues.put(BigInteger.class.getName(), BIGINTEGER);
         __inlineValues.put(BigDecimal.class.getName(), BIGDECIMAL);
+        __inlineValues.put(Date.class.getName(), DATE);
     }
     
     @SuppressWarnings("unchecked")

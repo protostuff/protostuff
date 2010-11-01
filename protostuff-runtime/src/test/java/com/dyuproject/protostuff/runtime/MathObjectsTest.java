@@ -14,14 +14,14 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
@@ -32,7 +32,7 @@ import com.dyuproject.protostuff.Schema;
  * @author David Yu
  * @created Sep 9, 2010
  */
-public class MathObjectsTest extends TestCase
+public class MathObjectsTest extends AbstractTest
 {
     
     public static class Payment
@@ -212,17 +212,30 @@ public class MathObjectsTest extends TestCase
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = filledPayment();
 
-        byte[] data = ProtobufIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtobufIOUtil.toByteArray(p, schema, buf());
         
         Payment p2 = new Payment();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        System.err.println(p2.getId());
+        /*System.err.println(p2.getId());
         System.err.println(p2.getBd());
         System.err.println(p2.getBi());
         System.err.println(p2.getBdList());
-        System.err.println(p2.getBiList());
+        System.err.println(p2.getBiList());*/
         
         assertEquals(p, p2);
+        
+        List<Payment> list = new ArrayList<Payment>();
+        list.add(p);
+        list.add(p2);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ProtobufIOUtil.writeListTo(out, list, schema, buf());
+        byte[] listData = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(listData);
+        List<Payment> parsedList = ProtobufIOUtil.parseListFrom(in, schema);
+        
+        assertEquals(list, parsedList);
     }
     
     public void testProtostuff() throws Exception
@@ -230,17 +243,30 @@ public class MathObjectsTest extends TestCase
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = filledPayment();
 
-        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, buf());
         
         Payment p2 = new Payment();
         ProtostuffIOUtil.mergeFrom(data, 0, data.length, p2, schema);
-        System.err.println(p2.getId());
+        /*System.err.println(p2.getId());
         System.err.println(p2.getBd());
         System.err.println(p2.getBi());
         System.err.println(p2.getBdList());
-        System.err.println(p2.getBiList());
+        System.err.println(p2.getBiList());*/
         
         assertEquals(p, p2);
+        
+        List<Payment> list = new ArrayList<Payment>();
+        list.add(p);
+        list.add(p2);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ProtostuffIOUtil.writeListTo(out, list, schema, buf());
+        byte[] listData = out.toByteArray();
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(listData);
+        List<Payment> parsedList = ProtostuffIOUtil.parseListFrom(in, schema);
+        
+        assertEquals(list, parsedList);
     }
 
 }
