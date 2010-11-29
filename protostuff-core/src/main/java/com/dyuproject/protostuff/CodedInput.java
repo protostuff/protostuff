@@ -584,9 +584,13 @@ public final class CodedInput implements Input {
     input = null;
     this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
   }
-
+  
   CodedInput(final InputStream input, boolean decodeNestedMessageAsGroup) {
-    buffer = new byte[BUFFER_SIZE];
+    this(input, new byte[BUFFER_SIZE], decodeNestedMessageAsGroup);
+  }
+
+  CodedInput(final InputStream input, byte[] buffer, boolean decodeNestedMessageAsGroup) {
+    this.buffer = buffer;
     bufferSize = 0;
     bufferPos = 0;
     totalBytesRetired = 0;
