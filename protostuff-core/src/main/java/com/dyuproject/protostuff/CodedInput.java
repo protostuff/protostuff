@@ -573,7 +573,7 @@ public final class CodedInput implements Input {
 
   static final int DEFAULT_RECURSION_LIMIT = 64;
   static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
-  static final int BUFFER_SIZE = 4096;
+  static final int DEFAULT_BUFFER_SIZE = 4096;
 
   CodedInput(final byte[] buffer, final int off, final int len, 
       boolean decodeNestedMessageAsGroup) {
@@ -586,7 +586,7 @@ public final class CodedInput implements Input {
   }
   
   CodedInput(final InputStream input, boolean decodeNestedMessageAsGroup) {
-    this(input, new byte[BUFFER_SIZE], decodeNestedMessageAsGroup);
+    this(input, new byte[DEFAULT_BUFFER_SIZE], decodeNestedMessageAsGroup);
   }
 
   CodedInput(final InputStream input, byte[] buffer, boolean decodeNestedMessageAsGroup) {
@@ -807,7 +807,7 @@ public final class CodedInput implements Input {
       System.arraycopy(buffer, bufferPos, bytes, 0, size);
       bufferPos += size;
       return bytes;
-    } else if (size < BUFFER_SIZE) {
+    } else if (size < buffer.length) {
       // Reading more bytes than are in the buffer, but not an excessive number
       // of bytes.  We can safely allocate the resulting array ahead of time.
 
@@ -857,7 +857,7 @@ public final class CodedInput implements Input {
       final List<byte[]> chunks = new ArrayList<byte[]>();
 
       while (sizeLeft > 0) {
-        final byte[] chunk = new byte[Math.min(sizeLeft, BUFFER_SIZE)];
+        final byte[] chunk = new byte[Math.min(sizeLeft, buffer.length)];
         int pos = 0;
         while (pos < chunk.length) {
           final int n = (input == null) ? -1 :
