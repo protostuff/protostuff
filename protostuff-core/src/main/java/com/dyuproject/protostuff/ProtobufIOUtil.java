@@ -230,7 +230,7 @@ public final class ProtobufIOUtil
             if(len != 0)
             {
                 // not an empty message
-                if(len > CodedInput.BUFFER_SIZE)
+                if(len > CodedInput.DEFAULT_BUFFER_SIZE)
                 {
                     // message too big
                     if(lin == null)
