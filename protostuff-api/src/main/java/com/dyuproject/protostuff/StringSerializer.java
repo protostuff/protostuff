@@ -557,19 +557,38 @@ public final class StringSerializer
         return lb;
     }
     
-    static void writeFixed2ByteInt(final int value, final byte[] buffer, int offset)
+    static void writeFixed2ByteInt(final int value, final byte[] buffer, int offset, 
+            final boolean littleEndian)
     {
-        buffer[offset++] = (byte)((value >>>  8) & 0xFF);
-        buffer[offset] = (byte)((value >>>  0) & 0xFF);
+        if(littleEndian)
+        {
+            buffer[offset++] = (byte)value;
+            buffer[offset] = (byte)((value >>> 8) & 0xFF);
+        }
+        else
+        {
+            buffer[offset++] = (byte)((value >>> 8) & 0xFF);
+            buffer[offset] = (byte)value;
+        }
+    }
+    
+    /**
+     * The length of the utf8 bytes is written first (big endian) 
+     * before the string - which is fixed 2-bytes.
+     * Same behavior as {@link java.io.DataOutputStream#writeUTF(String)}.
+     */
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str, 
+            final WriteSession session, LinkedBuffer lb)
+    {
+        return writeUTF8FixedDelimited(str, false, session, lb);
     }
     
     /**
      * The length of the utf8 bytes is written first before the string - which is  
      * fixed 2-bytes.
-     * Same behavior as {@link java.io.DataOutputStream#writeUTF(String)}.
      */
     public static LinkedBuffer writeUTF8FixedDelimited(final String str, 
-            final WriteSession session, LinkedBuffer lb)
+            final boolean littleEndian, final WriteSession session, LinkedBuffer lb)
     {
         final int lastSize = session.size;
         final int len = str.length();
@@ -588,7 +607,7 @@ public final class StringSerializer
             
             if(len == 0)
             {
-                writeFixed2ByteInt(0, lb.buffer, offset);
+                writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
                 // update size
                 session.size += 2;
                 return lb;
@@ -599,7 +618,7 @@ public final class StringSerializer
             
             final int size = session.size - lastSize;
             
-            writeFixed2ByteInt(size, lb.buffer, offset);
+            writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
             
             // update size
             session.size += 2;
@@ -609,7 +628,7 @@ public final class StringSerializer
         
         if(len == 0)
         {
-            writeFixed2ByteInt(0, lb.buffer, offset);
+            writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
             lb.offset = withIntOffset;
             // update size
             session.size += 2;
@@ -629,7 +648,7 @@ public final class StringSerializer
             
             final int size = session.size - lastSize;
             
-            writeFixed2ByteInt(size, buffer, offset);
+            writeFixed2ByteInt(size, buffer, offset, littleEndian);
             
             // update size
             session.size += 2;
@@ -644,7 +663,7 @@ public final class StringSerializer
         
         final int size = session.size - lastSize;
         
-        writeFixed2ByteInt(size, lb.buffer, offset);
+        writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
         
         // update size
         session.size += 2;

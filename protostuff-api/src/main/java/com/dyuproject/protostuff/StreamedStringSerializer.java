@@ -502,13 +502,24 @@ public final class StreamedStringSerializer
     }
     
     /**
-     * The length of the utf8 bytes is written first before the string - which is  
-     * fixed 2-bytes.
+     * The length of the utf8 bytes is written first (big endian) 
+     * before the string - which is fixed 2-bytes.
      * Same behavior as {@link java.io.DataOutputStream#writeUTF(String)}.
      */
     public static LinkedBuffer writeUTF8FixedDelimited(final String str, 
-            final WriteSession session, final OutputStream out, final LinkedBuffer lb) 
-            throws IOException
+            final WriteSession session, final OutputStream out, 
+            LinkedBuffer lb) throws IOException
+    {
+        return writeUTF8FixedDelimited(str, false, session, out, lb);
+    }
+    
+    /**
+     * The length of the utf8 bytes is written first before the string - which is  
+     * fixed 2-bytes.
+     */
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str, 
+            final boolean littleEndian, final WriteSession session, 
+            final OutputStream out, final LinkedBuffer lb) throws IOException
     {
         final int lastSize = session.size;
         final int len = str.length();
@@ -526,7 +537,7 @@ public final class StreamedStringSerializer
         
         if(len == 0)
         {
-            writeFixed2ByteInt(0, lb.buffer, offset);
+            writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
             lb.offset = withIntOffset;
             // update size
             session.size += 2;
@@ -546,7 +557,7 @@ public final class StreamedStringSerializer
             
             final int size = session.size - lastSize;
             
-            writeFixed2ByteInt(size, buffer, offset);
+            writeFixed2ByteInt(size, buffer, offset, littleEndian);
             
             // update size
             session.size += 2;
@@ -565,7 +576,7 @@ public final class StreamedStringSerializer
         
         final int size = session.size - lastSize;
         
-        writeFixed2ByteInt(size, lb.buffer, offset);
+        writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
         
         // update size
         session.size += 2;

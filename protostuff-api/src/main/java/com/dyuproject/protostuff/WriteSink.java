@@ -318,9 +318,11 @@ public enum WriteSink
         }
         
         public LinkedBuffer writeStrUTF8FixedDelimited(final String value, 
-                final WriteSession session, LinkedBuffer lb) throws IOException
+                final boolean littleEndian, final WriteSession session, LinkedBuffer lb) 
+                throws IOException
         {
-            return StringSerializer.writeUTF8FixedDelimited(value, session, lb);
+            return StringSerializer.writeUTF8FixedDelimited(value, littleEndian, session, 
+                    lb);
         }
     }
     ,
@@ -550,10 +552,11 @@ public enum WriteSink
         }
         
         public LinkedBuffer writeStrUTF8FixedDelimited(final String value, 
-                final WriteSession session, final LinkedBuffer lb) throws IOException
+                final boolean littleEndian, final WriteSession session, 
+                final LinkedBuffer lb) throws IOException
         {
-            return StreamedStringSerializer.writeUTF8FixedDelimited(value, session, 
-                    session.out, lb);
+            return StreamedStringSerializer.writeUTF8FixedDelimited(value, 
+                    littleEndian, session, session.out, lb);
         }
     };
     
@@ -650,5 +653,6 @@ public enum WriteSink
             final WriteSession session, final LinkedBuffer lb) throws IOException;
     
     public abstract LinkedBuffer writeStrUTF8FixedDelimited(final String value, 
-            final WriteSession session, final LinkedBuffer lb) throws IOException;
+            final boolean littleEndian, final WriteSession session, 
+            final LinkedBuffer lb) throws IOException;
 }
