@@ -2354,7 +2354,7 @@ public abstract class RuntimeFieldFactory<V>
     @SuppressWarnings("unchecked")
     public static <T> RuntimeFieldFactory<T> getInline(Class<T> typeClass)
     {
-        return (RuntimeFieldFactory<T>)__inlineValues.get(typeClass);
+        return (RuntimeFieldFactory<T>)__inlineValues.get(typeClass.getName());
     }
 
 }
