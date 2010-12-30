@@ -1,0 +1,49 @@
+package test_annotations;
+
+@DefaultPerson(name="Anonymous Coward")
+message Person {
+    required uint32 id = 1;
+    
+    @DefaultAge
+    optional uint32 age = 2;
+    
+    optional string name = 3;
+    
+    optional Gender gender = 4;
+    
+    @DefaultGender(value=MALE)
+    enum Gender {
+        MALE = 1;
+        FEMALE = 2;
+    }
+    
+    @NestedMessageAnnotation
+    message ListRequest {
+        required uint32 limit = 1;
+        
+        @DeeperMessageAnnotation
+        message Response {
+            required uint32 count = 1;
+            
+            @DeeperMessageFieldAnnotation(nullable=false)
+            repeated Person person = 2;
+        }
+    }
+    
+    extensions 100 to max;
+}
+
+@PersonExtras
+extend Person {
+    @Validate optional string country = 100;
+}
+
+@SomeServiceAnnotation
+@AnotherServiceAnnotation
+service PersonService {
+    
+    @AuthRequired(role=admin)
+    rpc Put (Person) returns (Person);
+    
+    rpc List (Person.ListRequest) returns (Person.ListRequest.Response);
+}

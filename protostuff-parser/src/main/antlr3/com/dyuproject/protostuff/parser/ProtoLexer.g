@@ -35,6 +35,10 @@ ASSIGN
     :   '='
     ;
     
+AT
+    :   '@'
+    ;
+    
 LEFTCURLY
     :   '{'
     ;

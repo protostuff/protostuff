@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Jun 18, 2010
  */
-public class Service implements HasName
+public class Service extends AnnotationContainer implements HasName
 {
     
     final String name;
@@ -69,7 +69,7 @@ public class Service implements HasName
             rm.resolveReferences();
     }
     
-    public class RpcMethod implements HasName
+    public class RpcMethod extends AnnotationContainer implements HasName
     {
         
         final int index;

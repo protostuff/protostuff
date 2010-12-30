@@ -51,6 +51,9 @@ options {
 
 parse [Proto proto]
     :   (statement[proto])+ EOF! {
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            
             proto.postParse();
         }
     ;
@@ -64,6 +67,7 @@ statement [Proto proto]
     |   enum_block[proto, null]
     |   extend_block[proto, null]
     |   service_block[proto]
+    |   annotation_entry[proto]
     ;
 
 // some keywords that might possibly be used as a variable
@@ -71,11 +75,43 @@ var
     :   PKG | SYNTAX | MESSAGE | SERVICE | GROUP | RPC | ID | MAX
     ;
 
+annotation_entry [Proto proto]
+@init {
+    Annotation annotation = null;
+}
+    :   AT var { annotation = new Annotation($var.text); }
+        (LEFTPAREN 
+        annotation_keyval[proto, annotation] (COMMA annotation_keyval[proto, annotation])* 
+        RIGHTPAREN)? {
+            proto.add(annotation);
+        }
+    ;
+
+annotation_keyval [Proto proto, Annotation annotation]
+@init {
+    Object value = null;
+}
+    :   k=var ASSIGN (
+            v=var { value = $v.text; }
+            |   NUMFLOAT { value = Float.valueOf($NUMFLOAT.text); }
+            |   NUMINT { value = Integer.valueOf($NUMFLOAT.text); }
+            |   NUMDOUBLE { value = Double.valueOf($NUMFLOAT.text); }
+            |   TRUE { value = Boolean.TRUE; }
+            |   FALSE { value = Boolean.FALSE; }
+            |   STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
+        ) {
+            annotation.put($k.text, value);
+        }
+    ;
+
 header_syntax [Proto proto]
     :   SYNTAX ASSIGN STRING_LITERAL SEMICOLON! {
             if(! "proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text)))
                 throw new IllegalStateException("Syntax isn't proto2: '"+
                   getStringFromStringLiteral($STRING_LITERAL.text)+"'");
+                  
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
     ;
 
@@ -88,12 +124,18 @@ header_package [Proto proto]
                 throw new IllegalStateException("Multiple package definitions.");
             
             proto.setPackageName(value);
+            
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
     ;
     
 header_import [Proto proto]
     :   IMPORT STRING_LITERAL SEMICOLON! {
             proto.importProto(getStringFromStringLiteral($STRING_LITERAL.text));
+            
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
     ;
 
@@ -110,6 +152,9 @@ header_option [Proto proto]
                 proto.standardOptions.put($n.text, value);
             else
                 proto.extraOptions.put($n.text, value);
+                
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
     ;
     
@@ -123,6 +168,8 @@ message_block [Proto proto, Message parent]
                 proto.addMessage(message);
             else
                 parent.addNestedMessage(message);
+                
+            message.addAnnotations(proto.annotations, true);
         } 
         LEFTCURLY (message_body[proto, message])* RIGHTCURLY
     ;
@@ -133,6 +180,7 @@ message_body [Proto proto, Message message]
     |   enum_block[proto, message]
     |   extend_block[proto, message]
     |   extensions_range[proto, message]
+    |   annotation_entry[proto]
     ;
     
 extensions_range [Proto proto, Message message]
@@ -166,8 +214,10 @@ message_field [Proto proto, HasFields message]
             }
         } 
         (field_options[proto, message, fieldHolder.field])? {
-            if(fieldHolder.field != null)
+            if(fieldHolder.field != null) {
+                fieldHolder.field.addAnnotations(proto.annotations, true);
                 message.addField(fieldHolder.field);
+            }
         }
         (SEMICOLON! | ignore_block)
     ;
@@ -435,6 +485,9 @@ enum_block [Proto proto, Message message]
                 proto.addEnumGroup(enumGroup);
             else
                 message.addNestedEnumGroup(enumGroup);
+                
+            enumGroup.addAnnotations(proto.annotations, true);
+            
         } (SEMICOLON?)!
     ;
 
@@ -448,8 +501,19 @@ service_block [Proto proto]
 @init {
     Service service = null;
 }
-    :   SERVICE ID { service = new Service($ID.text, proto); } LEFTCURLY
-        (rpc_block[proto, service])+ RIGHTCURLY (SEMICOLON?)!
+    :   SERVICE ID { 
+            service = new Service($ID.text, proto); 
+            service.addAnnotations(proto.annotations, true);
+        } LEFTCURLY
+        (service_body[proto, service])+ RIGHTCURLY (SEMICOLON?)! {
+            if(service.rpcMethods.isEmpty())
+                throw new IllegalStateException("Empty Service block: " + service.getName());
+        }
+    ;
+    
+service_body [Proto proto, Service service]
+    :   rpc_block[proto, service]
+    |   annotation_entry[proto]
     ;
     
 rpc_block [Proto proto, Service service]
@@ -468,7 +532,8 @@ rpc_block [Proto proto, Service service]
             retPackage = retFull.substring(0, lastDot); 
             retName = retFull.substring(lastDot+1);
         } | r=ID { retName = $r.text; }) RIGHTPAREN ignore_block? SEMICOLON! {
-            service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
+            Service.RpcMethod rm = service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
+            rm.addAnnotations(proto.annotations, true);
         }
     ;
     
@@ -483,18 +548,25 @@ extend_block [Proto proto, Message parent]
             String packageName = fullType.substring(0, lastDot); 
             String type = fullType.substring(lastDot+1);
             extension = new Extension(proto, parent, packageName, type);
+            extension.addAnnotations(proto.annotations, true);
         }
     |   ID { 
             String type = $ID.text;
             extension = new Extension(proto, parent, null, type);
+            extension.addAnnotations(proto.annotations, true);
         } )
         
-        LEFTCURLY (message_field[proto, extension])* RIGHTCURLY {
+        LEFTCURLY (extend_body[proto, extension])* RIGHTCURLY {
             if(parent==null)
                 proto.addExtension(extension);
             else
                 parent.addNestedExtension(extension);
         } (SEMICOLON?)!
+    ;
+    
+extend_body [Proto proto, Extension extension]
+    :   message_field[proto, extension]
+    |   annotation_entry[proto]
     ;
     
 ignore_block

@@ -24,7 +24,7 @@ import java.util.Collections;
  * @author David Yu
  * @created Dec 21, 2009
  */
-public class EnumGroup implements HasName
+public class EnumGroup extends AnnotationContainer implements HasName
 {
     
     String name;

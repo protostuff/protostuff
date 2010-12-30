@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
  * 
  * @author Philippe Laflamme
  */
-public class Extension implements HasFields
+public class Extension extends AnnotationContainer implements HasFields
 {
     final Message parentMessage;
     final String packageName;

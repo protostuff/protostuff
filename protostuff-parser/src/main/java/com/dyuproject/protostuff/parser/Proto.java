@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Dec 18, 2009
  */
-public class Proto
+public class Proto extends AnnotationContainer
 {
     
     final File file;

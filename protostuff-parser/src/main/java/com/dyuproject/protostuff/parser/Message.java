@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public class Message implements HasName, HasFields
+public class Message extends AnnotationContainer implements HasName, HasFields
 {
     
     String name;
@@ -276,7 +276,7 @@ public class Message implements HasName, HasFields
     
     void resolveReferences(Message root)
     {
-        Proto p = getProto();
+        getProto();
         for(Field<?> f : fields.values())
         {
             f.owner = this;
@@ -382,6 +382,7 @@ public class Message implements HasName, HasFields
         to.name = from.name;
         to.number = from.number;
         to.modifier = from.modifier;
+        to.addAnnotations(from.annotations, true);
     }
     
     static void resolveFullName(Message message, StringBuilder buffer)

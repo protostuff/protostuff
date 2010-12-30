@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public abstract class Field<T> implements Comparable<Field<?>>, HasName
+public abstract class Field<T> extends AnnotationContainer implements Comparable<Field<?>>, HasName
 {
     
     public enum Modifier
