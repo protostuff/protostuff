@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 38: Parser: cannot import more than one .proto file from the same package (patch by avaskys)
 + Add support for java.util.Date in protostuff-runtime
 
 protostuff-1.0.0.M6 2010-10-28
