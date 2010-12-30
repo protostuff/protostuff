@@ -35,7 +35,7 @@ public class DefaultProtoLoader implements Proto.Loader
     
     public Proto load(String path, Proto importer) throws Exception
     {
-        File protoFile, importerFile = importer.getFile();
+        File protoFile, importerFile = importer.getFile().getAbsoluteFile();
         if(importerFile == null)
             protoFile = new File(path);
         else
@@ -72,7 +72,7 @@ public class DefaultProtoLoader implements Proto.Loader
         if(importerPkg == null)
             return null;
         
-        File baseDir = importer.getFile().getParentFile().getParentFile();
+        File baseDir = importer.getFile().getAbsoluteFile().getParentFile();
         
         // up one level if package contains a dot.
         for(int i=0; (i=importerPkg.indexOf('.', i))!=-1; i++)
@@ -90,7 +90,7 @@ public class DefaultProtoLoader implements Proto.Loader
         if(resource == null)
             return null;
         
-        Proto proto = new Proto(null, DEFAULT_INSTANCE, importer);
+        Proto proto = new Proto(resource, DEFAULT_INSTANCE, importer);
         ProtoUtil.loadFrom(resource, proto);
         return proto;
     }

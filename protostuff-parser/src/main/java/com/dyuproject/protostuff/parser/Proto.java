@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.parser;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -30,10 +31,12 @@ public class Proto
 {
     
     final File file;
+    // if loaded form classpath.
+    final URL url;
     final Loader loader;
     final Proto importer;
     private Mutable<String> packageName, javaPackageName;
-    final LinkedHashMap<File, Proto> importedProtos = new LinkedHashMap<File, Proto>();
+    final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
     final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
@@ -45,7 +48,7 @@ public class Proto
     
     public Proto()
     {
-        this(null, DefaultProtoLoader.DEFAULT_INSTANCE, null);
+        this((File)null, DefaultProtoLoader.DEFAULT_INSTANCE, null);
     }
     
     public Proto(File file)
@@ -55,7 +58,7 @@ public class Proto
     
     public Proto(Loader loader)
     {
-        this(null, loader, null);
+        this((File)null, loader, null);
     }
     
     public Proto(File file, Loader loader)
@@ -65,7 +68,18 @@ public class Proto
     
     public Proto(File file, Loader loader, Proto importer)
     {
+        this.url = null;
+        
         this.file = file;
+        this.loader = loader;
+        this.importer = importer;
+    }
+    
+    public Proto(URL url, Loader loader, Proto importer)
+    {
+        this.file = null;
+        
+        this.url = url;
         this.loader = loader;
         this.importer = importer;
     }
@@ -170,7 +184,17 @@ public class Proto
     
     public Proto getImportedProto(File file)
     {
-        return importedProtos.get(file);
+        return importedProtos.get(file.toURI().toString());
+    }
+    
+    public Proto getImportedProto(URL url)
+    {
+        return importedProtos.get(url.toString());
+    }
+    
+    public Proto getImportedProto(String url)
+    {
+        return importedProtos.get(url);
     }
     
     void importProto(String path)
@@ -187,7 +211,10 @@ public class Proto
     
     void addImportedProto(Proto proto)
     {
-        importedProtos.put(proto.getFile(), proto);
+        if(proto.url == null)
+            importedProtos.put(proto.file.toURI().toString(), proto);
+        else
+            importedProtos.put(proto.url.toString(), proto);
     }
     
     void postParse()
