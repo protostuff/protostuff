@@ -38,10 +38,10 @@ public class ProtoServiceTest extends TestCase
         
         assertTrue(proto.getImportedProtos().size() == 2);
         
-        Proto importedProto = proto.getImportedProto("test_imported_inner");
+        Proto importedProto = proto.getImportedProto(ProtoParserTest.getFile("test_imported_inner.proto"));
         assertNotNull(importedProto);
         
-        Proto jpImportedProto = proto.getImportedProto("test.imported.jp");
+        Proto jpImportedProto = proto.getImportedProto(ProtoParserTest.getFile("test_java_package_imported_inner.proto"));
         assertNotNull(jpImportedProto);
         
         Message request = proto.getMessage("Request");

@@ -139,7 +139,7 @@ public class ProtoParserTest extends TestCase
         Proto proto = new Proto(f);
         ProtoUtil.loadFrom(f, proto);
         
-        Proto iProto = proto.getImportedProto("protobuf_unittest_import");
+        Proto iProto = proto.getImportedProto(getFile("google/protobuf/unittest_import.proto"));
         assertNotNull(iProto);
         assertEquals("protobuf_unittest_import", iProto.getPackageName());
         assertEquals("com.google.protobuf.test", iProto.getJavaPackageName());

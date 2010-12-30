@@ -81,14 +81,19 @@ public class Extension implements HasFields
 
     void resolveReferences()
     {
-        Message extendedMessage = Message.findMessage(this.type, this.packageName, getProto());
+        String enclosingNamespace;
+        if (isNested())
+            enclosingNamespace = this.getParentMessage().getFullName();
+        else
+            enclosingNamespace = getProto().getPackageName();
+        
+        extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(), enclosingNamespace);
         if (extendedMessage == null)
         {
             throw new IllegalStateException("The message " + getExtendedMessageFullName()
                     + " is not defined.");
         }
         extendedMessage.extend(this);
-        this.extendedMessage = extendedMessage;
     }
 
     private String getExtendedMessageFullName()

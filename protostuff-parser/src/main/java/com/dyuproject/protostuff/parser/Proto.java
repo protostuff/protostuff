@@ -33,13 +33,15 @@ public class Proto
     final Loader loader;
     final Proto importer;
     private Mutable<String> packageName, javaPackageName;
-    final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
+    final LinkedHashMap<File, Proto> importedProtos = new LinkedHashMap<File, Proto>();
     final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
     final LinkedHashMap<String, Service> services = new LinkedHashMap<String, Service>();
     final ArrayList<Extension> extensions = new ArrayList<Extension>();
+    final LinkedHashMap<String, Message> fullyQualifiedMessages = new LinkedHashMap<String, Message>();
+    final LinkedHashMap<String, EnumGroup> fullyQualifiedEnumGroups = new LinkedHashMap<String, EnumGroup>();
     
     public Proto()
     {
@@ -166,9 +168,9 @@ public class Proto
         return importedProtos.values();
     }
     
-    public Proto getImportedProto(String packageName)
+    public Proto getImportedProto(File file)
     {
-        return importedProtos.get(packageName);
+        return importedProtos.get(file);
     }
     
     void importProto(String path)
@@ -185,7 +187,7 @@ public class Proto
     
     void addImportedProto(Proto proto)
     {
-        importedProtos.put(proto.packageName.getValue(), proto);
+        importedProtos.put(proto.getFile(), proto);
     }
     
     void postParse()
@@ -198,6 +200,13 @@ public class Proto
                 packageName.getValue() : javaPkg;
         this.javaPackageName = new Mutable<String>(javaPackageName);
         
+        // Cache all fully-qualified message names and enum group names so we
+        // can look them up quickly
+        for (Message m : getMessages())
+            m.cacheFullyQualifiedNames();
+        for (EnumGroup eg : getEnumGroups())
+            eg.cacheFullyQualifiedName();
+        
         for(Message m : getMessages())
             m.resolveReferences(m);
         
@@ -206,6 +215,111 @@ public class Proto
 
         for(Extension e : getExtensions())
           e.resolveReferences();
+    }
+    
+    /**
+     * Given the name of a Message/EnumGroup reference and the namespace 
+     * enclosing that reference (can be a full message name or package 
+     * name), returns the referenced object if it exists.
+     * 
+     * @param fullRefName The full name of the object as specified by the reference,
+     *    including a package name if it was specified
+     * @param fullEnclosingNamespace The full enclosing namespace of the reference
+     * @return A Message or EnumGroup instance, or null
+     */
+    HasName findReference(String fullRefName, String enclosingNamespace)
+    {
+        boolean doneSearch = false;
+        
+        // Special case: if fullRefName begins with a period it is a fully qualified
+        // name so just search for that (but strip off the initial dot!)
+        if (fullRefName.charAt(0) == '.')
+            return findFullyQualifiedObject(fullRefName.substring(1));
+        
+        // Search for the object in the enclosing namespace, as well as each parent
+        // namespace until we find the object
+        while (!doneSearch)
+        {
+            String searchName = (enclosingNamespace == null ? fullRefName : enclosingNamespace + '.' + fullRefName);
+            HasName obj = findFullyQualifiedObject(searchName);
+            if (obj != null)
+                return obj;
+            
+            // We didn't find the object. Strip off the last component of the
+            // namespace and try again
+            if (enclosingNamespace != null)
+            {
+                int dotIndex = enclosingNamespace.lastIndexOf('.');
+                if (dotIndex < 0)
+                    enclosingNamespace = null;
+                else
+                    enclosingNamespace = enclosingNamespace.substring(0, dotIndex);
+            }
+            else
+            {
+                doneSearch = true;
+            }
+        }
+        
+        // If we didn't find a match using the normal protobuf-compatible
+        // lookup method, try searching each imported .proto as if we were
+        // in their namespace
+        for (Proto proto : getImportedProtos())
+        {
+            String searchName = (proto.getPackageName() == null ? fullRefName : proto.getPackageName() + '.' + fullRefName);
+            HasName result = proto.findFullyQualifiedObject(searchName);
+            if (result != null)
+                return result;
+        }
+        
+        // No results
+        return null;
+    }
+    
+    Message findMessageReference(String fullRefName, String enclosingNamespace)
+    {
+        HasName refObj = findReference(fullRefName, enclosingNamespace);
+        if (refObj instanceof Message)
+            return (Message) refObj;
+        else
+            return null;
+    }
+    
+    EnumGroup findEnumGroupReference(String fullRefName, String enclosingNamespace)
+    {
+        HasName refObj = findReference(fullRefName, enclosingNamespace);
+        if (refObj instanceof EnumGroup)
+            return (EnumGroup) refObj;
+        else
+            return null;
+    }
+    
+    /**
+     * Returns a Message or EnumGroup given its fully qualified name
+     * @param fullyQualifiedName The fully qualified name, without an
+     *     initial dot ('.')
+     * @return The Message or EnumGroup instance if it is defined in
+     *     this Proto or one of its imports.
+     */
+    HasName findFullyQualifiedObject(String fullyQualifiedName)
+    {
+        Message m = fullyQualifiedMessages.get(fullyQualifiedName);
+        if (m != null)
+            return m;
+        
+        EnumGroup eg = fullyQualifiedEnumGroups.get(fullyQualifiedName);
+        if (eg != null)
+            return eg;
+        
+        // Search imported protos as well
+        for (Proto proto : getImportedProtos())
+        {
+            HasName importedObj = proto.findFullyQualifiedObject(fullyQualifiedName);
+            if (importedObj != null)
+                return importedObj;
+        }
+        
+        return null;
     }
     
     public String toString()

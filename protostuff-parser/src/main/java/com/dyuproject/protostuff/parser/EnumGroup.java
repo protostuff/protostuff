@@ -54,7 +54,7 @@ public class EnumGroup implements HasName
         if(isNested())
             buffer.append(parentMessage.getFullName()).append('.').append(name);
         else
-            buffer.append(getProto().getJavaPackageName()).append('.').append(name);
+            buffer.append(getProto().getPackageName()).append('.').append(name);
         return buffer.toString();
     }
     
@@ -118,6 +118,12 @@ public class EnumGroup implements HasName
         sortedValues.add(value);
         // sort along the way?
         Collections.sort(sortedValues);
+    }
+    
+    void cacheFullyQualifiedName()
+    {
+        Proto proto = getProto();
+        proto.fullyQualifiedEnumGroups.put(getFullName(), this);
     }
     
     public ArrayList<Value> getUniqueSortedValues()

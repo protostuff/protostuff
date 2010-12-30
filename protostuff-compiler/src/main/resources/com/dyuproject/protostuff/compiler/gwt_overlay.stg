@@ -346,7 +346,7 @@ field_stringify_singular_nonmessage(field, options, arg) ::= <<
 >>
 
 field_stringify_outercall(field, options, arg) ::= <<
-@<field.message.fullName>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.relativeName; format=".==$">;)<arg>
+@<field.message.javaFullName>::stringify(L<field.message.proto.javaPackageName; format=".==/">/<field.message.relativeName; format=".==$">;)<arg>
 >>
 
 message_static_method_is_initialized(message, options) ::= <<
@@ -384,7 +384,7 @@ field_getters_and_setters(field, options) ::= <<
 public native <map_repeated_prefix.(field.class.simpleName)><map_repeated_value.(field.javaType)><map_repeated_suffix.(field.class.simpleName)> get<field.name; format="PC">Array() /*-{
     <if(field.enumField)>
     <if(options.dev_mode)>
-    return @<field.enumGroup.fullName>::getArray(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
+    return @<field.enumGroup.javaFullName>::getArray(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
     <else>
     return this["<field:field_name_or_number(field=it,options=options)>"];
     <endif>
@@ -472,7 +472,7 @@ return this["<field:field_name_or_number(field=field,options=options)>"] || "";
 <endif>
 <elseif(field.enumField)>
 <if(options.dev_mode)>
-return @<field.enumGroup.fullName>::get(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
+return @<field.enumGroup.javaFullName>::get(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, "<field:field_name_or_number(field=field,options=options)>");
 <else>
 var v = this["<field:field_name_or_number(field=it,options=options)>"];
 return v == null ? <field.defaultValue.number> : v;
