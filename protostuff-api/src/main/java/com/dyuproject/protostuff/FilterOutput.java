@@ -23,12 +23,12 @@ import java.io.IOException;
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class FilterOutput implements Output
+public class FilterOutput<F extends Output> implements Output
 {
     
-    protected final Output output;
+    protected final F output;
     
-    public FilterOutput(Output output)
+    public FilterOutput(F output)
     {
         this.output = output;
     }

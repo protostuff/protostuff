@@ -23,12 +23,12 @@ import java.io.IOException;
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class FilterInput implements Input
+public class FilterInput<F extends Input> implements Input
 {
     
-    protected final Input input;
+    protected final F input;
     
-    public FilterInput(Input input)
+    public FilterInput(F input)
     {
         this.input = input;
     }    
