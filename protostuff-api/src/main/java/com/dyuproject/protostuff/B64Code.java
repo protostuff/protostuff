@@ -490,7 +490,42 @@ public final class B64Code
         // Create result array of exact required size.
         final int outLen=((withoutPaddingLen)*3)/4;
         final byte[] output=new byte[outLen];
-        int outOffset=0;
+
+        decode(str, inOffset, inLen, output, 0, outLen);
+
+        return output;
+    }
+    
+    /**
+     * Returns the length of the decoded base64 input (written to the 
+     * provided {@code output} byte array).
+     * The {@code output} byte array must have enough capacity or it will fail.
+     */
+    public static int decodeTo(final byte[] output, int outOffset, 
+            final String str, int inOffset, final int inLen)
+    {
+        if(inLen == 0)
+            return 0;
+        
+        if (inLen%4!=0)
+            throw new IllegalArgumentException("Input block size is not 4");
+
+        int withoutPaddingLen = inLen, limit = inOffset + inLen;
+        while (str.charAt(--limit)==pad)
+            withoutPaddingLen--;
+
+        // Create result array of exact required size.
+        final int outLen=((withoutPaddingLen)*3)/4;
+        assert (output.length - outOffset) >= outLen;
+        
+        decode(str, inOffset, inLen, output, outOffset, outLen);
+
+        return outLen;
+    }
+    
+    private static void decode(final String str, int inOffset, final int inLen, 
+            final byte[] output, int outOffset, final int outLen)
+    {
         int stop=(outLen/3)*3;
         byte b0,b1,b2,b3;
         try
@@ -542,8 +577,6 @@ public final class B64Code
             throw new IllegalArgumentException("char "+inOffset
                     +" was not B64 encoded");
         }
-
-        return output;
     }
 
 }
