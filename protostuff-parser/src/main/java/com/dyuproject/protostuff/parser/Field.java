@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.parser;
 
 import java.nio.ByteBuffer;
+import java.util.LinkedHashMap;
 
 /**
  * Base class for fields defined in a {@link Message}.
@@ -44,6 +45,8 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     boolean packable;
     T defaultValue;
     Message owner;
+    final LinkedHashMap<java.lang.String,Object> options = 
+        new LinkedHashMap<java.lang.String,Object>();
     
     public Field()
     {
@@ -53,6 +56,30 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     public Field(boolean packable)
     {
         this.packable = packable;
+    }
+    
+    /**
+     * Returns this options
+     */
+    public LinkedHashMap<java.lang.String,Object> getOptions()
+    {
+        return options;
+    }
+    
+    /**
+     * Returns the option defined by the {@code key}.
+     */
+    @SuppressWarnings("unchecked")
+    public <V> V getOption(java.lang.String key)
+    {
+        return (V)options.get(key);
+    }
+    
+    void putOption(java.lang.String key, Object value)
+    {
+        Object existing = options.put(key, value);
+        if(existing != null)
+            throw new IllegalStateException("Duplicate field option: " + key);
     }
     
     /**

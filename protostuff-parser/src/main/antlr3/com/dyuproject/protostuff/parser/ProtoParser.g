@@ -149,9 +149,9 @@ header_option [Proto proto]
             | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
         ) SEMICOLON! {
             if(standard)
-                proto.standardOptions.put($n.text, value);
+                proto.putStandardOption($n.text, value);
             else
-                proto.extraOptions.put($n.text, value);
+                proto.putExtraOption($n.text, value);
                 
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
@@ -273,6 +273,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid string default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, getStringFromStringLiteral($STRING_LITERAL.text));
         } 
     |   NUMFLOAT {
             if("default".equals($key.text)) {
@@ -286,6 +288,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, Float.valueOf($NUMFLOAT.text));
         } 
     |   NUMINT {
             if("default".equals($key.text)) {
@@ -307,6 +311,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, Integer.valueOf($NUMINT.text));
         }
     |   NUMDOUBLE {
             if("default".equals($key.text)) {
@@ -320,6 +326,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, Double.valueOf($NUMDOUBLE.text));
         }
     |   HEX {
             if("default".equals($key.text)) {
@@ -347,6 +355,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
                 
             }
+            
+            field.putOption($key.text, $HEX.text);
         }
     |   OCTAL {
             if("default".equals($key.text)) {
@@ -370,6 +380,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, $OCTAL.text);
         }
     |   TRUE {
             if("default".equals($key.text)) {
@@ -381,6 +393,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("invalid boolean default value for the non-boolean field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, Boolean.TRUE);
         }    
     |   FALSE {
             if("default".equals($key.text)) {
@@ -392,6 +406,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("invalid boolean default value for the non-boolean field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, Boolean.FALSE);
         }
     |   val=ID {
             if("default".equals($key.text)) {
@@ -428,6 +444,8 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("invalid field value '" + refName + "' for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, $val.text);
         }
     |   EXP {
             if("default".equals($key.text)) {
@@ -441,8 +459,12 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 else
                     throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
+            
+            field.putOption($key.text, $EXP.text);
         }
-    |   signed_constant[proto, message, field, $key.text]
+    |   signed_constant[proto, message, field, $key.text] {
+            field.putOption($key.text, $signed_constant.text);
+        }
         )
     ;
     

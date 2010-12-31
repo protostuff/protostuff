@@ -212,6 +212,19 @@ public class ProtoParserTest extends TestCase
         assertTrue(testAllTypes.getNestedMessages().size() == 1);
         assertTrue(testAllTypes.getNestedEnumGroups().size() == 1);
         
+        Field<?> defaultStringPiece = testAllTypes.getField("default_string_piece");
+        Field<?> defaultCord = testAllTypes.getField("default_cord");
+        
+        assertNotNull(defaultStringPiece);
+        assertEquals("STRING_PIECE", defaultStringPiece.getOption("ctype"));
+        assertEquals("abc", defaultStringPiece.getOption("default"));
+        assertEquals("abc", defaultStringPiece.defaultValue);
+        
+        assertNotNull(defaultCord);
+        assertEquals("CORD", defaultCord.getOption("ctype"));
+        assertEquals("123", defaultCord.getOption("default"));
+        assertEquals("123", defaultCord.defaultValue);
+        
         Message nestedMessage = testAllTypes.getNestedMessage("NestedMessage");
         assertNotNull(nestedMessage);
         EnumGroup nestedEnum = testAllTypes.getNestedEnumGroup("NestedEnum");

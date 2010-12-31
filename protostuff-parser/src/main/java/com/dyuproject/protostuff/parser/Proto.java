@@ -115,9 +115,28 @@ public class Proto extends AnnotationContainer
             this.packageName = new Mutable<String>(packageName);
     }
     
+    public LinkedHashMap<String,String> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    void putStandardOption(String key, String value)
+    {
+        String existing = standardOptions.put(key, value);
+        if(existing != null)
+            throw new IllegalStateException("Duplicate proto option: " + key);
+    }
+    
     public LinkedHashMap<String,String> getExtraOptions()
     {
         return extraOptions;
+    }
+    
+    void putExtraOption(String key, String value)
+    {
+        String existing = extraOptions.put(key, value);
+        if(existing != null)
+            throw new IllegalStateException("Duplicate proto option: " + key);
     }
     
     public String getExtraOption(String name)
