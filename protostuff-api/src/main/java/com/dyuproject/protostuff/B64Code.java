@@ -428,6 +428,90 @@ public final class B64Code
 
         return output;
     }
+    
+    /**
+     * Returns the base 64 decoded bytes.
+     * The provided {@code str} must already be base-64 encoded.
+     */
+    public static byte[] decode(final String str)
+    {
+        return decode(str, 0, str.length());
+    }
+    
+    /**
+     * Returns the base 64 decoded bytes.
+     * The provided {@code str} must already be base-64 encoded.
+     */
+    public static byte[] decode(final String str, int inOffset, final int inLen)
+    {
+        if(inLen == 0)
+            return new byte[0];
+        
+        if (inLen%4!=0)
+            throw new IllegalArgumentException("Input block size is not 4");
+
+        int withoutPaddingLen = inLen, limit = inOffset + inLen;
+        while (str.charAt(--limit)==pad)
+            withoutPaddingLen--;
+
+        // Create result array of exact required size.
+        final int outLen=((withoutPaddingLen)*3)/4;
+        final byte[] output=new byte[outLen];
+        int outOffset=0;
+        int stop=(outLen/3)*3;
+        byte b0,b1,b2,b3;
+        try
+        {
+            while (outOffset<stop)
+            {
+                b0=code2nibble[str.charAt(inOffset++)];
+                b1=code2nibble[str.charAt(inOffset++)];
+                b2=code2nibble[str.charAt(inOffset++)];
+                b3=code2nibble[str.charAt(inOffset++)];
+                if (b0<0 || b1<0 || b2<0 || b3<0)
+                    throw new IllegalArgumentException("Not B64 encoded");
+
+                output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                output[outOffset++]=(byte)(b1<<4|b2>>>2);
+                output[outOffset++]=(byte)(b2<<6|b3);
+            }
+
+            if (outLen!=outOffset)
+            {
+                switch (outLen%3)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        b0=code2nibble[str.charAt(inOffset++)];
+                        b1=code2nibble[str.charAt(inOffset++)];
+                        if (b0<0 || b1<0)
+                            throw new IllegalArgumentException("Not B64 encoded");
+                        output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                        break;
+                    case 2:
+                        b0=code2nibble[str.charAt(inOffset++)];
+                        b1=code2nibble[str.charAt(inOffset++)];
+                        b2=code2nibble[str.charAt(inOffset++)];
+                        if (b0<0 || b1<0 || b2<0)
+                            throw new IllegalArgumentException("Not B64 encoded");
+                        output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                        output[outOffset++]=(byte)(b1<<4|b2>>>2);
+                        break;
+
+                    default:
+                        throw new IllegalStateException("should not happen");
+                }
+            }
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            throw new IllegalArgumentException("char "+inOffset
+                    +" was not B64 encoded");
+        }
+
+        return output;
+    }
 
 }
 

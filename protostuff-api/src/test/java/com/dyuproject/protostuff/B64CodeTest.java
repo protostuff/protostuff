@@ -18,6 +18,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.dyuproject.protostuff.StringSerializer.STRING;
+
 import junit.framework.TestCase;
 
 /**
@@ -59,6 +61,20 @@ public class B64CodeTest extends TestCase
         testBuffer("1234567", str('a', 4), newBuffer(8, 'a', 4));
         // 1 write chunk and will need to grow (not using nextBufferSize)
         testBuffer("1234567", str('a', 4), newBuffer(8, 'a', 4), 3);
+    }
+    
+    public void testDecodeFromString() throws Exception
+    {
+        for(String str : new String[]{"abcdefgh", "1", "12", "123", "1234", "12345"})
+        {
+            byte[] b64Encoded = B64Code.encode(str.getBytes("UTF-8"));
+            
+            byte[] decoded = B64Code.decode(b64Encoded);
+            
+            byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
+            
+            assertEquals(STRING.deser(decoded), STRING.deser(decodedFromString));
+        }
     }
 
     
