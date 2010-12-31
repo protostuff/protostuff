@@ -1,8 +1,9 @@
 protostuff-1.0-SNAPSHOT
++ add protostuff-kvp module
 + Issue 39: The field options (other than default) are ignored by the parser
-+ Added support for annotations on proto files (extra metadata for better code generation)
++ add support for annotations on proto files (extra metadata for better code generation)
 + Issue 38: Parser: cannot import more than one .proto file from the same package (patch by avaskys)
-+ Add support for java.util.Date in protostuff-runtime
++ add support for java.util.Date in protostuff-runtime
 
 protostuff-1.0.0.M6 2010-10-28
 + Backward-forward compatibility support for runtime schemas via append-only fields in the pojo.
