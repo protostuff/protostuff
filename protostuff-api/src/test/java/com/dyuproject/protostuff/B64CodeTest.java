@@ -74,6 +74,8 @@ public class B64CodeTest extends TestCase
             byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
             
             assertEquals(STRING.deser(decoded), STRING.deser(decodedFromString));
+            
+            assertEquals(str, STRING.deser(decoded));
         }
     }
     
@@ -90,6 +92,8 @@ public class B64CodeTest extends TestCase
             byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
             
             assertEquals(STRING.deser(decoded, 0, decodedLen), STRING.deser(decodedFromString));
+            
+            assertEquals(str, STRING.deser(decoded, 0, decodedLen));
         }
     }
     
@@ -112,6 +116,8 @@ public class B64CodeTest extends TestCase
             
             assertEquals(STRING.deser(decoded, 0, decodedLen), 
                     STRING.deser(decodedFromString, 0, decodedFromStringLen));
+            
+            assertEquals(str, STRING.deser(decoded, 0, decodedLen));
         }
     }
 
