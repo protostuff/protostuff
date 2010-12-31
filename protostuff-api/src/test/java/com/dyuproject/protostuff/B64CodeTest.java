@@ -76,6 +76,22 @@ public class B64CodeTest extends TestCase
             assertEquals(STRING.deser(decoded), STRING.deser(decodedFromString));
         }
     }
+    
+    public void testDecodeTo() throws Exception
+    {
+        for(String str : new String[]{"abcdefgh", "1", "12", "123", "1234", "12345"})
+        {
+            byte[] b64Encoded = B64Code.encode(str.getBytes("UTF-8"));
+            
+            byte[] decoded = new byte[16];
+            
+            int decodedLen = B64Code.decodeTo(decoded, 0, b64Encoded, 0, b64Encoded.length);
+            
+            byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
+            
+            assertEquals(STRING.deser(decoded, 0, decodedLen), STRING.deser(decodedFromString));
+        }
+    }
 
     
     static String str(char c, int size)
