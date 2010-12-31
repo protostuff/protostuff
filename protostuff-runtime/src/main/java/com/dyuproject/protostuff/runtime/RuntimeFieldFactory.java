@@ -36,6 +36,7 @@ import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import com.dyuproject.protostuff.runtime.MappedSchema.MessageField;
 
 /**
  * A factory to create runtime {@link MappedSchema.Field fields} based on reflection.
@@ -1019,11 +1020,10 @@ public abstract class RuntimeFieldFactory<V>
                 }
             }
             
-            return new Field<T>(FieldType.MESSAGE, number, name)
+            return new MessageField<T, Message<?>>(
+                    (Schema<Message<?>>)RuntimeSchema.getSchema(f.getType()), 
+                    FieldType.MESSAGE, number, name)
             {
-                final Schema<Message<?>> schema = (Schema<Message<?>>)RuntimeSchema.getSchema(
-                        f.getType());
-                
                 final Pipe.Schema<?> pipeSchema;
                             
                 {
@@ -1115,11 +1115,10 @@ public abstract class RuntimeFieldFactory<V>
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
         {            
-            return new Field<T>(FieldType.MESSAGE, number, name)
+            return new MessageField<T,Object>(
+                    (Schema<Object>)RuntimeSchema.getSchema(f.getType()), 
+                    FieldType.MESSAGE, number, name)
             {
-                final Schema<Object> schema = (Schema<Object>)RuntimeSchema.getSchema(
-                        f.getType());
-                
                 final Pipe.Schema<?> pipeSchema = 
                     (schema instanceof MappedSchema) ? 
                             ((MappedSchema<?>)schema).pipeSchema : null;
@@ -1281,21 +1280,20 @@ public abstract class RuntimeFieldFactory<V>
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
                 
-                return new Field<T>(FieldType.MESSAGE, number, name, true)
+                return new MessageField<T,Object>(
+                        (Schema<Object>)RuntimeSchema.getSchema(genericType), 
+                        FieldType.MESSAGE, number, name, true)
                 {
-                    final Schema<Object> targetSchema = 
-                        (Schema<Object>)RuntimeSchema.getSchema(genericType);
-                    
                     final Pipe.Schema<?> pipeSchema = 
-                        (targetSchema instanceof MappedSchema) ? 
-                                ((MappedSchema<?>)targetSchema).pipeSchema : null;
+                        (schema instanceof MappedSchema) ? 
+                                ((MappedSchema<?>)schema).pipeSchema : null;
                                 
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = input.mergeObject(targetSchema.newMessage(), targetSchema);
+                        Object value = input.mergeObject(schema.newMessage(), schema);
                         try
                         {
                             Collection<Object> existing = (Collection<Object>)f.get(message);
@@ -1325,7 +1323,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Object o : list)
-                                    output.writeObject(this.number, o, targetSchema, true);
+                                    output.writeObject(this.number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1509,20 +1507,20 @@ public abstract class RuntimeFieldFactory<V>
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
                 
-                return new Field<T>(FieldType.MESSAGE, number, name, true)
+                return new MessageField<T,Object>(
+                        (Schema<Object>)RuntimeSchema.getSchema(genericType), 
+                        FieldType.MESSAGE, number, name, true)
                 {
-                    final Schema<Object> targetSchema = 
-                        (Schema<Object>)RuntimeSchema.getSchema(genericType);
                     
                     final Pipe.Schema<?> pipeSchema = 
-                        (targetSchema instanceof MappedSchema) ? 
-                                ((MappedSchema<?>)targetSchema).pipeSchema : null;
+                        (schema instanceof MappedSchema) ? 
+                                ((MappedSchema<?>)schema).pipeSchema : null;
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = input.mergeObject(targetSchema.newMessage(), targetSchema);
+                        Object value = input.mergeObject(schema.newMessage(), schema);
                         try
                         {
                             List<Object> existing = (List<Object>)f.get(message);
@@ -1552,7 +1550,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(list!=null && !list.isEmpty())
                             {
                                 for(Object o : list)
-                                    output.writeObject(this.number, o, targetSchema, true);
+                                    output.writeObject(this.number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1736,21 +1734,20 @@ public abstract class RuntimeFieldFactory<V>
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
                 
-                return new Field<T>(FieldType.MESSAGE, number, name, true)
+                return new MessageField<T, Object>(
+                        (Schema<Object>)RuntimeSchema.getSchema(genericType), 
+                        FieldType.MESSAGE, number, name, true)
                 {
-                    final Schema<Object> targetSchema = 
-                        (Schema<Object>)RuntimeSchema.getSchema(genericType);
-                    
                     final Pipe.Schema<?> pipeSchema = 
-                        (targetSchema instanceof MappedSchema) ? 
-                                ((MappedSchema<?>)targetSchema).pipeSchema : null;
+                        (schema instanceof MappedSchema) ? 
+                                ((MappedSchema<?>)schema).pipeSchema : null;
                                 
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = input.mergeObject(targetSchema.newMessage(), targetSchema);
+                        Object value = input.mergeObject(schema.newMessage(), schema);
                         try
                         {
                             Set<Object> existing = (Set<Object>)f.get(message);
@@ -1780,7 +1777,7 @@ public abstract class RuntimeFieldFactory<V>
                             if(set!=null && !set.isEmpty())
                             {
                                 for(Object o : set)
-                                    output.writeObject(this.number, o, targetSchema, true);
+                                    output.writeObject(this.number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1967,21 +1964,20 @@ public abstract class RuntimeFieldFactory<V>
                 if(componentType.isArray() || Collection.class.isAssignableFrom(componentType))
                     return null;
                 
-                return new Field<T>(FieldType.MESSAGE, number, name, true)
+                return new MessageField<T, Object>(
+                        (Schema<Object>)RuntimeSchema.getSchema(componentType), 
+                        FieldType.MESSAGE, number, name, true)
                 {
-                    final Schema<Object> targetSchema = 
-                        (Schema<Object>)RuntimeSchema.getSchema(componentType);
-                    
                     final Pipe.Schema<?> pipeSchema = 
-                        (targetSchema instanceof MappedSchema) ? 
-                                ((MappedSchema<?>)targetSchema).pipeSchema : null;
+                        (schema instanceof MappedSchema) ? 
+                                ((MappedSchema<?>)schema).pipeSchema : null;
                                 
                     {
                         f.setAccessible(true);
                     }
                     protected void mergeFrom(Input input, T message) throws IOException
                     {
-                        Object value = input.mergeObject(targetSchema.newMessage(), targetSchema);
+                        Object value = input.mergeObject(schema.newMessage(), schema);
                         try
                         {
                             Object existing = f.get(message);
@@ -2020,7 +2016,7 @@ public abstract class RuntimeFieldFactory<V>
                                 for(int i=0; i<len; i++)
                                 {
                                     output.writeObject(this.number, Array.get(array, i), 
-                                            targetSchema, true);
+                                            schema, true);
                                 }
                             }
                         }

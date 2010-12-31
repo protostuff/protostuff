@@ -218,6 +218,10 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
     }
     
+    /**
+     * Represents a field of a message/pojo.
+     *
+     */
     public static abstract class Field<T>
     {
         public final FieldType type;
@@ -253,6 +257,35 @@ public abstract class MappedSchema<T> implements Schema<T>
          */
         protected abstract void transfer(Pipe pipe, Input input, Output output, 
                 boolean repeated) throws IOException;
+    }
+    
+    /**
+     * Represents a message/pojo field of a message/pojo.
+     * 
+     */
+    public static abstract class MessageField<T,P> extends Field<T>
+    {
+        
+        public final Schema<P> schema;
+        
+        public MessageField(Schema<P> schema, FieldType type, int number, String name)
+        {
+            super(type, number, name, false);
+            this.schema = schema;
+        }
+        
+        public MessageField(Schema<P> schema, FieldType type, int number, String name, 
+                boolean repeated)
+        {
+            super(type, number, name, repeated);
+            this.schema = schema;
+        }
+        
+        public boolean isWrappedMappedSchema()
+        {
+            return schema instanceof MappedSchema<?>;
+        }
+        
     }
 
 }
