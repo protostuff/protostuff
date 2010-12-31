@@ -192,7 +192,7 @@ public final class KvpInput implements Input
         if(offset + size > limit && !readable(size))
             throw new ProtostuffException("Truncated message.");
         
-        final int number = numeric ? parseInt(buffer, offset, size, 10) : 
+        final int number = numeric ? parseInt(buffer, offset, size, 10, true) : 
             schema.getFieldNumber(STRING.deser(buffer, offset, size));
         
         offset += size;

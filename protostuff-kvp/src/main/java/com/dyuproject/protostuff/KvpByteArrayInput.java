@@ -56,7 +56,7 @@ public final class KvpByteArrayInput implements Input
             return 0;
         
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        final int number = numeric ? parseInt(buffer, offset, size, 10) :
+        final int number = numeric ? parseInt(buffer, offset, size, 10, true) :
             schema.getFieldNumber(STRING.deser(buffer, offset, size));
         
         offset += size;
