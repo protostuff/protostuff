@@ -28,6 +28,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
 
 /**
  * Utility for the JSON serialization/deserialization of messages and objects tied to a schema.
@@ -41,9 +42,34 @@ public final class JsonIOUtil
     private JsonIOUtil(){}
     
     /**
+     * A custom factory simply to expose certain fields.
+     *
+     */
+    public static final class Factory extends JsonFactory
+    {
+        
+        /**
+         * Needed by jackson's internal utf8 strema parser.
+         */
+        public BytesToNameCanonicalizer getRootByteSymbols()
+        {
+            return _rootByteSymbols;
+        }
+        
+        /**
+         * Returns the default feature flags.
+         */
+        public int getFeatureFlags()
+        {
+            return _parserFeatures;
+        }
+        
+    }
+    
+    /**
      * The default json factory for creating json parsers and generators.
      */
-    public static final JsonFactory DEFAULT_JSON_FACTORY = new JsonFactory();
+    public static final Factory DEFAULT_JSON_FACTORY = new Factory();
     
     /**
      * Creates a json pipe from a byte array.
