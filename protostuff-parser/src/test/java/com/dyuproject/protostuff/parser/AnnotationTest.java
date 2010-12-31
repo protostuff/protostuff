@@ -75,8 +75,9 @@ public class AnnotationTest extends TestCase
         
         Annotation deeperMessageFieldAnnotation = personField.getAnnotation("DeeperMessageFieldAnnotation");
         assertNotNull(deeperMessageFieldAnnotation);
-        assertTrue(deeperMessageFieldAnnotation.getParams().size() == 1);
+        assertTrue(deeperMessageFieldAnnotation.getParams().size() == 2);
         assertEquals(false, deeperMessageFieldAnnotation.getValue("nullable"));
+        assertEquals(Float.valueOf(1.1f), deeperMessageFieldAnnotation.getValue("version"));
         
         Collection<Extension> extensions = proto.getExtensions();
         assertTrue(extensions.size() == 1);

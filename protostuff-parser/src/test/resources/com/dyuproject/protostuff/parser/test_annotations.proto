@@ -25,7 +25,7 @@ message Person {
         message Response {
             required uint32 count = 1;
             
-            @DeeperMessageFieldAnnotation(nullable=false)
+            @DeeperMessageFieldAnnotation(nullable=false,version=1.1)
             repeated Person person = 2;
         }
     }
