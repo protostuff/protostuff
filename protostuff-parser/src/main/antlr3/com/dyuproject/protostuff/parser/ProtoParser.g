@@ -106,9 +106,10 @@ annotation_keyval [Proto proto, Annotation annotation]
 
 header_syntax [Proto proto]
     :   SYNTAX ASSIGN STRING_LITERAL SEMICOLON! {
-            if(! "proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text)))
-                throw new IllegalStateException("Syntax isn't proto2: '"+
+            if(!"proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text))) {
+                throw new IllegalStateException("Syntax isn't proto2: '" +
                   getStringFromStringLiteral($STRING_LITERAL.text)+"'");
+            }
                   
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
@@ -171,7 +172,10 @@ message_block [Proto proto, Message parent]
                 
             message.addAnnotations(proto.annotations, true);
         } 
-        LEFTCURLY (message_body[proto, message])* RIGHTCURLY
+        LEFTCURLY (message_body[proto, message])* RIGHTCURLY {
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+        }
     ;
 
 message_body [Proto proto, Message message]
@@ -530,6 +534,9 @@ service_block [Proto proto]
         (service_body[proto, service])+ RIGHTCURLY (SEMICOLON?)! {
             if(service.rpcMethods.isEmpty())
                 throw new IllegalStateException("Empty Service block: " + service.getName());
+                
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
     ;
     
@@ -583,6 +590,10 @@ extend_block [Proto proto, Message parent]
                 proto.addExtension(extension);
             else
                 parent.addNestedExtension(extension);
+                
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+                
         } (SEMICOLON?)!
     ;
     
