@@ -145,6 +145,18 @@ final class IOUtil
     }
     
     /**
+     * Merges the {@code message} from the {@link InputStream} with the supplied 
+     * {@code buf} to use.
+     */
+    static <T> void mergeFrom(InputStream in, byte[] buf, T message, Schema<T> schema, 
+            boolean decodeNestedMessageAsGroup) throws IOException
+    {
+        final CodedInput input = new CodedInput(in, buf, decodeNestedMessageAsGroup);
+        schema.mergeFrom(input, message);
+        input.checkLastTagWas(0);
+    }
+    
+    /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
@@ -153,6 +165,44 @@ final class IOUtil
         final CodedInput input = new CodedInput(in, decodeNestedMessageAsGroup);
         schema.mergeFrom(input, message);
         input.checkLastTagWas(0);
+    }
+    
+    /**
+     * The {@code buf} size limits the size of the message that must be read.
+     * A ProtobufException (sizeLimitExceeded) will be thrown if the 
+     * size of the delimited message is larger.
+     */
+    static <T> void mergeDelimitedFrom(InputStream in, byte[] buf, T message, 
+            Schema<T> schema, boolean decodeNestedMessageAsGroup) throws IOException
+    {
+        final int size = in.read();
+        if(size == -1)
+            throw ProtobufException.truncatedMessage();
+        
+        final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        if(len != 0)
+        {
+            // not an empty message
+            if(len > buf.length)
+            {
+                // size limit exceeded.
+                throw new ProtobufException("size limit exceeded. " + 
+                        len + " > " + buf.length);
+            }
+            
+            fillBufferFrom(in, buf, 0, len);
+            final ByteArrayInput input = new ByteArrayInput(buf, 0, len, 
+                    decodeNestedMessageAsGroup);
+            try
+            {
+                schema.mergeFrom(input, message);
+            }
+            catch(ArrayIndexOutOfBoundsException e)
+            {
+                throw ProtobufException.truncatedMessage(e);
+            }
+            input.checkLastTagWas(0);
+        }
     }
     
     /**

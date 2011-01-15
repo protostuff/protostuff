@@ -107,6 +107,18 @@ public final class ProtobufIOUtil
     }
     
     /**
+     * Merges the {@code message} from the {@link InputStream} using 
+     * the given {@code schema}.
+     * 
+     * The {@code buffer}'s internal byte array will be used for reading the message.
+     */
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+            LinkedBuffer buffer) throws IOException
+    {
+        IOUtil.mergeFrom(in, buffer.buffer, message, schema, false);
+    }
+    
+    /**
      * Merges the {@code message} (delimited) from the {@link InputStream} 
      * using the given {@code schema}.
      */
@@ -114,6 +126,20 @@ public final class ProtobufIOUtil
     throws IOException
     {
         IOUtil.mergeDelimitedFrom(in, message, schema, false);
+    }
+    
+    /**
+     * Merges the {@code message} (delimited) from the {@link InputStream} 
+     * using the given {@code schema}.
+     * 
+     * The delimited message size must not be larger than the 
+     * {@code buffer}'s size/capacity.
+     * {@link ProtobufException} "size limit exceeded" is thrown otherwise.
+     */
+    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
+            LinkedBuffer buffer) throws IOException
+    {
+        IOUtil.mergeDelimitedFrom(in, buffer.buffer, message, schema, false);
     }
     
     /**
