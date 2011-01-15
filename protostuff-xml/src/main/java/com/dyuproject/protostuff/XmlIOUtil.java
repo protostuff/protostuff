@@ -223,16 +223,29 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
             XMLInputFactory inFactory) throws IOException
     {
+        XMLStreamReader parser = null;
         try
         {
-            final XMLStreamReader parser = inFactory.createXMLStreamReader(in, 
-                    XML_ENCODING);
+            parser = inFactory.createXMLStreamReader(in, XML_ENCODING);
             mergeFrom(parser, message, schema);
-            parser.close();
         }
         catch(XMLStreamException e)
         {
             throw new XmlInputException(e);
+        }
+        finally
+        {
+            if(parser != null)
+            {
+                try
+                {
+                    parser.close();
+                }
+                catch (XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
@@ -251,15 +264,29 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(Reader r, T message, Schema<T> schema, 
             XMLInputFactory inFactory) throws IOException
     {
+        XMLStreamReader parser = null;
         try
         {
-            final XMLStreamReader parser = inFactory.createXMLStreamReader(r);
+            parser = inFactory.createXMLStreamReader(r);
             mergeFrom(parser, message, schema);
-            parser.close();
         }
         catch(XMLStreamException e)
         {
             throw new XmlInputException(e);
+        }
+        finally
+        {
+            if(parser != null)
+            {
+                try
+                {
+                    parser.close();
+                }
+                catch (XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
@@ -337,21 +364,34 @@ public final class XmlIOUtil
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
             XMLOutputFactory outFactory) throws IOException
     {
+        XMLStreamWriter writer = null;
         try
         {
-            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, 
-                    XML_ENCODING);
+            writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
             writer.writeEndDocument();
             
             writer.flush();
-            writer.close();
         }
         catch(XMLStreamException e)
         {
             throw new XmlOutputException(e);
+        }
+        finally
+        {
+            if(writer != null)
+            {
+                try
+                {
+                    writer.close();
+                }
+                catch(XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
@@ -372,20 +412,34 @@ public final class XmlIOUtil
     public static <T> void writeTo(Writer w, T message, Schema<T> schema, 
             XMLOutputFactory outFactory) throws IOException
     {
+        XMLStreamWriter writer = null;
         try
         {
-            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(w);
+            writer = outFactory.createXMLStreamWriter(w);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
             writer.writeEndDocument();
             
             writer.flush();
-            writer.close();
         }
         catch(XMLStreamException e)
         {
             throw new XmlOutputException(e);
+        }
+        finally
+        {
+            if(writer != null)
+            {
+                try
+                {
+                    writer.close();
+                }
+                catch(XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
@@ -418,20 +472,34 @@ public final class XmlIOUtil
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
             XMLOutputFactory outFactory) throws IOException
     {
+        XMLStreamWriter writer = null;
         try
         {
-            final XMLStreamWriter writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
+            writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
             
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeListTo(writer, messages, schema);
             writer.writeEndDocument();
             
             writer.flush();
-            writer.close();
         }
         catch(XMLStreamException e)
         {
             throw new XmlOutputException(e);
+        }
+        finally
+        {
+            if(writer != null)
+            {
+                try
+                {
+                    writer.close();
+                }
+                catch(XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
@@ -476,16 +544,29 @@ public final class XmlIOUtil
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
             XMLInputFactory inFactory) throws IOException
     {
+        XMLStreamReader parser = null;
         try
         {
-            final XMLStreamReader parser = inFactory.createXMLStreamReader(in);
-            final List<T> list = parseListFrom(parser, schema);
-            parser.close();
-            return list;
+            parser = inFactory.createXMLStreamReader(in);
+            return parseListFrom(parser, schema);
         }
         catch(XMLStreamException e)
         {
             throw new XmlInputException(e);
+        }
+        finally
+        {
+            if(parser != null)
+            {
+                try
+                {
+                    parser.close();
+                }
+                catch(XMLStreamException e)
+                {
+                    // ignore
+                }
+            }
         }
     }
     
