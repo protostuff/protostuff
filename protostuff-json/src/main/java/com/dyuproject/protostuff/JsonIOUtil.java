@@ -28,6 +28,8 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.impl.Utf8StreamParser;
+import org.codehaus.jackson.io.IOContext;
 import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
 
 /**
@@ -57,11 +59,19 @@ public final class JsonIOUtil
         }
         
         /**
-         * Returns the default feature flags.
+         * Returns the parser feature flags.
          */
-        public int getFeatureFlags()
+        public int getParserFeatures()
         {
             return _parserFeatures;
+        }
+        
+        /**
+         * Returns the generator feature flags.
+         */
+        public int getGeneratorFeatures()
+        {
+            return _generatorFeatures;
         }
         
     }
@@ -141,6 +151,43 @@ public final class JsonIOUtil
         };
     }
     
+    /**
+     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied 
+     * buf {@code inBuffer} to use.
+     */
+    public static Utf8StreamParser newJsonParser(InputStream in, byte[] buf, 
+            int offset, int limit) throws IOException
+    {
+        return newJsonParser(in, buf, offset, limit, false, 
+                new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), in, 
+                        false));
+    }
+    
+    /**
+     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied 
+     * buf {@code inBuffer} to use.
+     */
+    static Utf8StreamParser newJsonParser(InputStream in, byte[] buf, 
+            int offset, int limit, boolean bufferRecyclable, IOContext context) 
+            throws IOException
+    {
+        return new Utf8StreamParser(context, 
+                DEFAULT_JSON_FACTORY.getParserFeatures(), in, 
+                DEFAULT_JSON_FACTORY.getCodec(), 
+                DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(true, true), 
+                buf, offset, limit, bufferRecyclable);
+    }
+    
+    /*public static Utf8Generator newJsonGenerator(OutputStream out, boolean autoCloseStream)
+    {
+        final IOContext context = new IOContext(
+                DEFAULT_JSON_FACTORY._getBufferRecycler(), out, autoCloseStream);
+        
+        return new Utf8Generator(context, 
+                DEFAULT_JSON_FACTORY.getParserFeatures(), 
+                DEFAULT_JSON_FACTORY.getCodec(), 
+                out);
+    }*/
     
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
@@ -157,8 +204,12 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema, boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, 
-                length);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                data, false);
+        final JsonParser parser = newJsonParser(null, data, offset, offset+length, false, 
+                context);
+        /*final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, 
+                length);*/
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
@@ -170,7 +221,27 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
             boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                in, false);
+        final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0, 
+                true, context);
+        //final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        mergeFrom(parser, message, schema, numeric);
+        parser.close();
+    }
+    
+    /**
+     * Merges the {@code message} from the {@link InputStream} using the 
+     * given {@code schema}.
+     * 
+     * The {@code buffer}'s internal byte array will be used for reading the message.
+     */
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+            boolean numeric, LinkedBuffer buffer) throws IOException
+    {
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                in, false);
+        final JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context);
         mergeFrom(parser, message, schema, numeric);
         parser.close();
     }
