@@ -81,6 +81,13 @@ public final class JsonIOUtil
      */
     public static final Factory DEFAULT_JSON_FACTORY = new Factory();
     
+    static
+    {
+        // disable auto-close to have same behavior as protostuff-core utility io methods
+        DEFAULT_JSON_FACTORY.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+        DEFAULT_JSON_FACTORY.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+    }
+    
     /**
      * Creates a json pipe from a byte array.
      */
@@ -210,8 +217,14 @@ public final class JsonIOUtil
                 context);
         /*final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, 
                 length);*/
-        mergeFrom(parser, message, schema, numeric);
-        parser.close();
+        try
+        {
+            mergeFrom(parser, message, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
@@ -226,8 +239,14 @@ public final class JsonIOUtil
         final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0, 
                 true, context);
         //final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        mergeFrom(parser, message, schema, numeric);
-        parser.close();
+        try
+        {
+            mergeFrom(parser, message, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
@@ -242,8 +261,14 @@ public final class JsonIOUtil
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
                 in, false);
         final JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context);
-        mergeFrom(parser, message, schema, numeric);
-        parser.close();
+        try
+        {
+            mergeFrom(parser, message, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
@@ -253,8 +278,14 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        mergeFrom(parser, message, schema, numeric);
-        parser.close();
+        try
+        {
+            mergeFrom(parser, message, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
@@ -308,8 +339,14 @@ public final class JsonIOUtil
     {
         final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
                 JsonEncoding.UTF8);
-        writeTo(generator, message, schema, numeric);
-        generator.close();
+        try
+        {
+            writeTo(generator, message, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
     }
     
     /**
@@ -320,8 +357,14 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        writeTo(generator, message, schema, numeric);
-        generator.close();
+        try
+        {
+            writeTo(generator, message, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
     }
     
     /**
@@ -349,8 +392,14 @@ public final class JsonIOUtil
     {
         final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
                 JsonEncoding.UTF8);
-        writeListTo(generator, messages, schema, numeric);
-        generator.close();
+        try
+        {
+            writeListTo(generator, messages, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
     }
     
     /**
@@ -360,8 +409,14 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        writeListTo(generator, messages, schema, numeric);
-        generator.close();
+        try
+        {
+            writeListTo(generator, messages, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
     }
     
     /**
@@ -400,10 +455,40 @@ public final class JsonIOUtil
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
             boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        final List<T> list = parseListFrom(parser, schema, numeric);
-        parser.close();
-        return list;
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                in, false);
+        final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0, 
+                true, context);
+        //final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
+        try
+        {
+            return parseListFrom(parser, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
+    }
+    
+    /**
+     * Parses the {@code messages} from the stream using the given {@code schema}.
+     * 
+     * The {@code buffer}'s internal byte array will be used for reading the message.
+     */
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
+            boolean numeric, LinkedBuffer buffer) throws IOException
+    {
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                in, false);
+        final JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context);
+        try
+        {
+            return parseListFrom(parser, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
@@ -413,9 +498,14 @@ public final class JsonIOUtil
             boolean numeric) throws IOException
     {
         final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        final List<T> list = parseListFrom(parser, schema, numeric);
-        parser.close();
-        return list;
+        try
+        {
+            return parseListFrom(parser, schema, numeric);
+        }
+        finally
+        {
+            parser.close();
+        }
     }
     
     /**
