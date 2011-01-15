@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
++ update jackson to 1.7.1
++ api for re-using the LinkedBuffer as a read-only buffer
 + add protostuff-kvp module
 + Issue 39: The field options (other than default) are ignored by the parser
 + add support for annotations on proto files (extra metadata for better code generation)
