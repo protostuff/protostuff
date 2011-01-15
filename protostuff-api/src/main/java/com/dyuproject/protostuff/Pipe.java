@@ -51,8 +51,12 @@ public abstract class Pipe
     
     /**
      * End input processing.
+     * 
+     * If {@code cleanupOnly} is true, the io processing ended prematurely hence the 
+     * underlying pipe should cleanup/close all resources that need to be.
      */
-    protected abstract void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException;
+    protected abstract void end(Pipe.Schema<?> pipeSchema, Input input, 
+            boolean cleanupOnly) throws IOException;
     
     /**
      * Schema for transferring data from a source ({@link Input}) to a 
@@ -78,6 +82,9 @@ public abstract class Pipe
             return wrappedSchema.getFieldNumber(name);
         }
 
+        /**
+         * Always returns true since we're just transferring data.
+         */
         public boolean isInitialized(Pipe message)
         {
             return true;
@@ -113,18 +120,25 @@ public abstract class Pipe
                 if(input == null)
                 {
                     // empty message pipe.
+                    pipe.end(this, input, true);
                     return;
                 }
                 
                 pipe.input = input;
                 pipe.output = output;
-
-                transfer(pipe, input, output);
                 
-                pipe.end(this, input);
-                
-                //pipe.input = null;
-                //pipe.output = null;
+                boolean transferComplete = false;
+                try
+                {
+                    transfer(pipe, input, output);
+                    transferComplete = true;
+                }
+                finally
+                {
+                    pipe.end(this, input, !transferComplete);
+                    //pipe.input = null;
+                    //pipe.output = null;
+                }
                 
                 return;
             }

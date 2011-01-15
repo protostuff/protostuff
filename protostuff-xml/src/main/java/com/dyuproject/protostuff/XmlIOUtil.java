@@ -133,14 +133,26 @@ public final class XmlIOUtil
                 return xmlInput;
             }
             
-            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input, 
+                    boolean cleanupOnly) throws IOException
             {
+                if(cleanupOnly)
+                {
+                    try
+                    {
+                        parser.close();
+                    }
+                    catch (XMLStreamException e)
+                    {
+                        // ignore
+                    }
+                    return;
+                }
+                
                 assert input == xmlInput;
                 
                 final String simpleName = pipeSchema.wrappedSchema.messageName();
-                if(!simpleName.equals(parser.getLocalName()))
-                    throw new XmlInputException("Expecting token END_ELEMENT: " + 
-                            simpleName);
+                final String localName = parser.getLocalName();
                 
                 try
                 {
@@ -149,6 +161,12 @@ public final class XmlIOUtil
                 catch (XMLStreamException e)
                 {
                     // end of pipe transfer ... ignore
+                }
+                
+                if(!simpleName.equals(localName))
+                {
+                    throw new XmlInputException("Expecting token END_ELEMENT: " + 
+                            simpleName);
                 }
             }
         };

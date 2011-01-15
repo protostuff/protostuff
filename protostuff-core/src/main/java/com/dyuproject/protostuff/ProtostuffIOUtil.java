@@ -54,8 +54,12 @@ public final class ProtostuffIOUtil
             {
                 return byteArrayInput;
             }
-            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input, 
+                    boolean cleanupOnly) throws IOException
             {
+                if(cleanupOnly)
+                    return;
+                
                 assert input == byteArrayInput;
             }
         };
@@ -73,8 +77,12 @@ public final class ProtostuffIOUtil
             {
                 return codedInput;
             }
-            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input, 
+                    boolean cleanupOnly) throws IOException
             {
+                if(cleanupOnly)
+                    return;
+                
                 assert input == codedInput;
             }
         };

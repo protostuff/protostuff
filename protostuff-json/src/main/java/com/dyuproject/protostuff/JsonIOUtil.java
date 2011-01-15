@@ -142,18 +142,26 @@ public final class JsonIOUtil
                 return jsonInput;
             }
             
-            protected void end(Pipe.Schema<?> pipeSchema, Input input) throws IOException
+            protected void end(Pipe.Schema<?> pipeSchema, Input input, 
+                    boolean cleanupOnly) throws IOException
             {
-                assert input == jsonInput;
-                
-                if(parser.getCurrentToken() != JsonToken.END_OBJECT)
+                if(cleanupOnly)
                 {
-                    throw new JsonInputException("Expected token: } but was " + 
-                            parser.getCurrentToken() + " on message " + 
-                            pipeSchema.wrappedSchema.messageFullName());
+                    parser.close();
+                    return;
                 }
                 
+                assert input == jsonInput;
+                final JsonToken token = parser.getCurrentToken();
+                
                 parser.close();
+                
+                if(token != JsonToken.END_OBJECT)
+                {
+                    throw new JsonInputException("Expected token: } but was " + 
+                            token + " on message " + 
+                            pipeSchema.wrappedSchema.messageFullName());
+                }
             }
         };
     }
