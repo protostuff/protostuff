@@ -75,7 +75,7 @@ public class WriteSession
     {
         tail = head;
         this.head = head;
-        this.nextBufferSize = 0;
+        this.nextBufferSize = LinkedBuffer.DEFAULT_BUFFER_SIZE;
         this.out = out;
         sink = WriteSink.STREAMED;
         

@@ -409,6 +409,103 @@ public class StreamedStringSerializerTest extends TestCase
         print("len: " + builtin.length);
     }
     
+    public void testMultipleLargeStringsExceedingBufferSize() throws Exception
+    {
+        LinkedBuffer buffer = LinkedBuffer.allocate(256);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        WriteSession session = new WriteSession(buffer, out);
+        String utf8OneByte = repeatChar('a', 1024);
+        String utf8TwoBytes = repeatChar((char)0x7ff, 1024/2);
+        String utf8ThreeBytes = repeatChar((char)0x800, 1024/3);
+        
+        writeToSession(utf8OneByte, utf8TwoBytes, utf8ThreeBytes, session, false);
+        assertTrue(session.tail == session.head);
+        // flush remaining
+        LinkedBuffer.writeTo(out, buffer);
+        // clear
+        buffer.clear();
+        
+        byte[] data = out.toByteArray();
+        
+        LinkedBuffer buffer2 = LinkedBuffer.allocate(256);
+        WriteSession session2 = new WriteSession(buffer2);
+        
+        writeToSession(utf8OneByte, utf8TwoBytes, utf8ThreeBytes, session2, false);
+        
+        byte[] data2 = session2.toByteArray();
+        
+        assertEquals(STRING.deser(data), STRING.deser(data2));
+    }
+    
+    public void testMultipleLargeStringsExceedingBufferSizeDelimited() throws Exception
+    {
+        LinkedBuffer buffer = LinkedBuffer.allocate(256);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        WriteSession session = new WriteSession(buffer, out);
+        String utf8OneByte = repeatChar('a', 1024);
+        String utf8TwoBytes = repeatChar((char)0x7ff, 1024/2);
+        String utf8ThreeBytes = repeatChar((char)0x800, 1024/3);
+        
+        writeToSession(utf8OneByte, utf8TwoBytes, utf8ThreeBytes, session, true);
+        assertTrue(session.tail == session.head);
+        // temporary buffers will remain
+        assertTrue(session.tail.next != null);
+        // flush remaining
+        LinkedBuffer.writeTo(out, buffer);
+        // clear
+        buffer.clear();
+        
+        byte[] data = out.toByteArray();
+        
+        LinkedBuffer buffer2 = LinkedBuffer.allocate(256);
+        WriteSession session2 = new WriteSession(buffer2);
+        
+        writeToSession(utf8OneByte, utf8TwoBytes, utf8ThreeBytes, session2, true);
+        
+        byte[] data2 = session2.toByteArray();
+        
+        assertEquals(STRING.deser(data), STRING.deser(data2));
+    }
+    
+    static void writeToSession(String str1, String str2, String str3, 
+            WriteSession session, boolean delimited) throws IOException
+    {
+        if(delimited)
+        {
+            session.tail = session.sink.writeStrUTF8VarDelimited(str1, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8VarDelimited(str1, session, 
+                    session.tail);
+            
+            session.tail = session.sink.writeStrUTF8VarDelimited(str2, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8VarDelimited(str2, session, 
+                    session.tail);
+            
+            session.tail = session.sink.writeStrUTF8VarDelimited(str3, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8VarDelimited(str3, session, 
+                    session.tail);
+        }
+        else
+        {
+            session.tail = session.sink.writeStrUTF8(str1, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8(str1, session, 
+                    session.tail);
+            
+            session.tail = session.sink.writeStrUTF8(str2, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8(str2, session, 
+                    session.tail);
+            
+            session.tail = session.sink.writeStrUTF8(str3, session, 
+                    session.tail);
+            session.tail = session.sink.writeStrUTF8(str3, session, 
+                    session.tail);
+        }
+    }
+    
     static void print(String msg)
     {
         //System.err.println(msg);

@@ -169,7 +169,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte)c;
@@ -195,7 +198,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
@@ -219,7 +225,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte) (0x80 | ((c >>  0) & 0x3F));
@@ -245,7 +254,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
@@ -269,7 +281,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte) (0x80 | ((c >>  6) & 0x3F));
@@ -293,7 +308,10 @@ public final class StreamedStringSerializer
                         // use the existing buffer from previous utf8 write.
                         lb = lb.next;
                         // reset
-                        lb.offset = lb.start;
+                        start = lb.start;
+                        lb.offset = offset = start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
                     }
                 }
                 buffer[offset++] = (byte) (0x80 | ((c >>  0) & 0x3F));
