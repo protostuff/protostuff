@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 40: ArrayIndexOutOfBoundsException when using streaming mulitple large delimited utf8 strings that exceeds the buffer size.
 + update jackson to 1.7.1
 + api for re-using the LinkedBuffer as a read-only buffer
 + add protostuff-kvp module
