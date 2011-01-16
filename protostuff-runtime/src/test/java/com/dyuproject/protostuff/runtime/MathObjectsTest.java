@@ -215,7 +215,7 @@ public class MathObjectsTest extends AbstractTest
         byte[] data = ProtobufIOUtil.toByteArray(p, schema, buf());
         
         Payment p2 = new Payment();
-        ProtostuffIOUtil.mergeFrom(data, p2, schema);
+        ProtobufIOUtil.mergeFrom(data, p2, schema);
         /*System.err.println(p2.getId());
         System.err.println(p2.getBd());
         System.err.println(p2.getBi());
