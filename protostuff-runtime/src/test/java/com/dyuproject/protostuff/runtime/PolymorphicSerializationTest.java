@@ -264,11 +264,11 @@ public class PolymorphicSerializationTest extends AbstractTest
     
     static Elephant filledElephant()
     {
-        Elephant bear = new Elephant();
-        bear.someElephantField = "elephantField";
-        bear.normalBodyTemperature = 25f;
-        bear.properName = "elephant";
-        return bear;
+        Elephant elephant = new Elephant();
+        elephant.someElephantField = "elephantField";
+        elephant.normalBodyTemperature = 25f;
+        elephant.properName = "elephant";
+        return elephant;
     }
     
     static Zoo filledZoo()
