@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,7 +96,13 @@ public abstract class RuntimeFieldFactory<V>
             return COLLECTION;
         
         RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
-        return inline==null ? POJO : inline;
+        return inline == null ? pojo(clazz) : inline;
+    }
+    
+    static RuntimeFieldFactory<?> pojo(Class<?> clazz)
+    {
+        return clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ? 
+                POLYMORPHIC_POJO : POJO;
     }
     
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>()
@@ -1192,6 +1199,90 @@ public abstract class RuntimeFieldFactory<V>
         }
     };
     
+    static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO = new RuntimeFieldFactory<Object>()
+    {
+        @SuppressWarnings("unchecked")
+        public <T> Field<T> create(int number, java.lang.String name, 
+                final java.lang.reflect.Field f)
+        {
+            if(RuntimeSchema.isRegistered(f.getType()))
+            {
+                // the explicit mapping is configured. 
+                return POJO.create(number, name, f);
+            }
+            
+            return new PolymorphicRuntimeField<T>(
+                    (Class<Object>)f.getType(), 
+                    FieldType.MESSAGE, number, name)
+            {
+                {
+                    f.setAccessible(true);
+                }
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    input.mergeObject(message, schema);
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    final Object existing;
+                    try
+                    {
+                        existing = f.get(message);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    if(existing != null)
+                        output.writeObject(number, existing, schema, repeated);
+                }
+                protected void transfer(Pipe pipe, Input input, Output output, 
+                        boolean repeated) throws IOException
+                {
+                    output.writeObject(number, pipe, pipeSchema, false);
+                }
+                protected void set(Object message, Object value)
+                {
+                    try
+                    {
+                        f.set(message, value);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        }
+        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+                boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected Object readFrom(Input input) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+    };
+    
     /**
      * Mapped to {@link ArrayList}.
      */
@@ -1279,6 +1370,74 @@ public abstract class RuntimeFieldFactory<V>
             {
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
+                
+                if(POLYMORPHIC_POJO == pojo(genericType) && 
+                        !RuntimeSchema.isRegistered(genericType))
+                {
+                    // polymorphic
+                    return new PolymorphicRuntimeField<T>(
+                            (Class<Object>)f.getType(), 
+                            FieldType.MESSAGE, number, name)
+                    {
+                        {
+                            f.setAccessible(true);
+                        }
+                        protected void mergeFrom(Input input, T message) throws IOException
+                        {
+                            input.mergeObject(message, schema);
+                        }
+                        protected void writeTo(Output output, T message) throws IOException
+                        {
+                            final Collection<Object> existing;
+                            try
+                            {
+                                existing = (Collection<Object>)f.get(message);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            
+                            if(existing != null && !existing.isEmpty())
+                            {
+                                for(Object o : existing)
+                                    output.writeObject(number, o, schema, true);
+                            }
+                        }
+                        protected void transfer(Pipe pipe, Input input, Output output, 
+                                boolean repeated) throws IOException
+                        {
+                            output.writeObject(number, pipe, pipeSchema, repeated);
+                        }
+                        protected void set(Object message, Object value)
+                        {
+                            try
+                            {
+                                Collection<Object> existing = (Collection<Object>)f.get(message);
+                                if(existing==null)
+                                {
+                                    ArrayList<Object> list = new ArrayList<Object>();
+                                    list.add(value);
+                                    f.set(message, list);
+                                }
+                                else
+                                    existing.add(value);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    };
+                }
                 
                 return new MessageField<T,Object>(
                         (Schema<Object>)RuntimeSchema.getSchema(genericType), 
@@ -1507,6 +1666,74 @@ public abstract class RuntimeFieldFactory<V>
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
                 
+                if(POLYMORPHIC_POJO == pojo(genericType) && 
+                        !RuntimeSchema.isRegistered(genericType))
+                {
+                    // polymorphic
+                    return new PolymorphicRuntimeField<T>(
+                            (Class<Object>)f.getType(), 
+                            FieldType.MESSAGE, number, name)
+                    {
+                        {
+                            f.setAccessible(true);
+                        }
+                        protected void mergeFrom(Input input, T message) throws IOException
+                        {
+                            input.mergeObject(message, schema);
+                        }
+                        protected void writeTo(Output output, T message) throws IOException
+                        {
+                            final List<Object> existing;
+                            try
+                            {
+                                existing = (List<Object>)f.get(message);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            
+                            if(existing != null && !existing.isEmpty())
+                            {
+                                for(Object o : existing)
+                                    output.writeObject(number, o, schema, true);
+                            }
+                        }
+                        protected void transfer(Pipe pipe, Input input, Output output, 
+                                boolean repeated) throws IOException
+                        {
+                            output.writeObject(number, pipe, pipeSchema, repeated);
+                        }
+                        protected void set(Object message, Object value)
+                        {
+                            try
+                            {
+                                List<Object> existing = (List<Object>)f.get(message);
+                                if(existing==null)
+                                {
+                                    ArrayList<Object> list = new ArrayList<Object>();
+                                    list.add(value);
+                                    f.set(message, list);
+                                }
+                                else
+                                    existing.add(value);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    };
+                }
+                
                 return new MessageField<T,Object>(
                         (Schema<Object>)RuntimeSchema.getSchema(genericType), 
                         FieldType.MESSAGE, number, name, true)
@@ -1734,6 +1961,74 @@ public abstract class RuntimeFieldFactory<V>
                 if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
                     return null;
                 
+                if(POLYMORPHIC_POJO == pojo(genericType) && 
+                        !RuntimeSchema.isRegistered(genericType))
+                {
+                    // polymorphic
+                    return new PolymorphicRuntimeField<T>(
+                            (Class<Object>)f.getType(), 
+                            FieldType.MESSAGE, number, name)
+                    {
+                        {
+                            f.setAccessible(true);
+                        }
+                        protected void mergeFrom(Input input, T message) throws IOException
+                        {
+                            input.mergeObject(message, schema);
+                        }
+                        protected void writeTo(Output output, T message) throws IOException
+                        {
+                            final Set<Object> existing;
+                            try
+                            {
+                                existing = (Set<Object>)f.get(message);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            
+                            if(existing != null && !existing.isEmpty())
+                            {
+                                for(Object o : existing)
+                                    output.writeObject(number, o, schema, true);
+                            }
+                        }
+                        protected void transfer(Pipe pipe, Input input, Output output, 
+                                boolean repeated) throws IOException
+                        {
+                            output.writeObject(number, pipe, pipeSchema, repeated);
+                        }
+                        protected void set(Object message, Object value)
+                        {
+                            try
+                            {
+                                Set<Object> existing = (Set<Object>)f.get(message);
+                                if(existing==null)
+                                {
+                                    LinkedHashSet<Object> set = new LinkedHashSet<Object>();
+                                    set.add(value);
+                                    f.set(message, set);
+                                }
+                                else
+                                    existing.add(value);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    };
+                }
+                
                 return new MessageField<T, Object>(
                         (Schema<Object>)RuntimeSchema.getSchema(genericType), 
                         FieldType.MESSAGE, number, name, true)
@@ -1884,7 +2179,7 @@ public abstract class RuntimeFieldFactory<V>
             final Class<?> componentType = f.getType().getComponentType();
             
             // no two dimensional arrays
-            if(byte[].class==componentType)
+            if(byte[].class==componentType || Map.class.isAssignableFrom(componentType))
                 return null;
             
             if(componentType.isEnum())
@@ -1963,6 +2258,84 @@ public abstract class RuntimeFieldFactory<V>
             {
                 if(componentType.isArray() || Collection.class.isAssignableFrom(componentType))
                     return null;
+                
+                if(POLYMORPHIC_POJO == pojo(componentType) && 
+                        !RuntimeSchema.isRegistered(componentType))
+                {
+                    // polymorphic
+                    return new PolymorphicRuntimeField<T>(
+                            (Class<Object>)f.getType(), 
+                            FieldType.MESSAGE, number, name)
+                    {
+                        {
+                            f.setAccessible(true);
+                        }
+                        protected void mergeFrom(Input input, T message) throws IOException
+                        {
+                            input.mergeObject(message, schema);
+                        }
+                        protected void writeTo(Output output, T message) throws IOException
+                        {
+                            final Object array;
+                            try
+                            {
+                                array = f.get(message);
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            
+                            if(array != null)
+                            {
+                                int len = Array.getLength(array);
+                                for(int i=0; i<len; i++)
+                                {
+                                    output.writeObject(number, Array.get(array, i), 
+                                            schema, true);
+                                }
+                            }
+                        }
+                        protected void transfer(Pipe pipe, Input input, Output output, 
+                                boolean repeated) throws IOException
+                        {
+                            output.writeObject(number, pipe, pipeSchema, repeated);
+                        }
+                        protected void set(Object message, Object value)
+                        {
+                            try
+                            {
+                                Object existing = f.get(message);
+                                if(existing==null)
+                                {
+                                    Object newArray = Array.newInstance(componentType, 1);
+                                    Array.set(newArray, 0, value);
+                                    f.set(message, newArray);
+                                }
+                                else
+                                {
+                                    int len = Array.getLength(existing);
+                                    Object newArray = Array.newInstance(componentType, len+1);
+                                    System.arraycopy(existing, 0, newArray, 0, len);
+                                    Array.set(newArray, len, value);
+                                    f.set(message, newArray);
+                                }
+                            }
+                            catch (IllegalArgumentException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    };
+                }
                 
                 return new MessageField<T, Object>(
                         (Schema<Object>)RuntimeSchema.getSchema(componentType), 

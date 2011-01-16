@@ -35,6 +35,14 @@ import com.dyuproject.protostuff.Schema;
  */
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {
+    
+    /**
+     * By default, it is enabled.  For security purposes, you probably would want to 
+     * register all known classes and disable this option.
+     */
+    public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES = 
+        Boolean.parseBoolean(
+                System.getProperty("protostuff.auto_load_polymorphic_classes", "true"));
 
     private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
         new ConcurrentHashMap<String, HasSchema<?>>();
@@ -72,6 +80,35 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(typeClass.getName(), hs);
             if(last != null)
                 hs = last;
+        }
+        
+        return hs.getSchema();
+    }
+    
+    /**
+     * Gets the schema that was either registered or lazily initialized at runtime (if 
+     * the boolean arg {@code load} is true).
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Schema<T> getSchema(String className, boolean load)
+    {
+        final HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
+        if(hs == null)
+        {
+            if(!load)
+                return null;
+            
+            final Class<T> clazz;
+            try
+            {
+                clazz = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+            return getSchema(clazz);
         }
         
         return hs.getSchema();

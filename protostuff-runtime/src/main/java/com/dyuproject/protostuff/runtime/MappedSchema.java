@@ -38,7 +38,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     protected final Class<T> typeClass;
     protected final Field<T>[] fields, fieldsByNumber;
     protected final Map<String,Field<T>> fieldsByName;
-    protected final Pipe.Schema<T> pipeSchema;
+    protected final PipeSchema pipeSchema;
     
     @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Field<T>[] fields, int lastFieldNumber)
