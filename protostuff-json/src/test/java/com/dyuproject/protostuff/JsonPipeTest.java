@@ -15,6 +15,8 @@
 package com.dyuproject.protostuff;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
@@ -64,6 +66,8 @@ public class JsonPipeTest extends AbstractTest
         assertTrue(protobufRoundTrip.length == protobuf.length);
         
         assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        
+        checkCompat(json, jsonFromStream, protobuf, pipeSchema, numeric, false);
     }
     
     static <T> void protostuffRoundTrip(T message, Schema<T> schema, 
@@ -103,6 +107,41 @@ public class JsonPipeTest extends AbstractTest
         assertTrue(protostuffRoundTrip.length == protostuff.length);
         
         assertEquals(strProtostuffRoundTrip, STRING.deser(protostuff));
+        
+        checkCompat(json, jsonFromStream, protostuff, pipeSchema, numeric, true);
+    }
+    
+    
+    static <T> void checkCompat(byte[] json, byte[] jsonFromStream, 
+            byte[] source, Pipe.Schema<T> pipeSchema, boolean numeric, boolean protostuff) 
+            throws IOException
+    {
+        // check compatibilty for JsonOutput and JsonXOutput
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(source);
+        LinkedBuffer buffer = buf();
+        try
+        {
+            JsonXIOUtil.writeTo(out, 
+                    protostuff ? ProtostuffIOUtil.newPipe(in) : ProtobufIOUtil.newPipe(in), 
+                    pipeSchema, numeric, buffer);
+        }
+        finally
+        {
+            buffer.clear();
+        }
+        
+        byte[] jsonxFromStream = out.toByteArray();
+        
+        byte[] jsonx = JsonXIOUtil.toByteArray(
+                protostuff ? ProtostuffIOUtil.newPipe(source, 0, source.length) : 
+                    ProtobufIOUtil.newPipe(source, 0, source.length), 
+                pipeSchema, numeric, buf());
+        
+        assertTrue(jsonx.length == jsonxFromStream.length);
+        assertEquals(STRING.deser(jsonx), STRING.deser(jsonxFromStream));
+        assertEquals(STRING.deser(json), STRING.deser(jsonx));
     }
     
     public void testFoo() throws Exception

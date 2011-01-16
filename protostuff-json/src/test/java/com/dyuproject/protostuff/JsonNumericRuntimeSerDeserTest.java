@@ -24,8 +24,10 @@ import junit.framework.TestCase;
 import com.dyuproject.protostuff.runtime.Bar;
 import com.dyuproject.protostuff.runtime.Baz;
 import com.dyuproject.protostuff.runtime.Foo;
+import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.dyuproject.protostuff.runtime.SerializableObjects;
+import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 
 /**
  * Testing for json ser/deser against runtime messages.
@@ -59,14 +61,6 @@ public class JsonNumericRuntimeSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(barCompare, schema, true);
             JsonIOUtil.mergeFrom(data, dbar, schema, true);
             SerializableObjects.assertEquals(barCompare, dbar);
-            //System.err.println(dbar.getSomeInt());
-            //System.err.println(dbar.getSomeLong());
-            //System.err.println(dbar.getSomeFloat());
-            //System.err.println(dbar.getSomeDouble());
-            //System.err.println(dbar.getSomeBytes());
-            //System.err.println(dbar.getSomeString());
-            //System.err.println(dbar.getSomeEnum());
-            //System.err.println(dbar.getSomeBoolean());
         }
     }
     
@@ -81,10 +75,19 @@ public class JsonNumericRuntimeSerDeserTest extends TestCase
             byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, true);
             JsonIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
-            //System.err.println(dbaz.getId());
-            //System.err.println(dbaz.getName());
-            //System.err.println(dbaz.getTimestamp());
         }
+    }
+    
+    public void testPolymorphic() throws Exception
+    {
+        Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
+        Zoo zooCompare = PolymorphicSerializationTest.filledZoo();
+        
+        Zoo dzoo = new Zoo();            
+        
+        byte[] data = JsonIOUtil.toByteArray(zooCompare, schema, true);
+        JsonIOUtil.mergeFrom(data, dzoo, schema, true);
+        SerializableObjects.assertEquals(zooCompare, dzoo);
     }
 
 }
