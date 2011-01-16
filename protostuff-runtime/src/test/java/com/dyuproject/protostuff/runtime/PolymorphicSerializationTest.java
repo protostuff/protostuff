@@ -244,7 +244,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         
     }
     
-    static Bear filledBear()
+    public static Bear filledBear()
     {
         Bear bear = new Bear();
         bear.someBearField = "bearField";
@@ -253,7 +253,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         return bear;
     }
     
-    static Tiger filledTiger()
+    public static Tiger filledTiger()
     {
         Tiger tiger = new Tiger();
         tiger.someTigerField = "tigerField";
@@ -262,7 +262,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         return tiger;
     }
     
-    static Elephant filledElephant()
+    public static Elephant filledElephant()
     {
         Elephant elephant = new Elephant();
         elephant.someElephantField = "elephantField";
@@ -271,7 +271,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         return elephant;
     }
     
-    static Zoo filledZoo()
+    public static Zoo filledZoo()
     {
         Zoo zoo = new Zoo();
         

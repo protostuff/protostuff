@@ -1377,7 +1377,7 @@ public abstract class RuntimeFieldFactory<V>
                     // polymorphic
                     return new PolymorphicRuntimeField<T>(
                             (Class<Object>)f.getType(), 
-                            FieldType.MESSAGE, number, name)
+                            FieldType.MESSAGE, number, name, true)
                     {
                         {
                             f.setAccessible(true);
@@ -1672,7 +1672,7 @@ public abstract class RuntimeFieldFactory<V>
                     // polymorphic
                     return new PolymorphicRuntimeField<T>(
                             (Class<Object>)f.getType(), 
-                            FieldType.MESSAGE, number, name)
+                            FieldType.MESSAGE, number, name, true)
                     {
                         {
                             f.setAccessible(true);
@@ -1967,7 +1967,7 @@ public abstract class RuntimeFieldFactory<V>
                     // polymorphic
                     return new PolymorphicRuntimeField<T>(
                             (Class<Object>)f.getType(), 
-                            FieldType.MESSAGE, number, name)
+                            FieldType.MESSAGE, number, name, true)
                     {
                         {
                             f.setAccessible(true);
@@ -2265,7 +2265,7 @@ public abstract class RuntimeFieldFactory<V>
                     // polymorphic
                     return new PolymorphicRuntimeField<T>(
                             (Class<Object>)f.getType(), 
-                            FieldType.MESSAGE, number, name)
+                            FieldType.MESSAGE, number, name, true)
                     {
                         {
                             f.setAccessible(true);
