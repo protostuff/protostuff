@@ -254,7 +254,12 @@ public final class ProtostuffIOUtil
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
     {
-        return IOUtil.writeDelimitedTo(out, message, schema, true);
+        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
+        final ProtostuffOutput output = new ProtostuffOutput(buffer);
+        schema.writeTo(output, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.size);
+        LinkedBuffer.writeTo(out, buffer);
+        return output.size;
     }
     
     /**

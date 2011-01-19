@@ -186,8 +186,6 @@ public final class GraphIOUtil
     public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
     throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, message, schema, true);
-        
         final byte size = in.readByte();
         if(size == -1)
             throw ProtobufException.truncatedMessage();
@@ -327,7 +325,13 @@ public final class GraphIOUtil
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
     {
-        return IOUtil.writeDelimitedTo(out, message, schema, true);
+        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
+        final ProtostuffOutput output = new ProtostuffOutput(buffer);
+        final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
+        schema.writeTo(graphOutput, message);
+        CodedOutput.writeRawVarInt32Bytes(out, output.size);
+        LinkedBuffer.writeTo(out, buffer);
+        return output.size;
     }
 
 }
