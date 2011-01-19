@@ -242,12 +242,7 @@ public final class XmlInput implements Input
         return STRING.ser(getText());
     }
     
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException
-    {
-        return mergeObject(message, message.cachedSchema());
-    }
-    
-    public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException
+    public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         final String simpleName = schema.messageName();
         if(nextTag() != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
@@ -259,6 +254,9 @@ public final class XmlInput implements Input
                 throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
             
             // empty message
+            if(value == null)
+                value = schema.newMessage();
+            
             if(!schema.isInitialized(value))
                 throw new UninitializedMessageException(value, schema);
             
@@ -267,6 +265,8 @@ public final class XmlInput implements Input
             return value;
         }
         
+        if(value == null)
+            value = schema.newMessage();
         schema.mergeFrom(this, value);
         
         if(!simpleName.equals(parser.getLocalName()))

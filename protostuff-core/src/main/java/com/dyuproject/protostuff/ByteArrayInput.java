@@ -45,7 +45,9 @@ public final class ByteArrayInput implements Input
     
     private final byte[] buffer;
     private int offset, limit, lastTag = 0;
-    private final boolean decodeNestedMessageAsGroup;
+    
+    /** If true, the nested messages are group-encoded */
+    public final boolean decodeNestedMessageAsGroup;
     
     public ByteArrayInput(byte[] buffer, boolean decodeNestedMessageAsGroup)
     {
@@ -87,6 +89,14 @@ public final class ByteArrayInput implements Input
     public int currentLimit()
     {
         return limit;
+    }
+    
+    /**
+     * Returns the last tag.
+     */
+    public int getLastTag()
+    {
+        return lastTag;
     }
     
     /**
@@ -193,7 +203,7 @@ public final class ByteArrayInput implements Input
             lastTag = 0;
             return 0;
         }
-
+        
         final int tag = readRawVarint32();
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
@@ -339,13 +349,8 @@ public final class ByteArrayInput implements Input
         
         return copy;
     }
-    
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException
-    {
-        return mergeObject(message, message.cachedSchema());
-    }
 
-    public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException
+    public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if(decodeNestedMessageAsGroup)
             return mergeObjectEncodedAsGroup(value, schema);
@@ -358,6 +363,9 @@ public final class ByteArrayInput implements Input
         final int oldLimit = this.limit;
         
         this.limit = offset + length;
+        
+        if(value == null)
+            value = schema.newMessage();
         schema.mergeFrom(this, value);
         if(!schema.isInitialized(value))
             throw new UninitializedMessageException(value, schema);
@@ -369,8 +377,10 @@ public final class ByteArrayInput implements Input
         return value;
     }
     
-    <T> T mergeObjectEncodedAsGroup(final T value, final Schema<T> schema) throws IOException
+    <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException
     {
+        if(value == null)
+            value = schema.newMessage();
         schema.mergeFrom(this, value);
         if(!schema.isInitialized(value))
             throw new UninitializedMessageException(value, schema);

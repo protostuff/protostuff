@@ -346,7 +346,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
             output.writeString(2, message.someString, false);
         
         if(message.someBaz != null)
-            output.writeMessage(3, message.someBaz, false);
+            output.writeObject(3, message.someBaz, Baz.getSchema(), false);
         
         if(message.someEnum != null) 
             output.writeEnum(4, message.someEnum.number, false);
@@ -369,9 +369,8 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
 
     public void mergeFrom(Input input, Bar message) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:
@@ -383,9 +382,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
                     message.someString = input.readString();
                     break;
                 case 3:
-                    if(message.someBaz==null)
-                        message.someBaz = new Baz();
-                    input.mergeMessage(message.someBaz);
+                    message.someBaz = input.mergeObject(message.someBaz, Baz.getSchema());
                     break;
                 case 4:
                     message.someEnum = Status.valueOf(input.readEnum());
@@ -416,9 +413,8 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
 
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                int number = input.readFieldNumber(wrappedSchema);
                 switch(number)
                 {
                     case 0:

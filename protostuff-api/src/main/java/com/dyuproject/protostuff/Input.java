@@ -87,9 +87,6 @@ public interface Input
     /** Reads a byte array field value. */
     public byte[] readByteArray() throws IOException;
     
-    /** Merges a {@code Message} field value. */
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException;
-    
     /**
      * Merges an object(with schema) field value.
      * The provided {@link Schema schema} handles the deserialization for the object.

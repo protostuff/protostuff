@@ -18,8 +18,10 @@ import java.net.URL;
 
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreGESerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffGraphSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffJsonSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonXSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeGESerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
@@ -50,16 +52,23 @@ public class BenchmarkModules
         // protobuf-encoded
         runner.addObjectSerializer(new ProtostuffCoreSerializer());
         runner.addObjectSerializer(new ProtostuffCoreGESerializer());
+        runner.addObjectSerializer(new ProtostuffGraphSerializer());
+        if(true) return;
         runner.addObjectSerializer(new ProtostuffRuntimeSerializer());
         runner.addObjectSerializer(new ProtostuffRuntimeGESerializer());
         // json
+        runner.addObjectSerializer(new ProtostuffJsonSerializer());
         runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
+        runner.addObjectSerializer(new ProtostuffNumericJsonXSerializer());
+        
+
+        
         // deprecated
         //runner.addObjectSerializer(new GeneratedSpeedNumericSerializer());
         //runner.addObjectSerializer(new GeneratedLiteNumericSerializer());
         
         // numeric
-        runner.addObjectSerializer(new ProtostuffJsonSerializer());
+        
         // deprecated
         //runner.addObjectSerializer(new GeneratedSpeedSerializer());
         //runner.addObjectSerializer(new GeneratedLiteSerializer());

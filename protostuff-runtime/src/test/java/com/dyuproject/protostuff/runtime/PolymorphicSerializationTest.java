@@ -350,5 +350,65 @@ public class PolymorphicSerializationTest extends AbstractTest
         
         ProtostuffPipeTest.roundTrip(p, schema, pipeSchema);
     }
+    
+    public void testMerge() throws Exception
+    {
+        Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
+        
+        final String properName = "elephant";
+        
+        Elephant elephant = new Elephant();
+        elephant.someElephantField = "elephantField";
+        elephant.normalBodyTemperature = 25f;
+        elephant.properName = properName;
+        
+        Zoo zoo = new Zoo();
+        zoo.largestAnimal = elephant;
+        
+        // mergeZoo
+        
+        Elephant sickElephant = new Elephant();
+        sickElephant.normalBodyTemperature = 50f;
+        sickElephant.someElephantField = "sickElephantField";
+        
+        Zoo mergeZoo = new Zoo();
+        mergeZoo.largestAnimal = sickElephant;
+        
+        // ser
+        byte[] data = ProtostuffIOUtil.toByteArray(mergeZoo, schema, buf());
+        // deser
+        ProtostuffIOUtil.mergeFrom(data, zoo, schema);
+        
+        // test that it was not overwritten.
+        assertTrue(zoo.largestAnimal == elephant);
+        
+        // test that some elephant fields are overwritten
+        assertTrue(elephant.normalBodyTemperature == 50f);
+        assertEquals(elephant.someElephantField, "sickElephantField");
+        
+        // test that this property was not touched.
+        assertTrue(properName == elephant.properName);
+    }
+    
+    public void testOverwrite() throws Exception
+    {
+        Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
+        
+        Zoo zoo = new Zoo();
+        zoo.largestAnimal = filledBear();
+        
+        // overwriteZoo
+        
+        Zoo overwriteZoo = new Zoo();
+        overwriteZoo.largestAnimal = filledTiger();
+        
+        // ser
+        byte[] data = ProtostuffIOUtil.toByteArray(overwriteZoo, schema, buf());
+        // deser
+        ProtostuffIOUtil.mergeFrom(data, zoo, schema);
+        
+        // test that it was overwritten
+        assertTrue(zoo.largestAnimal instanceof Tiger);
+    }
 
 }

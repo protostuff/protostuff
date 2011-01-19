@@ -487,12 +487,6 @@ public final class YamlOutput extends WriteSession implements Output
         
         lastNumber = fieldNumber;
     }
-    
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
-    throws IOException
-    {
-        writeObject(fieldNumber, value, value.cachedSchema(), repeated);
-    }
 
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
             final boolean repeated) throws IOException

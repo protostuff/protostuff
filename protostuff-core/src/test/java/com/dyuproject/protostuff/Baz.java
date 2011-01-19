@@ -190,9 +190,8 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
 
     public void mergeFrom(Input input, Baz message) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:
@@ -217,9 +216,8 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
 
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                int number = input.readFieldNumber(wrappedSchema);
                 switch(number)
                 {
                     case 0:

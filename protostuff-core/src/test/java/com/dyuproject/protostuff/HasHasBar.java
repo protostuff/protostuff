@@ -120,9 +120,8 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
 
     public void mergeFrom(Input input, HasHasBar message) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:

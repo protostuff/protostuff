@@ -19,14 +19,6 @@ import static com.dyuproject.protostuff.StringSerializer.stringSize;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.WriteSession;
-
 /**
  * An output for serializing kvp-encoded messages (from a byte array as source).
  * A kvp encoding is a binary encoding w/c contains a key-value sequence.
@@ -237,11 +229,6 @@ public final class KvpOutput extends WriteSession implements Output
                         fieldNumber, 
                         size, 
                         tail));
-    }
-
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) throws IOException
-    {
-        throw new ProtostuffException("Unsupported.");
     }
 
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException

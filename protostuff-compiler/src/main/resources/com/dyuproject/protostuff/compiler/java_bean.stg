@@ -394,9 +394,8 @@ message_field_merge(message, options, name) ::= <<
 
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
-    while(true)
+    for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
     {
-        final int number = input.readFieldNumber(this);
         switch(number)
         {
             case 0:
@@ -419,9 +418,7 @@ case <field.number>:
 
 singular_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
-if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
-    <name>.<var(val=field.name, fmt="CC", options=options)> = new <field.javaType>();
-input.mergeMessage(<name>.<var(val=field.name, fmt="CC", options=options)>);
+<name>.<var(val=field.name, fmt="CC", options=options)> = input.mergeObject(<name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema());
 break;
 <elseif(field.enumField)>
 <name>.<var(val=field.name, fmt="CC", options=options)> = <field.javaType>.valueOf(input.readEnum());
@@ -436,7 +433,7 @@ repeated_field_merge_switch(field, options, name) ::= <<
 <if(field.messageField)>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     <name>.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<field.javaType>\>();
-<name>.<var(val=field.name, fmt="CC", options=options)>.add(input.mergeMessage(new <field.javaType>()));
+<name>.<var(val=field.name, fmt="CC", options=options)>.add(input.mergeObject(null, <field.javaType>.getSchema()));
 break;
 <elseif(field.enumField)>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
@@ -473,7 +470,7 @@ singular_field_write_switch(field, options, name) ::= <<
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     throw new UninitializedMessageException(<name>);
 <if(field.messageField)>
-output.writeMessage(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
 <elseif(field.enumField)>
 output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.number, false);
 <else>
@@ -482,7 +479,7 @@ output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name,
 <else>
 <if(field.messageField)>
 <field:singular_field_write_check(field=it, options=options)>
-     output.writeMessage(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+     output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
 <elseif(field.enumField)>
 <field:singular_field_write_check(field=it, options=options)>
      output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.number, false);
@@ -500,7 +497,7 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
     for(<field.javaType> <var(val=field.name, fmt="CC", options=options)> : <name>.<var(val=field.name, fmt="CC", options=options)>)
     {
         if(<var(val=field.name, fmt="CC", options=options)> != null)
-            output.writeMessage(<field.number>, <var(val=field.name, fmt="CC", options=options)>, true);
+            output.writeObject(<field.number>, <var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), true);
     }
 }
 <elseif(field.enumField)>
@@ -596,9 +593,8 @@ static final Pipe.Schema\<<message.name>\> PIPE_SCHEMA = new Pipe.Schema\<<messa
 {
     protected void transfer(Pipe pipe, Input input, Output output) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
         {
-            final int number = input.readFieldNumber(wrappedSchema);
             switch(number)
             {
                 case 0:

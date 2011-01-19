@@ -20,12 +20,6 @@ import static com.dyuproject.protostuff.NumberParser.parseLong;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
@@ -234,11 +228,6 @@ public final class KvpInput implements Input
         }
         
         offset += size;
-    }
-
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException
-    {
-        throw new ProtostuffException("Unsupported.");
     }
 
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException

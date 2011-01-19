@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -115,6 +116,24 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     }
     
     /**
+     * Returns the schema wrapper.
+     */
+    @SuppressWarnings("unchecked")
+    static <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass)
+    {
+        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(typeClass.getName());
+        if(hs == null)
+        {
+            hs = new Lazy<T>(typeClass);
+            HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(typeClass.getName(), hs);
+            if(last != null)
+                hs = last;
+        }
+        
+        return hs;
+    }
+    
+    /**
      * Generates a schema from the given class.
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass)
@@ -152,7 +171,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 if(f.getAnnotation(Deprecated.class) != null)
                 {
                     // this field is deprecated and should be skipped.
-                    // reserver its field number for backward-forward compat
+                    // preserve its field number for backward-forward compat
                     i++;
                     continue;
                 }
@@ -296,7 +315,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     {
         final Schema<T> schema;
         
-        public Registered(Schema<T> schema)
+        Registered(Schema<T> schema)
         {
             this.schema = schema;
         }
@@ -312,11 +331,12 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         final Class<T> typeClass;
         Schema<T> schema;
         
-        public Lazy(Class<T> typeClass)
+        Lazy(Class<T> typeClass)
         {
             this.typeClass = typeClass;
         }
 
+        @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
             Schema<T> schema = this.schema;
@@ -325,12 +345,34 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 synchronized(this)
                 {
                     if((schema = this.schema) == null)
-                        this.schema = schema = createFrom(typeClass);
+                    {
+                        if(Message.class.isAssignableFrom(typeClass))
+                        {
+                            // use the message's schema.
+                            try
+                            {
+                                final Message<T> m = (Message<T>)typeClass.newInstance();
+                                this.schema = schema = m.cachedSchema();
+                            }
+                            catch (InstantiationException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                            catch (IllegalAccessException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        else
+                        {
+                            // create new
+                            this.schema = schema = createFrom(typeClass);
+                        }
+                    }
                 }
             }
 
             return schema;
         }
     }
-
 }

@@ -127,11 +127,6 @@ public class FilterInput<F extends Input> implements Input
     {
         return input.readUInt64();
     }
-    
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException
-    {
-        return input.mergeMessage(message);
-    }
 
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {

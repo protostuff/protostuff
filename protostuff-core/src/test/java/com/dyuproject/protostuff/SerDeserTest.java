@@ -67,7 +67,7 @@ public abstract class SerDeserTest extends StandardTest
             public void writeTo(Output output, Foo message) throws IOException
             {
                 // 10 is an unknown field
-                output.writeMessage(10, baz, false);
+                output.writeObject(10, baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };
@@ -87,7 +87,7 @@ public abstract class SerDeserTest extends StandardTest
             public void writeTo(Output output, Bar message) throws IOException
             {
                 // 10 is an unknown field
-                output.writeMessage(10, baz, false);
+                output.writeObject(10, baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };
@@ -113,7 +113,7 @@ public abstract class SerDeserTest extends StandardTest
         {
             public void writeTo(Output output, Bar message) throws IOException
             {
-                output.writeMessage(10, baz, false);
+                output.writeObject(10, baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };

@@ -262,12 +262,6 @@ public final class BufferedOutput2 implements Output
         System.arraycopy(value, offset, bytes, 0, length);
         writeByteArray(fieldNumber, bytes, repeated);
     }
-
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, 
-            boolean repeated) throws IOException
-    {
-        writeObject(fieldNumber, value, value.cachedSchema(), repeated);
-    }
     
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
             final boolean repeated) throws IOException

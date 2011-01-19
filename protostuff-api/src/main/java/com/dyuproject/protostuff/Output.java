@@ -81,10 +81,6 @@ public interface Output
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
             int offset, int length, boolean repeated) throws IOException;
     
-    /** Writes a message field. */
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
-    throws IOException;
-    
     /** Writes an object(using its schema) field. */
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException;

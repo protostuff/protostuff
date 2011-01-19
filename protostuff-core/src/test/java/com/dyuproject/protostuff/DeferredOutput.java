@@ -235,12 +235,6 @@ public final class DeferredOutput implements Output
         System.arraycopy(value, offset, bytes, 0, length);
         writeByteArray(fieldNumber, bytes, repeated);
     }
-
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, 
-            boolean repeated) throws IOException
-    {
-        writeObject(fieldNumber, value, value.cachedSchema(), repeated);
-    }
     
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException

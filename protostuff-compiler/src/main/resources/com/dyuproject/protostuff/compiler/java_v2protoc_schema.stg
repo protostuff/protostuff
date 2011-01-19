@@ -97,9 +97,8 @@ public static class BuilderSchema implements Schema\<<message:message_fullname(m
 {
     public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:

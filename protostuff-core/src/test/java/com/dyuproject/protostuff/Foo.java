@@ -356,7 +356,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         if(message.someBar!=null)
         {
             for(Bar value : message.someBar)
-                output.writeMessage(3, value, true);
+                output.writeObject(3, value, Bar.getSchema(), true);
         }
         if(message.someEnum!=null)
         {
@@ -392,9 +392,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     
     public void mergeFrom(Input input, Foo message) throws IOException
     {
-        while(true)
+        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            int number = input.readFieldNumber(this);
             switch(number)
             {
                 case 0:
@@ -412,7 +411,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
                 case 3:
                     if(message.someBar==null)
                         message.someBar = new ArrayList<Bar>();
-                    message.someBar.add(input.mergeMessage(new Bar()));
+                    message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
                     if(message.someEnum==null)
@@ -455,9 +454,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                int number = input.readFieldNumber(wrappedSchema);
                 switch(number)
                 {
                     case 0:

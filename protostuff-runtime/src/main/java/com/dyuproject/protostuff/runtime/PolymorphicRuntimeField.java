@@ -32,10 +32,9 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * use upon deserialization.
  * 
  * Limitations:
- * The number of fields are limited to 126.
+ * The number of fields are limited to 126 (127 is the usual limit anyway).
  * The order of the fields being written must be preserved.
- * Does not inherit the concept of merging (parsing only ... w/c is 90% of use-cases).
- * It will work with protostuff, protobuf and json(numeric) format.
+ * It will only work with protostuff, protobuf and json(numeric) format.
  * It will not work if the message serialized is coming from the browser 
  * since the fields will most likey be out-of-order 
  * (unless you have control of the json serialization).
@@ -104,9 +103,7 @@ public abstract class PolymorphicRuntimeField<T> extends Field<T>
             if(schema == null)
                 throw new ProtostuffException("polymorphic pojo not registered: " + className);
             
-            final Object value = schema.newMessage();
-            schema.mergeFrom(input, value);
-            set(owner, value);
+            doMergeFrom(input, schema, owner);
         }
         
         /**
@@ -178,5 +175,6 @@ public abstract class PolymorphicRuntimeField<T> extends Field<T>
         this.baseClass = baseClass;
     }
     
-    protected abstract void set(Object owner, Object value);
+    protected abstract void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+            Object owner) throws IOException;
 }

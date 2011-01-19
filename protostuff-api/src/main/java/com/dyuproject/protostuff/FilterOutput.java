@@ -88,12 +88,6 @@ public class FilterOutput<F extends Output> implements Output
     {
         output.writeInt64(fieldNumber, value, repeated);
     }
-
-    public <T extends Message<T>> void writeMessage(int fieldNumber, T value, boolean repeated) 
-    throws IOException
-    {
-        output.writeMessage(fieldNumber, value, repeated);
-    }
     
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException

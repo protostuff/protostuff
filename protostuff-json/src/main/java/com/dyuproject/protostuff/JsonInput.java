@@ -300,12 +300,7 @@ public final class JsonInput implements Input
         return readInt64();
     }
 
-    public <T extends Message<T>> T mergeMessage(T message) throws IOException
-    {
-        return mergeObject(message, message.cachedSchema());
-    }
-
-    public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException
+    public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if(parser.getCurrentToken() != START_OBJECT)
         {
@@ -320,6 +315,9 @@ public final class JsonInput implements Input
         
         // reset
         this.lastRepeated = false;
+        
+        if(value == null)
+            value = schema.newMessage();
         
         schema.mergeFrom(this, value);
         

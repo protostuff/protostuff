@@ -282,7 +282,9 @@ public final class CodedOutput implements Output {
 
   private final OutputStream output;
   private final ComputedSizeOutput computedSize;
-  private final boolean encodeNestedMessageAsGroup;
+  
+  /** If true, the nested messages are group-encoded */
+  public final boolean encodeNestedMessageAsGroup;
 
   /**
    * The buffer size used in {@link #newInstance(OutputStream)}.
@@ -480,12 +482,6 @@ public final class CodedOutput implements Output {
                                 throws IOException {
     writeGroup(fieldNumber, value);
   }*/
-
-  /** Write an embedded message field, including tag, to the stream. */
-  public <T extends Message<T>> void writeMessage(final int fieldNumber, final T value, 
-                         boolean repeated) throws IOException {
-    writeObject(fieldNumber, value, value.cachedSchema(), repeated);
-  }
 
   /** Write a {@code bytes} field, including tag, to the stream. */
   public void writeBytes(final int fieldNumber, final ByteString value, boolean repeated)

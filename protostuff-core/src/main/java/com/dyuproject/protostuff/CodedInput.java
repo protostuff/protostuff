@@ -234,7 +234,7 @@ public final class CodedInput implements Input {
     }
   }
   
-  public <T> T mergeObject(final T value, final Schema<T> schema) throws IOException {
+  public <T> T mergeObject(T value, final Schema<T> schema) throws IOException {
     if(decodeNestedMessageAsGroup)
       return mergeObjectEncodedAsGroup(value, schema);
     
@@ -244,6 +244,10 @@ public final class CodedInput implements Input {
     }
     final int oldLimit = pushLimit(length);
     ++recursionDepth;
+    
+    if(value == null) {
+      value = schema.newMessage();
+    }
     schema.mergeFrom(this, value);
     if(!schema.isInitialized(value)) {
       throw new UninitializedMessageException(value, schema);
@@ -255,11 +259,15 @@ public final class CodedInput implements Input {
   }
 
   /** Reads a message field value from the stream (using the {@code group} encoding). */
-  <T> T mergeObjectEncodedAsGroup(final T value, final Schema<T> schema) throws IOException {
+  <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException {
     if (recursionDepth >= recursionLimit) {
       throw ProtobufException.recursionLimitExceeded();
     }
     ++recursionDepth;
+    
+    if(value == null) {
+      value = schema.newMessage();
+    }
     schema.mergeFrom(this, value);
     if(!schema.isInitialized(value)) {
       throw new UninitializedMessageException(value, schema);
@@ -288,12 +296,6 @@ public final class CodedInput implements Input {
     // library.)
     readGroup(fieldNumber, builder, null);
   }*/
-
-  /** Read an embedded message field value from the stream. */
-  public <T extends Message<T>> T mergeMessage(final T message)
-      throws IOException {
-    return mergeObject(message, message.cachedSchema());
-  }
 
   /** Read a {@code bytes} field value from the stream. */
   public ByteString readBytes() throws IOException {
@@ -566,7 +568,7 @@ public final class CodedInput implements Input {
   private int recursionLimit = DEFAULT_RECURSION_LIMIT;
   
   /** If true, the nested messages are group-encoded */
-  private final boolean decodeNestedMessageAsGroup;
+  public final boolean decodeNestedMessageAsGroup;
 
   /** See setSizeLimit() */
   private int sizeLimit = DEFAULT_SIZE_LIMIT;
@@ -987,6 +989,11 @@ public final class CodedInput implements Input {
     boolean repeated) throws IOException {
     final byte[] value = readByteArray();
     output.writeByteRange(utf8String, fieldNumber, value, 0, value.length, repeated);
+  }
+  
+  /** Returns the last tag. */
+  public int getLastTag() {
+    return lastTag;
   }
   //END EXTRA
 }

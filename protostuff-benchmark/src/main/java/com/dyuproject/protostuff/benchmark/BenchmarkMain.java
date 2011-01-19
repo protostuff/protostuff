@@ -16,6 +16,8 @@ package com.dyuproject.protostuff.benchmark;
 
 import com.dyuproject.protostuff.benchmark.serializers.ProtobufLiteSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtobufSpeedSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreGESerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffCoreSerializer;
 
 /**
  * @author David Yu
@@ -36,8 +38,8 @@ public class BenchmarkMain
     
     public static void configure(BenchmarkRunner runner) throws Exception
     {
-        runner.addObjectSerializer(new ProtobufSpeedSerializer());
-        runner.addObjectSerializer(new ProtobufLiteSerializer());
+        //runner.addObjectSerializer(new ProtobufSpeedSerializer());
+        //runner.addObjectSerializer(new ProtobufLiteSerializer());
         
         //runner.addObjectSerializer(new ProtobufCodeSizeSerializer());
         //runner.addObjectSerializer(new ProtobufJsonSerializer());

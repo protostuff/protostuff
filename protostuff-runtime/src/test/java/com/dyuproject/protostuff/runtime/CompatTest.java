@@ -15,8 +15,12 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import com.dyuproject.protostuff.AbstractTest;
+import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.StringSerializer.STRING;
@@ -31,7 +35,7 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 public class CompatTest extends AbstractTest
 {
     
-    public void testIt() throws IOException
+    public void testCompat() throws IOException
     {
         com.dyuproject.protostuff.Foo foo1 = com.dyuproject.protostuff.SerializableObjects.foo;
         Schema<com.dyuproject.protostuff.Foo> schema1 = com.dyuproject.protostuff.Foo.getSchema();
@@ -51,6 +55,84 @@ public class CompatTest extends AbstractTest
         
         assertEquals(str1, str2);
         assertEquals(str1, str3);
+    }
+    
+    static <T extends Message<T>> Schema<T> getCachedSchema(Class<T> clazz) 
+    throws InstantiationException, IllegalAccessException
+    {
+        Schema<T> schema = clazz.newInstance().cachedSchema();
+        //System.err.println("! " + schema + " | " + System.identityHashCode(schema));
+        return schema;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testMixed() throws Exception
+    {
+        Schema<Mixed> schema = RuntimeSchema.getSchema(Mixed.class);
+        
+        assertTrue(MappedSchema.class.isAssignableFrom(schema.getClass()));
+        
+        MappedSchema<Mixed> mappedSchema = (MappedSchema<Mixed>)schema;
+        
+        assertTrue(
+                RuntimeMessageField.class.isAssignableFrom(
+                        mappedSchema.fieldsByName.get("rfoo").getClass())
+                );
+        assertTrue(
+                RuntimeMessageField.class.isAssignableFrom(
+                        mappedSchema.fieldsByName.get("rbar").getClass())
+                );
+        assertTrue(
+                RuntimeMessageField.class.isAssignableFrom(
+                        mappedSchema.fieldsByName.get("rbaz").getClass())
+                );
+        assertTrue(
+                RuntimeMessageField.class.isAssignableFrom(
+                        mappedSchema.fieldsByName.get("arrayBar").getClass())
+                );
+        
+        RuntimeMessageField<Mixed,com.dyuproject.protostuff.Foo> rfoo = 
+            (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Foo>)mappedSchema.fieldsByName.get("rfoo");
+        
+        RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar> rbar = 
+            (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar>)mappedSchema.fieldsByName.get("rbar");
+        
+        RuntimeMessageField<Mixed,com.dyuproject.protostuff.Baz> rbaz = 
+            (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Baz>)mappedSchema.fieldsByName.get("rbaz");
+        
+        RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar> arrayBar = 
+            (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar>)mappedSchema.fieldsByName.get("arrayBar");
+        
+        assertTrue(rfoo.getSchema().getClass().isAssignableFrom(
+                getCachedSchema(com.dyuproject.protostuff.Foo.class).getClass()));
+        
+        assertTrue(rbar.getSchema().getClass().isAssignableFrom(
+                getCachedSchema(com.dyuproject.protostuff.Bar.class).getClass()));
+        
+        assertTrue(rbaz.getSchema().getClass().isAssignableFrom(
+                getCachedSchema(com.dyuproject.protostuff.Baz.class).getClass()));
+        
+        assertTrue(arrayBar.getSchema().getClass().isAssignableFrom(
+                getCachedSchema(com.dyuproject.protostuff.Bar.class).getClass()));
+    }
+    
+    public static class Mixed
+    {
+        int id;
+        
+        Foo fo;
+        Bar br;
+        Baz bz;
+        
+        com.dyuproject.protostuff.Foo foo;
+        com.dyuproject.protostuff.Bar bar;
+        com.dyuproject.protostuff.Baz baz;
+        
+        List<com.dyuproject.protostuff.Foo> rfoo;
+        Set<com.dyuproject.protostuff.Bar> rbar;
+        Collection<com.dyuproject.protostuff.Baz> rbaz;
+        
+        com.dyuproject.protostuff.Bar[] arrayBar;
     }
 
 }
