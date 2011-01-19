@@ -53,7 +53,6 @@ public class BenchmarkModules
         runner.addObjectSerializer(new ProtostuffCoreSerializer());
         runner.addObjectSerializer(new ProtostuffCoreGESerializer());
         runner.addObjectSerializer(new ProtostuffGraphSerializer());
-        if(true) return;
         runner.addObjectSerializer(new ProtostuffRuntimeSerializer());
         runner.addObjectSerializer(new ProtostuffRuntimeGESerializer());
         // json
