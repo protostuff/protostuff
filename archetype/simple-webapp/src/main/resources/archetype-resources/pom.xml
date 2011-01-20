@@ -86,7 +86,7 @@
     <servlet.version>2.5-20081211</servlet.version>
     <jetty.version>6.1.24</jetty.version>
     <protobuf.version>2.3.0</protobuf.version>
-    <jackson.version>1.2.1</jackson.version>
+    <jackson.version>1.7.1</jackson.version>
     <protostuff.version>1.0-SNAPSHOT</protostuff.version>
   </properties>
   
