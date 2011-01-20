@@ -10,7 +10,7 @@
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-kvp</artifactId>
   <name>protostuff :: kvp</name>
-  <description>key-value pair (hash in binary block) serialization format (like uwsgi)</description>
+  <description>binary key-value-pair serialization format (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol)</description>
   <packaging>jar</packaging>
   
   <build>

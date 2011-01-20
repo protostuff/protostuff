@@ -31,6 +31,8 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  * The keys and values are length-delimited (uint16 little endian).
  * 
  * Note that this encoding does not support nested messages.
+ * This encoding is mostly useful for headers w/c contain information about 
+ * the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  *
  * @author David Yu
  * @created Nov 30, 2010

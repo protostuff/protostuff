@@ -28,6 +28,8 @@ import java.io.OutputStream;
  * The keys and values are length-delimited (uint16 little endian).
  * 
  * Note that this encoding does not support nested messages.
+ * This encoding is mostly useful for headers w/c contain information about 
+ * the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  *
  * @author David Yu
  * @created Nov 30, 2010
@@ -233,7 +235,7 @@ public final class KvpOutput extends WriteSession implements Output
 
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException
     {
-        throw new ProtostuffException("Unsupported.");
+        throw new UnsupportedOperationException();
     }
 
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException

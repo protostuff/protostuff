@@ -22,7 +22,16 @@ import java.io.IOException;
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
- * Parse kvp-encoded message from a raw byte array.
+ * An input for deserializing kvp-encoded messages.
+ * A kvp encoding is a binary encoding w/c contains a key-value sequence.
+ * On the wire, a serialized field (key-value) would look like:
+ * [key-len][key][value-len][value]
+ * 
+ * The keys and values are length-delimited (uint16 little endian).
+ * 
+ * Note that this encoding does not support nested messages.
+ * This encoding is mostly useful for headers w/c contain information about 
+ * the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  *
  * @author David Yu
  * @created Nov 19, 2010
@@ -73,7 +82,7 @@ public final class KvpByteArrayInput implements Input
 
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {
-        throw new ProtostuffException("Unsupported io.");
+        throw new UnsupportedOperationException();
     }
 
     public boolean readBool() throws IOException
