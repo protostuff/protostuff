@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -70,6 +71,7 @@ public class CollectionTest extends TestCase
         int id;
         String description;
         Collection<String> tags;
+        Date dateCreated;
         
         public Task()
         {
@@ -124,14 +126,31 @@ public class CollectionTest extends TestCase
             this.tags = tags;
         }
 
+        /**
+         * @return the dateCreated
+         */
+        public Date getDateCreated()
+        {
+            return dateCreated;
+        }
+
+        /**
+         * @param dateCreated the dateCreated to set
+         */
+        public void setDateCreated(Date dateCreated)
+        {
+            this.dateCreated = dateCreated;
+        }
+
         @Override
         public int hashCode()
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((description == null) ? 0 : description.hashCode());
+            result = prime * result + ((dateCreated == null)?0:dateCreated.hashCode());
+            result = prime * result + ((description == null)?0:description.hashCode());
             result = prime * result + id;
-            result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+            result = prime * result + ((tags == null)?0:tags.hashCode());
             return result;
         }
 
@@ -145,6 +164,13 @@ public class CollectionTest extends TestCase
             if (getClass() != obj.getClass())
                 return false;
             Task other = (Task)obj;
+            if (dateCreated == null)
+            {
+                if (other.dateCreated != null)
+                    return false;
+            }
+            else if (!dateCreated.equals(other.dateCreated))
+                return false;
             if (description == null)
             {
                 if (other.description != null)
@@ -167,8 +193,9 @@ public class CollectionTest extends TestCase
         @Override
         public String toString()
         {
-            return "Task [description=" + description + ", id=" + id + ", tags=" + tags + "]";
+            return "Task [dateCreated=" + dateCreated + ", description=" + description + ", id=" + id + ", tags=" + tags + "]";
         }
+        
         
         
         
@@ -295,6 +322,7 @@ public class CollectionTest extends TestCase
         task.setId(1);
         task.setDescription("Complete that other task.");
         task.setTags(tags);
+        task.setDateCreated(new Date(System.currentTimeMillis()));
         
         return task;
     }

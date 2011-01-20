@@ -2708,7 +2708,7 @@ public abstract class RuntimeFieldFactory<V>
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
-            input.transferByteRangeTo(output, false, number, repeated);
+            output.writeFixed64(number, input.readFixed64(), repeated);
         }
         protected Date readFrom(Input input) throws IOException
         {
