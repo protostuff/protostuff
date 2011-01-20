@@ -30,7 +30,7 @@ public class HelloServlet extends HttpServlet
         response.setContentType("application/json");
         
         Greet greet = new Greet();
-        JsonIOUtil.mergeFrom(request.getInputStream(), greet, false);
+        JsonIOUtil.mergeFrom(request.getInputStream(), greet, Greet.getSchema(), false);
         
         String name = greet.getName();
         if(name==null || name.length()==0)
@@ -40,7 +40,7 @@ public class HelloServlet extends HttpServlet
             .setStatus(Greet.Status.ACKNOWLEDGED)
             .setMessage("Hello " + greet.getName() + " from server @ " + new Date());
         
-        JsonIOUtil.writeTo(response.getOutputStream(), greet, false);
+        JsonIOUtil.writeTo(response.getOutputStream(), greet, Greet.getSchema(), false);
     }
 
 }
