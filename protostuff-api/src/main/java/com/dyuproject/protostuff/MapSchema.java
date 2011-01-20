@@ -30,6 +30,19 @@ import java.util.Map.Entry;
 public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
 {
     
+    /**
+     * The field name of the Map.Entry.
+     */
+    public static final String FIELD_NAME_ENTRY = "e";
+    /**
+     * The field name of the key.
+     */
+    public static final String FIELD_NAME_KEY = "k";
+    /**
+     * The field name of the value;
+     */
+    public static final String FIELD_NAME_VALUE = "v";
+    
     protected abstract K readKeyFrom(Input input) throws IOException;
     
     protected abstract V readValueFrom(Input input) throws IOException;
@@ -43,16 +56,12 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     
     public final String getFieldName(int number)
     {
-        // alphanumeric to support xml
-        // protobuf and json(numeric) does not call this method.
-        return number % 2 == 0 ? "v" + number : "k" + number;
+        return number == 1 ? FIELD_NAME_ENTRY : null;
     }
 
     public final int getFieldNumber(String name)
     {
-        // alphanumeric to support xml
-        // protobuf and json(numeric) does not call this method.
-        return Integer.parseInt(name.substring(1));
+        return name.length() == 1 && name.charAt(0) == 'e' ? 1 : 0; 
     }
 
     public final boolean isInitialized(Map<K, V> map)
@@ -82,75 +91,193 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     
     public final void mergeFrom(Input input, Map<K, V> map) throws IOException
     {
-        final int first = input.readFieldNumber(this);
-        if(first == 0)
+        MapWrapper<K,V> entry = null;
+        for(int number = input.readFieldNumber(this);; 
+                number = input.readFieldNumber(this))
         {
-            // empty map
-            return;
-        }
-        if(first % 2 == 0)
-        {
-            // must start with a key (odd number)
-            throw new ProtostuffException("The map was incorrectly serialized.");
-        }
-        
-        while(true)
-        {
-            final K key = readKeyFrom(input);
-            int next = input.readFieldNumber(this);
-            if(next == 0)
+            switch(number)
             {
-                // end of map
-                // null value
-                map.put(key, null);
-                return;
-            }
-            
-            if(next % 2 == 0)
-            {
-                // has value.
-                map.put(key, readValueFrom(input));
-                
-                // move to next field number
-                next = input.readFieldNumber(this);
-                if(next == 0)
-                {
-                    // end of map
+                case 0:
                     return;
-                }
-                if(next % 2 == 0)
-                {
-                    // next entry must start with a key (odd number)
+                case 1:
+                    if(entry == null)
+                    {
+                        // lazy initialize
+                        entry = new MapWrapper<K,V>(map);
+                    }
+                    
+                    if(entry != input.mergeObject(entry, ENTRY_SCHEMA))
+                    {
+                        // an entry will always be unique
+                        // it can never be a reference.
+                        throw new IllegalStateException("A Map.Entry will always be " +
+                        		"unique, hence it cannot be a reference " +
+                        		"obtained from " + input.getClass().getName());
+                    }
+                    break;
+                default:
                     throw new ProtostuffException("The map was incorrectly serialized.");
-                }
-            }
-            else
-            {
-                // its the next entry's key (odd number) ... meaning null value for current entry
-                map.put(key, null);
             }
         }
     }
 
     public final void writeTo(Output output, Map<K, V> map) throws IOException
     {
-        int fieldNumber = 0;
         for(Entry<K, V> entry : map.entrySet())
         {
-            final K key = entry.getKey();
-            if(key == null)
-                continue;
-            
-            writeKeyTo(output, ++fieldNumber, key, false);
-            ++fieldNumber;
-            
-            final V value = entry.getValue();
-            if(value == null)
-                continue;
-            
-            writeValueTo(output, fieldNumber, value, false);
+            // only inlude entries with keys.
+            if(entry.getKey() != null)
+            {
+                // if the value is null, only the key is written.
+                output.writeObject(1, entry, ENTRY_SCHEMA, true);
+            }
         }
     }
+    
+    /**
+     * A Map.Entry w/c wraps a Map.
+     */
+    static final class MapWrapper<K,V> implements Entry<K,V>
+    {
+        
+        final Map<K,V> map;
+        
+        MapWrapper(Map<K,V> map)
+        {
+            this.map = map;
+        }
+
+        public K getKey()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public V getValue()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public V setValue(V arg0)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+    
+    final Schema<Entry<K,V>> ENTRY_SCHEMA = new Schema<Entry<K,V>>()
+    {
+
+        public final String getFieldName(int number)
+        {
+            switch(number)
+            {
+                case 1:
+                    return FIELD_NAME_KEY;
+                case 2:
+                    return FIELD_NAME_VALUE;
+                default:
+                    return null;
+            }
+        }
+
+        public final int getFieldNumber(String name)
+        {
+            if(name.length() != 1)
+                return 0;
+            
+            switch(name.charAt(0))
+            {
+                case 'k':
+                    return 1;
+                case 'v':
+                    return 2;
+                default:
+                    return 0;
+            }
+        }
+
+        public boolean isInitialized(Entry<K, V> message)
+        {
+            return true;
+        }
+
+        public String messageFullName()
+        {
+            return Entry.class.getName();
+        }
+
+        public String messageName()
+        {
+            return Entry.class.getSimpleName();
+        }
+
+        public Entry<K, V> newMessage()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public Class<? super Entry<K, V>> typeClass()
+        {
+            return Entry.class;
+        }
+
+        public void mergeFrom(Input input, Entry<K, V> message) throws IOException
+        {
+            // Nobody else calls this except MapSchema.mergeFrom
+            final MapWrapper<K,V> wrapper = (MapWrapper<K,V>)message;
+            
+            K key = null; 
+            for(int number = input.readFieldNumber(this);; 
+                    number = input.readFieldNumber(this))
+            {
+                switch(number)
+                {
+                    case 0:
+                        if(key != null)
+                        {
+                            // put last entry
+                            wrapper.map.put(key, null);
+                        }
+                        return;
+                    case 1:
+                        if(key != null)
+                        {
+                            // more than one key
+                            throw new ProtostuffException("The map was incorrectly " +
+                            		"serialized.");
+                        }
+
+                        key = readKeyFrom(input);
+                        assert key != null;
+                        break;
+                    case 2:
+                        if(key == null)
+                        {
+                            // a value without a key.
+                            throw new ProtostuffException("The map was incorrectly " +
+                            		"serialized.");
+                        }
+                        
+                        wrapper.map.put(key, readValueFrom(input));
+                        key = null;
+                        break;
+                    default:
+                        throw new ProtostuffException("The map was incorrectly " +
+                        		"serialized.");
+                }
+            }
+        }
+
+        public void writeTo(Output output, Entry<K, V> message) throws IOException
+        {
+            writeKeyTo(output, 1, message.getKey(), false);
+            
+            final V value = message.getValue();
+            if(value != null)
+                writeValueTo(output, 2, value, false);
+        }
+        
+    };
 
 
 }
