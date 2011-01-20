@@ -147,12 +147,12 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+        GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+        GraphIOUtil.writeDelimitedTo(out, this, this);
     }
     
     static HasBar readHasBar(Input input) throws IOException

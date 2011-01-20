@@ -329,12 +329,12 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+        GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+        GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
     public void writeTo(Output output, Bar message) throws IOException

@@ -10,12 +10,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-
 public final class Student implements Externalizable, Message<Student>
 {
 
@@ -89,12 +83,12 @@ public final class Student implements Externalizable, Message<Student>
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
+        GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, SCHEMA);
+        GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
     }
 
     // message method

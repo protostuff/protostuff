@@ -61,12 +61,12 @@ message_impl_serializable(message, options) ::= <<
 
 public void readExternal(ObjectInput in) throws IOException
 {
-    ProtostuffIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
+    GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
 }
 
 public void writeExternal(ObjectOutput out) throws IOException
 {
-    ProtostuffIOUtil.writeDelimitedTo(out, this, SCHEMA);
+    GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
 }
 
 >>

@@ -167,12 +167,12 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+        GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+        GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
     public void writeTo(Output output, Baz message) throws IOException

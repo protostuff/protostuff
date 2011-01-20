@@ -333,12 +333,12 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, this);
+        GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, this);
+        GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
     public void writeTo(Output output, Foo message) throws IOException
