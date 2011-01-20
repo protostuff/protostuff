@@ -1098,9 +1098,8 @@ public abstract class RuntimeFieldFactory<V>
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     final Object value = input.mergeObject(message, schema);
-                    if(value != message || 
-                            (input instanceof GraphInput && 
-                                    ((GraphInput)input).isCurrentMessageReference()))
+                    if(input instanceof GraphInput && 
+                            ((GraphInput)input).isCurrentMessageReference())
                     {
                         // a reference from polymorphic+cyclic graph deser
                         try
@@ -1294,9 +1293,8 @@ public abstract class RuntimeFieldFactory<V>
                         protected void mergeFrom(Input input, T message) throws IOException
                         {
                             final Object value = input.mergeObject(message, schema);
-                            if(value != message || 
-                                    (input instanceof GraphInput && 
-                                            ((GraphInput)input).isCurrentMessageReference()))
+                            if(input instanceof GraphInput && 
+                                    ((GraphInput)input).isCurrentMessageReference())
                             {
                                 // a reference from polymorphic+cyclic graph deser
                                 try
@@ -1621,9 +1619,8 @@ public abstract class RuntimeFieldFactory<V>
                         protected void mergeFrom(Input input, T message) throws IOException
                         {
                             final Object value = input.mergeObject(message, schema);
-                            if(value != message || 
-                                    (input instanceof GraphInput && 
-                                            ((GraphInput)input).isCurrentMessageReference()))
+                            if(input instanceof GraphInput && 
+                                    ((GraphInput)input).isCurrentMessageReference())
                             {
                                 // a reference from polymorphic+cyclic graph deser
                                 try
@@ -1947,9 +1944,8 @@ public abstract class RuntimeFieldFactory<V>
                         protected void mergeFrom(Input input, T message) throws IOException
                         {
                             final Object value = input.mergeObject(message, schema);
-                            if(value != message || 
-                                    (input instanceof GraphInput && 
-                                            ((GraphInput)input).isCurrentMessageReference()))
+                            if(input instanceof GraphInput && 
+                                    ((GraphInput)input).isCurrentMessageReference())
                             {
                                 // a reference from polymorphic+cyclic graph deser
                                 try
@@ -2276,9 +2272,8 @@ public abstract class RuntimeFieldFactory<V>
                         protected void mergeFrom(Input input, T message) throws IOException
                         {
                             final Object value = input.mergeObject(message, schema);
-                            if(value != message || 
-                                    (input instanceof GraphInput && 
-                                            ((GraphInput)input).isCurrentMessageReference()))
+                            if(input instanceof GraphInput && 
+                                    ((GraphInput)input).isCurrentMessageReference())
                             {
                                 // a reference from polymorphic+cyclic graph deser
                                 try
