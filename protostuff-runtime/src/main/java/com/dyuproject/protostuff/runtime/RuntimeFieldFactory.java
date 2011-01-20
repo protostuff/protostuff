@@ -138,12 +138,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeUInt32(this.number, f.getChar(message), false);
+                            output.writeUInt32(number, f.getChar(message), false);
                         else
                         {
                             Character value = (Character)f.get(message);
                             if(value!=null)
-                                output.writeUInt32(this.number, value.charValue(), false);
+                                output.writeUInt32(number, value.charValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -215,12 +215,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeUInt32(this.number, f.getShort(message), false);
+                            output.writeUInt32(number, f.getShort(message), false);
                         else
                         {
                             Short value = (Short)f.get(message);
                             if(value!=null)
-                                output.writeUInt32(this.number, value.shortValue(), false);
+                                output.writeUInt32(number, value.shortValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -292,12 +292,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeUInt32(this.number, f.getByte(message), false);
+                            output.writeUInt32(number, f.getByte(message), false);
                         else
                         {
                             Byte value = (Byte)f.get(message);
                             if(value!=null)
-                                output.writeUInt32(this.number, value.byteValue(), false);
+                                output.writeUInt32(number, value.byteValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -370,12 +370,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt32(this.number, f.getInt(message), false);
+                            output.writeInt32(number, f.getInt(message), false);
                         else
                         {
                             Integer value = (Integer)f.get(message);
                             if(value!=null)
-                                output.writeInt32(this.number, value.intValue(), false);
+                                output.writeInt32(number, value.intValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -448,12 +448,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeInt64(this.number, f.getLong(message), false);
+                            output.writeInt64(number, f.getLong(message), false);
                         else
                         {
                             Long value = (Long)f.get(message);
                             if(value!=null)
-                                output.writeInt64(this.number, value.longValue(), false);
+                                output.writeInt64(number, value.longValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -526,12 +526,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeFloat(this.number, f.getFloat(message), false);
+                            output.writeFloat(number, f.getFloat(message), false);
                         else
                         {
                             Float value = (Float)f.get(message);
                             if(value!=null)
-                                output.writeFloat(this.number, value.floatValue(), false);
+                                output.writeFloat(number, value.floatValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -604,12 +604,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeDouble(this.number, f.getDouble(message), false);
+                            output.writeDouble(number, f.getDouble(message), false);
                         else
                         {
                             Double value = (Double)f.get(message);
                             if(value!=null)
-                                output.writeDouble(this.number, value.doubleValue(), false);
+                                output.writeDouble(number, value.doubleValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -663,11 +663,10 @@ public abstract class RuntimeFieldFactory<V>
                 {
                     try
                     {
-                        boolean value = input.readBool();
                         if(primitive)
-                            f.setBoolean(message, value);
+                            f.setBoolean(message, input.readBool());
                         else
-                            f.set(message, value ? Boolean.TRUE : Boolean.FALSE);
+                            f.set(message, input.readBool() ? Boolean.TRUE : Boolean.FALSE);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -683,12 +682,12 @@ public abstract class RuntimeFieldFactory<V>
                     try
                     {
                         if(primitive)
-                            output.writeBool(this.number, f.getBoolean(message), false);
+                            output.writeBool(number, f.getBoolean(message), false);
                         else
                         {
                             Boolean value = (Boolean)f.get(message);
                             if(value!=null)
-                                output.writeBool(this.number, value.booleanValue(), false);
+                                output.writeBool(number, value.booleanValue(), false);
                         }
                     }
                     catch(IllegalArgumentException e)
@@ -758,7 +757,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         String value = (String)f.get(message);
                         if(value!=null)
-                            output.writeString(this.number, value, false);
+                            output.writeString(number, value, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -827,7 +826,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         ByteString bs = (ByteString)f.get(message);
                         if(bs!=null)
-                            output.writeBytes(this.number, bs, false);
+                            output.writeBytes(number, bs, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -896,7 +895,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         byte[] array = (byte[])f.get(message);
                         if(array!=null)
-                            output.writeByteArray(this.number, array, false);
+                            output.writeByteArray(number, array, false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -1424,7 +1423,7 @@ public abstract class RuntimeFieldFactory<V>
                             {
                                 final Schema<Object> schema = getSchema();
                                 for(Object o : list)
-                                    output.writeObject(this.number, o, schema, true);
+                                    output.writeObject(number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1481,7 +1480,7 @@ public abstract class RuntimeFieldFactory<V>
                         if(list!=null && !list.isEmpty())
                         {
                             for(Object o : list)
-                                inline.writeTo(output, this.number, o, true);
+                                inline.writeTo(output, number, o, true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -1749,7 +1748,7 @@ public abstract class RuntimeFieldFactory<V>
                             {
                                 final Schema<Object> schema = getSchema();
                                 for(Object o : list)
-                                    output.writeObject(this.number, o, schema, true);
+                                    output.writeObject(number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -1806,7 +1805,7 @@ public abstract class RuntimeFieldFactory<V>
                         if(list!=null && !list.isEmpty())
                         {
                             for(Object o : list)
-                                inline.writeTo(output, this.number, o, true);
+                                inline.writeTo(output, number, o, true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -2074,7 +2073,7 @@ public abstract class RuntimeFieldFactory<V>
                             {
                                 final Schema<Object> schema = getSchema();
                                 for(Object o : set)
-                                    output.writeObject(this.number, o, schema, true);
+                                    output.writeObject(number, o, schema, true);
                             }
                         }
                         catch (IllegalArgumentException e)
@@ -2131,7 +2130,7 @@ public abstract class RuntimeFieldFactory<V>
                         if(set!=null && !set.isEmpty())
                         {
                             for(Object o : set)
-                                inline.writeTo(output, this.number, o, true);
+                                inline.writeTo(output, number, o, true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -2426,7 +2425,7 @@ public abstract class RuntimeFieldFactory<V>
                                 int len = Array.getLength(array);
                                 for(int i=0; i<len; i++)
                                 {
-                                    output.writeObject(this.number, Array.get(array, i), 
+                                    output.writeObject(number, Array.get(array, i), 
                                             schema, true);
                                 }
                             }
@@ -2492,7 +2491,7 @@ public abstract class RuntimeFieldFactory<V>
                         {
                             int len = Array.getLength(array);
                             for(int i=0; i<len; i++)
-                                inline.writeTo(output, this.number, Array.get(array, i), true);
+                                inline.writeTo(output, number, Array.get(array, i), true);
                         }
                     }
                     catch (IllegalArgumentException e)
@@ -2558,7 +2557,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         BigDecimal value = (BigDecimal)f.get(message);
                         if(value!=null)
-                            output.writeString(this.number, value.toString(), false);
+                            output.writeString(number, value.toString(), false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -2623,7 +2622,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         BigInteger value = (BigInteger)f.get(message);
                         if(value!=null)
-                            output.writeByteArray(this.number, value.toByteArray(), false);
+                            output.writeByteArray(number, value.toByteArray(), false);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -2688,7 +2687,7 @@ public abstract class RuntimeFieldFactory<V>
                     {
                         Date value = (Date)f.get(message);
                         if(value!=null)
-                            output.writeFixed64(this.number, value.getTime(), false);
+                            output.writeFixed64(number, value.getTime(), false);
                     }
                     catch(IllegalArgumentException e)
                     {
