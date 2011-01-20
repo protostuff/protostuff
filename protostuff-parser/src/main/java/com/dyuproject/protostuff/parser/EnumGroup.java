@@ -58,6 +58,16 @@ public class EnumGroup extends AnnotationContainer implements HasName
         return buffer.toString();
     }
     
+    public String getJavaFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        if(isNested())
+            buffer.append(parentMessage.getJavaFullName()).append('.').append(name);
+        else
+            buffer.append(getProto().getJavaPackageName()).append('.').append(name);
+        return buffer.toString();
+    }
+    
     public String getRelativeName()
     {
         return isNested() ? parentMessage.getRelativeName() + "." + name : name;
