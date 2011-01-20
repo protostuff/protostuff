@@ -109,7 +109,7 @@ public abstract class RuntimeFieldFactory<V>
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            return new Field<T>(FieldType.INT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name)
             {
                 final boolean primitive = f.getType().isPrimitive();
                 {
@@ -178,7 +178,7 @@ public abstract class RuntimeFieldFactory<V>
         }
         protected FieldType getFieldType()
         {
-            return FieldType.INT32;
+            return FieldType.UINT32;
         }
     };
     
@@ -186,7 +186,7 @@ public abstract class RuntimeFieldFactory<V>
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            return new Field<T>(FieldType.INT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name)
             {
                 final boolean primitive = f.getType().isPrimitive();
                 {
@@ -255,7 +255,7 @@ public abstract class RuntimeFieldFactory<V>
         }
         protected FieldType getFieldType()
         {
-            return FieldType.INT32;
+            return FieldType.UINT32;
         }
     };
     
@@ -263,7 +263,7 @@ public abstract class RuntimeFieldFactory<V>
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            return new Field<T>(FieldType.INT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name)
             {
                 final boolean primitive = f.getType().isPrimitive();
                 {
@@ -332,7 +332,7 @@ public abstract class RuntimeFieldFactory<V>
         }
         protected FieldType getFieldType()
         {
-            return FieldType.INT32;
+            return FieldType.UINT32;
         }
     };
     
@@ -2760,6 +2760,9 @@ public abstract class RuntimeFieldFactory<V>
         __inlineValues.put(Date.class.getName(), DATE);
     }
     
+    /**
+     * Returns the factory for inline (scalar) values.
+     */
     @SuppressWarnings("unchecked")
     public static <T> RuntimeFieldFactory<T> getInline(Class<T> typeClass)
     {
