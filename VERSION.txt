@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
+
+protostuff-1.0.0.M7 2011-01-20
 + add ser/deser support for object graphs (cyclic references/dependencies)
 + Issue 42: Support for Self Referential Classes
 + Issue 41: Support for polymorphic ser/deser for protostuff-runtime
