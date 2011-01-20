@@ -22,15 +22,13 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.ComputedSizeOutput;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.Bar.Status;
 
@@ -181,19 +179,6 @@ public class SerDeserTest extends TestCase
         //System.err.println(dpojo.getSomeFloatAsSet());
     }
     
-    public void testEmptyFieldsPojo()
-    {
-        try
-        {
-            RuntimeSchema.createFrom(EmptyFieldsPojo.class);
-            assertTrue(false);
-        }
-        catch(RuntimeException e)
-        {
-            // expected
-        }
-    }
-    
     static void assertEquals(HasHasBar h1, HasHasBar h2)
     {
         // true if both are null
@@ -319,31 +304,4 @@ public class SerDeserTest extends TestCase
             assertNull(dp2);
         
     }
-    
-    static class EmptyFieldsPojo
-    {
-        transient int someInt;
-        static long someLong;
-        
-        /* this works as well
-        @Deprecated
-        boolean g; */
-        
-        List<String[]> someListArrayString;
-        List<Map<String,Double>> someDouble;
-        List<Set<String>> someListSetString;
-        
-        Map<String,Float> someFloat;
-        Map<String,Boolean>[] someBoolean;
-        
-        Set<Map<String,String>> someString;
-        Set<String>[] someOtherString;
-        Set<List<String>> someSetListString;
-        
-        Integer[][] someOtherInt;
-        long[][] someOtherLong;
-        byte[][] someBytes;
-    }
-
-
 }

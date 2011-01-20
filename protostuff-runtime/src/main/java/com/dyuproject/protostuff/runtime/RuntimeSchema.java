@@ -154,11 +154,10 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, List<String> exclusions)
     {
-        if(typeClass.isInterface())
+        if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
         {
-            throw new RuntimeException("The interface \"" + typeClass + 
-                    "\" must be pre-mapped to its respective impl.  E.g. " + 
-                    "RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(TaskImpl.class));");
+            throw new RuntimeException("The root object can neither be an abstract " +
+                        "class nor interface: \"" + typeClass.getName());
         }
         
         Map<String,java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
@@ -208,11 +207,10 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
             Map<String,String> declaredFields)
     {
-        if(typeClass.isInterface())
+        if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
         {
-            throw new RuntimeException("The interface \"" + typeClass + 
-                    "\" must be pre-mapped to its respective impl.  E.g. " + 
-                    "RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(TaskImpl.class));");
+            throw new RuntimeException("The root object can neither be an abstract " +
+            		"class nor interface: \"" + typeClass.getName());
         }
         
         ArrayList<Field<T>> fields = new ArrayList<Field<T>>(declaredFields.size());

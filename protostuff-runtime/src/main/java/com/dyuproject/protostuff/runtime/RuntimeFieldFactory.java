@@ -105,6 +105,13 @@ public abstract class RuntimeFieldFactory<V>
                 POLYMORPHIC_POJO : POJO;
     }
     
+    static boolean isInvalidChildType(Class<?> clazz)
+    {
+        return clazz.isArray() 
+                || Map.class.isAssignableFrom(clazz)
+                || Collection.class.isAssignableFrom(clazz);
+    }
+    
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>()
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
@@ -1275,7 +1282,7 @@ public abstract class RuntimeFieldFactory<V>
             
             if(inline==null)
             {
-                if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
+                if(isInvalidChildType(genericType))
                     return null;
                 
                 if(POLYMORPHIC_POJO == pojo(genericType) && 
@@ -1601,7 +1608,7 @@ public abstract class RuntimeFieldFactory<V>
             
             if(inline==null)
             {
-                if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
+                if(isInvalidChildType(genericType))
                     return null;
                 
                 if(POLYMORPHIC_POJO == pojo(genericType) && 
@@ -1926,7 +1933,7 @@ public abstract class RuntimeFieldFactory<V>
             
             if(inline==null)
             {
-                if(genericType.isArray() || Collection.class.isAssignableFrom(genericType))
+                if(isInvalidChildType(genericType))
                     return null;
                 
                 if(POLYMORPHIC_POJO == pojo(genericType) && 
@@ -2177,7 +2184,7 @@ public abstract class RuntimeFieldFactory<V>
             final Class<?> componentType = f.getType().getComponentType();
             
             // no two dimensional arrays
-            if(byte[].class==componentType || Map.class.isAssignableFrom(componentType))
+            if(byte[].class == componentType)
                 return null;
             
             if(componentType.isEnum())
@@ -2254,7 +2261,7 @@ public abstract class RuntimeFieldFactory<V>
             
             if(inline==null)
             {
-                if(componentType.isArray() || Collection.class.isAssignableFrom(componentType))
+                if(isInvalidChildType(componentType))
                     return null;
                 
                 if(POLYMORPHIC_POJO == pojo(componentType) && 
