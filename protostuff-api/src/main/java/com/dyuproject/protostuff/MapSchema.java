@@ -125,12 +125,8 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     {
         for(Entry<K, V> entry : map.entrySet())
         {
-            // only inlude entries with keys.
-            if(entry.getKey() != null)
-            {
-                // if the value is null, only the key is written.
-                output.writeObject(1, entry, ENTRY_SCHEMA, true);
-            }
+            // allow null keys and values.
+            output.writeObject(1, entry, ENTRY_SCHEMA, true);
         }
     }
     
@@ -226,40 +222,24 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             // Nobody else calls this except MapSchema.mergeFrom
             final MapWrapper<K,V> wrapper = (MapWrapper<K,V>)message;
             
-            K key = null; 
+            K key = null;
+            V value = null;
             for(int number = input.readFieldNumber(this);; 
                     number = input.readFieldNumber(this))
             {
                 switch(number)
                 {
                     case 0:
-                        if(key != null)
-                        {
-                            // put last entry
-                            wrapper.map.put(key, null);
-                        }
+                        // allow null keys and values
+                        wrapper.map.put(key, value);
                         return;
                     case 1:
-                        if(key != null)
-                        {
-                            // more than one key
-                            throw new ProtostuffException("The map was incorrectly " +
-                            		"serialized.");
-                        }
-
                         key = readKeyFrom(input);
                         assert key != null;
                         break;
                     case 2:
-                        if(key == null)
-                        {
-                            // a value without a key.
-                            throw new ProtostuffException("The map was incorrectly " +
-                            		"serialized.");
-                        }
-                        
-                        wrapper.map.put(key, readValueFrom(input));
-                        key = null;
+                        value = readValueFrom(input);
+                        assert value != null;
                         break;
                     default:
                         throw new ProtostuffException("The map was incorrectly " +
@@ -270,11 +250,11 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
 
         public void writeTo(Output output, Entry<K, V> message) throws IOException
         {
-            writeKeyTo(output, 1, message.getKey(), false);
+            if(message.getKey() != null)
+                writeKeyTo(output, 1, message.getKey(), false);
             
-            final V value = message.getValue();
-            if(value != null)
-                writeValueTo(output, 2, value, false);
+            if(message.getValue() != null)
+                writeValueTo(output, 2, message.getValue(), false);
         }
         
     };
