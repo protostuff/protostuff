@@ -43,14 +43,14 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      */
     public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES = 
         Boolean.parseBoolean(
-                System.getProperty("protostuff.auto_load_polymorphic_classes", "true"));
+                System.getProperty("protostuff.runtime.auto_load_polymorphic_classes", "true"));
     /**
      * Disabled by default.  For pojos that are not declared final, they 
      * could still be morphed to their respective subclasses (inheritance).
      * Enable this option if your parent classes aren't abstract classes.
      */
     public static final boolean MORPH_NON_FINAL_POJOS = 
-        Boolean.getBoolean("protostuff.morph_non_final_pojos");
+        Boolean.getBoolean("protostuff.runtime.morph_non_final_pojos");
 
     private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
         new ConcurrentHashMap<String, HasSchema<?>>();

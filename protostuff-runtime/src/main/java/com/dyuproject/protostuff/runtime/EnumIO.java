@@ -23,7 +23,7 @@ import com.dyuproject.protostuff.Pipe;
 /**
  * Determines how enums are serialized/deserialized. 
  * Default is BY_NUMBER. 
- * To enable BY_NAME, set the property "protostuff.runtime.enum.by_name=true".
+ * To enable BY_NAME, set the property "protostuff.runtime.enums_by_name=true".
  *
  * @author David Yu
  * @created Oct 20, 2010
