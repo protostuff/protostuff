@@ -28,8 +28,7 @@ import com.dyuproject.protostuff.Schema;
 /**
  * Test ser/deser for subclasses that inherit from non-abstract base types.
  * 
- * Run this standalone to execute the actual tests with the property: 
- * -Dprotostuff.morph_non_final_pojos=true
+ * Run this standalone to execute the actual tests.
  * 
  * @author David Yu
  * @created Jan 21, 2011
