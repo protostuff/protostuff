@@ -232,10 +232,11 @@ public class InheritanceTest extends AbstractTest
     
     boolean skipTests = false;
     
-    public void setUp()
+    public void setUp() throws Exception
     {
         System.setProperty("protostuff.morph_non_final_pojos", "true");
         skipTests = !RuntimeSchema.MORPH_NON_FINAL_POJOS;
+        super.setUp();
     }
 
     public void testInheritance() throws IOException
