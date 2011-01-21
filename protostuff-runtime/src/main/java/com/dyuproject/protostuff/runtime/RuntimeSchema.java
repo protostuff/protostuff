@@ -295,7 +295,11 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         {
             return typeClass.newInstance();
         }
-        catch(Exception e)
+        catch (InstantiationException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
