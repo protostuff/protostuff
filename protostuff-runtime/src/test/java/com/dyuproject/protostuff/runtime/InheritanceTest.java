@@ -39,7 +39,7 @@ public class InheritanceTest extends AbstractTest
     static
     {
         // must enable to support inheritance on non-abstract base types.
-        System.setProperty("protostuff.morph_non_final_pojos", "true");
+        System.setProperty("protostuff.runtime.morph_non_final_pojos", "true");
     }
 
     public static class InputDevice
