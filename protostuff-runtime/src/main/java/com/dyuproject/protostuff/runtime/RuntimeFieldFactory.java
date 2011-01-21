@@ -101,8 +101,10 @@ public abstract class RuntimeFieldFactory<V>
     
     static RuntimeFieldFactory<?> pojo(Class<?> clazz)
     {
-        return clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ? 
-                POLYMORPHIC_POJO : POJO;
+        return (clazz.isInterface() 
+            || Modifier.isAbstract(clazz.getModifiers()) 
+            || (!Modifier.isFinal(clazz.getModifiers()) && 
+                    RuntimeSchema.MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
     }
     
     static boolean isInvalidChildType(Class<?> clazz)

@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 43: Inheritance support for non-abstract base types
 
 protostuff-1.0.0.M7 2011-01-20
 + add ser/deser support for object graphs (cyclic references/dependencies)
