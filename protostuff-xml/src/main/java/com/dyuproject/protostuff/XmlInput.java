@@ -35,6 +35,7 @@ public final class XmlInput implements Input
 {
 
     private final XMLStreamReader parser;
+    private boolean emptyMessage = false;
     
     public XmlInput(XMLStreamReader parser)
     {
@@ -122,6 +123,12 @@ public final class XmlInput implements Input
     
     public <T> int readFieldNumber(final Schema<T> schema) throws IOException
     {
+        if(emptyMessage)
+        {
+            emptyMessage = false;
+            return 0;
+        }
+        
         if(parser.getEventType() == END_ELEMENT)
             return 0;
         
@@ -250,12 +257,16 @@ public final class XmlInput implements Input
         
         if(nextTag() == END_ELEMENT)
         {
+            // empty message
+            emptyMessage = true;
+            
             if(!simpleName.equals(parser.getLocalName()))
                 throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
             
-            // empty message
             if(value == null)
                 value = schema.newMessage();
+            
+            schema.mergeFrom(this, value);
             
             if(!schema.isInitialized(value))
                 throw new UninitializedMessageException(value, schema);
