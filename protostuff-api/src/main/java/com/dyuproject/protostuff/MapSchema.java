@@ -29,7 +29,6 @@ import java.util.Map.Entry;
  */
 public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
 {
-    
     /**
      * The field name of the Map.Entry.
      */
@@ -43,15 +42,40 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
      */
     public static final String FIELD_NAME_VALUE = "v";
     
+    /**
+     * Reads the key from the input.
+     */
     protected abstract K readKeyFrom(Input input) throws IOException;
     
-    protected abstract V readValueFrom(Input input) throws IOException;
+    /**
+     * Puts the entry(key and value), obtained from the input, into the {@code MapWrapper}.
+     */
+    protected abstract void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
+    throws IOException;
     
+    /**
+     * Writes the key to the output.
+     */
     protected abstract void writeKeyTo(Output output, int fieldNumber, K value, 
             boolean repeated) throws IOException;
     
+    /**
+     * Writes the value to the output.
+     */
     protected abstract void writeValueTo(Output output, int fieldNumber, V value, 
             boolean repeated) throws IOException;
+    
+    /**
+     * Transfers the key from the input to the output.
+     */
+    protected abstract void transferKey(Pipe pipe, Input input, Output output, 
+            int number, boolean repeated) throws IOException;
+    
+    /**
+     * Transfers the value from the input to the output.
+     */
+    protected abstract void transferValue(Pipe pipe, Input input, Output output, 
+            int number, boolean repeated) throws IOException;
 
     
     public final String getFieldName(int number)
@@ -98,6 +122,8 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             switch(number)
             {
                 case 0:
+                    //if(entry != null)
+                    //    entry.value = null;
                     return;
                 case 1:
                     if(entry == null)
@@ -106,7 +132,7 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
                         entry = new MapWrapper<K,V>(map);
                     }
                     
-                    if(entry != input.mergeObject(entry, ENTRY_SCHEMA))
+                    if(entry != input.mergeObject(entry, entrySchema))
                     {
                         // an entry will always be unique
                         // it can never be a reference.
@@ -126,41 +152,38 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
         for(Entry<K, V> entry : map.entrySet())
         {
             // allow null keys and values.
-            output.writeObject(1, entry, ENTRY_SCHEMA, true);
+            output.writeObject(1, entry, entrySchema, true);
         }
     }
     
     /**
-     * A Map.Entry w/c wraps a Map.
+     * The pipe schema of the {@link Map}.
      */
-    static final class MapWrapper<K,V> implements Entry<K,V>
+    public final Pipe.Schema<Map<K,V>> pipeSchema = 
+        new Pipe.Schema<Map<K,V>>(MapSchema.this)
     {
-        
-        final Map<K,V> map;
-        
-        MapWrapper(Map<K,V> map)
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            this.map = map;
-        }
-
-        public K getKey()
-        {
-            throw new UnsupportedOperationException();
-        }
-
-        public V getValue()
-        {
-            throw new UnsupportedOperationException();
-        }
-
-        public V setValue(V arg0)
-        {
-            throw new UnsupportedOperationException();
+            for(int number = input.readFieldNumber(MapSchema.this);;
+                    number = input.readFieldNumber(MapSchema.this))
+            {
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        output.writeObject(number, pipe, entryPipeSchema, true);
+                        break;
+                    default:
+                        throw new ProtostuffException("The map was incorrectly " + 
+                                "serialized.");
+                }
+            }
         }
         
-    }
+    };
     
-    final Schema<Entry<K,V>> ENTRY_SCHEMA = new Schema<Entry<K,V>>()
+    private final Schema<Entry<K,V>> entrySchema = new Schema<Entry<K,V>>()
     {
 
         public final String getFieldName(int number)
@@ -223,27 +246,46 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             final MapWrapper<K,V> wrapper = (MapWrapper<K,V>)message;
             
             K key = null;
-            V value = null;
+            boolean valueRetrieved = false;
             for(int number = input.readFieldNumber(this);; 
                     number = input.readFieldNumber(this))
             {
                 switch(number)
                 {
                     case 0:
-                        // allow null keys and values
-                        wrapper.map.put(key, value);
+                        if(key == null)
+                        {
+                            // null key (and potentially null value)
+                            wrapper.map.put(null, valueRetrieved ? wrapper.value : null);
+                        }
+                        else if(!valueRetrieved)
+                        {
+                            // null value
+                            wrapper.map.put(key, null);
+                        }
                         return;
                     case 1:
+                        if(key != null)
+                        {
+                            throw new ProtostuffException("The map was incorrectly " + 
+                                    "serialized.");
+                        }
                         key = readKeyFrom(input);
                         assert key != null;
                         break;
                     case 2:
-                        value = readValueFrom(input);
-                        assert value != null;
+                        if(valueRetrieved)
+                        {
+                            throw new ProtostuffException("The map was incorrectly " + 
+                                    "serialized.");
+                        }
+                        valueRetrieved = true;
+                        
+                        putValueFrom(input, wrapper, key);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly " +
-                        		"serialized.");
+                        throw new ProtostuffException("The map was incorrectly " + 
+                                    "serialized.");
                 }
             }
         }
@@ -258,6 +300,99 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
         }
         
     };
+    
+    private final Pipe.Schema<Entry<K,V>> entryPipeSchema = 
+        new Pipe.Schema<Entry<K,V>>(entrySchema)
+    {
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            for(int number = input.readFieldNumber(entrySchema);;
+                    number = input.readFieldNumber(entrySchema))
+            {
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        transferKey(pipe, input, output, 1, false);
+                        break;
+                    case 2:
+                        transferValue(pipe, input, output, 2, false);
+                        break;
+                    default:
+                        throw new ProtostuffException("The map was incorrectly " +
+                                        "serialized.");
+                }
+            }
+        }
+        
+    };
+    
+    
+    /**
+     * A {@link Map.Entry} w/c wraps a {@link Map}.
+     */
+    public static final class MapWrapper<K,V> implements Entry<K,V>
+    {
+        
+        /**
+         * The actual map being operated on.
+         */
+        final Map<K,V> map;
+        
+        /**
+         * A temporary storage for the value if the key is not yet available.
+         */
+        V value;
+        
+        MapWrapper(Map<K,V> map)
+        {
+            this.map = map;
+        }
+
+        /**
+         * The key is provided as the last arg of 
+         * {@link MapSchema#putValueFrom(Input, MapWrapper, Object)}.
+         */
+        public K getKey()
+        {
+            return null;
+        }
+
+        /**
+         * Gets the last value set.
+         */
+        public V getValue()
+        {
+            return value;
+        }
+
+        /**
+         * Sets the new value and returns the old one.
+         * This method is useful for storage when deserializing cyclic object graphs.
+         */
+        public V setValue(V value)
+        {
+            final V last = this.value;
+            this.value = value;
+            return last;
+        }
+        
+        /**
+         * Puts the key-value entry.
+         */
+        public void put(K key, V value)
+        {
+            // Do not add the entry yet if the value is retrieved before the key.
+            // This could happen when you're dealing with json serialized from the browser.
+            if(key == null)
+                this.value = value;
+            else
+                map.put(key, value);
+        }
+        
+    }
 
 
 }

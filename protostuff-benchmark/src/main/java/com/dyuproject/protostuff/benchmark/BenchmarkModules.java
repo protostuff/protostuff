@@ -24,6 +24,7 @@ import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonSeri
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffNumericJsonXSerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeGESerializer;
 import com.dyuproject.protostuff.benchmark.serializers.ProtostuffRuntimeSerializer;
+import com.dyuproject.protostuff.benchmark.serializers.ProtostuffXmlSerializer;
 import com.dyuproject.protostuff.codegen.GeneratorMain;
 
 /**
@@ -59,6 +60,8 @@ public class BenchmarkModules
         runner.addObjectSerializer(new ProtostuffJsonSerializer());
         runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
         runner.addObjectSerializer(new ProtostuffNumericJsonXSerializer());
+        // xml
+        runner.addObjectSerializer(new ProtostuffXmlSerializer());
         
 
         

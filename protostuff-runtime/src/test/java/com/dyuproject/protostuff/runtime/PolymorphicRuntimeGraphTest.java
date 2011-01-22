@@ -16,7 +16,9 @@ package com.dyuproject.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.GraphTest;
@@ -34,21 +36,44 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
     public static abstract class Node
     {
         ContainerNode parent;
+        String tagName;
+        String id;
         String name;
-        String attribute;
         String text;
+        Map<String,String> attributes;
+        Document root;
         
         public Node()
         {
             
         }
         
-        public Node(ContainerNode parent, String name)
+        public Node(ContainerNode parent, String tagName, String id, Document root)
         {
             this.parent = parent;
-            this.name = name;
+            this.tagName = tagName;
+            this.id = id;
+            this.root = root;
+            
             if(parent != null)
                 parent.addNode(this);
+            
+            if(id != null)
+                root.addNodeById(this);
+                
+        }
+        
+        public void setAttribute(String key, String value)
+        {
+            if(attributes == null)
+                attributes = new HashMap<String,String>();
+            
+            attributes.put(key, value);
+        }
+        
+        public String getAttribute(String key)
+        {
+            return attributes == null ? null : attributes.get(key);
         }
         
         public String toString()
@@ -60,23 +85,20 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
     public static abstract class ContainerNode extends Node
     {
 
-        List<Node> nodes;
+        List<Node> nodes = new ArrayList<Node>();
         
         public ContainerNode()
         {
             
         }
 
-        public ContainerNode(ContainerNode parent, String name)
+        public ContainerNode(ContainerNode parent, String name, String id, Document root)
         {
-            super(parent,name);
+            super(parent, name, id, root);
         }
         
         public void addNode(Node node)
         {
-            if(nodes == null)
-                nodes = new ArrayList<Node>();
-            
             nodes.add(node);
             node.parent = this;
         }
@@ -88,13 +110,16 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         public int getNodeCount()
         {
-            return nodes == null ? 0 : nodes.size();
+            return nodes.size();
         }
         
     }
     
     public static class Document extends ContainerNode
     {
+        
+        Map<String,Node> idMap;
+        
         public Document()
         {
             
@@ -102,7 +127,20 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         public Document(ContainerNode parent)
         {
-            super(parent, "html");
+            super(parent, "html", null, null);
+        }
+        
+        public void addNodeById(Node node)
+        {
+            if(idMap == null)
+                idMap = new HashMap<String,Node>();
+            
+            idMap.put(node.id, node);
+        }
+        
+        public Node getNodeById(String id)
+        {
+            return idMap == null ? null : idMap.get(id);
         }
     }
     
@@ -113,9 +151,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             
         }
         
-        public Head(ContainerNode parent)
+        public Head(ContainerNode parent, Document root)
         {
-            super(parent, "head");
+            super(parent, "head", null, root);
         }
     }
     
@@ -126,9 +164,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             
         }
         
-        public Title(ContainerNode parent)
+        public Title(ContainerNode parent, Document root)
         {
-            super(parent, "title");
+            super(parent, "title", null, root);
         }
     }
     
@@ -143,9 +181,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             
         }
         
-        public Link(ContainerNode parent)
+        public Link(ContainerNode parent, Document root)
         {
-            super(parent, "link");
+            super(parent, "link", null, root);
         }
     }
     
@@ -158,9 +196,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             
         }
         
-        public Body(ContainerNode parent)
+        public Body(ContainerNode parent, Document root)
         {
-            super(parent, "body");
+            super(parent, "body", null, root);
         }
     }
     
@@ -172,16 +210,16 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         }
         
         // default is block
-        Display display = Display.BLOCK;
+        Display display;
         
         public Div()
         {
             
         }
         
-        public Div(ContainerNode parent)
+        public Div(ContainerNode parent, String id, Document root)
         {
-            super(parent, "div");
+            super(parent, "div", id, root);
         }
     }
     
@@ -195,9 +233,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             
         }
         
-        public TextArea(ContainerNode parent)
+        public TextArea(ContainerNode parent, String id, Document root)
         {
-            super(parent, "textarea");
+            super(parent, "textarea", id, root);
         }
     }
     
@@ -206,7 +244,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         Document document;
     }
     
-    /**
+    /*
      * Scenario:
      * 
      * <html>
@@ -215,9 +253,9 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
      *     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
      *   </head>
      *   <body>
-     *     <div>TextArea</div>
-     *     <div>
-     *       <textarea rows="10" cols="20" />
+     *     <div id="firstDiv" name="firstDiv" foo="bar" display="inline">TextArea</div>
+     *     <div id="secondDiv" name="secondDiv">
+     *       <textarea id="ta" name="ta" rows="10" cols="20" />
      *     </div>
      *   </body>
      * </html>
@@ -253,12 +291,12 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
     
     static void attachHead(Document document)
     {
-        Head head = new Head(document);
+        Head head = new Head(document, document);
         
-        Title title = new Title(head);
+        Title title = new Title(head, document);
         title.text = "Hello world from protostuff-runtime graph ser/deser!";
         
-        Link link = new Link(head);
+        Link link = new Link(head, document);
         link.rel = "shortcut icon";
         link.href = "/favicon.ico";
         link.type = "image/x-icon";
@@ -266,12 +304,19 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
     
     static void attachBody(Document document)
     {
-        Body body = new Body(document);
-        Div div = new Div(body);
+        Body body = new Body(document, document);
+        Div div = new Div(body, "firstDiv", document);
+        div.name = "firstDiv";
         div.text = "TextArea";
+        div.setAttribute("foo", "bar");
+        div.display = Div.Display.INLINE;
         
-        Div anotherDiv = new Div(body);
-        TextArea ta = new TextArea(anotherDiv);
+        Div anotherDiv = new Div(body, "secondDiv", document);
+        anotherDiv.name = "secondDiv";
+        anotherDiv.display = Div.Display.BLOCK;
+        
+        TextArea ta = new TextArea(anotherDiv, "ta", document);
+        ta.name = "ta";
         ta.rows = 10;
         ta.cols = 20;
     }
@@ -290,7 +335,8 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         Head head = (Head)document.getNode(0);
         assertTrue(head.parent == document);
-        assertEquals(head.name, "head");
+        assertTrue(head.root == document);
+        assertEquals(head.tagName, "head");
         
         assertTrue(head.getNodeCount() == 2);
         assertTrue(head.getNode(0) instanceof Title);
@@ -298,19 +344,22 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         Title title = (Title)head.getNode(0);
         assertTrue(title.parent == head);
-        assertEquals(title.name, "title");
+        assertTrue(title.root == document);
+        assertEquals(title.tagName, "title");
         assertEquals(title.text, "Hello world from protostuff-runtime graph ser/deser!");
         
         Link link = (Link)head.getNode(1);
         assertTrue(link.parent == head);
-        assertEquals(link.name, "link");
+        assertTrue(link.root == document);
+        assertEquals(link.tagName, "link");
         assertEquals(link.rel, "shortcut icon");
         assertEquals(link.href, "/favicon.ico");
         assertEquals(link.type, "image/x-icon");
         
         Body body = (Body)document.getNode(1);
         assertTrue(body.parent == document);
-        assertEquals(body.name, "body");
+        assertTrue(body.root == document);
+        assertEquals(body.tagName, "body");
         
         assertTrue(body.getNodeCount() == 2);
         assertTrue(body.getNode(0) instanceof Div);
@@ -318,13 +367,22 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         Div div = (Div)body.getNode(0);
         assertTrue(div.parent == body);
-        assertEquals(div.name, "div");
+        assertTrue(div.root == document);
+        assertEquals(div.tagName, "div");
+        assertEquals(div.id, "firstDiv");
+        assertEquals(div.name, "firstDiv");
         assertEquals(div.text, "TextArea");
+        assertEquals("bar", div.getAttribute("foo"));
+        assertTrue(div.display == Div.Display.INLINE);
         assertTrue(div.getNodeCount() == 0);
         
         Div anotherDiv = (Div)body.getNode(1);
         assertTrue(anotherDiv.parent == body);
-        assertEquals(anotherDiv.name, "div");
+        assertTrue(anotherDiv.root == document);
+        assertEquals(anotherDiv.tagName, "div");
+        assertEquals(anotherDiv.id, "secondDiv");
+        assertEquals(anotherDiv.name, "secondDiv");
+        assertTrue(anotherDiv.display == Div.Display.BLOCK);
         assertNull(anotherDiv.text);
         
         assertTrue(anotherDiv.getNodeCount() == 1);
@@ -332,9 +390,16 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         TextArea ta = (TextArea)anotherDiv.getNode(0);
         assertTrue(ta.parent == anotherDiv);
-        assertEquals(ta.name, "textarea");
+        assertTrue(ta.root == document);
+        assertEquals(ta.tagName, "textarea");
+        assertEquals(ta.id, "ta");
+        assertEquals(ta.name, "ta");
         assertTrue(ta.rows == 10);
         assertTrue(ta.cols == 20);
+        
+        assertTrue(document.getNodeById("firstDiv") == div);
+        assertTrue(document.getNodeById("secondDiv") == anotherDiv);
+        assertTrue(document.getNodeById("ta") == ta);
     }
     
     public static abstract class LinkedElement

@@ -93,6 +93,11 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-xml</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-model</artifactId>
       <version>${project.version}</version>
     </dependency>

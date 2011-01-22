@@ -14,7 +14,6 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
@@ -37,8 +36,6 @@ public abstract class RuntimeMessageField<T,P> extends Field<T>
     
     final HasSchema<P> hasSchema;
     
-    private Pipe.Schema<P> pipeSchema;
-    
     public RuntimeMessageField(Class<P> typeClass, HasSchema<P> hasSchema, 
             FieldType type, int number, String name, boolean repeated)
     {
@@ -58,45 +55,9 @@ public abstract class RuntimeMessageField<T,P> extends Field<T>
     /**
      * Returns the lazy initialized pipe schema.
      */
-    @SuppressWarnings("unchecked")
     public Pipe.Schema<P> getPipeSchema()
     {
-        Pipe.Schema<P> pipeSchema = this.pipeSchema;
-        if(pipeSchema == null)
-        {
-            synchronized(this)
-            {
-                if((pipeSchema = this.pipeSchema) == null)
-                {
-                    this.pipeSchema = pipeSchema = (Pipe.Schema<P>)resolvePipeSchema(
-                            hasSchema.getSchema(), typeClass);
-                }
-            }
-        }
-        return pipeSchema;
-    }
-    
-    private static Pipe.Schema<?> resolvePipeSchema(Schema<?> schema, Class<?> clazz)
-    {
-        if(Message.class.isAssignableFrom(clazz))
-        {
-            try
-            {
-                // use the pipe schema of code-generated messages if available.
-                java.lang.reflect.Method m = clazz.getDeclaredMethod("getPipeSchema", 
-                        new Class[]{});
-                return (Pipe.Schema<?>)m.invoke(null, new Object[]{});
-            }
-            catch(Exception e)
-            {
-                // ignore
-            }
-        }
-        
-        if(MappedSchema.class.isAssignableFrom(schema.getClass()))
-            return ((MappedSchema<?>)schema).pipeSchema;
-        
-        throw new RuntimeException("No pipe schema for: " + clazz);
+        return hasSchema.getPipeSchema();
     }
 
 }

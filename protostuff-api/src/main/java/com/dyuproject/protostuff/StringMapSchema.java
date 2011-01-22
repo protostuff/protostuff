@@ -33,9 +33,10 @@ public class StringMapSchema<V> extends MapSchema<String,V>
      */
     public static final StringMapSchema<String> VALUE_STRING = new StringMapSchema<String>(null)
     {
-        protected String readValueFrom(Input input) throws IOException
+        protected void putValueFrom(Input input, MapWrapper<String,String> wrapper, 
+                String key) throws IOException
         {
-            return input.readString();
+            wrapper.put(key, input.readString());
         }
 
         protected void writeValueTo(Output output, int fieldNumber, String value, 
@@ -45,11 +46,24 @@ public class StringMapSchema<V> extends MapSchema<String,V>
         }
     };
     
-    protected final Schema<V> vSchema;
+    /**
+     * The schema of the message value.
+     */
+    public final Schema<V> vSchema;
+    /**
+     * The pipe schema of the message value.
+     */
+    public final Pipe.Schema<V> vPipeSchema;
     
     public StringMapSchema(Schema<V> vSchema)
     {
+        this(vSchema, null);
+    }
+    
+    public StringMapSchema(Schema<V> vSchema, Pipe.Schema<V> vPipeSchema)
+    {
         this.vSchema = vSchema;
+        this.vPipeSchema = vPipeSchema;
     }
 
     protected final String readKeyFrom(Input input) throws IOException
@@ -57,9 +71,10 @@ public class StringMapSchema<V> extends MapSchema<String,V>
         return input.readString();
     }
     
-    protected V readValueFrom(Input input) throws IOException
+    protected void putValueFrom(Input input, MapWrapper<String,V> wrapper, String key) 
+    throws IOException
     {
-        return input.mergeObject(vSchema.newMessage(), vSchema);
+        wrapper.put(key, input.mergeObject(null, vSchema));
     }
 
     protected final void writeKeyTo(Output output, int fieldNumber, String value, 
@@ -72,6 +87,24 @@ public class StringMapSchema<V> extends MapSchema<String,V>
             boolean repeated) throws IOException
     {
         output.writeObject(fieldNumber, value, vSchema, repeated);
+    }
+
+    protected void transferKey(Pipe pipe, Input input, Output output, int number, 
+            boolean repeated) throws IOException
+    {
+        input.transferByteRangeTo(output, true, number, repeated);
+    }
+
+    protected void transferValue(Pipe pipe, Input input, Output output, int number, 
+            boolean repeated) throws IOException
+    {
+        if(vPipeSchema == null)
+        {
+            throw new RuntimeException("No pipe schema for key: " + 
+                    vPipeSchema.typeClass().getName());
+        }
+        
+        output.writeObject(number, pipe, vPipeSchema, repeated);
     }
 
 }

@@ -16,15 +16,16 @@ package com.dyuproject.protostuff.runtime;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -55,7 +56,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
         new ConcurrentHashMap<String, HasSchema<?>>();
     
-    private static final List<String> NO_EXCLUSIONS = Collections.emptyList();
+    private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
     
     /**
      * Registers the schema which overrides any existing schema mapped with the 
@@ -70,9 +71,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      * Registers the schema which overrides any existing schema mapped with the 
      * given class.
      */
-    public static <T> boolean isRegistered(Class<T> typeClass)
+    public static boolean isRegistered(Class<?> typeClass)
     {
-        return __schemaWrappers.containsKey(typeClass.getName());
+        return __schemaWrappers.get(typeClass.getName()) instanceof Registered<?>;
     }
     
     /**
@@ -85,7 +86,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         if(hs == null)
         {
             hs = new Lazy<T>(typeClass);
-            HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(typeClass.getName(), hs);
+            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
+                    typeClass.getName(), hs);
             if(last != null)
                 hs = last;
         }
@@ -100,23 +102,27 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     @SuppressWarnings("unchecked")
     public static <T> Schema<T> getSchema(String className, boolean load)
     {
-        final HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
+        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
         if(hs == null)
         {
             if(!load)
                 return null;
             
-            final Class<T> clazz;
+            final Class<T> typeClass;
             try
             {
-                clazz = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
+                typeClass = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
             }
             catch (ClassNotFoundException e)
             {
                 throw new RuntimeException(e);
             }
             
-            return getSchema(clazz);
+            hs = new Lazy<T>(typeClass);
+            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
+                    typeClass.getName(), hs);
+            if(last != null)
+                hs = last;
         }
         
         return hs.getSchema();
@@ -132,7 +138,41 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         if(hs == null)
         {
             hs = new Lazy<T>(typeClass);
-            HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(typeClass.getName(), hs);
+            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
+                    typeClass.getName(), hs);
+            if(last != null)
+                hs = last;
+        }
+        
+        return hs;
+    }
+    
+    /**
+     * Gets the schema wrapper that was either registered or lazily initialized 
+     * at runtime (if the boolean arg {@code load} is true).
+     */
+    @SuppressWarnings("unchecked")
+    static <T> HasSchema<T> getSchemaWrapper(String className, boolean load)
+    {
+        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
+        if(hs == null)
+        {
+            if(!load)
+                return null;
+            
+            final Class<T> typeClass;
+            try
+            {
+                typeClass = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+            hs = new Lazy<T>(typeClass);
+            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
+                    typeClass.getName(), hs);
             if(last != null)
                 hs = last;
         }
@@ -153,13 +193,18 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, String[] exclusions)
     {
-        return createFrom(typeClass, Arrays.asList(exclusions));
+        HashSet<String> set = new HashSet<String>();
+        for(String exclusion : exclusions)
+            set.add(exclusion);
+        
+        return createFrom(typeClass, set);
     }
     
     /**
      * Generates a schema from the given class with the exclusion of certain fields.
      */
-    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, List<String> exclusions)
+    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
+            Set<String> exclusions)
     {
         if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
         {
@@ -196,13 +241,13 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
         if(fields.isEmpty())
         {
-            throw new RuntimeException("Not able to map any fields from " + typeClass + 
-                        ".  All fields are either transient/static.  " +
-            		"Note that Map fields are excluded.  " +
-            		"Two dimensional array fields are excluded.  " +
-            		"Collection fields whose generic type is a collection " +
-            		"or another generic type, are excluded.");
+            throw new RuntimeException("Not able to map any fields from " + 
+                    typeClass + ".  All fields are either transient/static.  " +
+                    "Two dimensional array fields are excluded.  " +
+                    "Collection/Map fields whose generic type is another " +
+            	    "Collection/Map or another generic type, are excluded.");
         }
+        
         return new RuntimeSchema<T>(typeClass, fields, i);
     }
     
@@ -251,12 +296,11 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
         if(fields.isEmpty())
         {
-            throw new RuntimeException("Not able to map any fields from " + typeClass + 
-                        ".  All fields are either transient/static.  " +
-                        "Note that Map fields are excluded.  " +
-                        "Two dimensional array fields are excluded.  " +
-                        "Collection fields whose generic type is a collection " +
-                        "or another generic type, are excluded.");
+            throw new RuntimeException("Not able to map any fields from " + 
+                    typeClass + ".  All fields are either transient/static.  " +
+                    "Two dimensional array fields are excluded.  " +
+                    "Collection/Map fields whose generic type is another " +
+                    "Collection/Map or another generic type, are excluded.");
         }
         return new RuntimeSchema<T>(typeClass, fields, i);
     }
@@ -312,17 +356,23 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
-    interface HasSchema<T>
+    public static abstract class HasSchema<T>
     {
         /**
          * Gets the schema.
          */
-        public Schema<T> getSchema();
+        public abstract Schema<T> getSchema();
+        
+        /**
+         * Gets the pipe schema.
+         */
+        abstract Pipe.Schema<T> getPipeSchema();
     }
     
-    static final class Registered<T> implements HasSchema<T>
+    static final class Registered<T> extends HasSchema<T>
     {
         final Schema<T> schema;
+        private Pipe.Schema<T> pipeSchema;
         
         Registered(Schema<T> schema)
         {
@@ -333,12 +383,30 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         {
             return schema;
         }
+        
+        Pipe.Schema<T> getPipeSchema()
+        {
+            Pipe.Schema<T> pipeSchema = this.pipeSchema;
+            if(pipeSchema == null)
+            {
+                synchronized(this)
+                {
+                    if((pipeSchema = this.pipeSchema) == null)
+                    {
+                        this.pipeSchema = pipeSchema = resolvePipeSchema(
+                                schema, schema.typeClass(), true);
+                    }
+                }
+            }
+            return pipeSchema;
+        }
     }
     
-    static final class Lazy<T> implements HasSchema<T>
+    static final class Lazy<T> extends HasSchema<T>
     {
         final Class<T> typeClass;
-        Schema<T> schema;
+        private Schema<T> schema;
+        private Pipe.Schema<T> pipeSchema;
         
         Lazy(Class<T> typeClass)
         {
@@ -383,5 +451,53 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
             return schema;
         }
+        
+        Pipe.Schema<T> getPipeSchema()
+        {
+            Pipe.Schema<T> pipeSchema = this.pipeSchema;
+            if(pipeSchema == null)
+            {
+                synchronized(this)
+                {
+                    if((pipeSchema = this.pipeSchema) == null)
+                    {
+                        this.pipeSchema = pipeSchema = RuntimeSchema.resolvePipeSchema(
+                                getSchema(), typeClass, true);
+                    }
+                }
+            }
+            return pipeSchema;
+        }
+    }
+    
+    /**
+     * Invoked only when applications are having pipe io operations.
+     */
+    @SuppressWarnings("unchecked")
+    static <T> Pipe.Schema<T> resolvePipeSchema(Schema<T> schema, Class<? super T> clazz, 
+            boolean throwIfNone)
+    {
+        if(Message.class.isAssignableFrom(clazz))
+        {
+            try
+            {
+                // use the pipe schema of code-generated messages if available.
+                java.lang.reflect.Method m = clazz.getDeclaredMethod("getPipeSchema", 
+                        new Class[]{});
+                return (Pipe.Schema<T>)m.invoke(null, new Object[]{});
+            }
+            catch(Exception e)
+            {
+                // ignore
+            }
+        }
+        
+        if(MappedSchema.class.isAssignableFrom(schema.getClass()))
+            return ((MappedSchema<T>)schema).pipeSchema;
+        
+        if(throwIfNone)
+            throw new RuntimeException("No pipe schema for: " + clazz);
+        
+        return null;
     }
 }

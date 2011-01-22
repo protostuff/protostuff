@@ -73,10 +73,6 @@ public abstract class RuntimeFieldFactory<V>
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
         
-        // maps are excluded
-        if(Map.class.isAssignableFrom(clazz))
-            return null;
-        
         if(clazz.isEnum())
             return ENUM;
         
@@ -85,6 +81,9 @@ public abstract class RuntimeFieldFactory<V>
         
         if(clazz.isArray())
             return ARRAY;
+        
+        if(Map.class.isAssignableFrom(clazz))
+            return RuntimeMapFieldFactory.MAP;
 
         if(List.class.isAssignableFrom(clazz))
             return LIST;
@@ -95,7 +94,7 @@ public abstract class RuntimeFieldFactory<V>
         if(Collection.class == clazz)
             return COLLECTION;
         
-        RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
+        final RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
         return inline == null ? pojo(clazz) : inline;
     }
     
@@ -1146,7 +1145,7 @@ public abstract class RuntimeFieldFactory<V>
                 protected void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
-                    output.writeObject(number, pipe, pipeSchema, false);
+                    output.writeObject(number, pipe, schema.pipeSchema, false);
                 }
                 protected void doMergeFrom(Input input, Schema<Object> schema, 
                         Object message) throws IOException
@@ -1352,7 +1351,7 @@ public abstract class RuntimeFieldFactory<V>
                         protected void transfer(Pipe pipe, Input input, Output output, 
                                 boolean repeated) throws IOException
                         {
-                            output.writeObject(number, pipe, pipeSchema, repeated);
+                            output.writeObject(number, pipe, schema.pipeSchema, repeated);
                         }
                         protected void doMergeFrom(Input input, Schema<Object> schema, 
                                 Object message) throws IOException
@@ -1678,7 +1677,7 @@ public abstract class RuntimeFieldFactory<V>
                         protected void transfer(Pipe pipe, Input input, Output output, 
                                 boolean repeated) throws IOException
                         {
-                            output.writeObject(number, pipe, pipeSchema, repeated);
+                            output.writeObject(number, pipe, schema.pipeSchema, repeated);
                         }
                         protected void doMergeFrom(Input input, Schema<Object> schema, 
                                 Object message) throws IOException
@@ -2003,7 +2002,7 @@ public abstract class RuntimeFieldFactory<V>
                         protected void transfer(Pipe pipe, Input input, Output output, 
                                 boolean repeated) throws IOException
                         {
-                            output.writeObject(number, pipe, pipeSchema, repeated);
+                            output.writeObject(number, pipe, schema.pipeSchema, repeated);
                         }
                         protected void doMergeFrom(Input input, Schema<Object> schema, 
                                 Object message) throws IOException
@@ -2341,7 +2340,7 @@ public abstract class RuntimeFieldFactory<V>
                         protected void transfer(Pipe pipe, Input input, Output output, 
                                 boolean repeated) throws IOException
                         {
-                            output.writeObject(number, pipe, pipeSchema, repeated);
+                            output.writeObject(number, pipe, schema.pipeSchema, repeated);
                         }
                         protected void doMergeFrom(Input input, Schema<Object> schema, 
                                 Object message) throws IOException

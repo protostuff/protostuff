@@ -17,9 +17,6 @@ package com.dyuproject.protostuff.runtime;
 import java.io.IOException;
 
 import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
@@ -46,133 +43,35 @@ public abstract class PolymorphicRuntimeField<T> extends Field<T>
 {
 
     /**
-     * The polymorphic schema.
+     * The schema of the polymorphic pojo.
      */
-    final Schema<Object> schema = new Schema<Object>()
-    {
-
-        public String getFieldName(int number)
-        {
-            return Integer.toString(number);
-        }
-
-        public int getFieldNumber(String name)
-        {
-            return Integer.parseInt(name);
-        }
-
-        public boolean isInitialized(Object owner)
-        {
-            return true;
-        }
-
-        public String messageFullName()
-        {
-            return baseClass.getName();
-        }
-
-        public String messageName()
-        {
-            return baseClass.getSimpleName();
-        }
-
-        public Object newMessage()
-        {
-            // cannot instantiate an abstract type.
-            throw new UnsupportedOperationException();
-        }
-
-        public Class<? super Object> typeClass()
-        {
-            return baseClass;
-        }
-        
-        /**
-         * Delegates to the derived schema from the type metadata.
-         */
-        public void mergeFrom(Input input, final Object owner) throws IOException
-        {
-            final int first = input.readFieldNumber(schema);
-            if(first != 127)
-                throw new ProtostuffException("order not preserved.");
-            
-            final String className = input.readString();
-            final Schema<Object> schema = RuntimeSchema.getSchema(className, 
-                    RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
-            
-            if(schema == null)
-                throw new ProtostuffException("polymorphic pojo not registered: " + className);
-            
-            doMergeFrom(input, schema, owner);
-        }
-        
-        /**
-         * Delegates to the derived schema from the type metadata.
-         */
-        @SuppressWarnings("unchecked")
-        public void writeTo(final Output output, final Object value) throws IOException
-        {
-            final Schema<Object> schema = 
-                RuntimeSchema.getSchema((Class<Object>)value.getClass());
-            
-            // write the type
-            output.writeString(127, value.getClass().getName(), false);
-            
-            // write the rest of the fields of the exact type
-            schema.writeTo(output, value);
-        }
-    };
+    public final DerivativeSchema schema;
     
     /**
-     * The polymorphic pipe schema.
+     * The class of the message field.
      */
-    final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(schema)
-    {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            final int first = input.readFieldNumber(schema);
-            if(first != 127)
-                throw new ProtostuffException("order not preserved.");
-            
-            final String className = input.readString();
-            
-            final MappedSchema<Object> schema;
-            try
-            {
-                schema = (MappedSchema<Object>)RuntimeSchema.getSchema(className, 
-                        RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
-            }
-            catch(ClassCastException e)
-            {
-                throw new IllegalStateException("PipeSchema not available");
-            }
-            
-            if(schema == null)
-            {
-                throw new ProtostuffException("polymorphic pojo not registered: " + 
-                        className);
-            }
-            
-            output.writeString(127, className, false);
-            schema.pipeSchema.transfer(pipe, input, output);
-        }
-        
-    };
-    
-    final Class<Object> baseClass;
+    public final Class<Object> typeClass;
     
     public PolymorphicRuntimeField(Class<Object> baseClass, 
             FieldType type, int number, String name)
     {
-        super(type, number, name);
-        this.baseClass = baseClass;
+        this(baseClass, type, number, name, false);
     }
     
-    public PolymorphicRuntimeField(Class<Object> baseClass, 
+    public PolymorphicRuntimeField(Class<Object> typeClass, 
             FieldType type, int number, String name, boolean repeated)
     {
         super(type, number, name, repeated);
-        this.baseClass = baseClass;
+        this.typeClass = typeClass;
+        
+        schema = new DerivativeSchema()
+        {
+            protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+                    Object owner) throws IOException
+            {
+                PolymorphicRuntimeField.this.doMergeFrom(input, derivedSchema, owner);
+            }
+        };
     }
     
     protected abstract void doMergeFrom(Input input, Schema<Object> derivedSchema, 

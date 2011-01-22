@@ -159,5 +159,14 @@ public abstract class Pipe
         throws IOException;
 
     }
+    
+    /**
+     * This should not be called directly by applications.
+     */
+    public static <T> void transferDirect(Pipe.Schema<T> pipeSchema, Pipe pipe, 
+            Input input, Output output) throws IOException
+    {
+        pipeSchema.transfer(pipe, input, output);
+    }
 
 }

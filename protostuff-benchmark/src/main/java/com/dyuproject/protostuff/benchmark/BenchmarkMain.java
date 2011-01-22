@@ -26,7 +26,8 @@ public class BenchmarkMain
 {
     
     public static void main(String[] args) throws Exception
-    {        
+    {       
+        System.setProperty("benchmark.output_dir", "target");
         BenchmarkRunner runner = new BenchmarkRunner();
         configure(runner);
         System.out.println("benchmark running.");

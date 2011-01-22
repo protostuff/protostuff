@@ -60,7 +60,6 @@ public class FieldExclusionTest extends AbstractTest
         Set<Map<String,Double>> someSetValueMap;
         Set<String>[] arraySet;
 
-        Map<String, String> someMap;
         Map<String[], String> someMapKeyArray;
         Map<String, String[]> someMapValueArray;
         Map<String[], String[]> someMapBothArray;
