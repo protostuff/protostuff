@@ -36,7 +36,7 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
  * @author David Yu
  * @created Jan 21, 2011
  */
-public final class RuntimeMapFieldFactory
+final class RuntimeMapFieldFactory
 {
 
     private RuntimeMapFieldFactory() {}
@@ -1191,10 +1191,10 @@ public final class RuntimeMapFieldFactory
                 if(isInvalidChildType(clazzV))
                     return null;
                 
-                if(POLYMORPHIC_POJO == pojo(clazzV))
-                    return createMapEnumKPolymorphicV(number, name, f, clazzK, clazzV);
+                if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
+                    return createMapEnumKPojoV(number, name, f, clazzK, clazzV);
                 
-                return createMapEnumKPojoV(number, name, f, clazzK, clazzV);
+                return createMapEnumKPolymorphicV(number, name, f, clazzK, clazzV);
             }
 
             final RuntimeFieldFactory<Object> inline = getInline(clazzK);
@@ -1210,13 +1210,16 @@ public final class RuntimeMapFieldFactory
                 if(isInvalidChildType(clazzV))
                     return null;
                 
-                if(POLYMORPHIC_POJO == pojo(clazzV))
-                    return createMapInlineKPolymorphicV(number, name, f, clazzK, clazzV);
+                if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
+                    return createMapInlineKPojoV(number, name, f, clazzK, clazzV);
                 
-                return createMapInlineKPojoV(number, name, f, clazzK, clazzV);
+                return createMapInlineKPolymorphicV(number, name, f, clazzK, clazzV);
             }
             
-            if(POJO == pojo(clazzK))
+            if(isInvalidChildType(clazzK))
+                return null;
+            
+            if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
             {
                 if(clazzV.isEnum())
                     return createMapPojoKEnumV(number, name, f, clazzK, clazzV);
@@ -1227,10 +1230,10 @@ public final class RuntimeMapFieldFactory
                 if(isInvalidChildType(clazzV))
                     return null;
                 
-                if(POLYMORPHIC_POJO == pojo(clazzV))
-                    return createMapPojoKPolymorphicV(number, name, f, clazzK, clazzV);
+                if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
+                    return createMapPojoKPojoV(number, name, f, clazzK, clazzV);
                 
-                return createMapPojoKPojoV(number, name, f, clazzK, clazzV);
+                return createMapPojoKPolymorphicV(number, name, f, clazzK, clazzV);
             }
             
             // polymorphic keys not allowed.
