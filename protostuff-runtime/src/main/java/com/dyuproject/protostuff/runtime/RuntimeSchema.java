@@ -59,21 +59,56 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
     
     /**
-     * Registers the schema which overrides any existing schema mapped with the 
-     * given class.
+     * Maps the {@code baseClass} to a specific non-interface/non-abstract 
+     * {@code typeClass} and registers it (this must be done on application startup).
+     * 
+     * With this approach, there is no overhead of writing the type metadata if a 
+     * {@code baseClass} field is serialized.
+     * 
+     * Returns true if the baseClass does not exist.
+     * 
+     * @throws IllegalArgumentException if the {@code typeClass} is an interface or 
+     * an abstract class.
      */
-    public static <T> void register(Class<? super T> typeClass, Schema<T> schema)
+    public static <T> boolean map(Class<? super T> baseClass, Class<T> typeClass)
     {
-        __schemaWrappers.put(typeClass.getName(), new Registered<T>(schema));
+        assert baseClass != null && typeClass != null;
+        
+        if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
+        {
+            throw new IllegalArgumentException(typeClass + 
+                    " cannot be an interface/abstract class.");
+        }
+        
+        final HasSchema<?> last = __schemaWrappers.putIfAbsent(baseClass.getName(), 
+                new Mapped<T>(baseClass, typeClass));
+        
+        return last == null || (last instanceof Mapped<?> && 
+                ((Mapped<?>)last).typeClass == typeClass);
     }
     
     /**
-     * Registers the schema which overrides any existing schema mapped with the 
-     * given class.
+     * Returns true if this there is no existing one or the same schema 
+     * has already been registered (this must be done on application startup).
+     */
+    public static <T> boolean register(Class<T> typeClass, Schema<T> schema)
+    {
+        assert typeClass != null && schema != null;
+        
+        final HasSchema<?> last = __schemaWrappers.putIfAbsent(typeClass.getName(), 
+                new Registered<T>(schema));
+        
+        return last == null || (last instanceof Registered<?> && 
+                ((Registered<?>)last).schema == schema);
+    }
+    
+    /**
+     * Returns true if the {@code typeClass} has already been registered/mapped.
      */
     public static boolean isRegistered(Class<?> typeClass)
     {
-        return __schemaWrappers.get(typeClass.getName()) instanceof Registered<?>;
+        final HasSchema<?> last = __schemaWrappers.get(typeClass.getName());
+        return last != null && !(last instanceof Lazy<?>);
     }
     
     /**
@@ -356,6 +391,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
+    /**
+     * The schema wrapper.
+     */
     public static abstract class HasSchema<T>
     {
         /**
@@ -468,6 +506,55 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             }
             return pipeSchema;
         }
+    }
+    
+    static final class Mapped<T> extends HasSchema<T>
+    {
+        
+        final Class<? super T> baseClass;
+        final Class<T> typeClass;
+        private HasSchema<T> wrapper;
+        
+        Mapped(Class<? super T> baseClass, Class<T> typeClass)
+        {
+            this.baseClass = baseClass;
+            this.typeClass = typeClass;
+        }
+
+        public Schema<T> getSchema()
+        {
+            HasSchema<T> wrapper = this.wrapper;
+            if(wrapper == null)
+            {
+                synchronized(this)
+                {
+                    if((wrapper = this.wrapper) == null)
+                    {
+                        this.wrapper = wrapper = getSchemaWrapper(typeClass);
+                    }
+                }
+            }
+            
+            return wrapper.getSchema();
+        }
+
+        Pipe.Schema<T> getPipeSchema()
+        {
+            HasSchema<T> wrapper = this.wrapper;
+            if(wrapper == null)
+            {
+                synchronized(this)
+                {
+                    if((wrapper = this.wrapper) == null)
+                    {
+                        this.wrapper = wrapper = getSchemaWrapper(typeClass);
+                    }
+                }
+            }
+            
+            return wrapper.getPipeSchema();
+        }
+        
     }
     
     /**

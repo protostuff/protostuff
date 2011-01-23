@@ -16,8 +16,6 @@ package com.dyuproject.protostuff.runtime;
 
 import com.dyuproject.protostuff.ProtostuffPipeTest;
 import com.dyuproject.protostuff.runtime.CollectionTest.Employee;
-import com.dyuproject.protostuff.runtime.CollectionTest.IEmployee;
-import com.dyuproject.protostuff.runtime.CollectionTest.ITask;
 import com.dyuproject.protostuff.runtime.CollectionTest.Task;
 import com.dyuproject.protostuff.runtime.MathObjectsTest.Payment;
 
@@ -29,13 +27,6 @@ import com.dyuproject.protostuff.runtime.MathObjectsTest.Payment;
  */
 public class RuntimePipeTest extends ProtostuffPipeTest
 {
-    
-    static
-    {
-        // this is necessary to be able to map interfaces to their respective implementations.
-        RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(Task.class));
-        RuntimeSchema.register(IEmployee.class, RuntimeSchema.getSchema(Employee.class));
-    }
     
     static <T> MappedSchema<T> getSchema(Class<T> typeClass)
     {

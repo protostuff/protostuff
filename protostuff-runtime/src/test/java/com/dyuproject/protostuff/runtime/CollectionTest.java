@@ -35,9 +35,10 @@ public class CollectionTest extends TestCase
     
     static
     {
-        // this is necessary to be able to map interfaces to their respective implementations.
-        RuntimeSchema.register(ITask.class, RuntimeSchema.getSchema(Task.class));
-        RuntimeSchema.register(IEmployee.class, RuntimeSchema.getSchema(Employee.class));
+        // this is necessary to be able to map interfaces to their respective 
+        // implementations and to avoid including type metadata during serialization.
+        RuntimeSchema.map(ITask.class, Task.class);
+        RuntimeSchema.map(IEmployee.class, Employee.class);
     }
     
     public interface ITask
@@ -344,6 +345,7 @@ public class CollectionTest extends TestCase
     
     public void testITask() throws Exception
     {
+        // Because we mapped ITask to Task, this is ok.
         Schema<ITask> schema = RuntimeSchema.getSchema(ITask.class);
         
         ITask p = filledTask();
@@ -392,6 +394,7 @@ public class CollectionTest extends TestCase
     
     public void testIEmployee() throws Exception
     {
+        // Because we mapped IEmployee to Employee, this is ok.
         Schema<IEmployee> schema = RuntimeSchema.getSchema(IEmployee.class);
         
         Collection<String> departments = new ArrayList<String>();
