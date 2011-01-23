@@ -170,10 +170,7 @@ final class RuntimeArrayFieldFactory
                 if(array != null)
                 {
                     for(int i=0, len=Array.getLength(array); i<len; i++)
-                    {
-                        eio.writeTo(output, number, repeated, 
-                                (Enum<?>)Array.get(array, i));
-                    }
+                        eio.writeTo(output, number, true, (Enum<?>)Array.get(array, i));
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
