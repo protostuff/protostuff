@@ -35,7 +35,13 @@ public final class XmlOutput implements Output, StatefulOutput
     
     public XmlOutput(XMLStreamWriter writer)
     {
+        this(writer, null);
+    }
+    
+    public XmlOutput(XMLStreamWriter writer, Schema<?> schema)
+    {
         this.writer = writer;
+        this.schema = schema;
     }
     
     public XmlOutput use(Schema<?> schema)
@@ -52,7 +58,8 @@ public final class XmlOutput implements Output, StatefulOutput
         }
     }
     
-    private void write(String name, String value) throws IOException
+    private static void write(final XMLStreamWriter writer, final String name, 
+            final String value) throws IOException
     {
         try
         {
@@ -68,77 +75,77 @@ public final class XmlOutput implements Output, StatefulOutput
     
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Long.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Long.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Long.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Long.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Long.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
     
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Float.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Float.toString(value));
     }
     
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Double.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Double.toString(value));
     }
     
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), String.valueOf(value));
+        write(writer, schema.getFieldName(fieldNumber), String.valueOf(value));
     }
     
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), Integer.toString(value));
+        write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
     
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        write(schema.getFieldName(fieldNumber), value);
+        write(writer, schema.getFieldName(fieldNumber), value);
     }
     
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
@@ -148,9 +155,9 @@ public final class XmlOutput implements Output, StatefulOutput
     
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
+        final XMLStreamWriter writer = this.writer;
         try
         {
-            final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(schema.getFieldName(fieldNumber));
             writer.writeCData(STRING.deser(value));
             writer.writeEndElement();
@@ -170,9 +177,9 @@ public final class XmlOutput implements Output, StatefulOutput
             return;
         }
 
+        final XMLStreamWriter writer = this.writer;
         try
         {
-            final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(schema.getFieldName(fieldNumber));
             writer.writeCData(STRING.deser(value, offset, length));
             writer.writeEndElement();
@@ -189,9 +196,9 @@ public final class XmlOutput implements Output, StatefulOutput
         final Schema<?> lastSchema = this.schema;
         this.schema = schema;
         
+        final XMLStreamWriter writer = this.writer;
         try
         {
-            final XMLStreamWriter writer = this.writer;
             writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
             
             writer.writeStartElement(schema.messageName());

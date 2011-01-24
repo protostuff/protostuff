@@ -251,17 +251,17 @@ public final class XmlInput implements Input
     
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
-        final String simpleName = schema.messageName();
-        if(nextTag() != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
-            throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        //final String simpleName = schema.messageName();
+        if(nextTag() != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
+            throw new XmlInputException("Expecting token END_ELEMENT: " + schema.messageName());
         
         if(nextTag() == END_ELEMENT)
         {
             // empty message
             emptyMessage = true;
             
-            if(!simpleName.equals(parser.getLocalName()))
-                throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+            //if(!simpleName.equals(parser.getLocalName()))
+            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
             
             if(value == null)
                 value = schema.newMessage();
@@ -280,8 +280,8 @@ public final class XmlInput implements Input
             value = schema.newMessage();
         schema.mergeFrom(this, value);
         
-        if(!simpleName.equals(parser.getLocalName()))
-            throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        //if(!simpleName.equals(parser.getLocalName()))
+        //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
         
         // move to end element (field) then onto the next
         endAndNextTag();

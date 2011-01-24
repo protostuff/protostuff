@@ -104,22 +104,22 @@ public final class XmlIOUtil
         {
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
-                final String simpleName = pipeSchema.wrappedSchema.messageName();
+                //final String simpleName = pipeSchema.wrappedSchema.messageName();
 
                 try
                 {
                     if(parser.nextTag() != START_ELEMENT || 
-                            !simpleName.equals(parser.getLocalName()))
+                            !pipeSchema.wrappedSchema.messageName().equals(parser.getLocalName()))
                     {
                         throw new XmlInputException("Expected token START_ELEMENT: " + 
-                                simpleName);
+                                pipeSchema.wrappedSchema.messageName());
                     }
                     
                     if(parser.nextTag() == END_ELEMENT)
                     {
-                        if(!simpleName.equals(parser.getLocalName()))
-                            throw new XmlInputException("Expecting token END_ELEMENT: " + 
-                                    simpleName);
+                        //if(!simpleName.equals(parser.getLocalName()))
+                        //    throw new XmlInputException("Expecting token END_ELEMENT: " + 
+                        //            simpleName);
                         
                         // empty message;
                         return null;
@@ -151,8 +151,8 @@ public final class XmlIOUtil
                 
                 assert input == xmlInput;
                 
-                final String simpleName = pipeSchema.wrappedSchema.messageName();
-                final String localName = parser.getLocalName();
+                //final String simpleName = pipeSchema.wrappedSchema.messageName();
+                //final String localName = parser.getLocalName();
                 
                 try
                 {
@@ -163,11 +163,11 @@ public final class XmlIOUtil
                     // end of pipe transfer ... ignore
                 }
                 
-                if(!simpleName.equals(localName))
+                /*if(!simpleName.equals(localName))
                 {
                     throw new XmlInputException("Expecting token END_ELEMENT: " + 
                             simpleName);
-                }
+                }*/
             }
         };
     }
@@ -297,18 +297,18 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(XMLStreamReader parser, T message, Schema<T> schema)
     throws IOException, XMLStreamException, XmlInputException
     {
-        final String simpleName = schema.messageName();
+        //final String simpleName = schema.messageName();
         
         if(parser.nextTag() != START_ELEMENT || 
-                !simpleName.equals(parser.getLocalName()))
+                !schema.messageName().equals(parser.getLocalName()))
         {
-            throw new XmlInputException("Expected token START_ELEMENT: " + simpleName);
+            throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
         }
         
         if(parser.nextTag() == END_ELEMENT)
         {
-            if(!simpleName.equals(parser.getLocalName()))
-                throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+            //if(!simpleName.equals(parser.getLocalName()))
+            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
             
             // empty message;
             return;
@@ -316,8 +316,8 @@ public final class XmlIOUtil
         
         schema.mergeFrom(new XmlInput(parser), message);
         
-        if(!simpleName.equals(parser.getLocalName()))
-            throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        //if(!simpleName.equals(parser.getLocalName()))
+        //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
     }
     
     /**
@@ -452,7 +452,7 @@ public final class XmlIOUtil
     {
         writer.writeStartElement(schema.messageName());
         
-        schema.writeTo(new XmlOutput(writer).use(schema), message);
+        schema.writeTo(new XmlOutput(writer, schema), message);
         
         writer.writeEndElement();
     }
@@ -509,7 +509,6 @@ public final class XmlIOUtil
     public static <T> void writeListTo(XMLStreamWriter writer, List<T> messages, Schema<T> schema) 
     throws IOException, XMLStreamException
     {
-        final String simpleName = schema.messageName();
         writer.writeStartElement("list");
         
         if(messages.isEmpty())
@@ -518,11 +517,12 @@ public final class XmlIOUtil
             return;
         }
 
-        final XmlOutput output = new XmlOutput(writer);
+        final String simpleName = schema.messageName();
+        final XmlOutput output = new XmlOutput(writer, schema);
         for(T m : messages)
         {
             writer.writeStartElement(simpleName);
-            schema.writeTo(output.use(schema), m);
+            schema.writeTo(output, m);
             writer.writeEndElement();
         }
         
@@ -579,21 +579,21 @@ public final class XmlIOUtil
         if(parser.nextTag() != START_ELEMENT || !"list".equals(parser.getLocalName()))
             throw new XmlInputException("Expected token START_ELEMENT: list");
         
-        final String simpleName = schema.messageName();
+        //final String simpleName = schema.messageName();
         final ArrayList<T> list = new ArrayList<T>();
         final XmlInput input = new XmlInput(parser);
         
         for(int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())
         {
-            if(tag != START_ELEMENT || !simpleName.equals(parser.getLocalName()))
-                throw new XmlInputException("Expected token START_ELEMENT: " + simpleName);
+            if(tag != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
+                throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
             
             final T message = schema.newMessage();
             
             if(parser.nextTag() == END_ELEMENT)
             {
-                if(!simpleName.equals(parser.getLocalName()))
-                    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+                //if(!simpleName.equals(parser.getLocalName()))
+                //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
                 
                 // empty message
                 list.add(message);
@@ -602,8 +602,8 @@ public final class XmlIOUtil
 
             schema.mergeFrom(input, message);
             
-            if(!simpleName.equals(parser.getLocalName()))
-                throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+            //if(!simpleName.equals(parser.getLocalName()))
+            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
             
             list.add(message);
         }
