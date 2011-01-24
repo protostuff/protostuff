@@ -34,7 +34,7 @@ public class XmlRuntimeMapTest extends AbstractRuntimeMapTest
     
     protected boolean isPolymorphicPojoSupported()
     {
-        return false;
+        return true;
     }
 
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 

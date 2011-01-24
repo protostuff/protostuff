@@ -31,7 +31,6 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * Limitations:
  * The number of fields are limited to 126 (127 is the usual limit anyway).
  * The order of the fields being written must be preserved.
- * It will only work with protostuff, protobuf and json(numeric) format.
  * It will not work if the message serialized is coming from the browser 
  * since the fields will most likey be out-of-order 
  * (unless you have control of the json serialization).

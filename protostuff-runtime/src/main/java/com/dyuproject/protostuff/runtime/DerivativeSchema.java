@@ -21,6 +21,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.ProtostuffException;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.StatefulOutput;
 import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
 
 /**
@@ -31,15 +32,17 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
  */
 public abstract class DerivativeSchema implements Schema<Object>
 {
+    
+    private static final String FIELD_NAME_TYPE_METADATA = "_";
 
     public String getFieldName(int number)
     {
-        return Integer.toString(number);
+        return number == 127 ? FIELD_NAME_TYPE_METADATA : null;
     }
 
     public int getFieldNumber(String name)
     {
-        return Integer.parseInt(name);
+        return name.length() == 1 && name.charAt(0) == '_' ? 127 : 0;
     }
 
     public boolean isInitialized(Object owner)
@@ -100,6 +103,12 @@ public abstract class DerivativeSchema implements Schema<Object>
         // write the type
         output.writeString(127, value.getClass().getName(), false);
         
+        if(output instanceof StatefulOutput)
+        {
+            // update using the derived schema.
+            ((StatefulOutput)output).updateLast(schema, this);
+        }
+        
         // write the rest of the fields of the exact type
         schema.writeTo(output, value);
     }
@@ -128,7 +137,15 @@ public abstract class DerivativeSchema implements Schema<Object>
             }
             
             output.writeString(127, className, false);
-            Pipe.transferDirect(wrapper.getPipeSchema(), pipe, input, output);
+            
+            final Pipe.Schema<Object> pipeSchema = wrapper.getPipeSchema();
+            if(output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput)output).updateLast(pipeSchema, this);
+            }            
+            
+            Pipe.transferDirect(pipeSchema, pipe, input, output);
         }
         
     };

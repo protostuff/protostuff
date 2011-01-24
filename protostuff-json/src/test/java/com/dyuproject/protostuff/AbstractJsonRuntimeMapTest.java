@@ -37,7 +37,7 @@ public abstract class AbstractJsonRuntimeMapTest extends AbstractRuntimeMapTest
     
     protected boolean isPolymorphicPojoSupported()
     {
-        return isNumeric();
+        return true;
     }
     
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 

@@ -27,7 +27,7 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Jul 2, 2010
  */
-public final class JsonXOutput extends WriteSession implements Output
+public final class JsonXOutput extends WriteSession implements Output, StatefulOutput
 {
     
     private static final byte START_OBJECT = (byte)'{', END_OBJECT = (byte)'}', 
@@ -148,6 +148,14 @@ public final class JsonXOutput extends WriteSession implements Output
     public boolean isLastRepeated()
     {
         return lastRepeated;
+    }
+    
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
+    {
+        if(lastSchema != null && lastSchema == this.schema)
+        {
+            this.schema = schema;
+        }
     }
     
     JsonXOutput writeCommaAndStartObject() throws IOException

@@ -27,7 +27,7 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created May 24, 2010
  */
-public final class XmlOutput implements Output
+public final class XmlOutput implements Output, StatefulOutput
 {
     
     private final XMLStreamWriter writer;
@@ -42,6 +42,14 @@ public final class XmlOutput implements Output
     {
         this.schema = schema;
         return this;
+    }
+    
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
+    {
+        if(lastSchema != null && lastSchema == this.schema)
+        {
+            this.schema = schema;
+        }
     }
     
     private void write(String name, String value) throws IOException

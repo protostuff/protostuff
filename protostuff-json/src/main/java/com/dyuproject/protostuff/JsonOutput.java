@@ -24,7 +24,7 @@ import org.codehaus.jackson.JsonGenerator;
  * @author David Yu
  * @created Nov 20, 2009
  */
-public final class JsonOutput implements Output
+public final class JsonOutput implements Output, StatefulOutput
 {
     
     private final JsonGenerator generator;
@@ -92,6 +92,14 @@ public final class JsonOutput implements Output
     public boolean isLastRepeated()
     {
         return lastRepeated;
+    }
+    
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
+    {
+        if(lastSchema != null && lastSchema == this.schema)
+        {
+            this.schema = schema;
+        }
     }
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
