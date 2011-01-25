@@ -14,8 +14,6 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.getInline;
-
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -42,9 +40,8 @@ final class RuntimeCollectionFieldFactory
     
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> genericType)
+            final java.lang.reflect.Field f, final RuntimeFieldFactory<Object> inline)
     {
-        final RuntimeFieldFactory<Object> inline = getInline(genericType);
         return new Field<T>(inline.getFieldType(), number, name, true)
         {
             {
@@ -363,8 +360,9 @@ final class RuntimeCollectionFieldFactory
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, genericType);
             
-            if(getInline(genericType) != null)
-                return createCollectionInlineV(number, name, f, genericType);
+            final RuntimeFieldFactory<Object> inline = getInline(genericType);
+            if(inline != null)
+                return createCollectionInlineV(number, name, f, inline);
             
             if(isInvalidChildType(genericType))
                 return null;
