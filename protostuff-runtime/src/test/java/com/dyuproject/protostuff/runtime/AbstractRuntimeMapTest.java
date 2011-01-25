@@ -23,8 +23,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.Pipe;
@@ -96,6 +103,15 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         String name;
         long timestamp;
         final List<String> stringList = newList();
+        Map<Integer,Long> map;
+        HashMap<Long,Integer> hashMap;
+        LinkedHashMap<Float,Double> linkedHashMap;
+        TreeMap<Double,Float> treeMap;
+        WeakHashMap<Byte,Character> weakHashMap;
+        IdentityHashMap<Sequence, Boolean> identityHashMap;
+        Hashtable<String,String> hashTable;
+        ConcurrentHashMap<String,String> concurrentHashMap;
+        ConcurrentSkipListMap<String,String> concurrentSkipListMap;
         
         static SomePojo create(String name)
         {
@@ -106,6 +122,34 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             p.stringList.add("foo");
             p.stringList.add(name);
             
+            p.hashMap = new HashMap<Long,Integer>();
+            p.hashMap.put(System.currentTimeMillis(), 1);
+            p.hashMap.put(null, null);
+            
+            p.linkedHashMap = new LinkedHashMap<Float,Double>();
+            p.linkedHashMap.put(5.5f, 4.4d);
+            p.linkedHashMap.put(null, null);
+            
+            p.treeMap = new TreeMap<Double,Float>();
+            p.treeMap.put(324.43d, 234.1f);
+            
+            p.weakHashMap = new WeakHashMap<Byte,Character>();
+            p.weakHashMap.put(new Byte((byte)0x89), 'f');
+            p.weakHashMap.put(null, null);
+            
+            p.identityHashMap = new IdentityHashMap<Sequence, Boolean>();
+            p.identityHashMap.put(Sequence.ONE, true);
+            
+            p.hashTable = new Hashtable<String,String>();
+            p.hashTable.put("foo", "bar");
+            p.hashTable.put("", "");
+            
+            p.concurrentHashMap = new ConcurrentHashMap<String,String>();
+            p.concurrentHashMap.put("bar", "foo");
+            
+            p.concurrentSkipListMap = new ConcurrentSkipListMap<String,String>();
+            p.concurrentSkipListMap.put("baz", "bar");
+            
             return p;
         }
 
@@ -114,9 +158,18 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         {
             final int prime = 31;
             int result = 1;
+            result = prime * result + ((concurrentHashMap == null)?0:concurrentHashMap.hashCode());
+            result = prime * result + ((concurrentSkipListMap == null)?0:concurrentSkipListMap.hashCode());
+            result = prime * result + ((hashMap == null)?0:hashMap.hashCode());
+            result = prime * result + ((hashTable == null)?0:hashTable.hashCode());
+            result = prime * result + ((identityHashMap == null)?0:identityHashMap.hashCode());
+            result = prime * result + ((linkedHashMap == null)?0:linkedHashMap.hashCode());
+            result = prime * result + ((map == null)?0:map.hashCode());
             result = prime * result + ((name == null)?0:name.hashCode());
             result = prime * result + ((stringList == null)?0:stringList.hashCode());
             result = prime * result + (int)(timestamp ^ (timestamp >>> 32));
+            result = prime * result + ((treeMap == null)?0:treeMap.hashCode());
+            result = prime * result + ((weakHashMap == null)?0:weakHashMap.hashCode());
             return result;
         }
 
@@ -130,6 +183,55 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             if (getClass() != obj.getClass())
                 return false;
             SomePojo other = (SomePojo)obj;
+            if (concurrentHashMap == null)
+            {
+                if (other.concurrentHashMap != null)
+                    return false;
+            }
+            else if (!concurrentHashMap.equals(other.concurrentHashMap))
+                return false;
+            if (concurrentSkipListMap == null)
+            {
+                if (other.concurrentSkipListMap != null)
+                    return false;
+            }
+            else if (!concurrentSkipListMap.equals(other.concurrentSkipListMap))
+                return false;
+            if (hashMap == null)
+            {
+                if (other.hashMap != null)
+                    return false;
+            }
+            else if (!hashMap.equals(other.hashMap))
+                return false;
+            if (hashTable == null)
+            {
+                if (other.hashTable != null)
+                    return false;
+            }
+            else if (!hashTable.equals(other.hashTable))
+                return false;
+            if (identityHashMap == null)
+            {
+                if (other.identityHashMap != null)
+                    return false;
+            }
+            else if (!identityHashMap.equals(other.identityHashMap))
+                return false;
+            if (linkedHashMap == null)
+            {
+                if (other.linkedHashMap != null)
+                    return false;
+            }
+            else if (!linkedHashMap.equals(other.linkedHashMap))
+                return false;
+            if (map == null)
+            {
+                if (other.map != null)
+                    return false;
+            }
+            else if (!map.equals(other.map))
+                return false;
             if (name == null)
             {
                 if (other.name != null)
@@ -145,6 +247,20 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             else if (!stringList.equals(other.stringList))
                 return false;
             if (timestamp != other.timestamp)
+                return false;
+            if (treeMap == null)
+            {
+                if (other.treeMap != null)
+                    return false;
+            }
+            else if (!treeMap.equals(other.treeMap))
+                return false;
+            if (weakHashMap == null)
+            {
+                if (other.weakHashMap != null)
+                    return false;
+            }
+            else if (!weakHashMap.equals(other.weakHashMap))
                 return false;
             return true;
         }

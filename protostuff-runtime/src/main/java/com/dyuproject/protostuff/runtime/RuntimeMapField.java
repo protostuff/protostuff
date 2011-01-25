@@ -22,6 +22,7 @@ import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
+import com.dyuproject.protostuff.MapSchema.MessageFactory;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -39,40 +40,42 @@ public abstract class RuntimeMapField<T,K,V> extends Field<T>
      * Since we cannot inherit multiple classes, we create this Map schema simply 
      * to delegate to the wrapping class' abstract methods.
      */
-    protected final MapSchema<K,V> schema = new MapSchema<K,V>()
-    {
-        protected K readKeyFrom(Input input) throws IOException
-        {
-            return kFrom(input);
-        }
-        protected void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
-        throws IOException
-        {
-            vPutFrom(input, wrapper, key);
-        }
-        protected void writeKeyTo(Output output, int fieldNumber, K key, 
-                boolean repeated) throws IOException
-        {
-            kTo(output, fieldNumber, key, repeated);
-        }
-        protected void writeValueTo(Output output, int fieldNumber, V val, 
-                boolean repeated) throws IOException
-        {
-            vTo(output, fieldNumber, val, repeated);
-        }
-        protected void transferKey(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
-        {
-            kTransfer(pipe, input, output, number, repeated);
-        }
-        protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
-        {
-            vTransfer(pipe, input, output, number, repeated);
-        }
-    };
+    protected final MapSchema<K,V> schema;
     
-    public RuntimeMapField(FieldType type, int number, String name, boolean repeated)
+    public RuntimeMapField(FieldType type, int number, String name, 
+            MessageFactory messageFactory)
     {
-        super(type,number,name,repeated);
+        super(type,number,name,false);
+        schema = new MapSchema<K,V>(messageFactory)
+        {
+            protected K readKeyFrom(Input input) throws IOException
+            {
+                return kFrom(input);
+            }
+            protected void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
+            throws IOException
+            {
+                vPutFrom(input, wrapper, key);
+            }
+            protected void writeKeyTo(Output output, int fieldNumber, K key, 
+                    boolean repeated) throws IOException
+            {
+                kTo(output, fieldNumber, key, repeated);
+            }
+            protected void writeValueTo(Output output, int fieldNumber, V val, 
+                    boolean repeated) throws IOException
+            {
+                vTo(output, fieldNumber, val, repeated);
+            }
+            protected void transferKey(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
+            {
+                kTransfer(pipe, input, output, number, repeated);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
+            {
+                vTransfer(pipe, input, output, number, repeated);
+            }
+        };
     }
     
     protected abstract K kFrom(Input input) throws IOException;

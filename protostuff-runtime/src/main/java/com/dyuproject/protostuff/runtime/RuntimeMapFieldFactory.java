@@ -20,10 +20,12 @@ import java.util.Map;
 
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
+import com.dyuproject.protostuff.MapSchema.MessageFactory;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
@@ -56,14 +58,14 @@ final class RuntimeMapFieldFactory
     };
     
     private static <T> Field<T> createMapInlineKEnumV(int number, String name, 
-            final java.lang.reflect.Field f, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inlineK, 
             final Class<Object> clazzV)
     {
         final EnumIO<?> eioV = EnumIO.create(clazzV, null);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -143,12 +145,12 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapInlineKInlineV(int number, String name, 
-            final java.lang.reflect.Field f, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inlineK, 
             final RuntimeFieldFactory<Object> inlineV)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -228,14 +230,14 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapInlineKPojoV(int number, String name, 
-            final java.lang.reflect.Field f, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inlineK, 
             final Class<Object> clazzV)
     {
         final HasSchema<Object> schemaV = RuntimeSchema.getSchemaWrapper(clazzV);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -315,12 +317,12 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapInlineKPolymorphicV(int number, String name, 
-            final java.lang.reflect.Field f, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inlineK, 
             final Class<Object> clazzV)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             
             {
@@ -419,7 +421,8 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapEnumKEnumV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory,  
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final EnumIO<?> eioK = EnumIO.create(clazzK, null);
@@ -427,7 +430,7 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioV = clazzK == clazzV ? eioK : EnumIO.create(clazzV, null);
         
         return new RuntimeMapField<T,Enum<?>,Enum<?>>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -507,13 +510,14 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapEnumKInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final RuntimeFieldFactory<Object> inlineV)
     {
         final EnumIO<?> eioK = EnumIO.create(clazzK, null);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -593,14 +597,15 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapEnumKPojoV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final EnumIO<?> eioK = EnumIO.create(clazzK, null);
         final HasSchema<Object> schemaV = RuntimeSchema.getSchemaWrapper(clazzV);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -680,13 +685,14 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapEnumKPolymorphicV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final EnumIO<?> eioK = EnumIO.create(clazzK, null);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             
             {
@@ -785,14 +791,15 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapPojoKEnumV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
         final EnumIO<?> eioV = EnumIO.create(clazzV, null);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -872,13 +879,14 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapPojoKInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final RuntimeFieldFactory<Object> inlineV)
     {
         final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -958,14 +966,15 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapPojoKPojoV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
         final HasSchema<Object> schemaV = RuntimeSchema.getSchemaWrapper(clazzV);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -1045,13 +1054,14 @@ final class RuntimeMapFieldFactory
     }
     
     private static <T> Field<T> createMapPojoKPolymorphicV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> clazzK, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
         final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, false)
+                number, name, messageFactory)
         {
             
             {
@@ -1156,6 +1166,7 @@ final class RuntimeMapFieldFactory
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
             final Class<Object> clazzK, clazzV;
+            final MessageFactory messageFactory;
             try
             {
                 clazzK = 
@@ -1163,9 +1174,14 @@ final class RuntimeMapFieldFactory
                 
                 clazzV = 
                     (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[1];
+                
+                messageFactory = MapSchema.MessageFactories.getFactory((Class<? super Map<?,?>>)f.getType());
             }
             catch(Exception e)
             {
+                // Could either be:
+                // 1. The key or value is not a simple parameterized type.
+                // 2. The Map field is not standard jdk map implementation.
                 return null;
             }
             
@@ -1176,19 +1192,19 @@ final class RuntimeMapFieldFactory
             if(clazzK.isEnum())
             {
                 if(clazzV.isEnum())
-                    return createMapEnumKEnumV(number, name, f, clazzK, clazzV);
+                    return createMapEnumKEnumV(number, name, f, messageFactory, clazzK, clazzV);
                 
                 final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
                 if(inlineV != null)
-                    return createMapEnumKInlineV(number, name, f, clazzK, inlineV);
+                    return createMapEnumKInlineV(number, name, f, messageFactory, clazzK, inlineV);
                 
                 if(isInvalidChildType(clazzV))
                     return null;
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
-                    return createMapEnumKPojoV(number, name, f, clazzK, clazzV);
+                    return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV);
                 
-                return createMapEnumKPolymorphicV(number, name, f, clazzK, clazzV);
+                return createMapEnumKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV);
             }
 
             final RuntimeFieldFactory<Object> inlineK = getInline(clazzK);
@@ -1196,19 +1212,19 @@ final class RuntimeMapFieldFactory
             if(inlineK != null)
             {
                 if(clazzV.isEnum())
-                    return createMapInlineKEnumV(number, name, f, inlineK, clazzV);
+                    return createMapInlineKEnumV(number, name, f, messageFactory, inlineK, clazzV);
                 
                 final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
                 if(inlineV != null)
-                    return createMapInlineKInlineV(number, name, f, inlineK, inlineV);
+                    return createMapInlineKInlineV(number, name, f, messageFactory, inlineK, inlineV);
                 
                 if(isInvalidChildType(clazzV))
                     return null;
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
-                    return createMapInlineKPojoV(number, name, f, inlineK, clazzV);
+                    return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV);
                 
-                return createMapInlineKPolymorphicV(number, name, f, inlineK, clazzV);
+                return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV);
             }
             
             if(isInvalidChildType(clazzK))
@@ -1217,19 +1233,19 @@ final class RuntimeMapFieldFactory
             if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
             {
                 if(clazzV.isEnum())
-                    return createMapPojoKEnumV(number, name, f, clazzK, clazzV);
+                    return createMapPojoKEnumV(number, name, f, messageFactory, clazzK, clazzV);
                 
                 final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
                 if(inlineV != null)
-                    return createMapPojoKInlineV(number, name, f, clazzK, inlineV);
+                    return createMapPojoKInlineV(number, name, f, messageFactory, clazzK, inlineV);
                 
                 if(isInvalidChildType(clazzV))
                     return null;
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
-                    return createMapPojoKPojoV(number, name, f, clazzK, clazzV);
+                    return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV);
                 
-                return createMapPojoKPolymorphicV(number, name, f, clazzK, clazzV);
+                return createMapPojoKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV);
             }
             
             // polymorphic keys not allowed.

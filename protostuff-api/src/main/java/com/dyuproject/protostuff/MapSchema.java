@@ -23,12 +23,109 @@ import java.util.Map.Entry;
  * A schema for a {@link Map} with single-typed object keys and single-typed object values.
  * Keys cannot be null otherwise the entry is ignored (not serialized).
  * Values however can be null.
+ * 
+ * The default {@link Map} message created will be an instance of {@link HashMap}.
  *
  * @author David Yu
  * @created Jun 26, 2010
  */
 public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
 {
+    
+    /**
+     * Creates new {@code Map} messages.
+     */
+    public interface MessageFactory
+    {
+        
+        /**
+         * Creates a new {@link Map} message.
+         */
+        public <K,V> Map<K,V> newMessage();
+        
+    }
+    
+    /**
+     * A message factory for standard {@code Map} implementations.
+     */
+    public enum MessageFactories implements MessageFactory
+    {
+        // Default is HashMap.
+        Map
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new HashMap<K,V>();
+            }
+        },
+        HashMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new HashMap<K,V>();
+            }
+        },
+        LinkedHashMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.LinkedHashMap<K,V>();
+            }
+        },
+        TreeMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.TreeMap<K,V>();
+            }
+        },
+        WeakHashMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.WeakHashMap<K,V>();
+            }
+        },
+        IdentityHashMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.IdentityHashMap<K,V>();
+            }
+        },
+        Hashtable
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.Hashtable<K,V>();
+            }
+        },
+        ConcurrentHashMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.concurrent.ConcurrentHashMap<K,V>();
+            }
+        },
+        ConcurrentSkipListMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.concurrent.ConcurrentSkipListMap<K,V>();
+            }
+        };
+        
+        /**
+         * Returns the message factory for the standard jdk {@link Map} implementations.
+         */
+        public static MessageFactory getFactory(Class<? super Map<?,?>> mapType)
+        {
+            return mapType.getName().startsWith("java.util") ? 
+                    MessageFactories.valueOf(mapType.getSimpleName()) : 
+                        null;
+        }
+    }
+    
     /**
      * The field name of the Map.Entry.
      */
@@ -41,6 +138,21 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
      * The field name of the value;
      */
     public static final String FIELD_NAME_VALUE = "v";
+    
+    /**
+     * Factory for creating {@code Map} messages.
+     */
+    public final MessageFactory messageFactory;
+    
+    public MapSchema()
+    {
+        this(MessageFactories.HashMap);
+    }
+    
+    public MapSchema(MessageFactory messageFactory)
+    {
+        this.messageFactory = messageFactory;
+    }
     
     /**
      * Reads the key from the input.
@@ -110,7 +222,7 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     
     public final Map<K, V> newMessage()
     {
-        return new HashMap<K,V>();
+        return messageFactory.newMessage();
     }
     
     public final void mergeFrom(Input input, Map<K, V> map) throws IOException
