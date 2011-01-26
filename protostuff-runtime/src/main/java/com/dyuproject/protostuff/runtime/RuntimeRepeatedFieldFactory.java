@@ -34,10 +34,10 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Jan 23, 2011
  */
-final class RuntimeCollectionFieldFactory
+final class RuntimeRepeatedFieldFactory
 {
     
-    private RuntimeCollectionFieldFactory() {}
+    private RuntimeRepeatedFieldFactory() {}
     
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
@@ -344,7 +344,7 @@ final class RuntimeCollectionFieldFactory
         };
     }
     
-    static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>()
+    static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>()
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)

@@ -81,7 +81,7 @@ public abstract class RuntimeFieldFactory<V>
             return RuntimeMapFieldFactory.MAP;
 
         if(Collection.class.isAssignableFrom(clazz))
-            return RuntimeCollectionFieldFactory.COLLECTION;
+            return RuntimeRepeatedFieldFactory.REPEATED;
         
         return pojo(clazz);
     }
