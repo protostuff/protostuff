@@ -21,9 +21,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.GraphInput;
@@ -82,13 +80,7 @@ public abstract class RuntimeFieldFactory<V>
         if(Map.class.isAssignableFrom(clazz))
             return RuntimeMapFieldFactory.MAP;
 
-        if(List.class.isAssignableFrom(clazz))
-            return RuntimeListFieldFactory.LIST;
-        
-        if(Set.class.isAssignableFrom(clazz))
-            return RuntimeSetFieldFactory.SET;
-        
-        if(Collection.class == clazz)
+        if(Collection.class.isAssignableFrom(clazz))
             return RuntimeCollectionFieldFactory.COLLECTION;
         
         return pojo(clazz);

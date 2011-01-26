@@ -16,7 +16,6 @@ package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.dyuproject.protostuff.GraphInput;
@@ -24,6 +23,8 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.CollectionSchema.MessageFactories;
+import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -40,7 +41,8 @@ final class RuntimeCollectionFieldFactory
     
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final RuntimeFieldFactory<Object> inline)
+            final java.lang.reflect.Field f, final MessageFactory messageFactory, 
+            final RuntimeFieldFactory<Object> inline)
     {
         return new Field<T>(inline.getFieldType(), number, name, true)
         {
@@ -56,9 +58,9 @@ final class RuntimeCollectionFieldFactory
                     final Collection<Object> existing = (Collection<Object>)f.get(message);
                     if(existing == null)
                     {
-                        final ArrayList<Object> list = new ArrayList<Object>();
-                        list.add(value);
-                        f.set(message, list);
+                        final Collection<Object> collection = messageFactory.newMessage();
+                        collection.add(value);
+                        f.set(message, collection);
                     }
                     else
                         existing.add(value);
@@ -75,10 +77,10 @@ final class RuntimeCollectionFieldFactory
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> list;
+                final Collection<Object> collection;
                 try
                 {
-                    list = (Collection<Object>)f.get(message);
+                    collection = (Collection<Object>)f.get(message);
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -89,9 +91,9 @@ final class RuntimeCollectionFieldFactory
                     throw new RuntimeException(e);
                 }
                 
-                if(list != null && !list.isEmpty())
+                if(collection != null && !collection.isEmpty())
                 {
-                    for(Object o : list)
+                    for(Object o : collection)
                         inline.writeTo(output, number, o, true);
                 }
             }
@@ -104,7 +106,8 @@ final class RuntimeCollectionFieldFactory
     }
     
     private static <T> Field<T> createCollectionEnumV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> genericType)
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
+            final Class<Object> genericType)
     {
         final EnumIO<?> eio = EnumIO.create(genericType, null);
         return new Field<T>(FieldType.ENUM, number, name, true)
@@ -121,9 +124,9 @@ final class RuntimeCollectionFieldFactory
                     final Collection<Enum<?>> existing = (Collection<Enum<?>>)f.get(message);
                     if(existing == null)
                     {
-                        final ArrayList<Enum<?>> list = new ArrayList<Enum<?>>();
-                        list.add(value);
-                        f.set(message, list);
+                        final Collection<Enum<?>> collection = messageFactory.newMessage();
+                        collection.add(value);
+                        f.set(message, collection);
                     }
                     else
                         existing.add(value);
@@ -140,10 +143,10 @@ final class RuntimeCollectionFieldFactory
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Enum<?>> list;
+                final Collection<Enum<?>> collection;
                 try
                 {
-                    list = (Collection<Enum<?>>)f.get(message);
+                    collection = (Collection<Enum<?>>)f.get(message);
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -154,9 +157,9 @@ final class RuntimeCollectionFieldFactory
                     throw new RuntimeException(e);
                 }
                 
-                if(list != null && !list.isEmpty())
+                if(collection != null && !collection.isEmpty())
                 {
-                    for(Enum<?> en : list)
+                    for(Enum<?> en : collection)
                         eio.writeTo(output, number, true, en);
                 }
             }
@@ -169,7 +172,8 @@ final class RuntimeCollectionFieldFactory
     }
     
     private static <T> Field<T> createCollectionPojoV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> genericType)
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
+            final Class<Object> genericType)
     {
         return new RuntimeMessageField<T,Object>(
                 genericType, RuntimeSchema.getSchemaWrapper(genericType), 
@@ -188,9 +192,9 @@ final class RuntimeCollectionFieldFactory
                     final Collection<Object> existing = (Collection<Object>)f.get(message);
                     if(existing == null)
                     {
-                        final ArrayList<Object> list = new ArrayList<Object>();
-                        list.add(value);
-                        f.set(message, list);
+                        final Collection<Object> collection = messageFactory.newMessage();
+                        collection.add(value);
+                        f.set(message, collection);
                     }
                     else
                         existing.add(value);
@@ -207,10 +211,10 @@ final class RuntimeCollectionFieldFactory
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> list;
+                final Collection<Object> collection;
                 try
                 {
-                    list = (Collection<Object>)f.get(message);
+                    collection = (Collection<Object>)f.get(message);
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -221,10 +225,10 @@ final class RuntimeCollectionFieldFactory
                     throw new RuntimeException(e);
                 }
                 
-                if(list != null && !list.isEmpty())
+                if(collection != null && !collection.isEmpty())
                 {
                     final Schema<Object> schema = getSchema();
-                    for(Object o : list)
+                    for(Object o : collection)
                         output.writeObject(number, o, schema, true);
                 }
             }
@@ -237,7 +241,8 @@ final class RuntimeCollectionFieldFactory
     }
     
     private static <T> Field<T> createCollectionPolymorphicV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> genericType)
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
+            final Class<Object> genericType)
     {
         return new PolymorphicRuntimeField<T>(
                 genericType, FieldType.MESSAGE, number, name, true)
@@ -258,9 +263,9 @@ final class RuntimeCollectionFieldFactory
                         final Collection<Object> existing = (Collection<Object>)f.get(message);
                         if(existing == null)
                         {
-                            final ArrayList<Object> list = new ArrayList<Object>();
-                            list.add(value);
-                            f.set(message, list);
+                            final Collection<Object> collection = messageFactory.newMessage();
+                            collection.add(value);
+                            f.set(message, collection);
                         }
                         else
                             existing.add(value);
@@ -320,9 +325,9 @@ final class RuntimeCollectionFieldFactory
                     final Collection<Object> existing = (Collection<Object>)f.get(message);
                     if(existing == null)
                     {
-                        final ArrayList<Object> list = new ArrayList<Object>();
-                        list.add(value);
-                        f.set(message, list);
+                        final Collection<Object> collection = messageFactory.newMessage();
+                        collection.add(value);
+                        f.set(message, collection);
                     }
                     else
                         existing.add(value);
@@ -339,9 +344,6 @@ final class RuntimeCollectionFieldFactory
         };
     }
     
-    /**
-     * Mapped to {@link ArrayList} if the field does not have an existing value.
-     */
     static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>()
     {
         @SuppressWarnings("unchecked")
@@ -354,23 +356,33 @@ final class RuntimeCollectionFieldFactory
             }
             catch(Exception e)
             {
+                // the value is not a simple parameterized type.
+                return null;
+            }
+            
+            final MessageFactory messageFactory = MessageFactories.getFactory(
+                    (Class<? extends Collection<?>>)f.getType());
+            
+            if(messageFactory == null)
+            {
+                // Not a standard jdk Collection impl.
                 return null;
             }
             
             if(genericType.isEnum())
-                return createCollectionEnumV(number, name, f, genericType);
+                return createCollectionEnumV(number, name, f, messageFactory, genericType);
             
             final RuntimeFieldFactory<Object> inline = getInline(genericType);
             if(inline != null)
-                return createCollectionInlineV(number, name, f, inline);
+                return createCollectionInlineV(number, name, f, messageFactory, inline);
             
             if(isInvalidChildType(genericType))
                 return null;
             
             if(POJO == pojo(genericType) || RuntimeSchema.isRegistered(genericType))
-                return createCollectionPojoV(number, name, f, genericType);
+                return createCollectionPojoV(number, name, f, messageFactory, genericType);
             
-            return createCollectionPolymorphicV(number, name, f, genericType);
+            return createCollectionPolymorphicV(number, name, f, messageFactory, genericType);
         }
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException

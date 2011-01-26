@@ -1166,7 +1166,6 @@ final class RuntimeMapFieldFactory
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
             final Class<Object> clazzK, clazzV;
-            final MessageFactory messageFactory;
             try
             {
                 clazzK = 
@@ -1174,14 +1173,19 @@ final class RuntimeMapFieldFactory
                 
                 clazzV = 
                     (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[1];
-                
-                messageFactory = MapSchema.MessageFactories.getFactory((Class<? extends Map<?,?>>)f.getType());
             }
             catch(Exception e)
             {
-                // Could either be:
-                // 1. The key or value is not a simple parameterized type.
-                // 2. The Map field is not standard jdk map implementation.
+                // the key or value is not a simple parameterized type.
+                return null;
+            }
+            
+            final MessageFactory messageFactory = MapSchema.MessageFactories.getFactory(
+                    (Class<? extends Map<?,?>>)f.getType());
+            
+            if(messageFactory == null)
+            {
+                // Not a standard jdk Map impl.
                 return null;
             }
             
