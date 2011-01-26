@@ -37,12 +37,9 @@ public abstract class EnumIO<E extends Enum<E>>
     public static final boolean ENUMS_BY_NAME = Boolean.getBoolean("protostuff.runtime.enums_by_name");
     
     @SuppressWarnings("unchecked")
-    public static final EnumIO<? extends Enum<?>> create(Class<?> enumClass, 
+    static EnumIO<? extends Enum<?>> create(Class<?> enumClass, 
             java.lang.reflect.Field f)
     {
-        if(!enumClass.isEnum())
-            throw new RuntimeException("Not an enum class: " + enumClass);
-        
         return ENUMS_BY_NAME ? new ByName(enumClass, f) : new ByNumber(enumClass, f); 
     }
     
