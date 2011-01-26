@@ -20,9 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * A schema for a {@link Map} with single-typed object keys and single-typed object values.
- * Keys cannot be null otherwise the entry is ignored (not serialized).
- * Values however can be null.
+ * A schema for a {@link Map}.
+ * The key and value can be null (depending on the particular map impl).
  * 
  * The default {@link Map} message created will be an instance of {@link HashMap}.
  *
