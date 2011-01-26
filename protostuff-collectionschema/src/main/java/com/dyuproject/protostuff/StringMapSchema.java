@@ -43,6 +43,12 @@ public class StringMapSchema<V> extends MapSchema<String,V>
         {
             output.writeString(fieldNumber, value, repeated);
         }
+        
+        protected void transferValue(Pipe pipe, Input input, Output output, int number, 
+                boolean repeated) throws IOException
+        {
+            input.transferByteRangeTo(output, true, number, repeated);
+        }
     };
     
     /**
