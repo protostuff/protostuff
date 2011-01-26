@@ -99,8 +99,8 @@ public class StringMapSchema<V> extends MapSchema<String,V>
     {
         if(vPipeSchema == null)
         {
-            throw new RuntimeException("No pipe schema for key: " + 
-                    vPipeSchema.typeClass().getName());
+            throw new RuntimeException("No pipe schema for value: " + 
+                    vSchema.typeClass().getName());
         }
         
         output.writeObject(number, pipe, vPipeSchema, repeated);

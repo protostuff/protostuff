@@ -87,7 +87,7 @@ public final class MessageMapSchema<K,V> extends MapSchema<K,V>
         if(kPipeSchema == null)
         {
             throw new RuntimeException("No pipe schema for key: " + 
-                    kPipeSchema.typeClass().getName());
+                    kSchema.typeClass().getName());
         }
         
         output.writeObject(number, pipe, kPipeSchema, repeated);
@@ -98,8 +98,8 @@ public final class MessageMapSchema<K,V> extends MapSchema<K,V>
     {
         if(vPipeSchema == null)
         {
-            throw new RuntimeException("No pipe schema for key: " + 
-                    vPipeSchema.typeClass().getName());
+            throw new RuntimeException("No pipe schema for value: " + 
+                    vSchema.typeClass().getName());
         }
         
         output.writeObject(number, pipe, vPipeSchema, repeated);
