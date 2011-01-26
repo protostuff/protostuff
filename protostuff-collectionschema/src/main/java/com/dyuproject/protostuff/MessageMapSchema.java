@@ -18,10 +18,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * A utility schema for a {@link Map} with single-typed message/pojo keys and 
- * single-typed message/pojo values.
- * Keys cannot be null otherwise the entry is ignored (not serialized).
- * Values however can be null.
+ * A schema for a {@link Map} with {@link Message} or pojo keys.
+ * The key and value can be null (depending on the particular map impl).
  *
  * @author David Yu
  * @created Jun 26, 2010

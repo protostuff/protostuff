@@ -18,9 +18,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * A utility schema for a {@link Map} with {@link String} keys and single-type object values.
- * Keys cannot be null otherwise the entry is ignored (not serialized).
- * Values however can be null.
+ * A schema for a {@link Map} with {@link String} keys.
+ * The key and value can be null (depending on the particular map impl).
  *
  * @author David Yu
  * @created Jun 25, 2010
