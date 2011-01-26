@@ -1175,7 +1175,7 @@ final class RuntimeMapFieldFactory
                 clazzV = 
                     (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[1];
                 
-                messageFactory = MapSchema.MessageFactories.getFactory((Class<? super Map<?,?>>)f.getType());
+                messageFactory = MapSchema.MessageFactories.getFactory((Class<? extends Map<?,?>>)f.getType());
             }
             catch(Exception e)
             {
