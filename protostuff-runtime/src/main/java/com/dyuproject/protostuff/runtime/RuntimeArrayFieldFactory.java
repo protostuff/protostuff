@@ -14,8 +14,6 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.getInline;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 
@@ -42,9 +40,9 @@ final class RuntimeArrayFieldFactory
     private RuntimeArrayFieldFactory() {}
     
     private static <T> Field<T> createArrayInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final Class<Object> componentType)
+            final java.lang.reflect.Field f, final RuntimeFieldFactory<Object> inline, 
+            final Class<Object> componentType)
     {
-        final RuntimeFieldFactory<Object> inline = getInline(componentType);
         return new Field<T>(inline.getFieldType(), number, name, true)
         {
             {
@@ -381,8 +379,9 @@ final class RuntimeArrayFieldFactory
             if(componentType.isEnum())
                 return createArrayEnumV(number, name, f, componentType);
             
-            if(getInline(componentType) != null)
-                return createArrayInlineV(number, name, f, componentType);
+            final RuntimeFieldFactory<Object> inline = getInline(componentType);
+            if(inline != null)
+                return createArrayInlineV(number, name, f, inline, componentType);
             
             if(isInvalidChildType(componentType))
                 return null;
