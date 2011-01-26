@@ -178,6 +178,7 @@
   <modules>
     <module>protostuff-api</module>
     <module>protostuff-core</module>
+    <module>protostuff-collectionschema</module>
     <module>protostuff-runtime</module>
     <module>protostuff-json</module>
     <module>protostuff-xml</module>

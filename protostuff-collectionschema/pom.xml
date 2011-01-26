@@ -8,9 +8,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject.protostuff</groupId>
-  <artifactId>protostuff-runtime</artifactId>
-  <name>protostuff :: runtime</name>
-  <description>protobuf serialization for pre-existing objects</description>
+  <artifactId>protostuff-collectionschema</artifactId>
+  <name>protostuff :: collectionschema</name>
+  <description>predefined schemas for jdk collections and maps</description>
   <packaging>jar</packaging>
   
   <build>
@@ -54,11 +54,6 @@
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-collectionschema</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

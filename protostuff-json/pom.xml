@@ -38,6 +38,19 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-collectionschema</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-collectionschema</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
