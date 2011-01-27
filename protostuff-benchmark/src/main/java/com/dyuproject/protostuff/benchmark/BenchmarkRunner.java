@@ -34,7 +34,7 @@ public class BenchmarkRunner
     try
     {
         out = new PrintStream(new FileOutputStream(new File(
-            System.getProperty("benchmark.output_dir", "."), 
+            System.getProperty("benchmark.output_dir", "target"), 
             "benchmark-"+System.currentTimeMillis()+".html")), true);
     }
     catch (FileNotFoundException e)
