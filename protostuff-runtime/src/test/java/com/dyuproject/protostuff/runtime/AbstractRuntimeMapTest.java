@@ -861,6 +861,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         boolean startup;
         Employer employer;
         Map<Integer,Person> people;
+        Map<String,Object> peopleByName;
         
         HasMapInlineKPolymorphicV fill()
         {
@@ -881,8 +882,11 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         {
             if(people == null)
                 people = newMap();
+            if(peopleByName == null)
+                peopleByName = newMap();
             
             people.put(person.id, person);
+            peopleByName.put(person.name, person);
         }
 
         @Override
@@ -893,6 +897,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             result = prime * result + ((employer == null)?0:employer.hashCode());
             result = prime * result + ((name == null)?0:name.hashCode());
             result = prime * result + ((people == null)?0:people.hashCode());
+            result = prime * result + ((peopleByName == null)?0:peopleByName.hashCode());
             result = prime * result + (startup?1231:1237);
             return result;
         }
@@ -928,6 +933,13 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             }
             else if (!people.equals(other.people))
                 return false;
+            if (peopleByName == null)
+            {
+                if (other.peopleByName != null)
+                    return false;
+            }
+            else if (!peopleByName.equals(other.peopleByName))
+                return false;
             if (startup != other.startup)
                 return false;
             return true;
@@ -936,7 +948,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         @Override
         public String toString()
         {
-            return "HasMapInlineKPolymorphicV [employer=" + employer + ", name=" + name + ", people=" + people + ", startup=" + startup + "]";
+            return "HasMapInlineKPolymorphicV [employer=" + employer + ", name=" + name + ", people=" + people + ", peopleByName=" + peopleByName
+                    + ", startup=" + startup + "]";
         }
         
     }
