@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.GraphTest;
@@ -42,6 +43,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         String text;
         Map<String,String> attributes;
         Document root;
+        AtomicReference<Node> self;
         
         public Node()
         {
@@ -54,6 +56,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             this.tagName = tagName;
             this.id = id;
             this.root = root;
+            self = new AtomicReference<Node>(this);
             
             if(parent != null)
                 parent.addNode(this);
@@ -329,11 +332,13 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         
         assertNotNull(document);
         
+        assertTrue(document == document.self.get());
         assertTrue(document.getNodeCount() == 2);
         assertTrue(document.getNode(0) instanceof Head);
         assertTrue(document.getNode(1) instanceof Body);
         
         Head head = (Head)document.getNode(0);
+        assertTrue(head == head.self.get());
         assertTrue(head.parent == document);
         assertTrue(head.root == document);
         assertEquals(head.tagName, "head");
@@ -343,12 +348,14 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         assertTrue(head.getNode(1) instanceof Link);
         
         Title title = (Title)head.getNode(0);
+        assertTrue(title == title.self.get());
         assertTrue(title.parent == head);
         assertTrue(title.root == document);
         assertEquals(title.tagName, "title");
         assertEquals(title.text, "Hello world from protostuff-runtime graph ser/deser!");
         
         Link link = (Link)head.getNode(1);
+        assertTrue(link == link.self.get());
         assertTrue(link.parent == head);
         assertTrue(link.root == document);
         assertEquals(link.tagName, "link");
@@ -357,6 +364,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         assertEquals(link.type, "image/x-icon");
         
         Body body = (Body)document.getNode(1);
+        assertTrue(body == body.self.get());
         assertTrue(body.parent == document);
         assertTrue(body.root == document);
         assertEquals(body.tagName, "body");
@@ -366,6 +374,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         assertTrue(body.getNode(1) instanceof Div);
         
         Div div = (Div)body.getNode(0);
+        assertTrue(div == div.self.get());
         assertTrue(div.parent == body);
         assertTrue(div.root == document);
         assertEquals(div.tagName, "div");
@@ -377,6 +386,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         assertTrue(div.getNodeCount() == 0);
         
         Div anotherDiv = (Div)body.getNode(1);
+        assertTrue(anotherDiv == anotherDiv.self.get());
         assertTrue(anotherDiv.parent == body);
         assertTrue(anotherDiv.root == document);
         assertEquals(anotherDiv.tagName, "div");
@@ -389,6 +399,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         assertTrue(anotherDiv.getNode(0) instanceof TextArea);
         
         TextArea ta = (TextArea)anotherDiv.getNode(0);
+        assertTrue(ta == ta.self.get());
         assertTrue(ta.parent == anotherDiv);
         assertTrue(ta.root == document);
         assertEquals(ta.tagName, "textarea");

@@ -32,6 +32,9 @@ import java.util.TreeMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.Pipe;
@@ -439,6 +442,11 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Map<String,Date> partners;
         
+        // atomic stuff
+        AtomicBoolean atomicBoolean;
+        AtomicInteger atomicInteger;
+        AtomicLong atomicLong;
+        
         public static Employer create(int id)
         {
             Employer employer = new Employer();
@@ -448,6 +456,10 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             employer.partners = newMap();
             employer.partners.put("Joe Doe", new Date());
             
+            employer.atomicBoolean = new AtomicBoolean(true);
+            employer.atomicInteger = new AtomicInteger(5);
+            employer.atomicLong = new AtomicLong(System.currentTimeMillis());
+            
             return employer;
         }
 
@@ -456,6 +468,10 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         {
             final int prime = 31;
             int result = super.hashCode();
+            // commented out since it does returns an identity hashcode (unlike regular numbers).
+            //result = prime * result + ((atomicBoolean == null)?0:atomicBoolean.hashCode());
+            //result = prime * result + ((atomicInteger == null)?0:atomicInteger.hashCode());
+            //result = prime * result + ((atomicLong == null)?0:atomicLong.hashCode());
             result = prime * result + ((partners == null)?0:partners.hashCode());
             return result;
         }
@@ -470,6 +486,29 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             if (getClass() != obj.getClass())
                 return false;
             Employer other = (Employer)obj;
+            // begin edit (equality)
+            if (atomicBoolean == null)
+            {
+                if (other.atomicBoolean != null)
+                    return false;
+            }
+            else if (atomicBoolean.get() != other.atomicBoolean.get())
+                return false;
+            if (atomicInteger == null)
+            {
+                if (other.atomicInteger != null)
+                    return false;
+            }
+            else if (atomicInteger.get() != other.atomicInteger.get())
+                return false;
+            if (atomicLong == null)
+            {
+                if (other.atomicLong != null)
+                    return false;
+            }
+            else if (atomicLong.get() != other.atomicLong.get())
+                return false;
+            // end edit
             if (partners == null)
             {
                 if (other.partners != null)
@@ -478,6 +517,13 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             else if (!partners.equals(other.partners))
                 return false;
             return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Employer [atomicBoolean=" + atomicBoolean + ", atomicInteger=" + atomicInteger + ", atomicLong=" + atomicLong + ", partners=" + partners
+                    + "]";
         }
         
     }
