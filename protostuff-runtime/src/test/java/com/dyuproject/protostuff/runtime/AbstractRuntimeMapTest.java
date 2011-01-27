@@ -108,7 +108,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         LinkedHashMap<Float,Double> linkedHashMap;
         TreeMap<Double,Float> treeMap;
         WeakHashMap<Byte,Character> weakHashMap;
-        IdentityHashMap<Sequence, Boolean> identityHashMap;
+        IdentityHashMap<Sequence, Gender> identityHashMap;
         Hashtable<String,String> hashTable;
         ConcurrentHashMap<String,String> concurrentHashMap;
         ConcurrentSkipListMap<String,String> concurrentSkipListMap;
@@ -133,12 +133,12 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             p.treeMap = new TreeMap<Double,Float>();
             p.treeMap.put(324.43d, 234.1f);
             
-            p.weakHashMap = new WeakHashMap<Byte,Character>();
-            p.weakHashMap.put(new Byte((byte)0x89), 'f');
-            p.weakHashMap.put(null, null);
+            //p.weakHashMap = new WeakHashMap<Byte,Character>();
+            //p.weakHashMap.put(new Byte((byte)0x89), 'f');
+            //p.weakHashMap.put(null, null);
             
-            p.identityHashMap = new IdentityHashMap<Sequence, Boolean>();
-            p.identityHashMap.put(Sequence.ONE, true);
+            p.identityHashMap = new IdentityHashMap<Sequence, Gender>();
+            p.identityHashMap.put(Sequence.ONE, Gender.MALE);
             
             p.hashTable = new Hashtable<String,String>();
             p.hashTable.put("foo", "bar");
@@ -263,6 +263,14 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             else if (!weakHashMap.equals(other.weakHashMap))
                 return false;
             return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "SomePojo [concurrentHashMap=" + concurrentHashMap + ", concurrentSkipListMap=" + concurrentSkipListMap + ", hashMap=" + hashMap
+                    + ", hashTable=" + hashTable + ", identityHashMap=" + identityHashMap + ", linkedHashMap=" + linkedHashMap + ", map=" + map + ", name="
+                    + name + ", stringList=" + stringList + ", timestamp=" + timestamp + ", treeMap=" + treeMap + ", weakHashMap=" + weakHashMap + "]";
         }
         
     }

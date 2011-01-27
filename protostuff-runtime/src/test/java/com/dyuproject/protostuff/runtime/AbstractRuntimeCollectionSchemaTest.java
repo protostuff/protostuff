@@ -526,8 +526,8 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             treeMap = new TreeMap<String,String>();
             treeMap.put("11", "12");
             
-            weakHashMap = new WeakHashMap<String,String>();
-            weakHashMap.put("13", "14");
+            //weakHashMap = new WeakHashMap<String,String>();
+            //weakHashMap.put("13", "14");
             
             identityHashMap = new IdentityHashMap<Gender,Gender>();
             identityHashMap.put(Gender.MALE, Gender.FEMALE);
