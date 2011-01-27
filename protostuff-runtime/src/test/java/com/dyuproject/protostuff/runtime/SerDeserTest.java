@@ -20,9 +20,7 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -200,108 +198,4 @@ public class SerDeserTest extends TestCase
         SerializableObjects.assertEquals(h1.getBar(), h2.getBar());
     }
     
-    static void assertEquals(PojoWithArrayAndSet p1, PojoWithArrayAndSet p2)
-    {
-        // true if both are null
-        if(p1 == p2)
-            return;
-        
-        Set<Status> s1 = p1.getSomeEnumAsSet();
-        Set<Status> s2 = p2.getSomeEnumAsSet();
-        if(s1!=null)
-        {
-            assertNotNull(s2);
-            assertEquals(s1, s2);
-        }
-        else
-            assertNull(s2);
-        
-        Status[] sa1 = p1.getSomeEnumAsArray();
-        Status[] sa2 = p2.getSomeEnumAsArray();
-        if(sa1!=null)
-        {
-            assertNotNull(sa2);
-            assertTrue(sa1.length == sa2.length);
-            
-            for(int i=0,len=sa1.length; i<len; i++)
-                assertEquals(sa1[i], sa2[i]);
-        }
-        else
-            assertNull(sa2);
-        
-        
-        Set<Bar> b1 = p1.getSomeBarAsSet();
-        Set<Bar> b2 = p2.getSomeBarAsSet();
-        if(b1!=null)
-        {
-            assertNotNull(b2);
-            assertTrue(b1.size() == b2.size());
-            Iterator<Bar> i1 = b1.iterator();
-            Iterator<Bar> i2 = b2.iterator();
-            while(i1.hasNext() && i2.hasNext())
-                SerializableObjects.assertEquals(i1.next(), i2.next());
-        }
-        else
-            assertNull(b2);
-        
-        Bar[] ba1 = p1.getSomeBarAsArray();
-        Bar[] ba2 = p2.getSomeBarAsArray();
-        if(b1!=null)
-        {
-            assertNotNull(ba2);
-            assertTrue(ba1.length == ba2.length);
-            for(int i=0,len=ba1.length; i<len; i++)
-                SerializableObjects.assertEquals(ba1[i], ba2[i]);
-        }
-        else
-            assertNull(b2);
-        
-        
-        Set<Float> f1 = p1.getSomeFloatAsSet();
-        Set<Float> f2 = p2.getSomeFloatAsSet();
-        if(f1!=null)
-        {
-            assertNotNull(f2);
-            assertEquals(f1, f2);
-        }
-        else
-            assertNull(f2);
-        
-        Float[] fa1 = p1.getSomeFloatAsArray();
-        Float[] fa2 = p2.getSomeFloatAsArray();
-        if(fa1!=null)
-        {
-            assertNotNull(fa2);
-            assertTrue(fa1.length == fa2.length);
-            for(int i=0,len=fa1.length; i<len; i++)
-                assertEquals(fa1[i], fa2[i]);
-        }
-        else
-            assertNull(fa2);
-        
-        Double[] d1 = p1.getSomeDoubleAsArray();
-        Double[] d2 = p2.getSomeDoubleAsArray();
-        if(d1!=null)
-        {
-            assertNotNull(d2);
-            assertTrue(d1.length == d2.length);
-            for(int i=0,len=d1.length; i<len; i++)
-                assertEquals(d1[i], d2[i]);
-        }
-        else
-            assertNull(d2);
-        
-        double[] dp1 = p1.getSomePrimitiveDoubleAsArray();
-        double[] dp2 = p2.getSomePrimitiveDoubleAsArray();
-        if(dp1!=null)
-        {
-            assertNotNull(dp2);
-            assertTrue(dp1.length == dp2.length);
-            for(int i=0,len=dp1.length; i<len; i++)
-                assertTrue(dp1[i] == dp2[i]);
-        }
-        else
-            assertNull(dp2);
-        
-    }
 }

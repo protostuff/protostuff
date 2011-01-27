@@ -26,7 +26,7 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
  * @author David Yu
  * @created Jan 19, 2011
  */
-public abstract class RuntimeMessageField<T,P> extends Field<T>
+abstract class RuntimeMessageField<T,P> extends Field<T>
 {
     
     /**

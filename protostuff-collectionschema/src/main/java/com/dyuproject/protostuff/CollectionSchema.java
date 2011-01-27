@@ -171,12 +171,12 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                 return new java.util.LinkedList<V>();
             }
         },
-        // defaults to LinkedList
+        // defaults to LinkedBlockingQueue
         BlockingQueue
         {
             public <V> Collection<V> newMessage()
             {
-                return new java.util.LinkedList<V>();
+                return new java.util.concurrent.LinkedBlockingQueue<V>();
             }
         },
         LinkedBlockingQueue
@@ -187,7 +187,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             }
         },
         // defaults to LinkedList
-        Dequeue
+        Deque
         {
             public <V> Collection<V> newMessage()
             {
@@ -195,14 +195,14 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             }
         },
         // defaults to LinkedBlockingDeque
-        BlockingDequeue
+        BlockingDeque
         {
             public <V> Collection<V> newMessage()
             {
                 return new java.util.concurrent.LinkedBlockingDeque<V>();
             }
         },
-        LinkedBlockingDequeue
+        LinkedBlockingDeque
         {
             public <V> Collection<V> newMessage()
             {
@@ -217,7 +217,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                         ARRAY_BLOCKING_QUEUE_INITIAL_SIZE);
             }
         },
-        ArrayDequeue
+        ArrayDeque
         {
             public <V> Collection<V> newMessage()
             {
@@ -243,13 +243,6 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             public <V> Collection<V> newMessage()
             {
                 return new java.util.PriorityQueue<V>();
-            }
-        },
-        SynchronousQueue
-        {
-            public <V> Collection<V> newMessage()
-            {
-                return new java.util.concurrent.SynchronousQueue<V>();
             }
         };
         
@@ -350,17 +343,41 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                             "serialized.");
             }
         }
-        
     }
 
     public void writeTo(Output output, Collection<V> message) throws IOException
     {
         for(V value : message)
         {
-            // null values not allowed.
+            // null values not serialized.
             if(value != null)
                 writeValueTo(output, 1, value, true);
         }
     }
+    
+    public final Pipe.Schema<Collection<V>> pipeSchema = 
+        new Pipe.Schema<Collection<V>>(CollectionSchema.this)
+    {
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            for(int number = input.readFieldNumber(this);; 
+                    number = input.readFieldNumber(this))
+            {
+                switch(number)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        transferValue(pipe, input, output, 1, true);
+                        break;
+                    default:
+                        throw new ProtostuffException("The collection was incorrectly " + 
+                                "serialized.");
+                }
+            }
+        }
+        
+    };
 
 }

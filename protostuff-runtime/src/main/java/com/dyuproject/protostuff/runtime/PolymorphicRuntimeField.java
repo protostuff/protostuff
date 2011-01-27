@@ -38,7 +38,7 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Jan 16, 2011
  */
-public abstract class PolymorphicRuntimeField<T> extends Field<T>
+abstract class PolymorphicRuntimeField<T> extends Field<T>
 {
 
     /**

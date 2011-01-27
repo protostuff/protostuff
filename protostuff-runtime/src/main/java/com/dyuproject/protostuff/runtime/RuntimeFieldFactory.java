@@ -81,7 +81,10 @@ public abstract class RuntimeFieldFactory<V>
             return RuntimeMapFieldFactory.MAP;
 
         if(Collection.class.isAssignableFrom(clazz))
-            return RuntimeRepeatedFieldFactory.REPEATED;
+        {
+            // repeated fields.
+            return COLLECTION;
+        }
         
         return pojo(clazz);
     }
@@ -1380,6 +1383,11 @@ public abstract class RuntimeFieldFactory<V>
             return FieldType.FIXED64;
         }
     };
+    
+    static final RuntimeFieldFactory<Collection<?>> COLLECTION = 
+        RuntimeSchema.COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? 
+                RuntimeCollectionFieldFactory.getFactory() : 
+                    RuntimeRepeatedFieldFactory.getFactory();
     
     private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = 
         new HashMap<String, RuntimeFieldFactory<?>>();

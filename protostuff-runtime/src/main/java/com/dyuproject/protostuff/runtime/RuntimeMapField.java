@@ -33,7 +33,7 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Jan 21, 2011
  */
-public abstract class RuntimeMapField<T,K,V> extends Field<T>
+abstract class RuntimeMapField<T,K,V> extends Field<T>
 {
     
     /**

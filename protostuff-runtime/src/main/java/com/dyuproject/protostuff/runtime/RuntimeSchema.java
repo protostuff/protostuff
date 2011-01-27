@@ -52,6 +52,20 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      */
     public static final boolean MORPH_NON_FINAL_POJOS = 
         Boolean.getBoolean("protostuff.runtime.morph_non_final_pojos");
+    
+    /**
+     * On repeated fields, the List/Collection itself is not serialized (only its values).
+     * If you enable this option, the repeated field will be serialized as a 
+     * standalone message with a collection schema.  Even if the List/Collection is empty, 
+     * an empty collection message is still written.
+     * 
+     * This is particularly useful if you rely on {@link Object#equals(Object)} on your 
+     * pojos.
+     * 
+     * Disabled by default for protobuf compatibility.
+     */
+    public static final boolean COLLECTION_SCHEMA_ON_REPEATED_FIELDS = 
+        Boolean.getBoolean("protostuff.runtime.collection_schema_on_repeated_fields");
 
     private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
         new ConcurrentHashMap<String, HasSchema<?>>();

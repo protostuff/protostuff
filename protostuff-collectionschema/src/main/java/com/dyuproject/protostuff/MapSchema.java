@@ -49,12 +49,28 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
      */
     public enum MessageFactories implements MessageFactory
     {
-        // Default is HashMap.
+        // defaults to HashMap
         Map
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new HashMap<K,V>();
+            }
+        },
+        // defaults to TreeMap
+        SortedMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.TreeMap<K,V>();
+            }
+        },
+        // defaults to TreeMap
+        NavigableMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.TreeMap<K,V>();
             }
         },
         HashMap
@@ -99,11 +115,27 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
                 return new java.util.Hashtable<K,V>();
             }
         },
+        // defaults to ConcurrentHashMap
+        ConcurrentMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.concurrent.ConcurrentHashMap<K,V>();
+            }
+        },
         ConcurrentHashMap
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.concurrent.ConcurrentHashMap<K,V>();
+            }
+        },
+        // defaults to ConcurrentNavigableMap
+        ConcurrentNavigableMap
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new java.util.concurrent.ConcurrentSkipListMap<K,V>();
             }
         },
         ConcurrentSkipListMap

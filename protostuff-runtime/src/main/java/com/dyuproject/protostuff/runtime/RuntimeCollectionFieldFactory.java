@@ -27,31 +27,50 @@ import com.dyuproject.protostuff.CollectionSchema.MessageFactories;
 import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
 
 /**
- * Static utility for creating runtime repeated (list/collection) fields.
+ * Static utility for creating runtime {@link Collection} fields.
  *
  * @author David Yu
- * @created Jan 23, 2011
+ * @created Jan 26, 2011
  */
-final class RuntimeRepeatedFieldFactory
+final class RuntimeCollectionFieldFactory
 {
     
-    private RuntimeRepeatedFieldFactory() {}
+    private RuntimeCollectionFieldFactory() {}
     
     /**
      * For lazy initialization called by {@link RuntimeFieldFactory}.
      */
     static RuntimeFieldFactory<Collection<?>> getFactory()
     {
-        return REPEATED;
+        return COLLECTION;
     }
+    
+    private static final DerivativeSchema POLYMORPHIC_COLLECTION_VALUE_SCHEMA = 
+        new DerivativeSchema()
+    {
+        @SuppressWarnings("unchecked")
+        protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+                Object owner) throws IOException
+        {
+            final Object value = derivedSchema.newMessage();
+            
+            // the owner will always be the MapWrapper
+            ((Collection<Object>)owner).add(value);
+            
+            derivedSchema.mergeFrom(input, value);
+        }
+    };
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
-            final java.lang.reflect.Field f, final MessageFactory messageFactory, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inline)
     {
-        return new Field<T>(inline.getFieldType(), number, name, true)
+        return new RuntimeCollectionField<T,Object>(
+                inline.getFieldType(), 
+                number, name, messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -59,232 +78,18 @@ final class RuntimeRepeatedFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                final Object value = inline.readFrom(input);
                 try
                 {
-                    final Collection<Object> existing = (Collection<Object>)f.get(message);
-                    if(existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory.newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
+                    f.set(message, input.mergeObject((Collection<Object>)f.get(message), 
+                            schema));
                 }
-                catch (IllegalArgumentException e)
+                catch(IllegalArgumentException e)
                 {
                     throw new RuntimeException(e);
                 }
-                catch (IllegalAccessException e)
+                catch(IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
-                }
-            }
-            @SuppressWarnings("unchecked")
-            protected void writeTo(Output output, T message) throws IOException
-            {
-                final Collection<Object> collection;
-                try
-                {
-                    collection = (Collection<Object>)f.get(message);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                
-                if(collection != null && !collection.isEmpty())
-                {
-                    for(Object o : collection)
-                        inline.writeTo(output, number, o, true);
-                }
-            }
-            protected void transfer(Pipe pipe, Input input, Output output, 
-                    boolean repeated) throws IOException
-            {
-                inline.transfer(pipe, input, output, number, repeated);
-            }
-        };
-    }
-    
-    private static <T> Field<T> createCollectionEnumV(int number, String name, 
-            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
-            final Class<Object> genericType)
-    {
-        final EnumIO<?> eio = EnumIO.create(genericType, null);
-        return new Field<T>(FieldType.ENUM, number, name, true)
-        {
-            {
-                f.setAccessible(true);
-            }
-            @SuppressWarnings("unchecked")
-            protected void mergeFrom(Input input, T message) throws IOException
-            {
-                final Enum<?> value = eio.readFrom(input);
-                try
-                {
-                    final Collection<Enum<?>> existing = (Collection<Enum<?>>)f.get(message);
-                    if(existing == null)
-                    {
-                        final Collection<Enum<?>> collection = messageFactory.newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-            @SuppressWarnings("unchecked")
-            protected void writeTo(Output output, T message) throws IOException
-            {
-                final Collection<Enum<?>> collection;
-                try
-                {
-                    collection = (Collection<Enum<?>>)f.get(message);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                
-                if(collection != null && !collection.isEmpty())
-                {
-                    for(Enum<?> en : collection)
-                        eio.writeTo(output, number, true, en);
-                }
-            }
-            protected void transfer(Pipe pipe, Input input, Output output, 
-                    boolean repeated) throws IOException
-            {
-                eio.transfer(pipe, input, output, number, repeated);
-            }
-        };
-    }
-    
-    private static <T> Field<T> createCollectionPojoV(int number, String name, 
-            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
-            final Class<Object> genericType)
-    {
-        return new RuntimeMessageField<T,Object>(
-                genericType, RuntimeSchema.getSchemaWrapper(genericType), 
-                FieldType.MESSAGE, number, name, true)
-        {
-            
-            {
-                f.setAccessible(true);
-            }
-            @SuppressWarnings("unchecked")
-            protected void mergeFrom(Input input, T message) throws IOException
-            {
-                final Object value = input.mergeObject(null, getSchema());
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>)f.get(message);
-                    if(existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory.newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-            @SuppressWarnings("unchecked")
-            protected void writeTo(Output output, T message) throws IOException
-            {
-                final Collection<Object> collection;
-                try
-                {
-                    collection = (Collection<Object>)f.get(message);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                
-                if(collection != null && !collection.isEmpty())
-                {
-                    final Schema<Object> schema = getSchema();
-                    for(Object o : collection)
-                        output.writeObject(number, o, schema, true);
-                }
-            }
-            protected void transfer(Pipe pipe, Input input, Output output, 
-                    boolean repeated) throws IOException
-            {
-                output.writeObject(number, pipe, getPipeSchema(), repeated);
-            }
-        };
-    }
-    
-    private static <T> Field<T> createCollectionPolymorphicV(int number, String name, 
-            final java.lang.reflect.Field f, final MessageFactory messageFactory,  
-            final Class<Object> genericType)
-    {
-        return new PolymorphicRuntimeField<T>(
-                genericType, FieldType.MESSAGE, number, name, true)
-        {
-            {
-                f.setAccessible(true);
-            }
-            @SuppressWarnings("unchecked")
-            protected void mergeFrom(Input input, T message) throws IOException
-            {
-                final Object value = input.mergeObject(message, schema);
-                if(input instanceof GraphInput && 
-                        ((GraphInput)input).isCurrentMessageReference())
-                {
-                    // a reference from polymorphic+cyclic graph deser
-                    try
-                    {
-                        final Collection<Object> existing = (Collection<Object>)f.get(message);
-                        if(existing == null)
-                        {
-                            final Collection<Object> collection = messageFactory.newMessage();
-                            collection.add(value);
-                            f.set(message, collection);
-                        }
-                        else
-                            existing.add(value);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
                 }
             }
             @SuppressWarnings("unchecked")
@@ -295,63 +100,268 @@ final class RuntimeRepeatedFieldFactory
                 {
                     existing = (Collection<Object>)f.get(message);
                 }
-                catch (IllegalArgumentException e)
+                catch(IllegalArgumentException e)
                 {
                     throw new RuntimeException(e);
                 }
-                catch (IllegalAccessException e)
+                catch(IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
                 
-                if(existing != null && !existing.isEmpty())
-                {
-                    for(Object o : existing)
-                        output.writeObject(number, o, schema, true);
-                }
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            @SuppressWarnings("unchecked")
-            protected void doMergeFrom(Input input, Schema<Object> schema, 
-                    Object message) throws IOException
+            protected void addValueFrom(Input input, Collection<Object> collection) 
+            throws IOException
             {
-                final Object value = schema.newMessage();
-                if(input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput)input).updateLast(value, message);
-                }
-                
-                schema.mergeFrom(input, value);
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>)f.get(message);
-                    if(existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory.newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
+                collection.add(inline.readFrom(input));
+            }
+            protected void writeValueTo(Output output, int fieldNumber, Object value, 
+                    boolean repeated) throws IOException
+            {
+                inline.writeTo(output, fieldNumber, value, repeated);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, 
+                    int number, boolean repeated) throws IOException
+            {
+                inline.transfer(pipe, input, output, number, repeated);
             }
         };
     }
     
-    private static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>()
+    private static <T> Field<T> createCollectionEnumV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory,  
+            Class<Object> genericType)
+    {
+        final EnumIO<?> eio = EnumIO.create(genericType, null);
+        return new RuntimeCollectionField<T,Enum<?>>(
+                FieldType.ENUM, 
+                number, name, messageFactory)
+        {
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Collection<Enum<?>>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Collection<Enum<?>> existing;
+                try
+                {
+                    existing = (Collection<Enum<?>>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected void addValueFrom(Input input, Collection<Enum<?>> collection) 
+            throws IOException
+            {
+                collection.add(eio.readFrom(input));
+            }
+            protected void writeValueTo(Output output, int fieldNumber, Enum<?> value, 
+                    boolean repeated) throws IOException
+            {
+                eio.writeTo(output, fieldNumber, repeated, value);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, 
+                    int number, boolean repeated) throws IOException
+            {
+                eio.transfer(pipe, input, output, number, repeated);
+            }
+        };
+    }
+    
+    private static <T> Field<T> createCollectionPojoV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            Class<Object> genericType)
+    {
+        final HasSchema<Object> schemaV = RuntimeSchema.getSchemaWrapper(genericType);
+        return new RuntimeCollectionField<T,Object>(
+                FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Collection<Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Collection<Object> existing;
+                try
+                {
+                    existing = (Collection<Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected void addValueFrom(Input input, Collection<Object> collection) 
+            throws IOException
+            {
+                collection.add(input.mergeObject(null, schemaV.getSchema()));
+            }
+            protected void writeValueTo(Output output, int fieldNumber, Object value, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, value, schemaV.getSchema(), repeated);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, 
+                    int number, boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schemaV.getPipeSchema(), repeated);
+            }
+        };
+    }
+    
+    private static <T> Field<T> createCollectionPolymorphicV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory,  
+            Class<Object> genericType)
+    {
+        return new RuntimeCollectionField<T,Object>(
+                FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Collection<Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Collection<Object> existing;
+                try
+                {
+                    existing = (Collection<Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected void addValueFrom(Input input, Collection<Object> collection) 
+            throws IOException
+            {
+                final Object value = input.mergeObject(collection, 
+                        POLYMORPHIC_COLLECTION_VALUE_SCHEMA);
+                
+                if(input instanceof GraphInput && 
+                        ((GraphInput)input).isCurrentMessageReference())
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(value, collection);
+                }
+            }
+            protected void writeValueTo(Output output, int fieldNumber, Object value, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, value, 
+                        POLYMORPHIC_COLLECTION_VALUE_SCHEMA, repeated);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, 
+                    int number, boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, 
+                        POLYMORPHIC_COLLECTION_VALUE_SCHEMA.pipeSchema, repeated);
+            }
+        };
+    }
+    
+    private static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>()
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
