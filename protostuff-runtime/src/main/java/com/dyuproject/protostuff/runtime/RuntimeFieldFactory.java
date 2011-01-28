@@ -1194,7 +1194,10 @@ public abstract class RuntimeFieldFactory<V>
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
             return new Field<T>(FieldType.STRING, number, name)
-            {               
+            {
+                {
+                    f.setAccessible(true);
+                }
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     try
@@ -1259,7 +1262,10 @@ public abstract class RuntimeFieldFactory<V>
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
             return new Field<T>(FieldType.BYTES, number, name)
-            {               
+            {
+                {
+                    f.setAccessible(true);
+                }
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     try
@@ -1324,7 +1330,10 @@ public abstract class RuntimeFieldFactory<V>
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
             return new Field<T>(FieldType.FIXED64, number, name)
-            {               
+            {
+                {
+                    f.setAccessible(true);
+                }
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     try

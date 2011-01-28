@@ -14,14 +14,16 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 
 /**
@@ -69,10 +71,12 @@ public class CollectionTest extends TestCase
     public static class Task implements ITask
     {
         
-        int id;
-        String description;
-        Collection<String> tags;
-        Date dateCreated;
+        private int id;
+        private String description;
+        private Collection<String> tags;
+        private Date dateCreated;
+        private BigInteger bigInteger;
+        private BigDecimal bigDecimal;
         
         public Task()
         {
@@ -143,11 +147,45 @@ public class CollectionTest extends TestCase
             this.dateCreated = dateCreated;
         }
 
+        /**
+         * @return the bigInteger
+         */
+        public BigInteger getBigInteger()
+        {
+            return bigInteger;
+        }
+
+        /**
+         * @param bigInteger the bigInteger to set
+         */
+        public void setBigInteger(BigInteger bigInteger)
+        {
+            this.bigInteger = bigInteger;
+        }
+
+        /**
+         * @return the bigDecimal
+         */
+        public BigDecimal getBigDecimal()
+        {
+            return bigDecimal;
+        }
+
+        /**
+         * @param bigDecimal the bigDecimal to set
+         */
+        public void setBigDecimal(BigDecimal bigDecimal)
+        {
+            this.bigDecimal = bigDecimal;
+        }
+
         @Override
         public int hashCode()
         {
             final int prime = 31;
             int result = 1;
+            result = prime * result + ((bigDecimal == null)?0:bigDecimal.hashCode());
+            result = prime * result + ((bigInteger == null)?0:bigInteger.hashCode());
             result = prime * result + ((dateCreated == null)?0:dateCreated.hashCode());
             result = prime * result + ((description == null)?0:description.hashCode());
             result = prime * result + id;
@@ -165,6 +203,20 @@ public class CollectionTest extends TestCase
             if (getClass() != obj.getClass())
                 return false;
             Task other = (Task)obj;
+            if (bigDecimal == null)
+            {
+                if (other.bigDecimal != null)
+                    return false;
+            }
+            else if (!bigDecimal.equals(other.bigDecimal))
+                return false;
+            if (bigInteger == null)
+            {
+                if (other.bigInteger != null)
+                    return false;
+            }
+            else if (!bigInteger.equals(other.bigInteger))
+                return false;
             if (dateCreated == null)
             {
                 if (other.dateCreated != null)
@@ -194,11 +246,9 @@ public class CollectionTest extends TestCase
         @Override
         public String toString()
         {
-            return "Task [dateCreated=" + dateCreated + ", description=" + description + ", id=" + id + ", tags=" + tags + "]";
+            return "Task [bigDecimal=" + bigDecimal + ", bigInteger=" + bigInteger + ", dateCreated=" + dateCreated + ", description=" + description + ", id="
+                    + id + ", tags=" + tags + "]";
         }
-        
-        
-        
         
     }
 
@@ -324,6 +374,8 @@ public class CollectionTest extends TestCase
         task.setDescription("Complete that other task.");
         task.setTags(tags);
         task.setDateCreated(new Date(System.currentTimeMillis()));
+        task.setBigDecimal(new BigDecimal(564654.234234d));
+        task.setBigInteger(BigInteger.valueOf(System.currentTimeMillis()));
         
         return task;
     }
