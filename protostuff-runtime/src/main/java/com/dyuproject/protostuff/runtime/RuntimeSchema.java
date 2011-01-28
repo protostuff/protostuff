@@ -527,7 +527,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         
         final Class<? super T> baseClass;
         final Class<T> typeClass;
-        private HasSchema<T> wrapper;
+        private volatile HasSchema<T> wrapper;
         
         Mapped(Class<? super T> baseClass, Class<T> typeClass)
         {
