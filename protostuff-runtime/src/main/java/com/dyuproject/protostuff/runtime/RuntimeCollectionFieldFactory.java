@@ -344,6 +344,8 @@ final class RuntimeCollectionFieldFactory
                 {
                     // update the actual reference.
                     ((GraphInput)input).updateLast(value, collection);
+                    
+                    collection.add(value);
                 }
             }
             protected void writeValueTo(Output output, int fieldNumber, Object value, 
