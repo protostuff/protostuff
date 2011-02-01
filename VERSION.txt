@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 45: Double-checked locking concern
 + Issue 47: IllegalAccessException in when accessing a private Date field with RuntimeSchema
 + add protostuff-collectionschema (jdk standard collections support - map,list,set,queue,deque,etc)
 + Issue 43: Inheritance support for non-abstract base types

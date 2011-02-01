@@ -424,7 +424,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     static final class Registered<T> extends HasSchema<T>
     {
         final Schema<T> schema;
-        private Pipe.Schema<T> pipeSchema;
+        private volatile Pipe.Schema<T> pipeSchema;
         
         Registered(Schema<T> schema)
         {
@@ -457,8 +457,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     static final class Lazy<T> extends HasSchema<T>
     {
         final Class<T> typeClass;
-        private Schema<T> schema;
-        private Pipe.Schema<T> pipeSchema;
+        private volatile Schema<T> schema;
+        private volatile Pipe.Schema<T> pipeSchema;
         
         Lazy(Class<T> typeClass)
         {
