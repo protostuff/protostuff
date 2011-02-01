@@ -937,44 +937,50 @@ public abstract class RuntimeFieldFactory<V>
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
         {
+            final EnumIO<? extends Enum<?>> eio = EnumIO.get(f.getType());
             return new Field<T>(FieldType.ENUM, number, name)
             {
-                final EnumIO<?> eio = EnumIO.create(f.getType(), f);
-                
+                {
+                    f.setAccessible(true);
+                } 
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
-                        eio.mergeFrom(input, message);
+                        f.set(message, eio.readFrom(input));
                     }
-                    catch(IllegalArgumentException e)
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
-                    catch(IllegalAccessException e)
+                    catch (IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }
                 }
                 protected void writeTo(Output output, T message) throws IOException
                 {
+                    final Enum<?> existing;
                     try
                     {
-                        eio.writeTo(output, number, repeated, message);
+                        existing = (Enum<?>)f.get(message);
                     }
-                    catch(IllegalArgumentException e)
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
-                    catch(IllegalAccessException e)
+                    catch (IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }
+                    
+                    if(existing != null)
+                        EnumIO.writeTo(output, number, repeated, existing);
                 }
                 protected void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
-                    eio.transfer(pipe, input, output, number, repeated);
+                    EnumIO.transfer(pipe, input, output, number, repeated);
                 }
             };
         }

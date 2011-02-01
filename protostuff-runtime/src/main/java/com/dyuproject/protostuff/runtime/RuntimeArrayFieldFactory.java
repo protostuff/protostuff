@@ -112,7 +112,7 @@ final class RuntimeArrayFieldFactory
     private static <T> Field<T> createArrayEnumV(int number, String name, 
             final java.lang.reflect.Field f, final Class<Object> componentType)
     {
-        final EnumIO<?> eio = EnumIO.create(componentType, null);
+        final EnumIO<?> eio = EnumIO.get(componentType);
         return new Field<T>(FieldType.ENUM, number, name, true)
         {
             {
@@ -168,13 +168,13 @@ final class RuntimeArrayFieldFactory
                 if(array != null)
                 {
                     for(int i=0, len=Array.getLength(array); i<len; i++)
-                        eio.writeTo(output, number, true, (Enum<?>)Array.get(array, i));
+                        EnumIO.writeTo(output, number, true, (Enum<?>)Array.get(array, i));
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
                     boolean repeated) throws IOException
             {
-                eio.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }

@@ -62,7 +62,7 @@ final class RuntimeMapFieldFactory
             final RuntimeFieldFactory<Object> inlineK, 
             final Class<Object> clazzV)
     {
-        final EnumIO<?> eioV = EnumIO.create(clazzV, null);
+        final EnumIO<?> eioV = EnumIO.get(clazzV);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -134,12 +134,12 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val, 
                     boolean repeated) throws IOException
             {
-                eioV.writeTo(output, fieldNumber, repeated, val);
+                EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
@@ -425,9 +425,8 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
-        final EnumIO<?> eioK = EnumIO.create(clazzK, null);
-        // might be the same key-value type, why not re-use it.
-        final EnumIO<?> eioV = clazzK == clazzV ? eioK : EnumIO.create(clazzV, null);
+        final EnumIO<?> eioK = EnumIO.get(clazzK);
+        final EnumIO<?> eioV = EnumIO.get(clazzV);
         
         return new RuntimeMapField<T,Enum<?>,Enum<?>>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -484,12 +483,12 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key, 
                     boolean repeated) throws IOException
             {
-                eioK.writeTo(output, fieldNumber, repeated, key);
+                EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
             protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Enum<?>,Enum<?>> wrapper, 
                     Enum<?> key) throws IOException
@@ -499,12 +498,12 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val, 
                     boolean repeated) throws IOException
             {
-                eioV.writeTo(output, fieldNumber, repeated, val);
+                EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
@@ -514,7 +513,7 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzK, 
             final RuntimeFieldFactory<Object> inlineV)
     {
-        final EnumIO<?> eioK = EnumIO.create(clazzK, null);
+        final EnumIO<?> eioK = EnumIO.get(clazzK);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -571,12 +570,12 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key, 
                     boolean repeated) throws IOException
             {
-                eioK.writeTo(output, fieldNumber, repeated, key);
+                EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
             protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Enum<?>,Object> wrapper, 
                     Enum<?> key) throws IOException
@@ -601,7 +600,7 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
-        final EnumIO<?> eioK = EnumIO.create(clazzK, null);
+        final EnumIO<?> eioK = EnumIO.get(clazzK);
         final HasSchema<Object> schemaV = RuntimeSchema.getSchemaWrapper(clazzV);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
@@ -659,12 +658,12 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key, 
                     boolean repeated) throws IOException
             {
-                eioK.writeTo(output, fieldNumber, repeated, key);
+                EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
             protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Enum<?>,Object> wrapper, 
                     Enum<?> key) throws IOException
@@ -689,7 +688,7 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzK, 
             final Class<Object> clazzV)
     {
-        final EnumIO<?> eioK = EnumIO.create(clazzK, null);
+        final EnumIO<?> eioK = EnumIO.get(clazzK);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -747,12 +746,12 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key, 
                     boolean repeated) throws IOException
             {
-                eioK.writeTo(output, fieldNumber, repeated, key);
+                EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
             protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Enum<?>,Object> wrapper, 
                     Enum<?> key) throws IOException
@@ -796,7 +795,7 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzV)
     {
         final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
-        final EnumIO<?> eioV = EnumIO.create(clazzV, null);
+        final EnumIO<?> eioV = EnumIO.get(clazzV);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -868,12 +867,12 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val, 
                     boolean repeated) throws IOException
             {
-                eioV.writeTo(output, fieldNumber, repeated, val);
+                EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }

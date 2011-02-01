@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
@@ -34,45 +35,62 @@ public abstract class EnumIO<E extends Enum<E>>
     /**
      * Returns true if serializing enums by name is activated.
      */
-    public static final boolean ENUMS_BY_NAME = Boolean.getBoolean("protostuff.runtime.enums_by_name");
+    public static final boolean ENUMS_BY_NAME = 
+        Boolean.getBoolean("protostuff.runtime.enums_by_name");
+    
+    /**
+     * A cache to prevent creating the same eio over and over.
+     */
+    private static final ConcurrentHashMap<String,EnumIO<?>> __eioCache = 
+        new ConcurrentHashMap<String,EnumIO<?>>();
     
     @SuppressWarnings("unchecked")
-    static EnumIO<? extends Enum<?>> create(Class<?> enumClass, 
-            java.lang.reflect.Field f)
+    static EnumIO<? extends Enum<?>> get(Class<?> enumClass)
     {
-        return ENUMS_BY_NAME ? new ByName(enumClass, f) : new ByNumber(enumClass, f); 
+        EnumIO<?> eio = __eioCache.get(enumClass.getName());
+        if(eio == null)
+        {
+            eio = ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
+            
+            final EnumIO<?> existing = __eioCache.putIfAbsent(enumClass.getName(), eio);
+            if(existing != null)
+                eio = existing;
+        }
+        
+        return eio;
+    }
+    
+    /**
+     * Writes the {@link Enum} to the output.
+     */
+    public static void writeTo(Output output, int number, boolean repeated, Enum<?> e) 
+    throws IOException
+    {
+        if(ENUMS_BY_NAME)
+            output.writeString(number, e.name(), repeated);
+        else
+            output.writeEnum(number, e.ordinal(), repeated);
+    }
+    
+    /**
+     * Transfers the {@link Enum} from the input to the output.
+     */
+    public static void transfer(Pipe pipe, Input input, Output output, int number, 
+            boolean repeated) throws IOException
+    {
+        if(ENUMS_BY_NAME)
+            input.transferByteRangeTo(output, true, number, repeated);
+        else
+            output.writeEnum(number, input.readEnum(), repeated);
     }
     
     
     protected final Class<E> enumClass;
-    protected final java.lang.reflect.Field f;
     
-    public EnumIO(Class<E> enumClass, java.lang.reflect.Field f)
+    public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
-        this.f = f;
-        if(f != null)
-            f.setAccessible(true);
     }
-
-    /**
-     * Merge the value (inserted into the message) from the input.
-     */
-    public abstract void mergeFrom(Input input, Object message) throws IOException,
-            IllegalAccessException, IllegalArgumentException;
-    
-    /**
-     * Write the value (extracted from the message) to the output.
-     */
-    public abstract void writeTo(Output output, int fieldNumber, 
-            boolean repeated, Object message) throws IOException,
-            IllegalAccessException, IllegalArgumentException;
-    
-    /**
-     * Write the enum to the output.
-     */
-    public abstract void writeTo(Output output, int fieldNumber, 
-            boolean repeated, Enum<?> e) throws IOException;
     
     /**
      * Read the enum from the input.
@@ -80,97 +98,36 @@ public abstract class EnumIO<E extends Enum<E>>
     public abstract E readFrom(Input input) throws IOException;
     
     /**
-     * Transfer the enum.
-     */
-    public abstract void transfer(Pipe pipe, Input input, Output output, 
-            int number, boolean repeated) throws IOException;
-    
-    /**
-     * Writes the enum by its name.
+     * Reads the enum by its name.
      *
      */
     public static final class ByName<E extends Enum<E>> extends EnumIO<E>
     {
-        public ByName(Class<E> enumClass, java.lang.reflect.Field f)
+        public ByName(Class<E> enumClass)
         {
-            super(enumClass, f);
+            super(enumClass);
         }
-
-        public void mergeFrom(Input input, Object message) throws IOException, 
-            IllegalArgumentException, IllegalAccessException
-        {
-            f.set(message, Enum.valueOf(enumClass, input.readString()));
-        }
-
-        @SuppressWarnings("unchecked")
-        public void writeTo(Output output, int fieldNumber, boolean repeated, Object message)
-                throws IOException, IllegalArgumentException, IllegalAccessException
-        {
-            E e = (E)f.get(message);
-            if(e != null)
-                output.writeString(fieldNumber, e.name(), repeated);
-        }
-        
-        public void writeTo(Output output, int fieldNumber, 
-                boolean repeated, Enum<?> e) throws IOException
-        {
-            output.writeString(fieldNumber, e.name(), repeated);
-        }   
         
         public E readFrom(Input input) throws IOException
         {
             return Enum.valueOf(enumClass, input.readString());
         }
-
-        public void transfer(Pipe pipe, Input input, Output output, int number, 
-                boolean repeated) throws IOException
-        {
-            input.transferByteRangeTo(output, true, number, repeated);
-        }
-        
     }
     
     /**
-     * Writes the enum by its number.
+     * Reads the enum by its number.
      *
      */
     public static final class ByNumber<E extends Enum<E>> extends EnumIO<E>
     {
-        public ByNumber(Class<E> enumClass, java.lang.reflect.Field f)
+        public ByNumber(Class<E> enumClass)
         {
-            super(enumClass, f);
-        }
-
-        public void mergeFrom(Input input, Object message) throws IOException, 
-        IllegalArgumentException, IllegalAccessException
-        {
-            f.set(message, enumClass.getEnumConstants()[input.readEnum()]);
-        }
-
-        @SuppressWarnings("unchecked")
-        public void writeTo(Output output, int fieldNumber, boolean repeated, Object message)
-                throws IOException, IllegalArgumentException, IllegalAccessException
-        {
-            E e = (E)f.get(message);
-            if(e != null)
-                output.writeEnum(fieldNumber, e.ordinal(), repeated);
-        }
-        
-        public void writeTo(Output output, int fieldNumber, 
-                boolean repeated, Enum<?> e) throws IOException
-        {
-            output.writeEnum(fieldNumber, e.ordinal(), repeated);
-        }   
+            super(enumClass);
+        } 
         
         public E readFrom(Input input) throws IOException
         {
             return enumClass.getEnumConstants()[input.readEnum()];
-        }
-
-        public void transfer(Pipe pipe, Input input, Output output, int number, 
-                boolean repeated) throws IOException
-        {
-            output.writeEnum(number, input.readEnum(), repeated);
         }
     }
 

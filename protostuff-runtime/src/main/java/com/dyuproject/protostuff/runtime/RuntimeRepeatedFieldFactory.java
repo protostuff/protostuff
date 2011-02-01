@@ -116,7 +116,7 @@ final class RuntimeRepeatedFieldFactory
             final java.lang.reflect.Field f, final MessageFactory messageFactory,  
             final Class<Object> genericType)
     {
-        final EnumIO<?> eio = EnumIO.create(genericType, null);
+        final EnumIO<?> eio = EnumIO.get(genericType);
         return new Field<T>(FieldType.ENUM, number, name, true)
         {
             {
@@ -167,13 +167,13 @@ final class RuntimeRepeatedFieldFactory
                 if(collection != null && !collection.isEmpty())
                 {
                     for(Enum<?> en : collection)
-                        eio.writeTo(output, number, true, en);
+                        EnumIO.writeTo(output, number, true, en);
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
                     boolean repeated) throws IOException
             {
-                eio.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
