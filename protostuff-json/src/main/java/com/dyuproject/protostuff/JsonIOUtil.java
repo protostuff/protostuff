@@ -28,6 +28,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.impl.Utf8Generator;
 import org.codehaus.jackson.impl.Utf8StreamParser;
 import org.codehaus.jackson.io.IOContext;
 import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
@@ -193,16 +194,33 @@ public final class JsonIOUtil
                 buf, offset, limit, bufferRecyclable);
     }
     
-    /*public static Utf8Generator newJsonGenerator(OutputStream out, boolean autoCloseStream)
+    /**
+     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf 
+     * {@code outBuffer} to use.
+     */
+    public static Utf8Generator newJsonGenerator(OutputStream out, byte[] buf)
     {
-        final IOContext context = new IOContext(
-                DEFAULT_JSON_FACTORY._getBufferRecycler(), out, autoCloseStream);
+        return newJsonGenerator(out, buf, 0, false, new IOContext(
+                DEFAULT_JSON_FACTORY._getBufferRecycler(), out, false));
+    }
+    
+    /**
+     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf 
+     * {@code outBuffer} to use.
+     */
+    static Utf8Generator newJsonGenerator(OutputStream out, byte[] buf, int offset, 
+            boolean bufferRecyclable, IOContext context)
+    {
+        context.setEncoding(JsonEncoding.UTF8);
         
         return new Utf8Generator(context, 
-                DEFAULT_JSON_FACTORY.getParserFeatures(), 
+                DEFAULT_JSON_FACTORY.getGeneratorFeatures(), 
                 DEFAULT_JSON_FACTORY.getCodec(), 
-                out);
-    }*/
+                out,
+                buf,
+                offset,
+                bufferRecyclable);
+    }
     
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
@@ -261,7 +279,8 @@ public final class JsonIOUtil
      * Merges the {@code message} from the {@link InputStream} using the 
      * given {@code schema}.
      * 
-     * The {@code buffer}'s internal byte array will be used for reading the message.
+     * The {@link LinkedBuffer}'s internal byte array will be used when reading the 
+     * message.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
             boolean numeric, LinkedBuffer buffer) throws IOException
@@ -345,8 +364,39 @@ public final class JsonIOUtil
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
             boolean numeric) throws IOException
     {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
-                JsonEncoding.UTF8);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                out, false);
+        
+        final JsonGenerator generator = newJsonGenerator(out, 
+                context.allocWriteEncodingBuffer(), 0, true, context);
+        
+        /*final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
+                JsonEncoding.UTF8);*/
+        try
+        {
+            writeTo(generator, message, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
+    }
+    
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} 
+     * using the given {@code schema}.
+     * 
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
+     * when writing the message.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+            boolean numeric, LinkedBuffer buffer) throws IOException
+    {
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                out, false);
+        
+        final JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false, 
+                context);
         try
         {
             writeTo(generator, message, schema, numeric);
@@ -398,8 +448,37 @@ public final class JsonIOUtil
     public static <T> void writeListTo(OutputStream out, List<T> messages, 
             Schema<T> schema, boolean numeric) throws IOException
     {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
-                JsonEncoding.UTF8);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                out, false);
+        
+        final JsonGenerator generator = newJsonGenerator(out, 
+                context.allocWriteEncodingBuffer(), 0, true, context);
+        /*final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, 
+                JsonEncoding.UTF8);*/
+        try
+        {
+            writeListTo(generator, messages, schema, numeric);
+        }
+        finally
+        {
+            generator.close();
+        }
+    }
+    
+    /**
+     * Serializes the {@code messages} into the stream using the given schema.
+     * 
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
+     * when writing the message.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages, 
+            Schema<T> schema, boolean numeric, LinkedBuffer buffer) throws IOException
+    {
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                out, false);
+        
+        final JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false, 
+                context);
         try
         {
             writeListTo(generator, messages, schema, numeric);
@@ -481,7 +560,8 @@ public final class JsonIOUtil
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
      * 
-     * The {@code buffer}'s internal byte array will be used for reading the message.
+     * The {@link LinkedBuffer}'s internal byte array will be used when reading the 
+     * message.
      */
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
             boolean numeric, LinkedBuffer buffer) throws IOException

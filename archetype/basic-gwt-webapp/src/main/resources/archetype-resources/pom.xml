@@ -90,7 +90,7 @@
     <junit.version>4.4</junit.version>
     <servlet.version>2.5-20081211</servlet.version>
     <jetty.version>6.1.24</jetty.version>
-    <jackson.version>1.7.1</jackson.version>
+    <jackson.version>1.7.2</jackson.version>
     <protostuff.version>1.0-SNAPSHOT</protostuff.version>
     
     <!--<google.webtoolkit.home>${env.GWT_HOME}</google.webtoolkit.home>-->
