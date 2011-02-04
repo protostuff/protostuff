@@ -42,6 +42,44 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 public abstract class RuntimeFieldFactory<V>
 {
     
+    static final int ID_BOOL = 1, ID_BYTE = 2, ID_CHAR = 3, ID_SHORT = 4, 
+        ID_INT32 = 5, ID_INT64 = 6, ID_FLOAT = 7, ID_DOUBLE = 8, 
+        ID_STRING = 9, ID_BYTES = 10, ID_BYTE_ARRAY = 11, 
+        ID_BIGDECIMAL = 12, ID_BIGINTEGER = 13, ID_DATE = 14, ID_OBJECT = 15, 
+        
+        // room for more scalar types (16-22)
+        
+        ID_ENUM = 23, 
+        ID_COLLECTION = 24, ID_ARRAY = 25, 
+        ID_MAP = 26, 
+        // pojo fields limited to 126
+        ID_POJO = 127;
+    
+    static final String STR_BOOL = "a", STR_BYTE = "b", STR_CHAR = "c", STR_SHORT = "d", 
+        STR_INT32 = "e", STR_INT64 = "f", STR_FLOAT = "g", STR_DOUBLE = "h", 
+        STR_STRING = "i", STR_BYTES = "j", STR_BYTE_ARRAY = "k", 
+        STR_BIGDECIMAL = "l", STR_BIGINTEGER = "m", STR_DATE = "n", STR_OBJECT = "o", 
+        
+        // room for more scalar types (16-22)
+        
+        STR_ENUM = "w", 
+        STR_COLLECTION = "x", STR_ARRAY = "y", 
+        STR_MAP = "z", 
+        // pojo fields limited to 126
+        STR_POJO = "_";
+    
+    
+    
+    /**
+     * Used by {@link ObjectSchema} to serialize dynamic (polymorphic) fields.
+     */
+    final int id;
+    
+    public RuntimeFieldFactory(int id)
+    {
+        this.id = id;
+    }
+    
     /**
      * Creates a runtime {@link MappedSchema.Field field} based on reflection.
      */
@@ -57,6 +95,8 @@ public abstract class RuntimeFieldFactory<V>
     
     protected abstract void transfer(Pipe pipe, Input input, Output output, int number, 
             boolean repeated) throws IOException;
+    
+    protected abstract Class<?> typeClass();
 
     
     /**
@@ -86,12 +126,18 @@ public abstract class RuntimeFieldFactory<V>
             return COLLECTION;
         }
         
+        if(Object.class == clazz)
+        {
+            // dynamic
+            return OBJECT;
+        }
+        
         return pojo(clazz);
     }
     
     static RuntimeFieldFactory<?> pojo(Class<?> clazz)
     {
-        return (clazz == Object.class || clazz.isInterface() 
+        return (clazz.isInterface() 
             || Modifier.isAbstract(clazz.getModifiers()) 
             || (!Modifier.isFinal(clazz.getModifiers()) && 
                     RuntimeSchema.MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
@@ -104,7 +150,7 @@ public abstract class RuntimeFieldFactory<V>
                 || Collection.class.isAssignableFrom(clazz);
     }
     
-    public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>()
+    public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>(ID_CHAR)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -179,9 +225,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.UINT32;
         }
+        protected Class<?> typeClass()
+        {
+            return Character.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Short> SHORT = new RuntimeFieldFactory<Short>()
+    public static final RuntimeFieldFactory<Short> SHORT = new RuntimeFieldFactory<Short>(ID_SHORT)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -256,9 +306,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.UINT32;
         }
+        protected Class<?> typeClass()
+        {
+            return Short.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Byte> BYTE = new RuntimeFieldFactory<Byte>()
+    public static final RuntimeFieldFactory<Byte> BYTE = new RuntimeFieldFactory<Byte>(ID_BYTE)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -333,9 +387,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.UINT32;
         }
+        protected Class<?> typeClass()
+        {
+            return Byte.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Integer> INT32 = new RuntimeFieldFactory<Integer>()
+    public static final RuntimeFieldFactory<Integer> INT32 = new RuntimeFieldFactory<Integer>(ID_INT32)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -411,9 +469,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.INT32;
         }
+        protected Class<?> typeClass()
+        {
+            return Integer.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Long> INT64 = new RuntimeFieldFactory<Long>()
+    public static final RuntimeFieldFactory<Long> INT64 = new RuntimeFieldFactory<Long>(ID_INT64)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -489,9 +551,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.INT64;
         }
+        protected Class<?> typeClass()
+        {
+            return Long.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Float> FLOAT = new RuntimeFieldFactory<Float>()
+    public static final RuntimeFieldFactory<Float> FLOAT = new RuntimeFieldFactory<Float>(ID_FLOAT)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -567,9 +633,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.FLOAT;
         }
+        protected Class<?> typeClass()
+        {
+            return Float.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Double> DOUBLE = new RuntimeFieldFactory<Double>()
+    public static final RuntimeFieldFactory<Double> DOUBLE = new RuntimeFieldFactory<Double>(ID_DOUBLE)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -645,9 +715,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.DOUBLE;
         }
+        protected Class<?> typeClass()
+        {
+            return Double.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Boolean> BOOL = new RuntimeFieldFactory<Boolean>()
+    public static final RuntimeFieldFactory<Boolean> BOOL = new RuntimeFieldFactory<Boolean>(ID_BOOL)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -723,9 +797,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.BOOL;
         }
+        protected Class<?> typeClass()
+        {
+            return Boolean.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<String> STRING = new RuntimeFieldFactory<String>()
+    public static final RuntimeFieldFactory<String> STRING = new RuntimeFieldFactory<String>(ID_STRING)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -792,9 +870,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.STRING;
         }
+        protected Class<?> typeClass()
+        {
+            return String.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<ByteString> BYTES = new RuntimeFieldFactory<ByteString>()
+    public static final RuntimeFieldFactory<ByteString> BYTES = new RuntimeFieldFactory<ByteString>(ID_BYTES)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -861,9 +943,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.BYTES;
         }
+        protected Class<?> typeClass()
+        {
+            return ByteString.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<byte[]> BYTE_ARRAY = new RuntimeFieldFactory<byte[]>()
+    public static final RuntimeFieldFactory<byte[]> BYTE_ARRAY = new RuntimeFieldFactory<byte[]>(ID_BYTE_ARRAY)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -930,9 +1016,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.BYTES;
         }
+        protected Class<?> typeClass()
+        {
+            return byte[].class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Integer> ENUM = new RuntimeFieldFactory<Integer>()
+    public static final RuntimeFieldFactory<Integer> ENUM = new RuntimeFieldFactory<Integer>(ID_ENUM)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f)
@@ -1001,11 +1091,15 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
+        protected Class<?> typeClass()
+        {
+            throw new UnsupportedOperationException();
+        }
     };
     
     // NON-INLINE VALUES
     
-    static final RuntimeFieldFactory<Object> POJO = new RuntimeFieldFactory<Object>()
+    static final RuntimeFieldFactory<Object> POJO = new RuntimeFieldFactory<Object>(ID_POJO)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
@@ -1078,9 +1172,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
+        protected Class<?> typeClass()
+        {
+            throw new UnsupportedOperationException();
+        }
     };
     
-    static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO = new RuntimeFieldFactory<Object>()
+    static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO = new RuntimeFieldFactory<Object>(0)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
@@ -1094,7 +1192,7 @@ public abstract class RuntimeFieldFactory<V>
             
             return new PolymorphicRuntimeField<T>(
                     (Class<Object>)f.getType(), 
-                    FieldType.MESSAGE, number, name)
+                    FieldType.MESSAGE, number, name, false)
             {
                 {
                     f.setAccessible(true);
@@ -1137,7 +1235,7 @@ public abstract class RuntimeFieldFactory<V>
                     }
                     
                     if(existing != null)
-                        output.writeObject(number, existing, schema, repeated);
+                        output.writeObject(number, existing, schema, false);
                 }
                 protected void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
@@ -1193,9 +1291,110 @@ public abstract class RuntimeFieldFactory<V>
         {
             throw new UnsupportedOperationException();
         }
+        protected Class<?> typeClass()
+        {
+            throw new UnsupportedOperationException();
+        }
     };
     
-    public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>()
+    static final RuntimeFieldFactory<Object> OBJECT = new RuntimeFieldFactory<Object>(ID_OBJECT)
+    {
+        public <T> Field<T> create(int number, java.lang.String name, 
+                final java.lang.reflect.Field f)
+        {
+            return new RuntimeObjectField<T>( 
+                    FieldType.MESSAGE, number, name, false)
+            {
+                {
+                    f.setAccessible(true);
+                }
+                protected void mergeFrom(Input input, T message) throws IOException
+                {
+                    final Object value = input.mergeObject(message, schema);
+                    if(input instanceof GraphInput && 
+                            ((GraphInput)input).isCurrentMessageReference())
+                    {
+                        // a reference from polymorphic+cyclic graph deser
+                        try
+                        {
+                            f.set(message, value);
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                protected void writeTo(Output output, T message) throws IOException
+                {
+                    final Object existing;
+                    try
+                    {
+                        existing = f.get(message);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    if(existing != null)
+                        output.writeObject(number, existing, schema, false);
+                }
+                protected void transfer(Pipe pipe, Input input, Output output, 
+                        boolean repeated) throws IOException
+                {
+                    output.writeObject(number, pipe, schema.pipeSchema, false);
+                }
+                protected void setValue(Object value, Object message)
+                {
+                    try
+                    {
+                        f.set(message, value);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        }
+        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+                boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected Object readFrom(Input input) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected FieldType getFieldType()
+        {
+            return FieldType.MESSAGE;
+        }
+        protected Class<?> typeClass()
+        {
+            return Object.class;
+        }
+    };
+    
+    public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>(ID_BIGDECIMAL)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -1261,9 +1460,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.STRING;
         }
+        protected Class<?> typeClass()
+        {
+            return BigDecimal.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>()
+    public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>(ID_BIGINTEGER)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -1329,9 +1532,13 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.BYTES;
         }
+        protected Class<?> typeClass()
+        {
+            return BigInteger.class;
+        }
     };
     
-    public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>()
+    public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>(ID_DATE)
     {
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
@@ -1397,6 +1604,10 @@ public abstract class RuntimeFieldFactory<V>
         {
             return FieldType.FIXED64;
         }
+        protected Class<?> typeClass()
+        {
+            return Date.class;
+        }
     };
     
     static final RuntimeFieldFactory<Collection<?>> COLLECTION = 
@@ -1440,6 +1651,15 @@ public abstract class RuntimeFieldFactory<V>
     public static <T> RuntimeFieldFactory<T> getInline(Class<T> typeClass)
     {
         return (RuntimeFieldFactory<T>)__inlineValues.get(typeClass.getName());
+    }
+    
+    /**
+     * Returns the factory for inline (scalar) values.
+     */
+    @SuppressWarnings("unchecked")
+    static <T> RuntimeFieldFactory<T> getInline(String className)
+    {
+        return (RuntimeFieldFactory<T>)__inlineValues.get(className);
     }
 
 }

@@ -365,7 +365,7 @@ final class RuntimeArrayFieldFactory
         };
     }
     
-    static final RuntimeFieldFactory<Object> ARRAY = new RuntimeFieldFactory<Object>()
+    static final RuntimeFieldFactory<Object> ARRAY = new RuntimeFieldFactory<Object>(RuntimeFieldFactory.ID_ARRAY)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
@@ -406,6 +406,10 @@ final class RuntimeArrayFieldFactory
             throw new UnsupportedOperationException();
         }
         protected FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }

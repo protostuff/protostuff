@@ -351,7 +351,7 @@ final class RuntimeRepeatedFieldFactory
         };
     }
     
-    private static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>()
+    private static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>(RuntimeFieldFactory.ID_COLLECTION)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
@@ -406,6 +406,10 @@ final class RuntimeRepeatedFieldFactory
             throw new UnsupportedOperationException();
         }
         protected FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }

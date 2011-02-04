@@ -250,10 +250,19 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
          * Returns the message factory for the standard jdk {@link Collection} 
          * implementations.
          */
-        public static MessageFactory getFactory(Class<? extends Collection<?>> clazz)
+        public static MessageFactories getFactory(Class<? extends Collection<?>> clazz)
         {
             return clazz.getName().startsWith("java.util") ? 
                     MessageFactories.valueOf(clazz.getSimpleName()) : null;
+        }
+        
+        /**
+         * Returns the message factory for the standard jdk {@link Collection} 
+         * implementations.
+         */
+        public static MessageFactories getFactory(String name)
+        {
+            return MessageFactories.valueOf(name);
         }
     }
     

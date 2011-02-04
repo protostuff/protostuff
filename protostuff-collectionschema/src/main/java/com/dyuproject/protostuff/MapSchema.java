@@ -149,11 +149,19 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
         /**
          * Returns the message factory for the standard jdk {@link Map} implementations.
          */
-        public static MessageFactory getFactory(Class<? extends Map<?,?>> mapType)
+        public static MessageFactories getFactory(Class<? extends Map<?,?>> mapType)
         {
             return mapType.getName().startsWith("java.util") ? 
                     MessageFactories.valueOf(mapType.getSimpleName()) : 
                         null;
+        }
+        
+        /**
+         * Returns the message factory for the standard jdk {@link Map} implementations.
+         */
+        public static MessageFactories getFactory(String name)
+        {
+            return MessageFactories.valueOf(name);
         }
     }
     

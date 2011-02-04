@@ -861,7 +861,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         boolean startup;
         Employer employer;
         Map<Integer,Person> people;
-        Map<String,Object> peopleByName;
+        Map<String,Person> peopleByName;
         
         HasMapInlineKPolymorphicV fill()
         {

@@ -60,6 +60,36 @@ public abstract class EnumIO<E extends Enum<E>>
         return eio;
     }
     
+    @SuppressWarnings("unchecked")
+    static EnumIO<? extends Enum<?>> get(String className, boolean load)
+    {
+        EnumIO<?> eio = __eioCache.get(className);
+        if(eio == null)
+        {
+            if(!load)
+                return null;
+            
+            final Class<?> enumClass;
+            try
+            {
+                enumClass = Thread.currentThread().getContextClassLoader().loadClass(
+                        className);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+            eio = ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
+            
+            final EnumIO<?> existing = __eioCache.putIfAbsent(enumClass.getName(), eio);
+            if(existing != null)
+                eio = existing;
+        }
+        
+        return eio;
+    }
+    
     /**
      * Writes the {@link Enum} to the output.
      */

@@ -1158,7 +1158,7 @@ final class RuntimeMapFieldFactory
         };
     }
     
-    static final RuntimeFieldFactory<Map<?,?>> MAP = new RuntimeFieldFactory<Map<?,?>>()
+    static final RuntimeFieldFactory<Map<?,?>> MAP = new RuntimeFieldFactory<Map<?,?>>(RuntimeFieldFactory.ID_MAP)
     {
 
         @SuppressWarnings("unchecked")
@@ -1269,6 +1269,10 @@ final class RuntimeMapFieldFactory
             throw new UnsupportedOperationException();
         }
         protected FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+        protected Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }

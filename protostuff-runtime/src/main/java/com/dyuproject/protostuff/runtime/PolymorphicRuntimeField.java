@@ -44,33 +44,25 @@ abstract class PolymorphicRuntimeField<T> extends Field<T>
     /**
      * The schema of the polymorphic pojo.
      */
-    public final DerivativeSchema schema;
+    public final DerivativeSchema schema = new DerivativeSchema()
+    {
+        protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+                Object owner) throws IOException
+        {
+            PolymorphicRuntimeField.this.doMergeFrom(input, derivedSchema, owner);
+        }
+    };
     
     /**
      * The class of the message field.
      */
     public final Class<Object> typeClass;
     
-    public PolymorphicRuntimeField(Class<Object> baseClass, 
-            FieldType type, int number, String name)
-    {
-        this(baseClass, type, number, name, false);
-    }
-    
     public PolymorphicRuntimeField(Class<Object> typeClass, 
             FieldType type, int number, String name, boolean repeated)
     {
         super(type, number, name, repeated);
         this.typeClass = typeClass;
-        
-        schema = new DerivativeSchema()
-        {
-            protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
-                    Object owner) throws IOException
-            {
-                PolymorphicRuntimeField.this.doMergeFrom(input, derivedSchema, owner);
-            }
-        };
     }
     
     protected abstract void doMergeFrom(Input input, Schema<Object> derivedSchema, 
