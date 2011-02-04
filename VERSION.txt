@@ -2,7 +2,7 @@ protostuff-1.0-SNAPSHOT
 + update jackson to 1.7.2
 + LinkedBuffer re-use for JsonIOUtil read/write operations on streams.
 + Issue 50: Xml deser does not handle empty messages well
-+ xml optimizations
++ minor xml optimizations
 + Issue 45: Double-checked locking concern
 + Issue 47: IllegalAccessException in when accessing a private Date field with RuntimeSchema
 + add protostuff-collectionschema (jdk standard collections support - map,list,set,queue,deque,etc)
