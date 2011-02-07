@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
@@ -37,6 +38,7 @@ public class ImmutableObjectsTest extends AbstractTest
         int id;
         String name;
         ImmutablePojo ip;
+        UUID uuid;
         
         public Pojo()
         {
@@ -48,6 +50,7 @@ public class ImmutableObjectsTest extends AbstractTest
             id = 1;
             name = "pojo";
             ip = new ImmutablePojo(2, "ipojo");
+            uuid = UUID.randomUUID();
             
             return this;
         }
@@ -60,6 +63,7 @@ public class ImmutableObjectsTest extends AbstractTest
             result = prime * result + id;
             result = prime * result + ((ip == null)?0:ip.hashCode());
             result = prime * result + ((name == null)?0:name.hashCode());
+            result = prime * result + ((uuid == null)?0:uuid.hashCode());
             return result;
         }
 
@@ -89,13 +93,22 @@ public class ImmutableObjectsTest extends AbstractTest
             }
             else if (!name.equals(other.name))
                 return false;
+            if (uuid == null)
+            {
+                if (other.uuid != null)
+                    return false;
+            }
+            else if (uuid.compareTo(other.uuid) != 0)
+            {
+                return false;
+            }
             return true;
         }
 
         @Override
         public String toString()
         {
-            return "Pojo [id=" + id + ", ip=" + ip + ", name=" + name + "]";
+            return "Pojo [id=" + id + ", ip=" + ip + ", name=" + name + ", uuid=" + uuid + "]";
         }
         
     }
