@@ -304,7 +304,7 @@ public abstract class ObjectSchema implements Schema<Object>
         }
         else
         {
-            clazz = loadClass(className);
+            clazz = RuntimeSchema.loadClass(className);
         }
         
         if(dimensions == 1)
@@ -313,18 +313,6 @@ public abstract class ObjectSchema implements Schema<Object>
         final int[] arg = new int[dimensions];
         arg[0] = len;
         return new ArrayWrapper(Array.newInstance(clazz, arg));
-    }
-    
-    static Class<?> loadClass(String className)    
-    {
-        try
-        {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
     }
     
     private static Object readObjectFrom(final Input input, final Schema<?> schema) 

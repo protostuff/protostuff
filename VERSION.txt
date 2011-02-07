@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 52: Allow skipping constructor on immutable objects (fields marked final)
 + update jackson to 1.7.2
 + LinkedBuffer re-use for JsonIOUtil read/write operations on streams.
 + Issue 50: Xml deser does not handle empty messages well

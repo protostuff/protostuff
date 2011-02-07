@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +73,63 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         new ConcurrentHashMap<String, HasSchema<?>>();
     
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
+    
+    static final Constructor<Object> OBJECT_CONSTRUCTOR;
+    static
+    {
+        Constructor<Object> c = null;
+        Class<?> reflectionFactoryClass = null;
+        try
+        {
+            c = Object.class.getConstructor((Class[])null);
+            reflectionFactoryClass = loadClass("sun.reflect.ReflectionFactory");
+        }
+        catch (Exception e)
+        {
+            // ignore
+        }
+        
+        OBJECT_CONSTRUCTOR = c != null && reflectionFactoryClass != null ? c : null; 
+    }
+    
+    @SuppressWarnings("unchecked")
+    static <T> Class<T> loadClass(String className)
+    {
+        try
+        {
+            return (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(
+                    className);
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    static <T> Constructor<T> getConstructor(Class<T> clazz)
+    {
+        try
+        {
+            return clazz.getConstructor((Class[])null);
+        }
+        catch (SecurityException e)
+        {
+            if(OBJECT_CONSTRUCTOR == null)
+                throw new RuntimeException(e);
+            
+            return sun.reflect.ReflectionFactory.getReflectionFactory()
+                .newConstructorForSerialization(clazz, OBJECT_CONSTRUCTOR);
+        }
+        catch (NoSuchMethodException e)
+        {
+            if(OBJECT_CONSTRUCTOR == null)
+                throw new RuntimeException(e);
+            
+            return sun.reflect.ReflectionFactory.getReflectionFactory()
+                .newConstructorForSerialization(clazz, OBJECT_CONSTRUCTOR);
+        }
+    }
     
     /**
      * Maps the {@code baseClass} to a specific non-interface/non-abstract 
@@ -157,15 +216,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             if(!load)
                 return null;
             
-            final Class<T> typeClass;
-            try
-            {
-                typeClass = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException(e);
-            }
+            final Class<T> typeClass = loadClass(className);
             
             hs = new Lazy<T>(typeClass);
             final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
@@ -209,15 +260,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             if(!load)
                 return null;
             
-            final Class<T> typeClass;
-            try
-            {
-                typeClass = (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException(e);
-            }
+            final Class<T> typeClass = loadClass(className);
             
             hs = new Lazy<T>(typeClass);
             final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
@@ -297,7 +340,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             	    "Collection/Map or another generic type, are excluded.");
         }
         
-        return new RuntimeSchema<T>(typeClass, fields, i);
+        return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
     }
     
     /**
@@ -351,7 +394,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     "Collection/Map fields whose generic type is another " +
                     "Collection/Map or another generic type, are excluded.");
         }
-        return new RuntimeSchema<T>(typeClass, fields, i);
+        return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
     }
 
     static Map<String,java.lang.reflect.Field> findInstanceFields(Class<?> typeClass)
@@ -375,10 +418,13 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
+    final Constructor<T> constructor;
+    
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, 
-            int lastFieldNumber)
+            int lastFieldNumber, Constructor<T> constructor)
     {
         super(typeClass, fields, lastFieldNumber);
+        this.constructor = constructor;
     }
     
     /**
@@ -393,13 +439,21 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     {
         try
         {
-            return typeClass.newInstance();
+            return constructor.newInstance((Object[])null);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new RuntimeException(e);
         }
         catch (InstantiationException e)
         {
             throw new RuntimeException(e);
         }
         catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (InvocationTargetException e)
         {
             throw new RuntimeException(e);
         }
