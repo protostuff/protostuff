@@ -57,6 +57,17 @@ final class RuntimeMapFieldFactory
         }
     };
     
+    private static final ObjectSchema OBJECT_MAP_VALUE_SCHEMA = 
+        new ObjectSchema()
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            // the owner will always be the MapWrapper
+            ((MapWrapper<Object,Object>)owner).setValue(value);
+        }
+    };
+    
     private static <T> Field<T> createMapInlineKEnumV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final RuntimeFieldFactory<Object> inlineK, 
@@ -415,6 +426,109 @@ final class RuntimeMapFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, POLYMORPHIC_MAP_VALUE_SCHEMA.pipeSchema, 
+                        repeated);
+            }
+        };
+    }
+    
+    private static <T> Field<T> createMapInlineKObjectV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final RuntimeFieldFactory<Object> inlineK)
+    {
+        return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Map<Object,Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Map<Object,Object> existing;
+                try
+                {
+                    existing = (Map<Object,Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected Object kFrom(Input input) throws IOException
+            {
+                return inlineK.readFrom(input);
+            }
+            protected void kTo(Output output, int fieldNumber, Object key, 
+                    boolean repeated) throws IOException
+            {
+                inlineK.writeTo(output, fieldNumber, key, repeated);
+            }
+            protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                inlineK.transfer(pipe, input, output, number, repeated);
+            }
+            protected void vPutFrom(Input input, MapWrapper<Object,Object> wrapper, 
+                    Object key) throws IOException
+            {
+                final Object value = input.mergeObject(wrapper, 
+                        OBJECT_MAP_VALUE_SCHEMA);
+                if(value != wrapper)
+                {
+                    // referenced.
+                    // An entry would never have a cyclic reference.
+                    ((GraphInput)input).updateLast(value, wrapper);
+                    
+                    wrapper.put(key, value);
+                    return;
+                }
+
+                if(key != null)
+                {
+                    // we can already add the entry.
+                    wrapper.put(key, wrapper.setValue(null));
+                }
+            }
+            protected void vTo(Output output, int fieldNumber, Object val, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, val, OBJECT_MAP_VALUE_SCHEMA, 
+                        repeated);
+            }
+            protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
                         repeated);
             }
         };
@@ -789,6 +903,111 @@ final class RuntimeMapFieldFactory
         };
     }
     
+    private static <T> Field<T> createMapEnumKObjectV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK)
+    {
+        final EnumIO<?> eioK = EnumIO.get(clazzK);
+        
+        return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Map<Enum<?>,Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Map<Enum<?>,Object> existing;
+                try
+                {
+                    existing = (Map<Enum<?>,Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected Enum<?> kFrom(Input input) throws IOException
+            {
+                return eioK.readFrom(input);
+            }
+            protected void kTo(Output output, int fieldNumber, Enum<?> key, 
+                    boolean repeated) throws IOException
+            {
+                EnumIO.writeTo(output, fieldNumber, repeated, key);
+            }
+            protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                EnumIO.transfer(pipe, input, output, number, repeated);
+            }
+            protected void vPutFrom(Input input, MapWrapper<Enum<?>,Object> wrapper, 
+                    Enum<?> key) throws IOException
+            {
+                final Object value = input.mergeObject(wrapper, 
+                        OBJECT_MAP_VALUE_SCHEMA);
+                if(value != wrapper)
+                {
+                    // referenced.
+                    // An entry would never have a cyclic reference.
+                    ((GraphInput)input).updateLast(value, wrapper);
+                    
+                    wrapper.put(key, value);
+                    return;
+                }
+                
+                if(key != null)
+                {
+                    // we can already add the entry.
+                    wrapper.put(key, wrapper.setValue(null));
+                }
+            }
+            protected void vTo(Output output, int fieldNumber, Object val, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, val, OBJECT_MAP_VALUE_SCHEMA, 
+                        repeated);
+            }
+            protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                        repeated);
+            }
+        };
+    }
+    
     private static <T> Field<T> createMapPojoKEnumV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final Class<Object> clazzK, 
@@ -1158,27 +1377,117 @@ final class RuntimeMapFieldFactory
         };
     }
     
+    private static <T> Field<T> createMapPojoKObjectV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Class<Object> clazzK)
+    {
+        final HasSchema<Object> schemaK = RuntimeSchema.getSchemaWrapper(clazzK);
+        
+        return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Map<Object,Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Map<Object,Object> existing;
+                try
+                {
+                    existing = (Map<Object,Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected Object kFrom(Input input) throws IOException
+            {
+                return input.mergeObject(null, schemaK.getSchema());
+            }
+            protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schemaK.getPipeSchema(), repeated);
+            }
+            protected void kTo(Output output, int fieldNumber, Object key, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, key, schemaK.getSchema(), repeated);
+            }
+            protected void vPutFrom(Input input, MapWrapper<Object,Object> wrapper, 
+                    Object key) throws IOException
+            {
+                final Object value = input.mergeObject(wrapper, 
+                        OBJECT_MAP_VALUE_SCHEMA);
+                if(value != wrapper)
+                {
+                    // referenced.
+                    // An entry would never have a cyclic reference.
+                    ((GraphInput)input).updateLast(value, wrapper);
+                    
+                    wrapper.put(key, value);
+                    return;
+                }
+
+                if(key != null)
+                {
+                    // we can already add the entry.
+                    wrapper.put(key, wrapper.setValue(null));
+                }
+            }
+            protected void vTo(Output output, int fieldNumber, Object val, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, val, OBJECT_MAP_VALUE_SCHEMA, 
+                        repeated);
+            }
+            protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                        repeated);
+            }
+        };
+    }
+    
     static final RuntimeFieldFactory<Map<?,?>> MAP = new RuntimeFieldFactory<Map<?,?>>(RuntimeFieldFactory.ID_MAP)
     {
 
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final Class<Object> clazzK, clazzV;
-            try
-            {
-                clazzK = 
-                    (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
-                
-                clazzV = 
-                    (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[1];
-            }
-            catch(Exception e)
-            {
-                // the key or value is not a simple parameterized type.
-                return null;
-            }
-            
             final MessageFactory messageFactory = MapSchema.MessageFactories.getFactory(
                     (Class<? extends Map<?,?>>)f.getType());
             
@@ -1188,10 +1497,46 @@ final class RuntimeMapFieldFactory
                 return null;
             }
             
-            // Map<byte[],byte[]> is allowed. 
-            // Your app should not rely on Object.equals in that case. 
-            // But I guess you're already aware of that when dealing with map/collections.
+            final Class<Object> clazzK;
+            try
+            {
+                clazzK = 
+                    (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+            }
+            catch(Exception e)
+            {
+                // the key is not a simple parameterized type.
+                // TODO map with objectKobjectV
+                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+            }
             
+            final Class<Object> clazzV;
+            try
+            {
+                clazzV = 
+                    (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[1];
+            }
+            catch(Exception e)
+            {
+                // the value is not a simple parameterized type.
+                if(clazzK.isEnum())
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK);
+                
+                final RuntimeFieldFactory<Object> inlineK = getInline(clazzK);
+                if(inlineK != null)
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
+                
+                // TODO map with objectKobjectV
+                if(isComplexComponentType(clazzK))
+                    return RuntimeFieldFactory.OBJECT.create(number, name, f);
+                
+                if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
+                
+                // TODO map with objectKobjectV
+                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+            }
+
             if(clazzK.isEnum())
             {
                 if(clazzV.isEnum())
@@ -1201,8 +1546,8 @@ final class RuntimeMapFieldFactory
                 if(inlineV != null)
                     return createMapEnumKInlineV(number, name, f, messageFactory, clazzK, inlineV);
                 
-                if(isInvalidChildType(clazzV))
-                    return null;
+                if(isComplexComponentType(clazzV))
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK);
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV);
@@ -1221,8 +1566,8 @@ final class RuntimeMapFieldFactory
                 if(inlineV != null)
                     return createMapInlineKInlineV(number, name, f, messageFactory, inlineK, inlineV);
                 
-                if(isInvalidChildType(clazzV))
-                    return null;
+                if(isComplexComponentType(clazzV))
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV);
@@ -1230,8 +1575,11 @@ final class RuntimeMapFieldFactory
                 return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV);
             }
             
-            if(isInvalidChildType(clazzK))
-                return null;
+            if(isComplexComponentType(clazzK))
+            {
+                // TODO map with objectKobjectV
+                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+            }
             
             if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
             {
@@ -1242,8 +1590,8 @@ final class RuntimeMapFieldFactory
                 if(inlineV != null)
                     return createMapPojoKInlineV(number, name, f, messageFactory, clazzK, inlineV);
                 
-                if(isInvalidChildType(clazzV))
-                    return null;
+                if(isComplexComponentType(clazzV))
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV);
@@ -1251,8 +1599,8 @@ final class RuntimeMapFieldFactory
                 return createMapPojoKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV);
             }
             
-            // polymorphic keys not allowed.
-            return null;
+            // TODO map with objectKobjectV
+            return RuntimeFieldFactory.OBJECT.create(number, name, f);
         }
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException

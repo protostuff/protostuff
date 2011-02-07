@@ -365,16 +365,121 @@ final class RuntimeArrayFieldFactory
         };
     }
     
+    private static <T> Field<T> createArrayObjectV(int number, String name, 
+            final java.lang.reflect.Field f, final Class<Object> componentType)
+    {
+        return new RuntimeObjectField<T>(
+                FieldType.MESSAGE, number, name, true)
+        {
+            {
+                f.setAccessible(true);
+            }
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                final Object value = input.mergeObject(message, schema);
+                
+                if(input instanceof GraphInput && 
+                        ((GraphInput)input).isCurrentMessageReference())
+                {
+                    // a reference from polymorphic+cyclic graph deser
+                    try
+                    {
+                        final Object existing = f.get(message);
+                        if(existing == null)
+                        {
+                            final Object newArray = Array.newInstance(componentType, 1);
+                            Array.set(newArray, 0, value);
+                            f.set(message, newArray);
+                        }
+                        else
+                        {
+                            final int len = Array.getLength(existing);
+                            final Object newArray = Array.newInstance(componentType, len+1);
+                            System.arraycopy(existing, 0, newArray, 0, len);
+                            Array.set(newArray, len, value);
+                            f.set(message, newArray);
+                        }
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Object array;
+                try
+                {
+                    array = f.get(message);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(array != null)
+                {
+                    for(int i=0, len=Array.getLength(array); i<len; i++)
+                        output.writeObject(number, Array.get(array, i), schema, true);
+                }
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected void setValue(Object value, Object message)
+            {
+                try
+                {
+                    final Object existing = f.get(message);
+                    if(existing == null)
+                    {
+                        final Object newArray = Array.newInstance(componentType, 1);
+                        Array.set(newArray, 0, value);
+                        f.set(message, newArray);
+                    }
+                    else
+                    {
+                        final int len = Array.getLength(existing);
+                        final Object newArray = Array.newInstance(componentType, len+1);
+                        System.arraycopy(existing, 0, newArray, 0, len);
+                        Array.set(newArray, len, value);
+                        f.set(message, newArray);
+                    }
+                }
+                catch (IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+    
     static final RuntimeFieldFactory<Object> ARRAY = new RuntimeFieldFactory<Object>(RuntimeFieldFactory.ID_ARRAY)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final Class<Object> componentType = (Class<Object>)f.getType().getComponentType();
+            final Class<Object> componentType = 
+                (Class<Object>)f.getType().getComponentType();
             
-            // no two dimensional arrays.
+            // multi-dimensional arrays.
             if(componentType.isArray())
-                return null;
+                return createArrayObjectV(number, name, f, componentType);
             
             if(componentType.isEnum())
                 return createArrayEnumV(number, name, f, componentType);
@@ -383,8 +488,8 @@ final class RuntimeArrayFieldFactory
             if(inline != null)
                 return createArrayInlineV(number, name, f, inline, componentType);
             
-            if(isInvalidChildType(componentType))
-                return null;
+            if(isComplexComponentType(componentType))
+                return createArrayObjectV(number, name, f, componentType);
             
             if(POJO == pojo(componentType) || RuntimeSchema.isRegistered(componentType))
                 return createArrayPojoV(number, name, f, componentType);

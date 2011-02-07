@@ -351,22 +351,105 @@ final class RuntimeRepeatedFieldFactory
         };
     }
     
+    private static <T> Field<T> createCollectionObjectV(int number, String name, 
+            final java.lang.reflect.Field f, final MessageFactory messageFactory)
+    {
+        return new RuntimeObjectField<T>(
+                FieldType.MESSAGE, number, name, true)
+        {
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                final Object value = input.mergeObject(message, schema);
+                if(input instanceof GraphInput && 
+                        ((GraphInput)input).isCurrentMessageReference())
+                {
+                    // a reference from polymorphic+cyclic graph deser
+                    try
+                    {
+                        final Collection<Object> existing = (Collection<Object>)f.get(message);
+                        if(existing == null)
+                        {
+                            final Collection<Object> collection = messageFactory.newMessage();
+                            collection.add(value);
+                            f.set(message, collection);
+                        }
+                        else
+                            existing.add(value);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Collection<Object> existing;
+                try
+                {
+                    existing = (Collection<Object>)f.get(message);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null && !existing.isEmpty())
+                {
+                    for(Object o : existing)
+                        output.writeObject(number, o, schema, true);
+                }
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            @SuppressWarnings("unchecked")
+            protected void setValue(Object value, Object message)
+            {
+                try
+                {
+                    final Collection<Object> existing = (Collection<Object>)f.get(message);
+                    if(existing == null)
+                    {
+                        final Collection<Object> collection = messageFactory.newMessage();
+                        collection.add(value);
+                        f.set(message, collection);
+                    }
+                    else
+                        existing.add(value);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+    
     private static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>(RuntimeFieldFactory.ID_COLLECTION)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final Class<Object> genericType;
-            try
-            {
-                genericType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
-            }
-            catch(Exception e)
-            {
-                // the value is not a simple parameterized type.
-                return null;
-            }
-            
             final MessageFactory messageFactory = MessageFactories.getFactory(
                     (Class<? extends Collection<?>>)f.getType());
             
@@ -376,6 +459,17 @@ final class RuntimeRepeatedFieldFactory
                 return null;
             }
             
+            final Class<Object> genericType;
+            try
+            {
+                genericType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+            }
+            catch(Exception e)
+            {
+                // the value is not a simple parameterized type.
+                return createCollectionObjectV(number, name, f, messageFactory);
+            }
+            
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType);
             
@@ -383,8 +477,8 @@ final class RuntimeRepeatedFieldFactory
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
             
-            if(isInvalidChildType(genericType))
-                return null;
+            if(isComplexComponentType(genericType))
+                return createCollectionObjectV(number, name, f, messageFactory);
             
             if(POJO == pojo(genericType) || RuntimeSchema.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType);

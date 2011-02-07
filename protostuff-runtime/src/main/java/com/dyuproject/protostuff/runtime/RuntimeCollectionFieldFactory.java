@@ -57,10 +57,20 @@ final class RuntimeCollectionFieldFactory
         {
             final Object value = derivedSchema.newMessage();
             
-            // the owner will always be the MapWrapper
+            // the owner will always be a Collection
             ((Collection<Object>)owner).add(value);
             
             derivedSchema.mergeFrom(input, value);
+        }
+    };
+    
+    private static final ObjectSchema OBJECT_COLLECTION_VALUE_SCHEMA = new ObjectSchema()
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            // the owner will always be a Collection
+            ((Collection<Object>)owner).add(value);
         }
     };
     
@@ -363,22 +373,93 @@ final class RuntimeCollectionFieldFactory
         };
     }
     
+    private static <T> Field<T> createCollectionObjectV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory)
+    {
+        return new RuntimeCollectionField<T,Object>(
+                FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Collection<Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Collection<Object> existing;
+                try
+                {
+                    existing = (Collection<Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected void addValueFrom(Input input, Collection<Object> collection) 
+            throws IOException
+            {
+                final Object value = input.mergeObject(collection, 
+                        OBJECT_COLLECTION_VALUE_SCHEMA);
+                
+                if(input instanceof GraphInput && 
+                        ((GraphInput)input).isCurrentMessageReference())
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(value, collection);
+                    
+                    collection.add(value);
+                }
+            }
+            protected void writeValueTo(Output output, int fieldNumber, Object value, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, value, 
+                        OBJECT_COLLECTION_VALUE_SCHEMA, repeated);
+            }
+            protected void transferValue(Pipe pipe, Input input, Output output, 
+                    int number, boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, 
+                        OBJECT_COLLECTION_VALUE_SCHEMA.pipeSchema, repeated);
+            }
+        };
+    }
+    
     private static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>(RuntimeFieldFactory.ID_COLLECTION)
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final Class<Object> genericType;
-            try
-            {
-                genericType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
-            }
-            catch(Exception e)
-            {
-                // the value is not a simple parameterized type.
-                return null;
-            }
-            
             final MessageFactory messageFactory = MessageFactories.getFactory(
                     (Class<? extends Collection<?>>)f.getType());
             
@@ -388,6 +469,17 @@ final class RuntimeCollectionFieldFactory
                 return null;
             }
             
+            final Class<Object> genericType;
+            try
+            {
+                genericType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+            }
+            catch(Exception e)
+            {
+                // the value is not a simple parameterized type.
+                return createCollectionObjectV(number, name, f, messageFactory);
+            }
+            
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType);
             
@@ -395,8 +487,8 @@ final class RuntimeCollectionFieldFactory
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
             
-            if(isInvalidChildType(genericType))
-                return null;
+            if(isComplexComponentType(genericType))
+                return createCollectionObjectV(number, name, f, messageFactory);
             
             if(POJO == pojo(genericType) || RuntimeSchema.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType);

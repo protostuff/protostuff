@@ -143,11 +143,13 @@ public abstract class RuntimeFieldFactory<V>
                     RuntimeSchema.MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
     }
     
-    static boolean isInvalidChildType(Class<?> clazz)
+    static boolean isComplexComponentType(Class<?> clazz)
     {
         return clazz.isArray() 
                 || Map.class.isAssignableFrom(clazz)
-                || Collection.class.isAssignableFrom(clazz);
+                || Collection.class.isAssignableFrom(clazz)
+                // dynamic
+                || Object.class == clazz;
     }
     
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>(ID_CHAR)

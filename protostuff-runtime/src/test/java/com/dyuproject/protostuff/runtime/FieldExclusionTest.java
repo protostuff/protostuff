@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.dyuproject.protostuff.AbstractTest;
+import com.dyuproject.protostuff.Schema;
 
 /**
  * Test w/c fields should be excluded.
@@ -30,14 +31,16 @@ import com.dyuproject.protostuff.AbstractTest;
 public class FieldExclusionTest extends AbstractTest
 {
     
-    static class EmptyFieldsPojo
+    public static class EmptyFieldsPojo
     {
         transient int someInt;
         static long someLong;
-        
-        /* this works as well
         @Deprecated
-        boolean g; */
+        boolean g;
+    }
+    
+    public static class ComplexFieldsPojo
+    {
         
         Collection<String[]> someCollectionValueArray;
         Collection<Collection<String>> someCollectionValueCollection;
@@ -45,6 +48,8 @@ public class FieldExclusionTest extends AbstractTest
         Collection<Set<String>> someCollectionValueSet;
         Collection<Map<String,Double>> someCollectionValueMap;
         Collection<String>[] arrayCollection;
+        Collection<Object> someCollectionValueObject;
+        Collection<?> someCollectionValueWildcard;
         
         List<String[]> someListValueArray;
         List<Collection<String>> someListValueCollection;
@@ -52,6 +57,8 @@ public class FieldExclusionTest extends AbstractTest
         List<Set<String>> someListValueSet;
         List<Map<String,Double>> someListValueMap;
         List<String>[] arrayList;
+        List<Object> someListValueObject;
+        List<?> someListValueWildcard;
         
         Set<String[]> someSetValueArray;
         Set<Collection<String>> someSetValueCollection;
@@ -59,11 +66,15 @@ public class FieldExclusionTest extends AbstractTest
         Set<Set<String>> someSetValueSet;
         Set<Map<String,Double>> someSetValueMap;
         Set<String>[] arraySet;
+        Set<Object> someSetValueObject;
+        Set<?> someSetValueWildcard;
 
         Map<String[], String> someMapKeyArray;
         Map<String, String[]> someMapValueArray;
         Map<String[], String[]> someMapBothArray;
         Map<String, String>[] arrayMap;
+        Map<Object,Object> someMapBothObject;
+        Map<?,?> someMapBothWildcard;
         
         Map<Collection<String>, String> someMapKeyCollection;
         Map<String, Collection<String>> someMapValueCollection;
@@ -86,7 +97,6 @@ public class FieldExclusionTest extends AbstractTest
         byte[][] someBytes;
     }
     
-    
     public void testEmptyFieldsPojo()
     {
         try
@@ -98,6 +108,74 @@ public class FieldExclusionTest extends AbstractTest
         {
             // expected
         }
+    }
+    
+    public void testComplexFieldsPojo()
+    {
+        Schema<ComplexFieldsPojo> schema = 
+            RuntimeSchema.getSchema(ComplexFieldsPojo.class);
+        
+        MappedSchema<ComplexFieldsPojo> mappedSchema = 
+            (MappedSchema<ComplexFieldsPojo>)schema;
+        
+        assertTrue(mappedSchema.fields.length == 45);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueArray") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueCollection") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueList") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueSet") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueMap") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueObject") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueWildcard") 
+                instanceof RuntimeObjectField<?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someListValueArray") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueCollection") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueList") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueSet") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueMap") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueObject") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someListValueWildcard") 
+                instanceof RuntimeObjectField<?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueArray") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueCollection") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueList") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueSet") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueMap") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueObject") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someSetValueWildcard") 
+                instanceof RuntimeObjectField<?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someMapKeyArray") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapValueArray") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothArray") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothObject") 
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothWildcard") 
+                instanceof RuntimeObjectField<?>);
+        
     }
 
 }

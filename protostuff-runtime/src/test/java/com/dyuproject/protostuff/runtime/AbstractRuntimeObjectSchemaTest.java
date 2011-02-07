@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1022,6 +1023,252 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         
     }
     
+    public static class PojoWithCollection
+    {
+        Collection<Object> someCollectionObjectV;
+        Collection<?> someCollectionWildcardV;
+        
+        List<Object> someListObjectV;
+        List<?> someListWildcardV;
+        
+        PojoWithCollection fill()
+        {
+            someCollectionObjectV = newList(new Object[]{
+                    "foo",
+                    1,
+                    1.1f,
+                    100.001d,
+                    System.currentTimeMillis(), 
+                    new Date(),
+                    Size.LARGE, 
+                    new Pojo().fill(),
+                    new BassGuitar(4, true)
+            });
+            
+            Collection<Object> collectionWildcardV = newList(new Object[]{
+                    "bar",
+                    Size.SMALL, 
+                    new AcousticGuitar(GuitarPickup.MICROPHONE)
+            });
+            
+            someCollectionWildcardV = collectionWildcardV;
+            
+            someListObjectV = newList(new Object[]{
+                    "baz",
+                    2,
+                    2.2f,
+                    200.002d,
+                    Size.MEDIUM, 
+                    new BassGuitar(6, true)
+            });
+            
+            List<Object> listWildcardV = newList(new Object[]{
+                    "gg",
+                    3,
+                    30.03f,
+                    300.003d,
+                    300000l,
+                    new BassGuitar(5, false)
+            });
+            
+            someListWildcardV = listWildcardV;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((someCollectionObjectV == null)?0:someCollectionObjectV.hashCode());
+            result = prime * result + ((someCollectionWildcardV == null)?0:someCollectionWildcardV.hashCode());
+            result = prime * result + ((someListObjectV == null)?0:someListObjectV.hashCode());
+            result = prime * result + ((someListWildcardV == null)?0:someListWildcardV.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithCollection other = (PojoWithCollection)obj;
+            if (someCollectionObjectV == null)
+            {
+                if (other.someCollectionObjectV != null)
+                    return false;
+            }
+            else if (!someCollectionObjectV.equals(other.someCollectionObjectV))
+                return false;
+            if (someCollectionWildcardV == null)
+            {
+                if (other.someCollectionWildcardV != null)
+                    return false;
+            }
+            else if (!someCollectionWildcardV.equals(other.someCollectionWildcardV))
+                return false;
+            if (someListObjectV == null)
+            {
+                if (other.someListObjectV != null)
+                    return false;
+            }
+            else if (!someListObjectV.equals(other.someListObjectV))
+                return false;
+            if (someListWildcardV == null)
+            {
+                if (other.someListWildcardV != null)
+                    return false;
+            }
+            else if (!someListWildcardV.equals(other.someListWildcardV))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithCollection [someCollectionObjectV=" + someCollectionObjectV + ", someCollectionWildcardV=" + someCollectionWildcardV
+                    + ", someListObjectV=" + someListObjectV + ", someListWildcardV=" + someListWildcardV + "]";
+        }
+        
+    }
+    
+    public static class PojoWithMap
+    {
+        Map<String,Object> someMapStringKObjectV;
+        Map<Guitar,?> someMapGuitarKWildcardV;
+        
+        Map<Object,Integer> someMapObjectKIntegerV;
+        Map<?,Size> someMapWildcardKEnumV;
+        
+        Map<Object,Object> someMapObjectKObjectV;
+        Map<?,?> someMapWildcardKWildcardV;
+        
+        PojoWithMap fill()
+        {
+            someMapStringKObjectV = newMap();
+            someMapStringKObjectV.put("1", new Pojo().fill());
+            someMapStringKObjectV.put(null, Size.SMALL);
+            someMapStringKObjectV.put("3", 3);
+            
+            Map<Guitar,Object> mapGuitarKWildcardV = newMap();
+            mapGuitarKWildcardV.put(new BassGuitar(4, false), "passive 4 string");
+            mapGuitarKWildcardV.put(null, 5);
+            mapGuitarKWildcardV.put(new AcousticGuitar(GuitarPickup.CONTACT), new Date());
+            
+            someMapGuitarKWildcardV = mapGuitarKWildcardV;
+            
+            someMapObjectKIntegerV = newMap();
+            someMapObjectKIntegerV.put(1, 1);
+            someMapObjectKIntegerV.put(null, 2);
+            someMapObjectKIntegerV.put("3", null);
+            
+            Map<Object,Size> mapWildcardKEnumV = newMap();
+            mapWildcardKEnumV.put("1", Size.SMALL);
+            mapWildcardKEnumV.put(null, Size.MEDIUM);
+            mapWildcardKEnumV.put("3", null);
+            
+            someMapWildcardKEnumV = mapWildcardKEnumV;
+            
+            someMapObjectKObjectV = newMap();
+            someMapObjectKObjectV.put("foo", "bar");
+            someMapObjectKObjectV.put(1, Size.SMALL);
+            someMapObjectKObjectV.put(null, null);
+            
+            Map<Object,Object> mapWildcardKWildcardV = newMap();
+            mapWildcardKWildcardV.put(null, null);
+            mapWildcardKWildcardV.put("foo", 1);
+            mapWildcardKWildcardV.put(Size.LARGE, null);
+            
+            someMapWildcardKWildcardV = mapWildcardKWildcardV;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((someMapGuitarKWildcardV == null)?0:someMapGuitarKWildcardV.hashCode());
+            result = prime * result + ((someMapObjectKIntegerV == null)?0:someMapObjectKIntegerV.hashCode());
+            result = prime * result + ((someMapObjectKObjectV == null)?0:someMapObjectKObjectV.hashCode());
+            result = prime * result + ((someMapStringKObjectV == null)?0:someMapStringKObjectV.hashCode());
+            result = prime * result + ((someMapWildcardKEnumV == null)?0:someMapWildcardKEnumV.hashCode());
+            result = prime * result + ((someMapWildcardKWildcardV == null)?0:someMapWildcardKWildcardV.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithMap other = (PojoWithMap)obj;
+            if (someMapGuitarKWildcardV == null)
+            {
+                if (other.someMapGuitarKWildcardV != null)
+                    return false;
+            }
+            else if (!someMapGuitarKWildcardV.equals(other.someMapGuitarKWildcardV))
+                return false;
+            if (someMapObjectKIntegerV == null)
+            {
+                if (other.someMapObjectKIntegerV != null)
+                    return false;
+            }
+            else if (!someMapObjectKIntegerV.equals(other.someMapObjectKIntegerV))
+                return false;
+            if (someMapObjectKObjectV == null)
+            {
+                if (other.someMapObjectKObjectV != null)
+                    return false;
+            }
+            else if (!someMapObjectKObjectV.equals(other.someMapObjectKObjectV))
+                return false;
+            if (someMapStringKObjectV == null)
+            {
+                if (other.someMapStringKObjectV != null)
+                    return false;
+            }
+            else if (!someMapStringKObjectV.equals(other.someMapStringKObjectV))
+                return false;
+            if (someMapWildcardKEnumV == null)
+            {
+                if (other.someMapWildcardKEnumV != null)
+                    return false;
+            }
+            else if (!someMapWildcardKEnumV.equals(other.someMapWildcardKEnumV))
+                return false;
+            if (someMapWildcardKWildcardV == null)
+            {
+                if (other.someMapWildcardKWildcardV != null)
+                    return false;
+            }
+            else if (!someMapWildcardKWildcardV.equals(other.someMapWildcardKWildcardV))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithMap [someMapGuitarKWildcardV=" + someMapGuitarKWildcardV + ", someMapObjectKIntegerV=" + someMapObjectKIntegerV
+                    + ", someMapObjectKObjectV=" + someMapObjectKObjectV + ", someMapStringKObjectV=" + someMapStringKObjectV + ", someMapWildcardKEnumV="
+                    + someMapWildcardKEnumV + ", someMapWildcardKWildcardV=" + someMapWildcardKWildcardV + "]";
+        }
+        
+    }
+    
     static boolean isEquals(byte[][] b1, byte[][] b2)
     {
         if(b1.length != b2.length)
@@ -1127,5 +1374,48 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         roundTrip(p, schema, pipeSchema);
     }
     
+    public void testPojoWithCollection() throws Exception
+    {
+        Schema<PojoWithCollection> schema = RuntimeSchema.getSchema(PojoWithCollection.class);
+        Pipe.Schema<PojoWithCollection> pipeSchema = 
+            ((MappedSchema<PojoWithCollection>)schema).pipeSchema;
+        
+        PojoWithCollection p = new PojoWithCollection().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithCollection pFromByteArray = new PojoWithCollection();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithCollection pFromStream = new PojoWithCollection();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public void testPojoWithMap() throws Exception
+    {
+        Schema<PojoWithMap> schema = RuntimeSchema.getSchema(PojoWithMap.class);
+        Pipe.Schema<PojoWithMap> pipeSchema = 
+            ((MappedSchema<PojoWithMap>)schema).pipeSchema;
+        
+        PojoWithMap p = new PojoWithMap().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithMap pFromByteArray = new PojoWithMap();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithMap pFromStream = new PojoWithMap();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
 
 }
