@@ -1,4 +1,6 @@
 protostuff-1.0-SNAPSHOT
++ Issue 46: RuntimeSchema.getSchema() throws NPE on fields with type Object
++ Issue 48: Polymorphic serialization support for json and xml
 + Issue 52: Allow skipping constructor on immutable objects (fields marked final)
 + update jackson to 1.7.2
 + LinkedBuffer re-use for JsonIOUtil read/write operations on streams.
