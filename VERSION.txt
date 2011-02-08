@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 31: ProtoStuffRuntime cannot handle different subclasses
 + Issue 29: Empty list turns into null after serialization/deserialization
 + Issue 46: RuntimeSchema.getSchema() throws NPE on fields with type Object
 + Issue 48: Polymorphic serialization support for json and xml
