@@ -452,6 +452,39 @@ public abstract class ObjectSchema implements Schema<Object>
     {
         final Class<Object> clazz = (Class<Object>)value.getClass();
         
+        if(clazz.isArray())
+        {
+            int dimensions = 1;
+            Class<?> componentType = clazz.getComponentType();
+            while(componentType.isArray())
+            {
+                dimensions++;
+                componentType = componentType.getComponentType();
+            }
+            
+            // write the class without the "["
+            output.writeString(ID_ARRAY, componentType.getName(), false);
+            // write the length of the array
+            output.writeUInt32(ID_ARRAY_LEN, Array.getLength(value), false);
+            // write the dimensions of the array
+            output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
+            
+            if(output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput)output).updateLast(ARRAY_SCHEMA, currentSchema);
+            }
+            
+            ARRAY_SCHEMA.writeTo(output, value);
+            return;
+        }
+        
+        if(Object.class == clazz)
+        {
+            output.writeUInt32(ID_OBJECT, 0, false);
+            return;
+        }
+        
         if(Message.class.isAssignableFrom(clazz))
         {
             output.writeString(ID_POJO, clazz.getName(), false);
@@ -479,33 +512,6 @@ public abstract class ObjectSchema implements Schema<Object>
         {
             // scalar value
             inline.writeTo(output, inline.id, value, false);
-            return;
-        }
-        
-        if(clazz.isArray())
-        {
-            int dimensions = 1;
-            Class<?> componentType = clazz.getComponentType();
-            while(componentType.isArray())
-            {
-                dimensions++;
-                componentType = componentType.getComponentType();
-            }
-            
-            // write the class without the "["
-            output.writeString(ID_ARRAY, componentType.getName(), false);
-            // write the length of the array
-            output.writeUInt32(ID_ARRAY_LEN, Array.getLength(value), false);
-            // write the dimensions of the array
-            output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
-            
-            if(output instanceof StatefulOutput)
-            {
-                // update using the derived schema.
-                ((StatefulOutput)output).updateLast(ARRAY_SCHEMA, currentSchema);
-            }
-            
-            ARRAY_SCHEMA.writeTo(output, value);
             return;
         }
         
@@ -537,12 +543,6 @@ public abstract class ObjectSchema implements Schema<Object>
             }
             
             COLLECTION_SCHEMA.writeTo(output, (Collection<Object>)value);
-            return;
-        }
-        
-        if(Object.class == clazz)
-        {
-            output.writeUInt32(ID_OBJECT, 0, false);
             return;
         }
         

@@ -104,6 +104,9 @@ public abstract class RuntimeFieldFactory<V>
      */
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)
     {
+        if(clazz.isArray() || Object.class == clazz)
+            return OBJECT;
+        
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
         
@@ -114,9 +117,6 @@ public abstract class RuntimeFieldFactory<V>
         if(inline != null)
             return inline;
         
-        if(clazz.isArray())
-            return RuntimeArrayFieldFactory.ARRAY;
-        
         if(Map.class.isAssignableFrom(clazz))
             return RuntimeMapFieldFactory.MAP;
 
@@ -124,12 +124,6 @@ public abstract class RuntimeFieldFactory<V>
         {
             // repeated fields.
             return COLLECTION;
-        }
-        
-        if(Object.class == clazz)
-        {
-            // dynamic
-            return OBJECT;
         }
         
         return pojo(clazz);

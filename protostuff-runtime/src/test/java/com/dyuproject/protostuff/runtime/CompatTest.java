@@ -86,10 +86,6 @@ public class CompatTest extends AbstractTest
                 RuntimeMessageField.class.isAssignableFrom(
                         mappedSchema.fieldsByName.get("rbaz").getClass())
                 );
-        assertTrue(
-                RuntimeMessageField.class.isAssignableFrom(
-                        mappedSchema.fieldsByName.get("arrayBar").getClass())
-                );
         
         RuntimeMessageField<Mixed,com.dyuproject.protostuff.Foo> rfoo = 
             (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Foo>)mappedSchema.fieldsByName.get("rfoo");
@@ -100,9 +96,6 @@ public class CompatTest extends AbstractTest
         RuntimeMessageField<Mixed,com.dyuproject.protostuff.Baz> rbaz = 
             (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Baz>)mappedSchema.fieldsByName.get("rbaz");
         
-        RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar> arrayBar = 
-            (RuntimeMessageField<Mixed,com.dyuproject.protostuff.Bar>)mappedSchema.fieldsByName.get("arrayBar");
-        
         assertTrue(rfoo.getSchema().getClass().isAssignableFrom(
                 getCachedSchema(com.dyuproject.protostuff.Foo.class).getClass()));
         
@@ -111,9 +104,6 @@ public class CompatTest extends AbstractTest
         
         assertTrue(rbaz.getSchema().getClass().isAssignableFrom(
                 getCachedSchema(com.dyuproject.protostuff.Baz.class).getClass()));
-        
-        assertTrue(arrayBar.getSchema().getClass().isAssignableFrom(
-                getCachedSchema(com.dyuproject.protostuff.Bar.class).getClass()));
     }
     
     public static class Mixed
@@ -131,8 +121,6 @@ public class CompatTest extends AbstractTest
         List<com.dyuproject.protostuff.Foo> rfoo;
         Set<com.dyuproject.protostuff.Bar> rbar;
         Collection<com.dyuproject.protostuff.Baz> rbaz;
-        
-        com.dyuproject.protostuff.Bar[] arrayBar;
     }
 
 }
