@@ -195,8 +195,12 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     
     /**
      * Reads the key from the input.
+     * 
+     * The extra wrapper arg is internally used as an object placeholder during 
+     * polymorhic deserialization.
      */
-    protected abstract K readKeyFrom(Input input) throws IOException;
+    protected abstract K readKeyFrom(Input input, MapWrapper<K,V> wrapper) 
+    throws IOException;
     
     /**
      * Puts the entry(key and value), obtained from the input, into the {@code MapWrapper}.
@@ -421,7 +425,7 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
                             throw new ProtostuffException("The map was incorrectly " + 
                                     "serialized.");
                         }
-                        key = readKeyFrom(input);
+                        key = readKeyFrom(input, wrapper);
                         assert key != null;
                         break;
                     case 2:

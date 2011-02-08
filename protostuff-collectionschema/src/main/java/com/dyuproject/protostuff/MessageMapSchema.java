@@ -58,7 +58,7 @@ public final class MessageMapSchema<K,V> extends MapSchema<K,V>
         this.vPipeSchema = vPipeSchema;
     }
 
-    protected K readKeyFrom(Input input) throws IOException
+    protected K readKeyFrom(Input input, MapWrapper<K,V> wrapper) throws IOException
     {
         return input.mergeObject(null, kSchema);
     }

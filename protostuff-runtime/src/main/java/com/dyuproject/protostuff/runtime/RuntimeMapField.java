@@ -48,9 +48,10 @@ abstract class RuntimeMapField<T,K,V> extends Field<T>
         super(type,number,name,false);
         schema = new MapSchema<K,V>(messageFactory)
         {
-            protected K readKeyFrom(Input input) throws IOException
+            protected K readKeyFrom(Input input, MapWrapper<K,V> wrapper) 
+            throws IOException
             {
-                return kFrom(input);
+                return kFrom(input, wrapper);
             }
             protected void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
             throws IOException
@@ -78,7 +79,7 @@ abstract class RuntimeMapField<T,K,V> extends Field<T>
         };
     }
     
-    protected abstract K kFrom(Input input) throws IOException;
+    protected abstract K kFrom(Input input, MapWrapper<K,V> wrapper) throws IOException;
     
     protected abstract void vPutFrom(Input input, MapWrapper<K,V> wrapper, K key) 
     throws IOException;

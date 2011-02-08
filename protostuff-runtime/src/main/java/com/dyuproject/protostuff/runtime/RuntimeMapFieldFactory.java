@@ -123,7 +123,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object, Enum<?>> wrapper) 
+            throws IOException
             {
                 return inlineK.readFrom(input);
             }
@@ -208,7 +209,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return inlineK.readFrom(input);
             }
@@ -295,7 +297,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return inlineK.readFrom(input);
             }
@@ -381,7 +384,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return inlineK.readFrom(input);
             }
@@ -484,7 +488,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return inlineK.readFrom(input);
             }
@@ -590,7 +595,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Enum<?> kFrom(Input input) throws IOException
+            protected Enum<?> kFrom(Input input, MapWrapper<Enum<?>,Enum<?>> wrapper) 
+            throws IOException
             {
                 return eioK.readFrom(input);
             }
@@ -677,7 +683,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Enum<?> kFrom(Input input) throws IOException
+            protected Enum<?> kFrom(Input input, MapWrapper<Enum<?>,Object> wrapper) 
+            throws IOException
             {
                 return eioK.readFrom(input);
             }
@@ -765,7 +772,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Enum<?> kFrom(Input input) throws IOException
+            protected Enum<?> kFrom(Input input, MapWrapper<Enum<?>,Object> wrapper) 
+            throws IOException
             {
                 return eioK.readFrom(input);
             }
@@ -853,7 +861,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Enum<?> kFrom(Input input) throws IOException
+            protected Enum<?> kFrom(Input input, MapWrapper<Enum<?>,Object> wrapper) 
+            throws IOException
             {
                 return eioK.readFrom(input);
             }
@@ -958,7 +967,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Enum<?> kFrom(Input input) throws IOException
+            protected Enum<?> kFrom(Input input, MapWrapper<Enum<?>,Object> wrapper) 
+            throws IOException
             {
                 return eioK.readFrom(input);
             }
@@ -1064,7 +1074,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object, Enum<?>> wrapper) 
+            throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
@@ -1151,7 +1162,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
@@ -1239,7 +1251,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
@@ -1327,7 +1340,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
@@ -1432,7 +1446,8 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
-            protected Object kFrom(Input input) throws IOException
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
@@ -1445,6 +1460,120 @@ final class RuntimeMapFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, key, schemaK.getSchema(), repeated);
+            }
+            protected void vPutFrom(Input input, MapWrapper<Object,Object> wrapper, 
+                    Object key) throws IOException
+            {
+                final Object value = input.mergeObject(wrapper, 
+                        OBJECT_MAP_VALUE_SCHEMA);
+                if(value != wrapper)
+                {
+                    // referenced.
+                    // An entry would never have a cyclic reference.
+                    ((GraphInput)input).updateLast(value, wrapper);
+                    
+                    wrapper.put(key, value);
+                    return;
+                }
+
+                if(key != null)
+                {
+                    // we can already add the entry.
+                    wrapper.put(key, wrapper.setValue(null));
+                }
+            }
+            protected void vTo(Output output, int fieldNumber, Object val, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, val, OBJECT_MAP_VALUE_SCHEMA, 
+                        repeated);
+            }
+            protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                        repeated);
+            }
+        };
+    }
+    
+    private static <T> Field<T> createMapObjectKObjectV(int number, String name, 
+            final java.lang.reflect.Field f, MessageFactory messageFactory)
+    {
+        return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
+                number, name, messageFactory)
+        {
+            
+            {
+                f.setAccessible(true);
+            }
+            @SuppressWarnings("unchecked")
+            protected void mergeFrom(Input input, T message) throws IOException
+            {
+                try
+                {
+                    f.set(message, input.mergeObject((Map<Object,Object>)f.get(message), 
+                            schema));
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            protected void writeTo(Output output, T message) throws IOException
+            {
+                final Map<Object,Object> existing;
+                try
+                {
+                    existing = (Map<Object,Object>)f.get(message);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                
+                if(existing != null)
+                    output.writeObject(number, existing, schema, false);
+            }
+            protected void transfer(Pipe pipe, Input input, Output output, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+            }
+            protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
+            throws IOException
+            {
+                final Object value = input.mergeObject(wrapper, OBJECT_MAP_VALUE_SCHEMA);
+                if(value != wrapper)
+                {
+                    // referenced.
+                    // An entry would never have a cyclic reference.
+                    ((GraphInput)input).updateLast(value, wrapper);
+                    return value;
+                }
+                
+                return wrapper.setValue(null);
+            }
+            protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(number, pipe, OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                        repeated);
+            }
+            protected void kTo(Output output, int fieldNumber, Object key, 
+                    boolean repeated) throws IOException
+            {
+                output.writeObject(fieldNumber, key, OBJECT_MAP_VALUE_SCHEMA, 
+                        repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Object,Object> wrapper, 
                     Object key) throws IOException
@@ -1506,8 +1635,7 @@ final class RuntimeMapFieldFactory
             catch(Exception e)
             {
                 // the key is not a simple parameterized type.
-                // TODO map with objectKobjectV
-                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+                return createMapObjectKObjectV(number, name, f, messageFactory);
             }
             
             final Class<Object> clazzV;
@@ -1526,15 +1654,13 @@ final class RuntimeMapFieldFactory
                 if(inlineK != null)
                     return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
                 
-                // TODO map with objectKobjectV
                 if(isComplexComponentType(clazzK))
-                    return RuntimeFieldFactory.OBJECT.create(number, name, f);
+                    return createMapObjectKObjectV(number, name, f, messageFactory);
                 
                 if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
                     return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
                 
-                // TODO map with objectKobjectV
-                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+                return createMapObjectKObjectV(number, name, f, messageFactory);
             }
 
             if(clazzK.isEnum())
@@ -1577,8 +1703,7 @@ final class RuntimeMapFieldFactory
             
             if(isComplexComponentType(clazzK))
             {
-                // TODO map with objectKobjectV
-                return RuntimeFieldFactory.OBJECT.create(number, name, f);
+                return createMapObjectKObjectV(number, name, f, messageFactory);
             }
             
             if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
@@ -1599,8 +1724,7 @@ final class RuntimeMapFieldFactory
                 return createMapPojoKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV);
             }
             
-            // TODO map with objectKobjectV
-            return RuntimeFieldFactory.OBJECT.create(number, name, f);
+            return createMapObjectKObjectV(number, name, f, messageFactory);
         }
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException

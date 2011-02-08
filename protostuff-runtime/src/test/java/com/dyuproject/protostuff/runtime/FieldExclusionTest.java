@@ -92,9 +92,9 @@ public class FieldExclusionTest extends AbstractTest
         Map<String, Map<String,String>> someMapValueMap;
         Map<Map<String,String>, Map<String,String>> someMapBothMap;
         
-        Integer[][] someOtherInt;
-        long[][] someOtherLong;
-        byte[][] someBytes;
+        Integer[][][][] someIntArray4D;
+        long[][][] someLongArray3D;
+        byte[][] someByteArray2D;
     }
     
     public void testEmptyFieldsPojo()
@@ -166,14 +166,49 @@ public class FieldExclusionTest extends AbstractTest
                 instanceof RuntimeObjectField<?>);
         
         assertTrue(mappedSchema.fieldsByName.get("someMapKeyArray") 
-                instanceof RuntimeObjectField<?>);
+                instanceof RuntimeMapField<?,?,?>);
         assertTrue(mappedSchema.fieldsByName.get("someMapValueArray") 
                 instanceof RuntimeMapField<?,?,?>);
         assertTrue(mappedSchema.fieldsByName.get("someMapBothArray") 
-                instanceof RuntimeObjectField<?>);
+                instanceof RuntimeMapField<?,?,?>);
         assertTrue(mappedSchema.fieldsByName.get("someMapBothObject") 
-                instanceof RuntimeObjectField<?>);
+                instanceof RuntimeMapField<?,?,?>);
         assertTrue(mappedSchema.fieldsByName.get("someMapBothWildcard") 
+                instanceof RuntimeMapField<?,?,?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someMapKeyCollection") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapValueCollection") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothCollection") 
+                instanceof RuntimeMapField<?,?,?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someMapKeyList") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapValueList") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothList") 
+                instanceof RuntimeMapField<?,?,?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someMapKeySet") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapValueSet") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothSet") 
+                instanceof RuntimeMapField<?,?,?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someMapKeyMap") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapValueMap") 
+                instanceof RuntimeMapField<?,?,?>);
+        assertTrue(mappedSchema.fieldsByName.get("someMapBothMap") 
+                instanceof RuntimeMapField<?,?,?>);
+        
+        assertTrue(mappedSchema.fieldsByName.get("someIntArray4D")
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someLongArray3D")
+                instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.fieldsByName.get("someByteArray2D")
                 instanceof RuntimeObjectField<?>);
         
     }

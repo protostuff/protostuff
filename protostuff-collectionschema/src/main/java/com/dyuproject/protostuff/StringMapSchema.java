@@ -71,7 +71,8 @@ public class StringMapSchema<V> extends MapSchema<String,V>
         this.vPipeSchema = vPipeSchema;
     }
 
-    protected final String readKeyFrom(Input input) throws IOException
+    protected final String readKeyFrom(Input input, MapWrapper<String,V> wrapper) 
+    throws IOException
     {
         return input.readString();
     }
