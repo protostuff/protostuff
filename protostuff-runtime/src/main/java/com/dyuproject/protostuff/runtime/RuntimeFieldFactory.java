@@ -139,11 +139,7 @@ public abstract class RuntimeFieldFactory<V>
     
     static boolean isComplexComponentType(Class<?> clazz)
     {
-        return clazz.isArray() 
-                || Map.class.isAssignableFrom(clazz)
-                || Collection.class.isAssignableFrom(clazz)
-                // dynamic
-                || Object.class == clazz;
+        return clazz.isArray() || Object.class == clazz;
     }
     
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>(ID_CHAR)

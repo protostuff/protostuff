@@ -1647,6 +1647,9 @@ final class RuntimeMapFieldFactory
             catch(Exception e)
             {
                 // the value is not a simple parameterized type.
+                if(isComplexComponentType(clazzK))
+                    return createMapObjectKObjectV(number, name, f, messageFactory);
+                
                 if(clazzK.isEnum())
                     return createMapEnumKObjectV(number, name, f, messageFactory, clazzK);
                 
@@ -1654,26 +1657,26 @@ final class RuntimeMapFieldFactory
                 if(inlineK != null)
                     return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
                 
-                if(isComplexComponentType(clazzK))
-                    return createMapObjectKObjectV(number, name, f, messageFactory);
-                
                 if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
                     return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
                 
                 return createMapObjectKObjectV(number, name, f, messageFactory);
             }
+            
+            if(isComplexComponentType(clazzK))
+                return createMapObjectKObjectV(number, name, f, messageFactory);
 
             if(clazzK.isEnum())
             {
+                if(isComplexComponentType(clazzV))
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK);
+                
                 if(clazzV.isEnum())
                     return createMapEnumKEnumV(number, name, f, messageFactory, clazzK, clazzV);
                 
                 final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
                 if(inlineV != null)
                     return createMapEnumKInlineV(number, name, f, messageFactory, clazzK, inlineV);
-                
-                if(isComplexComponentType(clazzV))
-                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK);
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV);
@@ -1685,6 +1688,9 @@ final class RuntimeMapFieldFactory
             
             if(inlineK != null)
             {
+                if(isComplexComponentType(clazzV))
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
+                
                 if(clazzV.isEnum())
                     return createMapInlineKEnumV(number, name, f, messageFactory, inlineK, clazzV);
                 
@@ -1692,31 +1698,23 @@ final class RuntimeMapFieldFactory
                 if(inlineV != null)
                     return createMapInlineKInlineV(number, name, f, messageFactory, inlineK, inlineV);
                 
-                if(isComplexComponentType(clazzV))
-                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK);
-                
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV);
                 
                 return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV);
             }
             
-            if(isComplexComponentType(clazzK))
-            {
-                return createMapObjectKObjectV(number, name, f, messageFactory);
-            }
-            
             if(POJO == pojo(clazzK) || RuntimeSchema.isRegistered(clazzK))
             {
+                if(isComplexComponentType(clazzV))
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
+                
                 if(clazzV.isEnum())
                     return createMapPojoKEnumV(number, name, f, messageFactory, clazzK, clazzV);
                 
                 final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
                 if(inlineV != null)
                     return createMapPojoKInlineV(number, name, f, messageFactory, clazzK, inlineV);
-                
-                if(isComplexComponentType(clazzV))
-                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK);
                 
                 if(POJO == pojo(clazzV) || RuntimeSchema.isRegistered(clazzV))
                     return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV);

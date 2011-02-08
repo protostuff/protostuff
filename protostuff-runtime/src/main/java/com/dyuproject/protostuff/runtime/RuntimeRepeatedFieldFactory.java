@@ -470,15 +470,15 @@ final class RuntimeRepeatedFieldFactory
                 return createCollectionObjectV(number, name, f, messageFactory);
             }
             
+            if(isComplexComponentType(genericType))
+                return createCollectionObjectV(number, name, f, messageFactory);
+            
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType);
             
             final RuntimeFieldFactory<Object> inline = getInline(genericType);
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
-            
-            if(isComplexComponentType(genericType))
-                return createCollectionObjectV(number, name, f, messageFactory);
             
             if(POJO == pojo(genericType) || RuntimeSchema.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType);
