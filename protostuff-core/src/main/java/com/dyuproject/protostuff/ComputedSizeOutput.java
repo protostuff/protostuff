@@ -177,8 +177,7 @@ public final class ComputedSizeOutput implements Output
 
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint32Size(value);
+        writeInt32(fieldNumber, value, repeated);
     }
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
