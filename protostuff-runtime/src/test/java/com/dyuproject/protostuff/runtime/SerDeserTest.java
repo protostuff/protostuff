@@ -167,7 +167,7 @@ public class SerDeserTest extends TestCase
         
         PojoWithArrayAndSet dpojo = new PojoWithArrayAndSet();
         
-        int expectedSize = ComputedSizeOutput.getSize(pojoCompare, schema);
+        int expectedSize = ComputedSizeOutput.getSize(pojoCompare, schema, true);
 
         byte[] deferred = toByteArray(pojoCompare, schema);
         assertTrue(deferred.length == expectedSize);
