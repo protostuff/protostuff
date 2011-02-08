@@ -98,8 +98,8 @@ public abstract class ObjectSchema implements Schema<Object>
 {
     
     static final int ID_ENUM_VALUE = 1;
-    static final int ID_ARRAY_LEN = 4;
-    static final int ID_ARRAY_DIMENSION = 5;
+    static final int ID_ARRAY_LEN = 3;
+    static final int ID_ARRAY_DIMENSION = 2;
     
     static String name(int number)
     {
