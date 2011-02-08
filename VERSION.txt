@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 53: UUIDs cannot be used with RuntimeSchemas
 + Issue 55: Optimize protostuff-runtime serialization of arrays by writing the length first (order dependent)
 + Issue 31: ProtoStuffRuntime cannot handle different subclasses
 + Issue 29: Empty list turns into null after serialization/deserialization
