@@ -45,12 +45,14 @@ public abstract class RuntimeFieldFactory<V>
     static final int ID_BOOL = 1, ID_BYTE = 2, ID_CHAR = 3, ID_SHORT = 4, 
         ID_INT32 = 5, ID_INT64 = 6, ID_FLOAT = 7, ID_DOUBLE = 8, 
         ID_STRING = 9, ID_BYTES = 10, ID_BYTE_ARRAY = 11, 
-        ID_BIGDECIMAL = 12, ID_BIGINTEGER = 13, ID_DATE = 14, ID_OBJECT = 15, 
+        ID_BIGDECIMAL = 12, ID_BIGINTEGER = 13, ID_DATE = 14,
+        ID_ARRAY = 15, // 1-15 is encoded as 1 byte on protobuf and protostuff format
+        ID_OBJECT = 16, 
         
-        // room for more scalar types (16-22)
+        // room for more scalar types (17-23)
         
-        ID_ENUM = 23, 
-        ID_COLLECTION = 24, ID_ARRAY = 25, 
+        ID_ENUM = 24, 
+        ID_COLLECTION = 25, 
         ID_MAP = 26, 
         // pojo fields limited to 126
         ID_POJO = 127;
@@ -58,12 +60,14 @@ public abstract class RuntimeFieldFactory<V>
     static final String STR_BOOL = "a", STR_BYTE = "b", STR_CHAR = "c", STR_SHORT = "d", 
         STR_INT32 = "e", STR_INT64 = "f", STR_FLOAT = "g", STR_DOUBLE = "h", 
         STR_STRING = "i", STR_BYTES = "j", STR_BYTE_ARRAY = "k", 
-        STR_BIGDECIMAL = "l", STR_BIGINTEGER = "m", STR_DATE = "n", STR_OBJECT = "o", 
+        STR_BIGDECIMAL = "l", STR_BIGINTEGER = "m", STR_DATE = "n", 
+        STR_ARRAY = "o", 
+        STR_OBJECT = "p", 
         
-        // room for more scalar types (16-22)
+        // room for more scalar types (17-23)
         
-        STR_ENUM = "w", 
-        STR_COLLECTION = "x", STR_ARRAY = "y", 
+        STR_ENUM = "x", 
+        STR_COLLECTION = "y",
         STR_MAP = "z", 
         // pojo fields limited to 126
         STR_POJO = "_";

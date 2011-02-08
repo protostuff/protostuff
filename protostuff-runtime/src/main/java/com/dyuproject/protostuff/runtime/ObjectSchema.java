@@ -133,17 +133,17 @@ public abstract class ObjectSchema implements Schema<Object>
                 return STR_BIGINTEGER;
             case ID_DATE:
                 return STR_DATE;
+            case ID_ARRAY:
+                return STR_ARRAY;
             case ID_OBJECT:
                 return STR_OBJECT;
             
-            // room for more scalar types (16-22)
+            // room for more scalar types (17-23)
                 
             case ID_ENUM:
                 return STR_ENUM;
             case ID_COLLECTION:
                 return STR_COLLECTION;
-            case ID_ARRAY:
-                return STR_ARRAY;
             case ID_MAP:
                 return STR_MAP;
             case ID_POJO:
@@ -192,11 +192,11 @@ public abstract class ObjectSchema implements Schema<Object>
                 return 14;
             case 'o':
                 return 15;
+            case 'p':
+                return 16;
                 
-            // room for more scalar types (16-22)
+            // room for more scalar types (17-23)
                 
-            case 'w':
-                return 23;
             case 'x':
                 return 24;
             case 'y':
@@ -364,36 +364,6 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_DATE:
                 value = DATE.readFrom(input);
                 break;
-            case ID_OBJECT:
-                if(input.readUInt32() != 0)
-                    throw new ProtostuffException("Corrupt input.");
-                
-                value = new Object();
-                break;
-            case ID_ENUM:
-                final String typeEnum = input.readString();
-                final EnumIO<?> eio = EnumIO.get(typeEnum, 
-                        RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
-                
-                if(eio == null)
-                    throw new ProtostuffException("Unknown enum class: " + typeEnum);
-                
-                if(input.readFieldNumber(schema) != ID_ENUM_VALUE)
-                    throw new ProtostuffException("Corrupt input.");
-                
-                value = eio.readFrom(input);
-                break;
-            
-            // objects ser/deser with schema
-                
-            case ID_COLLECTION:
-                final Collection<Object> collection = 
-                    CollectionSchema.MessageFactories.getFactory(
-                            input.readString()).newMessage();
-                
-                COLLECTION_SCHEMA.mergeFrom(input, collection);
-                
-                return collection;
                 
             case ID_ARRAY:
                 final String typeArray = input.readString();
@@ -412,6 +382,36 @@ public abstract class ObjectSchema implements Schema<Object>
                 COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
                 
                 return arrayWrapper.array;
+                
+            case ID_OBJECT:
+                if(input.readUInt32() != 0)
+                    throw new ProtostuffException("Corrupt input.");
+                
+                value = new Object();
+                break;
+                
+            case ID_ENUM:
+                final String typeEnum = input.readString();
+                final EnumIO<?> eio = EnumIO.get(typeEnum, 
+                        RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                
+                if(eio == null)
+                    throw new ProtostuffException("Unknown enum class: " + typeEnum);
+                
+                if(input.readFieldNumber(schema) != ID_ENUM_VALUE)
+                    throw new ProtostuffException("Corrupt input.");
+                
+                value = eio.readFrom(input);
+                break;
+                
+            case ID_COLLECTION:
+                final Collection<Object> collection = 
+                    CollectionSchema.MessageFactories.getFactory(
+                            input.readString()).newMessage();
+                
+                COLLECTION_SCHEMA.mergeFrom(input, collection);
+                
+                return collection;
                 
             case ID_MAP:
                 final Map<Object,Object> map = 
@@ -609,6 +609,27 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_DATE:
                 DATE.transfer(pipe, input, output, number, false);
                 break;
+            case ID_ARRAY:
+                input.transferByteRangeTo(output, true, number, false);
+                
+                if(input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_LEN)
+                    throw new ProtostuffException("Corrupt input.");
+                
+                output.writeUInt32(ID_ARRAY_LEN, input.readUInt32(), false);
+                
+                if(input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_DIMENSION)
+                    throw new ProtostuffException("Corrupt input.");
+                
+                output.writeUInt32(ID_ARRAY_DIMENSION, input.readUInt32(), false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(ARRAY_PIPE_SCHEMA, pipeSchema);
+                }
+                
+                Pipe.transferDirect(ARRAY_PIPE_SCHEMA, pipe, input, output);
+                return;
             case ID_OBJECT:
                 output.writeUInt32(number, input.readUInt32(), false);
                 break;
@@ -630,27 +651,6 @@ public abstract class ObjectSchema implements Schema<Object>
                 }
                 
                 Pipe.transferDirect(COLLECTION_PIPE_SCHEMA, pipe, input, output);
-                return;
-            case ID_ARRAY:
-                input.transferByteRangeTo(output, true, number, false);
-                
-                if(input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_LEN)
-                    throw new ProtostuffException("Corrupt input.");
-                
-                output.writeUInt32(ID_ARRAY_LEN, input.readUInt32(), false);
-                
-                if(input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_DIMENSION)
-                    throw new ProtostuffException("Corrupt input.");
-                
-                output.writeUInt32(ID_ARRAY_DIMENSION, input.readUInt32(), false);
-                
-                if(output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput)output).updateLast(ARRAY_PIPE_SCHEMA, pipeSchema);
-                }
-                
-                Pipe.transferDirect(ARRAY_PIPE_SCHEMA, pipe, input, output);
                 return;
             case ID_MAP:
                 input.transferByteRangeTo(output, true, number, false);
