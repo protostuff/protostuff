@@ -29,7 +29,7 @@ import com.dyuproject.protostuff.Schema;
 /**
  * Test for polymorphic serialization.
  * 
- * See {@link PolymorphicRuntimeField} for details.
+ * See {@link RuntimeDerivativeField} for details.
  *
  * @author David Yu
  * @created Jan 15, 2011

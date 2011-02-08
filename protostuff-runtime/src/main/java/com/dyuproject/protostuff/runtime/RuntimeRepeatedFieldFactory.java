@@ -251,7 +251,7 @@ final class RuntimeRepeatedFieldFactory
             final java.lang.reflect.Field f, final MessageFactory messageFactory,  
             final Class<Object> genericType)
     {
-        return new PolymorphicRuntimeField<T>(
+        return new RuntimeDerivativeField<T>(
                 genericType, FieldType.MESSAGE, number, name, true)
         {
             {

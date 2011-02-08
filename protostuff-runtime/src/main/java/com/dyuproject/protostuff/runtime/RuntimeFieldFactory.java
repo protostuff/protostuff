@@ -1186,7 +1186,7 @@ public abstract class RuntimeFieldFactory<V>
                 return POJO.create(number, name, f);
             }
             
-            return new PolymorphicRuntimeField<T>(
+            return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
                     FieldType.MESSAGE, number, name, false)
             {

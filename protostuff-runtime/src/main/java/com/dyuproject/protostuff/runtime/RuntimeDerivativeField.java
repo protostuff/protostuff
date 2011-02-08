@@ -23,7 +23,8 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 
 /**
- * A runtime field w/c represents a polymorphic pojo(abstract class or interface).
+ * A runtime field w/c represents an abstract class, interface or a base type with 
+ * many possible subclasses.
  * 
  * The type metadata is written for the deserializer to know the actual/exact schema to 
  * use upon deserialization.
@@ -38,7 +39,7 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Jan 16, 2011
  */
-abstract class PolymorphicRuntimeField<T> extends Field<T>
+abstract class RuntimeDerivativeField<T> extends Field<T>
 {
 
     /**
@@ -49,7 +50,7 @@ abstract class PolymorphicRuntimeField<T> extends Field<T>
         protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
                 Object owner) throws IOException
         {
-            PolymorphicRuntimeField.this.doMergeFrom(input, derivedSchema, owner);
+            RuntimeDerivativeField.this.doMergeFrom(input, derivedSchema, owner);
         }
     };
     
@@ -58,7 +59,7 @@ abstract class PolymorphicRuntimeField<T> extends Field<T>
      */
     public final Class<Object> typeClass;
     
-    public PolymorphicRuntimeField(Class<Object> typeClass, 
+    public RuntimeDerivativeField(Class<Object> typeClass, 
             FieldType type, int number, String name, boolean repeated)
     {
         super(type, number, name, repeated);
