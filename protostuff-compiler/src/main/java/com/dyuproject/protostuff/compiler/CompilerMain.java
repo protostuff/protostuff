@@ -50,6 +50,11 @@ public final class CompilerMain
         __compilers.put(compiler.getOutputId(), compiler);
     }
     
+    public static boolean isAvailableOutput(String output)
+    {
+        return __compilers.get(output) != null;
+    }
+    
     public static InputStream getInputStream(String resource) throws IOException
     {
         File file = new File(resource);

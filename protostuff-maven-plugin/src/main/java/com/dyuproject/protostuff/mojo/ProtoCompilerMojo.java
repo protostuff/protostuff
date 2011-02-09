@@ -48,11 +48,20 @@ public class ProtoCompilerMojo extends AbstractMojo
      * @parameter
      */
     protected ProtoModule[] protoModules;
+    
+    
+    /**
+     * @parameter expression="${project.basedir}"
+     * @required
+     */
+    protected File baseDir;
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         if(SKIP)
             return;
+        
+        assert baseDir != null && baseDir.exists() && baseDir.isDirectory();
         
         if(modulesFile==null)
         {
@@ -64,7 +73,28 @@ public class ProtoCompilerMojo extends AbstractMojo
             try
             {
                 for(ProtoModule m : protoModules)
+                {
+                    if(!CompilerMain.isAvailableOutput(m.getOutput()) && 
+                            !baseDir.getAbsoluteFile().equals(
+                                    new File(".").getAbsoluteFile()))
+                    {
+                        // custom stg output executed on a child pom
+                        try
+                        {
+                            File relativePath = new File(baseDir, m.getOutput());
+                            if(relativePath.exists())
+                            {
+                                // update the path module.
+                                m.setOutput(relativePath.getCanonicalPath());
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            // ignore ... <output> might be an absolute path
+                        }
+                    }
                     CompilerMain.compile(m);
+                }
             }
             catch(Exception e)
             {
