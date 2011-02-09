@@ -16,15 +16,16 @@ package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
+import com.dyuproject.protostuff.MapSchema.MessageFactories;
 import com.dyuproject.protostuff.MapSchema.MessageFactory;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
@@ -1617,13 +1618,33 @@ final class RuntimeMapFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final MessageFactory messageFactory = MapSchema.MessageFactories.getFactory(
-                    (Class<? extends Map<?,?>>)f.getType());
-            
-            if(messageFactory == null)
+            final MessageFactory messageFactory;
+            if(EnumMap.class.isAssignableFrom(f.getType()))
             {
-                // Not a standard jdk Map impl.
-                return null;
+                final Class<Object> enumType;
+                try
+                {
+                    enumType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+                }
+                catch(Exception e)
+                {
+                    throw new RuntimeException("Could not get the enum type of the " + 
+                            "EnumMap: " + f.getType());
+                }
+                
+                messageFactory = EnumIO.get(enumType);
+            }
+            else
+            {
+                messageFactory = MessageFactories.getFactory(
+                        (Class<? extends Map<?,?>>)f.getType());
+                
+                if(messageFactory == null)
+                {
+                    // Not a standard jdk Map impl.
+                    throw new RuntimeException("Not a standard jdk map: " + 
+                            f.getType());
+                }
             }
             
             final Class<Object> clazzK;

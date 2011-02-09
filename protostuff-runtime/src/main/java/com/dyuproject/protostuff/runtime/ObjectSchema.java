@@ -72,6 +72,8 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_STRING;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -315,6 +317,7 @@ public abstract class ObjectSchema implements Schema<Object>
         return new ArrayWrapper(Array.newInstance(clazz, arg));
     }
     
+    @SuppressWarnings("unchecked")
     private static Object readObjectFrom(final Input input, final Schema<?> schema) 
     throws IOException
     {
@@ -405,18 +408,35 @@ public abstract class ObjectSchema implements Schema<Object>
                 break;
                 
             case ID_COLLECTION:
+                final String collectionType = input.readString();
+                if(collectionType.indexOf('.') != -1)
+                {
+                    // EnumSet
+                    final Collection<?> c = EnumIO.get(collectionType, true).newEnumSet();
+                    COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>)c);
+                    return c;
+                }
+                
                 final Collection<Object> collection = 
                     CollectionSchema.MessageFactories.getFactory(
-                            input.readString()).newMessage();
+                            collectionType).newMessage();
                 
                 COLLECTION_SCHEMA.mergeFrom(input, collection);
                 
                 return collection;
                 
             case ID_MAP:
+                final String mapType = input.readString();
+                if(mapType.indexOf('.') != -1)
+                {
+                    // EnumMap
+                    final Map<?,Object> m = EnumIO.get(mapType, true).newEnumMap();
+                    MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>)m);
+                    return m;
+                }
+                
                 final Map<Object,Object> map = 
-                    MapSchema.MessageFactories.getFactory(
-                            input.readString()).newMessage();
+                    MapSchema.MessageFactories.getFactory(mapType).newMessage();
                 
                 MAP_SCHEMA.mergeFrom(input, map);
                 
@@ -517,8 +537,12 @@ public abstract class ObjectSchema implements Schema<Object>
         
         if(Map.class.isAssignableFrom(clazz))
         {
-            output.writeString(ID_MAP, MapSchema.MessageFactories.getFactory(
-                    clazz.getSimpleName()).name(), false);
+            final String type = EnumMap.class.isAssignableFrom(clazz) ? 
+                    EnumIO.getKeyTypeFromEnumMap(value).getName() : 
+                        MapSchema.MessageFactories.getFactory(
+                                clazz.getSimpleName()).name();
+            
+            output.writeString(ID_MAP, type, false);
             
             if(output instanceof StatefulOutput)
             {
@@ -532,9 +556,12 @@ public abstract class ObjectSchema implements Schema<Object>
         
         if(Collection.class.isAssignableFrom(clazz))
         {
-            output.writeString(ID_COLLECTION, 
-                    CollectionSchema.MessageFactories.getFactory(
-                    clazz.getSimpleName()).name(), false);
+            final String type = EnumSet.class.isAssignableFrom(clazz) ? 
+                    EnumIO.getElementTypeFromEnumSet(value).getName() :
+                        CollectionSchema.MessageFactories.getFactory(
+                                clazz.getSimpleName()).name();
+            
+            output.writeString(ID_COLLECTION, type, false);
             
             if(output instanceof StatefulOutput)
             {

@@ -17,6 +17,7 @@ package com.dyuproject.protostuff.runtime;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.EnumSet;
 
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
@@ -450,13 +451,33 @@ final class RuntimeRepeatedFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final MessageFactory messageFactory = MessageFactories.getFactory(
-                    (Class<? extends Collection<?>>)f.getType());
-            
-            if(messageFactory == null)
+            final MessageFactory messageFactory;
+            if(EnumSet.class.isAssignableFrom(f.getType()))
             {
-                // Not a standard jdk Collection impl.
-                return null;
+                final Class<Object> enumType;
+                try
+                {
+                    enumType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+                }
+                catch(Exception e)
+                {
+                    throw new RuntimeException("Could not get the enum type of the " + 
+                            "EnumSet: " + f.getType());
+                }
+                
+                messageFactory = EnumIO.get(enumType);
+            }
+            else
+            {
+                messageFactory = MessageFactories.getFactory(
+                        (Class<? extends Collection<?>>)f.getType());
+                
+                if(messageFactory == null)
+                {
+                    // Not a standard jdk Collection impl.
+                    throw new RuntimeException("Not a standard jdk collection: " + 
+                            f.getType());
+                }
             }
             
             final Class<Object> genericType;

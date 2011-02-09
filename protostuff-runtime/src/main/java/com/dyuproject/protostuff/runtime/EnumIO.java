@@ -15,9 +15,15 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.dyuproject.protostuff.CollectionSchema;
 import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 
@@ -29,7 +35,9 @@ import com.dyuproject.protostuff.Pipe;
  * @author David Yu
  * @created Oct 20, 2010
  */
-public abstract class EnumIO<E extends Enum<E>>
+public abstract class EnumIO<E extends Enum<E>> implements 
+    MapSchema.MessageFactory, CollectionSchema.MessageFactory
+
 {
     
     /**
@@ -43,6 +51,84 @@ public abstract class EnumIO<E extends Enum<E>>
      */
     private static final ConcurrentHashMap<String,EnumIO<?>> __eioCache = 
         new ConcurrentHashMap<String,EnumIO<?>>();
+    
+    // Used by ObjectSchema to ser/deser both EnumMap and EnumSet.
+    private static final java.lang.reflect.Field __keyTypeFromEnumMap;
+    private static final java.lang.reflect.Field __elementTypeFromEnumSet;
+    
+    static
+    {
+        boolean success = false;
+        java.lang.reflect.Field keyTypeFromMap = null, valueTypeFromSet = null;
+        try
+        {
+            keyTypeFromMap = EnumMap.class.getDeclaredField("keyType");
+            keyTypeFromMap.setAccessible(true);
+            valueTypeFromSet = EnumSet.class.getDeclaredField("elementType");
+            valueTypeFromSet.setAccessible(true);
+            success = true;
+        }
+        catch(Exception e)
+        {
+            // ignore
+        }
+        
+        __keyTypeFromEnumMap = success ? keyTypeFromMap : null;
+        __elementTypeFromEnumSet = success ? valueTypeFromSet : null;
+    }
+    
+    /**
+     * Retrieves the enum key type from the EnumMap via reflection.
+     * This is used by {@link ObjectSchema}.
+     */
+    static Class<?> getKeyTypeFromEnumMap(Object enumMap)
+    {
+        if(__keyTypeFromEnumMap == null)
+        {
+            throw new RuntimeException("Could not access (reflection) the private " +
+                    "field *keyType* (enumClass) from: class java.util.EnumMap");
+        }
+        
+        try
+        {
+            return (Class<?>)__keyTypeFromEnumMap.get(enumMap);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Retrieves the enum key type from the EnumMap via reflection.
+     * This is used by {@link ObjectSchema}.
+     */
+    static Class<?> getElementTypeFromEnumSet(Object enumSet)
+    {
+        if(__elementTypeFromEnumSet == null)
+        {
+            throw new RuntimeException("Could not access (reflection) the private " +
+                    "field *elementType* (enumClass) from: class java.util.EnumSet");
+        }
+        
+        try
+        {
+            return (Class<?>)__elementTypeFromEnumSet.get(enumSet);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
     
     @SuppressWarnings("unchecked")
     static EnumIO<? extends Enum<?>> get(Class<?> enumClass)
@@ -122,6 +208,23 @@ public abstract class EnumIO<E extends Enum<E>>
         this.enumClass = enumClass;
     }
     
+    
+    /**
+     * Returns an empty {@link EnumSet}.
+     */
+    public EnumSet<E> newEnumSet()
+    {
+        return EnumSet.noneOf(enumClass);
+    }
+    
+    /**
+     * Returns an empty {@link EnumMap}.
+     */
+    public <V> EnumMap<E,V> newEnumMap()
+    {
+        return new EnumMap<E,V>(enumClass);
+    }
+    
     /**
      * Read the enum from the input.
      */
@@ -142,6 +245,18 @@ public abstract class EnumIO<E extends Enum<E>>
         {
             return Enum.valueOf(enumClass, input.readString());
         }
+        
+        @SuppressWarnings("unchecked")
+        public <K, V> Map<K, V> newMessage()
+        {
+            return (Map<K, V>)newEnumMap();
+        }
+        
+        @SuppressWarnings("unchecked")
+        public <V> Collection<V> newMessage()
+        {
+            return (Collection<V>)newEnumSet();
+        }
     }
     
     /**
@@ -158,6 +273,18 @@ public abstract class EnumIO<E extends Enum<E>>
         public E readFrom(Input input) throws IOException
         {
             return enumClass.getEnumConstants()[input.readEnum()];
+        }
+        
+        @SuppressWarnings("unchecked")
+        public <K, V> Map<K, V> newMessage()
+        {
+            return (Map<K, V>)newEnumMap();
+        }
+        
+        @SuppressWarnings("unchecked")
+        public <V> Collection<V> newMessage()
+        {
+            return (Collection<V>)newEnumSet();
         }
     }
 
