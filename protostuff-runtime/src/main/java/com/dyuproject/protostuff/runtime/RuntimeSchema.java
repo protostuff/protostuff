@@ -304,8 +304,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                         "class nor interface: \"" + typeClass.getName());
         }
         
-        Map<String,java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
-        ArrayList<Field<T>> fields = new ArrayList<Field<T>>(fieldMap.size());
+        final Map<String,java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
+        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(fieldMap.size());
         int i = 0;
         for(java.lang.reflect.Field f : fieldMap.values())
         {
@@ -319,25 +319,15 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     continue;
                 }
                 
-                RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(f.getType());
-                if(rff!=null)
-                {
-                    Field<T> field = rff.create(i+1, f.getName(), f);
-                    if(field!=null)
-                    {
-                        i++;
-                        fields.add(field);
-                    }
-                }
+                final Field<T> field = RuntimeFieldFactory.getFieldFactory(
+                        f.getType()).create(++i, f.getName(), f);
+                fields.add(field);
             }
         }
         if(fields.isEmpty())
         {
             throw new RuntimeException("Not able to map any fields from " + 
-                    typeClass + ".  All fields are either transient/static.  " +
-                    "Two dimensional array fields are excluded.  " +
-                    "Collection/Map fields whose generic type is another " +
-            	    "Collection/Map or another generic type, are excluded.");
+                    typeClass + ".  All fields are either transient/static.");
         }
         
         return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
@@ -357,11 +347,11 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             		"class nor interface: \"" + typeClass.getName());
         }
         
-        ArrayList<Field<T>> fields = new ArrayList<Field<T>>(declaredFields.size());
+        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(declaredFields.size());
         int i = 0;
         for(Map.Entry<String, String> entry : declaredFields.entrySet())
         {
-            java.lang.reflect.Field f;
+            final java.lang.reflect.Field f;
             try
             {
                 f = typeClass.getDeclaredField(entry.getKey());
@@ -371,28 +361,18 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 throw new IllegalArgumentException("Exception on field: " + entry.getKey(), e);
             }
             
-            int mod = f.getModifiers();
+            final int mod = f.getModifiers();
             if(!Modifier.isStatic(mod) && !Modifier.isTransient(mod))
             {
-                RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(f.getType());
-                if(rff!=null)
-                {
-                    Field<T> field = rff.create(i+1, entry.getValue(), f);
-                    if(field!=null)
-                    {
-                        i++;
-                        fields.add(field);
-                    }
-                }
+                final Field<T> field = RuntimeFieldFactory.getFieldFactory(
+                        f.getType()).create(++i, entry.getValue(), f);
+                fields.add(field);
             }
         }
         if(fields.isEmpty())
         {
             throw new RuntimeException("Not able to map any fields from " + 
-                    typeClass + ".  All fields are either transient/static.  " +
-                    "Two dimensional array fields are excluded.  " +
-                    "Collection/Map fields whose generic type is another " +
-                    "Collection/Map or another generic type, are excluded.");
+                    typeClass + ".  All fields are either transient/static.");
         }
         return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
     }
