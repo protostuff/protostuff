@@ -48,6 +48,9 @@ package com.dyuproject.protostuff;
 
 import static com.dyuproject.protostuff.StringSerializer.STRING;
 
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
@@ -67,6 +70,22 @@ public final class ByteString {
   // internal package access to avoid double memory allocation
   byte[] getBytes() {
     return bytes;
+  }
+  
+  /** Writes the bytes to the {@link OutputStream}. */
+  public static void writeTo(OutputStream out, ByteString bs) throws IOException {
+    out.write(bs.bytes);
+  }
+  
+  /** Writes the bytes to the {@link DataOutput}. */
+  public static void writeTo(DataOutput out, ByteString bs) throws IOException {
+    out.write(bs.bytes);
+  }
+  
+  /** Writes the bytes to the {@link Output}. */
+  public static void writeTo(Output output, ByteString bs, int fieldNumber, 
+    boolean repeated) throws IOException {
+    output.writeByteArray(fieldNumber, bs.bytes, repeated);
   }
   
   public String toString() {
