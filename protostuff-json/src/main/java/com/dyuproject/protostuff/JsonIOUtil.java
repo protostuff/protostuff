@@ -103,8 +103,12 @@ public final class JsonIOUtil
     public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) 
     throws IOException
     {
-        return newPipe(DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length), 
-                numeric);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                data, false);
+        final JsonParser parser = newJsonParser(null, data, offset, offset+length, false, 
+                context);
+        
+        return newPipe(parser, numeric);
     }
     
     /**
@@ -112,7 +116,12 @@ public final class JsonIOUtil
      */
     public static Pipe newPipe(InputStream in, boolean numeric) throws IOException
     {
-        return newPipe(DEFAULT_JSON_FACTORY.createJsonParser(in), numeric);
+        final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(), 
+                in, false);
+        final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0, 
+                true, context);
+        
+        return newPipe(parser, numeric);
     }
     
     /**
