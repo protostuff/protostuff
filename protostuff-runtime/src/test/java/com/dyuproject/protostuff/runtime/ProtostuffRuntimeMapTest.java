@@ -35,11 +35,6 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  */
 public class ProtostuffRuntimeMapTest extends AbstractRuntimeMapTest
 {
-    
-    protected boolean isPolymorphicPojoSupported()
-    {
-        return true;
-    }
 
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema) throws IOException

@@ -73,8 +73,6 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     protected abstract <T> void roundTrip(T message, Schema<T> schema, 
             Pipe.Schema<T> pipeSchema) throws Exception;
     
-    protected abstract boolean isPolymorphicPojoSupported();
-    
     static <K,V> Map<K,V> newMap()
     {
         return new HashMap<K,V>();
@@ -1853,9 +1851,6 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     
     public void testInlineKPolymorphicV() throws Exception
     {
-        if(!isPolymorphicPojoSupported())
-            return;
-        
         Schema<HasMapInlineKPolymorphicV> schema = RuntimeSchema.getSchema(HasMapInlineKPolymorphicV.class);
         Pipe.Schema<HasMapInlineKPolymorphicV> pipeSchema = 
             ((MappedSchema<HasMapInlineKPolymorphicV>)schema).pipeSchema;
@@ -1944,9 +1939,6 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     
     public void testEnumKPolymorphicV() throws Exception
     {
-        if(!isPolymorphicPojoSupported())
-            return;
-        
         Schema<HasMapEnumKPolymorphicV> schema = RuntimeSchema.getSchema(HasMapEnumKPolymorphicV.class);
         Pipe.Schema<HasMapEnumKPolymorphicV> pipeSchema = 
             ((MappedSchema<HasMapEnumKPolymorphicV>)schema).pipeSchema;
@@ -2035,9 +2027,6 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     
     public void testPojoKPolymorphicV() throws Exception
     {
-        if(!isPolymorphicPojoSupported())
-            return;
-        
         Schema<HasMapPojoKPolymorphicV> schema = RuntimeSchema.getSchema(HasMapPojoKPolymorphicV.class);
         Pipe.Schema<HasMapPojoKPolymorphicV> pipeSchema = 
             ((MappedSchema<HasMapPojoKPolymorphicV>)schema).pipeSchema;

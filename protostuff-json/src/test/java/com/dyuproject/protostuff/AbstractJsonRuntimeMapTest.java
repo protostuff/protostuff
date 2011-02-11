@@ -34,12 +34,6 @@ public abstract class AbstractJsonRuntimeMapTest extends AbstractRuntimeMapTest
     
     protected abstract boolean isNumeric();
     
-    
-    protected boolean isPolymorphicPojoSupported()
-    {
-        return true;
-    }
-    
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
             Schema<T> schema) throws IOException
     {
