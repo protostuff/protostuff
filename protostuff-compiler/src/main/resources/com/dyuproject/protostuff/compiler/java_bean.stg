@@ -38,6 +38,17 @@ map_primitive_wrapper ::= [
     default: key
 ]
 
+map_primitive_number_suffix ::= [
+    "Int64": "l",
+    "UInt64": "l",
+    "SInt64": "l",
+    "Fixed64": "l",
+    "SFixed64": "l",
+    "Float": "f",
+    "Double": "d",
+    default: 
+]
+
 //#enum begin
 
 enum_block(eg, module, options, nested) ::= <<
@@ -175,6 +186,16 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 field_defaults_declaration(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+static final <field.javaType> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<else>
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<else>
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<else>
 static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
 <endif>
 <endif>
@@ -184,7 +205,15 @@ field_default_value(field, options) ::= <<
 <if(field.defaultValueConstant)>
 <field.defaultValueConstant>
 <else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+<field.defaultValueAsString><map_primitive_number_suffix.(field.class.simpleName)>
+<else>
 <map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>
+<endif>
+<else>
+<map_value_prefix.(field.class.simpleName)><field.defaultValueAsString><map_value_suffix.(field.class.simpleName)>
+<endif>
 <endif>
 >>
 
@@ -192,7 +221,23 @@ field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
 <modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>;
 <else>
-<modifier; format=" "><map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
+<modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
+<endif>
+>>
+
+field_singular_type(field, options) ::= <<
+<if(field.required)>
+<map_primitive_wrapper.(field.javaType)>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+<field.javaType>
+<else>
+<map_primitive_wrapper.(field.javaType)>
+<endif>
+<else>
+<map_primitive_wrapper.(field.javaType)>
+<endif>
 <endif>
 >>
 
@@ -524,12 +569,28 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 singular_field_write_check(field, options) ::= <<
 <if(field.defaultValue)>
 <if(!field.enumField)>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+<endif>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != 0)
 <else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 <endif>
 <else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+<endif>
 <endif>
 >>
 
