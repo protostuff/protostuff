@@ -73,10 +73,19 @@ public final class LinkedBuffer
      */
     public static LinkedBuffer use(byte[] buffer)
     {
-        if(buffer.length < MIN_BUFFER_SIZE)
+        return use(buffer, 0);
+    }
+    
+    /**
+     * Uses the existing byte array as the internal buffer.
+     */
+    public static LinkedBuffer use(byte[] buffer, int start)
+    {
+        assert start >= 0;
+        if(buffer.length - start < MIN_BUFFER_SIZE)
             throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
         
-        return new LinkedBuffer(buffer, 0, 0);
+        return new LinkedBuffer(buffer, start, start);
     }
     
     /**
