@@ -324,7 +324,7 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 
 <else>
 
-public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
+public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">()
 {
     <if(field.enumField)>
     <if(field.required)>
@@ -337,7 +337,7 @@ public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">()
     <endif>
 }
 
-public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
     <field:builder_pattern_return(field=it, options=options)>
