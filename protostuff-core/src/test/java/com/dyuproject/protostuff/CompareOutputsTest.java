@@ -164,9 +164,7 @@ public class CompareOutputsTest extends AbstractTest
     
     static <T> byte[] toByteArrayBufferedProtobuf(T message, Schema<T> schema)
     {
-        //return ProtobufIOUtil.toByteArray(message, schema, new LinkedBuffer(BUF_SIZE));
-        final BufferedOutput output = new BufferedOutput(
-                new LinkedBuffer(BUF_SIZE), false);
+        final ProtobufOutput output = new ProtobufOutput(new LinkedBuffer(BUF_SIZE));
         try
         {
             schema.writeTo(output, message);
@@ -205,9 +203,7 @@ public class CompareOutputsTest extends AbstractTest
     
     static <T> byte[] toByteArrayBufferedProtostuff(T message, Schema<T> schema)
     {
-        //return ProtostuffIOUtil.toByteArray(message, schema, new LinkedBuffer(BUF_SIZE));
-        final ProtostuffOutput output = new ProtostuffOutput(
-                new LinkedBuffer(BUF_SIZE));
+        final ProtostuffOutput output = new ProtostuffOutput(new LinkedBuffer(BUF_SIZE));
         try
         {
             schema.writeTo(output, message);

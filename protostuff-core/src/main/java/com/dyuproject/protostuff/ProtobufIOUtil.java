@@ -167,7 +167,21 @@ public final class ProtobufIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
-        return IOUtil.toByteArray(message, schema, buffer, false);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final ProtobufOutput output = new ProtobufOutput(buffer);
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return output.toByteArray();
     }
     
     /**
@@ -177,7 +191,21 @@ public final class ProtobufIOUtil
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
-        return IOUtil.writeTo(buffer, message, schema, false);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final ProtobufOutput output = new ProtobufOutput(buffer);
+        try
+        {
+            schema.writeTo(output, message);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        
+        return output.getSize();
     }
     
     /**
@@ -188,7 +216,12 @@ public final class ProtobufIOUtil
     public static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
     {
-        return IOUtil.writeTo(out, message, schema, buffer, false);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final ProtobufOutput output = new ProtobufOutput(buffer);
+        schema.writeTo(output, message);
+        return LinkedBuffer.writeTo(out, buffer);
     }
     
     /**
@@ -200,7 +233,18 @@ public final class ProtobufIOUtil
     public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
     {
-        return IOUtil.writeDelimitedTo(out, message, schema, buffer, false);
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final ProtobufOutput output = new ProtobufOutput(buffer);
+        schema.writeTo(output, message);
+        final int size = output.getSize();
+        ProtobufOutput.writeRawVarInt32Bytes(out, size);
+        final int msgSize = LinkedBuffer.writeTo(out, buffer);
+        
+        assert size == msgSize;
+        
+        return size;
     }
     
     /**
@@ -212,7 +256,17 @@ public final class ProtobufIOUtil
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema) 
     throws IOException
     {
-        return IOUtil.writeDelimitedTo(out, message, schema, false);
+        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
+        final ProtobufOutput output = new ProtobufOutput(buffer);
+        schema.writeTo(output, message);
+        final int size = output.getSize();
+        ProtobufOutput.writeRawVarInt32Bytes(out, size);
+        
+        final int msgSize = LinkedBuffer.writeTo(out, buffer);
+        
+        assert size == msgSize;
+        
+        return size;
     }
     
     /**
@@ -227,13 +281,13 @@ public final class ProtobufIOUtil
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
-        final BufferedOutput output = new BufferedOutput(buffer, false);
+        final ProtobufOutput output = new ProtobufOutput(buffer);
         int totalSize = 0;
         for(T m : messages)
         {
             schema.writeTo(output, m);
             final int size = output.getSize();
-            CodedOutput.writeRawVarInt32Bytes(out, size);
+            ProtobufOutput.writeRawVarInt32Bytes(out, size);
             final int msgSize = LinkedBuffer.writeTo(out, buffer);
             
             assert size == msgSize;

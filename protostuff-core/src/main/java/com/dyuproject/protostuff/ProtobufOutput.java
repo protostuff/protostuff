@@ -14,53 +14,43 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.CodedOutput.LITTLE_ENDIAN_32_SIZE;
-import static com.dyuproject.protostuff.CodedOutput.LITTLE_ENDIAN_64_SIZE;
-import static com.dyuproject.protostuff.CodedOutput.computeRawVarint32Size;
-import static com.dyuproject.protostuff.CodedOutput.computeRawVarint64Size;
-import static com.dyuproject.protostuff.CodedOutput.encodeZigZag32;
-import static com.dyuproject.protostuff.CodedOutput.getTagAndRawVarInt32Bytes;
-import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian32;
-import static com.dyuproject.protostuff.CodedOutput.writeRawLittleEndian64;
 import static com.dyuproject.protostuff.StringSerializer.writeUTF8VarDelimited;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
+import java.io.DataOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * Maintains a decent-sized byte buffer for writing.  If the delimited field's byte-array-value 
- * is too large, it is wrapped by another buffer and linked together (basically zero copy).
+ * Protobuf serialization where the messages must be fully buffered on memory before 
+ * it can be written to the socket ({@link OutputStream}).
  *
  * @author David Yu
  * @created May 18, 2010
  */
-public final class BufferedOutput extends WriteSession implements Output
+public final class ProtobufOutput extends WriteSession implements Output
 {
-    private final boolean encodeNestedMessageAsGroup;
     
-    public BufferedOutput(LinkedBuffer buffer, boolean encodeNestedMessageAsGroup)
+    public static final int LITTLE_ENDIAN_32_SIZE = 4, LITTLE_ENDIAN_64_SIZE = 8;
+    
+    public ProtobufOutput(LinkedBuffer buffer)
     {
         super(buffer);
-        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
-    public BufferedOutput(LinkedBuffer buffer, int nextBufferSize, 
-            boolean encodeNestedMessageAsGroup)
+    public ProtobufOutput(LinkedBuffer buffer, int nextBufferSize)
     {
         super(buffer, nextBufferSize);
-        this.encodeNestedMessageAsGroup = encodeNestedMessageAsGroup;
     }
     
     /**
      * Resets this output for re-use.
      */
-    public BufferedOutput clear()
+    public ProtobufOutput clear()
     {
         super.clear();
         return this;
@@ -144,7 +134,7 @@ public final class BufferedOutput extends WriteSession implements Output
     {
         tail = writeTagAndRawVarInt64(
                 makeTag(fieldNumber, WIRETYPE_VARINT), 
-                value, 
+                encodeZigZag64(value), 
                 this, 
                 tail);
     }
@@ -234,12 +224,6 @@ public final class BufferedOutput extends WriteSession implements Output
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
             final boolean repeated) throws IOException
     {
-        if(encodeNestedMessageAsGroup)
-        {
-            writeObjectEncodedAsGroup(fieldNumber, value, schema, repeated);
-            return;
-        }
-        
         final LinkedBuffer lastBuffer = tail;
         final int lastSize = size;
         // view
@@ -260,9 +244,9 @@ public final class BufferedOutput extends WriteSession implements Output
         new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = inner;
     }
     
-    /**
+    /*
      * Write the nested message encoded as group.
-     */
+     *
     <T> void writeObjectEncodedAsGroup(final int fieldNumber, final T value, 
             final Schema<T> schema, final boolean repeated) throws IOException
     {
@@ -277,7 +261,7 @@ public final class BufferedOutput extends WriteSession implements Output
                 makeTag(fieldNumber, WIRETYPE_END_GROUP), 
                 this, 
                 tail);
-    }
+    }*/
     
     /* ----------------------------------------------------------------- */
     
@@ -528,5 +512,263 @@ public final class BufferedOutput extends WriteSession implements Output
         
         return lb;
     }
+    
+    /** Encode and write a varint to the {@link OutputStream} */
+    public static void writeRawVarInt32Bytes(OutputStream out, int value) throws IOException {
+      while (true) {
+        if ((value & ~0x7F) == 0) {
+          out.write(value);
+          return;
+        } else {
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+      }  
+    }
+    
+    /** Encode and write a varint to the {@link DataOutput} */
+    public static void writeRawVarInt32Bytes(DataOutput out, int value) throws IOException {
+      while (true) {
+        if ((value & ~0x7F) == 0) {
+          out.write(value);
+          return;
+        } else {
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+      }  
+    }
+    
+    /** Returns a byte array encoded with the tag and var int 32 */
+    public static byte[] getTagAndRawVarInt32Bytes(int tag, int value) {
+      int tagSize = computeRawVarint32Size(tag);
+      int size = computeRawVarint32Size(value);
+      int offset = 0;
+      byte[] buffer = new byte[tagSize + size];
+      if(tagSize==1)
+        buffer[offset++] = (byte)tag;
+      else {
+        for(int i=0,last=tagSize-1; i<last; i++, tag >>>= 7)
+          buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+        
+        buffer[offset++] = (byte)tag;
+      }
+      
+      if(size==1)
+        buffer[offset] = (byte)value;
+      else {
+        for(int i=0,last=size-1; i<last; i++, value >>>= 7)
+          buffer[offset++] = (byte)((value & 0x7F) | 0x80);
+          
+        buffer[offset] = (byte)value;  
+      }
+      
+      return buffer;
+    }
+    
+    /** Returns a byte array encoded with the tag and var int 64 */
+    public static byte[] getTagAndRawVarInt64Bytes(int tag, long value) {
+      int tagSize = computeRawVarint32Size(tag);
+      int size = computeRawVarint64Size(value);
+      int offset = 0;
+      byte[] buffer = new byte[tagSize + size];
+      
+      if(tagSize==1) {
+        buffer[offset++] = (byte)tag;
+      }
+      else {
+        for(int i=0,last=tagSize-1; i<last; i++, tag >>>= 7)
+          buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+        
+        buffer[offset++] = (byte)tag;
+      }
+      
+      if(size==1) {
+        buffer[offset] = (byte)value;
+      }
+      else {
+        for(int i=0,last=size-1; i<last; i++, value >>>= 7)
+          buffer[offset++] = (byte)(((int)value & 0x7F) | 0x80);
+          
+        buffer[offset] = (byte)value;  
+      }
+      
+      return buffer;
+    }
+    
+    /** Returns a byte array encoded with the tag and little endian 32 */
+    public static byte[] getTagAndRawLittleEndian32Bytes(int tag, int value) {
+      int tagSize = computeRawVarint32Size(tag);
+      int offset = 0;
+      byte[] buffer = new byte[tagSize + LITTLE_ENDIAN_32_SIZE];
+      
+      if(tagSize==1) {
+        buffer[offset++] = (byte)tag;
+      }
+      else {
+        for(int i=0,last=tagSize-1; i<last; i++, tag >>>= 7)
+          buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+        
+        buffer[offset++] = (byte)tag;
+      }
 
+      writeRawLittleEndian32(value, buffer, offset);
+      
+      return buffer;
+    }
+    
+    /** Returns a byte array encoded with the tag and little endian 64 */
+    public static byte[] getTagAndRawLittleEndian64Bytes(int tag, long value){
+      int tagSize = computeRawVarint32Size(tag);
+      int offset = 0;
+      byte[] buffer = new byte[tagSize + LITTLE_ENDIAN_64_SIZE];
+      
+      if(tagSize==1) {
+        buffer[offset++] = (byte)tag;
+      }
+      else {
+        for(int i=0,last=tagSize-1; i<last; i++, tag >>>= 7)
+          buffer[offset++] = (byte)((tag & 0x7F) | 0x80);
+        
+        buffer[offset++] = (byte)tag;
+      }
+      
+      writeRawLittleEndian64(value, buffer, offset);
+      
+      return buffer;
+    }
+    
+    /** Writes the encoded little endian 32 and returns the bytes written */
+    public static int writeRawLittleEndian32(int value, byte[] buffer, int offset) {
+      if(buffer.length - offset < LITTLE_ENDIAN_32_SIZE)
+        throw new IllegalArgumentException("buffer capacity not enough.");
+      
+      buffer[offset++] = (byte)(value & 0xFF);
+      buffer[offset++] = (byte)(value >> 8 & 0xFF);
+      buffer[offset++] = (byte)(value >> 16 & 0xFF);
+      buffer[offset] = (byte)(value >> 24 & 0xFF);
+        
+      return LITTLE_ENDIAN_32_SIZE;
+    }
+    
+    /** Writes the encoded little endian 64 and returns the bytes written */
+    public static int writeRawLittleEndian64(long value, byte[] buffer, int offset) {
+      if(buffer.length - offset < LITTLE_ENDIAN_64_SIZE)
+        throw new IllegalArgumentException("buffer capacity not enough.");
+      
+      buffer[offset++] = (byte)(value & 0xFF);
+      buffer[offset++] = (byte)(value >> 8 & 0xFF);
+      buffer[offset++] = (byte)(value >> 16 & 0xFF);
+      buffer[offset++] = (byte)(value >> 24 & 0xFF);
+      buffer[offset++] = (byte)(value >> 32 & 0xFF);
+      buffer[offset++] = (byte)(value >> 40 & 0xFF);
+      buffer[offset++] = (byte)(value >> 48 & 0xFF);
+      buffer[offset] = (byte)(value >> 56 & 0xFF);
+      
+      return LITTLE_ENDIAN_64_SIZE;
+    }
+    
+    /** Returns the byte array computed from the var int 32 size */
+    public static byte[] getRawVarInt32Bytes(int value) {
+      int size = computeRawVarint32Size(value);
+      if(size==1)
+        return new byte[]{(byte)value};
+
+      int offset = 0;
+      byte[] buffer = new byte[size];
+      for(int i=0,last=size-1; i<last; i++, value >>>= 7)
+        buffer[offset++] = (byte)((value & 0x7F) | 0x80);
+          
+      buffer[offset] = (byte)value;
+      return buffer;
+    }
+    
+ /* METHODS FROM CodedOutput */
+ 
+ // Protocol Buffers - Google's data interchange format
+ // Copyright 2008 Google Inc.  All rights reserved.
+ // http://code.google.com/p/protobuf/
+ //
+ // Redistribution and use in source and binary forms, with or without
+ // modification, are permitted provided that the following conditions are
+ // met:
+ //
+ //      * Redistributions of source code must retain the above copyright
+ // notice, this list of conditions and the following disclaimer.
+ //      * Redistributions in binary form must reproduce the above
+ // copyright notice, this list of conditions and the following disclaimer
+ // in the documentation and/or other materials provided with the
+ // distribution.
+ //      * Neither the name of Google Inc. nor the names of its
+ // contributors may be used to endorse or promote products derived from
+ // this software without specific prior written permission.
+ //
+ // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    
+    /**
+     * Compute the number of bytes that would be needed to encode a varint.
+     * {@code value} is treated as unsigned, so it won't be sign-extended if
+     * negative.
+     */
+    public static int computeRawVarint32Size(final int value) {
+      if ((value & (0xffffffff <<  7)) == 0) return 1;
+      if ((value & (0xffffffff << 14)) == 0) return 2;
+      if ((value & (0xffffffff << 21)) == 0) return 3;
+      if ((value & (0xffffffff << 28)) == 0) return 4;
+      return 5;
+    }
+    
+    /** Compute the number of bytes that would be needed to encode a varint. */
+    public static int computeRawVarint64Size(final long value) {
+      if ((value & (0xffffffffffffffffL <<  7)) == 0) return 1;
+      if ((value & (0xffffffffffffffffL << 14)) == 0) return 2;
+      if ((value & (0xffffffffffffffffL << 21)) == 0) return 3;
+      if ((value & (0xffffffffffffffffL << 28)) == 0) return 4;
+      if ((value & (0xffffffffffffffffL << 35)) == 0) return 5;
+      if ((value & (0xffffffffffffffffL << 42)) == 0) return 6;
+      if ((value & (0xffffffffffffffffL << 49)) == 0) return 7;
+      if ((value & (0xffffffffffffffffL << 56)) == 0) return 8;
+      if ((value & (0xffffffffffffffffL << 63)) == 0) return 9;
+      return 10;
+    }
+    
+    /**
+     * Encode a ZigZag-encoded 32-bit value.  ZigZag encodes signed integers
+     * into values that can be efficiently encoded with varint.  (Otherwise,
+     * negative values must be sign-extended to 64 bits to be varint encoded,
+     * thus always taking 10 bytes on the wire.)
+     *
+     * @param n A signed 32-bit integer.
+     * @return An unsigned 32-bit integer, stored in a signed int because
+     *         Java has no explicit unsigned support.
+     */
+    public static int encodeZigZag32(final int n) {
+      // Note:  the right-shift must be arithmetic
+      return (n << 1) ^ (n >> 31);
+    }
+    
+    /**
+     * Encode a ZigZag-encoded 64-bit value.  ZigZag encodes signed integers
+     * into values that can be efficiently encoded with varint.  (Otherwise,
+     * negative values must be sign-extended to 64 bits to be varint encoded,
+     * thus always taking 10 bytes on the wire.)
+     *
+     * @param n A signed 64-bit integer.
+     * @return An unsigned 64-bit integer, stored in a signed int because
+     *         Java has no explicit unsigned support.
+     */
+    public static long encodeZigZag64(final long n) {
+      // Note:  the right-shift must be arithmetic
+      return (n << 1) ^ (n >> 63);
+    }
 }

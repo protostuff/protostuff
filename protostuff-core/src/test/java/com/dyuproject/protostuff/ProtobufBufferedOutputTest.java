@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Test the buffering output capability of {@link BufferedOutput}.
+ * Test the buffering output capability of {@link ProtobufOutput}.
  *
  * @author David Yu
  * @created Oct 7, 2010

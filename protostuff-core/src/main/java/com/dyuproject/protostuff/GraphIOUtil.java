@@ -311,7 +311,7 @@ public final class GraphIOUtil
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
         schema.writeTo(graphOutput, message);
-        CodedOutput.writeRawVarInt32Bytes(out, output.size);
+        ProtobufOutput.writeRawVarInt32Bytes(out, output.size);
         LinkedBuffer.writeTo(out, buffer);
         return output.size;
     }
@@ -329,7 +329,7 @@ public final class GraphIOUtil
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
         schema.writeTo(graphOutput, message);
-        CodedOutput.writeRawVarInt32Bytes(out, output.size);
+        ProtobufOutput.writeRawVarInt32Bytes(out, output.size);
         LinkedBuffer.writeTo(out, buffer);
         return output.size;
     }

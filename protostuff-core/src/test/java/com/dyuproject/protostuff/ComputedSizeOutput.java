@@ -95,83 +95,83 @@ public final class ComputedSizeOutput implements Output
 
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        int s = CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        int s = ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT));
-        s += value<0 ? 10 : CodedOutput.computeRawVarint32Size(value);
+        s += value<0 ? 10 : ProtobufOutput.computeRawVarint32Size(value);
         size += s;
     }
     
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint32Size(value);
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint32Size(value);
     }
     
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint32Size(
-                        CodedOutput.encodeZigZag32(value));
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint32Size(
+                        ProtobufOutput.encodeZigZag32(value));
     }
     
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED32)) + ProtobufOutput.LITTLE_ENDIAN_32_SIZE;
     }
     
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED32)) + ProtobufOutput.LITTLE_ENDIAN_32_SIZE;
     }
 
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(value);
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint64Size(value);
     }
     
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(value);
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint64Size(value);
     }
     
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_VARINT)) + CodedOutput.computeRawVarint64Size(
-                        CodedOutput.encodeZigZag64(value));
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint64Size(
+                        ProtobufOutput.encodeZigZag64(value));
     }
     
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED64)) + ProtobufOutput.LITTLE_ENDIAN_64_SIZE;
     }
     
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED64)) + ProtobufOutput.LITTLE_ENDIAN_64_SIZE;
     }
 
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED32)) + CodedOutput.LITTLE_ENDIAN_32_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED32)) + ProtobufOutput.LITTLE_ENDIAN_32_SIZE;
     }
 
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
-                WireFormat.WIRETYPE_FIXED64)) + CodedOutput.LITTLE_ENDIAN_64_SIZE;
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+                WireFormat.WIRETYPE_FIXED64)) + ProtobufOutput.LITTLE_ENDIAN_64_SIZE;
     }
 
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_VARINT)) + 1;
     }
 
@@ -182,10 +182,10 @@ public final class ComputedSizeOutput implements Output
 
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         final int strSize = computeUTF8Size(value, 0, value.length());
-        size += CodedOutput.computeRawVarint32Size(strSize) + strSize;
+        size += ProtobufOutput.computeRawVarint32Size(strSize) + strSize;
     }
 
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
@@ -195,17 +195,17 @@ public final class ComputedSizeOutput implements Output
     
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        size += CodedOutput.computeRawVarint32Size(value.length) + value.length;
+        size += ProtobufOutput.computeRawVarint32Size(value.length) + value.length;
     }
     
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
             int offset, int length, boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
-        size += CodedOutput.computeRawVarint32Size(length) + length;
+        size += ProtobufOutput.computeRawVarint32Size(length) + length;
     }
     
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
@@ -217,24 +217,24 @@ public final class ComputedSizeOutput implements Output
             return;
         }
         
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
         final int last = size;
         schema.writeTo(this, value);
         
-        final int actualSize = CodedOutput.computeRawVarint32Size(size - last);
+        final int actualSize = ProtobufOutput.computeRawVarint32Size(size - last);
         size += actualSize;
     }
     
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema, 
             boolean repeated) throws IOException
     {
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                     WireFormat.WIRETYPE_START_GROUP));
         
         schema.writeTo(this, value);
         
-        size += CodedOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_END_GROUP));
     }
 

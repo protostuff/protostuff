@@ -15,10 +15,8 @@
 package com.dyuproject.protostuff;
 
 import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Common io utils for between protostuff and protobuf formats.
@@ -30,94 +28,6 @@ final class IOUtil
 {
     
     private IOUtil(){}
-    
-    /**
-     * Serializes the {@code message} into a byte array with the 
-     * supplied buffer.
-     */
-    static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer, 
-            boolean encodeNestedMessageAsGroup)
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        try
-        {
-            schema.writeTo(output, message);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        
-        return output.toByteArray();
-    }
-    
-    /**
-     * Writes the {@code message} into the {@link LinkedBuffer}.
-     * 
-     * @return the size of the message
-     */
-    static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup)
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        try
-        {
-            schema.writeTo(output, message);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
-                    "(should never happen).", e);
-        }
-        
-        return output.getSize();
-    }
-    
-    /**
-     * Serializes the {@code message} into an {@link OutputStream}.
-     * 
-     * @return the size of the message
-     */
-    static <T> int writeTo(OutputStream out, T message, Schema<T> schema, 
-            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        schema.writeTo(output, message);
-        return LinkedBuffer.writeTo(out, buffer);
-    }
-    
-    /**
-     * Serializes the {@code message} (delimited) into 
-     * an {@link OutputStream} using the given schema.
-     * 
-     * @return the size of the message
-     */
-    static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, 
-            LinkedBuffer buffer, boolean encodeNestedMessageAsGroup) throws IOException
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final BufferedOutput output = new BufferedOutput(buffer, encodeNestedMessageAsGroup);
-        schema.writeTo(output, message);
-        final int size = output.getSize();
-        CodedOutput.writeRawVarInt32Bytes(out, size);
-        final int msgSize = LinkedBuffer.writeTo(out, buffer);
-        
-        assert size == msgSize;
-        
-        return size;
-    }
     
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
@@ -244,29 +154,6 @@ final class IOUtil
             }
             input.checkLastTagWas(0);
         }
-    }
-    
-    /**
-     * Used by the code generated messages that implement {@link java.io.Externalizable}.
-     * Writes to the {@link DataOutput}.
-     * 
-     * @return the size of the message.
-     */
-    static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema, 
-            boolean encodeNestedMessageAsGroup) throws IOException
-    {
-        final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.MIN_BUFFER_SIZE);
-        final BufferedOutput output = new BufferedOutput(buffer, LinkedBuffer.MIN_BUFFER_SIZE, 
-                encodeNestedMessageAsGroup);
-        schema.writeTo(output, message);
-        final int size = output.getSize();
-        CodedOutput.writeRawVarInt32Bytes(out, size);
-        
-        final int msgSize = LinkedBuffer.writeTo(out, buffer);
-        
-        assert size == msgSize;
-        
-        return size;
     }
 
     /**

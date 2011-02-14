@@ -14,7 +14,8 @@
 
 package com.dyuproject.protostuff;
 
-import static com.dyuproject.protostuff.CodedOutput.encodeZigZag32;
+import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag32;
+import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag64;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
@@ -201,7 +202,7 @@ public final class ProtostuffOutput extends WriteSession implements Output
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = sink.writeVarInt64(
-                value, 
+                encodeZigZag64(value), 
                 this, 
                 sink.writeVarInt32(
                         makeTag(fieldNumber, WIRETYPE_VARINT), 
@@ -210,7 +211,7 @@ public final class ProtostuffOutput extends WriteSession implements Output
         
         /*tail = writeTagAndRawVarInt64(
                 makeTag(fieldNumber, WIRETYPE_VARINT), 
-                value, 
+                encodeZigZag64(value), 
                 this, 
                 tail);*/
     }
