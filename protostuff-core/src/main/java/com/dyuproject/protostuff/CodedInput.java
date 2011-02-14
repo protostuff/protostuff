@@ -577,7 +577,7 @@ public final class CodedInput implements Input {
   static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
   static final int DEFAULT_BUFFER_SIZE = 4096;
 
-  CodedInput(final byte[] buffer, final int off, final int len, 
+  public CodedInput(final byte[] buffer, final int off, final int len, 
       boolean decodeNestedMessageAsGroup) {
     this.buffer = buffer;
     bufferSize = off + len;
@@ -587,16 +587,16 @@ public final class CodedInput implements Input {
     this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
   }
   
-  CodedInput(final InputStream input, boolean decodeNestedMessageAsGroup) {
+  public CodedInput(final InputStream input, boolean decodeNestedMessageAsGroup) {
     this(input, new byte[DEFAULT_BUFFER_SIZE], 0, 0, decodeNestedMessageAsGroup);
   }
 
-  CodedInput(final InputStream input, byte[] buffer, 
+  public CodedInput(final InputStream input, byte[] buffer, 
       boolean decodeNestedMessageAsGroup) {
     this(input, buffer, 0, 0, decodeNestedMessageAsGroup);
   }
   
-  CodedInput(final InputStream input, byte[] buffer, int offset, int limit, 
+  public CodedInput(final InputStream input, byte[] buffer, int offset, int limit, 
       boolean decodeNestedMessageAsGroup) {
     this.buffer = buffer;
     bufferSize = limit;
