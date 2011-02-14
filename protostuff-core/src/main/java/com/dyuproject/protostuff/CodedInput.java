@@ -239,11 +239,11 @@ public final class CodedInput implements Input {
       return mergeObjectEncodedAsGroup(value, schema);
     
     final int length = readRawVarint32();
-    if (recursionDepth >= recursionLimit) {
-      throw ProtobufException.recursionLimitExceeded();
-    }
+    //if (recursionDepth >= recursionLimit) {
+    //  throw ProtobufException.recursionLimitExceeded();
+    //}
     final int oldLimit = pushLimit(length);
-    ++recursionDepth;
+    //++recursionDepth;
     
     if(value == null) {
       value = schema.newMessage();
@@ -253,17 +253,17 @@ public final class CodedInput implements Input {
       throw new UninitializedMessageException(value, schema);
     }
     checkLastTagWas(0);
-    --recursionDepth;
+    //--recursionDepth;
     popLimit(oldLimit);
     return value;
   }
 
   /** Reads a message field value from the stream (using the {@code group} encoding). */
   <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException {
-    if (recursionDepth >= recursionLimit) {
-      throw ProtobufException.recursionLimitExceeded();
-    }
-    ++recursionDepth;
+    //if (recursionDepth >= recursionLimit) {
+    //  throw ProtobufException.recursionLimitExceeded();
+    //}
+    //++recursionDepth;
     
     if(value == null) {
       value = schema.newMessage();
@@ -274,7 +274,7 @@ public final class CodedInput implements Input {
     }
     // handling is in #readFieldNumber
     checkLastTagWas(0);
-    --recursionDepth;
+    //--recursionDepth;
     return value;
   }
 
@@ -563,9 +563,9 @@ public final class CodedInput implements Input {
   /** The absolute position of the end of the current message. */
   private int currentLimit = Integer.MAX_VALUE;
 
-  /** See setRecursionLimit() */
-  private int recursionDepth;
-  private int recursionLimit = DEFAULT_RECURSION_LIMIT;
+  //** See setRecursionLimit() */
+  //private int recursionDepth;
+  //private int recursionLimit = DEFAULT_RECURSION_LIMIT;
   
   /** If true, the nested messages are group-encoded */
   public final boolean decodeNestedMessageAsGroup;
@@ -573,7 +573,7 @@ public final class CodedInput implements Input {
   /** See setSizeLimit() */
   private int sizeLimit = DEFAULT_SIZE_LIMIT;
 
-  static final int DEFAULT_RECURSION_LIMIT = 64;
+  //static final int DEFAULT_RECURSION_LIMIT = 64;
   static final int DEFAULT_SIZE_LIMIT = 64 << 20;  // 64MB
   static final int DEFAULT_BUFFER_SIZE = 4096;
 
@@ -606,13 +606,13 @@ public final class CodedInput implements Input {
     this.decodeNestedMessageAsGroup = decodeNestedMessageAsGroup;
   }
 
-  /**
+  /*
    * Set the maximum message recursion depth.  In order to prevent malicious
    * messages from causing stack overflows, {@code CodedInput} limits
    * how deeply messages may be nested.  The default limit is 64.
    *
    * @return the old limit.
-   */
+   *
   public int setRecursionLimit(final int limit) {
     if (limit < 0) {
       throw new IllegalArgumentException(
@@ -621,7 +621,7 @@ public final class CodedInput implements Input {
     final int oldLimit = recursionLimit;
     recursionLimit = limit;
     return oldLimit;
-  }
+  }*/
 
   /**
    * Set the maximum message size.  In order to prevent malicious
