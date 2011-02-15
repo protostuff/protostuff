@@ -43,6 +43,9 @@
                 <property>
                   <name>separate_schema</name>
                 </property>
+                <!--<property>
+                  <name>primitive_numbers_if_optional</name>
+                </property>-->
               </options>
             </protoModule>
           </protoModules>
@@ -116,6 +119,11 @@
       <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-codegen</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-smile</artifactId>
+      <version>${jackson-version}</version>
     </dependency>
   </dependencies>
 
