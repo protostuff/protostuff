@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ add smile format
 + update jackson to 1.7.3
 + Issue 56: Signed int64 is not correctly serialized (zigzag encoding missing)
 + Issue 51: Compiler option to use primitive numbers if the field is optional
