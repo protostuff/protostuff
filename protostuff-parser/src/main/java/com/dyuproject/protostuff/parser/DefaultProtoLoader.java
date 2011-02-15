@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.parser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Default proto loader for imported protos.
@@ -28,6 +29,28 @@ public class DefaultProtoLoader implements Proto.Loader
     
     public static final DefaultProtoLoader DEFAULT_INSTANCE = new DefaultProtoLoader();
     
+    private static final ArrayList<File> __protoLoadDirs = new ArrayList<File>();
+    
+    static
+    {
+        String protoPath = System.getProperty("proto_path");
+        if(protoPath != null)
+        {
+            for(String path : protoPath.split(","))
+            {
+                File dir = new File(path);
+                if(dir.exists() && dir.isDirectory())
+                {
+                    __protoLoadDirs.add(dir);
+                }
+                else
+                {
+                    System.err.println("warn: " + path + " not found.");
+                }
+            }
+        }
+    }
+    
     public static DefaultProtoLoader getDefaultInstance()
     {
         return DEFAULT_INSTANCE;
@@ -35,19 +58,40 @@ public class DefaultProtoLoader implements Proto.Loader
     
     public Proto load(String path, Proto importer) throws Exception
     {
-        File protoFile, importerFile = importer.getFile().getAbsoluteFile();
+        if(path.startsWith("http://"))
+        {
+            URL url = new URL(path);
+            Proto proto = new Proto(url, this, importer);
+            ProtoUtil.loadFrom(url, proto);
+            return proto;
+        }
+        
+        File protoFile, importerFile = importer.getFile();
         if(importerFile == null)
             protoFile = new File(path);
         else
         {
             // check if its relative to its importer's dir.
-            protoFile = new File(importerFile.getParentFile(), path);
+            protoFile = new File(importerFile.getAbsoluteFile().getParentFile(), path);
             if(!protoFile.exists() && !(protoFile=new File(path)).exists())
             {
                 // check if its relative to its importer's package base dir.
                 File baseDir = getBaseDirFromPackagePath(path, importer);
                 if(baseDir != null)
                     protoFile = new File(baseDir, path);
+            }
+            
+            if(!protoFile.exists() && !__protoLoadDirs.isEmpty())
+            {
+                // check from the "proto_path" provided as a system property
+                for(File dir : __protoLoadDirs)
+                {
+                    if((protoFile=new File(dir, path)).exists())
+                    {
+                        // found
+                        break;
+                    }
+                }
             }
         }
         
