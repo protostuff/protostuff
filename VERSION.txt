@@ -1,4 +1,5 @@
 protostuff-1.0-SNAPSHOT
++ Issue 57: Add proto_path as a system property read by protostuff-compiler to load imported protos
 + add smile format
 + update jackson to 1.7.3
 + Issue 56: Signed int64 is not correctly serialized (zigzag encoding missing)
