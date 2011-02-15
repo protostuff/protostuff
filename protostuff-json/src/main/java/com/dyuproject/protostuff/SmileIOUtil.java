@@ -292,6 +292,29 @@ public final class SmileIOUtil
     }
     
     /**
+     * Serializes the {@code message} into a byte array 
+     * using the given {@code schema}.
+     * 
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
+     * when writing the message.
+     */
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric, 
+            LinkedBuffer buffer)
+    {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            writeTo(baos, message, schema, numeric, buffer);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
+        return baos.toByteArray();
+    }
+    
+    /**
      * Serializes the {@code message} into an {@link OutputStream} 
      * using the given {@code schema}.
      */
