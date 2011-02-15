@@ -1,3 +1,5 @@
+protostuff-1.0-SNAPSHOT
+
 protostuff-1.0.0 2011-02-15
 + Issue 57: Add proto_path as a system property read by protostuff-compiler to load imported protos
 + add smile format
