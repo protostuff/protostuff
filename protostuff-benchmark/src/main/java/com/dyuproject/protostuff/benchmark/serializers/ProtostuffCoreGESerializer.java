@@ -36,7 +36,7 @@ public class ProtostuffCoreGESerializer extends AbstractProtostuffSerializer
 
     public String getName()
     {
-        return "protostuff-core-ge";
+        return "protostuff";
     }
 
     public byte[] serialize(MediaContent content) throws Exception

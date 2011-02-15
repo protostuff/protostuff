@@ -14,45 +14,33 @@
 
 package com.dyuproject.protostuff.benchmark.serializers;
 
-import com.dyuproject.protostuff.JsonIOUtil;
-import com.dyuproject.protostuff.JsonXIOUtil;
-import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.SmileIOUtil;
 import com.dyuproject.protostuff.benchmark.MediaContent;
 
 /**
- * Compare regular JsonOutput vs JsonXOutput for numeric json output.
+ * Serializer for the smile (numeric) format.
  *
  * @author David Yu
- * @created Jan 17, 2011
+ * @created Feb 15, 2011
  */
-public class ProtostuffNumericJsonXSerializer extends AbstractProtostuffSerializer
+public class ProtostuffSmileNumericSerializer extends AbstractProtostuffSerializer
 {
-    
-    final LinkedBuffer buffer = LinkedBuffer.allocate(512);
     
     public MediaContent deserialize(byte[] array) throws Exception
     {
         MediaContent mediaContent = new MediaContent();
-        JsonIOUtil.mergeFrom(array, mediaContent, mediaContent.cachedSchema(), true);
+        SmileIOUtil.mergeFrom(array, mediaContent, mediaContent.cachedSchema(), true);
         return mediaContent;
     }
 
     public String getName()
     {
-        return "json/protostuff+numeric(jsonx)";
+        return "smile/protostuff+numeric";
     }
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        try
-        {
-            return JsonXIOUtil.toByteArray(content, content.cachedSchema(), true, 
-                    buffer);
-        }
-        finally
-        {
-            buffer.clear();
-        }
+        return SmileIOUtil.toByteArray(content, content.cachedSchema(), true);
     }
 
 }

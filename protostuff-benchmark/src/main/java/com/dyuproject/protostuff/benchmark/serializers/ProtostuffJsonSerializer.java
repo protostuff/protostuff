@@ -35,7 +35,7 @@ public class ProtostuffJsonSerializer extends AbstractProtostuffSerializer
 
     public String getName()
     {
-        return "protostuff-json";
+        return "json/protostuff";
     }
 
     public byte[] serialize(MediaContent content) throws Exception

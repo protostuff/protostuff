@@ -35,7 +35,7 @@ public class ProtostuffXmlSerializer extends AbstractProtostuffSerializer
 
     public String getName()
     {
-        return "protostuff-xml";
+        return "xml/protostuff";
     }
 
     public byte[] serialize(MediaContent content) throws Exception

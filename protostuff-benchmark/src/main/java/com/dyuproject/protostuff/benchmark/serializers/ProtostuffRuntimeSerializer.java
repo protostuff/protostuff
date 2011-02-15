@@ -40,7 +40,7 @@ public class ProtostuffRuntimeSerializer extends AbstractProtostuffSerializer
 
     public String getName()
     {
-        return "protostuff-runtime";
+        return "protobuf/protostuff-runtime";
     }
 
     public byte[] serialize(MediaContent content) throws Exception
