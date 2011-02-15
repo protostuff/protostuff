@@ -17,6 +17,7 @@ package com.dyuproject.protostuff.parser;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Default proto loader for imported protos.
@@ -36,8 +37,10 @@ public class DefaultProtoLoader implements Proto.Loader
         String protoPath = System.getProperty("proto_path");
         if(protoPath != null)
         {
-            for(String path : protoPath.split(","))
+            StringTokenizer tokenizer = new StringTokenizer(protoPath, ",:;");
+            while(tokenizer.hasMoreTokens())
             {
+                String path = tokenizer.nextToken().trim();
                 File dir = new File(path);
                 if(dir.exists() && dir.isDirectory())
                 {
