@@ -239,7 +239,7 @@ public class Proto extends AnnotationContainer
     void postParse()
     {
         if(packageName == null)
-            throw new IllegalStateException("proto package not defined.");
+            throw new IllegalStateException("proto package not defined in " + file);
         
         String javaPkg = extraOptions.get("java_package");
         String javaPackageName = javaPkg==null || javaPkg.length()==0 ? 
