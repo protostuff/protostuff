@@ -1,0 +1,4 @@
+This is the combination of protostuff-api and protostuff-core
+as they existed at r1277.   The package was renamed to include
+".me" and all Java SE features were backported to work with 
+j2me
