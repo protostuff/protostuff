@@ -1,0 +1,744 @@
+group java_bean : base;
+
+map_literal_value_prefix ::= [
+    "Bytes": "\"",
+    "String": "\"",
+    default: 
+]
+
+map_literal_value_suffix ::= [
+    "Int64": "l",
+    "UInt64": "l",
+    "SInt64": "l",
+    "Fixed64": "l",
+    "SFixed64": "l",
+    "Float": "f",
+    "Double": "d",
+    "Bytes": "\"",
+    "String": "\"",
+    default:
+]
+
+map_primitive_value_prefix ::= [
+    "Int64":  "new Long(",
+    "UInt64":  "new Long(",
+    "SInt64":  "new Long(",
+    "Fixed64":  "new Long(",
+    "SFixed64":  "new Long(",
+    "Float": "new Float(",
+    "Double": "new Double(",
+    "Bool": "new Boolean(",
+    "Bytes": "ByteString.bytesDefaultValue(",
+    "String": "ByteString.stringDefaultValue(",
+    "EnumField": ,
+    default: "new Integer("
+]
+
+map_primitive_value_suffix ::= [
+    "EnumField": ,
+    default: ")"
+]
+
+map_primitive_wrapper ::= [
+    "int": "Integer",
+    "long": "Long",
+    "float": "Float",
+    "double": "Double",
+    "boolean": "Boolean",
+    default: key
+]
+
+map_primitive_number_suffix ::= [
+    "Int64": "l",
+    "UInt64": "l",
+    "SInt64": "l",
+    "Fixed64": "l",
+    "SFixed64": "l",
+    "Float": "f",
+    "Double": "d",
+    default: 
+]
+
+map_value_prefix(t) ::= <<
+<map_primitive_value_prefix.(t)><map_literal_value_prefix.(t)>
+>>
+
+map_value_suffix(t) ::= <<
+<map_literal_value_suffix.(t)><map_primitive_value_suffix.(t)>
+>>
+//#enum begin
+
+enum_block(eg, module, options, nested) ::= <<
+<if(!nested)>
+<eg:enum_header(eg=it, module=module, options=options)>
+<endif>
+
+public interface <eg.name>
+{
+    <eg.values:{v|static final int <v.name> = <v.number>}; separator=";\n">;
+}
+
+>>
+
+enum_header(eg, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
+
+package <eg.proto.javaPackageName>;
+
+>>
+
+enum_switch_case(value, options) ::= <<
+case <value.number>: return <value.name>;
+>>
+
+//#message begin
+
+message_block(message, module, options, nested) ::= <<
+<if(!nested)>
+<message:message_header(message=it, module=module, options=options)>
+<endif>
+
+public <if(nested)>static <endif>final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
+{
+    <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options, nested="true")>
+    <message:message_default_instance(message=it, options=options)>
+    <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
+    
+    <message.fields:field_declaration(field=it, options=options, modifier="private"); separator="\n">
+    <message:message_constructor(message=it, options=options)>
+    <message:message_getters_and_setters(message=it, options=options)>
+    <message:message_impl_message(message=it, options=options)>
+    <message:message_impl_schema(message=it, options=options)>
+    
+    <if(options.generate_pipe_schema)>
+    <message:message_pipe_schema(message=it, options=options)>
+    <endif>
+}
+
+>>
+
+message_header(message, module, options) ::= <<
+<header_text(prefix="// ", module=module)>
+
+package <message.proto.javaPackageName>;
+
+import java.io.IOException;
+<if(message.repeatedFieldPresent)>
+import java.util.Vector;
+<endif>
+
+
+<if(message.bytesFieldPresent)>
+import com.dyuproject.protostuff.ByteString;
+<endif>
+
+import com.dyuproject.protostuff.ByteString;
+import com.dyuproject.protostuff.GraphIOUtil;
+import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Output;
+<if(options.generate_pipe_schema)>
+import com.dyuproject.protostuff.Pipe;
+<endif>
+
+import com.dyuproject.protostuff.Schema;
+<if(message.requiredFieldPresent)>
+import com.dyuproject.protostuff.UninitializedMessageException;
+<endif>
+
+
+>>
+
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+<options.(message.name + ".implements_declaration")>, 
+<else>
+implements 
+<endif>
+Message, Schema
+>>
+
+message_default_instance(message, options) ::= <<
+
+public static Schema getSchema()
+{
+    return DEFAULT_INSTANCE;
+}
+
+public static <message.name> getDefaultInstance()
+{
+    return DEFAULT_INSTANCE;
+}
+
+static final <message.name> DEFAULT_INSTANCE = new <message.name>();
+
+>>
+
+field_defaults_declaration(field, options) ::= <<
+<if(field.defaultValue)>
+<if(!field.enumField)>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+static final <field.javaType> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<else>
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<else>
+static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<else>
+static final int DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<endif>
+>>
+
+field_default_value(field, options) ::= <<
+<if(field.defaultValueConstant)>
+<field.defaultValueConstant>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+<field.defaultValueAsString><map_primitive_number_suffix.(field.class.simpleName)>
+<else>
+<map_value_prefix(field.class.simpleName)><field.defaultValueAsString><map_value_suffix(field.class.simpleName)>
+<endif>
+<else>
+<map_value_prefix(field.class.simpleName)><field.defaultValueAsString><map_value_suffix(field.class.simpleName)>
+<endif>
+<endif>
+>>
+
+field_declaration(field, options, modifier) ::= <<
+<if(field.repeated)>
+<modifier; format=" ">Vector <var(val=field.name, fmt="CC", options=options)>;
+<else>
+<if(field.enumField)>
+<modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
+<else>
+<modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
+<endif>
+<endif>
+>>
+
+field_singular_type(field, options) ::= <<
+<if(field.enumField)>
+<if(field.required)>
+int
+<else>
+<map_primitive_wrapper.("int")>
+<endif>
+<else>
+<if(field.required)>
+<map_primitive_wrapper.(field.javaType)>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+<field.javaType>
+<else>
+<map_primitive_wrapper.(field.javaType)>
+<endif>
+<else>
+<map_primitive_wrapper.(field.javaType)>
+<endif>
+<endif>
+<endif>
+>>
+
+field_assign_defaults(field, options) ::= <<
+<if(field.defaultValue)>
+<if(!field.enumField)>
+ = DEFAULT_<field.name; format="UUC">
+<endif>
+<endif>
+>>
+
+message_constructor(message, options) ::= <<
+
+public <message.name>()
+{
+    
+}
+<if(message.requiredFieldPresentOnCurrent)>
+
+public <message.name>(
+    <message.fields:field_declare_constructor_singular(field=it, options=options); separator=",\n">
+)
+{
+    <message.fields:field_assign_constructor_singular(field=it, options=options); separator="\n">
+}
+
+<endif>
+
+>>
+
+field_declare_constructor_singular(field, options) ::= <<
+<if(field.required)>
+<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
+<endif>
+>>
+
+field_assign_constructor_singular(field, options) ::= <<
+<if(field.required)>
+this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+<endif>
+>>
+
+message_getters_and_setters(message, options) ::= <<
+// getters and setters
+<message.fields:field_getters_and_setters(field=it, options=options, message=message)>
+>>
+
+field_getters_and_setters(field, options, message) ::= <<
+
+// <field.name; format="CC">
+<if(field.repeated)>
+
+public Vector get<field.name; format="PC">List()
+{
+    return <var(val=field.name, fmt="CC", options=options)>;
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">List(Vector <var(val=field.name, fmt="CC", options=options)>)
+{
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+<if(options.generate_helper_methods)>
+
+public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
+{
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : <var(val=field.name, fmt="CC", options=options)>.get(index);
+}
+
+public int get<field.name; format="PC">Count()
+{
+    return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+{
+    if(this.<var(val=field.name, fmt="CC", options=options)> == null)
+        this.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+    this.<var(val=field.name, fmt="CC", options=options)>.addElement(<var(val=field.name, fmt="CC", options=options)>);
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<endif>
+
+<else>
+
+public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">()
+{
+    <if(field.enumField)>
+    <if(field.required)>
+    return <var(val=field.name, fmt="CC", options=options)>;
+    <else>
+    return <var(val=field.name, fmt="CC", options=options)> == null ? new Integer(<field.defaultValueAsString>) : <var(val=field.name, fmt="CC", options=options)>;
+    <endif>
+    <else>
+    return <var(val=field.name, fmt="CC", options=options)>;
+    <endif>
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>)
+{
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<endif>
+>>
+
+builder_pattern_return_type(field, options, type) ::= <<
+<if(options.builder_pattern)>
+<type>
+<else>
+void
+<endif>
+>>
+
+builder_pattern_return(field, options) ::= <<
+<if(options.builder_pattern)>
+return this;
+<endif>
+>>
+
+message_impl_message(message, options) ::= <<
+// message method
+
+public Schema cachedSchema()
+{
+    return this;
+}
+
+>>
+
+message_impl_schema(message, options) ::= <<
+// schema methods
+
+public Object /*<message.name>*/ newMessage()
+{
+    return new <message.name>();
+}
+
+public Class typeClass()
+{
+    return <message.name>.class;
+}
+
+public String messageName()
+{
+    return <message.name>.class.getName();
+}
+
+public String messageFullName()
+{
+    return <message.name>.class.getName();
+}
+
+<message:message_method_is_initialized(message=it, options=options)>
+<message:message_field_merge(message=it, options=options, name="message")>
+<message:message_field_write(message=it, options=options, name="message")>
+<message:message_field_map(message=it, options=options)>
+>>
+
+message_method_is_initialized(message, options) ::= <<
+<if(message.requiredFieldPresentOnCurrent)>
+public boolean isInitialized(Object /*<message.name>*/ messageObj)
+{
+    <message.name> message = (<message.name>)messageObj;
+    return 
+        <message.fields:field_is_initialized(field=it, options=options, name="message"); separator=" \n&& ">;
+}
+<else>
+public boolean isInitialized(Object /*<message.name>*/ message)
+{
+    return true;
+}
+<endif>
+>>
+
+field_is_initialized(field, options, name) ::= <<
+<if(field.required)>
+<name>.<var(val=field.name, fmt="CC", options=options)> != null
+<endif>
+>>
+
+message_field_merge(message, options, name) ::= <<
+
+public void mergeFrom(Input input, Object /*<message.name>*/ <name>Obj) throws IOException
+{
+    <message.name> <name> = (<message.name>)<name>Obj;
+    for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+    {
+        switch(number)
+        {
+            case 0:
+                return;
+            <message.fields:field_merge_switch(field=it, options=options, name=name); separator="\n">
+            default:
+                input.handleUnknownField(number, this);
+        }   
+    }
+}
+
+public void mergeFrom(Object /*<message.name>*/ <name>Obj)
+{
+    <message.name> <name> = (<message.name>)<name>Obj;
+    <message.fields:field_copy(field=it, options=options, name=name); separator="\n">
+}
+
+>>
+
+field_merge_switch(field, options, name) ::= <<
+case <field.number>:
+    <if(field.repeated)><field:repeated_field_merge_switch(field=it, options=options, name=name)>
+    <else><field:singular_field_merge_switch(field=it, options=options, name=name)>
+    <endif>
+>>
+
+field_copy(field, options, name) ::= <<
+<if(field.repeated)><field:repeated_field_copy(field=it, options=options, name=name)>
+<else><field:singular_field_copy(field=it, options=options, name=name)>
+<endif>
+>>
+
+singular_field_merge_switch(field, options, name) ::= <<
+<if(field.messageField)>
+<name>.<var(val=field.name, fmt="CC", options=options)> = (<field.javaType>)input.mergeObject(<name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema());
+break;
+<elseif(field.enumField)>
+<name>.<var(val=field.name, fmt="CC", options=options)> = new Integer(input.readEnum());
+break;
+<else>
+<name>.<var(val=field.name, fmt="CC", options=options)> = <map_primitive_value_prefix.(field.class.simpleName)>input.read<field.class.simpleName>()<map_primitive_value_suffix.(field.class.simpleName)>;
+break;
+<endif>
+>>
+
+repeated_field_merge_switch(field, options, name) ::= <<
+<if(field.messageField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(input.mergeObject(null, <field.javaType>.getSchema()));
+break;
+<elseif(field.enumField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(new Integer(input.readEnum()));
+break;
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(<map_primitive_value_prefix.(field.class.simpleName)>input.read<field.class.simpleName>()<map_primitive_value_suffix.(field.class.simpleName)>);
+break;
+<endif>
+>>
+
+singular_field_copy(field, options, name) ::= <<
+<if(field.messageField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null) {
+    this.<var(val=field.name, fmt="CC", options=options)> = null;
+} else {
+    this.<var(val=field.name, fmt="CC", options=options)> = (<field.javaType>)<name>.<var(val=field.name, fmt="CC", options=options)>.newMessage();
+    this.<var(val=field.name, fmt="CC", options=options)>.mergeFrom((<field.javaType>)<name>.<var(val=field.name, fmt="CC", options=options)>);
+}
+<else>
+this.<var(val=field.name, fmt="CC", options=options)> = <name>.<var(val=field.name, fmt="CC", options=options)>;
+<endif>
+>>
+
+repeated_field_copy(field, options, name) ::= <<
+this.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null) {
+    for(int i = 0; i \< <name>.<var(val=field.name, fmt="CC", options=options)>.size(); i++) {
+        <if(field.messageField)>
+        <field.javaType> origElt = (<field.javaType>)<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i);
+        <field.javaType> newElt = (<field.javaType>)origElt.newMessage();
+        newElt.mergeFrom((<field.javaType>)<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i));
+        this.<var(val=field.name, fmt="CC", options=options)>.addElement(newElt);
+        <else>
+        this.<var(val=field.name, fmt="CC", options=options)>.addElement(<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i));
+        <endif>
+    }
+}
+>>
+
+message_field_write(message, options, name) ::= <<
+
+public void writeTo(Output output, Object /*<message.name>*/ <name>Obj) throws IOException
+{
+    <message.name> <name> = (<message.name>)<name>Obj;
+    <message.fields:field_write_switch(field=it, options=options, name=name); separator="\n\n">
+}
+
+>>
+
+field_write_switch(field, options, name) ::= <<
+<if(field.repeated)>
+<field:repeated_field_write_switch(field=it, options=options, name=name)>
+<else>
+<field:singular_field_write_switch(field=it, options=options, name=name)>
+<endif>
+>>
+
+singular_field_write_switch(field, options, name) ::= <<
+<if(field.required)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    throw new UninitializedMessageException(<name>);
+<if(field.messageField)>
+output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
+<elseif(field.enumField)>
+output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.intValue(), false);
+<elseif(field.stringField)>
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<else>
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.<field.javaType>Value(), false);
+<endif>
+<else>
+<if(field.messageField)>
+<field:singular_field_write_check(field=it, options=options)>
+     output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
+<elseif(field.enumField)>
+<field:singular_field_write_check(field=it, options=options)>
+     output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.intValue(), false);
+<else>
+<field:singular_field_write_check(field=it, options=options)>
+<if(options.primitive_numbers_if_optional)>
+    output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<elseif(field.stringField)>
+    output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<else>
+    output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.<field.javaType>Value(), false);
+<endif>
+<endif>
+<endif>
+>>
+
+repeated_field_write_switch(field, options, name) ::= <<
+<if(field.messageField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+{
+    for(int i = 0; i \< <name>.<var(val=field.name, fmt="CC", options=options)>.size(); i++)
+    {
+        <field.javaType> <var(val=field.name, fmt="CC", options=options)> = (<field.javaType>)<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.writeObject(<field.number>, <var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), true);
+    }
+}
+<elseif(field.enumField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+{
+    for(int i = 0; i \< <name>.<var(val=field.name, fmt="CC", options=options)>.size(); i++)
+    {
+        Integer <var(val=field.name, fmt="CC", options=options)> = (Integer)<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.writeEnum(<field.number>, <var(val=field.name, fmt="CC", options=options)>.number, true);
+    }
+}
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+{
+    for(int i = 0; i \< <name>.<var(val=field.name, fmt="CC", options=options)>.size(); i++)
+    {
+        <map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)> = (<map_primitive_wrapper.(field.javaType)>)<name>.<var(val=field.name, fmt="CC", options=options)>.elementAt(i);
+        if(<var(val=field.name, fmt="CC", options=options)> != null)
+            output.write<field.class.simpleName>(<field.number>, <var(val=field.name, fmt="CC", options=options)>, true);
+    }
+}
+<endif>
+>>
+
+singular_field_write_check(field, options) ::= <<
+<if(field.defaultValue)>
+<if(!field.enumField)>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+<endif>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != 0)
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+<endif>
+<else>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+<endif>
+<endif>
+>>
+
+message_field_map(message, options) ::= <<
+<if(options.generate_field_map)>
+public String getFieldName(int number)
+{
+    switch(number)
+    {
+        <message.fields:field_switch_case(field=it, options=options); separator="\n">
+        default: return null;
+    }
+}
+
+public int getFieldNumber(String name)
+{
+    final Integer number = __fieldMap.get(name);
+    return number == null ? 0 : number.intValue();
+}
+
+private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
+static
+{
+    <message.fields:field_map(field=it, options=options, mapVar="__fieldMap"); separator="\n">
+}
+<else>
+public String getFieldName(int number)
+{
+    return Integer.toString(number);
+}
+
+public int getFieldNumber(String name)
+{
+    return Integer.parseInt(name);
+}
+<endif>
+>>
+
+field_switch_case(field, options) ::= <<
+<if(options.alphanumeric)>
+case <field.number>: return "f<field.number>";
+<else>
+case <field.number>: return "<field.name; format="CC">";
+<endif>
+>>
+
+field_map(field, options, mapVar) ::= <<
+<if(options.alphanumeric)>
+<mapVar>.put("f<field.number>", <field.number>);
+<else>
+<mapVar>.put("<field.name; format="CC">", <field.number>);
+<endif>
+>>
+
+message_static_schema_ref(message, options) ::= <<
+DEFAULT_INSTANCE
+>>
+
+message_pipe_schema(message, options) ::= <<
+static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(<message:message_static_schema_ref(message=it, options=options)>)
+{
+    protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+    {
+        for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+        {
+            switch(number)
+            {
+                case 0:
+                    return;
+                <message.fields:field_transfer_switch(field=it, options=options); separator="\n">
+                default:
+                    input.handleUnknownField(number, wrappedSchema);
+            }
+        }
+    }
+};
+
+public static Pipe.Schema getPipeSchema()
+{
+    return PIPE_SCHEMA;
+}
+
+>>
+
+field_transfer_switch(field, options) ::= <<
+case <field.number>:
+    <field:field_transfer_switch_body(field=it, options=options)>
+>>
+
+field_transfer_switch_body(field, options) ::= <<
+<if(field.messageField)>
+output.writeObject(number, pipe, <field.javaType>.getPipeSchema(), <field.repeated>);
+break;
+<elseif(field.enumField)>
+output.writeEnum(number, input.readEnum(), <field.repeated>); 
+break;
+<elseif(field.stringField)>
+input.transferByteRangeTo(output, true, number, <field.repeated>);
+break;
+<elseif(field.bytesField)>
+input.transferByteRangeTo(output, false, number, <field.repeated>);
+break;
+<else>
+output.write<field.class.simpleName>(number, input.read<field.class.simpleName>(), <field.repeated>);
+break;
+<endif>
+>>

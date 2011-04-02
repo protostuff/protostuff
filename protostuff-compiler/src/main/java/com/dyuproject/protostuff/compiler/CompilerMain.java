@@ -41,6 +41,7 @@ public final class CompilerMain
     static
     {        
         addCompiler(new ProtoToJavaBeanCompiler());
+        addCompiler(new ProtoToJavaMeBeanCompiler());
         addCompiler(new ProtoToGwtOverlayCompiler());
         addCompiler(new ProtoToJavaV2ProtocSchemaCompiler());
     }
