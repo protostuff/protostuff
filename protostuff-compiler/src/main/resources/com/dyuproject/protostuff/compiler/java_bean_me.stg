@@ -130,21 +130,21 @@ import java.util.Vector;
 
 
 <if(message.bytesFieldPresent)>
-import com.dyuproject.protostuff.ByteString;
+import com.dyuproject.protostuff.me.ByteString;
 <endif>
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.GraphIOUtil;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.me.ByteString;
+import com.dyuproject.protostuff.me.GraphIOUtil;
+import com.dyuproject.protostuff.me.Input;
+import com.dyuproject.protostuff.me.Message;
+import com.dyuproject.protostuff.me.Output;
 <if(options.generate_pipe_schema)>
-import com.dyuproject.protostuff.Pipe;
+import com.dyuproject.protostuff.me.Pipe;
 <endif>
 
-import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.me.Schema;
 <if(message.requiredFieldPresent)>
-import com.dyuproject.protostuff.UninitializedMessageException;
+import com.dyuproject.protostuff.me.UninitializedMessageException;
 <endif>
 
 
