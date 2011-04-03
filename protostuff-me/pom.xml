@@ -9,8 +9,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-me</artifactId>
-  <name>protostuff :: core</name>
-  <description>protobuf serialization for mutable messages</description>
+  <name>protostuff :: me</name>
+  <description>protostuff for j2me</description>
   <packaging>jar</packaging>
   
   <build>
