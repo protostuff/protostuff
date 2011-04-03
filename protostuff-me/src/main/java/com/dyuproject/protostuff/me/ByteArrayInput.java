@@ -16,17 +16,6 @@ package com.dyuproject.protostuff.me;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.ByteArrayInput;
-import com.dyuproject.protostuff.IOUtil;
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.me.ByteString;
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-import com.dyuproject.protostuff.me.WireFormat;
-import com.dyuproject.protostuff.me.StringSerializer.STRING;
-
 /**
  * Reads and decodes protocol buffer message fields from an internal byte array buffer.
  * This object is re-usable via doing a reset on the byte array position and length.
@@ -324,7 +313,7 @@ public final class ByteArrayInput implements Input
         
         this.offset += length;
         
-        return STRING.deser(buffer, offset, length);
+        return StringSerializer.STRING.deser(buffer, offset, length);
     }
     
     public ByteString readBytes() throws IOException

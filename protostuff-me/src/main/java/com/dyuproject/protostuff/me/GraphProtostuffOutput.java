@@ -16,12 +16,6 @@ package com.dyuproject.protostuff.me;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.IdentityHashMap;
-import com.dyuproject.protostuff.ProtostuffOutput;
-import com.dyuproject.protostuff.me.FilterOutput;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.WireFormat;
-
 /**
  * A ProtostuffOutput w/c can handle cyclic dependencies when serializing 
  * objects with graph transformations.

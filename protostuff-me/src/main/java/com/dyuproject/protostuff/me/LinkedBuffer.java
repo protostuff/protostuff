@@ -81,7 +81,7 @@ public final class LinkedBuffer
      */
     public static LinkedBuffer use(byte[] buffer, int start)
     {
-        assert start >= 0;
+        //assert start >= 0;
         if(buffer.length - start < MIN_BUFFER_SIZE)
             throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
         

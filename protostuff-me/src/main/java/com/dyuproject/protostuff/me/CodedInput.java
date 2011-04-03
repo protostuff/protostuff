@@ -50,16 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 
-import com.dyuproject.protostuff.CodedInput;
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.me.ByteString;
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-import com.dyuproject.protostuff.me.WireFormat;
-import com.dyuproject.protostuff.me.StringSerializer.STRING;
-
 /**
  * Reads and decodes protocol message fields.
  *
@@ -227,12 +217,12 @@ public final class CodedInput implements Input {
     if (size <= (bufferSize - bufferPos) && size > 0) {
       // Fast path:  We already have the bytes in a contiguous buffer, so
       //   just copy directly from it.
-      final String result = STRING.deser(buffer, bufferPos, size);
+      final String result = StringSerializer.STRING.deser(buffer, bufferPos, size);
       bufferPos += size;
       return result;
     } else {
       // Slow path:  Build a byte array first then copy it.
-      return STRING.deser(readRawBytes(size));
+      return StringSerializer.STRING.deser(readRawBytes(size));
     }
   }
   

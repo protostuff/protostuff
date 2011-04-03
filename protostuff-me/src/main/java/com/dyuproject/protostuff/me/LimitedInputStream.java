@@ -47,8 +47,6 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.dyuproject.protostuff.LimitedInputStream;
-
 /**
  * An InputStream implementations which reads from some other InputStream 
  * but is limited to a particular number of bytes.

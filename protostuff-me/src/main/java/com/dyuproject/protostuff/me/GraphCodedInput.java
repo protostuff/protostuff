@@ -17,14 +17,6 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.dyuproject.protostuff.CodedInput;
-import com.dyuproject.protostuff.me.FilterInput;
-import com.dyuproject.protostuff.me.GraphInput;
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-import com.dyuproject.protostuff.me.WireFormat;
 
 /**
  * A CodedInput w/c can handle cyclic dependencies when deserializing 

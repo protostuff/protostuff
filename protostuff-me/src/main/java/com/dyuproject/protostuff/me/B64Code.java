@@ -399,7 +399,7 @@ public final class B64Code
 
         // Create result array of exact required size.
         final int outLen=((withoutPaddingLen)*3)/4;
-        assert (output.length - outOffset) >= outLen;
+        //assert (output.length - outOffset) >= outLen;
         
         decode(input, inOffset, inLen, output, outOffset, outLen);
 
@@ -516,7 +516,7 @@ public final class B64Code
 
         // Create result array of exact required size.
         final int outLen=((withoutPaddingLen)*3)/4;
-        assert (output.length - outOffset) >= outLen;
+        //assert (output.length - outOffset) >= outLen;
         
         decode(str, inOffset, inLen, output, outOffset, outLen);
 

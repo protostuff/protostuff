@@ -18,13 +18,6 @@ import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.dyuproject.protostuff.ByteArrayInput;
-import com.dyuproject.protostuff.CodedInput;
-import com.dyuproject.protostuff.LimitedInputStream;
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-
 /**
  * Common io utils for between protostuff and protobuf formats.
  *

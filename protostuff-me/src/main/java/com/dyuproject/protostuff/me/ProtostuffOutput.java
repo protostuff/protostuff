@@ -17,14 +17,6 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.ProtobufOutput;
-import com.dyuproject.protostuff.me.ByteString;
-import com.dyuproject.protostuff.me.LinkedBuffer;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.WireFormat;
-import com.dyuproject.protostuff.me.WriteSession;
-
 /**
  * Dual output for streaming or full buffering.
  *

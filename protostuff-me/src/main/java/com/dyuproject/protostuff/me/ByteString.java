@@ -46,8 +46,6 @@
 package com.dyuproject.protostuff.me;
 
 
-import static com.dyuproject.protostuff.me.StringSerializer.STRING;
-
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -162,7 +160,7 @@ public final class ByteString {
    * result as a {@code ByteString}.
    */
   public static ByteString copyFromUtf8(final String text) {
-    return new ByteString(STRING.ser(text));
+    return new ByteString(StringSerializer.STRING.ser(text));
     /*@try {
       return new ByteString(text.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
@@ -229,7 +227,7 @@ public final class ByteString {
    * Constructs a new {@code String} by decoding the bytes as UTF-8.
    */
   public String toStringUtf8() {
-    return STRING.deser(bytes);
+    return StringSerializer.STRING.deser(bytes);
     /*@try {
       return new String(bytes, "UTF-8");
     } catch (UnsupportedEncodingException e) {

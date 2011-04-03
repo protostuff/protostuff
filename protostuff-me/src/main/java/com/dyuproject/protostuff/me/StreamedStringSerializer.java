@@ -1,19 +1,5 @@
 package com.dyuproject.protostuff.me;
 
-import static com.dyuproject.protostuff.me.StringSerializer.FIVE_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.me.StringSerializer.FOUR_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.me.StringSerializer.FOUR_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.me.StringSerializer.INT_MIN_VALUE;
-import static com.dyuproject.protostuff.me.StringSerializer.LONG_MIN_VALUE;
-import static com.dyuproject.protostuff.me.StringSerializer.ONE_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.me.StringSerializer.THREE_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.me.StringSerializer.THREE_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.me.StringSerializer.TWO_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.me.StringSerializer.TWO_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.me.StringSerializer.putBytesFromInt;
-import static com.dyuproject.protostuff.me.StringSerializer.putBytesFromLong;
-import static com.dyuproject.protostuff.me.StringSerializer.writeFixed2ByteInt;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -36,7 +22,7 @@ public final class StreamedStringSerializer
     {
         if(value == Integer.MIN_VALUE)
         {
-            final int valueLen = INT_MIN_VALUE.length;
+            final int valueLen = StringSerializer.INT_MIN_VALUE.length;
             if(lb.offset + valueLen > lb.buffer.length)
             {
                 // not enough size
@@ -45,7 +31,7 @@ public final class StreamedStringSerializer
                 //lb = new LinkedBuffer(session.nextBufferSize, lb);
             }
             
-            System.arraycopy(INT_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
+            System.arraycopy(StringSerializer.INT_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
             
             lb.offset += valueLen;
             session.size += valueLen;
@@ -63,7 +49,7 @@ public final class StreamedStringSerializer
             //lb = new LinkedBuffer(session.nextBufferSize, lb);
         }
         
-        putBytesFromInt(value, lb.offset, size, lb.buffer);
+        StringSerializer.putBytesFromInt(value, lb.offset, size, lb.buffer);
         
         lb.offset += size;
         session.size += size;
@@ -79,7 +65,7 @@ public final class StreamedStringSerializer
     {
         if(value == Long.MIN_VALUE)
         {
-            final int valueLen = LONG_MIN_VALUE.length;
+            final int valueLen = StringSerializer.LONG_MIN_VALUE.length;
             if(lb.offset + valueLen > lb.buffer.length)
             {
                 //TODO space efficiency (slower path)
@@ -89,7 +75,7 @@ public final class StreamedStringSerializer
                 //lb = new LinkedBuffer(session.nextBufferSize, lb);
             }
             
-            System.arraycopy(LONG_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
+            System.arraycopy(StringSerializer.LONG_MIN_VALUE, 0, lb.buffer, lb.offset, valueLen);
             
             lb.offset += valueLen;
             session.size += valueLen;
@@ -108,7 +94,7 @@ public final class StreamedStringSerializer
             //lb = new LinkedBuffer(session.nextBufferSize, lb);
         }
         
-        putBytesFromLong(value, lb.offset, size, lb.buffer);
+        StringSerializer.putBytesFromLong(value, lb.offset, size, lb.buffer);
         
         lb.offset += size;
         session.size += size;
@@ -555,7 +541,7 @@ public final class StreamedStringSerializer
         
         if(len == 0)
         {
-            writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
+        	StringSerializer.writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
             lb.offset = withIntOffset;
             // update size
             session.size += 2;
@@ -575,12 +561,12 @@ public final class StreamedStringSerializer
             
             final int size = session.size - lastSize;
             
-            writeFixed2ByteInt(size, buffer, offset, littleEndian);
+            StringSerializer.writeFixed2ByteInt(size, buffer, offset, littleEndian);
             
             // update size
             session.size += 2;
             
-            assert rb != lb;
+            //assert rb != lb;
             // flush and reset nodes
             flushAndReset(lb, out);
             
@@ -594,7 +580,7 @@ public final class StreamedStringSerializer
         
         final int size = session.size - lastSize;
         
-        writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
+        StringSerializer.writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
         
         // update size
         session.size += 2;
@@ -642,7 +628,7 @@ public final class StreamedStringSerializer
             // update size
             session.size++;
             
-            assert rb != lb;
+            //assert rb != lb;
             
             // flush and reset nodes
             flushAndReset(lb, out);
@@ -725,7 +711,7 @@ public final class StreamedStringSerializer
             
             buffer[offset] = (byte)(size);
             
-            assert rb != lb;
+            //assert rb != lb;
             
             // flush and reset nodes
             flushAndReset(lb, out);
@@ -798,35 +784,35 @@ public final class StreamedStringSerializer
             return lb;
         }
         
-        if(len < ONE_BYTE_EXCLUSIVE)
+        if(len < StringSerializer.ONE_BYTE_EXCLUSIVE)
         {
             // the varint will be max 1-byte. (even if all chars are non-ascii)
             return writeUTF8OneByteDelimited(str, 0, len, session, out, lb);
         }
         
-        if(len < TWO_BYTE_EXCLUSIVE)
+        if(len < StringSerializer.TWO_BYTE_EXCLUSIVE)
         {
             // the varint will be max 2-bytes and could be 1-byte. (even if all non-ascii)
-            return writeUTF8VarDelimited(str, 0, len, TWO_BYTE_LOWER_LIMIT, 2, 
+            return writeUTF8VarDelimited(str, 0, len, StringSerializer.TWO_BYTE_LOWER_LIMIT, 2, 
                     session, out, lb);
         }
         
-        if(len < THREE_BYTE_EXCLUSIVE)
+        if(len < StringSerializer.THREE_BYTE_EXCLUSIVE)
         {
             // the varint will be max 3-bytes and could be 2-bytes. (even if all non-ascii)
-            return writeUTF8VarDelimited(str, 0, len, THREE_BYTE_LOWER_LIMIT, 3, 
+            return writeUTF8VarDelimited(str, 0, len, StringSerializer.THREE_BYTE_LOWER_LIMIT, 3, 
                     session, out, lb);
         }
         
-        if(len < FOUR_BYTE_EXCLUSIVE)
+        if(len < StringSerializer.FOUR_BYTE_EXCLUSIVE)
         {
             // the varint will be max 4-bytes and could be 3-bytes. (even if all non-ascii)
-            return writeUTF8VarDelimited(str, 0, len, FOUR_BYTE_LOWER_LIMIT, 4,
+            return writeUTF8VarDelimited(str, 0, len, StringSerializer.FOUR_BYTE_LOWER_LIMIT, 4,
                     session, out, lb);
         }
         
         // the varint will be max 5-bytes and could be 4-bytes. (even if all non-ascii)
-        return writeUTF8VarDelimited(str, 0, len, FIVE_BYTE_LOWER_LIMIT, 5, session, out, lb);
+        return writeUTF8VarDelimited(str, 0, len, StringSerializer.FIVE_BYTE_LOWER_LIMIT, 5, session, out, lb);
     }
 
 }

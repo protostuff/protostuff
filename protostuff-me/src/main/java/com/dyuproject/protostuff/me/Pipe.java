@@ -100,7 +100,7 @@ public abstract class Pipe
             return wrappedSchema.messageName();
         }
 
-        public Pipe newMessage()
+        public Object /*Pipe*/ newMessage()
         {
             throw new UnsupportedOperationException();
         }

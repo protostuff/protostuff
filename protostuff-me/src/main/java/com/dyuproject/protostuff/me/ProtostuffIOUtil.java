@@ -21,18 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
 
-import com.dyuproject.protostuff.ByteArrayInput;
-import com.dyuproject.protostuff.CodedInput;
-import com.dyuproject.protostuff.IOUtil;
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.ProtobufOutput;
-import com.dyuproject.protostuff.ProtostuffOutput;
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.LinkedBuffer;
-import com.dyuproject.protostuff.me.Pipe;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.WireFormat;
-
 /**
  * Protostuff ser/deser util for messages/objects.
  *

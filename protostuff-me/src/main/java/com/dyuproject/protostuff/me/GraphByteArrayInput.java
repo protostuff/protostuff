@@ -17,15 +17,6 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.dyuproject.protostuff.ByteArrayInput;
-import com.dyuproject.protostuff.me.FilterInput;
-import com.dyuproject.protostuff.me.GraphInput;
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-import com.dyuproject.protostuff.me.WireFormat;
-
 /**
  * A ByteArrayInput w/c can handle cyclic dependencies when deserializing 
  * objects with graph transformations.

@@ -79,7 +79,7 @@ public class WriteSession
         this.out = out;
         sink = WriteSink.STREAMED;
         
-        assert out != null;
+        //assert out != null;
     }
     
     /**

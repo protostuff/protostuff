@@ -20,20 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.ByteArrayInput;
-import com.dyuproject.protostuff.CodedInput;
-import com.dyuproject.protostuff.GraphByteArrayInput;
-import com.dyuproject.protostuff.GraphCodedInput;
-import com.dyuproject.protostuff.GraphProtostuffOutput;
-import com.dyuproject.protostuff.IOUtil;
-import com.dyuproject.protostuff.LimitedInputStream;
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.ProtobufOutput;
-import com.dyuproject.protostuff.ProtostuffOutput;
-import com.dyuproject.protostuff.me.LinkedBuffer;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.UninitializedMessageException;
-
 /**
  * IO Utilities for graph objects (references and cyclic dependencies).
  *

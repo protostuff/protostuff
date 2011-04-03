@@ -45,9 +45,6 @@
 
 package com.dyuproject.protostuff.me;
 
-import com.dyuproject.protostuff.ProtobufException;
-import com.dyuproject.protostuff.me.ProtostuffException;
-
 /**
  * Thrown when a protocol message being parsed is invalid in some way,
  * e.g. it contains a malformed varint or a negative byte length.
