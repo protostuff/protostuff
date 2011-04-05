@@ -85,7 +85,7 @@ public abstract class Pipe
         /**
          * Always returns true since we're just transferring data.
          */
-        public boolean isInitialized(Pipe message)
+        public boolean isInitialized(Object message)
         {
             return true;
         }
@@ -110,8 +110,9 @@ public abstract class Pipe
             throw new UnsupportedOperationException();
         }
 
-        public final void writeTo(final Output output, final Pipe pipe) throws IOException
+        public final void writeTo(final Output output, final Object pipeObj) throws IOException
         {
+            Pipe pipe = (Pipe)pipeObj;
             if(pipe.output == null)
             {
                 // begin message pipe
@@ -147,8 +148,9 @@ public abstract class Pipe
             pipe.input.mergeObject(pipe, this);
         }
 
-        public final void mergeFrom(final Input input, final Pipe pipe) throws IOException
+        public final void mergeFrom(final Input input, final Object pipeObj) throws IOException
         {
+            Pipe pipe = (Pipe)pipeObj;
             transfer(pipe, input, pipe.output);
         }
         
