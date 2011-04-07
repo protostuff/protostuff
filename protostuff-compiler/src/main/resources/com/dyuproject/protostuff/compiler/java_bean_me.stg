@@ -308,7 +308,7 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
 {
-    return <var(val=field.name, fmt="CC", options=options)> == null ? null : <var(val=field.name, fmt="CC", options=options)>.get(index);
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : (<map_primitive_wrapper.(field.javaType)>)<var(val=field.name, fmt="CC", options=options)>.elementAt(index);
 }
 
 public int get<field.name; format="PC">Count()
