@@ -1,0 +1,17 @@
+package com.dyuproject.protostuff.me;
+
+        message ClubFounder {
+            optional string name = 1;
+            optional Club club = 2;
+        }
+        
+        message Club {
+            optional string name = 1;
+            repeated Student student = 2;
+            repeated Club partner_club = 3;
+        }
+
+        message Student {
+            optional string name = 1;
+            repeated Club club = 2;
+        }
