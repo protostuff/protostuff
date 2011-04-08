@@ -26,19 +26,19 @@ import java.io.IOException;
 public final class GraphProtostuffOutput extends FilterOutput
 {
     
-    private final IdentityHashMap/*<Object,Integer>*/ references;
+    private final IdentityIntHashMap/*<Object,Integer>*/ references;
     private int refCount = 0;
     
     public GraphProtostuffOutput(ProtostuffOutput output)
     {
         super(output);
-        references = new IdentityHashMap/*<Object,Integer>*/();
+        references = new IdentityIntHashMap/*<Object,Integer>*/();
     }
     
     public GraphProtostuffOutput(ProtostuffOutput output, int initialCapacity)
     {
         super(output);
-        references = new IdentityHashMap/*<Object,Integer>*/(initialCapacity);
+        references = new IdentityIntHashMap/*<Object,Integer>*/(initialCapacity);
     }
 
     public void writeObject(int fieldNumber, Object value, Schema schema, 
