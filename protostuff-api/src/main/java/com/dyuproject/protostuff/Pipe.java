@@ -31,8 +31,8 @@ import java.io.IOException;
 public abstract class Pipe
 {
     
-    Input input;
-    Output output;
+    protected Input input;
+    protected Output output;
     
     /**
      * Resets this pipe for re-use.
@@ -114,18 +114,21 @@ public abstract class Pipe
         {
             if(pipe.output == null)
             {
+                pipe.output = output;
+                
                 // begin message pipe
                 final Input input = pipe.begin(this);
                 
                 if(input == null)
                 {
                     // empty message pipe.
+                    pipe.output = null;
                     pipe.end(this, input, true);
                     return;
                 }
                 
                 pipe.input = input;
-                pipe.output = output;
+                
                 
                 boolean transferComplete = false;
                 try

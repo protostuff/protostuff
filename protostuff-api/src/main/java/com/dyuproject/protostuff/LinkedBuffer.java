@@ -95,11 +95,10 @@ public final class LinkedBuffer
      */
     public static int writeTo(final OutputStream out, LinkedBuffer node) throws IOException
     {
-        int contentSize = 0;
+        int contentSize = 0, len;
         do
         {
-            final int len = node.offset - node.start;
-            if(len > 0)
+            if((len = node.offset - node.start) > 0)
             {
                 out.write(node.buffer, node.start, len);
                 contentSize += len;
@@ -117,11 +116,10 @@ public final class LinkedBuffer
      */
     public static int writeTo(final DataOutput out, LinkedBuffer node) throws IOException
     {
-        int contentSize = 0;
+        int contentSize = 0, len;
         do
         {
-            final int len = node.offset - node.start;
-            if(len > 0)
+            if((len = node.offset - node.start) > 0)
             {
                 out.write(node.buffer, node.start, len);
                 contentSize += len;

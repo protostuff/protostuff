@@ -505,18 +505,19 @@ public final class StreamedStringSerializer
         return lb;
     }
     
-    private static void flushAndReset(final LinkedBuffer head, final OutputStream out) 
+    private static void flushAndReset(LinkedBuffer node, final OutputStream out) 
     throws IOException
     {
-        for(LinkedBuffer node = head; node != null; node = node.next)
+        int len;
+        do
         {
-            final int len = node.offset - node.start;
-            if(len > 0)
+            if((len = node.offset - node.start) > 0)
             {
                 out.write(node.buffer, node.start, len);
                 node.offset = node.start;
             }
         }
+        while((node=node.next) != null);
     }
     
     /**
