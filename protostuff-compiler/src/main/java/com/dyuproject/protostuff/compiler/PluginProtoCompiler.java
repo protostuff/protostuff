@@ -192,6 +192,14 @@ public class PluginProtoCompiler extends STCodeGenerator
                 name = outerClassname;
         }
         
+        String outerFilePrefix = module.getOption("outer_file_prefix");
+        if(outerFilePrefix != null)
+            name = outerFilePrefix + name;
+        
+        String outerFileSuffix = module.getOption("outer_file_suffix");
+        if(outerFileSuffix != null)
+            name += outerFileSuffix;
+        
         String fileName = name + fileExtension;
         
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);

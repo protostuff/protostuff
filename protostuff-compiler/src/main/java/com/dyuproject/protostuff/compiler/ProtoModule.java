@@ -41,10 +41,7 @@ public class ProtoModule implements Serializable
     {
         
     }
-
-    /**
-     * TODO
-     */
+    
     public ProtoModule(File source, String output, String encoding, File outputDir)
     {
         super();
