@@ -1,4 +1,4 @@
-group java_bean : base;
+group java_bean_me : base;
 
 map_literal_value_prefix ::= [
     "Bytes": "\"",
