@@ -1,3 +1,9 @@
+Thanks to:
+  Michael Donohue
+    * j2me module
+  Alexander Dvorkovyy
+    * deployment to maven central
+
 Patch contributors:
   J.D. Zamfirescu
     * protostuff-parser - supplied code to parse protobuf "syntax2" header. (Issue 6)

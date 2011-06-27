@@ -1,4 +1,7 @@
-protostuff-1.0-SNAPSHOT
+protostuff-1.0.1-SNAPSHOT
++ new protostuff-me module (protostuff for j2me by Michael Donohue)
++ tiny optimizations for protostuff-graph
++ fixed protostuff-parser bug on handling int/double annotation attributes.
 
 protostuff-1.0.0 2011-02-15
 + Issue 57: Add proto_path as a system property read by protostuff-compiler to load imported protos

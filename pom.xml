@@ -78,7 +78,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
@@ -92,7 +92,7 @@
         <configuration>
           <aggregate>false</aggregate>
         </configuration>
-      </plugin>
+      </plugin>-->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -145,13 +145,6 @@
         </configuration>
       </plugin>
     </plugins>
-    <!--<extensions>
-      <extension>
-        <groupId>org.jvnet.wagon-svn</groupId>
-        <artifactId>wagon-svn</artifactId>
-        <version>1.9</version>
-      </extension>
-    </extensions>-->
   </build>
   <distributionManagement>
     <repository>
@@ -214,12 +207,20 @@
         <artifactId>velocity</artifactId>
         <version>${velocity-version}</version>
       </dependency>
+      <!--<dependency>
+        <groupId>com.tonicsystems.jarjar</groupId>
+        <artifactId>jarjar</artifactId>
+        <version>1.1</version>
+        <scope>system</scope>
+        <systemPath>lib/jarjar-1.1.jar</systemPath>
+      </dependency>-->
     </dependencies>
   </dependencyManagement>
   
   <modules>
     <module>protostuff-api</module>
     <module>protostuff-core</module>
+    <module>protostuff-me</module>
     <module>protostuff-collectionschema</module>
     <module>protostuff-runtime</module>
     <module>protostuff-json</module>
@@ -242,10 +243,11 @@
   
     <junit-version>3.8.2</junit-version>
     <protobuf-version>2.3.0</protobuf-version>
-    <jackson-version>1.7.3</jackson-version>
+    <jackson-version>1.7.7</jackson-version>
     <woodstox-version>4.1.1</woodstox-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
+
     <stringtemplate-version>3.2.1</stringtemplate-version>
   </properties>
   

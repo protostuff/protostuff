@@ -20,3 +20,6 @@ velocity is licensed under the apache 2.0 license.
 B64Code.java is copyright Mort Bay Consulting Pty Ltd unless otherwise noted. 
 It is licensed under the apache 2.0 license.
 
+jarjar is copyright Google inc unless otherwise noted. 
+It is licensed under the apache 2.0 license.
+
