@@ -525,6 +525,15 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Bar [someBaz=" + someBaz + ", someBoolean=" + someBoolean + ", someBytes=" + someBytes + ", someDouble=" + someDouble + ", someEnum="
+                + someEnum + ", someFloat=" + someFloat + ", someInt=" + someInt + ", someLong=" + someLong + ", someString=" + someString + "]";
+    }
+    
+    
     
     
 }
