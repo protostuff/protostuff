@@ -53,7 +53,7 @@ public final class KvpInput implements Input
     final InputStream in;
     final byte[] buffer;
     final boolean numeric;
-    int offset, limit, read;
+    int offset, limit;
     
     public KvpInput(InputStream in, boolean numeric)
     {
@@ -95,9 +95,10 @@ public final class KvpInput implements Input
             offset = 0;
             limit = existing;
             
+            int read;
             do
             {
-                final int read = in.read(buffer, limit, buffer.length - limit);
+                read = in.read(buffer, limit, buffer.length - limit);
                 if(read == -1)
                     return false;
                 
@@ -109,9 +110,10 @@ public final class KvpInput implements Input
             return true;
         }
         
+        int read;
         do
         {
-            final int read = in.read(buffer, limit, buffer.length - limit);
+            read = in.read(buffer, limit, buffer.length - limit);
             if(read == -1)
                 return false;
             
@@ -135,29 +137,9 @@ public final class KvpInput implements Input
             System.arraycopy(buffer, offset, data, dataOffset, existing);
             dataOffset += existing;
         }
-
-        /*while(true)
-        {
-            // duplicate copy ... not good
-            read = in.read(buffer, 0, buffer.length);
-            if(read == -1)
-                throw new ProtostuffException("Truncated message.");
-            
-            toRead -= read;
-            if(toRead > 0)
-            {
-                System.arraycopy(buffer, 0, data, dataOffset, read);
-                dataOffset += read;
-            }
-            else
-            {
-                offset = read - (-toRead);
-                limit = read;
-                System.arraycopy(buffer, 0, data, dataOffset, offset);
-                assert dataOffset + offset == len;
-                break;
-            }
-        }*/
+        // reset
+        offset = 0;
+        limit = 0;
         
         do
         {
