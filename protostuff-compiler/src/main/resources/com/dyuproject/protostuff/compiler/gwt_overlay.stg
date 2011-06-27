@@ -159,6 +159,10 @@ public <if(nested)>static <endif>final class <message.name> extends JavaScriptOb
     <message:message_static_method_parse_array(message=it, options=options)>
     
     <message:message_static_method_stringify(message=it, options=options)>
+
+    <if(options.generate_merge_method)>
+    <message:message_static_method_merge(message=it, options=options)>
+    <endif>
     
     <message:message_static_method_is_initialized(message=it, options=options)>
     
@@ -495,4 +499,17 @@ return v == null ? <field.defaultValue> : v;
 return this["<field:field_name_or_number(field=field,options=options)>"] || false;
 <endif>
 <endif>
+>>
+
+message_static_method_merge(message, options) ::= <<
+public static native <message.name> merge(<message.name> a, <message.name> b) /*-{
+    var key, value;
+    for (key in b) {
+        value = b[key];
+        if (value != null) {
+            a[key] = value;
+        }
+    }
+    return a;
+}-*/;
 >>

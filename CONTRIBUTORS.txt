@@ -19,6 +19,7 @@ Patch contributors:
 
   nordlig.ulv
     * protostuff-compiler - Native methods for repeated fields (Issue 35)
+    * protostuff-compiler - Merge method for json protobuf classes (Issue 64)
   
   avaskys
     * protostuff-parser, protostuff-compiler - cannot import more than one .proto file from the same package (Issue 38)
