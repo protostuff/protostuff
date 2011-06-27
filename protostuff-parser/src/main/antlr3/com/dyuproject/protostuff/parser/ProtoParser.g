@@ -94,8 +94,8 @@ annotation_keyval [Proto proto, Annotation annotation]
     :   k=var ASSIGN (
             v=var { value = $v.text; }
             |   NUMFLOAT { value = Float.valueOf($NUMFLOAT.text); }
-            |   NUMINT { value = Integer.valueOf($NUMFLOAT.text); }
-            |   NUMDOUBLE { value = Double.valueOf($NUMFLOAT.text); }
+            |   NUMINT { value = Integer.valueOf($NUMINT.text); }
+            |   NUMDOUBLE { value = Double.valueOf($NUMDOUBLE.text); }
             |   TRUE { value = Boolean.TRUE; }
             |   FALSE { value = Boolean.FALSE; }
             |   STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }

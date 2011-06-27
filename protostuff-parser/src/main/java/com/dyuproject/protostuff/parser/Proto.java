@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Contains the metadata of parsed protos.
@@ -149,6 +150,11 @@ public class Proto extends AnnotationContainer
         return extraOptions.get(name);
     }
     
+    public Map<String,Message> getMessageMap()
+    {
+        return messages;
+    }
+    
     public Collection<Message> getMessages()
     {
         return messages.values();
@@ -165,6 +171,11 @@ public class Proto extends AnnotationContainer
         message.proto = this;
     }
     
+    public Map<String,EnumGroup> getEnumGroupMap()
+    {
+        return enumGroups;
+    }
+    
     public Collection<EnumGroup> getEnumGroups()
     {
         return enumGroups.values();
@@ -179,6 +190,11 @@ public class Proto extends AnnotationContainer
     {
         enumGroups.put(enumGroup.name, enumGroup);
         enumGroup.proto = this;
+    }
+    
+    public Map<String,Service> getServiceMap()
+    {
+        return services;
     }
     
     public Collection<Service> getServices()
