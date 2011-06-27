@@ -104,7 +104,10 @@ public final class JsonInput implements Input
             return;
         }
         
-        throw new JsonInputException("Unknown field: " + lastName + " on message " + schema.messageFullName());
+        throw new JsonInputException("Unknown field: " + 
+                (numeric ? fieldNumber : lastName) + 
+                " on message " + 
+                schema.messageFullName());
     }
     
     public <T> int readFieldNumber(final Schema<T> schema) throws IOException
