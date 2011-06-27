@@ -134,13 +134,18 @@
         <plugins>
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.2-beta-4</version>
             <configuration>
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
                <archive>
-                <manifestFile>src/main/etc/MANIFEST.txt</manifestFile>
+                <manifest>
+                  <mainClass>com.dyuproject.protostuff.benchmark.BenchmarkMain</mainClass>
+                </manifest>
+                <manifestEntries>
+                  <implementation-version>${project.version}</implementation-version>
+                  <url>${pom.url}</url>
+                </manifestEntries>
               </archive> 
             </configuration>
             <executions>
@@ -152,6 +157,41 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jarjar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                    <jarjar jarfile="target/${project.build.finalName}-jarjar.jar">
+                      <manifest>
+                        <attribute name="Main-Class" value="com.dyuproject.protostuff.benchmark.BenchmarkMain" />
+                        <attribute name="implementation-version" value="${project.version}" />
+                        <attribute name="url" value="${pom.url}" />
+                      </manifest>
+                      <zipfileset src="target/${project.build.finalName}-jar-with-dependencies.jar"/>
+                      <keep pattern="com.dyuproject.protostuff.benchmark.**"/>
+                    </jarjar>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.tonicsystems.jarjar</groupId>
+                <artifactId>jarjar</artifactId>
+                <version>1.1</version>
+                <scope>system</scope>
+                <systemPath>../lib/jarjar-1.1.jar</systemPath>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
