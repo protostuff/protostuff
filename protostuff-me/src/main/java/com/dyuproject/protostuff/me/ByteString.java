@@ -205,14 +205,14 @@ public final class ByteString {
     return copy;
   }
 
-  /**
+  /*@
    * Constructs a new read-only {@code java.nio.ByteBuffer} with the
    * same backing byte array.
    */
-  public ByteBuffer asReadOnlyByteBuffer() {
+  /*@public ByteBuffer asReadOnlyByteBuffer() {
     final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
     return byteBuffer.asReadOnlyBuffer();
-  }
+  }*/
 
   /*@
    * Constructs a new {@code String} by decoding the bytes using the

@@ -107,12 +107,11 @@ public class WriteSession
     public final byte[] toByteArray()
     {
         LinkedBuffer node = head;
-        int offset = 0;
+        int offset = 0, len;
         final byte[] buf = new byte[size];
         do
         {
-            final int len = node.offset - node.start;
-            if(len > 0)
+            if((len = node.offset - node.start) > 0)
             {
                 System.arraycopy(node.buffer, node.start, buf, offset, len);
                 offset += len;

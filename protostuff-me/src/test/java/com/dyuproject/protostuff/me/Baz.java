@@ -280,5 +280,11 @@ public final class Baz implements Message, Schema, Externalizable
         return true;
     }
     
+    public String toString()
+    {
+        return "Baz [id=" + id + ", name=" + name + ", timestamp=" + timestamp + "]";
+    }
+    
+    
     
 }

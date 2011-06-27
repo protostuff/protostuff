@@ -592,6 +592,12 @@ public final class Foo implements Message, Schema, Externalizable
         return true;
     }
     
+    public String toString()
+    {
+        return "Foo [someBar=" + someBar + ", someBoolean=" + someBoolean + ", someBytes=" + someBytes + ", someDouble=" + someDouble + ", someEnum="
+                + someEnum + ", someFloat=" + someFloat + ", someInt=" + someInt + ", someLong=" + someLong + ", someString=" + someString + "]";
+    }
+    
     
 
 }

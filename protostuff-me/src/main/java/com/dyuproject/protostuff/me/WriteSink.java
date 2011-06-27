@@ -199,59 +199,6 @@ public abstract class WriteSink
                 lb.buffer[lb.offset++] = (byte)((value & 0x7F) | 0x80);
                 value >>>= 7;
             }
-            
-            /*if(value < 0x0080)
-            {
-                session.size++;
-                if(lb.offset == lb.buffer.length)
-                    lb = new LinkedBuffer(session.nextBufferSize, lb);
-                
-                lb.buffer[lb.offset++] = (byte)value;
-                return lb;
-            }
-            else if(value < 0x0800)
-            {
-                session.size += 2;
-                if(lb.offset + 2 > lb.buffer.length)
-                    lb = new LinkedBuffer(session.nextBufferSize, lb);
-                
-                lb.buffer[lb.offset++] = (byte)((value & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)(value>>>7 & 0x7F);
-            }
-            else if(value < 0x8000)
-            {
-                session.size += 3;
-                if(lb.offset + 3 > lb.buffer.length)
-                    lb = new LinkedBuffer(session.nextBufferSize, lb);
-                
-                lb.buffer[lb.offset++] = (byte)((value & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>7 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)(value>>>14 & 0x7F);
-            }
-            else if(value < 0x80000)
-            {
-                session.size += 4;
-                if(lb.offset + 4 > lb.buffer.length)
-                    lb = new LinkedBuffer(session.nextBufferSize, lb);
-                
-                lb.buffer[lb.offset++] = (byte)((value & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>7 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>14 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)(value>>>28 & 0x7F);
-            }
-            else
-            {
-                session.size += 5;
-                if(lb.offset + 5 > lb.buffer.length)
-                    lb = new LinkedBuffer(session.nextBufferSize, lb);
-                
-                lb.buffer[lb.offset++] = (byte)((value & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>7 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>14 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)((value>>>28 & 0x7F) | 0x80);
-                lb.buffer[lb.offset++] = (byte)(value>>>35 & 0x7F);
-            }
-            return lb;*/
         }
         
         public LinkedBuffer writeVarInt64(long value, 

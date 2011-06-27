@@ -980,8 +980,15 @@ public final class CodedInput implements Input {
 
   public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber, 
     boolean repeated) throws IOException {
-    final byte[] value = readByteArray();
-    output.writeByteRange(utf8String, fieldNumber, value, 0, value.length, repeated);
+    final int size = readRawVarint32();
+    if (size <= (bufferSize - bufferPos) && size > 0) {
+      // Fast path:  We already have the bytes in a contiguous buffer
+      output.writeByteRange(utf8String, fieldNumber, buffer, bufferPos, size, repeated);
+      bufferPos += size;
+    } else {
+      // Slow path:  Build a byte array first then copy it.
+      output.writeByteRange(utf8String, fieldNumber, readRawBytes(size), 0, size, repeated);
+    }
   }
   
   /** Returns the last tag. */

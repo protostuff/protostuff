@@ -63,15 +63,15 @@ public final class SerializableObjects
     {
         
         return new Foo(
-                Arrays.asList(someInt),
-                Arrays.asList(someString), 
-                Arrays.asList(someBar), 
-                Arrays.asList(someEnum), 
-                Arrays.asList(someBytes), 
-                Arrays.asList(someBoolean), 
-                Arrays.asList(someFloat), 
-                Arrays.asList(someDouble),
-                Arrays.asList(someLong));
+                someInt == null ? null : Arrays.asList(someInt),
+                someString == null ? null : Arrays.asList(someString), 
+                someBar == null ? null : Arrays.asList(someBar), 
+                someEnum == null ? null : Arrays.asList(someEnum), 
+                someBytes == null ? null : Arrays.asList(someBytes), 
+                someBoolean == null ? null : Arrays.asList(someBoolean), 
+                someFloat == null ? null : Arrays.asList(someFloat), 
+                someDouble == null ? null : Arrays.asList(someDouble),
+                someLong == null ? null : Arrays.asList(someLong));
     }
     
     public static <T> void assertEquals(T m1, T m2)
