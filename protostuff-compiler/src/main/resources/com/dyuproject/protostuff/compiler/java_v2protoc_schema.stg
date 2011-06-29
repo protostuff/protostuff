@@ -219,6 +219,7 @@ public static int getFieldNumber(String name)
 }
 <if(options.generate_field_map)>
 private static final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<String,Integer\>();
+static
 {
     <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
 }
