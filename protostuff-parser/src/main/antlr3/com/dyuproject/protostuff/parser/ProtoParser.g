@@ -72,7 +72,11 @@ statement [Proto proto]
 
 // some keywords that might possibly be used as a variable
 var
-    :   PKG | SYNTAX | MESSAGE | SERVICE | GROUP | RPC | ID | MAX
+    :   ID | TO | PKG | SYNTAX | IMPORT | OPTIONS | MESSAGE | SERVICE | ENUM |  
+        REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | 
+        RETURNS | INT32 | INT64 | UINT32 | UINT64 | SINT32 | SINT64 | 
+        FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE | BOOL | 
+        STRING | BYTES | DEFAULT | MAX
     ;
 
 annotation_entry [Proto proto]

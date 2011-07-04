@@ -1,0 +1,39 @@
+package test_reserved_words_as_variables;
+
+message Test {
+  optional bool optional = 1;
+  repeated bool repeated = 2;
+  required bool required = 3;
+  
+  optional string to = 4;
+  optional string package = 5;
+  optional string syntax = 6;
+  optional string import = 7;
+  optional string options = 8;
+  optional string message = 9;
+  optional string service = 10;
+  optional string enum = 11;
+  optional string extensions = 12;
+  optional string extend = 13;
+  optional string group = 14;
+  optional string rpc = 15;
+  optional int32 int32 = 16;
+  optional int64 int64 = 17;
+  optional uint32 uint32 = 18;
+  optional uint64 uint64 = 19;
+  optional sint32 sint32 = 20;
+  optional sint64 sint64 = 21;
+  optional fixed32 fixed32 = 22;
+  optional fixed64 fixed64 = 23;
+  optional sfixed32 sfixed32 = 24;
+  optional sfixed64 sfixed64 = 25;
+  optional float float = 26;
+  optional double double = 27;
+  optional bool bool = 28;
+  optional string string = 29;
+  optional bytes bytes = 30;
+  optional string default = 31;
+  optional string max = 32;
+  
+
+}
