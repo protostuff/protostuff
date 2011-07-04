@@ -16,11 +16,6 @@ proto_header(proto, module, options) ::= <<
 
 package <proto.javaPackageName>;
 
-import java.io.IOException;
-
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Schema;
 >>
 
 derived_outer_name(proto, options) ::= <<
@@ -52,8 +47,10 @@ message_schema_block(message, proto, options) ::= <<
 public static final class <message.name>
 {
     <message.nestedMessages:message_schema_block(message=it, proto=proto, options=options)>
-    public static final MessageSchema WRITE = new MessageSchema();
-    public static final BuilderSchema MERGE = new BuilderSchema();
+    public static final <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.MessageSchema WRITE =
+        new <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.MessageSchema();
+    public static final <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.BuilderSchema MERGE =
+        new <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.BuilderSchema();
     
     <message:message_output(message=it, options=options)>
     <message:builder_input(message=it, options=options)>
@@ -63,9 +60,9 @@ public static final class <message.name>
 >>
 
 message_output(message, options) ::= <<
-public static class MessageSchema implements Schema\<<message:message_fullname(message=it, options=options)>\>
+public static class MessageSchema implements com.dyuproject.protostuff.Schema\<<message:message_fullname(message=it, options=options)>\>
 {
-    public void writeTo(Output output, <message:message_fullname(message=it, options=options)> message) throws IOException
+    public void writeTo(com.dyuproject.protostuff.Output output, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException
     {
         <message.fields:field_write_output(field=it, options=options); separator="\n">
     }
@@ -74,28 +71,28 @@ public static class MessageSchema implements Schema\<<message:message_fullname(m
         return message.isInitialized();
     }
     <message:message_field_map(message=it, options=options)>
-    public Class\<<message:message_fullname(message=it, options=options)>\> typeClass()
+    public java.lang.Class\<<message:message_fullname(message=it, options=options)>\> typeClass()
     {
         return <message:message_fullname(message=it, options=options)>.class;
     }
-    public String messageName()
+    public java.lang.String messageName()
     {
         return <message:message_fullname(message=it, options=options)>.class.getSimpleName();
     }
-    public String messageFullName()
+    public java.lang.String messageFullName()
     {
         return <message:message_fullname(message=it, options=options)>.class.getName();
     }
     //unused
-    public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)> message) throws IOException {}
+    public void mergeFrom(com.dyuproject.protostuff.Input input, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException {}
     public <message:message_fullname(message=it, options=options)> newMessage() { return null; }
 }
 >>
 
 builder_input(message, options) ::= <<
-public static class BuilderSchema implements Schema\<<message:message_fullname(message=it, options=options)>.Builder\>
+public static class BuilderSchema implements com.dyuproject.protostuff.Schema\<<message:message_fullname(message=it, options=options)>.Builder\>
 {
-    public void mergeFrom(Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException
+    public void mergeFrom(com.dyuproject.protostuff.Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException
     {
         for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
@@ -118,20 +115,20 @@ public static class BuilderSchema implements Schema\<<message:message_fullname(m
         return <message:message_fullname(message=it, options=options)>.newBuilder();
     }
     <message:message_field_map(message=it, options=options)>
-    public Class\<<message:message_fullname(message=it, options=options)>.Builder\> typeClass()
+    public java.lang.Class\<<message:message_fullname(message=it, options=options)>.Builder\> typeClass()
     {
         return <message:message_fullname(message=it, options=options)>.Builder.class;
     }
-    public String messageName()
+    public java.lang.String messageName()
     {
         return <message:message_fullname(message=it, options=options)>.class.getSimpleName();
     }
-    public String messageFullName()
+    public java.lang.String messageFullName()
     {
         return <message:message_fullname(message=it, options=options)>.class.getName();
     }
     //unused
-    public void writeTo(Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws IOException {}
+    public void writeTo(com.dyuproject.protostuff.Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException {}
 }
 >>
 
@@ -196,7 +193,7 @@ builder.<setOrAdd><field.name; format="PC">(input.read<field.class.simpleName>()
 >>
 
 message_static_field_map(message, options) ::= <<
-public static String getFieldName(int number)
+public static java.lang.String getFieldName(int number)
 {
     <if(options.generate_field_map)>
     switch(number)
@@ -205,20 +202,20 @@ public static String getFieldName(int number)
         default: return null;
     }
     <else>
-    return String.valueOf(number);
+    return java.lang.String.valueOf(number);
     <endif>
 }
-public static int getFieldNumber(String name)
+public static int getFieldNumber(java.lang.String name)
 {
     <if(options.generate_field_map)>
-    Integer number = fieldMap.get(name);
+    java.lang.Integer number = fieldMap.get(name);
     return number == null ? 0 : number.intValue();
     <else>
-    return Integer.parseInt(name);
+    return java.lang.Integer.parseInt(name);
     <endif>
 }
 <if(options.generate_field_map)>
-private static final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<String,Integer\>();
+private static final java.util.HashMap\<java.lang.String,java.lang.Integer\> fieldMap = new java.util.HashMap\<java.lang.String,java.lang.Integer\>();
 static
 {
     <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
@@ -227,13 +224,13 @@ static
 >>
 
 message_field_map(message, options) ::= <<
-public String getFieldName(int number)
+public java.lang.String getFieldName(int number)
 {
-    return <message.name>.getFieldName(number);
+    return <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.getFieldName(number);
 }
-public int getFieldNumber(String name)
+public int getFieldNumber(java.lang.String name)
 {
-    return <message.name>.getFieldNumber(name);
+    return <message.proto:schema_fullname(proto=it, options=options)>.<message.relativeName>.getFieldNumber(name);
 }
 >>
 
