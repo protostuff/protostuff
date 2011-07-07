@@ -76,6 +76,12 @@ public class ProtobufException extends ProtostuffException {
   static ProtobufException truncatedMessage() {
     return new ProtobufException(ERR_TRUNCATED_MESSAGE);
   }
+  
+  static ProtobufException misreportedSize() {
+    return new ProtobufException(
+      "CodedInput encountered an embedded string or bytes " +
+      "that misreported its size.");
+  }
 
   static ProtobufException negativeSize() {
     return new ProtobufException(
