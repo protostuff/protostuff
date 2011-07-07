@@ -33,6 +33,9 @@ import java.util.regex.Pattern;
 public final class CompilerMain
 {
     
+    static final boolean SILENT_MODE = Boolean.parseBoolean(
+            System.getProperty("protostuff.compiler.silent_mode", "true"));
+    
     static final Pattern COMMA = Pattern.compile(",");
     
     private static final HashMap<String,ProtoCompiler> __compilers = 
@@ -183,16 +186,19 @@ public final class CompilerMain
             
             compiler.compile(module);
             
-            StringBuilder buffer = new StringBuilder()
-                .append("Successfully compiled proto from ")
-                .append(module.getSource())
-                .append(" to output: ")
-                .append(output);
-            
-            if(options.length()>2)
-                buffer.append(' ').append(options);
-            
-            System.out.println(buffer.toString());
+            if(!SILENT_MODE)
+            {
+                StringBuilder buffer = new StringBuilder()
+                    .append("Successfully compiled proto from ")
+                    .append(module.getSource())
+                    .append(" to output: ")
+                    .append(output);
+                
+                if(options.length()>2)
+                    buffer.append(' ').append(options);
+                
+                System.out.println(buffer.toString());
+            }
         }
     }
     
