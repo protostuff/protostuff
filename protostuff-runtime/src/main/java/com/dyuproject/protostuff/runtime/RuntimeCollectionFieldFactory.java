@@ -475,7 +475,7 @@ final class RuntimeCollectionFieldFactory
                             "EnumSet: " + f.getType());
                 }
                 
-                messageFactory = EnumIO.get(enumType);
+                messageFactory = EnumIO.get(enumType).getEnumSetFactory();
             }
             else
             {

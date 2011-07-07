@@ -465,7 +465,7 @@ final class RuntimeRepeatedFieldFactory
                             "EnumSet: " + f.getType());
                 }
                 
-                messageFactory = EnumIO.get(enumType);
+                messageFactory = EnumIO.get(enumType).getEnumSetFactory();
             }
             else
             {

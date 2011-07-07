@@ -1632,7 +1632,7 @@ final class RuntimeMapFieldFactory
                             "EnumMap: " + f.getType());
                 }
                 
-                messageFactory = EnumIO.get(enumType);
+                messageFactory = EnumIO.get(enumType).getEnumMapFactory();
             }
             else
             {

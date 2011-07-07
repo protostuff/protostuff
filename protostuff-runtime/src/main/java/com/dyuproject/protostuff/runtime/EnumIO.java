@@ -35,8 +35,7 @@ import com.dyuproject.protostuff.Pipe;
  * @author David Yu
  * @created Oct 20, 2010
  */
-public abstract class EnumIO<E extends Enum<E>> implements 
-    MapSchema.MessageFactory, CollectionSchema.MessageFactory
+public abstract class EnumIO<E extends Enum<E>>
 
 {
     
@@ -200,14 +199,77 @@ public abstract class EnumIO<E extends Enum<E>> implements
             output.writeEnum(number, input.readEnum(), repeated);
     }
     
+    private static <E extends Enum<E>> CollectionSchema.MessageFactory newEnumSetFactory(
+            final EnumIO<E> eio)
+    {
+        return new CollectionSchema.MessageFactory()
+        {
+            @SuppressWarnings("unchecked")
+            public <V> Collection<V> newMessage()
+            {
+                return (Collection<V>)eio.newEnumSet();
+            }
+        };
+    }
     
-    protected final Class<E> enumClass;
+    private static <E extends Enum<E>> MapSchema.MessageFactory newEnumMapFactory(
+            final EnumIO<E> eio)
+    {
+        return new MapSchema.MessageFactory()
+        {
+            @SuppressWarnings("unchecked")
+            public <K, V> Map<K, V> newMessage()
+            {
+                return (Map<K,V>)eio.newEnumMap();
+            }
+        };
+    }
+    
+    /**
+     * The enum class.
+     */
+    public final Class<E> enumClass;
+    private volatile CollectionSchema.MessageFactory enumSetFactory;
+    private volatile MapSchema.MessageFactory enumMapFactory;
     
     public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
     }
     
+    /**
+     * Returns the factory for an EnumSet (lazy).
+     */
+    public CollectionSchema.MessageFactory getEnumSetFactory()
+    {
+        CollectionSchema.MessageFactory enumSetFactory = this.enumSetFactory;
+        if(enumSetFactory == null)
+        {
+            synchronized(this)
+            {
+                if((enumSetFactory = this.enumSetFactory) == null)
+                    this.enumSetFactory = enumSetFactory = newEnumSetFactory(this);
+            }
+        }
+        return enumSetFactory;
+    }
+    
+    /**
+     * Returns the factory for an EnumMap (lazy).
+     */
+    public MapSchema.MessageFactory getEnumMapFactory()
+    {
+        MapSchema.MessageFactory enumMapFactory = this.enumMapFactory;
+        if(enumMapFactory == null)
+        {
+            synchronized(this)
+            {
+                if((enumMapFactory = this.enumMapFactory) == null)
+                    this.enumMapFactory = enumMapFactory = newEnumMapFactory(this);
+            }
+        }
+        return enumMapFactory;
+    }
     
     /**
      * Returns an empty {@link EnumSet}.
@@ -245,18 +307,6 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return Enum.valueOf(enumClass, input.readString());
         }
-        
-        @SuppressWarnings("unchecked")
-        public <K, V> Map<K, V> newMessage()
-        {
-            return (Map<K, V>)newEnumMap();
-        }
-        
-        @SuppressWarnings("unchecked")
-        public <V> Collection<V> newMessage()
-        {
-            return (Collection<V>)newEnumSet();
-        }
     }
     
     /**
@@ -273,18 +323,6 @@ public abstract class EnumIO<E extends Enum<E>> implements
         public E readFrom(Input input) throws IOException
         {
             return enumClass.getEnumConstants()[input.readEnum()];
-        }
-        
-        @SuppressWarnings("unchecked")
-        public <K, V> Map<K, V> newMessage()
-        {
-            return (Map<K, V>)newEnumMap();
-        }
-        
-        @SuppressWarnings("unchecked")
-        public <V> Collection<V> newMessage()
-        {
-            return (Collection<V>)newEnumSet();
         }
     }
 
