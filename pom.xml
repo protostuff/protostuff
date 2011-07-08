@@ -78,21 +78,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>              
-        </executions>
-        <configuration>
-          <aggregate>false</aggregate>
-        </configuration>
-      </plugin>-->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -128,7 +113,6 @@
         <version>2.5</version>
         <configuration>
           <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
-          <aggregate>true</aggregate>
           <tags>
             <tag>
               <name>created</name>
@@ -140,9 +124,27 @@
             <link>http://java.sun.com/javaee/5/docs/api</link>
             <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
           </links>
-          <reportOutputDirectory>${basedir}</reportOutputDirectory> 
-          <destDir>javadoc</destDir>
         </configuration>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+            <phase>site</phase>
+            <configuration>
+              <reportOutputDirectory>${basedir}</reportOutputDirectory> 
+              <destDir>javadoc</destDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>              
+        </executions>
       </plugin>
     </plugins>
   </build>
