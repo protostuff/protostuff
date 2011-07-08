@@ -70,10 +70,25 @@ public final class RuntimeUnsafeFieldFactory
         }
         catch(Exception e)
         {
-            throw new RuntimeException(e);
+            // ignore
+            
+            /* android 3.x
+            try
+            {
+                java.lang.reflect.Field f = 
+                        sun.misc.Unsafe.class.getDeclaredField("THE_ONE");
+                    
+                f.setAccessible(true);
+                
+                return (sun.misc.Unsafe)f.get(null);
+            }
+            catch(Exception e1)
+            {
+                // ignore
+            }*/
         }
         
-        //return sun.misc.Unsafe.getUnsafe();
+        return sun.misc.Unsafe.getUnsafe();
     }
     
     private RuntimeUnsafeFieldFactory() {}

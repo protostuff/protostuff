@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES;
+
 import java.io.IOException;
 
 import com.dyuproject.protostuff.Input;
@@ -83,7 +85,7 @@ public abstract class DerivativeSchema implements Schema<Object>
         
         final String className = input.readString();
         final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(className, 
-                RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                AUTO_LOAD_POLYMORPHIC_CLASSES);
         
         if(wrapper == null)
             throw new ProtostuffException("polymorphic pojo not registered: " + className);
@@ -128,7 +130,7 @@ public abstract class DerivativeSchema implements Schema<Object>
             final String className = input.readString();
             
             final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(className, 
-                    RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                    AUTO_LOAD_POLYMORPHIC_CLASSES);
             
             if(wrapper == null)
             {

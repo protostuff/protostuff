@@ -14,6 +14,10 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
+
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -39,13 +43,6 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  */
 public abstract class RuntimeFieldFactory<V>
 {
-    
-    /**
-     * If true, sun.misc.Unsafe is used to access the fields of the objects instead of 
-     * plain java reflections.  Enabled by default.
-     */
-    public static final boolean USE_SUN_MISC_UNSAFE = Boolean.parseBoolean(
-            System.getProperty("protostuff.runtime.use_sun_misc_unsafe", "true"));
     
     static final int ID_BOOL = 1, ID_BYTE = 2, ID_CHAR = 3, ID_SHORT = 4, 
         ID_INT32 = 5, ID_INT64 = 6, ID_FLOAT = 7, ID_DOUBLE = 8, 
@@ -150,7 +147,7 @@ public abstract class RuntimeFieldFactory<V>
             POLYMORPHIC_POJO = RuntimeReflectionFieldFactory.POLYMORPHIC_POJO;
         }
         
-        COLLECTION = RuntimeSchema.COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? 
+        COLLECTION = COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? 
                     RuntimeCollectionFieldFactory.getFactory() : 
                         RuntimeRepeatedFieldFactory.getFactory();
         
@@ -213,7 +210,7 @@ public abstract class RuntimeFieldFactory<V>
         return (clazz.isInterface() 
             || Modifier.isAbstract(clazz.getModifiers()) 
             || (!Modifier.isFinal(clazz.getModifiers()) && 
-                    RuntimeSchema.MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
+                    MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
     }
     
     static boolean isComplexComponentType(Class<?> clazz)

@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -36,14 +38,7 @@ import com.dyuproject.protostuff.Pipe;
  * @created Oct 20, 2010
  */
 public abstract class EnumIO<E extends Enum<E>>
-
 {
-    
-    /**
-     * Returns true if serializing enums by name is activated.
-     */
-    public static final boolean ENUMS_BY_NAME = 
-        Boolean.getBoolean("protostuff.runtime.enums_by_name");
     
     /**
      * A cache to prevent creating the same eio over and over.

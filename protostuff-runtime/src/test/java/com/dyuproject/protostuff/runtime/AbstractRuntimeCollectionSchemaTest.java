@@ -689,7 +689,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
     
     public void testCollectionAndMapSchema() throws Exception
     {
-        if(!RuntimeSchema.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        if(!RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
         {
             System.err.println("RuntimeSchema.COLLECTION_SCHEMA_ON_REPEATED_FIELDS was not enabled.");
             return;

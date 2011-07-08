@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES;
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.loadClass;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BIGDECIMAL;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BIGINTEGER;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BOOL;
@@ -306,7 +308,7 @@ public abstract class ObjectSchema implements Schema<Object>
         }
         else
         {
-            clazz = RuntimeSchema.loadClass(className);
+            clazz = loadClass(className);
         }
         
         if(dimensions == 1)
@@ -396,7 +398,7 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_ENUM:
                 final String typeEnum = input.readString();
                 final EnumIO<?> eio = EnumIO.get(typeEnum, 
-                        RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                        AUTO_LOAD_POLYMORPHIC_CLASSES);
                 
                 if(eio == null)
                     throw new ProtostuffException("Unknown enum class: " + typeEnum);
@@ -445,7 +447,7 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_POJO:
                 final String typePojo = input.readString();
                 final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(
-                        typePojo, RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                        typePojo, AUTO_LOAD_POLYMORPHIC_CLASSES);
                 
                 if(wrapper == null)
                     throw new ProtostuffException("Unknown pojo class: " + typePojo);
@@ -693,7 +695,7 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_POJO:
                 final String typePojo = input.readString();
                 final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(
-                        typePojo, RuntimeSchema.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                        typePojo, AUTO_LOAD_POLYMORPHIC_CLASSES);
                 
                 if(wrapper == null)
                     throw new ProtostuffException("Unknown pojo class: " + typePojo);

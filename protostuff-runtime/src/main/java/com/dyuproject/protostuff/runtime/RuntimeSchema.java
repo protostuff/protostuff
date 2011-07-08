@@ -14,8 +14,9 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.loadClass;
+
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
+import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**
  * A schema that can be generated and cached at runtime for objects that have no schema.
@@ -39,97 +42,11 @@ import com.dyuproject.protostuff.Schema;
  */
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {
-    
-    /**
-     * By default, it is enabled.  For security purposes, you probably would want to 
-     * register all known classes and disable this option.
-     */
-    public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES = 
-        Boolean.parseBoolean(
-                System.getProperty("protostuff.runtime.auto_load_polymorphic_classes", "true"));
-    /**
-     * Disabled by default.  For pojos that are not declared final, they 
-     * could still be morphed to their respective subclasses (inheritance).
-     * Enable this option if your parent classes aren't abstract classes.
-     */
-    public static final boolean MORPH_NON_FINAL_POJOS = 
-        Boolean.getBoolean("protostuff.runtime.morph_non_final_pojos");
-    
-    /**
-     * On repeated fields, the List/Collection itself is not serialized (only its values).
-     * If you enable this option, the repeated field will be serialized as a 
-     * standalone message with a collection schema.  Even if the List/Collection is empty, 
-     * an empty collection message is still written.
-     * 
-     * This is particularly useful if you rely on {@link Object#equals(Object)} on your 
-     * pojos.
-     * 
-     * Disabled by default for protobuf compatibility.
-     */
-    public static final boolean COLLECTION_SCHEMA_ON_REPEATED_FIELDS = 
-        Boolean.getBoolean("protostuff.runtime.collection_schema_on_repeated_fields");
 
     private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
         new ConcurrentHashMap<String, HasSchema<?>>();
     
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
-    
-    static final Constructor<Object> OBJECT_CONSTRUCTOR;
-    static
-    {
-        Constructor<Object> c = null;
-        Class<?> reflectionFactoryClass = null;
-        try
-        {
-            c = Object.class.getConstructor((Class[])null);
-            reflectionFactoryClass = loadClass("sun.reflect.ReflectionFactory");
-        }
-        catch (Exception e)
-        {
-            // ignore
-        }
-        
-        OBJECT_CONSTRUCTOR = c != null && reflectionFactoryClass != null ? c : null; 
-    }
-    
-    @SuppressWarnings("unchecked")
-    static <T> Class<T> loadClass(String className)
-    {
-        try
-        {
-            return (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(
-                    className);
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    static <T> Constructor<T> getConstructor(Class<T> clazz)
-    {
-        try
-        {
-            return clazz.getConstructor((Class[])null);
-        }
-        catch (SecurityException e)
-        {
-            if(OBJECT_CONSTRUCTOR == null)
-                throw new RuntimeException(e);
-            
-            return sun.reflect.ReflectionFactory.getReflectionFactory()
-                .newConstructorForSerialization(clazz, OBJECT_CONSTRUCTOR);
-        }
-        catch (NoSuchMethodException e)
-        {
-            if(OBJECT_CONSTRUCTOR == null)
-                throw new RuntimeException(e);
-            
-            return sun.reflect.ReflectionFactory.getReflectionFactory()
-                .newConstructorForSerialization(clazz, OBJECT_CONSTRUCTOR);
-        }
-    }
     
     /**
      * Maps the {@code baseClass} to a specific non-interface/non-abstract 
@@ -330,7 +247,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     typeClass + ".  All fields are either transient/static.");
         }
         
-        return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
+        return new RuntimeSchema<T>(typeClass, fields, i, 
+                RuntimeEnv.newInstantiator(typeClass));
     }
     
     /**
@@ -374,7 +292,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             throw new RuntimeException("Not able to map any fields from " + 
                     typeClass + ".  All fields are either transient/static.");
         }
-        return new RuntimeSchema<T>(typeClass, fields, i, getConstructor(typeClass));
+        return new RuntimeSchema<T>(typeClass, fields, i, 
+                RuntimeEnv.newInstantiator(typeClass));
     }
 
     static Map<String,java.lang.reflect.Field> findInstanceFields(Class<?> typeClass)
@@ -398,13 +317,20 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
-    final Constructor<T> constructor;
+    final Instantiator<T> instantiator;
     
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, 
             int lastFieldNumber, Constructor<T> constructor)
     {
+        this(typeClass, fields, lastFieldNumber, 
+                new DefaultInstantiator<T>(constructor));
+    }
+    
+    public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, 
+            int lastFieldNumber, Instantiator<T> instantiator)
+    {
         super(typeClass, fields, lastFieldNumber);
-        this.constructor = constructor;
+        this.instantiator = instantiator;
     }
     
     /**
@@ -417,26 +343,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     public T newMessage()
     {
-        try
-        {
-            return constructor.newInstance((Object[])null);
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (InstantiationException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (InvocationTargetException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return instantiator.newInstance();
     }
     
     /**
