@@ -29,6 +29,8 @@ import java.lang.reflect.Constructor;
 final class OnDemandSunReflectionFactory
 {
     
+    private OnDemandSunReflectionFactory() {}
+    
     @SuppressWarnings("unchecked")
     static <T> Constructor<T> getConstructor(Class<T> clazz, 
             Constructor<Object> constructor)
