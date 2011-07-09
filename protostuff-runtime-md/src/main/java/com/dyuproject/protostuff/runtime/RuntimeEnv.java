@@ -12,6 +12,9 @@
 //limitations under the License.
 //========================================================================
 
+/**
+ * 
+ */
 package com.dyuproject.protostuff.runtime;
 
 import java.lang.reflect.Constructor;
@@ -166,13 +169,15 @@ public final class RuntimeEnv
         }
         catch (SecurityException e)
         {
-            return OBJECT_CONSTRUCTOR == null ? null : 
-                OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
+            return null;
+            //return OBJECT_CONSTRUCTOR == null ? null : 
+            //    OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
         }
         catch (NoSuchMethodException e)
         {
-            return OBJECT_CONSTRUCTOR == null ? null : 
-                OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
+            return null;
+            //return OBJECT_CONSTRUCTOR == null ? null : 
+            //    OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
         }
     }
     

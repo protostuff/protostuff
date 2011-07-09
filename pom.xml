@@ -225,6 +225,7 @@
     <module>protostuff-me</module>
     <module>protostuff-collectionschema</module>
     <module>protostuff-runtime</module>
+    <module>protostuff-runtime-md</module>
     <module>protostuff-json</module>
     <module>protostuff-xml</module>
     <module>protostuff-yaml</module>
