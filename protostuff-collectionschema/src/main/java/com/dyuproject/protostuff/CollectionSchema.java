@@ -35,10 +35,6 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     
     public static final String FIELD_NAME_VALUE = "v";
     
-    static final int ARRAY_BLOCKING_QUEUE_INITIAL_SIZE = 
-        Integer.getInteger("protostuff.collectionschema.array_block_queue_initial_size", 
-                16);
-    
     /**
      * Creates new {@code Collection} messages.
      */
@@ -213,8 +209,8 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
         {
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.ArrayBlockingQueue<V>(
-                        ARRAY_BLOCKING_QUEUE_INITIAL_SIZE);
+                // initialize to same initial value as ArrayList
+                return new java.util.concurrent.ArrayBlockingQueue<V>(10);
             }
         },
         ArrayDeque
