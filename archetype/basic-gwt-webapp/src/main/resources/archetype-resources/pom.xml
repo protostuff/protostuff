@@ -80,8 +80,8 @@
     <junit.version>4.4</junit.version>
     <servlet.version>2.5-20081211</servlet.version>
     <jetty.version>6.1.24</jetty.version>
-    <jackson.version>1.7.3</jackson.version>
-    <protostuff.version>1.0-SNAPSHOT</protostuff.version>
+    <jackson.version>1.7.7</jackson.version>
+    <protostuff.version>1.0.1-SNAPSHOT</protostuff.version>
     
     <!--<google.webtoolkit.home>${env.GWT_HOME}</google.webtoolkit.home>-->
     <gwt.version>2.0.3</gwt.version>
