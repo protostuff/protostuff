@@ -330,60 +330,111 @@ public final class StringSerializer
     
     /**
      * Slow path.  It checks the limit before every write.
+     * Shared with StreamedStringSerializer.
      */
-    private static LinkedBuffer writeUTF8(final String str, final int index, final int len, 
+    static LinkedBuffer writeUTF8(final String str, int i, final int len, 
             byte[] buffer, int offset, int limit,
             final WriteSession session, LinkedBuffer lb)
     {
-        int start = offset;
-        
-        for(int i = index; i < len; i++)
+        for(char c = 0; ; c = 0)
         {
-            final char c = str.charAt(i);
-            if(c < 0x0080)
-            {
-                if(offset == limit)
-                {
-                    // we are done with this LinkedBuffer
-                    lb.offset = offset;
-                    session.size += (offset - start);
-                    // reset
-                    offset = start = 0;
-                    limit = session.nextBufferSize;
-                    buffer = new byte[limit];
-                    // grow
-                    lb = new LinkedBuffer(buffer, 0, lb);
-                }
+            while(i != len && offset != limit && (c=str.charAt(i++)) < 0x0080)
                 buffer[offset++] = (byte)c;
-            }
-            else if(c < 0x0800)
+            
+            if(i == len && c < 0x0080)
             {
-                if(offset == limit)
+                session.size += (offset - lb.offset);
+                lb.offset = offset;
+                return lb;
+            }
+            
+            if(offset == limit)
+            {
+                // we are done with this LinkedBuffer
+                session.size += (offset - lb.offset);
+                lb.offset = offset;
+                
+                if(lb.next == null)
                 {
-                    // we are done with this LinkedBuffer
-                    lb.offset = offset;
-                    session.size += (offset - start);
                     // reset
-                    offset = start = 0;
+                    offset = 0;
                     limit = session.nextBufferSize;
                     buffer = new byte[limit];
                     // grow
                     lb = new LinkedBuffer(buffer, 0, lb);
                 }
+                else
+                {
+                    // use the existing buffer from previous utf8 write.
+                    // this condition happens only on streaming mode
+                    lb = lb.next;
+                    // reset
+                    lb.offset = offset = lb.start;
+                    buffer = lb.buffer;
+                    limit = buffer.length;
+                }
+                
+                continue;
+            }
+            
+            if(c < 0x0800)
+            {
+                if(offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+                    
+                    if(lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                }
+                
                 buffer[offset++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
                 
                 if(offset == limit)
                 {
                     // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    // reset
-                    offset = start = 0;
-                    limit = session.nextBufferSize;
-                    buffer = new byte[limit];
-                    // grow
-                    lb = new LinkedBuffer(buffer, 0, lb);
+                    
+                    if(lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
                 }
+                
                 buffer[offset++] = (byte) (0x80 | ((c >>  0) & 0x3F));
             }
             else
@@ -391,81 +442,119 @@ public final class StringSerializer
                 if(offset == limit)
                 {
                     // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    // reset
-                    offset = start = 0;
-                    limit = session.nextBufferSize;
-                    buffer = new byte[limit];
-                    // grow
-                    lb = new LinkedBuffer(buffer, 0, lb);
+                    
+                    if(lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
                 }
+                
                 buffer[offset++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
                 
                 if(offset == limit)
                 {
                     // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    // reset
-                    offset = start = 0;
-                    limit = session.nextBufferSize;
-                    buffer = new byte[limit];
-                    // grow
-                    lb = new LinkedBuffer(buffer, 0, lb);
+                    
+                    if(lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
                 }
+                
                 buffer[offset++] = (byte) (0x80 | ((c >>  6) & 0x3F));
                 
                 if(offset == limit)
                 {
                     // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    // reset
-                    offset = start = 0;
-                    limit = session.nextBufferSize;
-                    buffer = new byte[limit];
-                    // grow
-                    lb = new LinkedBuffer(buffer, 0, lb);
+                    
+                    if(lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
                 }
+                
                 buffer[offset++] = (byte) (0x80 | ((c >>  0) & 0x3F));
             }
         }
-        
-        lb.offset = offset;
-        session.size += (offset - start);
-        
-        return lb;
     }
     
     /**
      * Fast path.  The {@link LinkedBuffer}'s capacity is >= string length.
      */
-    private static LinkedBuffer writeUTF8(final String str, final int index, final int len, 
+    static LinkedBuffer writeUTF8(final String str, int i, final int len, 
             final WriteSession session, final LinkedBuffer lb)
     {
         final byte[] buffer = lb.buffer;
-        final int limit = buffer.length;
-        final int start = lb.offset;
-        
-        int offset = start;
-        int adjustableLimit = offset + len;
-
-        for(int i=index; i<len; i++)
+        for(int c = 0, offset = lb.offset, adjustableLimit = offset + len; ; c = 0)
         {
-            final char c = str.charAt(i);
-            if(c < 0x0080)
-            {
-                // ascii
+            while(i != len && (c=str.charAt(i++)) < 0x0080)
                 buffer[offset++] = (byte)c;
-            }
-            else if(c < 0x0800)
+            
+            if(i == len && c < 0x0080)
             {
-                if(++adjustableLimit > limit)
+                session.size += (offset - lb.offset);
+                lb.offset = offset;
+                return lb;
+            }
+            
+            if(c < 0x0800)
+            {
+                if(++adjustableLimit > buffer.length)
                 {
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    return writeUTF8(str, i, len, buffer, offset, limit, session, lb);
+                    return writeUTF8(str, i-1, len, buffer, offset, buffer.length, session, lb);
                 }
                 
                 buffer[offset++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
@@ -474,11 +563,11 @@ public final class StringSerializer
             else
             {
                 adjustableLimit += 2;
-                if(adjustableLimit > limit)
+                if(adjustableLimit > buffer.length)
                 {
+                    session.size += (offset - lb.offset);
                     lb.offset = offset;
-                    session.size += (offset - start);
-                    return writeUTF8(str, i, len, buffer, offset, limit, session, lb);
+                    return writeUTF8(str, i-1, len, buffer, offset, buffer.length, session, lb);
                 }
                 
                 buffer[offset++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
@@ -486,11 +575,6 @@ public final class StringSerializer
                 buffer[offset++] = (byte) (0x80 | ((c >>  0) & 0x3F));
             }
         }
-        
-        lb.offset = offset;
-        session.size += (offset - start);
-        
-        return lb;
     }
     
     /**
@@ -519,9 +603,9 @@ public final class StringSerializer
         if(len == 0)
             return lb;
         
-        int offset = lb.offset;
-        int limit = lb.buffer.length;
         byte[] buffer = lb.buffer;
+        int offset = lb.offset, 
+            limit = lb.buffer.length;
         
         // actual size
         session.size += len;
@@ -590,11 +674,9 @@ public final class StringSerializer
     public static LinkedBuffer writeUTF8FixedDelimited(final String str, 
             final boolean littleEndian, final WriteSession session, LinkedBuffer lb)
     {
-        final int lastSize = session.size;
-        final int len = str.length();
-        
-        int offset = lb.offset;
-        final int withIntOffset = offset + 2;
+        final int lastSize = session.size, 
+            len = str.length(), 
+            withIntOffset = lb.offset + 2;
         
         if(withIntOffset > lb.buffer.length)
         {
@@ -602,12 +684,12 @@ public final class StringSerializer
             // create a new buffer.
             lb = new LinkedBuffer(len+2 > session.nextBufferSize ? len+2 : session.nextBufferSize, 
                     lb);
-            offset = 0;
+            
             lb.offset = 2;
             
             if(len == 0)
             {
-                writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
+                writeFixed2ByteInt(0, lb.buffer, 0, littleEndian);
                 // update size
                 session.size += 2;
                 return lb;
@@ -616,9 +698,7 @@ public final class StringSerializer
             // fast path
             final LinkedBuffer rb = writeUTF8(str, 0, len, session, lb);
             
-            final int size = session.size - lastSize;
-            
-            writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
+            writeFixed2ByteInt((session.size - lastSize), lb.buffer, 0, littleEndian);
             
             // update size
             session.size += 2;
@@ -628,7 +708,7 @@ public final class StringSerializer
         
         if(len == 0)
         {
-            writeFixed2ByteInt(0, lb.buffer, offset, littleEndian);
+            writeFixed2ByteInt(0, lb.buffer, lb.offset, littleEndian);
             lb.offset = withIntOffset;
             // update size
             session.size += 2;
@@ -640,15 +720,12 @@ public final class StringSerializer
             // not enough space for the string.
             lb.offset = withIntOffset;
             
-            final byte[] buffer = lb.buffer;
-            
             // slow path
-            final LinkedBuffer rb = writeUTF8(str, 0, len, buffer, withIntOffset, buffer.length, 
-                    session, lb);
+            final LinkedBuffer rb = writeUTF8(str, 0, len, 
+                    lb.buffer, withIntOffset, lb.buffer.length, session, lb);
             
-            final int size = session.size - lastSize;
-            
-            writeFixed2ByteInt(size, buffer, offset, littleEndian);
+            writeFixed2ByteInt((session.size - lastSize), lb.buffer, 
+                    withIntOffset-2, littleEndian);
             
             // update size
             session.size += 2;
@@ -661,9 +738,8 @@ public final class StringSerializer
         
         final LinkedBuffer rb = writeUTF8(str, 0, len, session, lb);
         
-        final int size = session.size - lastSize;
-        
-        writeFixed2ByteInt(size, lb.buffer, offset, littleEndian);
+        writeFixed2ByteInt((session.size - lastSize), lb.buffer, 
+                withIntOffset-2, littleEndian);
         
         // update size
         session.size += 2;
@@ -675,23 +751,19 @@ public final class StringSerializer
             final int len, final WriteSession session, LinkedBuffer lb)
     {
         final int lastSize = session.size;
-        int offset = lb.offset;
         
-        if(offset == lb.buffer.length)
+        if(lb.offset == lb.buffer.length)
         {
-            // not enough space for the 1-byte varint.
             // create a new buffer.
             lb = new LinkedBuffer(len+1 > session.nextBufferSize ? len+1 : session.nextBufferSize, 
                     lb);
-            offset = 0;
+            
             lb.offset = 1;
             
             // fast path
             final LinkedBuffer rb = writeUTF8(str, index, len, session, lb);
             
-            final int size = session.size - lastSize;
-            
-            lb.buffer[offset] = (byte)(size);
+            lb.buffer[0] = (byte)(session.size - lastSize);
             
             // update size
             session.size++;
@@ -699,7 +771,7 @@ public final class StringSerializer
             return rb;
         }
         
-        final int withIntOffset = offset + 1;
+        final int withIntOffset = lb.offset + 1;
         if(withIntOffset + len > lb.buffer.length)
         {
             // not enough space for the string.
@@ -711,9 +783,7 @@ public final class StringSerializer
             final LinkedBuffer rb = writeUTF8(str, index, len, buffer, withIntOffset, buffer.length, 
                     session, lb);
             
-            final int size = session.size - lastSize;
-            
-            buffer[offset] = (byte)(size);
+            buffer[withIntOffset-1] = (byte)(session.size - lastSize);
             
             // update size
             session.size++;
@@ -726,9 +796,7 @@ public final class StringSerializer
         
         final LinkedBuffer rb = writeUTF8(str, index, len, session, lb);
         
-        final int size = session.size - lastSize;
-        
-        lb.buffer[offset] = (byte)(size);
+        lb.buffer[withIntOffset-1] = (byte)(session.size - lastSize);
         
         // update size
         session.size++;
@@ -737,13 +805,12 @@ public final class StringSerializer
     }
     
     private static LinkedBuffer writeUTF8VarDelimited(final String str, final int index, 
-            final int len, final int lowerLimit, final int expectedSize,
+            final int len, final int lowerLimit, int expectedSize,
             final WriteSession session, LinkedBuffer lb)
     {
-        final int lastSize = session.size;
-        
-        int offset = lb.offset;
-        final int withIntOffset = offset + expectedSize;
+        int lastSize = session.size,
+            offset = lb.offset, 
+            withIntOffset = offset + expectedSize;
         
         if(withIntOffset > lb.buffer.length)
         {
@@ -751,37 +818,31 @@ public final class StringSerializer
             // create a new buffer.
             lb = new LinkedBuffer(len+expectedSize > session.nextBufferSize ? len+expectedSize : session.nextBufferSize,
                     lb);
-            offset = 0;
-            lb.offset = expectedSize;
+            offset = lb.start;
+            lb.offset = withIntOffset = offset + expectedSize;
             
             // fast path
             final LinkedBuffer rb = writeUTF8(str, index, len, session, lb);
             
             int size = session.size - lastSize;
             
-            final byte[] buffer = lb.buffer;
-            
-            int last = expectedSize - 1;
             if(size < lowerLimit)
             {
                 // move one space to the left since the varint is 1-byte smaller
-                System.arraycopy(buffer, expectedSize, buffer, expectedSize-1, 
-                        lb.offset - expectedSize);
-                // update size
-                session.size += last;
+                System.arraycopy(lb.buffer, withIntOffset, lb.buffer, withIntOffset - 1, 
+                        lb.offset - withIntOffset);
+                
+                expectedSize--;
                 lb.offset--;
-                last--;
-            }
-            else
-            {
-                // update size
-                session.size += expectedSize;
             }
             
-            for (int i = 0; i < last; i++, size >>>= 7)
-                buffer[offset++] = (byte)((size & 0x7F) | 0x80);
+            // update size
+            session.size += expectedSize;
             
-            buffer[offset] = (byte)(size);
+            for (;--expectedSize > 0; size >>>= 7)
+                lb.buffer[offset++] = (byte)((size & 0x7F) | 0x80);
+            
+            lb.buffer[offset] = (byte)(size);
 
             return rb;
         }
@@ -791,35 +852,29 @@ public final class StringSerializer
             // not enough space for the string.
             lb.offset = withIntOffset;
             
-            final byte[] buffer = lb.buffer;
-            
             // slow path
-            final LinkedBuffer rb = writeUTF8(str, index, len, buffer, withIntOffset, buffer.length, 
-                    session, lb);
+            final LinkedBuffer rb = writeUTF8(str, index, len, 
+                    lb.buffer, withIntOffset, lb.buffer.length, session, lb);
             
             int size = session.size - lastSize;
-
-            int last = expectedSize - 1;
+            
             if(size < lowerLimit)
             {
                 // move one space to the left since the varint is 1-byte smaller
-                System.arraycopy(buffer, withIntOffset, buffer, withIntOffset - 1, 
+                System.arraycopy(lb.buffer, withIntOffset, lb.buffer, withIntOffset - 1, 
                         lb.offset - withIntOffset);
-                // update size
-                session.size += last;
+                
+                expectedSize--;
                 lb.offset--;
-                last--;
             }
-            else
-            {
-                // update size
-                session.size += expectedSize;
-            }
+
+            // update size
+            session.size += expectedSize;
             
-            for (int i = 0; i < last; i++, size >>>= 7)
-                buffer[offset++] = (byte)((size & 0x7F) | 0x80);
+            for (;--expectedSize > 0; size >>>= 7)
+                lb.buffer[offset++] = (byte)((size & 0x7F) | 0x80);
             
-            buffer[offset] = (byte)(size);
+            lb.buffer[offset] = (byte)(size);
             
             return rb;
         }
@@ -831,29 +886,23 @@ public final class StringSerializer
         
         int size = session.size - lastSize;
         
-        final byte[] buffer = lb.buffer;
-        
-        int last = expectedSize - 1;
         if(size < lowerLimit)
         {
             // move one space to the left since the varint is 1-byte smaller
-            System.arraycopy(buffer, withIntOffset, buffer, withIntOffset - 1, 
+            System.arraycopy(lb.buffer, withIntOffset, lb.buffer, withIntOffset - 1, 
                     lb.offset - withIntOffset);
-            // update size
-            session.size += last;
+            
+            expectedSize--;
             lb.offset--;
-            last--;
         }
-        else
-        {
-            // update size
-            session.size += expectedSize;
-        }
+
+        // update size
+        session.size += expectedSize;
         
-        for (int i = 0; i < last; i++, size >>>= 7)
-            buffer[offset++] = (byte)((size & 0x7F) | 0x80);
+        for (;--expectedSize > 0; size >>>= 7)
+            lb.buffer[offset++] = (byte)((size & 0x7F) | 0x80);
         
-        buffer[offset] = (byte)(size);
+        lb.buffer[offset] = (byte)(size);
         
         return rb;
     }

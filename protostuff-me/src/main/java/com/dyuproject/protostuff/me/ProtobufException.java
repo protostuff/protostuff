@@ -45,6 +45,7 @@
 
 package com.dyuproject.protostuff.me;
 
+
 /**
  * Thrown when a protocol message being parsed is invalid in some way,
  * e.g. it contains a malformed varint or a negative byte length.
@@ -82,7 +83,13 @@ public class ProtobufException extends ProtostuffException {
       "CodedInput encountered an embedded string or message " +
       "which claimed to have negative size.");
   }
-
+  
+  static ProtobufException misreportedSize() {
+    return new ProtobufException(
+      "CodedInput encountered an embedded string or bytes " +
+      "that misreported its size.");
+  }
+  
   static ProtobufException malformedVarint() {
     return new ProtobufException(
       "CodedInput encountered a malformed varint.");

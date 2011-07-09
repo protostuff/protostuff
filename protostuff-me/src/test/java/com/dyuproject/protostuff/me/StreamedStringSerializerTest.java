@@ -322,7 +322,7 @@ public class StreamedStringSerializerTest extends TestCase
         
         assertTrue(buf.length == stringLen + size);
         
-        int len = readRawVarint32(lb.buffer, 0);
+        int len = readRawVarint32(buf, 0);
         assertTrue(len == stringLen);
         
         print("total len: " + buf.length);

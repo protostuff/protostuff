@@ -309,6 +309,9 @@ public final class ByteArrayInput implements Input
         if(length < 0)
             throw ProtobufException.negativeSize();
         
+        if(offset + length > limit)
+            throw ProtobufException.misreportedSize();
+        
         final int offset = this.offset;
         
         this.offset += length;
@@ -326,6 +329,9 @@ public final class ByteArrayInput implements Input
         final int length = readRawVarint32();
         if(length < 0)
             throw ProtobufException.negativeSize();
+        
+        if(offset + length > limit)
+            throw ProtobufException.misreportedSize();
         
         final byte[] copy = new byte[length];
         System.arraycopy(buffer, offset, copy, 0, length);

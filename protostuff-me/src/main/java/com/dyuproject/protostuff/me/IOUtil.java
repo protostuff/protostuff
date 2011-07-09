@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.me;
 
 import java.io.DataInput;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -87,7 +88,7 @@ final class IOUtil
     {
         final int size = in.read();
         if(size == -1)
-            throw ProtobufException.truncatedMessage();
+            throw new EOFException("mergeDelimitedFrom");
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
         if(len != 0)
@@ -124,7 +125,7 @@ final class IOUtil
     {
         final int size = in.read();
         if(size == -1)
-            throw ProtobufException.truncatedMessage();
+            throw new EOFException("mergeDelimitedFrom");
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
         if(len != 0)
@@ -165,7 +166,7 @@ final class IOUtil
     {
         final byte size = in.readByte();
         if(size == -1)
-            throw ProtobufException.truncatedMessage();
+            throw new EOFException("mergeDelimitedFrom");
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
         
