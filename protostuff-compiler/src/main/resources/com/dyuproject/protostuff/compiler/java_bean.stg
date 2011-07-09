@@ -380,7 +380,7 @@ message_impl_message(message, options) ::= <<
 
 public Schema\<<message.name>\> cachedSchema()
 {
-    return this;
+    return DEFAULT_INSTANCE;
 }
 
 >>
