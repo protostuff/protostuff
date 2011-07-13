@@ -1,3 +1,5 @@
+protostuff-1.0.2-SNAPSHOT
+
 protostuff-1.0.1 2011-07-13
 + new protostuff-me module (for j2me by Michael Donohue)
 + new protostuff-runtime-md module (for modern mobile devices like android and kindle)
