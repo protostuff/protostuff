@@ -24,12 +24,29 @@ package com.dyuproject.protostuff.mojo;
  */
 public class ProtoModule extends com.dyuproject.protostuff.compiler.ProtoModule
 {
-
-    /**
-     * TODO
-     */
+    
     private static final long serialVersionUID = -1491907620177689686L;
 
+    private boolean addToCompileSourceRoot = true;
+
+    /**
+     * @return the addToCompileSourceRoot
+     */
+    public boolean isAddToCompileSourceRoot()
+    {
+        return addToCompileSourceRoot;
+    }
+
+    /**
+     * Set this to true to include the output dir to the list of compilation sources.
+     * 
+     * @param addToCompileSourceRoot the addToCompileSourceRoot to set
+     */
+    public void setAddToCompileSourceRoot(boolean addToCompileSourceRoot)
+    {
+        this.addToCompileSourceRoot = addToCompileSourceRoot;
+    }
+    
     
 
 }

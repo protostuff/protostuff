@@ -23,6 +23,7 @@
         <configuration>
           <protoModules>
             <protoModule>
+              <addToCompileSourceRoot>false</addToCompileSourceRoot>
               <source>src/main/resources/media.proto</source>
               <outputDir>src/main/java</outputDir>
               <output>java_bean</output>

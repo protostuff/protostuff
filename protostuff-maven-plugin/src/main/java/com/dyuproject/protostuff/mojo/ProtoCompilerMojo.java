@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 
 import com.dyuproject.protostuff.compiler.CompilerMain;
 
@@ -34,7 +35,36 @@ import com.dyuproject.protostuff.compiler.CompilerMain;
 public class ProtoCompilerMojo extends AbstractMojo
 {
     
-    static final boolean SKIP = Boolean.getBoolean("protostuff.compiler.skip");
+    /**
+     * The current Maven project.
+     *
+     * @parameter default-value="${project}"
+     * @readonly
+     * @required
+     * @since 1.0.1
+     */
+    protected MavenProject project;
+
+    /**
+     * When {@code true}, skip the execution.
+     *
+     * @parameter expression="${protostuff.compiler.skip}" default-value="false"
+     * @since 1.0.1
+     */
+    private boolean skip;
+
+    /**
+     * Usually most of protostuff mojos will not get executed on parent poms
+     * (i.e. projects with packaging type 'pom').
+     * Setting this parameter to {@code true} will force
+     * the execution of this mojo, even if it would usually get skipped in this case.
+     *
+     * @parameter expression="${protostuff.compiler.force}" default-value="false"
+     * @required
+     * @since 1.0.1
+     */
+    private boolean forceMojoExecution;
+
     /**
      * The properties file that contains the modules
      *
@@ -58,9 +88,11 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
-        if(SKIP)
+        if (skipMojo())
+        {
             return;
-        
+        }
+
         assert baseDir != null && baseDir.exists() && baseDir.isDirectory();
         
         if(modulesFile==null)
@@ -94,6 +126,13 @@ public class ProtoCompilerMojo extends AbstractMojo
                         }
                     }
                     CompilerMain.compile(m);
+
+                    // enabled by default unless overridden
+                    if(m.isAddToCompileSourceRoot())
+                    {
+                        // Include generated directory to the list of compilation sources
+                        project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                    }
                 }
             }
             catch(Exception e)
@@ -107,8 +146,17 @@ public class ProtoCompilerMojo extends AbstractMojo
             {
                 if(protoModules!=null)
                 {
-                    for(ProtoModule m : protoModules)
+                    for (ProtoModule m : protoModules)
+                    {
                         CompilerMain.compile(m);
+
+                        // enabled by default unless overridden
+                        if(m.isAddToCompileSourceRoot())
+                        {
+                            // Include generated directory to the list of compilation sources
+                            project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                        }
+                    }
                 }
                 
                 if(!modulesFile.exists())
@@ -122,5 +170,33 @@ public class ProtoCompilerMojo extends AbstractMojo
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * <p>Determine if the mojo execution should get skipped.</p>
+     * This is the case if:
+     * <ul>
+     * <li>{@link #skip} is <code>true</code></li>
+     * <li>if the mojo gets executed on a project with packaging type 'pom' and
+     * {@link #forceMojoExecution} is <code>false</code></li>
+     * </ul>
+     *
+     * @return <code>true</code> if the mojo execution should be skipped.
+     * @since 1.0.1
+     */
+    protected boolean skipMojo() {
+        if (skip) 
+        {
+            getLog().info("Skipping protostuff mojo execution");
+            return true;
+        }
+
+        if (!forceMojoExecution && "pom".equals(this.project.getPackaging())) 
+        {
+            getLog().info("Skipping protostuff mojo execution for project with packaging type 'pom'");
+            return true;
+        }
+
+        return false;
     }
 }
