@@ -2,7 +2,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>com.dyuproject.protostuff</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -28,15 +28,15 @@
               <tasks>
                 <copy todir="${project.build.directory}/extra-sources">  
                   <fileset dir="../protostuff-runtime/src/main/java">  
-                    <exclude name="**/RuntimeUnsafeFieldFactory.java"/>
-                    <exclude name="**/OnDemandSunReflectionFactory.java"/>
-                    <exclude name="**/RuntimeFieldFactory.java"/>
-                    <exclude name="**/RuntimeEnv.java"/>
+                    <exclude name="**/RuntimeUnsafeFieldFactory.java" />
+                    <exclude name="**/OnDemandSunReflectionFactory.java" />
+                    <exclude name="**/RuntimeFieldFactory.java" />
+                    <exclude name="**/RuntimeEnv.java" />
                   </fileset>  
                 </copy>
                 <copy todir="${project.build.directory}/extra-test-sources">  
                   <fileset dir="../protostuff-runtime/src/test/java">  
-                    <exclude name="**/ImmutableObjectsTest.java"/>
+                    <exclude name="**/ImmutableObjectsTest.java" />
                   </fileset>  
                 </copy>
               </tasks>

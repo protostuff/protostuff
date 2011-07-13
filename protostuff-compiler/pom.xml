@@ -2,7 +2,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>com.dyuproject.protostuff</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -88,15 +88,15 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
                     <jarjar jarfile="target/${project.build.finalName}-jarjar.jar">
                       <manifest>
                         <attribute name="Main-Class" value="com.dyuproject.protostuff.compiler.CompilerMain" />
                         <attribute name="implementation-version" value="${project.version}" />
                         <attribute name="url" value="${pom.url}" />
                       </manifest>
-                      <zipfileset src="target/${project.build.finalName}-jar-with-dependencies.jar"/>
-                      <keep pattern="com.dyuproject.protostuff.compiler.**"/>
+                      <zipfileset src="target/${project.build.finalName}-jar-with-dependencies.jar" />
+                      <keep pattern="com.dyuproject.protostuff.compiler.**" />
                     </jarjar>
                   </tasks>
                 </configuration>
