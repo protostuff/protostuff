@@ -140,6 +140,14 @@ public abstract class MappedSchema<T> implements Schema<T>
         pipeSchema = new PipeSchema();
     }
     
+    /**
+     * Returns the message's total number of fields.
+     */
+    public int getFieldCount()
+    {
+        return fields.length;
+    }
+    
     public Class<T> typeClass()
     {
         return typeClass;
