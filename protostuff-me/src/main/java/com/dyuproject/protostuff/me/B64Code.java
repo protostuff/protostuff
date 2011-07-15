@@ -361,7 +361,7 @@ public final class B64Code
     public static byte[] decode(final byte[] input, int inOffset, final int inLen)
     {
         if(inLen == 0)
-            return new byte[0];
+            return ByteString.EMPTY_BYTE_ARRAY;
         
         if (inLen%4!=0)
             throw new IllegalArgumentException("Input block size is not 4");

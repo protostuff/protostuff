@@ -122,9 +122,19 @@ public final class ByteString {
   // byte[] -> ByteString
 
   /**
+   * Empty String.
+   */
+  public static final String EMPTY_STRING = "";
+  
+  /**
+   * Empty byte array.
+   */
+  public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+  /**
    * Empty ByteString.
    */
-  public static final ByteString EMPTY = new ByteString(new byte[0]);
+  public static final ByteString EMPTY = new ByteString(EMPTY_BYTE_ARRAY);
 
   /**
    * Copies the given bytes into a {@code ByteString}.

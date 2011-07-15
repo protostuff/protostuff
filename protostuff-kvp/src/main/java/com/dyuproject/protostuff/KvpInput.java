@@ -40,10 +40,6 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 public final class KvpInput implements Input
 {
     
-    static final String EMPTY_STRING = "";
-    
-    static final byte[] EMPTY_BYTES = new byte[0];
-    
     static final int DEFAULT_BUFFER_SIZE = 
         Integer.getInteger("kvpinput.default_buffer_size", 1024);
     
@@ -338,7 +334,7 @@ public final class KvpInput implements Input
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         
         if(size == 0)
-            return EMPTY_BYTES;
+            return ByteString.EMPTY_BYTE_ARRAY;
         
         if(size > MAX_VALUE_SIZE)
             throw new ProtostuffException("Exceeded kvp max value size.");
@@ -360,7 +356,7 @@ public final class KvpInput implements Input
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         
         if(size == 0)
-            return EMPTY_STRING;
+            return ByteString.EMPTY_STRING;
         
         if(size > MAX_VALUE_SIZE)
             throw new ProtostuffException("Exceeded kvp max value size.");

@@ -99,7 +99,7 @@ public final class KvpByteArrayInput implements Input
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         if(size == 0)
-            return KvpInput.EMPTY_BYTES;
+            return ByteString.EMPTY_BYTE_ARRAY;
         
         byte[] data = new byte[size];
         System.arraycopy(buffer, offset, data, 0, size);
@@ -191,7 +191,7 @@ public final class KvpByteArrayInput implements Input
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         if(size == 0)
-            return KvpInput.EMPTY_STRING;
+            return ByteString.EMPTY_STRING;
         
         final String str = STRING.deser(buffer, offset, size);
         offset += size;
