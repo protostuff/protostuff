@@ -31,11 +31,15 @@ message Response {
 
 service SimpleRpc {
   rpc Local (Request) returns (Response) {
-    // rpc options are ignored by protostuff-parser
     option (rpc.is_streaming_rpc) = true;
+    option foo = "bar";
+    option bar.baz = 1.0f;
+    option id = 1;
   };
   
-  rpc LocalFull (testrpc.Request) returns (testrpc.Response);
+  rpc LocalFull (testrpc.Request) returns (testrpc.Response) {
+    // empty
+  };
   
   rpc LocalInner (Request.Inner) returns (Response.Inner);
   

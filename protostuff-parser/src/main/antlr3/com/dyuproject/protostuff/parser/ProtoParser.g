@@ -149,9 +149,13 @@ header_option [Proto proto]
     boolean standard = false;
     String value = null;
 }
-    :   OPTION n=ID ASSIGN (
-            v=ID { standard = true; value = $v.text; } 
+    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
+            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
             | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
+            | TRUE { value = "true"; }
+            | FALSE { value = "false"; }
+            | NUMINT { value = $NUMINT.text; }
+            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
         ) SEMICOLON! {
             if(standard)
                 proto.putStandardOption($n.text, value);
@@ -552,6 +556,7 @@ service_body [Proto proto, Service service]
 rpc_block [Proto proto, Service service]
 @init {
     String argName = null, argPackage = null, retName = null, retPackage = null;
+    Service.RpcMethod rm = null;
 }
     :   RPC n=ID LEFTPAREN (ap=FULL_ID {  
             String argFull = $ap.text;
@@ -564,9 +569,36 @@ rpc_block [Proto proto, Service service]
             int lastDot = retFull.lastIndexOf('.');
             retPackage = retFull.substring(0, lastDot); 
             retName = retFull.substring(lastDot+1);
-        } | r=ID { retName = $r.text; }) RIGHTPAREN ignore_block? SEMICOLON! {
-            Service.RpcMethod rm = service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
+        } | r=ID { retName = $r.text; }) RIGHTPAREN {
+            rm = service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
             rm.addAnnotations(proto.annotations, true);
+        } rpc_body_block[proto, rm]? SEMICOLON!
+    ;
+    
+rpc_body_block [Proto proto, Service.RpcMethod rm]
+    :   LEFTCURLY rpc_option[proto, rm]* RIGHTCURLY {
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+        }
+    ;
+
+rpc_option [Proto proto, Service.RpcMethod rm]
+@init {
+    boolean standard = false;
+    String value = null;
+}
+    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
+            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
+            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
+            | TRUE { value = "true"; }
+            | FALSE { value = "false"; }
+            | NUMINT { value = $NUMINT.text; }
+            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
+        ) SEMICOLON! {
+            if(standard)
+                rm.putStandardOption($n.text, value);
+            else
+                rm.putExtraOption($n.text, value);
         }
     ;
     

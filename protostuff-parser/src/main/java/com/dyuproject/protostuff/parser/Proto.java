@@ -133,6 +133,11 @@ public class Proto extends AnnotationContainer
             throw new IllegalStateException("Duplicate proto option: " + key);
     }
     
+    public String getStandardOption(String name)
+    {
+        return standardOptions.get(name);
+    }
+    
     public LinkedHashMap<String,String> getExtraOptions()
     {
         return extraOptions;

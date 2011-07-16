@@ -72,6 +72,9 @@ public class Service extends AnnotationContainer implements HasName
     public class RpcMethod extends AnnotationContainer implements HasName
     {
         
+        final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
+        final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
+        
         final int index;
         final String name, argName, argPackage, retName, retPackage;
         Message argType, returnType;
@@ -117,6 +120,40 @@ public class Service extends AnnotationContainer implements HasName
         public Message getReturnType()
         {
             return returnType;
+        }
+        
+        public LinkedHashMap<String,String> getStandardOptions()
+        {
+            return standardOptions;
+        }
+        
+        void putStandardOption(String key, String value)
+        {
+            String existing = standardOptions.put(key, value);
+            if(existing != null)
+                throw new IllegalStateException("Duplicate rpc option: " + key);
+        }
+        
+        public String getStandardOption(String name)
+        {
+            return standardOptions.get(name);
+        }
+        
+        public LinkedHashMap<String,String> getExtraOptions()
+        {
+            return extraOptions;
+        }
+        
+        void putExtraOption(String key, String value)
+        {
+            String existing = extraOptions.put(key, value);
+            if(existing != null)
+                throw new IllegalStateException("Duplicate rpc option: " + key);
+        }
+        
+        public String getExtraOption(String name)
+        {
+            return extraOptions.get(name);
         }
         
         void resolveReferences()

@@ -106,6 +106,11 @@ public class ProtoServiceTest extends TestCase
         assertTrue(local.getArgType() == request);
         assertTrue(local.getReturnType() == response);
         
+        assertEquals("true", local.getExtraOption("rpc.is_streaming_rpc"));
+        assertEquals("bar", local.getExtraOption("foo"));
+        assertEquals("1.0", local.getExtraOption("bar.baz"));
+        assertEquals("1", local.getExtraOption("id"));
+        
         RpcMethod localFull = service.getRpcMethod("LocalFull");
         assertNotNull(localFull);
         assertTrue(localFull.getArgType() == request);
