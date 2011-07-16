@@ -454,8 +454,20 @@ public final class ByteString {
    * embed raw bytes as a string literal with ISO-8859-1 encoding.
    */
   public static ByteString bytesDefaultValue(String bytes) {
+    return new ByteString(byteArrayDefaultValue(bytes));
+  }
+  
+  /**
+   * Helper called by generated code to construct default values for byte array
+   * fields.
+   * <p>
+   * This is a lot like {@link #stringDefaultValue}, but for bytes fields.
+   * In this case we only need the second of the two hacks -- allowing us to
+   * embed raw bytes as a string literal with ISO-8859-1 encoding.
+   */
+  public static byte[] byteArrayDefaultValue(String bytes) {
     try {
-      return ByteString.wrap(bytes.getBytes("ISO-8859-1"));
+      return bytes.getBytes("ISO-8859-1");
     } catch (UnsupportedEncodingException e) {
       // This should never happen since all JVMs are required to implement
       // ISO-8859-1.
