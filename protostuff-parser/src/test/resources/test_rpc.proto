@@ -37,6 +37,8 @@ service SimpleRpc {
     option id = 1;
   };
   
+  rpc theVoid (void) returns (void);
+  
   rpc LocalFull (testrpc.Request) returns (testrpc.Response) {
     // empty
   };

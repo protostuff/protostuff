@@ -122,6 +122,16 @@ public class Service extends AnnotationContainer implements HasName
             return returnType;
         }
         
+        public boolean isVoidArgType()
+        {
+            return argType == null;
+        }
+        
+        public boolean isVoidReturnType()
+        {
+            return returnType == null;
+        }
+        
         public LinkedHashMap<String,String> getStandardOptions()
         {
             return standardOptions;
@@ -159,20 +169,26 @@ public class Service extends AnnotationContainer implements HasName
         void resolveReferences()
         {
             String fullArgName = (argPackage != null ? argPackage + '.' + argName : argName);
-            Message argType = proto.findMessageReference(fullArgName, proto.getPackageName());
-            if(argType == null)
+            if(!"void".equals(fullArgName))
             {
-                throw new IllegalStateException("The message " + fullArgName + " is not defined.");
+                Message argType = proto.findMessageReference(fullArgName, proto.getPackageName());
+                if(argType == null)
+                {
+                    throw new IllegalStateException("The message " + fullArgName + " is not defined.");
+                }
+                this.argType = argType;
             }
-            this.argType = argType;
             
             String fullReturnName = (retPackage != null ? retPackage + '.' + retName : retName);
-            Message returnType = proto.findMessageReference(fullReturnName, proto.getPackageName());
-            if(returnType == null)
+            if(!"void".equals(fullReturnName))
             {
-                throw new IllegalStateException("The message " + fullReturnName + " is not defined.");
+                Message returnType = proto.findMessageReference(fullReturnName, proto.getPackageName());
+                if(returnType == null)
+                {
+                    throw new IllegalStateException("The message " + fullReturnName + " is not defined.");
+                }
+                this.returnType = returnType;
             }
-            this.returnType = returnType;
         }
         
     }

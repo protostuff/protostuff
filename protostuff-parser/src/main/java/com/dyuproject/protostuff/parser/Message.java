@@ -38,7 +38,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
     // code generator helpers
     boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent, extensible;
-    boolean requiredFieldPresentOnCurrent;
+    boolean requiredFieldPresentOnCurrent, annotationPresentOnFields;
     
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
     final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
@@ -247,6 +247,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return buffer.toString();
     }
     
+    public boolean isAnnotationPresentOnFields()
+    {
+        return annotationPresentOnFields;
+    }
+    
     public boolean isRepeatedFieldPresent()
     {
         return repeatedFieldPresent;
@@ -288,6 +293,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             
             if(!requiredFieldPresentOnCurrent && f.isRequired())
                 requiredFieldPresentOnCurrent = true;
+            
+            if(!annotationPresentOnFields && !f.annotations.isEmpty())
+                annotationPresentOnFields = true;
             
             if(f instanceof Field.Bytes)
             {

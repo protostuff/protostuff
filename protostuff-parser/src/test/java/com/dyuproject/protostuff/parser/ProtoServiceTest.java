@@ -111,6 +111,11 @@ public class ProtoServiceTest extends TestCase
         assertEquals("1.0", local.getExtraOption("bar.baz"));
         assertEquals("1", local.getExtraOption("id"));
         
+        RpcMethod theVoid = service.getRpcMethod("theVoid");
+        assertNotNull(theVoid);
+        assertTrue(theVoid.isVoidArgType());
+        assertTrue(theVoid.isVoidReturnType());
+        
         RpcMethod localFull = service.getRpcMethod("LocalFull");
         assertNotNull(localFull);
         assertTrue(localFull.getArgType() == request);

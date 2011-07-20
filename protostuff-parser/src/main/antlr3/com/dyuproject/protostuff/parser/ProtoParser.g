@@ -76,7 +76,7 @@ var
         REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | 
         RETURNS | INT32 | INT64 | UINT32 | UINT64 | SINT32 | SINT64 | 
         FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE | BOOL | 
-        STRING | BYTES | DEFAULT | MAX
+        STRING | BYTES | DEFAULT | MAX | VOID
     ;
 
 annotation_entry [Proto proto]
@@ -563,13 +563,13 @@ rpc_block [Proto proto, Service service]
             int lastDot = argFull.lastIndexOf('.');
             argPackage = argFull.substring(0, lastDot); 
             argName = argFull.substring(lastDot+1);
-        } | a=ID { argName = $a.text; }) RIGHTPAREN 
+        } | a=(VOID|ID) { argName = $a.text; }) RIGHTPAREN 
         RETURNS LEFTPAREN (rp=FULL_ID {  
             String retFull = $rp.text;
             int lastDot = retFull.lastIndexOf('.');
             retPackage = retFull.substring(0, lastDot); 
             retName = retFull.substring(lastDot+1);
-        } | r=ID { retName = $r.text; }) RIGHTPAREN {
+        } | r=(VOID|ID) { retName = $r.text; }) RIGHTPAREN {
             rm = service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
             rm.addAnnotations(proto.annotations, true);
         } rpc_body_block[proto, rm]? SEMICOLON!

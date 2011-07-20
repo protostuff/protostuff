@@ -219,6 +219,10 @@ MAX
     :   'max'
     ;    
 
+VOID
+    :   'void'
+    ;
+
 FULL_ID
     : ID ('.' ID)+
     ;
