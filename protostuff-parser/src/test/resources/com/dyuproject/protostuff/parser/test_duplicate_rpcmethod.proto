@@ -1,0 +1,10 @@
+package testdup;
+
+
+service FooService {
+
+  rpc bar (void) returns (void);
+  
+  rpc bar (void) returns (void);
+
+}

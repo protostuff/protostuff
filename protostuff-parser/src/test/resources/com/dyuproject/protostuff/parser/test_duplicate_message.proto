@@ -1,0 +1,13 @@
+package testdup;
+
+message Foo {
+
+  optional int32 id = 1;
+
+}
+
+message Foo {
+
+  optional string bar = 2;
+
+}

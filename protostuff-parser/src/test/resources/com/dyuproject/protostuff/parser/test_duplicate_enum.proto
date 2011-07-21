@@ -1,0 +1,15 @@
+package testdup;
+
+enum Foo {
+
+  A = 1;
+  B = 2;
+
+}
+
+enum Foo {
+  
+  C = 3;
+  D = 4;
+
+}

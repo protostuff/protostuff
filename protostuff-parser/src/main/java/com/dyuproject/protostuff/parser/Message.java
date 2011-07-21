@@ -103,7 +103,12 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     void addNestedMessage(Message message)
     {
-        nestedMessages.put(message.name, message);
+        if(nestedMessages.put(message.name, message) != null)
+        {
+            throw new IllegalStateException("Duplicate nested message: " + 
+                    message.name + " from message: " + name);
+        }
+        
         message.parentMessage = this;
     }
     
@@ -119,7 +124,12 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     void addNestedEnumGroup(EnumGroup enumGroup)
     {
-        nestedEnumGroups.put(enumGroup.name, enumGroup);
+        if(nestedEnumGroups.put(enumGroup.name, enumGroup) != null)
+        {
+            throw new IllegalStateException("Duplicate nested enum: " + 
+                    enumGroup.name + " from message: " + name);
+        }
+        
         enumGroup.parentMessage = this;
     }
     

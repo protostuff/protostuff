@@ -34,7 +34,8 @@ public class Service extends AnnotationContainer implements HasName
     {
         this.name = name;
         this.proto = proto;
-        proto.services.put(name, this);
+        if(proto.services.put(name, this) != null)
+            throw new IllegalStateException("Duplicate service: " + name);
     }
 
     public String getName()
@@ -89,8 +90,7 @@ public class Service extends AnnotationContainer implements HasName
             this.retName = retName;
             this.retPackage = retPackage;
             
-            rpcMethods.put(name, this);
-            if(index+1 != rpcMethods.size())
+            if(rpcMethods.put(name, this) != null)
             {
                 throw new IllegalStateException("Duplicate rpc method: " + name + 
                         " from service " + Service.this.name);

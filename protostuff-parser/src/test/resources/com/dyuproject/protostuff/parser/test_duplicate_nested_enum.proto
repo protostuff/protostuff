@@ -1,0 +1,15 @@
+package testdup;
+
+message Foo {
+
+  enum Bar {
+    BAZ = 3;
+  }
+  
+  enum Bar {
+    BZ = 4;
+  }
+  
+  optional int32 id = 1;
+
+}

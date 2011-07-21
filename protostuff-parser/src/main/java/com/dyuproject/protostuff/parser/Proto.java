@@ -172,7 +172,9 @@ public class Proto extends AnnotationContainer
     
     void addMessage(Message message)
     {
-        messages.put(message.name, message);
+        if(messages.put(message.name, message) != null)
+            throw new IllegalStateException("Duplicate message: " + message.name);
+        
         message.proto = this;
     }
     
@@ -193,7 +195,9 @@ public class Proto extends AnnotationContainer
     
     void addEnumGroup(EnumGroup enumGroup)
     {
-        enumGroups.put(enumGroup.name, enumGroup);
+        if(enumGroups.put(enumGroup.name, enumGroup) != null)
+            throw new IllegalStateException("Duplicate enum: " + enumGroup.name);
+        
         enumGroup.proto = this;
     }
     
