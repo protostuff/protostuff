@@ -1,4 +1,5 @@
 protostuff-1.0.2-SNAPSHOT
++ Issue 78: Field option missing on message fields (thanks to robert.herschke.de)
 + Issue 76: The protostuff compiler does not detect duplicate service/message/enum
 
 protostuff-1.0.1 2011-07-13

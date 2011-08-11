@@ -401,6 +401,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         to.number = from.number;
         to.modifier = from.modifier;
         to.addAnnotations(from.annotations, true);
+        to.options.putAll(from.options);
     }
     
     static void resolveFullName(Message message, StringBuilder buffer)

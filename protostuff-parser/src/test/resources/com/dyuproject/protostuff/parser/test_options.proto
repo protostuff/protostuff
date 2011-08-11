@@ -1,0 +1,9 @@
+package foo;
+
+message AnotherMessage {
+  required int32 id = 1;
+}
+
+message AMessage {
+ required AnotherMessage anotherMessage = 1 [anOption = "something"];
+}
