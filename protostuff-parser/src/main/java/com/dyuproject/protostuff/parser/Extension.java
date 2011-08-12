@@ -30,7 +30,9 @@ public class Extension extends AnnotationContainer implements HasFields
     final String type;
     Proto proto;
     final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
-
+    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
+    
     Message extendedMessage;
 
     public Extension(Proto proto, Message parentMessage, String packageName, String type)
@@ -72,6 +74,36 @@ public class Extension extends AnnotationContainer implements HasFields
     public void addField(Field<?> field)
     {
         this.fields.put(field.getName(), field);
+    }
+    
+    public void putStandardOption(String key, String value)
+    {
+        standardOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    public String getStandardOption(String key)
+    {
+        return standardOptions.get(key);
+    }
+    
+    public void putExtraOption(String key, String value)
+    {
+        extraOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getExtraOptions()
+    {
+        return extraOptions;
+    }
+    
+    public String getExtraOption(String key)
+    {
+        return extraOptions.get(key);
     }
 
     public Message getExtendedMessage()

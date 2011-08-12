@@ -17,6 +17,7 @@ package com.dyuproject.protostuff.parser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 
 /**
  * Represents an enum declared in either the {@link Proto} or nested in a {@link Message}.
@@ -32,6 +33,8 @@ public class EnumGroup extends AnnotationContainer implements HasName
     Proto proto;
     final ArrayList<Value> values = new ArrayList<Value>();
     final ArrayList<Value> sortedValues = new ArrayList<Value>();
+    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
     
     public EnumGroup()
     {
@@ -89,6 +92,36 @@ public class EnumGroup extends AnnotationContainer implements HasName
         if(p==null)
             p = proto = parentMessage.getProto();
         return p;
+    }
+    
+    public void putStandardOption(String key, String value)
+    {
+        standardOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    public String getStandardOption(String key)
+    {
+        return standardOptions.get(key);
+    }
+    
+    public void putExtraOption(String key, String value)
+    {
+        extraOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getExtraOptions()
+    {
+        return extraOptions;
+    }
+    
+    public String getExtraOption(String key)
+    {
+        return extraOptions.get(key);
     }
     
     public Value getValue(int index)

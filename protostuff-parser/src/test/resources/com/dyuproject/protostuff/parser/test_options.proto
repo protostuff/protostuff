@@ -2,8 +2,19 @@ package foo;
 
 message AnotherMessage {
   required int32 id = 1;
+  option foo = "bar";
 }
 
 message AMessage {
- required AnotherMessage anotherMessage = 1 [anOption = "something"];
+  option message_set_wire_format = true;
+
+  required AnotherMessage anotherMessage = 1 [anOption = "something"];
+}
+
+enum Baz {
+  option random.enum.option = 1.0;
+  
+  A = 1;
+  Z = 26;
+  
 }

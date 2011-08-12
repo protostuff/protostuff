@@ -18,6 +18,10 @@ import java.util.Collection;
 
 public interface HasFields
 {
+    
+    void putStandardOption(String key, String value);
+    
+    void putExtraOption(String key, String value);
 
     Collection<Field<?>> getFields();
 

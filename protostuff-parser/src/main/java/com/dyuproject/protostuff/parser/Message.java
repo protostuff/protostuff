@@ -42,6 +42,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
     final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
+    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
     
     public Message()
     {
@@ -222,6 +224,36 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             }
             this.extensions.put(number, field);
         }
+    }
+    
+    public void putStandardOption(String key, String value)
+    {
+        standardOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    public String getStandardOption(String key)
+    {
+        return standardOptions.get(key);
+    }
+    
+    public void putExtraOption(String key, String value)
+    {
+        extraOptions.put(key, value);
+    }
+    
+    public LinkedHashMap<String,String> getExtraOptions()
+    {
+        return extraOptions;
+    }
+    
+    public String getExtraOption(String key)
+    {
+        return extraOptions.get(key);
     }
     
     public String toString()

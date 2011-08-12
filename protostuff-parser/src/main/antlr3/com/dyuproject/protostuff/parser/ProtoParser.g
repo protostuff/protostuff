@@ -193,6 +193,27 @@ message_body [Proto proto, Message message]
     |   extend_block[proto, message]
     |   extensions_range[proto, message]
     |   annotation_entry[proto]
+    |   message_option[proto, message]
+    ;
+    
+message_option [Proto proto, HasFields message]
+@init {
+    boolean standard = false;
+    String value = null;
+}
+    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
+            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
+            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
+            | TRUE { value = "true"; }
+            | FALSE { value = "false"; }
+            | NUMINT { value = $NUMINT.text; }
+            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
+        ) SEMICOLON! {
+            if(standard)
+                message.putStandardOption($n.text, value);
+            else
+                message.putExtraOption($n.text, value);
+        }
     ;
     
 extensions_range [Proto proto, Message message]
@@ -514,7 +535,7 @@ enum_block [Proto proto, Message message]
     EnumGroup enumGroup = null;
 }
     :   ENUM ID { enumGroup = new EnumGroup($ID.text); } LEFTCURLY 
-        (enum_field[proto, message, enumGroup])* RIGHTCURLY {
+        (enum_body[proto, message, enumGroup])* RIGHTCURLY {
             if(message==null)
                 proto.addEnumGroup(enumGroup);
             else
@@ -524,6 +545,31 @@ enum_block [Proto proto, Message message]
             
         } (SEMICOLON?)!
     ;
+    
+enum_body [Proto proto, Message message, EnumGroup enumGroup]
+    :   enum_field[proto, message, enumGroup]
+    |   enum_option[proto, enumGroup]
+    ;
+    
+enum_option [Proto proto, EnumGroup enumGroup]
+@init {
+    boolean standard = false;
+    String value = null;
+}
+    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
+            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
+            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
+            | TRUE { value = "true"; }
+            | FALSE { value = "false"; }
+            | NUMINT { value = $NUMINT.text; }
+            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
+        ) SEMICOLON! {
+            if(standard)
+                enumGroup.putStandardOption($n.text, value);
+            else
+                enumGroup.putExtraOption($n.text, value);
+        }
+    ;    
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]
     :   ID ASSIGN NUMINT SEMICOLON! {

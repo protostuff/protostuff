@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 public class OptionTest extends TestCase
 {
     
-    public void testMessageOption() throws Exception
+    public void testIt() throws Exception
     {
         File f = ProtoParserTest.getFile("com/dyuproject/protostuff/parser/test_options.proto");
         assertTrue(f.exists());
@@ -39,6 +39,15 @@ public class OptionTest extends TestCase
         assertNotNull(aMessage);
         assertEquals("something",
                 aMessage.getField("anotherMessage").getOption("anOption"));
+        assertEquals("true", aMessage.getExtraOption("message_set_wire_format"));
+        
+        Message anotherMessage = proto.getMessage("AnotherMessage");
+        assertNotNull(anotherMessage);
+        assertEquals("bar", anotherMessage.getExtraOption("foo"));
+        
+        EnumGroup baz = proto.getEnumGroup("Baz");
+        assertNotNull(baz);
+        assertEquals("1.0", baz.getExtraOption("random.enum.option"));
     }
 
 }
