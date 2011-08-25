@@ -131,6 +131,10 @@ import java.util.Vector;
 
 <if(message.bytesFieldPresent)>
 import com.dyuproject.protostuff.me.ByteString;
+<else>
+<if(message.bytesOrStringDefaultValuePresent)>
+import com.dyuproject.protostuff.me.ByteString;
+<endif>
 <endif>
 
 import com.dyuproject.protostuff.me.Input;

@@ -38,6 +38,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
     // code generator helpers
     boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent, extensible;
+    boolean bytesOrStringDefaultValuePresent;
     boolean requiredFieldPresentOnCurrent, annotationPresentOnFields;
     
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
@@ -304,6 +305,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return bytesFieldPresent;
     }
     
+    public boolean isBytesOrStringDefaultValuePresent()
+    {
+        return bytesOrStringDefaultValuePresent;
+    }
+    
     public boolean isRequiredFieldPresent()
     {
         return requiredFieldPresent;
@@ -343,11 +349,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             {
                 if(!root.bytesFieldPresent)
                     root.bytesFieldPresent = true;
+                if(!root.bytesOrStringDefaultValuePresent && f.defaultValue != null)
+                    root.bytesOrStringDefaultValuePresent = true;
             }
             else if(f instanceof Field.String)
             {    
-                if(!root.bytesFieldPresent && f.defaultValue!=null)
-                    root.bytesFieldPresent = true;
+                if(!root.bytesOrStringDefaultValuePresent && f.defaultValue != null)
+                    root.bytesOrStringDefaultValuePresent = true;
             }
             else if(f instanceof Field.Reference)
             {

@@ -140,6 +140,10 @@ import java.util.List;
 
 <if(message.bytesFieldPresent)>
 import com.dyuproject.protostuff.ByteString;
+<else>
+<if(message.bytesOrStringDefaultValuePresent)>
+import com.dyuproject.protostuff.ByteString;
+<endif>
 <endif>
 
 import com.dyuproject.protostuff.GraphIOUtil;
