@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Jun 27, 2010
  */
-public final class YamlOutput extends WriteSession implements Output
+public final class YamlOutput extends WriteSession implements Output, StatefulOutput
 {
     
     /**
@@ -91,6 +91,14 @@ public final class YamlOutput extends WriteSession implements Output
         lastNumber = 0;
         
         return this;
+    }
+    
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
+    {
+        if(lastSchema != null && lastSchema == this.schema)
+        {
+            this.schema = schema;
+        }
     }
     
     /**
