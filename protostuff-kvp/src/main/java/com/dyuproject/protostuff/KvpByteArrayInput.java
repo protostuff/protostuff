@@ -101,6 +101,9 @@ public final class KvpByteArrayInput implements Input
         if(size == 0)
             return ByteString.EMPTY_BYTE_ARRAY;
         
+        if(offset + size > limit)
+            throw new ProtostuffException("Misreported size.");
+        
         byte[] data = new byte[size];
         System.arraycopy(buffer, offset, data, 0, size);
         offset += size;
@@ -139,6 +142,12 @@ public final class KvpByteArrayInput implements Input
     public int readInt32() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
+        if(size == 0)
+            return 0;
+        
+        if(offset + size > limit)
+            throw new ProtostuffException("Misreported size.");
+        
         final int number = parseInt(buffer, offset, size, 10);
         offset += size;
         return number;
@@ -147,6 +156,12 @@ public final class KvpByteArrayInput implements Input
     public long readInt64() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
+        if(size == 0)
+            return 0;
+        
+        if(offset + size > limit)
+            throw new ProtostuffException("Misreported size.");
+        
         final long number = parseLong(buffer, offset, size, 10);
         offset += size;
         return number;
@@ -192,6 +207,9 @@ public final class KvpByteArrayInput implements Input
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         if(size == 0)
             return ByteString.EMPTY_STRING;
+        
+        if(offset + size > limit)
+            throw new ProtostuffException("Misreported size.");
         
         final String str = STRING.deser(buffer, offset, size);
         offset += size;

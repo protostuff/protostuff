@@ -264,6 +264,9 @@ public final class KvpInput implements Input
         
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         
+        if(size == 0)
+            return 0;
+        
         if(offset + size > limit && !readable(size))
             throw new ProtostuffException("Truncated message.");
         
@@ -280,6 +283,9 @@ public final class KvpInput implements Input
             throw new ProtostuffException("Truncated message.");
         
         final int size = buffer[offset++] | (buffer[offset++] << 8);
+        
+        if(size == 0)
+            return 0;
         
         if(offset + size > limit && !readable(size))
             throw new ProtostuffException("Truncated message.");
