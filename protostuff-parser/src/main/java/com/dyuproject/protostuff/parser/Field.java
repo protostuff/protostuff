@@ -142,6 +142,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         return modifier == Modifier.OPTIONAL;
     }
     
+    public boolean isDefaultValueSet()
+    {
+        return getDefaultValue() != null;
+    }
+    
     public boolean isNumberField()
     {
         return Number.class.isAssignableFrom(getClass());
@@ -165,6 +170,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     public boolean isStringField()
     {
         return String.class.isAssignableFrom(getClass());
+    }
+    
+    public boolean isBoolField()
+    {
+        return Bool.class.isAssignableFrom(getClass());
     }
     
     public boolean isDelimited()

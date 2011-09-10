@@ -28,6 +28,7 @@ public class EnumField extends Field<EnumGroup.Value>
     
     java.lang.String javaType;
     EnumGroup enumGroup;
+    boolean defaultValueSet;
     
     public EnumField()
     {
@@ -38,6 +39,11 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         this();
         this.enumGroup = enumGroup;
+    }
+    
+    public boolean isDefaultValueSet()
+    {
+        return defaultValueSet;
     }
     
     public EnumGroup getEnumGroup()

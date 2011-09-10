@@ -423,6 +423,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             ef.defaultValue = enumGroup.getFirstValue();
         else
         {
+            ef.defaultValueSet = true;
             ef.defaultValue = enumGroup.getValue(refName);
             if(ef.defaultValue == null)
             {

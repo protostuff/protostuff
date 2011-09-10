@@ -132,6 +132,24 @@ public class Service extends AnnotationContainer implements HasName
             return returnType == null;
         }
         
+        public String getJavaArgType()
+        {
+            if(argType == null)
+                return "null";
+            
+            return getProto().getJavaPackageName().equals(argType.getProto().getJavaPackageName()) ? 
+                    argType.getRelativeName() : argType.getJavaFullName();
+        }
+        
+        public String getJavaReturnType()
+        {
+            if(returnType == null)
+                return "null";
+            
+            return getProto().getJavaPackageName().equals(returnType.getProto().getJavaPackageName()) ? 
+                    returnType.getRelativeName() : returnType.getJavaFullName();
+        }
+        
         public LinkedHashMap<String,String> getStandardOptions()
         {
             return standardOptions;
