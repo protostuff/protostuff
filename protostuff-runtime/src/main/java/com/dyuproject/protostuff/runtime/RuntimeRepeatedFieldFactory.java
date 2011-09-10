@@ -102,7 +102,10 @@ final class RuntimeRepeatedFieldFactory
                 if(collection != null && !collection.isEmpty())
                 {
                     for(Object o : collection)
-                        inline.writeTo(output, number, o, true);
+                    {
+                        if(o != null)
+                            inline.writeTo(output, number, o, true);
+                    }
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
@@ -237,7 +240,10 @@ final class RuntimeRepeatedFieldFactory
                 {
                     final Schema<Object> schema = getSchema();
                     for(Object o : collection)
-                        output.writeObject(number, o, schema, true);
+                    {
+                        if(o != null)
+                            output.writeObject(number, o, schema, true);
+                    }
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
@@ -308,7 +314,10 @@ final class RuntimeRepeatedFieldFactory
                 if(existing != null && !existing.isEmpty())
                 {
                     for(Object o : existing)
-                        output.writeObject(number, o, schema, true);
+                    {
+                        if(o != null)
+                            output.writeObject(number, o, schema, true);
+                    }
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
@@ -411,7 +420,10 @@ final class RuntimeRepeatedFieldFactory
                 if(existing != null && !existing.isEmpty())
                 {
                     for(Object o : existing)
-                        output.writeObject(number, o, schema, true);
+                    {
+                        if(o != null)
+                            output.writeObject(number, o, schema, true);
+                    }
                 }
             }
             protected void transfer(Pipe pipe, Input input, Output output, 
