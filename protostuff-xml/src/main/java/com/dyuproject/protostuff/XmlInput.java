@@ -280,6 +280,9 @@ public final class XmlInput implements Input
             value = schema.newMessage();
         schema.mergeFrom(this, value);
         
+        if(!schema.isInitialized(value))
+            throw new UninitializedMessageException(value, schema);
+        
         //if(!simpleName.equals(parser.getLocalName()))
         //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
         

@@ -22,6 +22,7 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -396,6 +397,187 @@ public class XmlCoreSerDeserTest extends TestCase
         Foo parsedFoo = new Foo();
         XmlIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema());
         SerializableObjects.assertEquals(foo, parsedFoo);
+    }
+    
+    public void testNestedRequiredField()
+    {
+        Schema<WrapperPojo> schema = WrapperPojo.SCHEMA;
+        WrapperPojo message = new WrapperPojo();
+        message.requiresName = new RequiresName();
+        message.requiresName.description = "some description";
+        
+        byte[] data = XmlIOUtil.toByteArray(message, schema);
+        
+        WrapperPojo parsed = new WrapperPojo();
+        
+        try
+        {
+            XmlIOUtil.mergeFrom(data, parsed, schema);
+        }
+        catch(UninitializedMessageException e)
+        {
+            // expected
+            return;
+        }
+        
+        assertTrue(false);
+    }
+    
+    static class RequiresName
+    {
+        
+        String name;
+        String description;
+        
+        static final Schema<RequiresName> SCHEMA = new Schema<RequiresName>()
+        {
+
+            public String getFieldName(int number)
+            {
+                switch(number)
+                {
+                    case 1: return "n";
+                    case 2: return "d";
+                    default: return null;
+                }
+            }
+
+            public int getFieldNumber(String name)
+            {
+                if(name.length() != 1)
+                    return 0;
+                
+                switch(name.charAt(0))
+                {
+                    case 'n': return 1;
+                    case 'd': return 2;
+                    default: return 0;
+                }
+            }
+
+            public boolean isInitialized(RequiresName message)
+            {
+                return message.name != null;
+            }
+
+            public void mergeFrom(Input input, RequiresName message) throws IOException
+            {
+                for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+                {
+                    switch(number)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            message.name = input.readString();
+                            break;
+                        case 2:
+                            message.description = input.readString();
+                            break;
+                        default:
+                            input.handleUnknownField(number, this);
+                    }
+                }
+            }
+
+            public String messageFullName()
+            {
+                return RequiresName.class.getName();
+            }
+
+            public String messageName()
+            {
+                return RequiresName.class.getSimpleName();
+            }
+
+            public RequiresName newMessage()
+            {
+                return new RequiresName();
+            }
+
+            public Class<? super RequiresName> typeClass()
+            {
+                return RequiresName.class;
+            }
+
+            public void writeTo(Output output, RequiresName message) throws IOException
+            {
+                if(message.name != null)
+                    output.writeString(1, message.name, false);
+                if(message.description != null)
+                    output.writeString(2, message.description, false);
+            }
+            
+        };
+        
+    }
+    
+    static class WrapperPojo
+    {
+        RequiresName requiresName;
+        
+        static final Schema<WrapperPojo> SCHEMA = new Schema<WrapperPojo>()
+        {
+
+            public String getFieldName(int number)
+            {
+                return number == 1 ? "w" : null;
+            }
+
+            public int getFieldNumber(String name)
+            {
+                return name.length() == 1 && name.charAt(0) == 'w' ? 1 : 0;
+            }
+
+            public boolean isInitialized(WrapperPojo message)
+            {
+                return true;
+            }
+
+            public void mergeFrom(Input input, WrapperPojo message) throws IOException
+            {
+                for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+                {
+                    switch(number)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            message.requiresName = input.mergeObject(message.requiresName, RequiresName.SCHEMA);
+                            break;
+                        default:
+                            input.handleUnknownField(number, this);
+                    }
+                }
+            }
+
+            public String messageFullName()
+            {
+                return WrapperPojo.class.getName();
+            }
+
+            public String messageName()
+            {
+                return WrapperPojo.class.getSimpleName();
+            }
+
+            public WrapperPojo newMessage()
+            {
+                return new WrapperPojo();
+            }
+
+            public Class<? super WrapperPojo> typeClass()
+            {
+                return WrapperPojo.class;
+            }
+
+            public void writeTo(Output output, WrapperPojo message) throws IOException
+            {
+                if(message.requiresName != null)
+                    output.writeObject(1, message.requiresName, RequiresName.SCHEMA, false);
+            }
+            
+        };
     }
 
 }
