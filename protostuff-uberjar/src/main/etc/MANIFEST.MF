@@ -1,0 +1,4 @@
+url: http://code.google.com/p/protostuff/
+mode: development
+
+

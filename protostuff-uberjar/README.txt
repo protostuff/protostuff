@@ -8,7 +8,7 @@ Building an "uberjar" for using protostuff with OSGI.
    cd protostuff-uberjar
 
 3) run maven to create the OSGI-bundle
-   mvn clean bundle:manifest assembly:single install
+   mvn clean install
 
 
 Background:

@@ -16,24 +16,28 @@
     <defaultGoal>install</defaultGoal>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2.1</version>
-        <configuration>
-          <appendAssemblyId>false</appendAssemblyId>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-              <manifestFile>src/main/resources/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy failonerror="false" file="src/main/etc/MANIFEST.MF" tofile="target/MANIFEST.MF" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-           <manifestLocation>src/main/resources</manifestLocation>
+           <manifestLocation>target</manifestLocation>
            <instructions>
               <Import-Package>
                  sun.misc;resolution:=optional
@@ -45,6 +49,37 @@
               </Export-Package>
            </instructions>
         </configuration>
+        <executions>
+          <execution>
+            <id>bundle-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifestFile>target/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
