@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Export-Package: com.dyuproject.protostuff,com.dyuproject.protostuff.ru
+ ntime;uses:="com.dyuproject.protostuff,sun.reflect,sun.misc"
+implementation-version: 1.0.2
+Built-By: dyuproject
+Tool: Bnd-1.15.0
+package: com.dyuproject.protostuff
+Bundle-Name: protostuff :: uberjar
+Created-By: Apache Maven Bundle Plugin
+url: http://code.google.com/p/protostuff/
+mode: development
+Build-Jdk: 1.6.0_26
+Bundle-Version: 1.0.2
+Bnd-LastModified: 1314644815344
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: serialization api for messages
+Import-Package: sun.misc;resolution:=optional,sun.reflect;resolution:=
+ optional
+Bundle-SymbolicName: com.dyuproject.protostuff.uberjar
+

@@ -1,4 +1,5 @@
 protostuff-1.0.2-SNAPSHOT
++ add protostuff-uberjar (osgi stuff from Thomas Kock)
 + Issue 83: Kvp input does not properly handle empty strings and misreported size
 + Issue 82: Serializing repeated fields on protostuff-runtime needs a null-check to only serialize non-nulls.
 + Issue 81: Xml input does not check required fields when the nested message is not empty.
