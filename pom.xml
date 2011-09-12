@@ -238,6 +238,7 @@
     <module>protostuff-maven-plugin</module>
     <!-- Not needed for releases -->
     <module>protostuff-benchmark</module>
+    <module>protostuff-uberjar</module>
     <module>archetype</module>
   </modules>
   
