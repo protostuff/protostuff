@@ -1,4 +1,8 @@
 protostuff-1.0.2-SNAPSHOT
++ Issue 83: Kvp input does not properly handle empty strings and misreported size
++ Issue 82: Serializing repeated fields on protostuff-runtime needs a null-check to only serialize non-nulls.
++ Issue 81: Xml input does not check required fields when the nested message is not empty.
++ Issue 80: Yaml does not handle polymorphic/cyclic serialization
 + Issue 79: Provide support for options in messages and enums
 + Issue 78: Field option missing on message fields (thanks to robert.herschke.de)
 + Issue 76: The protostuff compiler does not detect duplicate service/message/enum
