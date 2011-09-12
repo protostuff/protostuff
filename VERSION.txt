@@ -6,6 +6,7 @@ protostuff-1.0.2-SNAPSHOT
 + Issue 79: Provide support for options in messages and enums
 + Issue 78: Field option missing on message fields (thanks to robert.herschke.de)
 + Issue 76: The protostuff compiler does not detect duplicate service/message/enum
++ update jackson to 1.7.9
 
 protostuff-1.0.1 2011-07-13
 + new protostuff-me module (for j2me by Michael Donohue)
