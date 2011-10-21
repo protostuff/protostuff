@@ -1634,8 +1634,8 @@ final class RuntimeMapFieldFactory
                 }
                 catch(Exception e)
                 {
-                    throw new RuntimeException("Could not get the enum type of the " + 
-                            "EnumMap: " + f.getType());
+                    // still handle the serialization of EnumMaps even without generics
+                    return RuntimeFieldFactory.OBJECT.create(number, name, f);
                 }
                 
                 messageFactory = EnumIO.get(enumType).getEnumMapFactory();

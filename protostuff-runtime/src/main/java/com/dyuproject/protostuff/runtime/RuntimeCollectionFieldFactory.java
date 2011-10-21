@@ -359,9 +359,6 @@ final class RuntimeCollectionFieldFactory
                 if(input instanceof GraphInput && 
                         ((GraphInput)input).isCurrentMessageReference())
                 {
-                    // update the actual reference.
-                    ((GraphInput)input).updateLast(value, collection);
-                    
                     collection.add(value);
                 }
             }
@@ -441,9 +438,6 @@ final class RuntimeCollectionFieldFactory
                 if(input instanceof GraphInput && 
                         ((GraphInput)input).isCurrentMessageReference())
                 {
-                    // update the actual reference.
-                    ((GraphInput)input).updateLast(value, collection);
-                    
                     collection.add(value);
                 }
             }
@@ -467,7 +461,6 @@ final class RuntimeCollectionFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
         {
-            final MessageFactory messageFactory;
             if(EnumSet.class.isAssignableFrom(f.getType()))
             {
                 final Class<Object> enumType;
@@ -477,23 +470,22 @@ final class RuntimeCollectionFieldFactory
                 }
                 catch(Exception e)
                 {
-                    throw new RuntimeException("Could not get the enum type of the " + 
-                            "EnumSet: " + f.getType());
+                    // still handle the serialization of EnumSets even without generics
+                    return RuntimeFieldFactory.OBJECT.create(number, name, f);
                 }
                 
-                messageFactory = EnumIO.get(enumType).getEnumSetFactory();
+                return createCollectionEnumV(number, name, f, 
+                        EnumIO.get(enumType).getEnumSetFactory(), enumType);
             }
-            else
+
+            final MessageFactory messageFactory = MessageFactories.getFactory(
+                    (Class<? extends Collection<?>>)f.getType());
+            
+            if(messageFactory == null)
             {
-                messageFactory = MessageFactories.getFactory(
-                        (Class<? extends Collection<?>>)f.getType());
-                
-                if(messageFactory == null)
-                {
-                    // Not a standard jdk Collection impl.
-                    throw new RuntimeException("Not a standard jdk collection: " + 
-                            f.getType());
-                }
+                // Not a standard jdk Collection impl.
+                throw new RuntimeException("Not a standard jdk collection: " + 
+                        f.getType());
             }
             
             final Class<Object> genericType;

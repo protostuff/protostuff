@@ -21,10 +21,14 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import com.dyuproject.protostuff.AbstractTest;
+import com.dyuproject.protostuff.GraphIOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 
@@ -309,6 +313,190 @@ public class EnumSetAndMapTest extends AbstractTest
         List<PojoWithEnumMap> parsedList = ProtostuffIOUtil.parseListFrom(in, schema);
         
         assertEquals(list, parsedList);
+    }
+    
+    @SuppressWarnings("rawtypes") // explicitly without generics
+    public static class Bean
+    {
+        
+        EnumSet firstEnumSet, secondEnumSet;
+        EnumMap firstEnumMap, secondEnumMap;
+        
+        LinkedHashSet firstSet, secondSet;
+        LinkedHashMap firstMap, secondMap;
+        
+        String name;
+    }
+    
+    static EnumMap<Sequence,EnumSet<Sequence>> newSequenceEnumMap()
+    {
+        EnumMap<Sequence,EnumSet<Sequence>> firstEnumMap = 
+                new EnumMap<Sequence,EnumSet<Sequence>>(Sequence.class);
+        
+        for(Sequence s : Sequence.values())
+        {
+            firstEnumMap.put(s, EnumSet.of(s));
+        }
+        
+        return firstEnumMap;
+    }
+    
+    static LinkedHashMap<Sequence,EnumSet<Sequence>> newSequenceMap()
+    {
+        LinkedHashMap<Sequence,EnumSet<Sequence>> firstEnumMap = 
+                new LinkedHashMap<Sequence,EnumSet<Sequence>>();
+        
+        for(Sequence s : Sequence.values())
+            firstEnumMap.put(s, EnumSet.of(s));
+        
+        return firstEnumMap;
+    }
+    
+    static LinkedHashSet<Sequence> newSequenceSet()
+    {
+        LinkedHashSet<Sequence> set = new LinkedHashSet<Sequence>();
+        
+        for(Sequence s : Sequence.values())
+            set.add(s);
+        
+        return set;
+    }
+    
+    static <K,V> Map<K,V> newMap()
+    {
+        return new HashMap<K,V>();
+    }
+    
+    static Bean fill(Bean bean)
+    {
+        bean.name = "bean";
+        
+        bean.firstEnumSet = EnumSet.allOf(Sequence.class);
+        
+        bean.firstEnumMap = newSequenceEnumMap();
+        
+        bean.firstSet = newSequenceSet();
+        
+        bean.firstMap = newSequenceMap();
+        
+        return bean;
+    }
+    
+    static void verify(Bean bean)
+    {
+        assertEquals(bean.name, "bean");
+        
+        assertNotNull(bean.firstEnumSet);
+        assertNull(bean.secondEnumSet);
+        
+        assertEquals(EnumSet.allOf(Sequence.class), bean.firstEnumSet);
+        
+        assertNotNull(bean.firstEnumMap);
+        assertNull(bean.secondEnumMap);
+        
+        assertTrue(bean.firstEnumMap.size() == Sequence.values().length);
+        
+        assertEquals(newSequenceEnumMap(), bean.firstEnumMap);
+        
+        assertNotNull(bean.firstSet);
+        assertNull(bean.secondSet);
+        assertEquals(newSequenceSet(), bean.firstSet);
+        
+        assertNotNull(bean.firstMap);
+        assertNull(bean.secondMap);
+        assertEquals(newSequenceMap(), bean.firstMap);
+    }
+    
+    static Bean fillCyclic(Bean bean)
+    {
+        bean.name = "bean_cyclic";
+        
+        bean.firstEnumSet = bean.secondEnumSet = EnumSet.allOf(Sequence.class);
+        
+        // TODO uncomment
+        //bean.firstEnumMap = bean.secondEnumMap = newSequenceEnumMap();
+        
+        bean.firstSet = bean.secondSet = newSequenceSet();
+        
+        bean.firstMap = bean.secondMap = newSequenceMap();
+        
+        return bean;
+    }
+    
+    static void verifyCyclic(Bean bean)
+    {
+        assertEquals(bean.name, "bean_cyclic");
+        
+        assertNotNull(bean.firstEnumSet);
+        if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            assertTrue(bean.firstEnumSet == bean.secondEnumSet);
+        else
+            assertEquals(bean.firstEnumSet, bean.secondEnumSet);
+        
+        assertEquals(EnumSet.allOf(Sequence.class), bean.firstEnumSet);
+        
+        /* TODO uncomment
+        assertNotNull(bean.firstEnumMap);
+        if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            assertTrue(bean.firstEnumMap == bean.secondEnumMap);
+        else
+            assertEquals(bean.firstEnumMap, bean.secondEnumMap);
+        
+        assertEquals(newSequenceMap(), bean.firstEnumMap);*/
+        
+        assertNotNull(bean.firstSet);
+        
+        if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            assertTrue(bean.firstSet == bean.secondSet);
+        else
+            assertEquals(bean.firstSet, bean.secondSet);
+        
+        assertEquals(newSequenceSet(), bean.firstSet);
+        
+        assertNotNull(bean.firstMap);
+        
+        if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            assertTrue(bean.firstMap == bean.secondMap);
+        else
+            assertEquals(bean.firstMap, bean.secondMap);
+        
+        assertEquals(newSequenceMap(), bean.firstMap);
+    }
+    
+    public void testBean()
+    {
+        System.err.println(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+        
+        Bean bean = fill(new Bean());
+        
+        verify(bean);
+
+        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class);
+        //print(schema);
+        byte[] bytes = ProtostuffIOUtil.toByteArray(bean, schema, LinkedBuffer.allocate(256));
+
+        Bean deBean = new Bean();
+        ProtostuffIOUtil.mergeFrom(bytes, deBean, schema);
+        
+        verify(deBean);
+    }
+    
+    public void testBeanCyclic()
+    {
+        System.err.println(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+        
+        Bean bean = fillCyclic(new Bean());
+        
+        verifyCyclic(bean);
+
+        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class);
+        //print(schema);
+        byte[] bytes = GraphIOUtil.toByteArray(bean, schema, LinkedBuffer.allocate(256));
+
+        Bean deBean = new Bean();
+        GraphIOUtil.mergeFrom(bytes, deBean, schema);
+        
+        verifyCyclic(deBean);
     }
 
 }
