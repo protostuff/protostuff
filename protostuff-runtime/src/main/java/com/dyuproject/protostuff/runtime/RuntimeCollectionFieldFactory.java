@@ -61,6 +61,12 @@ final class RuntimeCollectionFieldFactory
             // the owner will always be a Collection
             ((Collection<Object>)owner).add(value);
             
+            if(input instanceof GraphInput)
+            {
+                // update the actual reference.
+                ((GraphInput)input).updateLast(value, owner);
+            }
+            
             derivedSchema.mergeFrom(input, value);
         }
     };

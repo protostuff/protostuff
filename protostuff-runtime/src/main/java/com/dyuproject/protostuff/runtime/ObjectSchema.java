@@ -250,7 +250,7 @@ public abstract class ObjectSchema implements Schema<Object>
 
     public void mergeFrom(Input input, Object owner) throws IOException
     {
-        setValue(readObjectFrom(input, this), owner);
+        setValue(readObjectFrom(input, this, owner), owner);
     }
 
     public void writeTo(Output output, Object value) throws IOException
@@ -320,8 +320,8 @@ public abstract class ObjectSchema implements Schema<Object>
     }
     
     @SuppressWarnings("unchecked")
-    private static Object readObjectFrom(final Input input, final Schema<?> schema) 
-    throws IOException
+    private static Object readObjectFrom(final Input input, final Schema<?> schema, 
+            Object owner) throws IOException
     {
         Object value = null;
         final int number = input.readFieldNumber(schema);
@@ -384,6 +384,12 @@ public abstract class ObjectSchema implements Schema<Object>
                 final ArrayWrapper arrayWrapper = newArrayWrapper(typeArray, len, 
                         dimensions);
                 
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(arrayWrapper.array, owner);
+                }
+                
                 COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
                 
                 return arrayWrapper.array;
@@ -393,6 +399,7 @@ public abstract class ObjectSchema implements Schema<Object>
                     throw new ProtostuffException("Corrupt input.");
                 
                 value = new Object();
+                
                 break;
                 
             case ID_ENUM:
@@ -415,6 +422,13 @@ public abstract class ObjectSchema implements Schema<Object>
                 {
                     // EnumSet
                     final Collection<?> c = EnumIO.get(collectionType, true).newEnumSet();
+                    
+                    if(input instanceof GraphInput)
+                    {
+                        // update the actual reference.
+                        ((GraphInput)input).updateLast(c, owner);
+                    }
+                    
                     COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>)c);
                     return c;
                 }
@@ -422,6 +436,12 @@ public abstract class ObjectSchema implements Schema<Object>
                 final Collection<Object> collection = 
                     CollectionSchema.MessageFactories.getFactory(
                             collectionType).newMessage();
+                
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(collection, owner);
+                }
                 
                 COLLECTION_SCHEMA.mergeFrom(input, collection);
                 
@@ -433,12 +453,25 @@ public abstract class ObjectSchema implements Schema<Object>
                 {
                     // EnumMap
                     final Map<?,Object> m = EnumIO.get(mapType, true).newEnumMap();
+                    
+                    if(input instanceof GraphInput)
+                    {
+                        // update the actual reference.
+                        ((GraphInput)input).updateLast(m, owner);
+                    }
+                    
                     MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>)m);
                     return m;
                 }
                 
                 final Map<Object,Object> map = 
                     MapSchema.MessageFactories.getFactory(mapType).newMessage();
+                
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(map, owner);
+                }
                 
                 MAP_SCHEMA.mergeFrom(input, map);
                 
@@ -455,11 +488,23 @@ public abstract class ObjectSchema implements Schema<Object>
                 final Schema<Object> derivedSchema = wrapper.getSchema();
                 final Object pojo = derivedSchema.newMessage();
                 
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(pojo, owner);
+                }
+                
                 derivedSchema.mergeFrom(input, pojo);
                 return pojo;
                 
             default:
                 throw new ProtostuffException("Corrupt input.  Unknown field number: " + number);
+        }
+        
+        if(input instanceof GraphInput)
+        {
+            // update the actual reference.
+            ((GraphInput)input).updateLast(value, owner);
         }
         
         if(input.readFieldNumber(schema) != 0)
@@ -776,12 +821,12 @@ public abstract class ObjectSchema implements Schema<Object>
             if(MapWrapper.class.isAssignableFrom(owner.getClass()))
             {
                 // called from ENTRY_SCHEMA
-                ((MapWrapper)owner).setValue(readObjectFrom(input, this));
+                ((MapWrapper)owner).setValue(readObjectFrom(input, this, owner));
             }
             else
             {
                 // called from COLLECTION_SCHEMA
-                ((Collection<Object>)owner).add(readObjectFrom(input, this));
+                ((Collection<Object>)owner).add(readObjectFrom(input, this, owner));
             }
         }
 

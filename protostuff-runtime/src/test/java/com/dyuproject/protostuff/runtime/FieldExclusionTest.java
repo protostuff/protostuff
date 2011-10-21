@@ -110,6 +110,11 @@ public class FieldExclusionTest extends AbstractTest
         }
     }
     
+    static void assertAssignable(Object obj, Class<?> clazz)
+    {
+        assertTrue(clazz.isAssignableFrom(obj.getClass()));
+    }
+    
     public void testComplexFieldsPojo()
     {
         Schema<ComplexFieldsPojo> schema = 
@@ -120,50 +125,54 @@ public class FieldExclusionTest extends AbstractTest
         
         assertTrue(mappedSchema.fields.length == 45);
         
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueArray") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueCollection") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueList") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueSet") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueMap") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueObject") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someCollectionValueWildcard") 
-                instanceof RuntimeObjectField<?>);
+        Class<?> expectedCollectionClass = 
+                RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? 
+                        RuntimeCollectionField.class : RuntimeObjectField.class;
         
-        assertTrue(mappedSchema.fieldsByName.get("someListValueArray") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueCollection") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueList") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueSet") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueMap") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueObject") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someListValueWildcard") 
-                instanceof RuntimeObjectField<?>);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueArray") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueCollection") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueList") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueSet") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueMap") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueObject") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someCollectionValueWildcard") 
+                , expectedCollectionClass);
         
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueArray") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueCollection") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueList") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueSet") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueMap") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueObject") 
-                instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someSetValueWildcard") 
-                instanceof RuntimeObjectField<?>);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueArray") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueCollection") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueList") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueSet") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueMap") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueObject") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someListValueWildcard") 
+                , expectedCollectionClass);
+        
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueArray") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueCollection") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueList") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueSet") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueMap") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueObject") 
+                , expectedCollectionClass);
+        assertAssignable(mappedSchema.fieldsByName.get("someSetValueWildcard") 
+                , expectedCollectionClass);
         
         assertTrue(mappedSchema.fieldsByName.get("someMapKeyArray") 
                 instanceof RuntimeMapField<?,?,?>);

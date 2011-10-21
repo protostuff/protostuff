@@ -37,6 +37,38 @@ public class CompatTest extends AbstractTest
     
     public void testCompat() throws IOException
     {
+        compareBar();
+        
+        if(!RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        {
+            compareFoo();
+        }
+    }
+    
+    static void compareBar()
+    {
+        com.dyuproject.protostuff.Bar bar1 = com.dyuproject.protostuff.SerializableObjects.bar;
+        Schema<com.dyuproject.protostuff.Bar> schema1 = com.dyuproject.protostuff.Bar.getSchema();
+        
+        Bar bar2 = SerializableObjects.bar;
+        Schema<Bar> schema2 = RuntimeSchema.getSchema(Bar.class);
+        
+        Schema<com.dyuproject.protostuff.Bar> schema3 = RuntimeSchema.getSchema(com.dyuproject.protostuff.Bar.class);
+        
+        byte[] byte1 = ProtostuffIOUtil.toByteArray(bar1, schema1, buf());
+        byte[] byte2 = ProtostuffIOUtil.toByteArray(bar2, schema2, buf());
+        byte[] byte3 = ProtostuffIOUtil.toByteArray(bar1, schema3, buf());
+        
+        String str1 = STRING.deser(byte1);
+        String str2 = STRING.deser(byte2);
+        String str3 = STRING.deser(byte3);
+        
+        assertEquals(str1, str2);
+        assertEquals(str1, str3);
+    }
+    
+    static void compareFoo()
+    {
         com.dyuproject.protostuff.Foo foo1 = com.dyuproject.protostuff.SerializableObjects.foo;
         Schema<com.dyuproject.protostuff.Foo> schema1 = com.dyuproject.protostuff.Foo.getSchema();
         
@@ -68,6 +100,9 @@ public class CompatTest extends AbstractTest
     @SuppressWarnings("unchecked")
     public void testMixed() throws Exception
     {
+        if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            return;
+        
         Schema<Mixed> schema = RuntimeSchema.getSchema(Mixed.class);
         
         assertTrue(MappedSchema.class.isAssignableFrom(schema.getClass()));

@@ -54,6 +54,12 @@ final class RuntimeMapFieldFactory
             // the owner will always be the MapWrapper
             ((MapWrapper<Object,Object>)owner).setValue(value);
             
+            if(input instanceof GraphInput)
+            {
+                // update the actual reference.
+                ((GraphInput)input).updateLast(value, owner);
+            }
+            
             derivedSchema.mergeFrom(input, value);
         }
     };

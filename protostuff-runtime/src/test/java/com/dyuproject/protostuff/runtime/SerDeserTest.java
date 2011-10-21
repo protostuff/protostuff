@@ -58,10 +58,13 @@ public class SerDeserTest extends TestCase
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
         
-        int expectedSize = ComputedSizeOutput.getSize(fooCompare, schema);
-
         byte[] deferred = toByteArray(fooCompare, schema);
-        assertTrue(deferred.length == expectedSize);
+        
+        // ComputedSizeOutput is format compatible with protobuf 
+        // E.g collections are not serialized ... only its members/elements are.
+        if(!RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+            assertTrue(deferred.length == ComputedSizeOutput.getSize(fooCompare, schema));
+        
         ProtostuffIOUtil.mergeFrom(deferred, dfoo, schema);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
