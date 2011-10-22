@@ -1,4 +1,6 @@
-protostuff-1.0.3-SNAPSHOT
+protostuff-1.0.4-SNAPSHOT
+
+protostuff-1.0.3 2011-10-22
 + Issue 89: graph serialization bug on IdentityHashMap and EnumMap
 + Issue 87: EnumSet and EnumMap without generics are not handled
 + Issue 85: graph serialization bug (protostuff-runtime) on collections/map without generics and dynamic objects
