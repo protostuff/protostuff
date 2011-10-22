@@ -413,8 +413,7 @@ public class EnumSetAndMapTest extends AbstractTest
         
         bean.firstEnumSet = bean.secondEnumSet = EnumSet.allOf(Sequence.class);
         
-        // TODO uncomment
-        //bean.firstEnumMap = bean.secondEnumMap = newSequenceEnumMap();
+        bean.firstEnumMap = bean.secondEnumMap = newSequenceEnumMap();
         
         bean.firstSet = bean.secondSet = newSequenceSet();
         
@@ -435,14 +434,13 @@ public class EnumSetAndMapTest extends AbstractTest
         
         assertEquals(EnumSet.allOf(Sequence.class), bean.firstEnumSet);
         
-        /* TODO uncomment
         assertNotNull(bean.firstEnumMap);
         if(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
             assertTrue(bean.firstEnumMap == bean.secondEnumMap);
         else
             assertEquals(bean.firstEnumMap, bean.secondEnumMap);
         
-        assertEquals(newSequenceMap(), bean.firstEnumMap);*/
+        assertEquals(newSequenceMap(), bean.firstEnumMap);
         
         assertNotNull(bean.firstSet);
         

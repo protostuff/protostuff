@@ -20,6 +20,7 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A ProtostuffOutput w/c can handle cyclic dependencies when serializing 
@@ -301,6 +302,15 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
             {
                 if (item == k)
                 {
+                    if(k instanceof Map.Entry 
+                            // filter on standard java map impls only
+                            && k.getClass().getName().startsWith("java.util"))
+                    {
+                        // IdentityHashMap and EnumMap re-uses the same Map.Entry.
+                        // It simply holds references to the actual data (key/value).
+                        return true;
+                    }
+                    
                     output.tail = output.sink.writeVarInt32(
                             ((Integer)tab[i + 1]).intValue(), 
                             output, 

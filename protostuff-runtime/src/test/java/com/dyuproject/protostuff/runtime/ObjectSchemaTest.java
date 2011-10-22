@@ -33,6 +33,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -227,6 +228,11 @@ public class ObjectSchemaTest extends TestCase
         Set<Item> secondSet = newSet(share15);
         bean.secondSet = secondSet;
         
+        IdentityHashMap<Item,Item> identityMap = new IdentityHashMap<Item,Item>();
+        identityMap.put(share, share);
+        
+        bean.identityMap = identityMap;
+        
         return bean;
     }
     
@@ -347,6 +353,16 @@ public class ObjectSchemaTest extends TestCase
         assertNotNull(bean.firstSet);
         assertTrue(bean.firstSet.size() == 1);
         assertTrue(bean.firstSet.iterator().next() == bean.secondSet.iterator().next());
+        
+        assertNotNull(bean.identityMap);
+        assertTrue(bean.identityMap.size() == 1);
+        assertTrue(bean.identityMap.keySet().iterator().next() == 
+                bean.identityMap.values().iterator().next());
+        
+        Item share = bean.firstItemArray[0];
+        assertEquals(share.name, "share");
+        assertTrue(bean.identityMap.containsKey(share));
+        assertTrue(bean.identityMap.get(share) == share);
     }
     
     static <T> Set<T> newSet(T ... ts)
@@ -441,6 +457,8 @@ public class ObjectSchemaTest extends TestCase
         Object[] itemArrayWrapper;
         
         public Set firstSet, secondSet;
+        
+        public IdentityHashMap identityMap;
         
     }
     
