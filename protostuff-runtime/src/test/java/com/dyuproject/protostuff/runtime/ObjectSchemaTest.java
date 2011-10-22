@@ -233,6 +233,13 @@ public class ObjectSchemaTest extends TestCase
         
         bean.identityMap = identityMap;
         
+        Item share16 = new Item("share16");
+        IdentityHashMap<Order,Item> anotherIdentityMap = new IdentityHashMap<Order,Item>();
+        anotherIdentityMap.put(Order.ASCENDING, share16);
+        anotherIdentityMap.put(Order.DESCENDING, share);
+        
+        bean.anotherIdentityMap = anotherIdentityMap;
+        
         return bean;
     }
     
@@ -363,6 +370,11 @@ public class ObjectSchemaTest extends TestCase
         assertEquals(share.name, "share");
         assertTrue(bean.identityMap.containsKey(share));
         assertTrue(bean.identityMap.get(share) == share);
+        
+        assertNotNull(bean.anotherIdentityMap);
+        assertTrue(bean.anotherIdentityMap.size() == 2);
+        assertEquals(bean.anotherIdentityMap.get(Order.ASCENDING), new Item("share16"));
+        assertTrue(bean.anotherIdentityMap.get(Order.DESCENDING) == share);
     }
     
     static <T> Set<T> newSet(T ... ts)
@@ -458,7 +470,7 @@ public class ObjectSchemaTest extends TestCase
         
         public Set firstSet, secondSet;
         
-        public IdentityHashMap identityMap;
+        public IdentityHashMap identityMap, anotherIdentityMap;
         
     }
     
