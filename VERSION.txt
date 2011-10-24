@@ -1,4 +1,9 @@
 protostuff-1.0.4-SNAPSHOT
++ Issue 90: byte arrays on protostuff-runtime were not treated as scalar fields
+            Best to update to this version for performance reasons.
+            If you have existing data that came from a pojo with byte[] fields, it will not be compatible on deser.
+            You can safely update the data by deserializing with the old protostuff from a different classloader 
+            and writing it back again using the new protostuff on another classloader.
 
 protostuff-1.0.3 2011-10-22
 + Issue 89: graph serialization bug on IdentityHashMap and EnumMap

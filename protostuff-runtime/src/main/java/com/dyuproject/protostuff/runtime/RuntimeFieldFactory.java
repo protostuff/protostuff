@@ -20,6 +20,8 @@ import static com.dyuproject.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -180,9 +182,6 @@ public abstract class RuntimeFieldFactory<V>
      */
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)
     {
-        if(clazz.isArray() || Object.class == clazz)
-            return OBJECT;
-        
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
         
@@ -192,6 +191,9 @@ public abstract class RuntimeFieldFactory<V>
         final RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
         if(inline != null)
             return inline;
+        
+        if(clazz.isArray() || Object.class == clazz)
+            return OBJECT;
         
         if(Map.class.isAssignableFrom(clazz))
             return RuntimeMapFieldFactory.MAP;
@@ -216,6 +218,22 @@ public abstract class RuntimeFieldFactory<V>
     static boolean isComplexComponentType(Class<?> clazz)
     {
         return clazz.isArray() || Object.class == clazz;
+    }
+    
+    static Class<?> getGenericType(java.lang.reflect.Field f, 
+            int index, boolean checkByteArray)
+    {
+        try
+        {
+            Type type = ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[index];
+            // TODO find more efficient way to check byte[].class?
+            return checkByteArray && "byte[]".equals(type.toString()) ? byte[].class : 
+                (Class<?>)type;
+        }
+        catch(Exception e)
+        {
+            return null;
+        }
     }
     
     /**

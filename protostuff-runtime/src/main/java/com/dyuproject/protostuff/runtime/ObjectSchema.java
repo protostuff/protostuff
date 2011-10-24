@@ -519,6 +519,36 @@ public abstract class ObjectSchema implements Schema<Object>
     {
         final Class<Object> clazz = (Class<Object>)value.getClass();
         
+        if(Message.class.isAssignableFrom(clazz))
+        {
+            output.writeString(ID_POJO, clazz.getName(), false);
+            final Schema<Object> schema = ((Message<Object>)value).cachedSchema();
+            
+            if(output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput)output).updateLast(schema, currentSchema);
+            }
+            
+            schema.writeTo(output, value);
+            return;
+        }
+        
+        if(clazz.isEnum())
+        {
+            output.writeString(ID_ENUM, clazz.getName(), false);
+            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>)value);
+            return;
+        }
+        
+        final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(clazz);
+        if(inline != null)
+        {
+            // scalar value
+            inline.writeTo(output, inline.id, value, false);
+            return;
+        }
+        
         if(clazz.isArray())
         {
             int dimensions = 1;
@@ -549,36 +579,6 @@ public abstract class ObjectSchema implements Schema<Object>
         if(Object.class == clazz)
         {
             output.writeUInt32(ID_OBJECT, 0, false);
-            return;
-        }
-        
-        if(Message.class.isAssignableFrom(clazz))
-        {
-            output.writeString(ID_POJO, clazz.getName(), false);
-            final Schema<Object> schema = ((Message<Object>)value).cachedSchema();
-            
-            if(output instanceof StatefulOutput)
-            {
-                // update using the derived schema.
-                ((StatefulOutput)output).updateLast(schema, currentSchema);
-            }
-            
-            schema.writeTo(output, value);
-            return;
-        }
-        
-        if(clazz.isEnum())
-        {
-            output.writeString(ID_ENUM, clazz.getName(), false);
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>)value);
-            return;
-        }
-        
-        final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-        {
-            // scalar value
-            inline.writeTo(output, inline.id, value, false);
             return;
         }
         

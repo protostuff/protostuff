@@ -15,7 +15,6 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.EnumSet;
 
@@ -465,12 +464,8 @@ final class RuntimeRepeatedFieldFactory
         {
             if(EnumSet.class.isAssignableFrom(f.getType()))
             {
-                final Class<Object> enumType;
-                try
-                {
-                    enumType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
-                }
-                catch(Exception e)
+                final Class<Object> enumType = (Class<Object>)getGenericType(f, 0, false);
+                if(enumType == null)
                 {
                     // still handle the serialization of EnumSets even without generics
                     return RuntimeFieldFactory.OBJECT.create(number, name, f);
@@ -490,19 +485,12 @@ final class RuntimeRepeatedFieldFactory
                         f.getType());
             }
             
-            final Class<Object> genericType;
-            try
-            {
-                genericType = (Class<Object>)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
-            }
-            catch(Exception e)
+            final Class<Object> genericType = (Class<Object>)getGenericType(f, 0, true);
+            if(genericType == null)
             {
                 // the value is not a simple parameterized type.
                 return createCollectionObjectV(number, name, f, messageFactory);
             }
-            
-            if(isComplexComponentType(genericType))
-                return createCollectionObjectV(number, name, f, messageFactory);
             
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType);
@@ -510,6 +498,9 @@ final class RuntimeRepeatedFieldFactory
             final RuntimeFieldFactory<Object> inline = getInline(genericType);
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
+            
+            if(isComplexComponentType(genericType))
+                return createCollectionObjectV(number, name, f, messageFactory);
             
             if(POJO == pojo(genericType) || RuntimeSchema.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType);
