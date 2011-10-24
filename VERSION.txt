@@ -1,4 +1,6 @@
-protostuff-1.0.4-SNAPSHOT
+protostuff-1.0.5-SNAPSHOT
+
+protostuff-1.0.4 2011-10-24
 + Issue 90: byte arrays on protostuff-runtime were not treated as scalar fields
             Best to update to this version for performance reasons.
             If you have existing data that came from a pojo with byte[] fields, it will not be compatible on deser.
