@@ -81,7 +81,7 @@ public interface <eg.name>
 >>
 
 enum_header(eg, module, options) ::= <<
-<header_text(prefix="// ", module=module)>
+<header_text(prefix="// ", module=module, proto=eg.proto)>
 
 package <eg.proto.javaPackageName>;
 
@@ -119,7 +119,7 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
 >>
 
 message_header(message, module, options) ::= <<
-<header_text(prefix="// ", module=module)>
+<header_text(prefix="// ", module=module, proto=message.proto)>
 
 package <message.proto.javaPackageName>;
 

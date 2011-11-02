@@ -12,7 +12,7 @@ public final class Schema<proto:derived_outer_name(proto=it, options=options)>
 >>
 
 proto_header(proto, module, options) ::= <<
-<header_text(prefix="// ", module=module)>
+<header_text(prefix="// ", module=module, proto=proto)>
 
 package <proto.javaPackageName>;
 
