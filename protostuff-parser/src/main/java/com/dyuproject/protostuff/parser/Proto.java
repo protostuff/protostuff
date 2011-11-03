@@ -85,6 +85,11 @@ public class Proto extends AnnotationContainer
         this.importer = importer;
     }
     
+    public ErrorMap getError()
+    {
+        return ErrorMap.INSTANCE;
+    }
+    
     public File getFile()
     {
         return file;
