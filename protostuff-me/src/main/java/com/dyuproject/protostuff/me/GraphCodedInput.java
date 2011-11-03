@@ -111,12 +111,12 @@ implements GraphInput, Schema
     
     public String getFieldName(int number)
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public int getFieldNumber(String name)
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public boolean isInitialized(Object owner)
@@ -126,22 +126,22 @@ implements GraphInput, Schema
 
     public String messageFullName()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public String messageName()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public Object newMessage()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public Class typeClass()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public void mergeFrom(Input input, final Object message) throws IOException
@@ -160,7 +160,7 @@ implements GraphInput, Schema
     public void writeTo(Output output, Object message) throws IOException
     {
         // only using mergeFrom.
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
 }

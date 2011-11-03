@@ -49,10 +49,52 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.pyx4me</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>proguard</goal>
+              </goals>
+            </execution>
+          </executions>
+        <configuration>
+          <proguardVersion>4.4</proguardVersion>
+          <obfuscate>false</obfuscate>
+          <options>
+            <option>-verbose</option>
+            <option>-microedition</option>
+            <option>-keep public class *</option>
+          </options>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.proguard</groupId>
+            <artifactId>proguard</artifactId>
+            <version>4.4</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
   
   <dependencies>
+    <dependency>
+      <groupId>org.microemu</groupId>
+      <artifactId>cldcapi11</artifactId>
+      <version>2.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.microemu</groupId>
+      <artifactId>midpapi20</artifactId>
+      <version>2.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

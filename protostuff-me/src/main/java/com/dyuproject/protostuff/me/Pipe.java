@@ -102,12 +102,12 @@ public abstract class Pipe
 
         public Object /*Pipe*/ newMessage()
         {
-            throw new UnsupportedOperationException();
+            throw new RuntimeException("Unsupported operation");
         }
 
         public Class typeClass()
         {
-            throw new UnsupportedOperationException();
+            throw new RuntimeException("Unsupported operation");
         }
 
         public final void writeTo(final Output output, final Object pipeObj) throws IOException

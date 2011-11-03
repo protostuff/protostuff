@@ -30,4 +30,7 @@ Patch contributors:
   Thomas Kock
     * protostuff-uberjar - a bundle created primarily for osgi.
 
+  thierry.monney
+    * protostuff-me - Preverification fails (Issue 92)
+
   

@@ -310,7 +310,7 @@ public final class GraphProtostuffOutput extends FilterOutput
 
             // modCount++;
             tab[i] = k;
-            tab[i + 1] = Integer.valueOf(value);
+            tab[i + 1] = new Integer(value);
             if (++size >= threshold)
                 resize(len); // len == 2 * current capacity.
             return true;

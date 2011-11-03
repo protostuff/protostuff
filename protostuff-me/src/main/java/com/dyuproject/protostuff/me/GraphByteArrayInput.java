@@ -110,12 +110,12 @@ public final class GraphByteArrayInput extends FilterInput
     
     public String getFieldName(int number)
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public int getFieldNumber(String name)
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public boolean isInitialized(Object owner)
@@ -125,22 +125,22 @@ public final class GraphByteArrayInput extends FilterInput
 
     public String messageFullName()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public String messageName()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public Object newMessage()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public Class typeClass()
     {
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
     public void mergeFrom(Input input, final Object message) throws IOException
@@ -159,7 +159,7 @@ public final class GraphByteArrayInput extends FilterInput
     public void writeTo(Output output, Object message) throws IOException
     {
         // only using mergeFrom.
-        throw new UnsupportedOperationException();
+        throw new RuntimeException("Unsupported operation");
     }
 
 }
