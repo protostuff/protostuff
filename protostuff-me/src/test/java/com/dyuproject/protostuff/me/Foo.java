@@ -414,69 +414,6 @@ public final class Foo implements Message, Schema
         }
     }
 
-    public void mergeFrom(Object /*Foo*/ messageObj)
-    {
-        Foo message = (Foo)messageObj;
-        this.someInt = new Vector();
-        if(message.someInt != null) {
-            for(int i = 0; i < message.someInt.size(); i++) {
-                this.someInt.addElement(message.someInt.elementAt(i));
-            }
-        }
-        this.someString = new Vector();
-        if(message.someString != null) {
-            for(int i = 0; i < message.someString.size(); i++) {
-                this.someString.addElement(message.someString.elementAt(i));
-            }
-        }
-        this.someBar = new Vector();
-        if(message.someBar != null) {
-            for(int i = 0; i < message.someBar.size(); i++) {
-                Bar origElt = (Bar)message.someBar.elementAt(i);
-                Bar newElt = (Bar)origElt.newMessage();
-                newElt.mergeFrom((Bar)message.someBar.elementAt(i));
-                this.someBar.addElement(newElt);
-            }
-        }
-        this.someEnum = new Vector();
-        if(message.someEnum != null) {
-            for(int i = 0; i < message.someEnum.size(); i++) {
-                this.someEnum.addElement(message.someEnum.elementAt(i));
-            }
-        }
-        this.someBytes = new Vector();
-        if(message.someBytes != null) {
-            for(int i = 0; i < message.someBytes.size(); i++) {
-                this.someBytes.addElement(message.someBytes.elementAt(i));
-            }
-        }
-        this.someBoolean = new Vector();
-        if(message.someBoolean != null) {
-            for(int i = 0; i < message.someBoolean.size(); i++) {
-                this.someBoolean.addElement(message.someBoolean.elementAt(i));
-            }
-        }
-        this.someFloat = new Vector();
-        if(message.someFloat != null) {
-            for(int i = 0; i < message.someFloat.size(); i++) {
-                this.someFloat.addElement(message.someFloat.elementAt(i));
-            }
-        }
-        this.someDouble = new Vector();
-        if(message.someDouble != null) {
-            for(int i = 0; i < message.someDouble.size(); i++) {
-                this.someDouble.addElement(message.someDouble.elementAt(i));
-            }
-        }
-        this.someLong = new Vector();
-        if(message.someLong != null) {
-            for(int i = 0; i < message.someLong.size(); i++) {
-                this.someLong.addElement(message.someLong.elementAt(i));
-            }
-        }
-    }
-
-
     public void writeTo(Output output, Object /*Foo*/ messageObj) throws IOException
     {
         Foo message = (Foo)messageObj;

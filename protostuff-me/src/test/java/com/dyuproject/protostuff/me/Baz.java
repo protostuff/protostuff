@@ -133,15 +133,6 @@ public final class Baz implements Message, Schema
         }
     }
 
-    public void mergeFrom(Object /*Baz*/ messageObj)
-    {
-        Baz message = (Baz)messageObj;
-        this.id = message.id;
-        this.name = message.name;
-        this.timestamp = message.timestamp;
-    }
-
-
     public void writeTo(Output output, Object /*Baz*/ messageObj) throws IOException
     {
         Baz message = (Baz)messageObj;

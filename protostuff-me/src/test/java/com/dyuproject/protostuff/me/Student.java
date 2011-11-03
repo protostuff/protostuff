@@ -138,22 +138,6 @@ public final class Student implements Message, Schema
         }
     }
 
-    public void mergeFrom(Object /*Student*/ messageObj)
-    {
-        Student message = (Student)messageObj;
-        this.name = message.name;
-        this.club = new Vector();
-        if(message.club != null) {
-            for(int i = 0; i < message.club.size(); i++) {
-                Club origElt = (Club)message.club.elementAt(i);
-                Club newElt = (Club)origElt.newMessage();
-                newElt.mergeFrom((Club)message.club.elementAt(i));
-                this.club.addElement(newElt);
-            }
-        }
-    }
-
-
     public void writeTo(Output output, Object /*Student*/ messageObj) throws IOException
     {
         Student message = (Student)messageObj;

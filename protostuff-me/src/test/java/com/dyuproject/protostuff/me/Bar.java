@@ -240,26 +240,6 @@ public final class Bar implements Message, Schema
         }
     }
 
-    public void mergeFrom(Object /*Bar*/ messageObj)
-    {
-        Bar message = (Bar)messageObj;
-        this.someInt = message.someInt;
-        this.someString = message.someString;
-        if(message.someBaz == null) {
-            this.someBaz = null;
-        } else {
-            this.someBaz = (Baz)message.someBaz.newMessage();
-            this.someBaz.mergeFrom((Baz)message.someBaz);
-        }
-        this.someEnum = message.someEnum;
-        this.someBytes = message.someBytes;
-        this.someBoolean = message.someBoolean;
-        this.someFloat = message.someFloat;
-        this.someDouble = message.someDouble;
-        this.someLong = message.someLong;
-    }
-
-
     public void writeTo(Output output, Object /*Bar*/ messageObj) throws IOException
     {
         Bar message = (Bar)messageObj;

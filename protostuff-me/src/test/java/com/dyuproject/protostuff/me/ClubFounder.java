@@ -117,20 +117,7 @@ public final class ClubFounder implements Message, Schema
             }   
         }
     }
-
-    public void mergeFrom(Object /*ClubFounder*/ messageObj)
-    {
-        ClubFounder message = (ClubFounder)messageObj;
-        this.name = message.name;
-        if(message.club == null) {
-            this.club = null;
-        } else {
-            this.club = (Club)message.club.newMessage();
-            this.club.mergeFrom((Club)message.club);
-        }
-    }
-
-
+    
     public void writeTo(Output output, Object /*ClubFounder*/ messageObj) throws IOException
     {
         ClubFounder message = (ClubFounder)messageObj;

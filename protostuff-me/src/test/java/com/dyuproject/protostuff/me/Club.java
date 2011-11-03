@@ -174,31 +174,6 @@ public final class Club implements Message, Schema
         }
     }
 
-    public void mergeFrom(Object /*Club*/ messageObj)
-    {
-        Club message = (Club)messageObj;
-        this.name = message.name;
-        this.student = new Vector();
-        if(message.student != null) {
-            for(int i = 0; i < message.student.size(); i++) {
-                Student origElt = (Student)message.student.elementAt(i);
-                Student newElt = (Student)origElt.newMessage();
-                newElt.mergeFrom((Student)message.student.elementAt(i));
-                this.student.addElement(newElt);
-            }
-        }
-        this.partnerClub = new Vector();
-        if(message.partnerClub != null) {
-            for(int i = 0; i < message.partnerClub.size(); i++) {
-                Club origElt = (Club)message.partnerClub.elementAt(i);
-                Club newElt = (Club)origElt.newMessage();
-                newElt.mergeFrom((Club)message.partnerClub.elementAt(i));
-                this.partnerClub.addElement(newElt);
-            }
-        }
-    }
-
-
     public void writeTo(Output output, Object /*Club*/ messageObj) throws IOException
     {
         Club message = (Club)messageObj;
