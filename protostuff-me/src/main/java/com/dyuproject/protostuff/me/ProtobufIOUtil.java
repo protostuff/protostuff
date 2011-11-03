@@ -289,8 +289,8 @@ public final class ProtobufIOUtil
             final int size = output.getSize();
             ProtobufOutput.writeRawVarInt32Bytes(out, size);
             LinkedBuffer.writeTo(out, buffer);
-            //final int msgSize = 
-             //assert size == msgSize;
+            //final int msgSize = LinkedBuffer.writeTo(out, buffer);
+            //assert size == msgSize;
             
             totalSize += size;
             output.clear();
