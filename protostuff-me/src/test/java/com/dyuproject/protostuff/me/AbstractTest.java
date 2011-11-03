@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.me;
 
+import java.util.Vector;
+
 import junit.framework.TestCase;
 
 /**
@@ -30,6 +32,35 @@ public abstract class AbstractTest extends TestCase
     public static LinkedBuffer buf()
     {
         return LinkedBuffer.allocate(BUF_SIZE);
+    }
+    
+    static int getInteger(String propertyName, int defaultIfNone)
+    {
+        String prop = System.getProperty(propertyName);
+        return prop == null ? defaultIfNone : Integer.parseInt(prop);
+    }
+    
+    public static boolean isEqual(Vector v1, Vector v2)
+    {
+        if(v1 == null && v2 == null)
+            return true;
+        
+        if(v1 == null || v2 == null)
+            return false;
+        
+        if(v1 == v2)
+            return true;
+        
+        if(v1.size() != v2.size())
+            return false;
+        
+        for(int i=0; i<v1.size(); i++)
+        {
+            if(!v1.elementAt(i).equals(v2.elementAt(i)))
+                return false;
+        }
+        
+        return true;
     }
 
 }

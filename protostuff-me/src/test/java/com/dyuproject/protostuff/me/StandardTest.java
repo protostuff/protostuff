@@ -15,7 +15,7 @@
 package com.dyuproject.protostuff.me;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Base for all ser/deser test cases.
@@ -95,9 +95,9 @@ public abstract class StandardTest extends AbstractTest
     {
         Bar bar = new Bar();
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        bars.add(bar);
-        foo.setSomeBar(bars);
+        Vector bars = new Vector();
+        bars.addElement(bar);
+        foo.setSomeBarList(bars);
         
         byte[] output = toByteArray(foo);
         
@@ -108,14 +108,14 @@ public abstract class StandardTest extends AbstractTest
     public void testPartialEmptyFoo() throws Exception
     {
         Bar bar = new Bar();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        bars.add(bar);
+        Vector bars = new Vector();
+        bars.addElement(bar);
         Foo foo = new Foo();
-        ArrayList<Integer> someInt = new ArrayList<Integer>();
-        someInt.add(1);
-        foo.setSomeInt(someInt);
+        Vector someInt = new Vector();
+        someInt.addElement(new Integer(1));
+        foo.setSomeIntList(someInt);
         
-        foo.setSomeBar(bars);
+        foo.setSomeBarList(bars);
         
         byte[] output = toByteArray(foo);
         
@@ -129,11 +129,11 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
-        strings.add("someString");
-        foo.setSomeString(strings);
+        Vector bars = new Vector();
+        foo.setSomeBarList(bars);
+        Vector strings = new Vector();
+        strings.addElement("someString");
+        foo.setSomeStringList(strings);
         
         byte[] output = toByteArray(foo);
         
@@ -147,11 +147,11 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
-        strings.add("");
-        foo.setSomeString(strings);
+        Vector bars = new Vector();
+        foo.setSomeBarList(bars);
+        Vector strings = new Vector();
+        strings.addElement("");
+        foo.setSomeStringList(strings);
         
         byte[] output = toByteArray(foo);
         
@@ -165,8 +165,8 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        foo.setSomeBar(bars);
+        Vector bars = new Vector();
+        foo.setSomeBarList(bars);
         
         byte[] output = toByteArray(foo);
         
@@ -181,8 +181,8 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        foo.setSomeBar(bars);
+        Vector bars = new Vector();
+        foo.setSomeBarList(bars);
         
         byte[] output = toByteArray(foo);
         
@@ -197,8 +197,8 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        foo.setSomeBar(bars);
+        Vector bars = new Vector();
+        foo.setSomeBarList(bars);
         
         byte[] output = toByteArray(foo);
         

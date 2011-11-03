@@ -104,14 +104,14 @@ public final class HasHasBar implements Message, Schema, Externalizable
         return new HasHasBar();
     }
     
-    public Class<HasHasBar> typeClass()
+    public Class typeClass()
     {
         return HasHasBar.class;
     }
     
     public String messageName()
     {
-        return getClass().getSimpleName();
+        return "HasHasBar";
     }
     
     public String messageFullName()
@@ -168,7 +168,7 @@ public final class HasHasBar implements Message, Schema, Externalizable
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
         finally
         {
@@ -191,5 +191,44 @@ public final class HasHasBar implements Message, Schema, Externalizable
             oos.close();
         }
     }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((hasBar == null) ? 0 : hasBar.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HasHasBar other = (HasHasBar)obj;
+        if (hasBar == null)
+        {
+            if (other.hasBar != null)
+                return false;
+        }
+        else if (!hasBar.equals(other.hasBar))
+            return false;
+        if (name == null)
+        {
+            if (other.name != null)
+                return false;
+        }
+        else if (!name.equals(other.name))
+            return false;
+        return true;
+    }
+    
+    
 
 }

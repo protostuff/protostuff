@@ -17,7 +17,7 @@ package com.dyuproject.protostuff.me;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Test ser/deser of graph objects (references and cyclic dependencies).
@@ -99,24 +99,24 @@ public class GraphTest extends AbstractTest
         bar2.setSomeInt(2);
         bar2.setSomeBaz(baz);
         
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        bars.add(bar1);
-        bars.add(bar2);
+        Vector bars = new Vector();
+        bars.addElement(bar1);
+        bars.addElement(bar2);
         
         
         Foo foo = new Foo();
-        foo.setSomeBar(bars);
+        foo.setSomeBarList(bars);
         
         return foo;
     }
     
     static void checkReference(Foo foo)
     {
-        Bar bar1 = foo.getSomeBar().get(0);
+        Bar bar1 = (Bar)foo.getSomeBarList().elementAt(0);
         assertNotNull(bar1);
         assert(bar1.getSomeInt() == 1);
         
-        Bar bar2 = foo.getSomeBar().get(1);
+        Bar bar2 = (Bar)foo.getSomeBarList().elementAt(1);
         assertNotNull(bar2);
         assert(bar2.getSomeInt() == 2);
         

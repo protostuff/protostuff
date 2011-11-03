@@ -194,14 +194,14 @@ public final class PojoWithInts implements Externalizable, Message, Schema
         return new PojoWithInts();
     }
 
-    public Class<PojoWithInts> typeClass()
+    public Class typeClass()
     {
         return PojoWithInts.class;
     }
 
     public String messageName()
     {
-        return PojoWithInts.class.getSimpleName();
+        return "PojoWithInts";
     }
 
     public String messageFullName()

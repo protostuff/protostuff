@@ -44,8 +44,8 @@ public class CompareInputsTest extends AbstractTest
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 200000);
-        int loops = Integer.getInteger("benchmark.loops", 2000000);
+        int warmups = getInteger("benchmark.warmups", 200000);
+        int loops = getInteger("benchmark.loops", 2000000);
         
         String title = "protostuff-core deserialization benchmark for " + loops + " runs";
         out.println(title);
@@ -93,8 +93,8 @@ public class CompareInputsTest extends AbstractTest
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 200000);
-        int loops = Integer.getInteger("benchmark.loops", 2000000);
+        int warmups = getInteger("benchmark.warmups", 200000);
+        int loops = getInteger("benchmark.loops", 2000000);
         
         String title = "protostuff-core deserialization benchmark for " + loops + " runs";
         out.println(title);

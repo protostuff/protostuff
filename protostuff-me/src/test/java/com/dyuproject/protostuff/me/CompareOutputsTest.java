@@ -32,27 +32,26 @@ import com.dyuproject.protostuff.me.Foo.EnumSample;
 public class CompareOutputsTest extends AbstractTest
 {
     
-    static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
-    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
-            ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
+    static final Baz negativeBaz = SerializableObjects.newBaz(-567, "negativeBaz", -202020202);
+    static final Bar negativeBar = SerializableObjects.newBar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
+            ByteString.copyFromUtf8("a1"), Boolean.TRUE, -130.031f, -1000.0001d, -101010101);
     
-    static final Baz baz = new Baz(567, "baz", 202020202);  
-    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
-            ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
+    static final Baz baz = SerializableObjects.newBaz(567, "baz", 202020202);  
+    static final Bar bar = SerializableObjects.newBar(890, "bar", baz, Bar.Status.STARTED, 
+            ByteString.copyFromUtf8("b2"), Boolean.TRUE, 150.051f, 2000.0002d, 303030303);
 
-    // a total of 1000 bytes
     public static final Foo foo = SerializableObjects.newFoo(
             new Integer[]{90210,-90210, 0}, 
             new String[]{"foo", "123456789012345678901234567890123456789012"}, 
             new Bar[]{bar, negativeBar},
-            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
+            new int[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
             new ByteString[]{
                     ByteString.copyFromUtf8("ef"), 
                     ByteString.copyFromUtf8("gh"),
                     // two 350-byte bytestring.
                     ByteString.copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"),
                     ByteString.copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")}, 
-            new Boolean[]{true, false}, 
+            new Boolean[]{Boolean.TRUE, Boolean.FALSE}, 
             new Float[]{1234.4321f, -1234.4321f, 0f}, 
             new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
             new Long[]{7060504030201l, -7060504030201l, 0l});
@@ -68,8 +67,8 @@ public class CompareOutputsTest extends AbstractTest
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 200000);
-        int loops = Integer.getInteger("benchmark.loops", 2000000);
+        int warmups = getInteger("benchmark.warmups", 200000);
+        int loops = getInteger("benchmark.loops", 2000000);
         
         String title = "protostuff-core serialization benchmark for " + loops + " runs";
         out.println(title);
@@ -89,8 +88,8 @@ public class CompareOutputsTest extends AbstractTest
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-core-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 200000);
-        int loops = Integer.getInteger("benchmark.loops", 2000000);
+        int warmups = getInteger("benchmark.warmups", 200000);
+        int loops = getInteger("benchmark.loops", 2000000);
         
         String title = "protostuff-core serialization benchmark for " + loops + " runs";
         out.println(title);
@@ -133,7 +132,7 @@ public class CompareOutputsTest extends AbstractTest
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
+                    "(should never happen).");
         }
         
         return output.toByteArray();
@@ -149,7 +148,7 @@ public class CompareOutputsTest extends AbstractTest
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
+                    "(should never happen).");
         }
         
         return output.toByteArray();
@@ -181,7 +180,7 @@ public class CompareOutputsTest extends AbstractTest
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
+                    "(should never happen).");
         }
         
         return out.toByteArray();

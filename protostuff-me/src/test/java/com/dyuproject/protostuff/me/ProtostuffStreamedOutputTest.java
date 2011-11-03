@@ -56,7 +56,7 @@ public class ProtostuffStreamedOutputTest extends SerDeserTest
         catch(IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException " + 
-                    "(should never happen).", e);
+                    "(should never happen).");
         }
         
         return out.toByteArray();

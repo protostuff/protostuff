@@ -65,7 +65,7 @@ public class BufferReuseTest extends StandardTest
                 new Bar[]{SerializableObjects.bar, SerializableObjects.negativeBar, 
                         SerializableObjects.bar, SerializableObjects.negativeBar, 
                         SerializableObjects.bar, SerializableObjects.negativeBar},
-                new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
+                new int[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
                 new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")}, 
                 new Boolean[]{true, false}, 
                 new Float[]{1234.4321f, -1234.4321f, 0f}, 

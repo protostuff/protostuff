@@ -54,7 +54,6 @@ package com.dyuproject.protostuff.me;
  * @author David Yu
  */
 public class ProtobufException extends ProtostuffException {
-  private static final long serialVersionUID = 1616151763072450476L;
   
   private static final String ERR_TRUNCATED_MESSAGE = 
       "While parsing a protocol message, the input ended unexpectedly " +

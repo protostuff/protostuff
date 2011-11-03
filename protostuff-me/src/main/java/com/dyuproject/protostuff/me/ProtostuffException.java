@@ -24,8 +24,6 @@ import java.io.IOException;
  */
 public class ProtostuffException extends IOException
 {
-
-    private static final long serialVersionUID = 3969366848110070516L;
     
     public ProtostuffException()
     {

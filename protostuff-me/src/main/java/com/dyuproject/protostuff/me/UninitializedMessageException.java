@@ -56,7 +56,6 @@ package com.dyuproject.protostuff.me;
  * @author David Yu
  */
 public final class UninitializedMessageException extends RuntimeException {
-  private static final long serialVersionUID = -7466929953374883507L;
   
   public final Object targetMessage;
   public final Schema targetSchema;

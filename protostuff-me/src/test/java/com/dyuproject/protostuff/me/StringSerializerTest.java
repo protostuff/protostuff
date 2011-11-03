@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import junit.framework.TestCase;
-
 import com.dyuproject.protostuff.me.StringSerializer.STRING;
 
 /**
@@ -32,7 +30,7 @@ import com.dyuproject.protostuff.me.StringSerializer.STRING;
  * @author David Yu
  * @created Jul 6, 2010
  */
-public class StringSerializerTest extends TestCase
+public class StringSerializerTest extends AbstractTest
 {
     
     // 4*3-byte
@@ -505,8 +503,8 @@ public class StringSerializerTest extends TestCase
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-string-bench-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 800000);
-        int loops = Integer.getInteger("benchmark.loops", 8000000);
+        int warmups = getInteger("benchmark.warmups", 800000);
+        int loops = getInteger("benchmark.loops", 8000000);
         
         String title = "protostuff-api string serialization benchmark for " + loops + " runs";
         out.println(title);
@@ -526,8 +524,8 @@ public class StringSerializerTest extends TestCase
             new PrintStream(new FileOutputStream(new File(new File(dir), 
                     "protostuff-string-bench-"+System.currentTimeMillis()+".txt"), true));
         
-        int warmups = Integer.getInteger("benchmark.warmups", 800000);
-        int loops = Integer.getInteger("benchmark.loops", 8000000);
+        int warmups = getInteger("benchmark.warmups", 800000);
+        int loops = getInteger("benchmark.loops", 8000000);
         
         String title = "protostuff-api string serialization benchmark for " + loops + " runs";
         out.println(title);
@@ -631,7 +629,7 @@ public class StringSerializerTest extends TestCase
             }
             catch (UnsupportedEncodingException e)
             {
-                throw new RuntimeException(e);
+                throw new RuntimeException(e.getMessage());
             }
         }
 

@@ -18,10 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Serialization and deserialization test cases.
@@ -59,7 +57,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema fooSchema = new CustomSchema(SerializableObjects.foo.cachedSchema())
         {
-            public void writeTo(Output output, Foo message) throws IOException
+            public void writeTo(Output output, Object message) throws IOException
             {
                 // 10 is an unknown field
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
@@ -79,7 +77,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema())
         {
-            public void writeTo(Output output, Bar message) throws IOException
+            public void writeTo(Output output, Object message) throws IOException
             {
                 // 10 is an unknown field
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
@@ -106,7 +104,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema())
         {
-            public void writeTo(Output output, Bar message) throws IOException
+            public void writeTo(Output output, Object message) throws IOException
             {
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
@@ -129,10 +127,10 @@ public abstract class SerDeserTest extends StandardTest
         // we expect this to succeed, skipping the baz field.
         mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema());
         
-        assertTrue(bar.getSomeInt() == foo.getSomeInt().get(0));
-        assertEquals(bar.getSomeString(), foo.getSomeString().get(0));
-        assertTrue(bar.getSomeDouble() == foo.getSomeDouble().get(0));
-        assertTrue(bar.getSomeFloat() == foo.getSomeFloat().get(0));
+        assertTrue(bar.getSomeInt() == ((Integer)foo.getSomeIntList().elementAt(0)).intValue());
+        assertEquals(bar.getSomeString(), foo.getSomeStringList().elementAt(0));
+        assertTrue(bar.getSomeDouble() == ((Double)foo.getSomeDoubleList().elementAt(0)).doubleValue());
+        assertTrue(bar.getSomeFloat() == ((Float)foo.getSomeFloatList().elementAt(0)).floatValue());
     }
     
     
@@ -169,9 +167,9 @@ public abstract class SerDeserTest extends StandardTest
     public void testEmptyInnerFooDelimited() throws Exception
     {
         Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        bars.add(new Bar());
-        fooCompare.setSomeBar(bars);
+        Vector bars = new Vector();
+        bars.addElement(new Bar());
+        fooCompare.setSomeBarList(bars);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, fooCompare);
@@ -260,13 +258,16 @@ public abstract class SerDeserTest extends StandardTest
         SerializableObjects.assertEquals(baz, bazCompare);
     }
     
-    /**
+    
+    // COMMENT OUT because j2me does not recognize java.io.Externalizable 
+    // java.io.NotSerializableException is thrown instead.
+    /*
      * HasHasBar wraps an object without a schema.
      * That object will have to be serialized via the default java serialization 
      * and it will be delimited.
      * 
      * HasBar wraps a message {@link Bar}.
-     */
+     *
     public void testJavaSerializable() throws Exception
     {
         HasHasBar hhbCompare = new HasHasBar("hhb", 
@@ -359,7 +360,7 @@ public abstract class SerDeserTest extends StandardTest
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
         Foo parsedFoo = (Foo)in.readObject();
         SerializableObjects.assertEquals(parsedFoo, foo);
-    }
+    }*/
     
     static void assertEquals(HasHasBar h1, HasHasBar h2)
     {
