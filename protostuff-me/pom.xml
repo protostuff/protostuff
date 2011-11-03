@@ -66,7 +66,9 @@
           <options>
             <option>-verbose</option>
             <option>-microedition</option>
-            <option>-keep public class *</option>
+            <option>-dontshrink</option>
+            <option>-dontoptimize</option>
+            <option>-keep class *</option>
           </options>
         </configuration>
         <dependencies>
