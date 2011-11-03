@@ -61,7 +61,7 @@
             </execution>
           </executions>
         <configuration>
-          <proguardVersion>4.4</proguardVersion>
+          <proguardVersion>${proguard-version}</proguardVersion>
           <obfuscate>false</obfuscate>
           <options>
             <option>-verbose</option>
@@ -72,14 +72,18 @@
         <dependencies>
           <dependency>
             <groupId>net.sf.proguard</groupId>
-            <artifactId>proguard</artifactId>
-            <version>4.4</version>
+            <artifactId>proguard-base</artifactId>
+            <version>${proguard-version}</version>
             <scope>runtime</scope>
           </dependency>
         </dependencies>
       </plugin>
     </plugins>
   </build>
+
+  <properties>
+    <proguard-version>4.6</proguard-version>
+  </properties>
   
   <dependencies>
     <dependency>
