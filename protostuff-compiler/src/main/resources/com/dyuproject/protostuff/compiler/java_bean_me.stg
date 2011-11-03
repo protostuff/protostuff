@@ -75,7 +75,7 @@ enum_block(eg, module, options, nested) ::= <<
 
 public interface <eg.name>
 {
-    <eg.values:{v|static final int <v.name> = <v.number>}; separator=";\n">;
+    <eg.values:{v|public static final int <v.name> = <v.number>}; separator=";\n">;
 }
 
 >>
@@ -213,20 +213,16 @@ field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
 <modifier; format=" ">Vector <var(val=field.name, fmt="CC", options=options)>;
 <else>
-<if(field.enumField)>
 <modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
-<else>
-<modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
-<endif>
 <endif>
 >>
 
 field_singular_type(field, options) ::= <<
 <if(field.enumField)>
 <if(field.required)>
-int
+Integer
 <else>
-<map_primitive_wrapper.("int")>
+int
 <endif>
 <else>
 <if(field.required)>
@@ -247,7 +243,11 @@ int
 
 field_assign_defaults(field, options) ::= <<
 <if(field.defaultValue)>
-<if(!field.enumField)>
+<if(field.enumField)>
+<if(!field.required)>
+ = <field.defaultValueAsString>
+<endif>
+<else>
  = DEFAULT_<field.name; format="UUC">
 <endif>
 <endif>
@@ -273,8 +273,16 @@ public <message.name>(
 >>
 
 field_declare_constructor_singular(field, options) ::= <<
+<if(field.enumField)>
+<if(field.required)>
+Integer <var(val=field.name, fmt="CC", options=options)>
+<else>
+int <var(val=field.name, fmt="CC", options=options)>
+<endif>
+<else>
 <if(field.required)>
 <map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
+<endif>
 <endif>
 >>
 
@@ -306,9 +314,9 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 }
 <if(options.generate_helper_methods)>
 
-public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
+public <if(field.enumField)>Integer<else><map_primitive_wrapper.(field.javaType)><endif> get<field.name; format="PC">(int index)
 {
-    return <var(val=field.name, fmt="CC", options=options)> == null ? null : (<map_primitive_wrapper.(field.javaType)>)<var(val=field.name, fmt="CC", options=options)>.elementAt(index);
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : (<if(field.enumField)>Integer<else><map_primitive_wrapper.(field.javaType)><endif>)<var(val=field.name, fmt="CC", options=options)>.elementAt(index);
 }
 
 public int get<field.name; format="PC">Count()
@@ -316,7 +324,7 @@ public int get<field.name; format="PC">Count()
     return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
 }
 
-public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> add<field.name; format="PC">(<if(field.enumField)>Integer<else><map_primitive_wrapper.(field.javaType)><endif> <var(val=field.name, fmt="CC", options=options)>)
 {
     if(this.<var(val=field.name, fmt="CC", options=options)> == null)
         this.<var(val=field.name, fmt="CC", options=options)> = new Vector();
@@ -330,15 +338,7 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 
 public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">()
 {
-    <if(field.enumField)>
-    <if(field.required)>
     return <var(val=field.name, fmt="CC", options=options)>;
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)> == null ? Integer.valueOf(<field.defaultValueAsString>) : <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
 }
 
 public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>)
@@ -389,7 +389,7 @@ public Class typeClass()
 
 public String messageName()
 {
-    return <message.name>.class.getName();
+    return "<message.name>";
 }
 
 public String messageFullName()
@@ -443,11 +443,13 @@ public void mergeFrom(Input input, Object /*<message.name>*/ <name>Obj) throws I
     }
 }
 
+<! COMMENT OUT ... too buggy
 public void mergeFrom(Object /*<message.name>*/ <name>Obj)
 {
     <message.name> <name> = (<message.name>)<name>Obj;
     <message.fields:field_copy(field=it, options=options, name=name); separator="\n">
 }
+!>
 
 >>
 
@@ -469,7 +471,7 @@ singular_field_merge_switch(field, options, name) ::= <<
 <name>.<var(val=field.name, fmt="CC", options=options)> = (<field.javaType>)input.mergeObject(<name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema());
 break;
 <elseif(field.enumField)>
-<name>.<var(val=field.name, fmt="CC", options=options)> = Integer.valueOf(input.readEnum());
+<name>.<var(val=field.name, fmt="CC", options=options)> = <if(field.required)>new Integer(input.readEnum())<else>input.readEnum()<endif>;
 break;
 <elseif(field.stringField)>
 <name>.<var(val=field.name, fmt="CC", options=options)> = input.read<field.class.simpleName>();
@@ -477,15 +479,18 @@ break;
 <elseif(field.bytesField)>
 <name>.<var(val=field.name, fmt="CC", options=options)> = input.read<field.class.simpleName>();
 break;
+<elseif(field.boolField)>
+<name>.<var(val=field.name, fmt="CC", options=options)> = input.readBool() ? Boolean.TRUE : Boolean.FALSE;
+break;
 <else>
-<if(field.numberField)>
+<if(field.required)>
+<name>.<var(val=field.name, fmt="CC", options=options)> = new <map_primitive_wrapper.(field.javaType)>(input.read<field.class.simpleName>());
+<else>
 <if(options.primitive_numbers_if_optional)>
 <name>.<var(val=field.name, fmt="CC", options=options)> = input.read<field.class.simpleName>();
 <else>
-<name>.<var(val=field.name, fmt="CC", options=options)> = <map_primitive_wrapper.(field.javaType)>.valueOf(input.read<field.class.simpleName>());
+<name>.<var(val=field.name, fmt="CC", options=options)> = new <map_primitive_wrapper.(field.javaType)>(input.read<field.class.simpleName>());
 <endif>
-<else>
-<name>.<var(val=field.name, fmt="CC", options=options)> = <map_primitive_wrapper.(field.javaType)>.valueOf(input.read<field.class.simpleName>());
 <endif>
 
 break;
@@ -501,7 +506,7 @@ break;
 <elseif(field.enumField)>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
-<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(Integer.valueOf(input.readEnum()));
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(new Integer(input.readEnum()));
 break;
 <elseif(field.bytesField)>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
@@ -513,10 +518,15 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
 <name>.<var(val=field.name, fmt="CC", options=options)>.addElement(input.read<field.class.simpleName>());
 break;
+<elseif(field.boolField)>
+if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(input.readBool() ? Boolean.TRUE : Boolean.FALSE);
+break;
 <else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     <name>.<var(val=field.name, fmt="CC", options=options)> = new Vector();
-<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(<map_primitive_wrapper.(field.javaType)>.valueOf(input.read<field.class.simpleName>()));
+<name>.<var(val=field.name, fmt="CC", options=options)>.addElement(new <map_primitive_wrapper.(field.javaType)>(input.read<field.class.simpleName>()));
 break;
 <endif>
 >>
@@ -578,6 +588,8 @@ output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options
 output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.intValue(), false);
 <elseif(field.stringField)>
 output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<elseif(field.bytesField)>
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <else>
 output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.<field.javaType>Value(), false);
 <endif>
@@ -586,9 +598,7 @@ output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name,
 <field:singular_field_write_check(field=it, options=options)>
      output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
 <elseif(field.enumField)>
-<field:singular_field_write_check(field=it, options=options)>
-     output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.intValue(), false);
-<elseif(field.stringField)>
+output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
 <elseif(field.stringField)>
 <field:singular_field_write_check(field=it, options=options)>
     output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
@@ -737,9 +747,9 @@ case <field.number>: return "<field.name; format="CC">";
 
 field_map(field, options, mapVar) ::= <<
 <if(options.alphanumeric)>
-<mapVar>.put("f<field.number>", Integer.valueOf(<field.number>));
+<mapVar>.put("f<field.number>", new Integer(<field.number>));
 <else>
-<mapVar>.put("<field.name; format="CC">", Integer.valueOf(<field.number>));
+<mapVar>.put("<field.name; format="CC">", new Integer(<field.number>));
 <endif>
 >>
 
