@@ -215,7 +215,7 @@ public final class Bar implements Message, Schema
                     break;
 
                 case 4:
-                    message.someEnum = new Integer(input.readEnum());
+                    message.someEnum = input.readEnum();
                     break;
 
                 case 5:
