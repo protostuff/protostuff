@@ -1,6 +1,7 @@
 protostuff-1.0.5-SNAPSHOT
 + Issue 93: Add runtime option to always use the constructor from sun reflection factory
 + Issue 92: [protostuff-me] Preverification fails (patch by thierry.monney)
++ Issue 91: Generated J2ME code not is not compatible
 
 protostuff-1.0.4 2011-10-24
 + Issue 90: byte arrays on protostuff-runtime were not treated as scalar fields
