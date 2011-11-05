@@ -1,4 +1,5 @@
 protostuff-1.0.5-SNAPSHOT
++ Issue 93: Add runtime option to always use the constructor from sun reflection factory
 + Issue 92: [protostuff-me] Preverification fails (patch by thierry.monney)
 
 protostuff-1.0.4 2011-10-24

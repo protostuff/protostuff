@@ -66,6 +66,22 @@ public final class RuntimeEnv
     public static final boolean USE_SUN_MISC_UNSAFE;
     
     
+    /**
+     * If true, the constructor will always be obtained from 
+     * {@code ReflectionFactory.newConstructorFromSerialization}.
+     * 
+     * Disabled by default, which means that if the pojo has a no-args constructor, 
+     * that will be used instead.
+     * 
+     * Enable this if you intend to avoid deserializing objects whose no-args constructor 
+     * initializes (unwanted) internal state.  This applies to complex/framework objects.
+     * 
+     * If you intend to fill default field values using your default constructor, 
+     * leave this disabled. This normally applies to java beans/data objects.
+     */
+    public static final boolean ALWAYS_USE_SUN_REFLECTION_FACTORY;
+    
+    
     static final Method newInstanceFromObjectInputStream;
     
     static final Constructor<Object> OBJECT_CONSTRUCTOR;
@@ -111,6 +127,10 @@ public final class RuntimeEnv
         // must be on a sun jre
         USE_SUN_MISC_UNSAFE = OBJECT_CONSTRUCTOR != null && Boolean.parseBoolean(
                 props.getProperty("protostuff.runtime.use_sun_misc_unsafe", "true"));
+        
+        ALWAYS_USE_SUN_REFLECTION_FACTORY = OBJECT_CONSTRUCTOR != null && 
+                Boolean.parseBoolean(props.getProperty(
+                        "protostuff.runtime.always_use_sun_reflection_factory", "false"));
     }
     
     private static Method getMethodNewInstanceFromObjectInputStream()
@@ -160,6 +180,9 @@ public final class RuntimeEnv
     
     private static <T> Constructor<T> getConstructor(Class<T> clazz)
     {
+        if(ALWAYS_USE_SUN_REFLECTION_FACTORY)
+            return OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
+        
         try
         {
             return clazz.getConstructor((Class[])null);
