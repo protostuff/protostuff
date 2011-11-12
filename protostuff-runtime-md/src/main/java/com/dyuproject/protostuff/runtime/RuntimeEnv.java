@@ -20,6 +20,7 @@ package com.dyuproject.protostuff.runtime;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Properties;
 
 /**
@@ -157,6 +158,9 @@ public final class RuntimeEnv
             
             return new Android2Instantiator<T>(clazz);
         }
+
+        if(!Modifier.isPublic(clazz.getModifiers()))
+            constructor.setAccessible(true);
         
         return new DefaultInstantiator<T>(constructor);
     }
