@@ -127,6 +127,30 @@ public abstract class STCodeGenerator implements ProtoCompiler
         if("UUC".equals(formatName))
             return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
         
+        // pascal case with space .. e.g. someFoo/some_foo becomes "Some Foo"
+        if("PCS".equals(formatName))
+        {
+            StringBuilder buffer = ProtoUtil.toUnderscoreCase(str);
+            char c = buffer.charAt(0);
+            if(c>96 && c<123)
+                buffer.setCharAt(0, (char)(c-32));
+            
+            for(int i = 1, len = buffer.length(); i < len; i++)
+            {
+                c = buffer.charAt(i);
+                if(c == '_' && len != i+1)
+                {
+                    buffer.setCharAt(i, ' ');
+                    
+                    c = buffer.charAt(i+1);
+                    if(c>96 && c<123)
+                        buffer.setCharAt(++i, (char)(c-32));
+                }
+            }
+            return buffer.toString();
+        }
+            
+        
         // regex replace
         int eq = formatName.indexOf("==");
         if(eq > 0)
@@ -181,63 +205,67 @@ public abstract class STCodeGenerator implements ProtoCompiler
         if(source.isDirectory())
         {
             for(File f : CompilerUtil.getProtoFiles(source))
-                compile(module, ProtoUtil.parseProto(f), compileImports, recursive);
+                compile(module, parseProto(f, module), compileImports, recursive);
         }
         else
-            compile(module, ProtoUtil.parseProto(source), compileImports, recursive);
+            compile(module, parseProto(source, module), compileImports, recursive);
     }
     
-    private void compile(ProtoModule module, Proto proto, boolean compileImports, 
-            boolean recursive) throws IOException
+    static Proto parseProto(File file, ProtoModule module)
     {
-        List<Proto> overridden = preCompile(module, proto);
+        CachingProtoLoader loader = module.getCachingProtoLoader();
+        if(loader == null)
+            return ProtoUtil.parseProto(file);
+
         try
         {
-            compile(module, proto);
-            if(compileImports)
+            return loader.loadFrom(file, null);
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    protected void compile(ProtoModule module, Proto proto, boolean compileImports, 
+            boolean recursive) throws IOException
+    {
+        final List<Proto> overridden = new ArrayList<Proto>();
+        try
+        {
+            collect(module, proto, overridden, recursive);
+            
+            if(!recursive)
             {
-                for(Proto p : proto.getImportedProtos())
+                compile(module, proto);
+                if(compileImports)
                 {
-                    if(recursive)
-                        compile(module, p, compileImports, recursive);
-                    else
+                    for(Proto p : proto.getImportedProtos())
                         compile(module, p);
                 }
             }
         }
         finally
         {
-            if(overridden != null)
-            {
-                for(Proto p : overridden)
-                    postCompile(module, p);
-            }
+            for(Proto p : overridden)
+                postCompile(module, p);
         }
     }
     
-    private static List<Proto> preCompile(ProtoModule module, Proto proto)
+    protected void collect(ProtoModule module, Proto proto, 
+            List<Proto> overridden, boolean compile) throws IOException
     {
-        List<Proto> overridden = null;
-        if(override(module, proto))
-        {
-            if(overridden == null)
-                overridden = new ArrayList<Proto>();
-            overridden.add(proto);
-        }
-        
         for(Proto p : proto.getImportedProtos())
-        {
-            if(override(module, p))
-            {
-                if(overridden == null)
-                    overridden = new ArrayList<Proto>();
-                overridden.add(p);
-            }
-        }
-        return overridden;
+            collect(module, p, overridden, compile);
+        
+        if(override(module, proto))
+            overridden.add(proto);
+        
+        if(compile)
+            compile(module, proto);
     }
     
-    private static boolean override(ProtoModule module, Proto proto)
+    static boolean override(ProtoModule module, Proto proto)
     {
         String pkg = proto.getPackageName();
         String jpkg = proto.getJavaPackageName();
@@ -257,7 +285,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
         return override;
     }
     
-    private static void postCompile(ProtoModule module, Proto proto)
+    static void postCompile(ProtoModule module, Proto proto)
     {
         proto.getMutableJavaPackageName().reset();
         proto.getMutablePackageName().reset();

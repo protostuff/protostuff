@@ -88,6 +88,8 @@ public final class CompilerMain
             propsErr();
             return null;
         }        
+        CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ? 
+                new CachingProtoLoader() : null;
         
         ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
         for(String m : COMMA.split(moduleString))
@@ -111,6 +113,8 @@ public final class CompilerMain
             
             ProtoModule module = new ProtoModule(new File(source), output, 
                     encoding, new File(outputDir));
+            
+            module.setCachingProtoLoader(loader);
             
             if(options!=null)
             {

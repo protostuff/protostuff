@@ -26,7 +26,7 @@ package com.dyuproject.protostuff.parser;
 public class EnumField extends Field<EnumGroup.Value>
 {
     
-    java.lang.String javaType;
+    //java.lang.String javaType;
     EnumGroup enumGroup;
     boolean defaultValueSet;
     
@@ -53,8 +53,8 @@ public class EnumField extends Field<EnumGroup.Value>
     
     public java.lang.String getJavaType()
     {
-        if(javaType!=null)
-            return javaType;
+        //if(javaType!=null)
+        //    return javaType;
         
         StringBuilder buffer = new StringBuilder();
         if(enumGroup.isNested())
@@ -72,7 +72,8 @@ public class EnumField extends Field<EnumGroup.Value>
         else
             buffer.append(enumGroup.getProto().getJavaPackageName()).append('.').append(enumGroup.getName());
         
-        return (javaType=buffer.toString());
+        return buffer.toString();
+        //return (javaType=buffer.toString());
         
     }
     

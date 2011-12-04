@@ -24,7 +24,7 @@ package com.dyuproject.protostuff.parser;
 public class MessageField extends Field<Message>
 {
     
-    java.lang.String javaType;
+    //java.lang.String javaType;
     Message message;
     
     public MessageField()
@@ -45,13 +45,14 @@ public class MessageField extends Field<Message>
 
     public java.lang.String getJavaType()
     {
-        if(javaType!=null)
-            return javaType;
+        //if(javaType!=null)
+        //    return javaType;
         
         StringBuilder buffer = new StringBuilder();
         Message.computeName(message, owner, buffer);
 
-        return (javaType=buffer.toString());
+        return buffer.toString();
+        //return (javaType=buffer.toString());
     }
     
     public java.lang.String getRegularType()

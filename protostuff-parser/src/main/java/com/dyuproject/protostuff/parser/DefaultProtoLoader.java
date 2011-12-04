@@ -64,9 +64,7 @@ public class DefaultProtoLoader implements Proto.Loader
         if(path.startsWith("http://"))
         {
             URL url = new URL(path);
-            Proto proto = new Proto(url, this, importer);
-            ProtoUtil.loadFrom(url, proto);
-            return proto;
+            return loadFrom(url, importer);
         }
         
         File protoFile, importerFile = importer.getFile();
@@ -98,18 +96,15 @@ public class DefaultProtoLoader implements Proto.Loader
             }
         }
         
-        if(!protoFile.exists())
-        {
-            Proto protoFromClasspath = loadFromClasspath(path, importer);
-            if(protoFromClasspath == null)
-                throw new IllegalStateException("Imported proto " + path + " not found.");
-            
-            return protoFromClasspath;
-        }
+        if(protoFile.exists())
+            return loadFrom(protoFile, importer);
         
-        Proto proto = new Proto(protoFile, this, importer);
-        ProtoUtil.loadFrom(protoFile, proto);
-        return proto;
+        // last resort (defaults to classpath lookup).
+        Proto protoFromOtherResource = loadFromOtherResource(path, importer);
+        if(protoFromOtherResource == null)
+            throw new IllegalStateException("Imported proto " + path + " not found.");
+        
+        return protoFromOtherResource;
     }
     
     static File getBaseDirFromPackagePath(String path, Proto importer)
@@ -127,6 +122,28 @@ public class DefaultProtoLoader implements Proto.Loader
         
         return baseDir;
     }
+    
+    protected Proto loadFromOtherResource(String path, Proto importer) throws Exception
+    {
+        // defaults to lookup from classpath.
+        URL resource = getResource(path, DefaultProtoLoader.class);
+        return resource == null ? null : loadFrom(resource, importer);
+    }
+    
+    protected Proto loadFrom(File file, Proto importer) throws Exception
+    {
+        Proto proto = new Proto(file, this, importer);
+        ProtoUtil.loadFrom(file, proto);
+        return proto;
+    }
+    
+    protected Proto loadFrom(URL resource, Proto importer) throws Exception
+    {
+        Proto proto = new Proto(resource, this, importer);
+        ProtoUtil.loadFrom(resource, proto);
+        return proto;
+    }
+    
     
     /**
      * Loads a proto from the classpath.

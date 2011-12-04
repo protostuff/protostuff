@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
+import com.dyuproject.protostuff.compiler.CachingProtoLoader;
 import com.dyuproject.protostuff.compiler.CompilerMain;
 
 /**
@@ -52,6 +53,15 @@ public class ProtoCompilerMojo extends AbstractMojo
      * @since 1.0.1
      */
     private boolean skip;
+    
+    /**
+     * When {@code true}, the protos are cached for re-use.
+     * This matters when a certain proto is also used/imported by other modules.
+     *
+     * @parameter expression="${protostuff.compiler.cache_protos}" default-value="false"
+     * @since 1.0.5
+     */
+    private boolean cacheProtos;
 
     /**
      * Usually most of protostuff mojos will not get executed on parent poms
@@ -95,6 +105,8 @@ public class ProtoCompilerMojo extends AbstractMojo
 
         assert baseDir != null && baseDir.exists() && baseDir.isDirectory();
         
+        CachingProtoLoader loader = cacheProtos ? new CachingProtoLoader() : null;
+        
         if(modulesFile==null)
         {
             if(protoModules==null)
@@ -106,6 +118,7 @@ public class ProtoCompilerMojo extends AbstractMojo
             {
                 for(ProtoModule m : protoModules)
                 {
+                    m.setCachingProtoLoader(loader);
                     if(!CompilerMain.isAvailableOutput(m.getOutput()) && 
                             !baseDir.getAbsoluteFile().equals(
                                     new File(".").getAbsoluteFile()))
@@ -148,6 +161,7 @@ public class ProtoCompilerMojo extends AbstractMojo
                 {
                     for (ProtoModule m : protoModules)
                     {
+                        m.setCachingProtoLoader(loader);
                         CompilerMain.compile(m);
 
                         // enabled by default unless overridden
