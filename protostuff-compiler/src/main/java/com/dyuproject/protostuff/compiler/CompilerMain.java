@@ -90,6 +90,10 @@ public final class CompilerMain
         }        
         CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ? 
                 new CachingProtoLoader() : null;
+                
+        String globalOptionsParam = props.getProperty("global_options");
+        String[] globalOptions = globalOptionsParam == null ? null : 
+            COMMA.split(globalOptionsParam);
         
         ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
         for(String m : COMMA.split(moduleString))
@@ -116,22 +120,28 @@ public final class CompilerMain
             
             module.setCachingProtoLoader(loader);
             
-            if(options!=null)
-            {
-                for(String o : COMMA.split(options))
-                {
-                    int idx = o.indexOf(':');
-                    if(idx==-1)
-                        module.setOption(o.trim(), "");
-                    else
-                        module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
-                }
-            }
+            if(globalOptions != null)
+                addOptionsTo(module, globalOptions);
+            
+            if(options != null)
+                addOptionsTo(module, COMMA.split(options));
             
             modules.add(module);
         }
         
         return modules;
+    }
+    
+    static void addOptionsTo(ProtoModule module, String[] options)
+    {
+        for(String o : options)
+        {
+            int idx = o.indexOf(':');
+            if(idx == -1)
+                module.setOption(o.trim(), "");
+            else
+                module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+        }
     }
     
     static void propsErr()

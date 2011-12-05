@@ -211,7 +211,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
             compile(module, parseProto(source, module), compileImports, recursive);
     }
     
-    static Proto parseProto(File file, ProtoModule module)
+    protected static Proto parseProto(File file, ProtoModule module)
     {
         CachingProtoLoader loader = module.getCachingProtoLoader();
         if(loader == null)
@@ -265,7 +265,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
             compile(module, proto);
     }
     
-    static boolean override(ProtoModule module, Proto proto)
+    protected static boolean override(ProtoModule module, Proto proto)
     {
         String pkg = proto.getPackageName();
         String jpkg = proto.getJavaPackageName();
@@ -285,7 +285,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
         return override;
     }
     
-    static void postCompile(ProtoModule module, Proto proto)
+    protected static void postCompile(ProtoModule module, Proto proto)
     {
         proto.getMutableJavaPackageName().reset();
         proto.getMutablePackageName().reset();

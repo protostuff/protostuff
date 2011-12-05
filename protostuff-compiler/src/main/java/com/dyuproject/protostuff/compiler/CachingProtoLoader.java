@@ -31,6 +31,7 @@ package com.dyuproject.protostuff.compiler;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +56,11 @@ public class CachingProtoLoader extends DefaultProtoLoader
     public CachingProtoLoader(Map<String,Proto> loadedProtos)
     {
         this.loadedProtos = loadedProtos;
+    }
+    
+    public Collection<Proto> getCachedProtos()
+    {
+        return loadedProtos.values();
     }
     
     public Proto loadFrom(File file, Proto importer) throws Exception

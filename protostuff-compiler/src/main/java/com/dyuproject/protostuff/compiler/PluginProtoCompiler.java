@@ -69,7 +69,10 @@ public class PluginProtoCompiler extends STCodeGenerator
         javaOutput = ".java".equalsIgnoreCase(fileExtension);
     }
     
-    static String getFileExtension(String resource)
+    /**
+     * Get the file extension of the provided stg resource.
+     */
+    public static String getFileExtension(String resource)
     {
         // E.g uf foo.bar.java.stg, it is the . before "java" 
         int secondToTheLastDot = resource.lastIndexOf('.', resource.length()-5);
@@ -89,7 +92,10 @@ public class PluginProtoCompiler extends STCodeGenerator
         return extension;
     }
     
-    static StringTemplateGroup resolveSTG(ProtoModule module)
+    /**
+     * Finds the stg resource.
+     */
+    public static StringTemplateGroup resolveSTG(ProtoModule module)
     {
         String resource = module.getOutput();
         try
