@@ -41,6 +41,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     boolean bytesOrStringDefaultValuePresent;
     boolean requiredFieldPresentOnCurrent, annotationPresentOnFields;
     
+    int requiredFieldCount;
+    
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
     final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
     final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
@@ -320,6 +322,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return requiredFieldPresentOnCurrent;
     }
     
+    public int getRequiredFieldCount()
+    {
+        return requiredFieldCount;
+    }
+    
     public boolean isExtensible() 
     {
         return extensible;
@@ -336,8 +343,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             if(!root.repeatedFieldPresent && f.isRepeated())
                 root.repeatedFieldPresent = true;
             
-            if(!root.requiredFieldPresent && f.isRequired())
+            if(f.isRequired())
+            {
+                requiredFieldCount++;
                 root.requiredFieldPresent = true;
+            }
             
             if(!requiredFieldPresentOnCurrent && f.isRequired())
                 requiredFieldPresentOnCurrent = true;
