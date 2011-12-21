@@ -39,7 +39,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     // code generator helpers
     boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent, extensible;
     boolean bytesOrStringDefaultValuePresent;
-    boolean requiredFieldPresentOnCurrent, annotationPresentOnFields;
+    boolean annotationPresentOnFields;
     
     int requiredFieldCount;
     
@@ -319,7 +319,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     public boolean isRequiredFieldPresentOnCurrent()
     {
-        return requiredFieldPresentOnCurrent;
+        return requiredFieldCount != 0;
     }
     
     public int getRequiredFieldCount()
@@ -348,9 +348,6 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 requiredFieldCount++;
                 root.requiredFieldPresent = true;
             }
-            
-            if(!requiredFieldPresentOnCurrent && f.isRequired())
-                requiredFieldPresentOnCurrent = true;
             
             if(!annotationPresentOnFields && !f.annotations.isEmpty())
                 annotationPresentOnFields = true;
