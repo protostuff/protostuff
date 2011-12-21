@@ -36,17 +36,24 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     final LinkedHashMap<String,Field<?>> fields = new LinkedHashMap<String,Field<?>>();
     final ArrayList<Extension> nestedExtensions = new ArrayList<Extension>();
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
-    // code generator helpers
-    boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent, extensible;
-    boolean bytesOrStringDefaultValuePresent;
-    boolean annotationPresentOnFields;
-    
-    int requiredFieldCount;
     
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
     final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
     final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
     final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
+    boolean extensible;
+    
+    // code generator helpers
+    
+    // for root message only
+    boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent;
+    boolean bytesOrStringDefaultValuePresent;
+    
+    // for every message
+    boolean annotationPresentOnFields;
+    int requiredFieldCount, repeatedFieldCount, singularFieldCount;
+    int requiredMessageFieldCount, repeatedMessageFieldCount, singularMessageFieldCount;
+    int requiredEnumFieldCount, repeatedEnumFieldCount, singularEnumFieldCount;
     
     public Message()
     {
@@ -292,6 +299,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return buffer.toString();
     }
     
+    public boolean isExtensible()
+    {
+        return extensible;
+    }
+    
+    // codegen helpers
+    
     public boolean isAnnotationPresentOnFields()
     {
         return annotationPresentOnFields;
@@ -322,14 +336,97 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return requiredFieldCount != 0;
     }
     
+    // field count
+    
+    public int getFieldCount()
+    {
+        return fields.size();
+    }
+    
     public int getRequiredFieldCount()
     {
         return requiredFieldCount;
     }
     
-    public boolean isExtensible() 
+    public int getRepeatedFieldCount()
     {
-        return extensible;
+        return repeatedFieldCount;
+    }
+    
+    public int getOptionalFieldCount()
+    {
+        return singularFieldCount - requiredFieldCount;
+    }
+    
+    public int getSingularFieldCount()
+    {
+        return singularFieldCount;
+    }
+    
+    // message field count
+    
+    public int getMessageFieldCount()
+    {
+        return repeatedMessageFieldCount + singularMessageFieldCount;
+    }
+    
+    public int getRequiredMessageFieldCount()
+    {
+        return requiredMessageFieldCount;
+    }
+    
+    public int getRepeatedMessageFieldCount()
+    {
+        return repeatedMessageFieldCount;
+    }
+    
+    public int getOptionalMessageFieldCount()
+    {
+        return singularMessageFieldCount - requiredMessageFieldCount;
+    }
+    
+    public int getSingularMessageFieldCount()
+    {
+        return singularMessageFieldCount;
+    }
+    
+    // enum field count
+    
+    public int getEnumFieldCount()
+    {
+        return repeatedEnumFieldCount + singularEnumFieldCount;
+    }
+    
+    public int getRequiredEnumFieldCount()
+    {
+        return requiredEnumFieldCount;
+    }
+    
+    public int getRepeatedEnumFieldCount()
+    {
+        return repeatedEnumFieldCount;
+    }
+    
+    public int getOptionalEnumFieldCount()
+    {
+        return singularEnumFieldCount - requiredEnumFieldCount;
+    }
+    
+    public int getSingularEnumFieldCount()
+    {
+        return singularEnumFieldCount;
+    }
+    
+    // scalar field count
+    
+    public int getScalarFieldCount()
+    {
+        return getFields().size() - repeatedMessageFieldCount - singularMessageFieldCount;
+    }
+    
+    public int getScalarWithoutEnumFieldCount()
+    {
+        return getScalarFieldCount() - repeatedEnumFieldCount - singularEnumFieldCount;
     }
     
     // post parse
@@ -340,13 +437,21 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         for(Field<?> f : fields.values())
         {
             f.owner = this;
-            if(!root.repeatedFieldPresent && f.isRepeated())
-                root.repeatedFieldPresent = true;
             
-            if(f.isRequired())
+            if(f.isRepeated())
             {
-                requiredFieldCount++;
-                root.requiredFieldPresent = true;
+                repeatedFieldCount++;
+                root.repeatedFieldPresent = true;
+            }
+            else
+            {
+                singularFieldCount++;
+                
+                if(f.isRequired())
+                {
+                    requiredFieldCount++;
+                    root.requiredFieldPresent = true;
+                }
             }
             
             if(!annotationPresentOnFields && !f.annotations.isEmpty())
@@ -376,6 +481,17 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 {
                     MessageField mf = newMessageField((Message) refObj, fr, this);
                     fields.put(mf.name, mf);
+                    
+                    if(mf.isRepeated())
+                        repeatedMessageFieldCount++;
+                    else
+                    {
+                        singularMessageFieldCount++;
+                        
+                        if(mf.isRequired())
+                            requiredMessageFieldCount++;
+                    }
+                    
                     continue;
                 }
                 
@@ -383,6 +499,17 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 {
                     EnumField ef = newEnumField((EnumGroup) refObj, fr, this);
                     fields.put(ef.name, ef);
+                    
+                    if(ef.isRepeated())
+                        repeatedEnumFieldCount++;
+                    else
+                    {
+                        singularEnumFieldCount++;
+                        
+                        if(ef.isRequired())
+                            requiredEnumFieldCount++;
+                    }
+                    
                     continue;
                 }
                 

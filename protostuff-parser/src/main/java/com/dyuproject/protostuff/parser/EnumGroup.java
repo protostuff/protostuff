@@ -154,6 +154,11 @@ public class EnumGroup extends AnnotationContainer implements HasName
         return values.get(0);
     }
     
+    public int getValueCount()
+    {
+        return values.size();
+    }
+    
     void add(Value value)
     {
         value.enumGroup = this;
