@@ -19,9 +19,9 @@ import java.util.Collection;
 public interface HasFields
 {
     
-    void putStandardOption(String key, String value);
+    void putStandardOption(String key, Object value);
     
-    void putExtraOption(String key, String value);
+    void putExtraOption(String key, Object value);
 
     Collection<Field<?>> getFields();
 

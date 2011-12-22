@@ -35,7 +35,7 @@ public interface HasAnnotations
      * Adds all the annotations to this container.
      * If {@code clearSource} is true, the {@code source} arg is cleared.
      */
-    public void addAnnotations(Map<String,Annotation> source, boolean clearSource);
+    public boolean addAnnotations(Map<String,Annotation> source, boolean clearSource);
     
     /**
      * Gets the annotation map.

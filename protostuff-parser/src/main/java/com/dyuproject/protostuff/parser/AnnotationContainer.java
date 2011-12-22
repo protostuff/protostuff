@@ -50,14 +50,16 @@ public class AnnotationContainer implements HasAnnotations
         return annotations.get(name);
     }
 
-    public void addAnnotations(Map<String, Annotation> source, boolean clearSource)
+    public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource)
     {
         if(source.isEmpty())
-            return;
+            return false;
         
         this.annotations.putAll(source);
         if(clearSource)
             source.clear();
+        
+        return true;
     }
 
 }

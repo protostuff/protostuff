@@ -33,8 +33,8 @@ public class EnumGroup extends AnnotationContainer implements HasName
     Proto proto;
     final ArrayList<Value> values = new ArrayList<Value>();
     final ArrayList<Value> sortedValues = new ArrayList<Value>();
-    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
-    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     
     public EnumGroup()
     {
@@ -94,34 +94,42 @@ public class EnumGroup extends AnnotationContainer implements HasName
         return p;
     }
     
-    public void putStandardOption(String key, String value)
+    public void putStandardOption(String key, Object value)
     {
+        putExtraOption(key, value);
         standardOptions.put(key, value);
     }
     
-    public LinkedHashMap<String,String> getStandardOptions()
+    public void putExtraOption(String key, Object value)
+    {
+        if(extraOptions.put(key, value) != null)
+            throw new IllegalStateException("Duplicate enum option: " + key);
+    }
+    
+    public LinkedHashMap<String,Object> getStandardOptions()
     {
         return standardOptions;
     }
     
-    public String getStandardOption(String key)
+    public Object getStandardOption(String key)
     {
         return standardOptions.get(key);
     }
     
-    public void putExtraOption(String key, String value)
-    {
-        extraOptions.put(key, value);
-    }
-    
-    public LinkedHashMap<String,String> getExtraOptions()
+    public LinkedHashMap<String,Object> getExtraOptions()
     {
         return extraOptions;
     }
     
-    public String getExtraOption(String key)
+    public LinkedHashMap<String,Object> getOptions()
     {
-        return extraOptions.get(key);
+        return extraOptions;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <V> V getExtraOption(java.lang.String key)
+    {
+        return (V)extraOptions.get(key);
     }
     
     public Value getValue(int index)
@@ -172,6 +180,9 @@ public class EnumGroup extends AnnotationContainer implements HasName
     {
         Proto proto = getProto();
         proto.fullyQualifiedEnumGroups.put(getFullName(), this);
+        
+        if(!standardOptions.isEmpty())
+            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
     }
     
     public ArrayList<Value> getUniqueSortedValues()

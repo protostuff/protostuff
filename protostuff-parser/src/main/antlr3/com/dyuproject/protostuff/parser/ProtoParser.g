@@ -92,20 +92,17 @@ annotation_entry [Proto proto]
     ;
 
 annotation_keyval [Proto proto, Annotation annotation]
-@init {
-    Object value = null;
-}
     :   k=var ASSIGN (
-            v=var { value = $v.text; }
-            |   NUMFLOAT { value = Float.valueOf($NUMFLOAT.text); }
-            |   NUMINT { value = Integer.valueOf($NUMINT.text); }
-            |   NUMDOUBLE { value = Double.valueOf($NUMDOUBLE.text); }
-            |   TRUE { value = Boolean.TRUE; }
-            |   FALSE { value = Boolean.FALSE; }
-            |   STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
-        ) {
-            annotation.put($k.text, value);
-        }
+                ID { annotation.putRef($k.text, $ID.text); }
+            |   fid=FULL_ID { annotation.putRef($k.text, $fid.text); }
+            |   NUMFLOAT { annotation.put($k.text, Float.valueOf($NUMFLOAT.text)); }
+            |   NUMINT { annotation.put($k.text, Integer.valueOf($NUMINT.text)); }
+            |   NUMDOUBLE { annotation.put($k.text, Double.valueOf($NUMDOUBLE.text)); }
+            |   TRUE { annotation.put($k.text, Boolean.TRUE); }
+            |   FALSE { annotation.put($k.text, Boolean.FALSE); }
+            |   STRING_LITERAL { annotation.put($k.text, getStringFromStringLiteral($STRING_LITERAL.text)); }
+            |   v=var { annotation.put($k.text, $v.text); }
+        )
     ;
 
 header_syntax [Proto proto]
@@ -178,7 +175,7 @@ message_block [Proto proto, Message parent]
             else
                 parent.addNestedMessage(message);
                 
-            message.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(message);
         } 
         LEFTCURLY (message_body[proto, message])* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
@@ -248,7 +245,7 @@ message_field [Proto proto, HasFields message]
         } 
         (field_options[proto, message, fieldHolder.field])? {
             if(fieldHolder.field != null) {
-                fieldHolder.field.addAnnotations(proto.annotations, true);
+                proto.addAnnotationsTo(fieldHolder.field);
                 message.addField(fieldHolder.field);
             }
         }
@@ -307,7 +304,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid string default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, getStringFromStringLiteral($STRING_LITERAL.text));
+            field.putExtraOption($key.text, getStringFromStringLiteral($STRING_LITERAL.text));
         } 
     |   NUMFLOAT {
             if("default".equals($key.text)) {
@@ -322,7 +319,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, Float.valueOf($NUMFLOAT.text));
+            field.putExtraOption($key.text, Float.valueOf($NUMFLOAT.text));
         } 
     |   NUMINT {
             if("default".equals($key.text)) {
@@ -345,7 +342,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, Integer.valueOf($NUMINT.text));
+            field.putExtraOption($key.text, Integer.valueOf($NUMINT.text));
         }
     |   NUMDOUBLE {
             if("default".equals($key.text)) {
@@ -360,7 +357,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, Double.valueOf($NUMDOUBLE.text));
+            field.putExtraOption($key.text, Double.valueOf($NUMDOUBLE.text));
         }
     |   HEX {
             if("default".equals($key.text)) {
@@ -389,7 +386,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                 
             }
             
-            field.putOption($key.text, $HEX.text);
+            field.putExtraOption($key.text, $HEX.text);
         }
     |   OCTAL {
             if("default".equals($key.text)) {
@@ -414,7 +411,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid numeric default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, $OCTAL.text);
+            field.putExtraOption($key.text, $OCTAL.text);
         }
     |   TRUE {
             if("default".equals($key.text)) {
@@ -427,7 +424,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("invalid boolean default value for the non-boolean field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, Boolean.TRUE);
+            field.putExtraOption($key.text, Boolean.TRUE);
         }    
     |   FALSE {
             if("default".equals($key.text)) {
@@ -440,9 +437,10 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("invalid boolean default value for the non-boolean field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, Boolean.FALSE);
+            field.putExtraOption($key.text, Boolean.FALSE);
         }
     |   val=ID {
+            boolean refOption = false;
             if("default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
@@ -474,11 +472,22 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     else
                         throw new IllegalStateException("Invalid double default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
                 }   
-                else
-                    throw new IllegalStateException("invalid field value '" + refName + "' for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                else {
+                    refOption = true;
+                    //throw new IllegalStateException("invalid field value '" + refName + "' for the field: " + field.getClass().getSimpleName() + " " + field.name);
+                }
+            }
+            else {
+                refOption = true;
             }
             
-            field.putOption($key.text, $val.text);
+            if(refOption)
+                field.putStandardOption($key.text, $val.text);
+            else
+                field.putExtraOption($key.text, $val.text);
+        }
+    |   FULL_ID {
+            field.putStandardOption($key.text, $FULL_ID.text);
         }
     |   EXP {
             if("default".equals($key.text)) {
@@ -493,10 +502,10 @@ field_options_keyval [Proto proto, HasFields message, Field field]
                     throw new IllegalStateException("Invalid float default value for the field: " + field.getClass().getSimpleName() + " " + field.name);
             }
             
-            field.putOption($key.text, $EXP.text);
+            field.putExtraOption($key.text, $EXP.text);
         }
     |   signed_constant[proto, message, field, $key.text] {
-            field.putOption($key.text, $signed_constant.text);
+            field.putExtraOption($key.text, $signed_constant.text);
         }
         )
     ;
@@ -541,7 +550,7 @@ enum_block [Proto proto, Message message]
             else
                 message.addNestedEnumGroup(enumGroup);
                 
-            enumGroup.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(enumGroup);
             
         } (SEMICOLON?)!
     ;
@@ -583,7 +592,7 @@ service_block [Proto proto]
 }
     :   SERVICE ID { 
             service = new Service($ID.text, proto); 
-            service.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(service);
         } LEFTCURLY
         (service_body[proto, service])+ RIGHTCURLY (SEMICOLON?)! {
             if(service.rpcMethods.isEmpty())
@@ -617,7 +626,7 @@ rpc_block [Proto proto, Service service]
             retName = retFull.substring(lastDot+1);
         } | r=(VOID|ID) { retName = $r.text; }) RIGHTPAREN {
             rm = service.addRpcMethod($n.text, argName, argPackage, retName, retPackage);
-            rm.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(rm);
         } rpc_body_block[proto, rm]? SEMICOLON!
     ;
     
@@ -659,12 +668,12 @@ extend_block [Proto proto, Message parent]
             String packageName = fullType.substring(0, lastDot); 
             String type = fullType.substring(lastDot+1);
             extension = new Extension(proto, parent, packageName, type);
-            extension.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(extension);
         }
     |   ID { 
             String type = $ID.text;
             extension = new Extension(proto, parent, null, type);
-            extension.addAnnotations(proto.annotations, true);
+            proto.addAnnotationsTo(extension);
         } )
         
         LEFTCURLY (extend_body[proto, extension])* RIGHTCURLY {

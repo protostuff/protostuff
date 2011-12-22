@@ -45,8 +45,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     boolean packable;
     T defaultValue;
     Message owner;
-    final LinkedHashMap<java.lang.String,Object> options = 
+    final LinkedHashMap<java.lang.String,Object> standardOptions = 
         new LinkedHashMap<java.lang.String,Object>();
+    
+    final LinkedHashMap<java.lang.String,Object> extraOptions = 
+            new LinkedHashMap<java.lang.String,Object>();
     
     public Field()
     {
@@ -58,12 +61,22 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         this.packable = packable;
     }
     
+    public LinkedHashMap<java.lang.String,Object> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    public LinkedHashMap<java.lang.String,Object> getExtraOptions()
+    {
+        return extraOptions;
+    }
+    
     /**
      * Returns this options
      */
     public LinkedHashMap<java.lang.String,Object> getOptions()
     {
-        return options;
+        return extraOptions;
     }
     
     /**
@@ -72,13 +85,18 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     @SuppressWarnings("unchecked")
     public <V> V getOption(java.lang.String key)
     {
-        return (V)options.get(key);
+        return (V)extraOptions.get(key);
     }
     
-    void putOption(java.lang.String key, Object value)
+    public void putStandardOption(java.lang.String key, Object value)
     {
-        Object existing = options.put(key, value);
-        if(existing != null)
+        putExtraOption(key, value);
+        standardOptions.put(key, value);
+    }
+    
+    public void putExtraOption(java.lang.String key, Object value)
+    {
+        if(extraOptions.put(key, value) != null)
             throw new IllegalStateException("Duplicate field option: " + key);
     }
     

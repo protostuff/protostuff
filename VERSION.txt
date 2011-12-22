@@ -1,4 +1,5 @@
 protostuff-1.0.5-SNAPSHOT
++ allow message/enum references on options and annotations (proto-parser).
 + add "cache_protos" config (cache/re-use protos being imported/loaded by multiple modules)
 + Issue 94: IllegalArgumentException thrown when instantiating a non-public class
 + Issue 93: Add runtime option to always use the constructor from sun reflection factory

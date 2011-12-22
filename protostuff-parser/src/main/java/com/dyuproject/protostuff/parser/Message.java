@@ -39,8 +39,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
     final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer,Field<?>>();
-    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
-    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     boolean extensible;
     
     // code generator helpers
@@ -236,34 +236,42 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
     }
     
-    public void putStandardOption(String key, String value)
+    public void putStandardOption(String key, Object value)
     {
+        putExtraOption(key, value);
         standardOptions.put(key, value);
     }
     
-    public LinkedHashMap<String,String> getStandardOptions()
+    public void putExtraOption(String key, Object value)
+    {
+        if(extraOptions.put(key, value) != null)
+            throw new IllegalStateException("Duplicate message option: " + key);
+    }
+    
+    public LinkedHashMap<String,Object> getStandardOptions()
     {
         return standardOptions;
     }
     
-    public String getStandardOption(String key)
+    public Object getStandardOption(String key)
     {
         return standardOptions.get(key);
     }
     
-    public void putExtraOption(String key, String value)
-    {
-        extraOptions.put(key, value);
-    }
-    
-    public LinkedHashMap<String,String> getExtraOptions()
+    public LinkedHashMap<String,Object> getExtraOptions()
     {
         return extraOptions;
     }
     
-    public String getExtraOption(String key)
+    @SuppressWarnings("unchecked")
+    public <V> V getExtraOption(java.lang.String key)
     {
-        return extraOptions.get(key);
+        return (V)extraOptions.get(key);
+    }
+    
+    public LinkedHashMap<String,Object> getOptions()
+    {
+        return extraOptions;
     }
     
     public String toString()
@@ -535,6 +543,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             m.cacheFullyQualifiedNames();
         for (EnumGroup eg : nestedEnumGroups.values())
             eg.cacheFullyQualifiedName();
+        
+        if(!standardOptions.isEmpty())
+            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
     }
     
     static MessageField newMessageField(Message message, Field.Reference fr, Message owner)
@@ -576,7 +587,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         to.number = from.number;
         to.modifier = from.modifier;
         to.addAnnotations(from.annotations, true);
-        to.options.putAll(from.options);
+        to.standardOptions.putAll(from.standardOptions);
+        to.extraOptions.putAll(from.extraOptions);
     }
     
     static void resolveFullName(Message message, StringBuilder buffer)

@@ -30,8 +30,8 @@ public class Extension extends AnnotationContainer implements HasFields
     final String type;
     Proto proto;
     final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
-    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>();
-    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>();
+    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     
     Message extendedMessage;
 
@@ -76,34 +76,39 @@ public class Extension extends AnnotationContainer implements HasFields
         this.fields.put(field.getName(), field);
     }
     
-    public void putStandardOption(String key, String value)
+    public void putStandardOption(String key, Object value)
     {
         standardOptions.put(key, value);
     }
     
-    public LinkedHashMap<String,String> getStandardOptions()
+    public LinkedHashMap<String,Object> getStandardOptions()
     {
         return standardOptions;
     }
     
-    public String getStandardOption(String key)
+    public Object getStandardOption(String key)
     {
         return standardOptions.get(key);
     }
     
-    public void putExtraOption(String key, String value)
+    public void putExtraOption(String key, Object value)
     {
         extraOptions.put(key, value);
     }
     
-    public LinkedHashMap<String,String> getExtraOptions()
+    public LinkedHashMap<String,Object> getExtraOptions()
     {
         return extraOptions;
     }
     
-    public String getExtraOption(String key)
+    public Object getExtraOption(String key)
     {
         return extraOptions.get(key);
+    }
+    
+    public LinkedHashMap<String,Object> getOptions()
+    {
+        return extraOptions;
     }
 
     public Message getExtendedMessage()
@@ -113,24 +118,27 @@ public class Extension extends AnnotationContainer implements HasFields
 
     void resolveReferences()
     {
-        String enclosingNamespace;
-        if (isNested())
-            enclosingNamespace = this.getParentMessage().getFullName();
-        else
-            enclosingNamespace = getProto().getPackageName();
-        
-        extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(), enclosingNamespace);
+        extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(), 
+                getEnclosingNamespace());
         if (extendedMessage == null)
         {
             throw new IllegalStateException("The message " + getExtendedMessageFullName()
                     + " is not defined.");
         }
         extendedMessage.extend(this);
+        
+        if(!standardOptions.isEmpty())
+            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getExtendedMessageFullName()));
     }
 
-    private String getExtendedMessageFullName()
+    public String getExtendedMessageFullName()
     {
         return this.packageName == null ? this.type : this.packageName + "." + this.type;
+    }
+    
+    public String getEnclosingNamespace()
+    {
+        return isNested() ? getParentMessage().getFullName() : getProto().getPackageName();
     }
 
     public String toString()

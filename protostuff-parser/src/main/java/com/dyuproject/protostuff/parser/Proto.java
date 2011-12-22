@@ -38,14 +38,18 @@ public class Proto extends AnnotationContainer
     final Proto importer;
     private Mutable<String> packageName, javaPackageName;
     final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
-    final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
-    final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
+    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
     final LinkedHashMap<String, Service> services = new LinkedHashMap<String, Service>();
     final ArrayList<Extension> extensions = new ArrayList<Extension>();
     final LinkedHashMap<String, Message> fullyQualifiedMessages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String, EnumGroup> fullyQualifiedEnumGroups = new LinkedHashMap<String, EnumGroup>();
+    
+    // from options and annotations
+    final ArrayList<ConfiguredReference> references = new ArrayList<ConfiguredReference>();
+    int refOffset;
     
     public Proto()
     {
@@ -126,38 +130,42 @@ public class Proto extends AnnotationContainer
             this.packageName = new Mutable<String>(packageName);
     }
     
-    public LinkedHashMap<String,String> getStandardOptions()
+    public LinkedHashMap<String,Object> getStandardOptions()
     {
         return standardOptions;
     }
     
-    void putStandardOption(String key, String value)
-    {
-        String existing = standardOptions.put(key, value);
-        if(existing != null)
-            throw new IllegalStateException("Duplicate proto option: " + key);
-    }
-    
-    public String getStandardOption(String name)
+    public Object getStandardOption(String name)
     {
         return standardOptions.get(name);
     }
     
-    public LinkedHashMap<String,String> getExtraOptions()
+    public LinkedHashMap<String,Object> getExtraOptions()
+    {
+        return extraOptions;
+    }
+
+    public LinkedHashMap<String,Object> getOptions()
     {
         return extraOptions;
     }
     
-    void putExtraOption(String key, String value)
+    public void putStandardOption(String key, Object value)
     {
-        String existing = extraOptions.put(key, value);
-        if(existing != null)
+        putExtraOption(key, value);
+        standardOptions.put(key, value);
+    }
+    
+    public void putExtraOption(String key, Object value)
+    {
+        if(extraOptions.put(key, value) != null)
             throw new IllegalStateException("Duplicate proto option: " + key);
     }
     
-    public String getExtraOption(String name)
+    @SuppressWarnings("unchecked")
+    public <V> V getExtraOption(java.lang.String key)
     {
-        return extraOptions.get(name);
+        return (V)extraOptions.get(key);
     }
     
     public Map<String,Message> getMessageMap()
@@ -276,7 +284,7 @@ public class Proto extends AnnotationContainer
         if(packageName == null)
             throw new IllegalStateException("proto package not defined in " + getSourcePath());
         
-        String javaPkg = extraOptions.get("java_package");
+        String javaPkg = (String)extraOptions.get("java_package");
         String javaPackageName = javaPkg==null || javaPkg.length()==0 ? 
                 packageName.getValue() : javaPkg;
         this.javaPackageName = new Mutable<String>(javaPackageName);
@@ -296,6 +304,90 @@ public class Proto extends AnnotationContainer
 
         for(Extension e : getExtensions())
           e.resolveReferences();
+        
+        for(ConfiguredReference r : references)
+            r.resolve(this);
+        
+        if(!standardOptions.isEmpty())
+            ConfiguredReference.resolve(this, standardOptions, extraOptions, getPackageName());
+    }
+    
+    public void add(Annotation annotation)
+    {
+        super.add(annotation);
+        
+        if(!annotation.refs.isEmpty())
+            references.add(new ConfiguredReference(annotation.refs, annotation.params, null));
+    }
+    
+    void addAnnotationsTo(Message target)
+    {
+        if(target.addAnnotations(annotations, true))
+        {
+            if(refOffset != references.size())
+            {
+                String enclosingNamespace = target.getFullName();
+                int size = references.size();
+                while(refOffset < size)
+                    references.get(refOffset++).enclosingNamespace = enclosingNamespace;
+            }
+        }
+    }
+    
+    void addAnnotationsTo(EnumGroup target)
+    {
+        if(target.addAnnotations(annotations, true))
+        {
+            if(refOffset != references.size())
+            {
+                String enclosingNamespace = target.getFullName();
+                int size = references.size();
+                while(refOffset < size)
+                    references.get(refOffset++).enclosingNamespace = enclosingNamespace;
+            }
+        }
+    }
+    
+    void addAnnotationsTo(Field<?> target)
+    {
+        if(target.addAnnotations(annotations, true))
+        {
+            if(refOffset != references.size())
+            {
+                String enclosingNamespace = target.getOwner().getFullName();
+                int size = references.size();
+                while(refOffset < size)
+                    references.get(refOffset++).enclosingNamespace = enclosingNamespace;
+            }
+        }
+    }
+    
+    void addAnnotationsTo(Service target)
+    {
+        // enclosingNamespace not necessary
+        if(target.addAnnotations(annotations, true))
+            refOffset = references.size();
+    }
+    
+    void addAnnotationsTo(Service.RpcMethod target)
+    {
+        // enclosingNamespace not necessary
+        if(target.addAnnotations(annotations, true))
+            refOffset = references.size();
+    }
+    
+    void addAnnotationsTo(Extension target)
+    {
+        if(target.addAnnotations(annotations, true))
+        {
+            if(refOffset != references.size())
+            {
+                String enclosingNamespace = target.getEnclosingNamespace();
+                int size = references.size();
+                while(refOffset < size)
+                    references.get(refOffset++).enclosingNamespace = enclosingNamespace;
+            }
+        }
     }
     
     /**

@@ -1,0 +1,56 @@
+package test_option_annotation_reference;
+
+import "test_annotations.proto";
+
+@Name(value="Car")
+@Local(self=Car, local_enum=Gender, nested=Part, nested_enum=Condition, deeper=Part.Tire)
+@Imported(imported_message=Person, imported_enum=Person.Gender)
+@FQCN(fqcn_message=test_annotations.Person.ListRequest, fqcn_enum=test_annotations.Person.Gender)
+message Car {
+
+  option name = "Car";
+  option self = Car;
+  option local_enum = Gender;
+  option nested = Part;
+  option nested_enum = Condition;
+  option deeper = Part.Tire;
+  
+  option imported_message = Person;
+  option imported_enum = Person.Gender;
+  
+  option fqcn_message = test_annotations.Person.ListRequest;
+  option fqcn_enum = test_annotations.Person.Gender;
+  
+  required int32 id = 1;
+  optional Gender local = 2 [local_enum=Gender, local_nested_message=Car.Part];
+  optional Person.Gender imported = 3 [imported_enum=Person.Gender, imported_nested_message=Person.ListRequest];
+  optional Condition condition = 4 [owner = Car, req = false];
+
+  @Owner(type=Car)
+  message Part {
+    option owner = Car;
+  
+    required int32 id = 1;
+  
+    message Tire {
+      
+      required int32 id = 1;
+    
+    }
+  }
+  
+  @Owner(type=Car)
+  enum Condition {
+    option owner = Car;
+    
+    BRAND_NEW = 1;
+    NEEDS_TUNEUP = 2;
+    NEEDS_TIRE_CHANGE = 3;
+    JUNK_MATERIAL = 4;
+  }
+}
+
+enum Gender {
+    FEMALE = 1;
+    MALE = 2;
+}

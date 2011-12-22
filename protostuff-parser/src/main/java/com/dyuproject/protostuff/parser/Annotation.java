@@ -27,6 +27,7 @@ public class Annotation implements HasName
     
     final String name;
     
+    final LinkedHashMap<String,Object> refs = new LinkedHashMap<String,Object>(); 
     final LinkedHashMap<String,Object> params = new LinkedHashMap<String,Object>();
     
     public Annotation(String name)
@@ -41,7 +42,14 @@ public class Annotation implements HasName
     
     void put(String key, Object value)
     {
-        params.put(key, value);
+        if(params.put(key, value) != null)
+            throw new IllegalStateException("Duplicate annotation key: " + key);
+    }
+    
+    void putRef(String key, Object value)
+    {
+        put(key, value);
+        refs.put(key, value);
     }
     
     @SuppressWarnings("unchecked")
