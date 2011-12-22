@@ -54,7 +54,7 @@ public final class ErrorMap implements Map<String,Object>
     public boolean containsKey(Object arg0)
     {
         // error mechanism called by stringtemplate
-        throw new RuntimeException(String.valueOf(arg0));
+        throw new IllegalStateException(String.valueOf(arg0));
     }
 
     public Object get(Object arg0)
