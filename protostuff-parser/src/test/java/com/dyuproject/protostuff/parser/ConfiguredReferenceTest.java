@@ -82,6 +82,11 @@ public class ConfiguredReferenceTest extends TestCase
         
         verifyPart(part);
         verifyCondition(condition);
+        
+        Service carService = proto.getService("CarService");
+        assertNotNull(carService);
+        
+        verifyCarService(carService, car, condition);
     }
     
     static void verifyCarAnnotations(Message car, Message part, Message tire, 
@@ -150,6 +155,30 @@ public class ConfiguredReferenceTest extends TestCase
         assertTrue(owner.getValue("type") == condition.getParentMessage());
         
         assertTrue(condition.getOptions().get("owner") == condition.getParentMessage());
+    }
+    
+    static void verifyCarService(Service carService, Message car, EnumGroup condition)
+    {
+        Annotation a = carService.getAnnotation("A");
+        assertNotNull(a);
+        
+        assertEquals(Boolean.TRUE, a.getValue("public"));
+        assertTrue(car == a.getValue("target"));
+        
+        assertEquals(Boolean.TRUE, carService.getOptions().get("public"));
+        assertTrue(car == carService.getOptions().get("target"));
+        
+        Service.RpcMethod rm = carService.getRpcMethod("getMostRecentCar");
+        assertNotNull(rm);
+        
+        Annotation rmA = rm.getAnnotation("A");
+        assertNotNull(rmA);
+        
+        assertEquals(Boolean.FALSE, rmA.getValue("throttle"));
+        assertTrue(condition == rmA.getValue("might_wanna_specify"));
+        
+        assertEquals(Boolean.FALSE, rm.getOptions().get("throttle"));
+        assertTrue(condition == rm.getOptions().get("might_wanna_specify"));
     }
 
 }

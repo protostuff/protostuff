@@ -54,3 +54,17 @@ enum Gender {
     FEMALE = 1;
     MALE = 2;
 }
+
+@A(public = true, target = Car)
+service CarService {
+  option public = true;
+  option target = Car;
+
+  @A(throttle = false, might_wanna_specify = Car.Condition)
+  rpc getMostRecentCar (void) returns (Car) {
+    option throttle = false;
+    option might_wanna_specify = Car.Condition;
+  };
+
+}
+

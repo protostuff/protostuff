@@ -565,6 +565,7 @@ service_block [Proto proto]
 service_body [Proto proto, Service service]
     :   rpc_block[proto, service]
     |   annotation_entry[proto]
+    |   option_entry[proto, service]
     ;
     
 rpc_block [Proto proto, Service service]

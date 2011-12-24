@@ -23,12 +23,15 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Jun 18, 2010
  */
-public class Service extends AnnotationContainer implements HasName
+public class Service extends AnnotationContainer implements HasName, HasOptions
 {
     
     final String name;
     final Proto proto;
     final LinkedHashMap<String,RpcMethod> rpcMethods = new LinkedHashMap<String,RpcMethod>();
+    
+    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     
     public Service(String name, Proto proto)
     {
@@ -64,10 +67,50 @@ public class Service extends AnnotationContainer implements HasName
         return new RpcMethod(name, argName, argPackage, retName, retPackage);
     }
     
+    public LinkedHashMap<String,Object> getStandardOptions()
+    {
+        return standardOptions;
+    }
+    
+    public void putStandardOption(String key, Object value)
+    {
+        putExtraOption(key, value);
+        standardOptions.put(key, value);
+    }
+    
+    public Object getStandardOption(String name)
+    {
+        return standardOptions.get(name);
+    }
+    
+    public LinkedHashMap<String,Object> getExtraOptions()
+    {
+        return extraOptions;
+    }
+    
+    public void putExtraOption(String key, Object value)
+    {
+        if(extraOptions.put(key, value) != null)
+            throw new IllegalStateException("Duplicate service option: " + key);
+    }
+    
+    public Object getExtraOption(String name)
+    {
+        return extraOptions.get(name);
+    }
+    
+    public LinkedHashMap<String,Object> getOptions()
+    {
+        return extraOptions;
+    }
+    
     void resolveReferences()
     {
         for(RpcMethod rm : rpcMethods.values())
             rm.resolveReferences();
+        
+        if(!standardOptions.isEmpty())
+            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, proto.getPackageName()));
     }
     
     public class RpcMethod extends AnnotationContainer implements HasName, HasOptions
@@ -175,8 +218,6 @@ public class Service extends AnnotationContainer implements HasName
         {
             if(extraOptions.put(key, value) != null)
                 throw new IllegalStateException("Duplicate rpc option: " + key);
-            
-            System.err.println(key);
         }
         
         public Object getExtraOption(String name)
