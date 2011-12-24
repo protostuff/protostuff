@@ -103,6 +103,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return !nestedEnumGroups.isEmpty();
     }
     
+    public LinkedHashMap<String,Message> getNestedMessageMap()
+    {
+        return nestedMessages;
+    }
+    
     public Collection<Message> getNestedMessages()
     {
         return nestedMessages.values();
@@ -122,6 +127,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
         
         message.parentMessage = this;
+    }
+    
+    public LinkedHashMap<String,EnumGroup> getNestedEnumGroupMap()
+    {
+        return nestedEnumGroups;
     }
     
     public Collection<EnumGroup> getNestedEnumGroups()
