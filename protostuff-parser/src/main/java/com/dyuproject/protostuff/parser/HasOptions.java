@@ -29,54 +29,20 @@
 
 package com.dyuproject.protostuff.parser;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * The reference configured via options and annotations.
+ * Represents a component in a proto that can have options.
  *
  * @author David Yu
- * @created Dec 22, 2011
+ * @created Dec 24, 2011
  */
-public class ConfiguredReference
+public interface HasOptions
 {
-    // could be same
-    final LinkedHashMap<String,Object> source, destination;
-    String enclosingNamespace;
     
-    public ConfiguredReference(LinkedHashMap<String,Object> source, 
-            LinkedHashMap<String,Object> destination, String enclosingNamespace)
-    {
-        this.source = source;
-        this.destination = destination;
-        this.enclosingNamespace = enclosingNamespace;
-    }
-    
-    void resolve(Proto proto)
-    {
-        resolve(proto, source, destination, enclosingNamespace);
-    }
-    
-    static void resolve(Proto proto, LinkedHashMap<String,Object> source, 
-            LinkedHashMap<String,Object> destination, String enclosingNamespace)
-    {
-        // we iterate this way (no EntrySet) to avoid concurrent modification exception 
-        // if the source and destination are the same.
-        String[] keys = source.keySet().toArray(new String[source.size()]);
-        for(String key : keys)
-        {
-            Object val = source.get(key);
-            if(val instanceof String)
-            {
-                HasName hn = proto.findReference((String)val, 
-                        enclosingNamespace == null ? proto.getPackageName() : 
-                            enclosingNamespace);
-                
-                if(hn != null)
-                    destination.put(key, hn);
-            }
-        }
-    }
-    
-    
+    void putStandardOption(String key, Object value);
 
+    void putExtraOption(String key, Object value);
+    
+    Map<String,Object> getOptions();
 }

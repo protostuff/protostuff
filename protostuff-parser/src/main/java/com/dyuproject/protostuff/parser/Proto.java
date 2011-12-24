@@ -28,7 +28,7 @@ import java.util.Map;
  * @author David Yu
  * @created Dec 18, 2009
  */
-public class Proto extends AnnotationContainer
+public class Proto extends AnnotationContainer implements HasOptions
 {
     
     final File file;

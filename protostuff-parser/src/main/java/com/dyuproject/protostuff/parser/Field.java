@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
  * @author David Yu
  * @created Dec 19, 2009
  */
-public abstract class Field<T> extends AnnotationContainer implements Comparable<Field<?>>, HasName
+public abstract class Field<T> extends AnnotationContainer implements Comparable<Field<?>>, HasName, HasOptions
 {
     
     public enum Modifier

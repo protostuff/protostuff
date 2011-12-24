@@ -62,12 +62,12 @@ statement [Proto proto]
     :   header_syntax[proto]
     |   header_package[proto]
     |   header_import[proto]
-    |   header_option[proto]
     |   message_block[proto, null]
     |   enum_block[proto, null]
     |   extend_block[proto, null]
     |   service_block[proto]
     |   annotation_entry[proto]
+    |   option_entry[proto, proto]
     ;
 
 // some keywords that might possibly be used as a variable
@@ -141,24 +141,17 @@ header_import [Proto proto]
         }
     ;
 
-header_option [Proto proto]
-@init {
-    boolean standard = false;
-    String value = null;
-}
-    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
-            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
-            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
-            | TRUE { value = "true"; }
-            | FALSE { value = "false"; }
-            | NUMINT { value = $NUMINT.text; }
-            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
+option_entry [Proto proto, HasOptions ho]
+    :   OPTION LEFTPAREN? k=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
+                id=ID { ho.putStandardOption($k.text, $id.text); }
+            |   fid=FULL_ID { ho.putStandardOption($k.text, $fid.text); }
+            |   NUMFLOAT { ho.putExtraOption($k.text, Float.valueOf($NUMFLOAT.text)); }
+            |   NUMINT { ho.putExtraOption($k.text, Integer.valueOf($NUMINT.text)); }
+            |   NUMDOUBLE { ho.putExtraOption($k.text, Double.valueOf($NUMDOUBLE.text)); }
+            |   TRUE { ho.putExtraOption($k.text, Boolean.TRUE); }
+            |   FALSE { ho.putExtraOption($k.text, Boolean.FALSE); }
+            |   STRING_LITERAL { ho.putExtraOption($k.text, getStringFromStringLiteral($STRING_LITERAL.text)); }
         ) SEMICOLON! {
-            if(standard)
-                proto.putStandardOption($n.text, value);
-            else
-                proto.putExtraOption($n.text, value);
-                
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         }
@@ -190,27 +183,7 @@ message_body [Proto proto, Message message]
     |   extend_block[proto, message]
     |   extensions_range[proto, message]
     |   annotation_entry[proto]
-    |   message_option[proto, message]
-    ;
-    
-message_option [Proto proto, HasFields message]
-@init {
-    boolean standard = false;
-    String value = null;
-}
-    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
-            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
-            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
-            | TRUE { value = "true"; }
-            | FALSE { value = "false"; }
-            | NUMINT { value = $NUMINT.text; }
-            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
-        ) SEMICOLON! {
-            if(standard)
-                message.putStandardOption($n.text, value);
-            else
-                message.putExtraOption($n.text, value);
-        }
+    |   option_entry[proto, message]
     ;
     
 extensions_range [Proto proto, Message message]
@@ -543,42 +516,25 @@ enum_block [Proto proto, Message message]
 @init {
     EnumGroup enumGroup = null;
 }
-    :   ENUM ID { enumGroup = new EnumGroup($ID.text); } LEFTCURLY 
-        (enum_body[proto, message, enumGroup])* RIGHTCURLY {
+    :   ENUM ID { 
+            enumGroup = new EnumGroup($ID.text); 
             if(message==null)
                 proto.addEnumGroup(enumGroup);
             else
                 message.addNestedEnumGroup(enumGroup);
-                
-            proto.addAnnotationsTo(enumGroup);
             
+            proto.addAnnotationsTo(enumGroup);
+        } 
+        LEFTCURLY (enum_body[proto, message, enumGroup])* RIGHTCURLY {
+            if(!proto.annotations.isEmpty())
+                throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
         } (SEMICOLON?)!
     ;
     
 enum_body [Proto proto, Message message, EnumGroup enumGroup]
     :   enum_field[proto, message, enumGroup]
-    |   enum_option[proto, enumGroup]
+    |   option_entry[proto, enumGroup]
     ;
-    
-enum_option [Proto proto, EnumGroup enumGroup]
-@init {
-    boolean standard = false;
-    String value = null;
-}
-    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
-            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
-            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
-            | TRUE { value = "true"; }
-            | FALSE { value = "false"; }
-            | NUMINT { value = $NUMINT.text; }
-            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
-        ) SEMICOLON! {
-            if(standard)
-                enumGroup.putStandardOption($n.text, value);
-            else
-                enumGroup.putExtraOption($n.text, value);
-        }
-    ;    
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]
     :   ID ASSIGN NUMINT SEMICOLON! {
@@ -631,29 +587,9 @@ rpc_block [Proto proto, Service service]
     ;
     
 rpc_body_block [Proto proto, Service.RpcMethod rm]
-    :   LEFTCURLY rpc_option[proto, rm]* RIGHTCURLY {
+    :   LEFTCURLY option_entry[proto, rm]* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
-        }
-    ;
-
-rpc_option [Proto proto, Service.RpcMethod rm]
-@init {
-    boolean standard = false;
-    String value = null;
-}
-    :   OPTION LEFTPAREN? n=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
-            v=(ID|FULL_ID) { standard = true; value = $v.text; } 
-            | STRING_LITERAL { value = getStringFromStringLiteral($STRING_LITERAL.text); }
-            | TRUE { value = "true"; }
-            | FALSE { value = "false"; }
-            | NUMINT { value = $NUMINT.text; }
-            | NUMFLOAT { value = Float.valueOf($NUMFLOAT.text).toString(); }
-        ) SEMICOLON! {
-            if(standard)
-                rm.putStandardOption($n.text, value);
-            else
-                rm.putExtraOption($n.text, value);
         }
     ;
     
@@ -668,20 +604,15 @@ extend_block [Proto proto, Message parent]
             String packageName = fullType.substring(0, lastDot); 
             String type = fullType.substring(lastDot+1);
             extension = new Extension(proto, parent, packageName, type);
-            proto.addAnnotationsTo(extension);
-        }
-    |   ID { 
-            String type = $ID.text;
-            extension = new Extension(proto, parent, null, type);
-            proto.addAnnotationsTo(extension);
-        } )
-        
-        LEFTCURLY (extend_body[proto, extension])* RIGHTCURLY {
+        } | ID { extension = new Extension(proto, parent, null, $ID.text); } ) {
             if(parent==null)
                 proto.addExtension(extension);
             else
                 parent.addNestedExtension(extension);
                 
+            proto.addAnnotationsTo(extension);
+        }
+        LEFTCURLY (extend_body[proto, extension])* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
                 

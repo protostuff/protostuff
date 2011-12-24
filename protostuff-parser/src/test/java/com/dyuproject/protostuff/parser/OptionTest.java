@@ -39,7 +39,7 @@ public class OptionTest extends TestCase
         assertNotNull(aMessage);
         assertEquals("something",
                 aMessage.getField("anotherMessage").getOption("anOption"));
-        assertEquals("true", aMessage.getExtraOption("message_set_wire_format"));
+        assertEquals(Boolean.TRUE, aMessage.getExtraOption("message_set_wire_format"));
         
         Message anotherMessage = proto.getMessage("AnotherMessage");
         assertNotNull(anotherMessage);
@@ -47,7 +47,7 @@ public class OptionTest extends TestCase
         
         EnumGroup baz = proto.getEnumGroup("Baz");
         assertNotNull(baz);
-        assertEquals("1.0", baz.getExtraOption("random.enum.option"));
+        assertEquals(Float.valueOf(1.0f), baz.getExtraOption("random.enum.option"));
     }
 
 }

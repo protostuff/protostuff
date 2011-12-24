@@ -70,11 +70,11 @@ public class Service extends AnnotationContainer implements HasName
             rm.resolveReferences();
     }
     
-    public class RpcMethod extends AnnotationContainer implements HasName
+    public class RpcMethod extends AnnotationContainer implements HasName, HasOptions
     {
         
-        final LinkedHashMap<String,String> standardOptions = new LinkedHashMap<String,String>(5);
-        final LinkedHashMap<String,String> extraOptions = new LinkedHashMap<String,String>(5);
+        final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
+        final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
         
         final int index;
         final String name, argName, argPackage, retName, retPackage;
@@ -150,38 +150,43 @@ public class Service extends AnnotationContainer implements HasName
                     returnType.getRelativeName() : returnType.getJavaFullName();
         }
         
-        public LinkedHashMap<String,String> getStandardOptions()
+        public LinkedHashMap<String,Object> getStandardOptions()
         {
             return standardOptions;
         }
         
-        void putStandardOption(String key, String value)
+        public void putStandardOption(String key, Object value)
         {
-            String existing = standardOptions.put(key, value);
-            if(existing != null)
-                throw new IllegalStateException("Duplicate rpc option: " + key);
+            putExtraOption(key, value);
+            standardOptions.put(key, value);
         }
         
-        public String getStandardOption(String name)
+        public Object getStandardOption(String name)
         {
             return standardOptions.get(name);
         }
         
-        public LinkedHashMap<String,String> getExtraOptions()
+        public LinkedHashMap<String,Object> getExtraOptions()
         {
             return extraOptions;
         }
         
-        void putExtraOption(String key, String value)
+        public void putExtraOption(String key, Object value)
         {
-            String existing = extraOptions.put(key, value);
-            if(existing != null)
+            if(extraOptions.put(key, value) != null)
                 throw new IllegalStateException("Duplicate rpc option: " + key);
+            
+            System.err.println(key);
         }
         
-        public String getExtraOption(String name)
+        public Object getExtraOption(String name)
         {
             return extraOptions.get(name);
+        }
+        
+        public LinkedHashMap<String,Object> getOptions()
+        {
+            return extraOptions;
         }
         
         void resolveReferences()
@@ -207,6 +212,9 @@ public class Service extends AnnotationContainer implements HasName
                 }
                 this.returnType = returnType;
             }
+            
+            if(!standardOptions.isEmpty())
+                proto.references.add(new ConfiguredReference(standardOptions, extraOptions, proto.getPackageName()));
         }
         
     }
