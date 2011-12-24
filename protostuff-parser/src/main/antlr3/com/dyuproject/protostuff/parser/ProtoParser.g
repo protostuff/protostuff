@@ -533,12 +533,15 @@ enum_block [Proto proto, Message message]
     
 enum_body [Proto proto, Message message, EnumGroup enumGroup]
     :   enum_field[proto, message, enumGroup]
+    |   annotation_entry[proto]
     |   option_entry[proto, enumGroup]
     ;
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]
     :   ID ASSIGN NUMINT SEMICOLON! {
-            enumGroup.add(new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text)));
+            EnumGroup.Value v = new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text));
+            enumGroup.add(v);
+            proto.addAnnotationsTo(v);
         }
     ;
     

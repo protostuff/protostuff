@@ -208,7 +208,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             .toString();
     }
 
-    public static class Value implements Comparable<Value>, HasName
+    public static class Value extends AnnotationContainer implements Comparable<Value>, HasName
     {
         final String name;
         final int number;

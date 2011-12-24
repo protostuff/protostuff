@@ -13,7 +13,9 @@ message Person {
     
     @DefaultGender(value=MALE)
     enum Gender {
+        @Alias(value="m")
         MALE = 1;
+        @Alias(value="f")
         FEMALE = 2;
     }
     

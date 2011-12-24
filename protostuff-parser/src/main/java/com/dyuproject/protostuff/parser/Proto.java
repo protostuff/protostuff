@@ -348,6 +348,20 @@ public class Proto extends AnnotationContainer implements HasOptions
         }
     }
     
+    void addAnnotationsTo(EnumGroup.Value target)
+    {
+        if(target.addAnnotations(annotations, true))
+        {
+            if(refOffset != references.size())
+            {
+                String enclosingNamespace = target.getEnumGroup().getFullName();
+                int size = references.size();
+                while(refOffset < size)
+                    references.get(refOffset++).enclosingNamespace = enclosingNamespace;
+            }
+        }
+    }
+    
     void addAnnotationsTo(Field<?> target)
     {
         if(target.addAnnotations(annotations, true))

@@ -56,6 +56,18 @@ public class AnnotationTest extends TestCase
         Annotation defaultGender = gender.getAnnotation("DefaultGender");
         assertEquals("MALE", defaultGender.getValue("value"));
         
+        EnumGroup.Value male = gender.getValue(0);
+        assertNotNull(male);
+        Annotation maleA = male.getAnnotation("Alias");
+        assertNotNull(maleA);
+        assertEquals("m", maleA.getValue("value"));
+        
+        EnumGroup.Value female = gender.getValue(1);
+        assertNotNull(female);
+        Annotation femaleA = female.getAnnotation("Alias");
+        assertNotNull(femaleA);
+        assertEquals("f", femaleA.getValue("value"));
+        
         Message listRequest = person.getNestedMessage("ListRequest");
         assertNotNull(listRequest);
         
