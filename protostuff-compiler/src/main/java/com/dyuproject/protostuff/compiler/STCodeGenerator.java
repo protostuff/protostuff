@@ -188,7 +188,10 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static void setGroupLoader(StringTemplateGroupLoader loader)
     {
         if(loader != null)
+        {
             __loader = loader;
+            StringTemplateGroup.registerGroupLoader(loader);
+        }
     }
     
     private static StringTemplateGroupLoader __loader = GROUP_LOADER;
