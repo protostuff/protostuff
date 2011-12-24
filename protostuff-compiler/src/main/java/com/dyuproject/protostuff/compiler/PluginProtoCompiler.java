@@ -42,11 +42,63 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
  */
 public class PluginProtoCompiler extends STCodeGenerator
 {
+    /**
+     * Resolve the stg from the module.
+     */
+    public interface GroupResolver
+    {
+        
+        /**
+         * Resolve the stg from the module.
+         */
+        StringTemplateGroup resolveSTG(ProtoModule module);
+    }
     
-    private final ProtoModule module;
-    private final StringTemplateGroup group;
-    private final boolean protoBlock, javaOutput;
-    private final String fileExtension;
+    public static final GroupResolver GROUP_RESOLVER = new GroupResolver()
+    {
+        
+        public StringTemplateGroup resolveSTG(ProtoModule module)
+        {
+            String resource = module.getOutput();
+            try
+            {
+                File file = new File(resource);
+                if(file.exists())
+                    return new StringTemplateGroup(new BufferedReader(new FileReader(file)));
+                
+                URL url = DefaultProtoLoader.getResource(resource, 
+                        PluginProtoCompiler.class);
+                if(url != null)
+                {
+                    return new StringTemplateGroup(new BufferedReader(
+                            new InputStreamReader(url.openStream(), "UTF-8")));
+                }
+                if(resource.startsWith("http://"))
+                {
+                    return new StringTemplateGroup(new BufferedReader(
+                            new InputStreamReader(new URL(resource).openStream(), "UTF-8")));
+                }
+            }
+            catch(IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+            throw new IllegalStateException("Could not find " + resource);
+        }
+    };
+    
+    public static void setGroupResolver(GroupResolver resolver)
+    {
+        if(resolver != null)
+            __resolver = resolver;
+    }
+    
+    private static GroupResolver __resolver = GROUP_RESOLVER;
+    
+    public final ProtoModule module;
+    public final StringTemplateGroup group;
+    public final boolean protoBlock, javaOutput;
+    public final String fileExtension;
 
     public PluginProtoCompiler(ProtoModule module)
     {
@@ -97,30 +149,7 @@ public class PluginProtoCompiler extends STCodeGenerator
      */
     public static StringTemplateGroup resolveSTG(ProtoModule module)
     {
-        String resource = module.getOutput();
-        try
-        {
-            File file = new File(resource);
-            if(file.exists())
-                return new StringTemplateGroup(new BufferedReader(new FileReader(file)));
-            
-            URL url = DefaultProtoLoader.getResource(resource, PluginProtoCompiler.class);
-            if(url != null)
-            {
-                return new StringTemplateGroup(new BufferedReader(
-                        new InputStreamReader(url.openStream(), "UTF-8")));
-            }
-            if(resource.startsWith("http://"))
-            {
-                return new StringTemplateGroup(new BufferedReader(
-                        new InputStreamReader(new URL(resource).openStream(), "UTF-8")));
-            }
-        }
-        catch(IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        throw new IllegalStateException("Could not find " + resource);
+        return __resolver.resolveSTG(module);
     }
 
     protected void compile(ProtoModule module, Proto proto) throws IOException

@@ -26,6 +26,7 @@ import org.antlr.stringtemplate.CommonGroupLoader;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateErrorListener;
 import org.antlr.stringtemplate.StringTemplateGroup;
+import org.antlr.stringtemplate.StringTemplateGroupLoader;
 
 import com.dyuproject.protostuff.parser.Proto;
 import com.dyuproject.protostuff.parser.ProtoUtil;
@@ -39,14 +40,14 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
 public abstract class STCodeGenerator implements ProtoCompiler
 {
     
-    static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
+    public static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
     
     static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
         new ConcurrentHashMap<Class<?>, AttributeRenderer>();
     
-    static final Pattern FORMAT_DELIM = Pattern.compile("&&");
+    public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
     
-    static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
+    public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
             TEMPLATE_BASE, new StringTemplateErrorListener()
     {
         public void error(String msg, Throwable e)
@@ -78,24 +79,26 @@ public abstract class STCodeGenerator implements ProtoCompiler
                     return str;
                 
                 String[] formats = FORMAT_DELIM.split(formatName);
-                if(formats.length != 0)
-                {
-                    // chained formatting
-                    String formatted = str;
-                    for(String f : formats)
-                        formatted = format(formatted, f);
-                    
-                    return formatted;
-                }
                 
-                return format(str, formatName);
+                return formats.length == 0 ? format(str, formatName) : 
+                    chainedFormat(str, formats);
             }
         });
         
         GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
     }
     
-    static String format(String str, String formatName)
+    public static String chainedFormat(String str, String[] formats)
+    {
+        // chained formatting
+        String formatted = str;
+        for(String f : formats)
+            formatted = format(formatted, f);
+        
+        return formatted;
+    }
+    
+    public static String format(String str, String formatName)
     {
         if("UPPER".equals(formatName))
             return str.toUpperCase();
@@ -174,13 +177,21 @@ public abstract class STCodeGenerator implements ProtoCompiler
      
     public static StringTemplateGroup getSTG(String groupName)
     {
-        return GROUP_LOADER.loadGroup(groupName);
+        return __loader.loadGroup(groupName);
     }
 
     public static StringTemplate getST(String groupName, String name)
     {
         return getSTG(groupName).getInstanceOf(name);
     }
+    
+    public static void setGroupLoader(StringTemplateGroupLoader loader)
+    {
+        if(loader != null)
+            __loader = loader;
+    }
+    
+    private static StringTemplateGroupLoader __loader = GROUP_LOADER;
     
     protected final String id;
     

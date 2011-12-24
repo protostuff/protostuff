@@ -33,12 +33,12 @@ import java.util.regex.Pattern;
 public final class CompilerMain
 {
     
-    static final boolean SILENT_MODE = Boolean.parseBoolean(
+    public static final boolean SILENT_MODE = Boolean.parseBoolean(
             System.getProperty("protostuff.compiler.silent_mode", "true"));
     
-    static final Pattern COMMA = Pattern.compile(",");
+    public static final Pattern COMMA = Pattern.compile(",");
     
-    private static final HashMap<String,ProtoCompiler> __compilers = 
+    static final HashMap<String,ProtoCompiler> __compilers = 
         new HashMap<String,ProtoCompiler>();
     
     static
@@ -132,7 +132,7 @@ public final class CompilerMain
         return modules;
     }
     
-    static void addOptionsTo(ProtoModule module, String[] options)
+    public static void addOptionsTo(ProtoModule module, String[] options)
     {
         for(String o : options)
         {
