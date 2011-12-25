@@ -155,6 +155,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         enumGroup.parentMessage = this;
     }
     
+    public LinkedHashMap<String,Field<?>> getFieldMap()
+    {
+        return fields;
+    }
+    
     public Collection<Field<?>> getFields()
     {
         return sortedFields;
