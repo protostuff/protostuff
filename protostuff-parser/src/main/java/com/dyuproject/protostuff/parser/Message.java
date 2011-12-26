@@ -54,6 +54,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     int requiredFieldCount, repeatedFieldCount, singularFieldCount;
     int requiredMessageFieldCount, repeatedMessageFieldCount, singularMessageFieldCount;
     int requiredEnumFieldCount, repeatedEnumFieldCount, singularEnumFieldCount;
+    int requiredBytesFieldCount, repeatedBytesFieldCount, singularBytesFieldCount;
     
     public Message()
     {
@@ -440,6 +441,33 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return singularEnumFieldCount;
     }
     
+    // bytes field count
+    
+    public int getBytesFieldCount()
+    {
+        return repeatedBytesFieldCount + singularBytesFieldCount;
+    }
+    
+    public int getRequiredBytesFieldCount()
+    {
+        return requiredBytesFieldCount;
+    }
+    
+    public int getRepeatedBytesFieldCount()
+    {
+        return repeatedBytesFieldCount;
+    }
+    
+    public int getOptionalBytesFieldCount()
+    {
+        return singularBytesFieldCount - requiredBytesFieldCount;
+    }
+    
+    public int getSingularBytesFieldCount()
+    {
+        return singularBytesFieldCount;
+    }
+    
     // scalar field count
     
     public int getScalarFieldCount()
@@ -482,6 +510,16 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             
             if(f instanceof Field.Bytes)
             {
+                if(f.isRepeated())
+                    repeatedBytesFieldCount++;
+                else
+                {
+                    singularBytesFieldCount++;
+                    
+                    if(f.isRequired())
+                        requiredBytesFieldCount++;
+                }
+                
                 if(!root.bytesFieldPresent)
                     root.bytesFieldPresent = true;
                 if(!root.bytesOrStringDefaultValuePresent && f.defaultValue != null)
