@@ -55,6 +55,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     int requiredMessageFieldCount, repeatedMessageFieldCount, singularMessageFieldCount;
     int requiredEnumFieldCount, repeatedEnumFieldCount, singularEnumFieldCount;
     int requiredBytesFieldCount, repeatedBytesFieldCount, singularBytesFieldCount;
+    int requiredStringFieldCount, repeatedStringFieldCount, singularStringFieldCount;
     
     public Message()
     {
@@ -468,6 +469,33 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return singularBytesFieldCount;
     }
     
+    // string field count
+    
+    public int getStringFieldCount()
+    {
+        return repeatedStringFieldCount + singularStringFieldCount;
+    }
+    
+    public int getRequiredStringFieldCount()
+    {
+        return requiredStringFieldCount;
+    }
+    
+    public int getRepeatedStringFieldCount()
+    {
+        return repeatedStringFieldCount;
+    }
+    
+    public int getOptionalStringFieldCount()
+    {
+        return singularStringFieldCount - requiredStringFieldCount;
+    }
+    
+    public int getSingularStringFieldCount()
+    {
+        return singularStringFieldCount;
+    }
+    
     // scalar field count
     
     public int getScalarFieldCount()
@@ -526,7 +554,17 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                     root.bytesOrStringDefaultValuePresent = true;
             }
             else if(f instanceof Field.String)
-            {    
+            {
+                if(f.isRepeated())
+                    repeatedStringFieldCount++;
+                else
+                {
+                    singularStringFieldCount++;
+                    
+                    if(f.isRequired())
+                        requiredStringFieldCount++;
+                }
+                
                 if(!root.bytesOrStringDefaultValuePresent && f.defaultValue != null)
                     root.bytesOrStringDefaultValuePresent = true;
             }
