@@ -253,21 +253,27 @@ public final class ByteString {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == this) {
-      return true;
-    }
-
-    if (!(o instanceof ByteString)) {
-      return false;
-    }
-
-    final ByteString other = (ByteString) o;
-    final int size = bytes.length;
+    return o == this || (o instanceof ByteString && equals(this, (ByteString)o, false));
+  }
+  
+  /**
+   * Returns true if the contents of both match.
+   */
+  public static boolean equals(ByteString bs, ByteString other, boolean checkHash) {
+    final int size = bs.bytes.length;
     if (size != other.bytes.length) {
       return false;
     }
+    
+    if(checkHash) {
+      // volatile reads
+      final int h1 = bs.hash, h2 = other.hash;
+      if(h1 != 0 && h2 != 0 && h1 != h2) {
+        return false;
+      }
+    }
 
-    final byte[] thisBytes = bytes;
+    final byte[] thisBytes = bs.bytes;
     final byte[] otherBytes = other.bytes;
     for (int i = 0; i < size; i++) {
       if (thisBytes[i] != otherBytes[i]) {
@@ -277,6 +283,31 @@ public final class ByteString {
 
     return true;
   }
+  
+  /**
+   * Returns true if the contents of the internal array and the provided array match.
+   */
+  public boolean equals(final byte[] data) {
+    return equals(data, 0, data.length);
+  }
+  
+  /**
+   * Returns true if the contents of the internal array and the provided array match.
+   */
+  public boolean equals(final byte[] data, int offset, final int len) {
+    final byte[] bytes = this.bytes;
+    if(len != bytes.length)
+      return false;
+    
+    for(int i = 0; i < len;) {
+      if(bytes[i++] != data[offset++]) {
+        return false;
+      }
+    }
+  
+    return true;
+  }
+  
 
   private volatile int hash = 0;
 
