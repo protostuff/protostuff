@@ -165,10 +165,7 @@ final class IOUtil
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final byte size = in.readByte();
-        if(size == -1)
-            throw new EOFException("mergeDelimitedFrom");
-        
-        final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
         
         if(len != 0)
         {

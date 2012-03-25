@@ -187,10 +187,7 @@ public final class GraphIOUtil
     throws IOException
     {
         final byte size = in.readByte();
-        if(size == -1)
-            throw ProtobufException.truncatedMessage();
-        
-        final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
         
         if(len != 0)
         {

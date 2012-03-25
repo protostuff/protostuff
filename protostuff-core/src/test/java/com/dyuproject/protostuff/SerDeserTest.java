@@ -265,6 +265,33 @@ public abstract class SerDeserTest extends StandardTest
         SerializableObjects.assertEquals(baz, bazCompare);
     }
     
+    public void testJavaSerializableGraphIOUtil() throws Exception
+    {
+        ClubFounder founder = new ClubFounder();
+        
+        StringBuilder b = new StringBuilder();
+        for(int i = 0; i < 25; i++)
+            b.append("1234567890");
+        
+        // 250 length string
+        // ~253 length message
+        
+        founder.setName(b.toString());
+        
+        WrapsClubFounder wrapper = new WrapsClubFounder(founder);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(out);
+        oout.writeObject(wrapper);
+        
+        byte[] coded = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+        WrapsClubFounder parsedWrapper = (WrapsClubFounder)in.readObject();
+        
+        assertEquals(founder.getName(), parsedWrapper.getClubFounder().getName());
+    }
+    
     /**
      * HasHasBar wraps an object without a schema.
      * That object will have to be serialized via the default java serialization 
@@ -279,6 +306,7 @@ public abstract class SerDeserTest extends StandardTest
         HasHasBar dhhb = new HasHasBar();        
 
         byte[] output = toByteArray(hhbCompare);
+        
         mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema());
         assertEquals(hhbCompare, dhhb);
     }
