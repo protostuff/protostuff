@@ -101,7 +101,7 @@ public class FieldExclusionTest extends AbstractTest
     {
         try
         {
-            RuntimeSchema.createFrom(EmptyFieldsPojo.class);
+            RuntimeSchema.createFrom(EmptyFieldsPojo.class, RuntimeEnv.ID_STRATEGY);
             assertTrue(false);
         }
         catch(RuntimeException e)

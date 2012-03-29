@@ -17,7 +17,6 @@ package com.dyuproject.protostuff.runtime;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Properties;
 
 /**
@@ -87,6 +86,8 @@ public final class RuntimeEnv
     
     static final Constructor<Object> OBJECT_CONSTRUCTOR;
     
+    public static final IdStrategy ID_STRATEGY;
+    
     static
     {
         Constructor<Object> c = null;
@@ -132,6 +133,26 @@ public final class RuntimeEnv
         ALWAYS_USE_SUN_REFLECTION_FACTORY = OBJECT_CONSTRUCTOR != null && 
                 Boolean.parseBoolean(props.getProperty(
                         "protostuff.runtime.always_use_sun_reflection_factory", "false"));
+
+        String factoryProp = props.getProperty(
+                "protostuff.runtime.id_strategy_factory");
+        if(factoryProp == null)
+            ID_STRATEGY = new DefaultIdStrategy();
+        else
+        {
+            final IdStrategy.Factory factory;
+            try
+            {
+                factory = ((IdStrategy.Factory)loadClass(factoryProp).newInstance());
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+            ID_STRATEGY = factory.create();
+            factory.postCreate();
+        }
     }
     
     private static Method getMethodNewInstanceFromObjectInputStream()
@@ -176,9 +197,6 @@ public final class RuntimeEnv
             return new Android2Instantiator<T>(clazz);
         }
         
-        if(!Modifier.isPublic(clazz.getModifiers()))
-            constructor.setAccessible(true);
-        
         return new DefaultInstantiator<T>(constructor);
     }
     
@@ -189,7 +207,7 @@ public final class RuntimeEnv
         
         try
         {
-            return clazz.getConstructor((Class[])null);
+            return clazz.getDeclaredConstructor((Class[])null);
         }
         catch (SecurityException e)
         {
@@ -222,6 +240,7 @@ public final class RuntimeEnv
         DefaultInstantiator(Constructor<T> constructor)
         {
             this.constructor = constructor;
+            constructor.setAccessible(true);
         }
 
         public T newInstance()

@@ -59,7 +59,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>(ID_CHAR)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.UINT32, number, name)
@@ -140,7 +140,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<Short> SHORT = new RuntimeFieldFactory<Short>(ID_SHORT)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.UINT32, number, name)
@@ -221,7 +221,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<Byte> BYTE = new RuntimeFieldFactory<Byte>(ID_BYTE)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.UINT32, number, name)
@@ -303,7 +303,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Integer> INT32 = new RuntimeFieldFactory<Integer>(ID_INT32)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.INT32, number, name)
@@ -385,7 +385,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Long> INT64 = new RuntimeFieldFactory<Long>(ID_INT64)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.INT64, number, name)
@@ -467,7 +467,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Float> FLOAT = new RuntimeFieldFactory<Float>(ID_FLOAT)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.FLOAT, number, name)
@@ -549,7 +549,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Double> DOUBLE = new RuntimeFieldFactory<Double>(ID_DOUBLE)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.DOUBLE, number, name)
@@ -631,7 +631,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Boolean> BOOL = new RuntimeFieldFactory<Boolean>(ID_BOOL)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             return new Field<T>(FieldType.BOOL, number, name)
@@ -713,7 +713,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<String> STRING = new RuntimeFieldFactory<String>(ID_STRING)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.STRING, number, name)
             {
@@ -786,7 +786,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<ByteString> BYTES = new RuntimeFieldFactory<ByteString>(ID_BYTES)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.BYTES, number, name)
             {
@@ -859,7 +859,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<byte[]> BYTE_ARRAY = new RuntimeFieldFactory<byte[]>(ID_BYTE_ARRAY)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.BYTES, number, name)
             {
@@ -932,9 +932,9 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Integer> ENUM = new RuntimeFieldFactory<Integer>(ID_ENUM)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            final EnumIO<? extends Enum<?>> eio = EnumIO.get(f.getType());
+            final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f.getType());
             return new Field<T>(FieldType.ENUM, number, name)
             {
                 {
@@ -1010,11 +1010,11 @@ public final class RuntimeReflectionFieldFactory
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             Class<Object> type = (Class<Object>)f.getType();
             return new RuntimeMessageField<T,Object>(
-                    type, RuntimeSchema.getSchemaWrapper(type), 
+                    type, strategy.getSchemaWrapper(type, true), 
                     FieldType.MESSAGE, number, name, false)
             {
                 {
@@ -1089,17 +1089,23 @@ public final class RuntimeReflectionFieldFactory
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if(RuntimeSchema.isRegistered(f.getType()))
+            if(strategy.isRegistered(f.getType()))
             {
                 // the explicit mapping is configured. 
-                return POJO.create(number, name, f);
+                return POJO.create(number, name, f, strategy);
+            }
+            
+            if(f.getType().isInterface())
+            {
+                // the runtime object could be an enum (which can implement interfaces)
+                return OBJECT.create(number, name, f, strategy);
             }
             
             return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
-                    FieldType.MESSAGE, number, name, false)
+                    FieldType.MESSAGE, number, name, false, strategy)
             {
                 {
                     f.setAccessible(true);
@@ -1207,10 +1213,10 @@ public final class RuntimeReflectionFieldFactory
     static final RuntimeFieldFactory<Object> OBJECT = new RuntimeFieldFactory<Object>(ID_OBJECT)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new RuntimeObjectField<T>( 
-                    FieldType.MESSAGE, number, name, false)
+                    FieldType.MESSAGE, number, name, false, strategy)
             {
                 {
                     f.setAccessible(true);
@@ -1303,7 +1309,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>(ID_BIGDECIMAL)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.STRING, number, name)
             {
@@ -1375,7 +1381,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>(ID_BIGINTEGER)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.BYTES, number, name)
             {
@@ -1447,7 +1453,7 @@ public final class RuntimeReflectionFieldFactory
     
     public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>(ID_DATE)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new Field<T>(FieldType.FIXED64, number, name)
             {

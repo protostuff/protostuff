@@ -7,13 +7,28 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject.protostuff</groupId>
-  <artifactId>protostuff-xml</artifactId>
-  <name>protostuff :: xml</name>
-  <description>protostuff serialization using xml format</description>
+  <artifactId>protostuff-runtime-registry</artifactId>
+  <name>protostuff :: runtime</name>
+  <description>id registration for runtime types</description>
   <packaging>jar</packaging>
   
   <build>
     <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   
   <dependencies>
@@ -43,13 +58,6 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-collectionschema</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -58,34 +66,20 @@
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-runtime-registry</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-runtime-registry</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <version>${woodstox-version}</version>
-      <scope>provided</scope>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-collectionschema</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-api</artifactId>
+      <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-
+  
 </project>

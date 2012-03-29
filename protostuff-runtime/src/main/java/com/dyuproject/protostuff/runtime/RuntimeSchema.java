@@ -14,7 +14,7 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.loadClass;
+import static com.dyuproject.protostuff.runtime.RuntimeEnv.ID_STRATEGY;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
@@ -42,9 +41,6 @@ import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
  */
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {
-
-    private static final ConcurrentHashMap<String, HasSchema<?>> __schemaWrappers = 
-        new ConcurrentHashMap<String, HasSchema<?>>();
     
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
     
@@ -57,163 +53,126 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      * 
      * Returns true if the baseClass does not exist.
      * 
+     * NOTE: This is only supported when {@link RuntimeEnv#ID_STRATEGY} is 
+     * {@link DefaultIdStrategy}.
+     * 
      * @throws IllegalArgumentException if the {@code typeClass} is an interface or 
      * an abstract class.
      */
     public static <T> boolean map(Class<? super T> baseClass, Class<T> typeClass)
     {
-        assert baseClass != null && typeClass != null;
+        if(ID_STRATEGY instanceof DefaultIdStrategy)
+            return ((DefaultIdStrategy)ID_STRATEGY).map(baseClass, typeClass);
         
-        if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
-        {
-            throw new IllegalArgumentException(typeClass + 
-                    " cannot be an interface/abstract class.");
-        }
-        
-        final HasSchema<?> last = __schemaWrappers.putIfAbsent(baseClass.getName(), 
-                new Mapped<T>(baseClass, typeClass));
-        
-        return last == null || (last instanceof Mapped<?> && 
-                ((Mapped<?>)last).typeClass == typeClass);
+        throw new RuntimeException("RuntimeSchema.map is only supported on DefaultIdStrategy");
     }
     
     /**
      * Returns true if this there is no existing one or the same schema 
      * has already been registered (this must be done on application startup).
+     * 
+     * NOTE: This is only supported when {@link RuntimeEnv#ID_STRATEGY} is 
+     * {@link DefaultIdStrategy}.
      */
     public static <T> boolean register(Class<T> typeClass, Schema<T> schema)
     {
-        assert typeClass != null && schema != null;
+        if(ID_STRATEGY instanceof DefaultIdStrategy)
+            return ((DefaultIdStrategy)ID_STRATEGY).register(typeClass, schema);
         
-        final HasSchema<?> last = __schemaWrappers.putIfAbsent(typeClass.getName(), 
-                new Registered<T>(schema));
-        
-        return last == null || (last instanceof Registered<?> && 
-                ((Registered<?>)last).schema == schema);
+        throw new RuntimeException("RuntimeSchema.register is only supported on DefaultIdStrategy");
     }
     
     /**
-     * Returns true if the {@code typeClass} has already been registered/mapped.
+     * Returns true if the {@code typeClass} was not lazily created.
+     * 
+     * Method overload for backwards compatibility.
      */
     public static boolean isRegistered(Class<?> typeClass)
     {
-        final HasSchema<?> last = __schemaWrappers.get(typeClass.getName());
-        return last != null && !(last instanceof Lazy<?>);
+        return isRegistered(typeClass, ID_STRATEGY);
+    }
+    
+    /**
+     * Returns true if the {@code typeClass} was not lazily created.
+     */
+    public static boolean isRegistered(Class<?> typeClass, IdStrategy strategy)
+    {
+        return strategy.isRegistered(typeClass);
+    }
+    
+    /**
+     * Gets the schema that was either registered or lazily initialized at runtime.
+     * 
+     * Method overload for backwards compatibility.
+     */
+    public static <T> Schema<T> getSchema(Class<T> typeClass)
+    {
+        return getSchema(typeClass, ID_STRATEGY);
     }
     
     /**
      * Gets the schema that was either registered or lazily initialized at runtime.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Schema<T> getSchema(Class<T> typeClass)
+    public static <T> Schema<T> getSchema(Class<T> typeClass, IdStrategy strategy)
     {
-        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(typeClass.getName());
-        if(hs == null)
-        {
-            hs = new Lazy<T>(typeClass);
-            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
-                    typeClass.getName(), hs);
-            if(last != null)
-                hs = last;
-        }
-        
-        return hs.getSchema();
+        return strategy.getSchemaWrapper(typeClass, true).getSchema();
     }
     
     /**
-     * Gets the schema that was either registered or lazily initialized at runtime (if 
-     * the boolean arg {@code load} is true).
+     * Returns the schema wrapper.
+     * 
+     * Method overload for backwards compatibility.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Schema<T> getSchema(String className, boolean load)
+    static <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass)
     {
-        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
-        if(hs == null)
-        {
-            if(!load)
-                return null;
-            
-            final Class<T> typeClass = loadClass(className);
-            
-            hs = new Lazy<T>(typeClass);
-            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
-                    typeClass.getName(), hs);
-            if(last != null)
-                hs = last;
-        }
-        
-        return hs.getSchema();
+        return getSchemaWrapper(typeClass, ID_STRATEGY);
     }
     
     /**
      * Returns the schema wrapper.
      */
-    @SuppressWarnings("unchecked")
-    static <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass)
+    static <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass, IdStrategy strategy)
     {
-        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(typeClass.getName());
-        if(hs == null)
-        {
-            hs = new Lazy<T>(typeClass);
-            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
-                    typeClass.getName(), hs);
-            if(last != null)
-                hs = last;
-        }
-        
-        return hs;
+        return strategy.getSchemaWrapper(typeClass, true);
     }
     
     /**
-     * Gets the schema wrapper that was either registered or lazily initialized 
-     * at runtime (if the boolean arg {@code load} is true).
+     * Generates a schema from the given class.
+     * 
+     * Method overload for backwards compatibility.
      */
-    @SuppressWarnings("unchecked")
-    static <T> HasSchema<T> getSchemaWrapper(String className, boolean load)
+    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass)
     {
-        HasSchema<T> hs = (HasSchema<T>)__schemaWrappers.get(className);
-        if(hs == null)
-        {
-            if(!load)
-                return null;
-            
-            final Class<T> typeClass = loadClass(className);
-            
-            hs = new Lazy<T>(typeClass);
-            final HasSchema<T> last = (HasSchema<T>)__schemaWrappers.putIfAbsent(
-                    typeClass.getName(), hs);
-            if(last != null)
-                hs = last;
-        }
-        
-        return hs;
+        return createFrom(typeClass, NO_EXCLUSIONS, ID_STRATEGY);
     }
     
     /**
      * Generates a schema from the given class.
      */
-    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass)
+    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
+            IdStrategy strategy)
     {
-        return createFrom(typeClass, NO_EXCLUSIONS);
-    }
-    
-    /**
-     * Generates a schema from the given class with the exclusion of certain fields.
-     */
-    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, String[] exclusions)
-    {
-        HashSet<String> set = new HashSet<String>();
-        for(String exclusion : exclusions)
-            set.add(exclusion);
-        
-        return createFrom(typeClass, set);
+        return createFrom(typeClass, NO_EXCLUSIONS, strategy);
     }
     
     /**
      * Generates a schema from the given class with the exclusion of certain fields.
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
-            Set<String> exclusions)
+            String[] exclusions, IdStrategy strategy)
+    {
+        HashSet<String> set = new HashSet<String>();
+        for(String exclusion : exclusions)
+            set.add(exclusion);
+        
+        return createFrom(typeClass, set, strategy);
+    }
+    
+    /**
+     * Generates a schema from the given class with the exclusion of certain fields.
+     */
+    public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
+            Set<String> exclusions, IdStrategy strategy)
     {
         if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
         {
@@ -237,7 +196,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 }
                 
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType()).create(++i, f.getName(), f);
+                        f.getType()).create(++i, f.getName(), f, strategy);
                 fields.add(field);
             }
         }
@@ -257,7 +216,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      * The value of a the Map's entry will be the name used for the field (which enables aliasing).
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass, 
-            Map<String,String> declaredFields)
+            Map<String,String> declaredFields, IdStrategy strategy)
     {
         if(typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers()))
         {
@@ -283,7 +242,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             if(!Modifier.isStatic(mod) && !Modifier.isTransient(mod))
             {
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType()).create(++i, entry.getValue(), f);
+                        f.getType()).create(++i, entry.getValue(), f, strategy);
                 fields.add(field);
             }
         }
@@ -345,173 +304,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     {
         return instantiator.newInstance();
     }
-    
-    /**
-     * The schema wrapper.
-     */
-    public static abstract class HasSchema<T>
-    {
-        /**
-         * Gets the schema.
-         */
-        public abstract Schema<T> getSchema();
-        
-        /**
-         * Gets the pipe schema.
-         */
-        abstract Pipe.Schema<T> getPipeSchema();
-    }
-    
-    static final class Registered<T> extends HasSchema<T>
-    {
-        final Schema<T> schema;
-        private volatile Pipe.Schema<T> pipeSchema;
-        
-        Registered(Schema<T> schema)
-        {
-            this.schema = schema;
-        }
 
-        public Schema<T> getSchema()
-        {
-            return schema;
-        }
-        
-        Pipe.Schema<T> getPipeSchema()
-        {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if(pipeSchema == null)
-            {
-                synchronized(this)
-                {
-                    if((pipeSchema = this.pipeSchema) == null)
-                    {
-                        this.pipeSchema = pipeSchema = resolvePipeSchema(
-                                schema, schema.typeClass(), true);
-                    }
-                }
-            }
-            return pipeSchema;
-        }
-    }
-    
-    static final class Lazy<T> extends HasSchema<T>
-    {
-        final Class<T> typeClass;
-        private volatile Schema<T> schema;
-        private volatile Pipe.Schema<T> pipeSchema;
-        
-        Lazy(Class<T> typeClass)
-        {
-            this.typeClass = typeClass;
-        }
-
-        @SuppressWarnings("unchecked")
-        public Schema<T> getSchema()
-        {
-            Schema<T> schema = this.schema;
-            if(schema==null)
-            {
-                synchronized(this)
-                {
-                    if((schema = this.schema) == null)
-                    {
-                        if(Message.class.isAssignableFrom(typeClass))
-                        {
-                            // use the message's schema.
-                            try
-                            {
-                                final Message<T> m = (Message<T>)typeClass.newInstance();
-                                this.schema = schema = m.cachedSchema();
-                            }
-                            catch (InstantiationException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                            catch (IllegalAccessException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                        else
-                        {
-                            // create new
-                            this.schema = schema = createFrom(typeClass);
-                        }
-                    }
-                }
-            }
-
-            return schema;
-        }
-        
-        Pipe.Schema<T> getPipeSchema()
-        {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if(pipeSchema == null)
-            {
-                synchronized(this)
-                {
-                    if((pipeSchema = this.pipeSchema) == null)
-                    {
-                        this.pipeSchema = pipeSchema = RuntimeSchema.resolvePipeSchema(
-                                getSchema(), typeClass, true);
-                    }
-                }
-            }
-            return pipeSchema;
-        }
-    }
-    
-    static final class Mapped<T> extends HasSchema<T>
-    {
-        
-        final Class<? super T> baseClass;
-        final Class<T> typeClass;
-        private volatile HasSchema<T> wrapper;
-        
-        Mapped(Class<? super T> baseClass, Class<T> typeClass)
-        {
-            this.baseClass = baseClass;
-            this.typeClass = typeClass;
-        }
-
-        public Schema<T> getSchema()
-        {
-            HasSchema<T> wrapper = this.wrapper;
-            if(wrapper == null)
-            {
-                synchronized(this)
-                {
-                    if((wrapper = this.wrapper) == null)
-                    {
-                        this.wrapper = wrapper = getSchemaWrapper(typeClass);
-                    }
-                }
-            }
-            
-            return wrapper.getSchema();
-        }
-
-        Pipe.Schema<T> getPipeSchema()
-        {
-            HasSchema<T> wrapper = this.wrapper;
-            if(wrapper == null)
-            {
-                synchronized(this)
-                {
-                    if((wrapper = this.wrapper) == null)
-                    {
-                        this.wrapper = wrapper = getSchemaWrapper(typeClass);
-                    }
-                }
-            }
-            
-            return wrapper.getPipeSchema();
-        }
-        
-    }
-    
     /**
      * Invoked only when applications are having pipe io operations.
      */

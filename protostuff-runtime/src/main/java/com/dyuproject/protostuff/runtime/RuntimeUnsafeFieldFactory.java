@@ -97,7 +97,7 @@ public final class RuntimeUnsafeFieldFactory
     {
         
         
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -154,7 +154,7 @@ public final class RuntimeUnsafeFieldFactory
     
     public static final RuntimeFieldFactory<Short> SHORT = new RuntimeFieldFactory<Short>(ID_SHORT)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -211,7 +211,7 @@ public final class RuntimeUnsafeFieldFactory
     
     public static final RuntimeFieldFactory<Byte> BYTE = new RuntimeFieldFactory<Byte>(ID_BYTE)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -269,7 +269,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Integer> INT32 = new RuntimeFieldFactory<Integer>(ID_INT32)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -327,7 +327,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Long> INT64 = new RuntimeFieldFactory<Long>(ID_INT64)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -385,7 +385,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Float> FLOAT = new RuntimeFieldFactory<Float>(ID_FLOAT)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -443,7 +443,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Double> DOUBLE = new RuntimeFieldFactory<Double>(ID_DOUBLE)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -501,7 +501,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Boolean> BOOL = new RuntimeFieldFactory<Boolean>(ID_BOOL)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
@@ -559,7 +559,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<String> STRING = new RuntimeFieldFactory<String>(ID_STRING)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.STRING, number, name)
@@ -608,7 +608,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<ByteString> BYTES = new RuntimeFieldFactory<ByteString>(ID_BYTES)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.BYTES, number, name)
@@ -657,7 +657,7 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<byte[]> BYTE_ARRAY = new RuntimeFieldFactory<byte[]>(ID_BYTE_ARRAY)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.BYTES, number, name)
@@ -706,9 +706,9 @@ public final class RuntimeUnsafeFieldFactory
     public static final RuntimeFieldFactory<Integer> ENUM = new RuntimeFieldFactory<Integer>(ID_ENUM)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            final EnumIO<? extends Enum<?>> eio = EnumIO.get(f.getType());
+            final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f.getType());
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.ENUM, number, name)
             { 
@@ -758,12 +758,12 @@ public final class RuntimeUnsafeFieldFactory
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             Class<Object> type = (Class<Object>)f.getType();
             final long offset = us.objectFieldOffset(f);
             return new RuntimeMessageField<T,Object>(
-                    type, RuntimeSchema.getSchemaWrapper(type), 
+                    type, strategy.getSchemaWrapper(type, true), 
                     FieldType.MESSAGE, number, name, false)
             {
                 protected void mergeFrom(Input input, T message) throws IOException
@@ -811,18 +811,24 @@ public final class RuntimeUnsafeFieldFactory
     {
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if(RuntimeSchema.isRegistered(f.getType()))
+            if(strategy.isRegistered(f.getType()))
             {
                 // the explicit mapping is configured. 
-                return POJO.create(number, name, f);
+                return POJO.create(number, name, f, strategy);
+            }
+            
+            if(f.getType().isInterface())
+            {
+                // the runtime object could be an enum (which can implement interfaces)
+                return OBJECT.create(number, name, f, strategy);
             }
             
             final long offset = us.objectFieldOffset(f);
             return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
-                    FieldType.MESSAGE, number, name, false)
+                    FieldType.MESSAGE, number, name, false, strategy)
             {
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
@@ -893,11 +899,11 @@ public final class RuntimeUnsafeFieldFactory
     static final RuntimeFieldFactory<Object> OBJECT = new RuntimeFieldFactory<Object>(ID_OBJECT)
     {
         public <T> Field<T> create(int number, java.lang.String name, 
-                final java.lang.reflect.Field f)
+                final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new RuntimeObjectField<T>( 
-                    FieldType.MESSAGE, number, name, false)
+                    FieldType.MESSAGE, number, name, false, strategy)
             {
                 protected void mergeFrom(Input input, T message) throws IOException
                 {
@@ -952,7 +958,7 @@ public final class RuntimeUnsafeFieldFactory
     
     public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>(ID_BIGDECIMAL)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.STRING, number, name)
@@ -1000,7 +1006,7 @@ public final class RuntimeUnsafeFieldFactory
     
     public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>(ID_BIGINTEGER)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.BYTES, number, name)
@@ -1048,7 +1054,7 @@ public final class RuntimeUnsafeFieldFactory
     
     public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>(ID_DATE)
     {
-        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f)
+        public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
             return new Field<T>(FieldType.FIXED64, number, name)

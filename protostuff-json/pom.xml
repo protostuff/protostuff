@@ -63,6 +63,20 @@
     </dependency>
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-runtime-registry</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-runtime-registry</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-api</artifactId>
       <version>${project.version}</version>
     </dependency>

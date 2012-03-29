@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.dyuproject.protostuff.CollectionSchema;
 import com.dyuproject.protostuff.Input;
@@ -39,12 +38,6 @@ import com.dyuproject.protostuff.Pipe;
  */
 public abstract class EnumIO<E extends Enum<E>>
 {
-    
-    /**
-     * A cache to prevent creating the same eio over and over.
-     */
-    private static final ConcurrentHashMap<String,EnumIO<?>> __eioCache = 
-        new ConcurrentHashMap<String,EnumIO<?>>();
     
     // Used by ObjectSchema to ser/deser both EnumMap and EnumSet.
     private static final java.lang.reflect.Field __keyTypeFromEnumMap;
@@ -123,51 +116,10 @@ public abstract class EnumIO<E extends Enum<E>>
         }
     }
     
-    
-    @SuppressWarnings("unchecked")
-    static EnumIO<? extends Enum<?>> get(Class<?> enumClass)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static EnumIO<? extends Enum<?>> newEnumIO(Class<?> enumClass)
     {
-        EnumIO<?> eio = __eioCache.get(enumClass.getName());
-        if(eio == null)
-        {
-            eio = ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
-            
-            final EnumIO<?> existing = __eioCache.putIfAbsent(enumClass.getName(), eio);
-            if(existing != null)
-                eio = existing;
-        }
-        
-        return eio;
-    }
-    
-    @SuppressWarnings("unchecked")
-    static EnumIO<? extends Enum<?>> get(String className, boolean load)
-    {
-        EnumIO<?> eio = __eioCache.get(className);
-        if(eio == null)
-        {
-            if(!load)
-                return null;
-            
-            final Class<?> enumClass;
-            try
-            {
-                enumClass = Thread.currentThread().getContextClassLoader().loadClass(
-                        className);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException(e);
-            }
-            
-            eio = ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
-            
-            final EnumIO<?> existing = __eioCache.putIfAbsent(enumClass.getName(), eio);
-            if(existing != null)
-                eio = existing;
-        }
-        
-        return eio;
+        return ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
     }
     
     /**
@@ -204,6 +156,11 @@ public abstract class EnumIO<E extends Enum<E>>
             {
                 return (Collection<V>)eio.newEnumSet();
             }
+
+            public Class<?> typeClass()
+            {
+                return EnumSet.class;
+            }
         };
     }
     
@@ -216,6 +173,11 @@ public abstract class EnumIO<E extends Enum<E>>
             public <K, V> Map<K, V> newMessage()
             {
                 return (Map<K,V>)eio.newEnumMap();
+            }
+
+            public Class<?> typeClass()
+            {
+                return EnumMap.class;
             }
         };
     }

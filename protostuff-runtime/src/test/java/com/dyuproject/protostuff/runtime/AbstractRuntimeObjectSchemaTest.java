@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,11 @@ import java.util.Map;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.ByteString;
+import com.dyuproject.protostuff.CollectionSchema;
+import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.MapSchema;
+import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 
@@ -39,6 +45,81 @@ import com.dyuproject.protostuff.Schema;
  */
 public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 {
+    
+    static
+    {
+        // to test varios runtime strategies, run:
+        // mvn -Dtest_id_strategy=$1 -DforkMode=never -Dtest=*RuntimeObjectSchemaTest -DfailIfNoTests=false test
+        
+        // where $1 can be: incremental|explicit
+        
+        // check if the protostuff-runtime-registry test module is on the classpath
+        boolean registryTestModuleExists = false;
+        try
+        {
+            registryTestModuleExists = null != Class.forName(
+                    "com.dyuproject.protostuff.runtime.TestDummy", 
+                    false, 
+                    Thread.currentThread().getContextClassLoader());
+        }
+        catch (ClassNotFoundException e)
+        {
+            // ignore
+        }
+        
+        if(registryTestModuleExists)
+        {
+            String strategy = System.getProperty("test_id_strategy");
+            if("incremental".equals(strategy))
+            {
+                System.setProperty("protostuff.runtime.id_strategy_factory", 
+                        "com.dyuproject.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
+            }
+            else if("explicit".equals(strategy))
+            {
+                System.setProperty("protostuff.runtime.id_strategy_factory", 
+                        "com.dyuproject.protostuff.runtime.ExplicitRuntimeObjectSchemaTest$IdStrategyFactory");
+            }
+        }
+    }
+    
+    static class CustomArrayList<T> extends ArrayList<T>
+    {
+        private static final long serialVersionUID = 1L;
+        
+        static final CollectionSchema.MessageFactory MESSAGE_FACTORY = 
+                new CollectionSchema.MessageFactory()
+        {
+            public <V> Collection<V> newMessage()
+            {
+                return new CustomArrayList<V>();
+            }
+
+            public Class<?> typeClass()
+            {
+                return CustomArrayList.class;
+            }
+        };
+    }
+    
+    static class CustomHashMap<K,V> extends HashMap<K,V>
+    {
+        private static final long serialVersionUID = 1L;
+        
+        static final MapSchema.MessageFactory MESSAGE_FACTORY = 
+                new MapSchema.MessageFactory()
+        {
+            public <K, V> Map<K, V> newMessage()
+            {
+                return new CustomHashMap<K,V>();
+            }
+            
+            public Class<?> typeClass()
+            {
+                return CustomHashMap.class;
+            }
+        };
+    }
     
     /**
      * Serializes the {@code message} into a byte array.
@@ -65,12 +146,37 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             Pipe.Schema<T> pipeSchema) throws Exception;
     
     
-    
-    public enum Size
+    public interface HasType
     {
-        SMALL,
-        MEDIUM,
-        LARGE;
+        int getType(); 
+    }
+    
+    public enum Size implements HasType
+    {
+        SMALL
+        {
+            public int getType()
+            {
+                return 1;
+            }
+        }
+        ,
+        MEDIUM
+        {
+            public int getType()
+            {
+                return 2;
+            }
+        }
+        ,
+        LARGE
+        {
+            public int getType()
+            {
+                return 3;
+            }
+        }
+        ;
     }
     
     public interface Instrument
@@ -1411,6 +1517,395 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         assertEquals(p, pFromByteArray);
         
         PojoWithMap pFromStream = new PojoWithMap();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public static final class WrapsBat
+    {
+        Bat bat;
+        Object bat2;
+        
+        WrapsBat fill()
+        {
+            bat = new Bat(500);
+            bat2 = new Bat(1000);
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((bat == null) ? 0 : bat.hashCode());
+            result = prime * result + ((bat2 == null) ? 0 : bat2.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            WrapsBat other = (WrapsBat)obj;
+            if (bat == null)
+            {
+                if (other.bat != null)
+                    return false;
+            }
+            else if (!bat.equals(other.bat))
+                return false;
+            if (bat2 == null)
+            {
+                if (other.bat2 != null)
+                    return false;
+            }
+            else if (!bat2.equals(other.bat2))
+                return false;
+            return true;
+        }
+        
+        
+    }
+    
+    static final class Bat implements Message<Bat>
+    {
+        
+        int id;
+        
+        public Bat()
+        {
+            
+        }
+        
+        public Bat(int id)
+        {
+            this.id = id;
+        }
+        
+        
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + id;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Bat other = (Bat)obj;
+            if (id != other.id)
+                return false;
+            return true;
+        }
+
+
+
+        static final Schema<Bat> SCHEMA = new Schema<Bat>()
+        {
+
+            public String getFieldName(int number)
+            {
+                return number == 1 ? "i" : null;
+            }
+
+            public int getFieldNumber(String name)
+            {
+                return name.length() == 1 && name.charAt(0) == 'i' ? 1 : 0;
+            }
+
+            public boolean isInitialized(Bat message)
+            {
+                return true;
+            }
+
+            public Bat newMessage()
+            {
+                return new Bat();
+            }
+
+            public String messageName()
+            {
+                return Bat.class.getSimpleName();
+            }
+
+            public String messageFullName()
+            {
+                return Bat.class.getName();
+            }
+
+            public Class<? super Bat> typeClass()
+            {
+                return Bat.class;
+            }
+
+            public void mergeFrom(Input input, Bat message) throws IOException
+            {
+                for(int number = input.readFieldNumber(this);;number = input.readFieldNumber(this))
+                {
+                    switch(number)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            message.id = input.readUInt32();
+                            break;
+                        default:
+                            input.handleUnknownField(number, this);
+                    }
+                }
+            }
+
+            public void writeTo(Output output, Bat message) throws IOException
+            {
+                output.writeUInt32(1, message.id, false);
+            }
+            
+        };
+        
+        static final Pipe.Schema<Bat> PIPE_SCHEMA = new Pipe.Schema<Bat>(SCHEMA)
+        {
+
+            @Override
+            protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+            {
+                for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+                {
+                    switch(number)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            output.writeUInt32(number, input.readUInt32(), false);
+                            break;
+                        default:
+                            input.handleUnknownField(number, this);
+                    }
+                }
+            }
+        };
+
+        public Schema<Bat> cachedSchema()
+        {
+            return SCHEMA;
+        }
+        
+        public static Schema<Bat> getSchema()
+        {
+            return SCHEMA;
+        }
+        
+        public static Pipe.Schema<Bat> getPipeSchema()
+        {
+            return PIPE_SCHEMA;
+        }
+    }
+    
+    public void testBat() throws Exception
+    {
+        Schema<WrapsBat> schema = RuntimeSchema.getSchema(WrapsBat.class);
+        Pipe.Schema<WrapsBat> pipeSchema = 
+            ((MappedSchema<WrapsBat>)schema).pipeSchema;
+        
+        WrapsBat p = new WrapsBat().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        WrapsBat pFromByteArray = new WrapsBat();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        WrapsBat pFromStream = new WrapsBat();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public static class PojoWithCustomArrayListAndHashMap
+    {
+        CustomArrayList<Size> one;
+        List<Size> two;
+        Object three;
+        
+        CustomHashMap<Size,Integer> map1;
+        Map<Long,Size> map2;
+        Object map3;
+        
+        Size size;
+        HasType hasType;
+        Object osize;
+        Serializable s;
+        
+        PojoWithCustomArrayListAndHashMap fill()
+        {
+            
+            one = new CustomArrayList<Size>();
+            one.add(Size.SMALL);
+            
+            two = new CustomArrayList<Size>();
+            two.add(Size.MEDIUM);
+            two.add(Size.LARGE);
+            
+            CustomArrayList<String> three = new CustomArrayList<String>();
+            three.add("1");
+            three.add("2");
+            three.add("3");
+            
+            map1 = new CustomHashMap<Size, Integer>();
+            map1.put(Size.LARGE, 1);
+            
+            map2 = new CustomHashMap<Long,Size>();
+            map2.put(100l, Size.MEDIUM);
+            
+            CustomHashMap<Size, Date> map3 = new CustomHashMap<Size, Date>();
+            map3.put(Size.SMALL, new Date(System.currentTimeMillis()));
+            
+            this.map3 = map3;
+            
+            size = Size.SMALL;
+            hasType = Size.MEDIUM;
+            osize = Size.LARGE;
+            
+            s = GuitarPickup.CONTACT;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((hasType == null) ? 0 : hasType.hashCode());
+            result = prime * result + ((map1 == null) ? 0 : map1.hashCode());
+            result = prime * result + ((map2 == null) ? 0 : map2.hashCode());
+            result = prime * result + ((map3 == null) ? 0 : map3.hashCode());
+            result = prime * result + ((one == null) ? 0 : one.hashCode());
+            result = prime * result + ((osize == null) ? 0 : osize.hashCode());
+            result = prime * result + ((s == null) ? 0 : s.hashCode());
+            result = prime * result + ((size == null) ? 0 : size.hashCode());
+            result = prime * result + ((three == null) ? 0 : three.hashCode());
+            result = prime * result + ((two == null) ? 0 : two.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithCustomArrayListAndHashMap other = (PojoWithCustomArrayListAndHashMap)obj;
+            if (hasType == null)
+            {
+                if (other.hasType != null)
+                    return false;
+            }
+            else if (!hasType.equals(other.hasType))
+                return false;
+            if (map1 == null)
+            {
+                if (other.map1 != null)
+                    return false;
+            }
+            else if (!map1.equals(other.map1))
+                return false;
+            if (map2 == null)
+            {
+                if (other.map2 != null)
+                    return false;
+            }
+            else if (!map2.equals(other.map2))
+                return false;
+            if (map3 == null)
+            {
+                if (other.map3 != null)
+                    return false;
+            }
+            else if (!map3.equals(other.map3))
+                return false;
+            if (one == null)
+            {
+                if (other.one != null)
+                    return false;
+            }
+            else if (!one.equals(other.one))
+                return false;
+            if (osize == null)
+            {
+                if (other.osize != null)
+                    return false;
+            }
+            else if (!osize.equals(other.osize))
+                return false;
+            if (s == null)
+            {
+                if (other.s != null)
+                    return false;
+            }
+            else if (!s.equals(other.s))
+                return false;
+            if (size != other.size)
+                return false;
+            if (three == null)
+            {
+                if (other.three != null)
+                    return false;
+            }
+            else if (!three.equals(other.three))
+                return false;
+            if (two == null)
+            {
+                if (other.two != null)
+                    return false;
+            }
+            else if (!two.equals(other.two))
+                return false;
+            return true;
+        }
+
+        
+    }
+    
+    public void testPojoWithCustomArrayListAndHashMapAndHashMap() throws Exception
+    {
+        Schema<PojoWithCustomArrayListAndHashMap> schema = RuntimeSchema.getSchema(PojoWithCustomArrayListAndHashMap.class);
+        Pipe.Schema<PojoWithCustomArrayListAndHashMap> pipeSchema = 
+            ((MappedSchema<PojoWithCustomArrayListAndHashMap>)schema).pipeSchema;
+        
+        PojoWithCustomArrayListAndHashMap p = new PojoWithCustomArrayListAndHashMap().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithCustomArrayListAndHashMap pFromByteArray = new PojoWithCustomArrayListAndHashMap();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithCustomArrayListAndHashMap pFromStream = new PojoWithCustomArrayListAndHashMap();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
         assertEquals(p, pFromByteArray);

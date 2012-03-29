@@ -42,6 +42,10 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
          */
         public <K,V> Map<K,V> newMessage();
         
+        /**
+         * The type to instantiate.
+         */
+        public Class<?> typeClass();
     }
     
     /**
@@ -50,7 +54,7 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
     public enum MessageFactories implements MessageFactory
     {
         // defaults to HashMap
-        Map
+        Map(java.util.HashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
@@ -58,7 +62,7 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             }
         },
         // defaults to TreeMap
-        SortedMap
+        SortedMap(java.util.TreeMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
@@ -66,49 +70,49 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             }
         },
         // defaults to TreeMap
-        NavigableMap
+        NavigableMap(java.util.TreeMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.TreeMap<K,V>();
             }
         },
-        HashMap
+        HashMap(java.util.HashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new HashMap<K,V>();
             }
         },
-        LinkedHashMap
+        LinkedHashMap(java.util.LinkedHashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.LinkedHashMap<K,V>();
             }
         },
-        TreeMap
+        TreeMap(java.util.TreeMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.TreeMap<K,V>();
             }
         },
-        WeakHashMap
+        WeakHashMap(java.util.WeakHashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.WeakHashMap<K,V>();
             }
         },
-        IdentityHashMap
+        IdentityHashMap(java.util.IdentityHashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.IdentityHashMap<K,V>();
             }
         },
-        Hashtable
+        Hashtable(java.util.Hashtable.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
@@ -116,14 +120,14 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             }
         },
         // defaults to ConcurrentHashMap
-        ConcurrentMap
+        ConcurrentMap(java.util.concurrent.ConcurrentHashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.concurrent.ConcurrentHashMap<K,V>();
             }
         },
-        ConcurrentHashMap
+        ConcurrentHashMap(java.util.concurrent.ConcurrentHashMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
@@ -131,14 +135,14 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             }
         },
         // defaults to ConcurrentNavigableMap
-        ConcurrentNavigableMap
+        ConcurrentNavigableMap(java.util.concurrent.ConcurrentSkipListMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.concurrent.ConcurrentSkipListMap<K,V>();
             }
         },
-        ConcurrentSkipListMap
+        ConcurrentSkipListMap(java.util.concurrent.ConcurrentSkipListMap.class)
         {
             public <K, V> Map<K, V> newMessage()
             {
@@ -146,6 +150,18 @@ public abstract class MapSchema<K,V> implements Schema<Map<K,V>>
             }
         };
         
+        public final Class<?> typeClass;
+        
+        private MessageFactories(Class<?> typeClass)
+        {
+            this.typeClass = typeClass;
+        }
+        
+        public Class<?> typeClass()
+        {
+            return typeClass;
+        }
+
         /**
          * Returns the message factory for the standard jdk {@link Map} implementations.
          */

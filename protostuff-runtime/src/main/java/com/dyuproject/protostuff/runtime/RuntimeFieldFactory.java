@@ -52,9 +52,12 @@ public abstract class RuntimeFieldFactory<V>
         ID_BIGDECIMAL = 12, ID_BIGINTEGER = 13, ID_DATE = 14,
         ID_ARRAY = 15, // 1-15 is encoded as 1 byte on protobuf and protostuff format
         ID_OBJECT = 16, 
+        ID_ARRAY_MAPPED = 17, 
         
-        // room for more scalar types (17-23)
+        // room for more scalar types (18-21)
         
+        ID_ENUM_SET = 22, 
+        ID_ENUM_MAP = 23, 
         ID_ENUM = 24, 
         ID_COLLECTION = 25, 
         ID_MAP = 26, 
@@ -67,9 +70,12 @@ public abstract class RuntimeFieldFactory<V>
         STR_BIGDECIMAL = "l", STR_BIGINTEGER = "m", STR_DATE = "n", 
         STR_ARRAY = "o", 
         STR_OBJECT = "p", 
+        STR_ARRAY_MAPPED = "q", 
         
-        // room for more scalar types (17-23)
+        // room for more scalar types (18-21)
         
+        STR_ENUM_SET = "v", 
+        STR_ENUM_MAP = "w", 
         STR_ENUM = "x", 
         STR_COLLECTION = "y",
         STR_MAP = "z", 
@@ -269,7 +275,7 @@ public abstract class RuntimeFieldFactory<V>
      * Creates a runtime {@link MappedSchema.Field field} based on reflection.
      */
     public abstract <T> Field<T> create(int number, java.lang.String name, 
-            java.lang.reflect.Field field);
+            java.lang.reflect.Field field, IdStrategy strategy);
     
     protected abstract FieldType getFieldType();
     

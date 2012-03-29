@@ -29,17 +29,20 @@ abstract class RuntimeObjectField<T> extends Field<T>
     /**
      * The schema of the object (dynamic) field.
      */
-    public final ObjectSchema schema = new ObjectSchema()
-    {
-        protected void setValue(Object value, Object owner)
-        {
-            RuntimeObjectField.this.setValue(value, owner);
-        }
-    };
+    public final ObjectSchema schema;
     
-    public RuntimeObjectField(FieldType type, int number, String name, boolean repeated)
+    public RuntimeObjectField(FieldType type, int number, String name, boolean repeated, 
+            IdStrategy strategy)
     {
         super(type, number, name, repeated);
+        
+        schema = new ObjectSchema(strategy)
+        {
+            protected void setValue(Object value, Object owner)
+            {
+                RuntimeObjectField.this.setValue(value, owner);
+            }
+        };
     }
     
     protected abstract void setValue(Object value, Object owner);

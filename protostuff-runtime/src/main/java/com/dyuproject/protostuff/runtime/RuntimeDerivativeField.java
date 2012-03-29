@@ -45,14 +45,7 @@ abstract class RuntimeDerivativeField<T> extends Field<T>
     /**
      * The schema of the polymorphic pojo.
      */
-    public final DerivativeSchema schema = new DerivativeSchema()
-    {
-        protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
-                Object owner) throws IOException
-        {
-            RuntimeDerivativeField.this.doMergeFrom(input, derivedSchema, owner);
-        }
-    };
+    public final DerivativeSchema schema;
     
     /**
      * The class of the message field.
@@ -60,10 +53,20 @@ abstract class RuntimeDerivativeField<T> extends Field<T>
     public final Class<Object> typeClass;
     
     public RuntimeDerivativeField(Class<Object> typeClass, 
-            FieldType type, int number, String name, boolean repeated)
+            FieldType type, int number, String name, boolean repeated,
+            IdStrategy strategy)
     {
         super(type, number, name, repeated);
         this.typeClass = typeClass;
+        
+        schema = new DerivativeSchema(strategy)
+        {
+            protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+                    Object owner) throws IOException
+            {
+                RuntimeDerivativeField.this.doMergeFrom(input, derivedSchema, owner);
+            }
+        };
     }
     
     protected abstract void doMergeFrom(Input input, Schema<Object> derivedSchema, 

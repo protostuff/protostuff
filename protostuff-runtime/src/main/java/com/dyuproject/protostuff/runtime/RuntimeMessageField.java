@@ -18,7 +18,6 @@ import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
-import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
 
 /**
  * A runtime message field that lazily loads the schema to support cyclic dependencies. 

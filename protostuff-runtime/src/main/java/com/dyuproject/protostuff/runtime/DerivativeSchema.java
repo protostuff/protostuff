@@ -14,7 +14,7 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
 
 import java.io.IOException;
 
@@ -24,7 +24,6 @@ import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.ProtostuffException;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.StatefulOutput;
-import com.dyuproject.protostuff.runtime.RuntimeSchema.HasSchema;
 
 /**
  * This schema delegates to another schema derived from the input.
@@ -36,15 +35,22 @@ public abstract class DerivativeSchema implements Schema<Object>
 {
     
     private static final String FIELD_NAME_TYPE_METADATA = "_";
+    
+    public final IdStrategy strategy;
+    
+    public DerivativeSchema(IdStrategy strategy)
+    {
+        this.strategy = strategy;
+    }
 
     public String getFieldName(int number)
     {
-        return number == 127 ? FIELD_NAME_TYPE_METADATA : null;
+        return number == ID_POJO ? FIELD_NAME_TYPE_METADATA : null;
     }
 
     public int getFieldNumber(String name)
     {
-        return name.length() == 1 && name.charAt(0) == '_' ? 127 : 0;
+        return name.length() == 1 && name.charAt(0) == '_' ? ID_POJO : 0;
     }
 
     public boolean isInitialized(Object owner)
@@ -80,17 +86,12 @@ public abstract class DerivativeSchema implements Schema<Object>
     public void mergeFrom(Input input, final Object owner) throws IOException
     {
         final int first = input.readFieldNumber(this);
-        if(first != 127)
+        if(first != ID_POJO)
             throw new ProtostuffException("order not preserved.");
         
-        final String className = input.readString();
-        final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(className, 
-                AUTO_LOAD_POLYMORPHIC_CLASSES);
-        
-        if(wrapper == null)
-            throw new ProtostuffException("polymorphic pojo not registered: " + className);
-        
-        doMergeFrom(input, wrapper.getSchema(), owner);
+        doMergeFrom(input, 
+                strategy.resolvePojoFrom(input, ID_POJO).getSchema(), 
+                owner);
     }
     
     /**
@@ -99,11 +100,8 @@ public abstract class DerivativeSchema implements Schema<Object>
     @SuppressWarnings("unchecked")
     public void writeTo(final Output output, final Object value) throws IOException
     {
-        final Schema<Object> schema = 
-            RuntimeSchema.getSchema((Class<Object>)value.getClass());
-        
-        // write the type
-        output.writeString(127, value.getClass().getName(), false);
+        final Schema<Object> schema = strategy.writePojoIdTo(
+                output, ID_POJO, (Class<Object>)value.getClass());
         
         if(output instanceof StatefulOutput)
         {
@@ -124,23 +122,12 @@ public abstract class DerivativeSchema implements Schema<Object>
         public void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             final int first = input.readFieldNumber(DerivativeSchema.this);
-            if(first != 127)
+            if(first != ID_POJO)
                 throw new ProtostuffException("order not preserved.");
             
-            final String className = input.readString();
+            final Pipe.Schema<Object> pipeSchema = strategy.transferPojoId(
+                    input, output, ID_POJO).getPipeSchema();
             
-            final HasSchema<Object> wrapper = RuntimeSchema.getSchemaWrapper(className, 
-                    AUTO_LOAD_POLYMORPHIC_CLASSES);
-            
-            if(wrapper == null)
-            {
-                throw new ProtostuffException("polymorphic pojo not registered: " + 
-                        className);
-            }
-            
-            output.writeString(127, className, false);
-            
-            final Pipe.Schema<Object> pipeSchema = wrapper.getPipeSchema();
             if(output instanceof StatefulOutput)
             {
                 // update using the derived schema.
