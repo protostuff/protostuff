@@ -1,4 +1,7 @@
 protostuff-1.0.5-SNAPSHOT
++ Issue 105: ObjectSchema needs to check clazz.getSuperclass().isEnum() to detect complex enums
++ Issue 88: Add support for transparent handling of non-standard collections
++ Issue 96: user definable mapping: FQNC's --> integer, for serialized stream size-reduction (thanks to Leo Romanoff)
 + Issue 103: Deserialize failed when reading objects from ObjectInput/DataInput
 + Issue 101: Improve ByteString.equals
 + allow message/enum references on options and annotations (proto-parser).

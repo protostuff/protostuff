@@ -33,4 +33,7 @@ Patch contributors:
   thierry.monney
     * protostuff-me - Preverification fails (Issue 92)
 
+  Leo Romanoff
+    * protostuff-runtime - user definable mapping: FQNC's --> integer, for serialized stream size-reduction (Issue 96)
+
   
