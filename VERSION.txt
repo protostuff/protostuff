@@ -1,4 +1,6 @@
 protostuff-1.0.5-SNAPSHOT
++ add support for annotations on protostuff-runtime to have explicit control of field numbers (patch by Brice Jaglin).
+  Annotate all non-transient/non-static fields with @Tag(x) or none at all (all or nothing).
 + Issue 106: Use Double.doubleToRawLongBits (was Double.doubleToLongBits) on serialization (protostuff-core)
 + new protostuff-runtime-registry module (compact ids for your polymorphic pojos)
 + Issue 105: ObjectSchema needs to check clazz.getSuperclass().isEnum() to detect complex enums

@@ -36,4 +36,7 @@ Patch contributors:
   Leo Romanoff
     * protostuff-runtime - user definable mapping: FQNC's --> integer, for serialized stream size-reduction (Issue 96)
 
+  Brice Jaglin
+    * protostuff-runtime - annotations on pojo's fields to have explicit control of field numbers.
+
   

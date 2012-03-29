@@ -183,6 +183,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         final Map<String,java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
         final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(fieldMap.size());
         int i = 0;
+        int maxFieldMapping = 0;
+        boolean annotated = false;
         for(java.lang.reflect.Field f : fieldMap.values())
         {
             if(!exclusions.contains(f.getName()))
@@ -195,9 +197,35 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     continue;
                 }
                 
+                int fieldMapping;
+                Tag tag = f.getAnnotation(Tag.class);
+                if(tag == null)
+                {
+                    // Fields gets assigned mapping tags according to their definition order
+                    if(annotated)
+                    {
+                        throw new RuntimeException("When using annotation-based mapping, " +
+                                "all fields must be annotated with @" + Tag.class.getSimpleName());
+                    }
+                    fieldMapping = ++i;
+                }
+                else
+                {
+                    // Fields gets assigned mapping tags according to their annotation
+                    if(!annotated && !fields.isEmpty())
+                    {
+                        throw new RuntimeException("When using annotation-based mapping, " +
+                                "all fields must be annotated with @" + Tag.class.getSimpleName());
+                    }
+                    annotated = true;
+                    fieldMapping = tag.value();
+                }
+                
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType()).create(++i, f.getName(), f, strategy);
+                        f.getType()).create(fieldMapping, f.getName(), f, strategy);
                 fields.add(field);
+                
+                maxFieldMapping = Math.max(maxFieldMapping, fieldMapping);
             }
         }
         if(fields.isEmpty())
@@ -206,7 +234,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     typeClass + ".  All fields are either transient/static.");
         }
         
-        return new RuntimeSchema<T>(typeClass, fields, i, 
+        return new RuntimeSchema<T>(typeClass, fields, maxFieldMapping, 
                 RuntimeEnv.newInstantiator(typeClass));
     }
     
