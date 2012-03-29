@@ -1,4 +1,5 @@
 protostuff-1.0.5-SNAPSHOT
++ added protostuff-runtime-registry (compact ids for your polymorphic pojos)
 + Issue 105: ObjectSchema needs to check clazz.getSuperclass().isEnum() to detect complex enums
 + Issue 88: Add support for transparent handling of non-standard collections
 + Issue 96: user definable mapping: FQNC's --> integer, for serialized stream size-reduction (thanks to Leo Romanoff)
