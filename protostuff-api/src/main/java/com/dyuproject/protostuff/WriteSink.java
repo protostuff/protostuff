@@ -545,13 +545,13 @@ public enum WriteSink
     public final LinkedBuffer writeFloat(final float value, 
             final WriteSession session, final LinkedBuffer lb) throws IOException
     {
-        return writeInt32(Float.floatToIntBits(value), session, lb);
+        return writeInt32(Float.floatToRawIntBits(value), session, lb);
     }
     
     public final LinkedBuffer writeDouble(final double value, 
             final WriteSession session, final LinkedBuffer lb) throws IOException
     {
-        return writeInt64(Double.doubleToLongBits(value), session, lb);
+        return writeInt64(Double.doubleToRawLongBits(value), session, lb);
     }
     
     public abstract LinkedBuffer writeInt32LE(final int value, 
@@ -563,13 +563,13 @@ public enum WriteSink
     public final LinkedBuffer writeFloatLE(final float value, 
             final WriteSession session, final LinkedBuffer lb) throws IOException
     {
-        return writeInt32LE(Float.floatToIntBits(value), session, lb);
+        return writeInt32LE(Float.floatToRawIntBits(value), session, lb);
     }
     
     public final LinkedBuffer writeDoubleLE(final double value, 
             final WriteSession session, final LinkedBuffer lb) throws IOException
     {
-        return writeInt64LE(Double.doubleToLongBits(value), session, lb);
+        return writeInt64LE(Double.doubleToRawLongBits(value), session, lb);
     }
     
     public abstract LinkedBuffer writeVarInt32(final int value, 
