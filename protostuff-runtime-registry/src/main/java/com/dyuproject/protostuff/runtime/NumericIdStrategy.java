@@ -54,7 +54,14 @@ public abstract class NumericIdStrategy extends IdStrategy
 {
     
     // array ids will be limited to 5 bits (written as the value 
-    // of the key: RuntimeFieldFactory.ID_ARRAY_MAPPED)
+    // of the key: RuntimeFieldFactory.ID_ARRAY)
+    
+    // Note that ID_ARRAY is used to write the int ids because the value 
+    // is 15 (ID_ARRAY_MAPPED is 17), which means it only takes 1 byte to 
+    // write.
+    // This optimization will benefit workloads that have primitive arrays 
+    // (including their boxed types) and arrays that have concrete component 
+    // types (e.g not an interface or abstract class)
     
     // primitive values are 0-7 (first 3 bits)
     // the 4th bit is the primitive flag
@@ -77,18 +84,20 @@ public abstract class NumericIdStrategy extends IdStrategy
         
         if(componentType.isPrimitive())
         {
-            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY_MAPPED, 
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
                     getIdPrimitive(componentType), false);
         }
         else if(!componentType.isInterface() && 
                 !Modifier.isAbstract(componentType.getModifiers()))
         {
-            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY_MAPPED, 
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
                     getId(componentType), false);
         }
         else
         {
-            output.writeString(RuntimeFieldFactory.ID_ARRAY, 
+            // too many possible interfaces and abstract types that it would be costly 
+            // to index it at runtime (Not all subclasses allow dynamic indexing)
+            output.writeString(RuntimeFieldFactory.ID_ARRAY_MAPPED, 
                     componentType.getName(), false);
         }
     }
@@ -97,16 +106,16 @@ public abstract class NumericIdStrategy extends IdStrategy
             boolean mapped) throws IOException
     {
         if(mapped)
-            output.writeUInt32(fieldNumber, input.readUInt32(), false);
-        else
             input.transferByteRangeTo(output, true, fieldNumber, false);
+        else
+            output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
     
     protected Class<?> resolveArrayComponentTypeFrom(Input input, boolean mapped) 
             throws IOException 
     {
-        return mapped ? resolveClass(input.readUInt32()) : RuntimeEnv.loadClass(
-                input.readString());
+        return mapped ? RuntimeEnv.loadClass(input.readString()) : 
+            resolveClass(input.readUInt32());
     }
     
     private int getIdPrimitive(Class<?> clazz)
