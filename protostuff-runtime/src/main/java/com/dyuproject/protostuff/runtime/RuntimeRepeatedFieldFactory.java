@@ -22,6 +22,7 @@ import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
@@ -484,12 +485,15 @@ final class RuntimeRepeatedFieldFactory
                 return createCollectionObjectV(number, name, f, messageFactory, strategy);
             }
             
-            if(genericType.isEnum())
-                return createCollectionEnumV(number, name, f, messageFactory, genericType, strategy);
-            
             final RuntimeFieldFactory<Object> inline = getInline(genericType);
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
+            
+            if(Message.class.isAssignableFrom(genericType))
+                return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
+            
+            if(genericType.isEnum())
+                return createCollectionEnumV(number, name, f, messageFactory, genericType, strategy);
             
             if(isComplexComponentType(genericType))
                 return createCollectionObjectV(number, name, f, messageFactory, strategy);

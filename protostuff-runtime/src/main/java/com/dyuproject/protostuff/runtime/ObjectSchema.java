@@ -510,6 +510,14 @@ public abstract class ObjectSchema implements Schema<Object>
     {
         final Class<Object> clazz = (Class<Object>)value.getClass();
         
+        final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(clazz);
+        if(inline != null)
+        {
+            // scalar value
+            inline.writeTo(output, inline.id, value, false);
+            return;
+        }
+        
         if(Message.class.isAssignableFrom(clazz))
         {
             final Schema<Object> schema = strategy.writeMessageIdTo(
@@ -536,14 +544,6 @@ public abstract class ObjectSchema implements Schema<Object>
         {
             strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
             EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>)value);
-            return;
-        }
-        
-        final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-        {
-            // scalar value
-            inline.writeTo(output, inline.id, value, false);
             return;
         }
         

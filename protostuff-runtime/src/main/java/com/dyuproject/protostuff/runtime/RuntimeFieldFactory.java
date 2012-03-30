@@ -199,15 +199,15 @@ public abstract class RuntimeFieldFactory<V>
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz, 
             IdStrategy strategy)
     {
+        final RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
+        if(inline != null)
+            return inline;
+        
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
         
         if(clazz.isEnum())
             return ENUM;
-        
-        final RuntimeFieldFactory<?> inline =  __inlineValues.get(clazz.getName());
-        if(inline != null)
-            return inline;
         
         // Of all the scalar (inline) fields, java.lang.Number is the only abstract
         // super type, hence we can filter it here
