@@ -222,7 +222,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 }
                 
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType()).create(fieldMapping, f.getName(), f, strategy);
+                        f.getType(), strategy).create(fieldMapping, f.getName(), f, strategy);
                 fields.add(field);
                 
                 maxFieldMapping = Math.max(maxFieldMapping, fieldMapping);
@@ -270,7 +270,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             if(!Modifier.isStatic(mod) && !Modifier.isTransient(mod))
             {
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType()).create(++i, entry.getValue(), f, strategy);
+                        f.getType(), strategy).create(++i, entry.getValue(), f, strategy);
                 fields.add(field);
             }
         }

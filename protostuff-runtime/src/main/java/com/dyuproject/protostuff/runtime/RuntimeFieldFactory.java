@@ -182,11 +182,22 @@ public abstract class RuntimeFieldFactory<V>
         __inlineValues.put(BigDecimal.class.getName(), BIGDECIMAL);
         __inlineValues.put(Date.class.getName(), DATE);
     }
+    
+    /**
+     * Gets the runtime field factory of the given {@code clazz}.
+     * 
+     * Method overload for backwards compatibility.
+     */
+    public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)
+    {
+        return getFieldFactory(clazz, RuntimeEnv.ID_STRATEGY);
+    }
 
     /**
      * Gets the runtime field factory of the given {@code clazz}.
      */
-    public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)
+    public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz, 
+            IdStrategy strategy)
     {
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
@@ -198,7 +209,10 @@ public abstract class RuntimeFieldFactory<V>
         if(inline != null)
             return inline;
         
-        if(clazz.isArray() || Object.class == clazz)
+        // Of all the scalar (inline) fields, java.lang.Number is the only abstract
+        // super type, hence we can filter it here
+        // Note that it has 10 built-in subtypes
+        if(clazz.isArray() || Object.class == clazz || Number.class == clazz)
             return OBJECT;
         
         if(Map.class.isAssignableFrom(clazz))
@@ -210,20 +224,32 @@ public abstract class RuntimeFieldFactory<V>
             return COLLECTION;
         }
         
-        return pojo(clazz);
+        // Enums or boxed types of primitives do implement interfaces.
+        // Although serializing polymorphic pojos declared as interfaces will be a 
+        // little bit slower than before, this is more correct.
+        //
+        // In versions prior to 1.0.5, it would serialize a field declared as 
+        // java.lang.Serializable like a polymorphic pojo even though it 
+        // gets assigned enum/string/number types.
+        //
+        // If you have declared fields as serializable, it wont be compatible
+        if(clazz.isInterface())
+            return strategy.isRegistered(clazz) ? POJO : OBJECT;
+        
+        return POJO == pojo(clazz) || strategy.isRegistered(clazz) ? 
+                POJO : POLYMORPHIC_POJO;
     }
     
     static RuntimeFieldFactory<?> pojo(Class<?> clazz)
     {
-        return (clazz.isInterface() 
-            || Modifier.isAbstract(clazz.getModifiers()) 
+        return (Modifier.isAbstract(clazz.getModifiers()) 
             || (!Modifier.isFinal(clazz.getModifiers()) && 
                     MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
     }
     
     static boolean isComplexComponentType(Class<?> clazz)
     {
-        return clazz.isArray() || Object.class == clazz;
+        return clazz.isArray() || Object.class == clazz || Number.class == clazz;
     }
     
     static Class<?> getGenericType(java.lang.reflect.Field f, 

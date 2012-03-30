@@ -1662,6 +1662,9 @@ final class RuntimeMapFieldFactory
                 if(POJO == pojo(clazzK) || strategy.isRegistered(clazzK))
                     return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
                 
+                if(clazzK.isInterface())
+                    return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+                
                 return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
             }
 
@@ -1679,6 +1682,9 @@ final class RuntimeMapFieldFactory
                 
                 if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
                     return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
+                
+                if(clazzV.isInterface())
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, strategy);
                 
                 return createMapEnumKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV, strategy);
             }
@@ -1700,6 +1706,9 @@ final class RuntimeMapFieldFactory
                 if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
                     return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV, strategy);
                 
+                if(clazzV.isInterface())
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy);
+                
                 return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV, strategy);
             }
             
@@ -1720,6 +1729,9 @@ final class RuntimeMapFieldFactory
                 
                 if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
                     return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
+                
+                if(clazzV.isInterface())
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
                 
                 return createMapPojoKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV, strategy);
             }

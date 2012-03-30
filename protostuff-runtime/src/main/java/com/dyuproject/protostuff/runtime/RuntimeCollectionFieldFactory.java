@@ -493,6 +493,9 @@ final class RuntimeCollectionFieldFactory
             if(POJO == pojo(genericType) || strategy.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
             
+            if(genericType.isInterface())
+                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+            
             return createCollectionPolymorphicV(number, name, f, messageFactory, genericType, strategy);
         }
         protected void transfer(Pipe pipe, Input input, Output output, int number, 
