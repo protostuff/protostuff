@@ -118,7 +118,7 @@ public abstract class NumericIdStrategy extends IdStrategy
             resolveClass(input.readUInt32());
     }
     
-    private int getIdPrimitive(Class<?> clazz)
+    private static int getIdPrimitive(Class<?> clazz)
     {
         return RuntimeFieldFactory.getInline(clazz).id - 1;
     }
