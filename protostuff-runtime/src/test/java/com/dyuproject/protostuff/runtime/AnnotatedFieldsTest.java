@@ -29,6 +29,7 @@
 package com.dyuproject.protostuff.runtime;
 
 import com.dyuproject.protostuff.AbstractTest;
+import com.dyuproject.protostuff.Tag;
 
 /**
  * Test for runtime schemas to handle annotation-based field mapping.

@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package com.dyuproject.protostuff;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,7 +34,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * To configure the field's number explicitly, annotate the fields with this.
+ * A field annotation to configure the field number explicitly.
  * 
  * @author David Yu
  * @created Mar 30, 2012

@@ -29,6 +29,7 @@ import java.util.Set;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
 import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
 
