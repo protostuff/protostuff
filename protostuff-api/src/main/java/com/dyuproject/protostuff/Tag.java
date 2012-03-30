@@ -36,6 +36,7 @@ import java.lang.annotation.Target;
 /**
  * A field annotation to configure the field number explicitly.
  * 
+ * @author Brice Jaglin
  * @author David Yu
  * @created Mar 30, 2012
  */
