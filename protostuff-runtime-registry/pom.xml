@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-runtime-registry</artifactId>
-  <name>protostuff :: runtime</name>
+  <name>protostuff :: runtime-registry</name>
   <description>id registration for runtime types</description>
   <packaging>jar</packaging>
   
