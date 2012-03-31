@@ -1,4 +1,6 @@
-protostuff-1.0.5-SNAPSHOT
+protostuff-1.0.6-SNAPSHOT
+
+protostuff-1.0.5 2012-03-31
 + Issue 107: Fields that are interfaces are not being serialized correctly if assigned an enum/boxed primitive type at runtime
   To optimize polymorphic ser/deser, use abstract classes or atleast declare the base abstract class.
 + add support for annotations on protostuff-runtime to have explicit control of field numbers (patch by Brice Jaglin).
