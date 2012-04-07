@@ -23,6 +23,7 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -356,6 +357,173 @@ public class JsonCoreSerDeserTest extends TestCase
         JsonIOUtil.mergeFrom(data, parsedFoo, parsedFoo.cachedSchema(), false);
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
-
-
+    
+    public void testFooNullFields() throws Exception
+    {
+        Foo b = new Foo();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":[null]" +
+                ",\"someString\":[null]" +
+                ",\"someBar\":[null]" +
+                ",\"someEnum\":[null]" +
+                ",\"someBytes\":[null]" +
+                ",\"someBoolean\":[null]" +
+                ",\"someFloat\":[null]" +
+                ",\"someDouble\":[null]" +
+                ",\"someLong\":[null]}"), 
+                b, b.cachedSchema(), false);
+        
+        assertNull(b.getSomeInt());
+        assertNull(b.getSomeString());
+        assertNull(b.getSomeBar());
+        assertNull(b.getSomeEnum());
+        assertNull(b.getSomeBytes());
+        assertNull(b.getSomeBoolean());
+        assertNull(b.getSomeFloat());
+        assertNull(b.getSomeDouble());
+        assertNull(b.getSomeLong());
+    }
+    
+    public void testFooNullFieldsButFirst() throws Exception
+    {
+        Foo b = new Foo();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":[1,null]" +
+                ",\"someString\":[\"string\",null]" +
+                ",\"someBar\":[{},null]" +
+                ",\"someEnum\":[1,null]" +
+                ",\"someBytes\":[\"fw==\",null]" + // 0x7f
+                ",\"someBoolean\":[true,null]" +
+                ",\"someFloat\":[10.01,null]" +
+                ",\"someDouble\":[100.001,null]" +
+                ",\"someLong\":[1000,null]}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(b.getSomeInt(), Arrays.asList(new Integer(1)));
+        assertEquals(b.getSomeString(), Arrays.asList("string"));
+        assertEquals(b.getSomeBar(), Arrays.asList(new Bar()));
+        assertEquals(b.getSomeEnum(), Arrays.asList(Foo.EnumSample.TYPE1));
+        assertEquals(b.getSomeBytes(), Arrays.asList(ByteString.copyFrom(new byte[]{0x7f})));
+        assertEquals(b.getSomeBoolean(), Arrays.asList(Boolean.TRUE));
+        assertEquals(b.getSomeFloat(), Arrays.asList(new Float(10.01f)));
+        assertEquals(b.getSomeDouble(), Arrays.asList(new Double(100.001d)));
+        assertEquals(b.getSomeLong(), Arrays.asList(new Long(1000l)));
+    }
+    
+    public void testFooNullFieldsButMid() throws Exception
+    {
+        Foo b = new Foo();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":[null,1,null]" +
+                ",\"someString\":[null,\"string\",null]" +
+                ",\"someBar\":[null,{},null]" +
+                ",\"someEnum\":[null,1,null]" +
+                ",\"someBytes\":[null,\"fw==\",null]" + // 0x7f
+                ",\"someBoolean\":[null,true,null]" +
+                ",\"someFloat\":[null,10.01,null]" +
+                ",\"someDouble\":[null,100.001,null]" +
+                ",\"someLong\":[null,1000,null]}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(b.getSomeInt(), Arrays.asList(new Integer(1)));
+        assertEquals(b.getSomeString(), Arrays.asList("string"));
+        assertEquals(b.getSomeBar(), Arrays.asList(new Bar()));
+        assertEquals(b.getSomeEnum(), Arrays.asList(Foo.EnumSample.TYPE1));
+        assertEquals(b.getSomeBytes(), Arrays.asList(ByteString.copyFrom(new byte[]{0x7f})));
+        assertEquals(b.getSomeBoolean(), Arrays.asList(Boolean.TRUE));
+        assertEquals(b.getSomeFloat(), Arrays.asList(new Float(10.01f)));
+        assertEquals(b.getSomeDouble(), Arrays.asList(new Double(100.001d)));
+        assertEquals(b.getSomeLong(), Arrays.asList(new Long(1000l)));
+    }
+    
+    public void testFooNullFieldsButLast() throws Exception
+    {
+        Foo b = new Foo();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":[null,1]" +
+                ",\"someString\":[null,\"string\"]" +
+                ",\"someBar\":[null,{}]" +
+                ",\"someEnum\":[null,1]" +
+                ",\"someBytes\":[null,\"fw==\"]" + // 0x7f
+                ",\"someBoolean\":[null,true]" +
+                ",\"someFloat\":[null,10.01]" +
+                ",\"someDouble\":[null,100.001]" +
+                ",\"someLong\":[null,1000]}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(b.getSomeInt(), Arrays.asList(new Integer(1)));
+        assertEquals(b.getSomeString(), Arrays.asList("string"));
+        assertEquals(b.getSomeBar(), Arrays.asList(new Bar()));
+        assertEquals(b.getSomeEnum(), Arrays.asList(Foo.EnumSample.TYPE1));
+        assertEquals(b.getSomeBytes(), Arrays.asList(ByteString.copyFrom(new byte[]{0x7f})));
+        assertEquals(b.getSomeBoolean(), Arrays.asList(Boolean.TRUE));
+        assertEquals(b.getSomeFloat(), Arrays.asList(new Float(10.01f)));
+        assertEquals(b.getSomeDouble(), Arrays.asList(new Double(100.001d)));
+        assertEquals(b.getSomeLong(), Arrays.asList(new Long(1000l)));
+    }
+    
+    public void testFooNullFieldsButLast2() throws Exception
+    {
+        Foo b = new Foo();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":[null,null,1]" +
+                ",\"someString\":[null,null,\"string\"]" +
+                ",\"someBar\":[null,null,{}]" +
+                ",\"someEnum\":[null,null,1]" +
+                ",\"someBytes\":[null,null,\"fw==\"]" + // 0x7f
+                ",\"someBoolean\":[null,null,true]" +
+                ",\"someFloat\":[null,null,10.01]" +
+                ",\"someDouble\":[null,null,100.001]" +
+                ",\"someLong\":[null,null,1000]}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(b.getSomeInt(), Arrays.asList(new Integer(1)));
+        assertEquals(b.getSomeString(), Arrays.asList("string"));
+        assertEquals(b.getSomeBar(), Arrays.asList(new Bar()));
+        assertEquals(b.getSomeEnum(), Arrays.asList(Foo.EnumSample.TYPE1));
+        assertEquals(b.getSomeBytes(), Arrays.asList(ByteString.copyFrom(new byte[]{0x7f})));
+        assertEquals(b.getSomeBoolean(), Arrays.asList(Boolean.TRUE));
+        assertEquals(b.getSomeFloat(), Arrays.asList(new Float(10.01f)));
+        assertEquals(b.getSomeDouble(), Arrays.asList(new Double(100.001d)));
+        assertEquals(b.getSomeLong(), Arrays.asList(new Long(1000l)));
+    }
+    
+    public void testBarNullFields() throws Exception
+    {
+        Bar b = new Bar();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"someInt\":null" +
+                ",\"someString\":null" +
+                ",\"someBaz\":null" +
+                ",\"someEnum\":null" +
+                ",\"someBytes\":null" +
+                ",\"someBoolean\":null" +
+                ",\"someFloat\":null" +
+                ",\"someDouble\":null" +
+                ",\"someLong\":null}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(0, b.getSomeInt());
+        assertNull(b.getSomeString());
+        assertNull(b.getSomeBaz());
+        assertNull(b.getSomeEnum());
+        assertNull(b.getSomeBytes());
+        assertFalse(b.getSomeBoolean());
+        assertEquals(0f, b.getSomeFloat());
+        assertEquals(0d, b.getSomeDouble());
+        assertEquals(0l, b.getSomeLong());
+    }
+    
+    public void testBazNullFields() throws Exception
+    {
+        Baz b = new Baz();
+        JsonIOUtil.mergeFrom(JsonIOUtil.DEFAULT_JSON_FACTORY.createJsonParser(
+                "{\"id\":null,\"name\":null,\"timestamp\":null}"), 
+                b, b.cachedSchema(), false);
+        
+        assertEquals(0, b.getId());
+        assertNull(b.getName());
+        assertEquals(0l, b.getTimestamp());
+    }
+    
 }

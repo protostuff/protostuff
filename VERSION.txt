@@ -1,4 +1,6 @@
 protostuff-1.0.6-SNAPSHOT
++ Issue 108: Ignore null values in json parser
+  * removes recursion and uses a loop instead
 
 protostuff-1.0.5 2012-03-31
 + Issue 107: Fields that are interfaces are not being serialized correctly if assigned an enum/boxed primitive type at runtime
