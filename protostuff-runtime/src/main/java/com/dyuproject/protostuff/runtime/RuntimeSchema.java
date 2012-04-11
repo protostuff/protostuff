@@ -220,6 +220,12 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     }
                     annotated = true;
                     fieldMapping = tag.value();
+                    
+                    if(fieldMapping < 1)
+                    {
+                        throw new RuntimeException("Invalid field number: " + 
+                                fieldMapping + " on " + typeClass);
+                    }
                 }
                 
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(

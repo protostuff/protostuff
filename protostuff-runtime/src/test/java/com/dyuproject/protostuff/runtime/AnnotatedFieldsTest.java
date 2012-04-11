@@ -95,6 +95,12 @@ public class AnnotatedFieldsTest extends AbstractTest
         @Tag(2)
         int other;
     }
+    
+    static class EntityInvalidTagNumber
+    {
+        @Tag(0)
+        int id;
+    }
 
     public void testEntityFullyAnnotated()
     {
@@ -157,6 +163,19 @@ public class AnnotatedFieldsTest extends AbstractTest
         try
         {
             RuntimeSchema.getSchema(EntityInvalidAnnotated1.class);
+            fail();
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+        }
+    }
+    
+    public void testEntityInvalidTagNumber() throws Exception
+    {
+        try
+        {
+            RuntimeSchema.getSchema(EntityInvalidTagNumber.class);
             fail();
         }
         catch (RuntimeException e)
