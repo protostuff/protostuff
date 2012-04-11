@@ -1912,5 +1912,453 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         
         roundTrip(p, schema, pipeSchema);
     }
+    
+    static class PojoWithClassFields
+    {
+        Class<?> c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
+        Object o0, o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, o14;
+        
+        Class<?>[] cArray;
+        Object[] oArray;
+        
+        List<Class<?>> cList;
+        ArrayList<?> cArrayList;
+        
+        Map<String,Class<?>> cMap;
+        HashMap<Class<?>, ?> cHashMap;
+        
+        PojoWithClassFields fill()
+        {
+            c0 = int.class;
+            c1 = Integer.class;
+            c2 = Integer[].class;
+            c3 = Integer[][].class;
+            c4 = int[].class;
+            c5 = int[][].class;
+            c6 = Pojo.class;
+            c7 = Instrument.class;
+            c8 = AbstractInstrument.class;
+            c9 = Size.class;
+            c10 = GuitarPickup.class;
+            
+            o0 = long.class;
+            o1 = Long.class;
+            o2 = Long[].class;
+            o3 = Long[][].class;
+            o4 = long[].class;
+            o5 = long[][].class;
+            o6 = Pojo.class;
+            o7 = Instrument.class;
+            o8 = AbstractInstrument.class;
+            o9 = Size.class;
+            o10 = GuitarPickup.class;
+            
+            cArray = new Class<?>[]{
+                    Float.class, 
+                    Double.class, 
+                    float[].class, 
+                    double[][].class, 
+                    Float[].class, 
+                    Double[][].class,
+                    byte[].class, 
+                    byte.class, 
+                    Pojo.class,
+                    Instrument.class, 
+                    AbstractInstrument.class, 
+                    Size.class, 
+                    GuitarPickup.class};
+            
+            oArray = new Object[]{
+                    String.class, 
+                    Boolean.class, 
+                    float[].class, 
+                    double[][].class, 
+                    Float[].class, 
+                    Double[][].class,
+                    byte[].class,
+                    byte.class, 
+                    Pojo.class,
+                    Instrument.class, 
+                    AbstractInstrument.class, 
+                    Size.class, 
+                    GuitarPickup.class};
+            
+            cList = new ArrayList<Class<?>>();
+            cList.add(Character.class);
+            cList.add(Short.class);
+            cList.add(float[].class);
+            cList.add(double[][].class);
+            cList.add(Float[].class);
+            cList.add(Double[][].class);
+            cList.add(byte[].class);
+            cList.add(byte.class);
+            cList.add(Pojo.class);
+            cList.add(Instrument.class);
+            cList.add(AbstractInstrument.class);
+            cList.add(Size.class);
+            cList.add(GuitarPickup.class);
+            
+            ArrayList<Class<?>> list = new ArrayList<Class<?>>();
+            list.add(Character.class);
+            list.add(Short.class);
+            list.add(float[].class);
+            list.add(double[][].class);
+            list.add(Float[].class);
+            list.add(Double[][].class);
+            list.add(byte[].class);
+            list.add(byte.class);
+            list.add(Pojo.class);
+            list.add(Instrument.class);
+            list.add(AbstractInstrument.class);
+            list.add(Size.class);
+            list.add(GuitarPickup.class);
+            
+            cArrayList = list;
+            
+            cMap = newMap();
+            cMap.put("object", Object.class);
+            cMap.put("Character", Character.class);
+            cMap.put("Short", Short.class);
+            cMap.put("float", float[].class);
+            cMap.put("double", double[][].class);
+            cMap.put("Float", Float[].class);
+            cMap.put("Double", Double[][].class);
+            cMap.put("byte[]", byte[].class);
+            cMap.put("byte", byte.class);
+            cMap.put("Pojo", Pojo.class);
+            cMap.put("Instrument", Instrument.class);
+            cMap.put("AbstractInstrument", AbstractInstrument.class);
+            cMap.put("Size", Size.class);
+            cMap.put("GuitarPickup", GuitarPickup.class);
+            
+            HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
+            map.put(Date.class, "date");
+            map.put(Character.class, Character.class);
+            map.put(Short.class, Short.class);
+            map.put(float[].class, float[].class);
+            map.put(double[][].class, double[][].class);
+            map.put(Float[].class, Float[].class);
+            map.put(Double[][].class, Double[][].class);
+            map.put(byte[].class, byte[].class);
+            map.put(byte.class, byte.class);
+            map.put(Pojo.class, Pojo.class);
+            map.put(Instrument.class, Instrument.class);
+            map.put(AbstractInstrument.class, AbstractInstrument.class);
+            map.put(Size.class, Size.class);
+            map.put(GuitarPickup.class, GuitarPickup.class);
+            
+            cHashMap = map;
+            
+            o11 = cList;
+            o12 = cArrayList;
+            o13 = cMap;
+            o14 = cHashMap;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((c0 == null) ? 0 : c0.hashCode());
+            result = prime * result + ((c1 == null) ? 0 : c1.hashCode());
+            result = prime * result + ((c10 == null) ? 0 : c10.hashCode());
+            result = prime * result + ((c2 == null) ? 0 : c2.hashCode());
+            result = prime * result + ((c3 == null) ? 0 : c3.hashCode());
+            result = prime * result + ((c4 == null) ? 0 : c4.hashCode());
+            result = prime * result + ((c5 == null) ? 0 : c5.hashCode());
+            result = prime * result + ((c6 == null) ? 0 : c6.hashCode());
+            result = prime * result + ((c7 == null) ? 0 : c7.hashCode());
+            result = prime * result + ((c8 == null) ? 0 : c8.hashCode());
+            result = prime * result + ((c9 == null) ? 0 : c9.hashCode());
+            result = prime * result + Arrays.hashCode(cArray);
+            result = prime * result + ((cArrayList == null) ? 0 : cArrayList.hashCode());
+            result = prime * result + ((cHashMap == null) ? 0 : cHashMap.hashCode());
+            result = prime * result + ((cList == null) ? 0 : cList.hashCode());
+            result = prime * result + ((cMap == null) ? 0 : cMap.hashCode());
+            result = prime * result + ((o0 == null) ? 0 : o0.hashCode());
+            result = prime * result + ((o1 == null) ? 0 : o1.hashCode());
+            result = prime * result + ((o10 == null) ? 0 : o10.hashCode());
+            result = prime * result + ((o11 == null) ? 0 : o11.hashCode());
+            result = prime * result + ((o12 == null) ? 0 : o12.hashCode());
+            result = prime * result + ((o13 == null) ? 0 : o13.hashCode());
+            result = prime * result + ((o14 == null) ? 0 : o14.hashCode());
+            result = prime * result + ((o2 == null) ? 0 : o2.hashCode());
+            result = prime * result + ((o3 == null) ? 0 : o3.hashCode());
+            result = prime * result + ((o4 == null) ? 0 : o4.hashCode());
+            result = prime * result + ((o5 == null) ? 0 : o5.hashCode());
+            result = prime * result + ((o6 == null) ? 0 : o6.hashCode());
+            result = prime * result + ((o7 == null) ? 0 : o7.hashCode());
+            result = prime * result + ((o8 == null) ? 0 : o8.hashCode());
+            result = prime * result + ((o9 == null) ? 0 : o9.hashCode());
+            result = prime * result + Arrays.hashCode(oArray);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithClassFields other = (PojoWithClassFields)obj;
+            if (c0 == null)
+            {
+                if (other.c0 != null)
+                    return false;
+            }
+            else if (!c0.equals(other.c0))
+                return false;
+            if (c1 == null)
+            {
+                if (other.c1 != null)
+                    return false;
+            }
+            else if (!c1.equals(other.c1))
+                return false;
+            if (c10 == null)
+            {
+                if (other.c10 != null)
+                    return false;
+            }
+            else if (!c10.equals(other.c10))
+                return false;
+            if (c2 == null)
+            {
+                if (other.c2 != null)
+                    return false;
+            }
+            else if (!c2.equals(other.c2))
+                return false;
+            if (c3 == null)
+            {
+                if (other.c3 != null)
+                    return false;
+            }
+            else if (!c3.equals(other.c3))
+                return false;
+            if (c4 == null)
+            {
+                if (other.c4 != null)
+                    return false;
+            }
+            else if (!c4.equals(other.c4))
+                return false;
+            if (c5 == null)
+            {
+                if (other.c5 != null)
+                    return false;
+            }
+            else if (!c5.equals(other.c5))
+                return false;
+            if (c6 == null)
+            {
+                if (other.c6 != null)
+                    return false;
+            }
+            else if (!c6.equals(other.c6))
+                return false;
+            if (c7 == null)
+            {
+                if (other.c7 != null)
+                    return false;
+            }
+            else if (!c7.equals(other.c7))
+                return false;
+            if (c8 == null)
+            {
+                if (other.c8 != null)
+                    return false;
+            }
+            else if (!c8.equals(other.c8))
+                return false;
+            if (c9 == null)
+            {
+                if (other.c9 != null)
+                    return false;
+            }
+            else if (!c9.equals(other.c9))
+                return false;
+            if (!Arrays.equals(cArray, other.cArray))
+                return false;
+            if (cArrayList == null)
+            {
+                if (other.cArrayList != null)
+                    return false;
+            }
+            else if (!cArrayList.equals(other.cArrayList))
+                return false;
+            if (cHashMap == null)
+            {
+                if (other.cHashMap != null)
+                    return false;
+            }
+            else if (!cHashMap.equals(other.cHashMap))
+                return false;
+            if (cList == null)
+            {
+                if (other.cList != null)
+                    return false;
+            }
+            else if (!cList.equals(other.cList))
+                return false;
+            if (cMap == null)
+            {
+                if (other.cMap != null)
+                    return false;
+            }
+            else if (!cMap.equals(other.cMap))
+                return false;
+            if (o0 == null)
+            {
+                if (other.o0 != null)
+                    return false;
+            }
+            else if (!o0.equals(other.o0))
+                return false;
+            if (o1 == null)
+            {
+                if (other.o1 != null)
+                    return false;
+            }
+            else if (!o1.equals(other.o1))
+                return false;
+            if (o10 == null)
+            {
+                if (other.o10 != null)
+                    return false;
+            }
+            else if (!o10.equals(other.o10))
+                return false;
+            if (o11 == null)
+            {
+                if (other.o11 != null)
+                    return false;
+            }
+            else if (!o11.equals(other.o11))
+                return false;
+            if (o12 == null)
+            {
+                if (other.o12 != null)
+                    return false;
+            }
+            else if (!o12.equals(other.o12))
+                return false;
+            if (o13 == null)
+            {
+                if (other.o13 != null)
+                    return false;
+            }
+            else if (!o13.equals(other.o13))
+                return false;
+            if (o14 == null)
+            {
+                if (other.o14 != null)
+                    return false;
+            }
+            else if (!o14.equals(other.o14))
+                return false;
+            if (o2 == null)
+            {
+                if (other.o2 != null)
+                    return false;
+            }
+            else if (!o2.equals(other.o2))
+                return false;
+            if (o3 == null)
+            {
+                if (other.o3 != null)
+                    return false;
+            }
+            else if (!o3.equals(other.o3))
+                return false;
+            if (o4 == null)
+            {
+                if (other.o4 != null)
+                    return false;
+            }
+            else if (!o4.equals(other.o4))
+                return false;
+            if (o5 == null)
+            {
+                if (other.o5 != null)
+                    return false;
+            }
+            else if (!o5.equals(other.o5))
+                return false;
+            if (o6 == null)
+            {
+                if (other.o6 != null)
+                    return false;
+            }
+            else if (!o6.equals(other.o6))
+                return false;
+            if (o7 == null)
+            {
+                if (other.o7 != null)
+                    return false;
+            }
+            else if (!o7.equals(other.o7))
+                return false;
+            if (o8 == null)
+            {
+                if (other.o8 != null)
+                    return false;
+            }
+            else if (!o8.equals(other.o8))
+                return false;
+            if (o9 == null)
+            {
+                if (other.o9 != null)
+                    return false;
+            }
+            else if (!o9.equals(other.o9))
+                return false;
+            if (!Arrays.equals(oArray, other.oArray))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithClassFields [c0=" + c0 + ", c1=" + c1 + ", c2=" + c2 + ", c3=" + c3
+                    + ", c4=" + c4 + ", c5=" + c5 + ", c6=" + c6 + ", c7=" + c7 + ", c8=" + c8
+                    + ", c9=" + c9 + ", c10=" + c10 + ", o0=" + o0 + ", o1=" + o1 + ", o2=" + o2
+                    + ", o3=" + o3 + ", o4=" + o4 + ", o5=" + o5 + ", o6=" + o6 + ", o7=" + o7
+                    + ", o8=" + o8 + ", o9=" + o9 + ", o10=" + o10 + ", o11=" + o11 + ", o12="
+                    + o12 + ", o13=" + o13 + ", o14=" + o14 + ", cArray=" + Arrays.toString(cArray)
+                    + ", oArray=" + Arrays.toString(oArray) + ", cList=" + cList + ", cArrayList="
+                    + cArrayList + ", cMap=" + cMap + ", cHashMap=" + cHashMap + "]";
+        }
+        
+    }
+    
+    public void testPojoWithClassFields() throws Exception
+    {
+        Schema<PojoWithClassFields> schema = RuntimeSchema.getSchema(PojoWithClassFields.class);
+        Pipe.Schema<PojoWithClassFields> pipeSchema = 
+            ((MappedSchema<PojoWithClassFields>)schema).pipeSchema;
+        
+        PojoWithClassFields p = new PojoWithClassFields().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithClassFields pFromByteArray = new PojoWithClassFields();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithClassFields pFromStream = new PojoWithClassFields();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
 
 }

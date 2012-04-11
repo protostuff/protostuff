@@ -687,8 +687,24 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return wrapper.getSchema().typeClass();
     }
     
+    protected int getEnumId(Class<?> clazz)
+    {
+        final RuntimeEnumIO reio = getRuntimeEnumIO(clazz);
+
+        // wait till everything is completely set
+        int id;
+        while(0 == (id = reio.id))
+            LockSupport.parkNanos(1);
+        
+        return (id << 5) | CID_ENUM;
+    }
+    
     protected int getId(Class<?> clazz)
     {
+        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
+        if(inline != null)
+            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
+        
         int id = 0;
         if(Message.class.isAssignableFrom(clazz))
         {
@@ -698,31 +714,19 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             while(0 == (id = wrapper.id))
                 LockSupport.parkNanos(1);
             
-            return (id << 5) | AID_POJO;
+            return (id << 5) | CID_POJO;
         }
-        
-        if(clazz.isEnum())
-        {
-            final RuntimeEnumIO reio = getRuntimeEnumIO(clazz);
-
-            // wait till everything is completely set
-            while(0 == (id = reio.id))
-                LockSupport.parkNanos(1);
-            
-            return (id << 5) | AID_ENUM;
-        }
-        
-        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
         
         if(Object.class == clazz)
-            return AID_OBJECT;
+            return CID_OBJECT;
+        
+        if(Class.class == clazz)
+            return CID_CLASS;
         
         if(Map.class.isAssignableFrom(clazz))
         {
             if(EnumMap.class.isAssignableFrom(clazz))
-                return AID_ENUM_MAP;
+                return CID_ENUM_MAP;
             
             final RuntimeMapFactory factory = getRuntimeMapFactory(clazz);
             
@@ -730,13 +734,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             while(0 == (id = factory.id))
                 LockSupport.parkNanos(1);
             
-            return (id << 5) | AID_MAP;
+            return (id << 5) | CID_MAP;
         }
         
         if(Collection.class.isAssignableFrom(clazz))
         {
             if(EnumSet.class.isAssignableFrom(clazz))
-                return AID_ENUM_SET;
+                return CID_ENUM_SET;
             
             final RuntimeCollectionFactory factory = getRuntimeCollectionFactory(clazz);
             
@@ -744,7 +748,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             while(0 == (id = factory.id))
                 LockSupport.parkNanos(1);
             
-            return (id << 5) | AID_COLLECTION;
+            return (id << 5) | CID_COLLECTION;
         }
         
         final BaseHS<?> wrapper = getBaseHS(clazz, true);
@@ -753,7 +757,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         while(0 == (id = wrapper.id))
             LockSupport.parkNanos(1);
         
-        return (id << 5) | AID_POJO;
+        return (id << 5) | CID_POJO;
     }
     
     static class RuntimeCollectionFactory implements CollectionSchema.MessageFactory

@@ -373,16 +373,19 @@ public final class DefaultIdStrategy extends IdStrategy
     }
     
     protected void transferArrayId(Input input, Output output, int fieldNumber, 
-            boolean nonConcrete) throws IOException 
+            boolean mapped) throws IOException 
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
     
     protected Class<?> resolveArrayComponentTypeFrom(Input input, 
-            boolean nonConcrete) throws IOException 
+            boolean mapped) throws IOException 
     {
-        final String className = input.readString();
-        
+        return resolveClass(input.readString());
+    }
+    
+    static Class<?> resolveClass(String className)
+    {
         final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(
                 className);
         
@@ -404,6 +407,27 @@ public final class DefaultIdStrategy extends IdStrategy
             case ID_DOUBLE: return double.class;
             default: throw new RuntimeException("Should never happen.");
         }
+    }
+    
+    protected void writeClassIdTo(Output output, Class<?> componentType, boolean array) 
+            throws IOException
+    {
+        final int id = array ? 
+                RuntimeFieldFactory.ID_CLASS_ARRAY : RuntimeFieldFactory.ID_CLASS;
+        
+        output.writeString(id, componentType.getName(), false);
+    }
+    
+    protected void transferClassId(Input input, Output output, int fieldNumber, 
+            boolean mapped, boolean array) throws IOException
+    {
+        input.transferByteRangeTo(output, true, fieldNumber, false);
+    }
+    
+    protected Class<?> resolveClassFrom(Input input, boolean mapped, boolean array) 
+            throws IOException
+    {
+        return resolveClass(input.readString());
     }
     
     static final class RuntimeCollectionFactory implements CollectionSchema.MessageFactory 

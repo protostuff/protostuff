@@ -33,6 +33,10 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTES;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE_ARRAY;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_ARRAY;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_ARRAY_MAPPED;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_MAPPED;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_COLLECTION;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
@@ -60,6 +64,10 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BYTE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BYTES;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BYTE_ARRAY;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CHAR;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_ARRAY;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_ARRAY_MAPPED;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_MAPPED;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_COLLECTION;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DOUBLE;
@@ -143,8 +151,14 @@ public abstract class ObjectSchema implements Schema<Object>
                 return STR_OBJECT;
             case ID_ARRAY_MAPPED:
                 return STR_ARRAY_MAPPED;
-            
-            // room for more scalar types (18-21)
+            case ID_CLASS:
+                return STR_CLASS;
+            case ID_CLASS_MAPPED:
+                return STR_CLASS_MAPPED;
+            case ID_CLASS_ARRAY:
+                return STR_CLASS_ARRAY;
+            case ID_CLASS_ARRAY_MAPPED:
+                return STR_CLASS_ARRAY_MAPPED;
                 
             case ID_ENUM_SET:
                 return STR_ENUM_SET;
@@ -206,8 +220,14 @@ public abstract class ObjectSchema implements Schema<Object>
                 return 16;
             case 'q':
                 return 17;
-                
-            // room for more scalar types (18-21)
+            case 'r':
+                return 18;
+            case 's':
+                return 19;
+            case 't':
+                return 20;
+            case 'u':
+                return 21;
                 
             case 'v':
                 return 22;
@@ -323,6 +343,38 @@ public abstract class ObjectSchema implements Schema<Object>
         Pipe.transferDirect(strategy.ARRAY_PIPE_SCHEMA, pipe, input, output);
     }
     
+    static void transferClass(Pipe pipe, Input input, Output output, int number, 
+            Pipe.Schema<?> pipeSchema, boolean mapped, boolean array, 
+            IdStrategy strategy) throws IOException
+    {
+        strategy.transferClassId(input, output, number, mapped, array);
+        
+        if(array)
+        {
+            if(input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_DIMENSION)
+                throw new ProtostuffException("Corrupt input.");
+            
+            output.writeUInt32(ID_ARRAY_DIMENSION, input.readUInt32(), false);
+        }
+    }
+    
+    static Class<?> getArrayClass(Input input, Schema<?> schema, 
+            final Class<?> componentType) throws IOException
+    {
+        if(input.readFieldNumber(schema) != ID_ARRAY_DIMENSION)
+            throw new ProtostuffException("Corrupt input.");
+        final int dimensions = input.readUInt32();
+        
+        // TODO is there another way (reflection) to obtain an array class? 
+        
+        if(dimensions == 1)
+            return Array.newInstance(componentType, 0).getClass();
+        
+        final int[] arg = new int[dimensions];
+        arg[0] = 0;
+        return Array.newInstance(componentType, arg).getClass();
+    }
+    
     @SuppressWarnings("unchecked")
     static Object readObjectFrom(final Input input, final Schema<?> schema, 
             Object owner, IdStrategy strategy) throws IOException
@@ -409,6 +461,21 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
                 
                 return mArrayWrapper.array;
+                
+            case ID_CLASS:
+                value = strategy.resolveClassFrom(input, false, false);
+                break;
+            case ID_CLASS_MAPPED:
+                value = strategy.resolveClassFrom(input, true, false);
+                break;
+            case ID_CLASS_ARRAY:
+                value = getArrayClass(input, schema, 
+                        strategy.resolveClassFrom(input, false, true));
+                break;
+            case ID_CLASS_ARRAY_MAPPED:
+                value = getArrayClass(input, schema, 
+                        strategy.resolveClassFrom(input, true, true));
+                break;
                 
             case ID_ENUM:
                 final EnumIO<?> eio = strategy.resolveEnumFrom(input);
@@ -557,7 +624,6 @@ public abstract class ObjectSchema implements Schema<Object>
                 componentType = componentType.getComponentType();
             }
             
-            // write the class without the "["
             strategy.writeArrayIdTo(output, componentType);
             // write the length of the array
             output.writeUInt32(ID_ARRAY_LEN, Array.getLength(value), false);
@@ -577,6 +643,30 @@ public abstract class ObjectSchema implements Schema<Object>
         if(Object.class == clazz)
         {
             output.writeUInt32(ID_OBJECT, 0, false);
+            return;
+        }
+        
+        if(Class.class == value.getClass())
+        {
+            // its a class
+            final Class<?> c = ((Class<?>)value);
+            if(c.isArray())
+            {
+                int dimensions = 1;
+                Class<?> componentType = c.getComponentType();
+                while(componentType.isArray())
+                {
+                    dimensions++;
+                    componentType = componentType.getComponentType();
+                }
+                
+                strategy.writeClassIdTo(output, componentType, true);
+                // write the dimensions of the array
+                output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
+                return;
+            }
+            
+            strategy.writeClassIdTo(output, c, false);
             return;
         }
         
@@ -695,6 +785,19 @@ public abstract class ObjectSchema implements Schema<Object>
             case ID_ARRAY_MAPPED:
                 transferArray(pipe, input, output, number, pipeSchema, true, strategy);
                 return;
+            case ID_CLASS:
+                transferClass(pipe, input, output, number, pipeSchema, false, false, strategy);
+                break;
+            case ID_CLASS_MAPPED:
+                transferClass(pipe, input, output, number, pipeSchema, true, false, strategy);
+                break;
+            case ID_CLASS_ARRAY:
+                transferClass(pipe, input, output, number, pipeSchema, false, true, strategy);
+                break;
+            case ID_CLASS_ARRAY_MAPPED:
+                transferClass(pipe, input, output, number, pipeSchema, true, true, strategy);
+                break;
+                
             case ID_ENUM:
                 strategy.transferEnumId(input, output, number);
                 

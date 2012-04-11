@@ -53,7 +53,7 @@ import com.dyuproject.protostuff.Output;
 public abstract class NumericIdStrategy extends IdStrategy
 {
     
-    // array ids will be limited to 5 bits (written as the value 
+    // class ids will be limited to 5 bits (written as the value 
     // of the key: RuntimeFieldFactory.ID_ARRAY)
     
     // Note that ID_ARRAY is used to write the int ids because the value 
@@ -63,18 +63,20 @@ public abstract class NumericIdStrategy extends IdStrategy
     // (including their boxed types) and arrays that have concrete component 
     // types (e.g not an interface or abstract class)
     
+    // The same rules apply for ID_CLASS_ARRAY and ID_CLASS_ARRAY_MAPPED
+    
     // primitive values are 0-7 (first 3 bits)
     // the 4th bit is the primitive flag
     
     // limited to 24 ids max
-    protected static final int AID_BOOL = 0, AID_BYTE = 1, AID_CHAR = 2, AID_SHORT = 3, 
-            AID_INT32 = 4, AID_INT64 = 5, AID_FLOAT = 6, AID_DOUBLE = 7, 
-            AID_STRING = 16, AID_BYTES = 17, AID_BYTE_ARRAY = 18, 
-            AID_BIGDECIMAL = 19, AID_BIGINTEGER = 20, 
-            AID_DATE = 21, AID_OBJECT = 22, 
-            AID_ENUM_SET = 23, AID_ENUM_MAP = 24, AID_ENUM = 25, 
-            AID_COLLECTION = 26, AID_MAP = 27, 
-            AID_POJO = 28;
+    protected static final int CID_BOOL = 0, CID_BYTE = 1, CID_CHAR = 2, CID_SHORT = 3, 
+            CID_INT32 = 4, CID_INT64 = 5, CID_FLOAT = 6, CID_DOUBLE = 7, 
+            CID_STRING = 16, CID_BYTES = 17, CID_BYTE_ARRAY = 18, 
+            CID_BIGDECIMAL = 19, CID_BIGINTEGER = 20, 
+            CID_DATE = 21, CID_OBJECT = 22, 
+            CID_ENUM_SET = 23, CID_ENUM_MAP = 24, CID_ENUM = 25, 
+            CID_COLLECTION = 26, CID_MAP = 27, 
+            CID_POJO = 28, CID_CLASS = 29;
     
     protected void writeArrayIdTo(Output output, Class<?> componentType) 
             throws IOException
@@ -85,7 +87,12 @@ public abstract class NumericIdStrategy extends IdStrategy
         if(componentType.isPrimitive())
         {
             output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
-                    getIdPrimitive(componentType), false);
+                    getPrimitiveId(componentType), false);
+        }
+        else if(componentType.isEnum())
+        {
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
+                    getEnumId(componentType), false);
         }
         else if(!componentType.isInterface() && 
                 !Modifier.isAbstract(componentType.getModifiers()))
@@ -118,7 +125,58 @@ public abstract class NumericIdStrategy extends IdStrategy
             resolveClass(input.readUInt32());
     }
     
-    private static int getIdPrimitive(Class<?> clazz)
+    protected void writeClassIdTo(Output output, Class<?> componentType, boolean array) 
+            throws IOException
+    {
+        // shouldn't happen
+        assert !componentType.isArray();
+        
+        final int id = array ? 
+                RuntimeFieldFactory.ID_CLASS_ARRAY : RuntimeFieldFactory.ID_CLASS;
+        
+        if(componentType.isPrimitive())
+        {
+            output.writeUInt32(id, 
+                    getPrimitiveId(componentType), false);
+        }
+        else if(componentType.isEnum())
+        {
+            output.writeUInt32(id, 
+                    getEnumId(componentType), false);
+        }
+        else if(!componentType.isInterface() && 
+                !Modifier.isAbstract(componentType.getModifiers()))
+        {
+            output.writeUInt32(id, 
+                    getId(componentType), false);
+        }
+        else
+        {
+            // too many possible interfaces and abstract types that it would be costly 
+            // to index it at runtime (Not all subclasses allow dynamic indexing)
+            // mapped class ids are +1 from regular the regular ones
+            output.writeString(id + 1, 
+                    componentType.getName(), false);
+        }
+    }
+    
+    protected void transferClassId(Input input, Output output, int fieldNumber, 
+            boolean mapped, boolean array) throws IOException
+    {
+        if(mapped)
+            input.transferByteRangeTo(output, true, fieldNumber, false);
+        else
+            output.writeUInt32(fieldNumber, input.readUInt32(), false);
+    }
+    
+    protected Class<?> resolveClassFrom(Input input, boolean mapped, 
+            boolean array) throws IOException 
+    {
+        return mapped ? RuntimeEnv.loadClass(input.readString()) : 
+            resolveClass(input.readUInt32());
+    }
+    
+    private static int getPrimitiveId(Class<?> clazz)
     {
         return RuntimeFieldFactory.getInline(clazz).id - 1;
     }
@@ -132,40 +190,43 @@ public abstract class NumericIdStrategy extends IdStrategy
             // first 3 bits
             switch(type & 0x07)
             {
-                case AID_BOOL: return primitive ? boolean.class : Boolean.class;
-                case AID_BYTE: return primitive ? byte.class : Byte.class;
-                case AID_CHAR: return primitive ? char.class : Character.class;
-                case AID_SHORT: return primitive ? short.class : Short.class;
-                case AID_INT32: return primitive ? int.class : Integer.class;
-                case AID_INT64: return primitive ? long.class : Long.class;
-                case AID_FLOAT: return primitive ? float.class : Float.class;
-                case AID_DOUBLE: return primitive ? double.class : Double.class;
+                case CID_BOOL: return primitive ? boolean.class : Boolean.class;
+                case CID_BYTE: return primitive ? byte.class : Byte.class;
+                case CID_CHAR: return primitive ? char.class : Character.class;
+                case CID_SHORT: return primitive ? short.class : Short.class;
+                case CID_INT32: return primitive ? int.class : Integer.class;
+                case CID_INT64: return primitive ? long.class : Long.class;
+                case CID_FLOAT: return primitive ? float.class : Float.class;
+                case CID_DOUBLE: return primitive ? double.class : Double.class;
                 default: throw new RuntimeException("Should not happen.");
             }
         }
         
         switch(type)
         {
-            case AID_STRING: return String.class;
-            case AID_BYTES: return ByteString.class;
-            case AID_BYTE_ARRAY: return byte[].class;
-            case AID_BIGDECIMAL: return BigDecimal.class;
-            case AID_BIGINTEGER: return BigInteger.class;
-            case AID_DATE: return Date.class;
-            case AID_OBJECT: return Object.class;
-            case AID_ENUM_SET: return EnumSet.class;
-            case AID_ENUM_MAP: return EnumMap.class;
-            case AID_ENUM:
+            case CID_STRING: return String.class;
+            case CID_BYTES: return ByteString.class;
+            case CID_BYTE_ARRAY: return byte[].class;
+            case CID_BIGDECIMAL: return BigDecimal.class;
+            case CID_BIGINTEGER: return BigInteger.class;
+            case CID_DATE: return Date.class;
+            case CID_OBJECT: return Object.class;
+            case CID_ENUM_SET: return EnumSet.class;
+            case CID_ENUM_MAP: return EnumMap.class;
+            case CID_ENUM:
                 return enumClass(id >>> 5);
                     
-            case AID_COLLECTION: 
+            case CID_COLLECTION: 
                 return collectionClass(id >>> 5);
                         
-            case AID_MAP: 
+            case CID_MAP: 
                 return mapClass(id >>> 5);
                 
-            case AID_POJO:
+            case CID_POJO:
                 return pojoClass(id >>> 5);
+                
+            case CID_CLASS:
+                return Class.class;
         }
         
         throw new RuntimeException("Should not happen.");
@@ -179,8 +240,9 @@ public abstract class NumericIdStrategy extends IdStrategy
     
     protected abstract Class<?> pojoClass(int id);
     
-    protected abstract int getId(Class<?> clazz);
+    protected abstract int getEnumId(Class<?> clazz);
     
+    protected abstract int getId(Class<?> clazz);
     
     protected static <T> ArrayList<T> newList(int size)
     {

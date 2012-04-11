@@ -42,6 +42,7 @@ import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.GuitarP
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Pojo;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray2D;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithClassFields;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCollection;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCustomArrayListAndHashMap;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithMap;
@@ -113,7 +114,8 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
                 .registerPojo(PojoWithMap.class, 7)
                 .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
                 .registerPojo(WrapsBat.class, 9)
-                .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
+                .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10)
+                .registerPojo(PojoWithClassFields.class, 11);
             
             
             r = null;

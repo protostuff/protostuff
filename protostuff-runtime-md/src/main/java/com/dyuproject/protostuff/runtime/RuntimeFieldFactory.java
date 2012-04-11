@@ -53,8 +53,10 @@ public abstract class RuntimeFieldFactory<V>
         ID_ARRAY = 15, // 1-15 is encoded as 1 byte on protobuf and protostuff format
         ID_OBJECT = 16, 
         ID_ARRAY_MAPPED = 17, 
-        
-        // room for more scalar types (18-21)
+        ID_CLASS = 18, 
+        ID_CLASS_MAPPED = 19, 
+        ID_CLASS_ARRAY = 20, 
+        ID_CLASS_ARRAY_MAPPED = 21, 
         
         ID_ENUM_SET = 22, 
         ID_ENUM_MAP = 23, 
@@ -71,8 +73,10 @@ public abstract class RuntimeFieldFactory<V>
         STR_ARRAY = "o", 
         STR_OBJECT = "p", 
         STR_ARRAY_MAPPED = "q", 
-        
-        // room for more scalar types (18-21)
+        STR_CLASS = "r", 
+        STR_CLASS_MAPPED = "s", 
+        STR_CLASS_ARRAY = "t", 
+        STR_CLASS_ARRAY_MAPPED = "u", 
         
         STR_ENUM_SET = "v", 
         STR_ENUM_MAP = "w", 
@@ -212,7 +216,7 @@ public abstract class RuntimeFieldFactory<V>
         // Of all the scalar (inline) fields, java.lang.Number is the only abstract
         // super type, hence we can filter it here
         // Note that it has 10 built-in subtypes
-        if(clazz.isArray() || Object.class == clazz || Number.class == clazz)
+        if(clazz.isArray() || Object.class == clazz || Number.class == clazz || Class.class == clazz)
             return OBJECT;
         
         if(Map.class.isAssignableFrom(clazz))

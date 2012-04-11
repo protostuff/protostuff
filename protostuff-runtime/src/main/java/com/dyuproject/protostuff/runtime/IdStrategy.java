@@ -155,6 +155,17 @@ public abstract class IdStrategy
     protected abstract Class<?> resolveArrayComponentTypeFrom(Input input, 
             boolean mapped) throws IOException;
     
+    // class
+    
+    protected abstract void writeClassIdTo(Output output, Class<?> componentType, 
+            boolean array) throws IOException;
+    
+    protected abstract void transferClassId(Input input, Output output, int fieldNumber, 
+            boolean mapped, boolean array) throws IOException;
+    
+    protected abstract Class<?> resolveClassFrom(Input input, 
+            boolean mapped, boolean array) throws IOException;
+    
     // polymorphic requirements
     
     final DerivativeSchema POLYMORPHIC_COLLECTION_VALUE_SCHEMA = 

@@ -574,44 +574,47 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper.getSchema().typeClass();
     }
     
+    protected int getEnumId(Class<?> clazz)
+    {
+        final RegisteredEnumIO reio = enumMapping.get(clazz);
+        if(reio == null)
+            throw new UnknownTypeException("enum: " + clazz);
+        
+        return (reio.id << 5) | CID_ENUM;
+    }
+    
     protected int getId(Class<?> clazz)
     {
+        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
+        if(inline != null)
+            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
+            
         if(Message.class.isAssignableFrom(clazz))
         {
             final BaseHS<?> wrapper = pojoMapping.get(clazz);
             if(wrapper == null)
                 throw new UnknownTypeException("pojo: " + clazz);
             
-            return (wrapper.id << 5) | AID_POJO;
+            return (wrapper.id << 5) | CID_POJO;
         }
-        
-        if(clazz.isEnum())
-        {
-            final RegisteredEnumIO reio = enumMapping.get(clazz);
-            if(reio == null)
-                throw new UnknownTypeException("enum: " + clazz);
-            
-            return (reio.id << 5) | AID_ENUM;
-        }
-        
-        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
         
         if(Object.class == clazz)
-            return AID_OBJECT;
+            return CID_OBJECT;
+        
+        if(Class.class == clazz)
+            return CID_CLASS;
         
         if(Map.class.isAssignableFrom(clazz))
-            return EnumMap.class.isAssignableFrom(clazz) ? AID_ENUM_MAP : mapId(clazz);
+            return EnumMap.class.isAssignableFrom(clazz) ? CID_ENUM_MAP : mapId(clazz);
         
         if(Collection.class.isAssignableFrom(clazz))
-            return EnumSet.class.isAssignableFrom(clazz) ? AID_ENUM_SET: collectionId(clazz);
+            return EnumSet.class.isAssignableFrom(clazz) ? CID_ENUM_SET: collectionId(clazz);
         
         final BaseHS<?> wrapper = pojoMapping.get(clazz);
         if(wrapper == null)
             throw new UnknownTypeException("pojo: " + clazz);
         
-        return (wrapper.id << 5) | AID_POJO;
+        return (wrapper.id << 5) | CID_POJO;
     }
     
     private int collectionId(Class<?> clazz)
@@ -620,7 +623,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         if(factory == null)
             throw new UnknownTypeException("collection: " + clazz);
 
-        return (factory.id << 5) | AID_COLLECTION;
+        return (factory.id << 5) | CID_COLLECTION;
     }
     
     private int mapId(Class<?> clazz)
@@ -629,7 +632,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         if(factory == null)
             throw new UnknownTypeException("map: " + clazz);
 
-        return (factory.id << 5) | AID_MAP;
+        return (factory.id << 5) | CID_MAP;
     }
     
     static <K, V> IdentityHashMap<K, V> newMap(int size)
