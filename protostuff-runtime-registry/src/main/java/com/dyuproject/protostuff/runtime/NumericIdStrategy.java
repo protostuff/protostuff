@@ -84,15 +84,28 @@ public abstract class NumericIdStrategy extends IdStrategy
         // shouldn't happen
         assert !componentType.isArray();
         
-        if(componentType.isPrimitive())
+        final RuntimeFieldFactory<?> inline = 
+                RuntimeFieldFactory.getInline(componentType);
+        
+        if(inline != null)
         {
             output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
-                    getPrimitiveId(componentType), false);
+                    getPrimitiveOrScalarId(componentType, inline.id), false);
         }
         else if(componentType.isEnum())
         {
             output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
                     getEnumId(componentType), false);
+        }
+        else if(Object.class == componentType)
+        {
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
+                    CID_OBJECT, false);
+        }
+        else if(Class.class == componentType)
+        {
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
+                    CID_CLASS, false);
         }
         else if(!componentType.isInterface() && 
                 !Modifier.isAbstract(componentType.getModifiers()))
@@ -134,15 +147,28 @@ public abstract class NumericIdStrategy extends IdStrategy
         final int id = array ? 
                 RuntimeFieldFactory.ID_CLASS_ARRAY : RuntimeFieldFactory.ID_CLASS;
         
-        if(componentType.isPrimitive())
+        final RuntimeFieldFactory<?> inline = 
+                RuntimeFieldFactory.getInline(componentType);
+        
+        if(inline != null)
         {
             output.writeUInt32(id, 
-                    getPrimitiveId(componentType), false);
+                    getPrimitiveOrScalarId(componentType, inline.id), false);
         }
         else if(componentType.isEnum())
         {
             output.writeUInt32(id, 
                     getEnumId(componentType), false);
+        }
+        else if(Object.class == componentType)
+        {
+            output.writeUInt32(id, 
+                    CID_OBJECT, false);
+        }
+        else if(Class.class == componentType)
+        {
+            output.writeUInt32(id, 
+                    CID_CLASS, false);
         }
         else if(!componentType.isInterface() && 
                 !Modifier.isAbstract(componentType.getModifiers()))
@@ -176,9 +202,13 @@ public abstract class NumericIdStrategy extends IdStrategy
             resolveClass(input.readUInt32());
     }
     
-    private static int getPrimitiveId(Class<?> clazz)
+    private static int getPrimitiveOrScalarId(Class<?> clazz, int id)
     {
-        return RuntimeFieldFactory.getInline(clazz).id - 1;
+        if(clazz.isPrimitive())
+            return id - 1;
+        
+        // if id < 9, its the primitive's boxed type.
+        return id < 9 ? ((id - 1) | 0x08) : (id + 7);
     }
     
     private Class<?> resolveClass(int id)

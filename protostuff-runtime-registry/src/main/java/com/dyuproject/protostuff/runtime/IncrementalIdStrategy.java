@@ -701,11 +701,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     
     protected int getId(Class<?> clazz)
     {
-        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
-        
-        int id = 0;
+        int id;
         if(Message.class.isAssignableFrom(clazz))
         {
             final BaseHS<?> wrapper = getBaseHS(clazz, true);
@@ -716,12 +712,6 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             
             return (id << 5) | CID_POJO;
         }
-        
-        if(Object.class == clazz)
-            return CID_OBJECT;
-        
-        if(Class.class == clazz)
-            return CID_CLASS;
         
         if(Map.class.isAssignableFrom(clazz))
         {
@@ -760,7 +750,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return (id << 5) | CID_POJO;
     }
     
-    static class RuntimeCollectionFactory implements CollectionSchema.MessageFactory
+    static final class RuntimeCollectionFactory implements CollectionSchema.MessageFactory
     {
         volatile int id;
         CollectionSchema.MessageFactory factory;
@@ -783,7 +773,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         }
     }
     
-    static class RuntimeMapFactory implements MapSchema.MessageFactory
+    static final class RuntimeMapFactory implements MapSchema.MessageFactory
     {
         volatile int id;
         MapSchema.MessageFactory factory;

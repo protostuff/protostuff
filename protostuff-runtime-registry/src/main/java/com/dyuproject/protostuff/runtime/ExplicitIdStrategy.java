@@ -585,10 +585,6 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     
     protected int getId(Class<?> clazz)
     {
-        final RuntimeFieldFactory<?> inline = RuntimeFieldFactory.getInline(clazz);
-        if(inline != null)
-            return inline.id < 9 ? ((inline.id - 1) | 0x08) : inline.id + 7;
-            
         if(Message.class.isAssignableFrom(clazz))
         {
             final BaseHS<?> wrapper = pojoMapping.get(clazz);
@@ -597,12 +593,6 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             
             return (wrapper.id << 5) | CID_POJO;
         }
-        
-        if(Object.class == clazz)
-            return CID_OBJECT;
-        
-        if(Class.class == clazz)
-            return CID_CLASS;
         
         if(Map.class.isAssignableFrom(clazz))
             return EnumMap.class.isAssignableFrom(clazz) ? CID_ENUM_MAP : mapId(clazz);
