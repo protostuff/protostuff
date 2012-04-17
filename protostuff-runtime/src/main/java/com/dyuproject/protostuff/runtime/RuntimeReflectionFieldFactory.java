@@ -1091,18 +1091,6 @@ public final class RuntimeReflectionFieldFactory
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if(strategy.isRegistered(f.getType()))
-            {
-                // the explicit mapping is configured. 
-                return POJO.create(number, name, f, strategy);
-            }
-            
-            if(f.getType().isInterface())
-            {
-                // the runtime object could be an enum (which can implement interfaces)
-                return OBJECT.create(number, name, f, strategy);
-            }
-            
             return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
                     FieldType.MESSAGE, number, name, false, strategy)
