@@ -1922,11 +1922,23 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         Object[] oArray;
         
         List<Class<?>> cList;
+        
+        @SuppressWarnings("rawtypes")
+        List<Class> cList2;
+        
         ArrayList<?> cArrayList;
         
         Map<String,Class<?>> cMap;
+        
+        @SuppressWarnings("rawtypes")
+        Map<String,Class> cMap2;
+        
         HashMap<Class<?>, ?> cHashMap;
         
+        @SuppressWarnings("rawtypes")
+        HashMap<Class,?> cHashMap2;
+        
+        @SuppressWarnings("rawtypes")
         PojoWithClassFields fill()
         {
             c0 = int.class;
@@ -1998,6 +2010,21 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             cList.add(Size.class);
             cList.add(GuitarPickup.class);
             
+            cList2 = new ArrayList<Class>();
+            cList2.add(Character.class);
+            cList2.add(Short.class);
+            cList2.add(float[].class);
+            cList2.add(double[][].class);
+            cList2.add(Float[].class);
+            cList2.add(Double[][].class);
+            cList2.add(byte[].class);
+            cList2.add(byte.class);
+            cList2.add(Pojo.class);
+            cList2.add(Instrument.class);
+            cList2.add(AbstractInstrument.class);
+            cList2.add(Size.class);
+            cList2.add(GuitarPickup.class);
+            
             ArrayList<Class<?>> list = new ArrayList<Class<?>>();
             list.add(Character.class);
             list.add(Short.class);
@@ -2049,6 +2076,40 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             
             cHashMap = map;
             
+            cMap2 = newMap();
+            cMap2.put("object", Object.class);
+            cMap2.put("Character", Character.class);
+            cMap2.put("Short", Short.class);
+            cMap2.put("float", float[].class);
+            cMap2.put("double", double[][].class);
+            cMap2.put("Float", Float[].class);
+            cMap2.put("Double", Double[][].class);
+            cMap2.put("byte[]", byte[].class);
+            cMap2.put("byte", byte.class);
+            cMap2.put("Pojo", Pojo.class);
+            cMap2.put("Instrument", Instrument.class);
+            cMap2.put("AbstractInstrument", AbstractInstrument.class);
+            cMap2.put("Size", Size.class);
+            cMap2.put("GuitarPickup", GuitarPickup.class);
+            
+            HashMap<Class, Object> map2 = new HashMap<Class, Object>();
+            map2.put(Date.class, "date");
+            map2.put(Character.class, Character.class);
+            map2.put(Short.class, Short.class);
+            map2.put(float[].class, float[].class);
+            map2.put(double[][].class, double[][].class);
+            map2.put(Float[].class, Float[].class);
+            map2.put(Double[][].class, Double[][].class);
+            map2.put(byte[].class, byte[].class);
+            map2.put(byte.class, byte.class);
+            map2.put(Pojo.class, Pojo.class);
+            map2.put(Instrument.class, Instrument.class);
+            map2.put(AbstractInstrument.class, AbstractInstrument.class);
+            map2.put(Size.class, Size.class);
+            map2.put(GuitarPickup.class, GuitarPickup.class);
+            
+            cHashMap2 = map2;
+            
             o11 = cList;
             o12 = cArrayList;
             o13 = cMap;
@@ -2076,8 +2137,11 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             result = prime * result + Arrays.hashCode(cArray);
             result = prime * result + ((cArrayList == null) ? 0 : cArrayList.hashCode());
             result = prime * result + ((cHashMap == null) ? 0 : cHashMap.hashCode());
+            result = prime * result + ((cHashMap2 == null) ? 0 : cHashMap2.hashCode());
             result = prime * result + ((cList == null) ? 0 : cList.hashCode());
+            result = prime * result + ((cList2 == null) ? 0 : cList2.hashCode());
             result = prime * result + ((cMap == null) ? 0 : cMap.hashCode());
+            result = prime * result + ((cMap2 == null) ? 0 : cMap2.hashCode());
             result = prime * result + ((o0 == null) ? 0 : o0.hashCode());
             result = prime * result + ((o1 == null) ? 0 : o1.hashCode());
             result = prime * result + ((o10 == null) ? 0 : o10.hashCode());
@@ -2200,6 +2264,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             }
             else if (!cHashMap.equals(other.cHashMap))
                 return false;
+            if (cHashMap2 == null)
+            {
+                if (other.cHashMap2 != null)
+                    return false;
+            }
+            else if (!cHashMap2.equals(other.cHashMap2))
+                return false;
             if (cList == null)
             {
                 if (other.cList != null)
@@ -2207,12 +2278,26 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             }
             else if (!cList.equals(other.cList))
                 return false;
+            if (cList2 == null)
+            {
+                if (other.cList2 != null)
+                    return false;
+            }
+            else if (!cList2.equals(other.cList2))
+                return false;
             if (cMap == null)
             {
                 if (other.cMap != null)
                     return false;
             }
             else if (!cMap.equals(other.cMap))
+                return false;
+            if (cMap2 == null)
+            {
+                if (other.cMap2 != null)
+                    return false;
+            }
+            else if (!cMap2.equals(other.cMap2))
                 return false;
             if (o0 == null)
             {
@@ -2333,10 +2418,10 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
                     + ", o3=" + o3 + ", o4=" + o4 + ", o5=" + o5 + ", o6=" + o6 + ", o7=" + o7
                     + ", o8=" + o8 + ", o9=" + o9 + ", o10=" + o10 + ", o11=" + o11 + ", o12="
                     + o12 + ", o13=" + o13 + ", o14=" + o14 + ", cArray=" + Arrays.toString(cArray)
-                    + ", oArray=" + Arrays.toString(oArray) + ", cList=" + cList + ", cArrayList="
-                    + cArrayList + ", cMap=" + cMap + ", cHashMap=" + cHashMap + "]";
+                    + ", oArray=" + Arrays.toString(oArray) + ", cList=" + cList + ", cList2="
+                    + cList2 + ", cArrayList=" + cArrayList + ", cMap=" + cMap + ", cMap2=" + cMap2
+                    + ", cHashMap=" + cHashMap + ", cHashMap2=" + cHashMap2 + "]";
         }
-        
     }
     
     public void testPojoWithClassFields() throws Exception

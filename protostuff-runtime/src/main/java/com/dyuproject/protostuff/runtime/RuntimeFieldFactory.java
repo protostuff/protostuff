@@ -253,7 +253,7 @@ public abstract class RuntimeFieldFactory<V>
     
     static boolean isComplexComponentType(Class<?> clazz)
     {
-        return clazz.isArray() || Object.class == clazz || Number.class == clazz;
+        return clazz.isArray() || Object.class == clazz || Number.class == clazz || Class.class == clazz;
     }
     
     static Class<?> getGenericType(java.lang.reflect.Field f, 
