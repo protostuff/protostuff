@@ -78,7 +78,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public static <T> boolean register(Class<T> typeClass, Schema<T> schema)
     {
         if(ID_STRATEGY instanceof DefaultIdStrategy)
-            return ((DefaultIdStrategy)ID_STRATEGY).register(typeClass, schema);
+            return ((DefaultIdStrategy)ID_STRATEGY).registerPojo(typeClass, schema);
         
         throw new RuntimeException("RuntimeSchema.register is only supported on DefaultIdStrategy");
     }

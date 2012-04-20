@@ -50,9 +50,12 @@ public final class DefaultIdStrategy extends IdStrategy
     
     
     /**
+     * Registers a pojo.
+     * Returns true if registration is successful or if the same exact schema 
+     * was previously registered.
      * Used by {@link RuntimeSchema#register(Class, Schema)}.
      */
-    public <T> boolean register(Class<T> typeClass, Schema<T> schema)
+    public <T> boolean registerPojo(Class<T> typeClass, Schema<T> schema)
     {
         assert typeClass != null && schema != null;
         
@@ -61,6 +64,34 @@ public final class DefaultIdStrategy extends IdStrategy
         
         return last == null || (last instanceof Registered<?> && 
                 ((Registered<?>)last).schema == schema);
+    }
+    
+    /**
+     * Registers an enum.
+     * Returns true if registration is successful.
+     */
+    public <T extends Enum<T>> boolean registerEnum(Class<T> enumClass)
+    {
+        return null == enumMapping.putIfAbsent(enumClass.getName(), 
+                EnumIO.newEnumIO(enumClass));
+    }
+    
+    /**
+     * Registers a collection. Returns true if registration is successful.
+     */
+    public boolean registerCollection(CollectionSchema.MessageFactory factory)
+    {
+        return null == collectionMapping.putIfAbsent(factory.typeClass().getName(), 
+                factory);
+    }
+    
+    /**
+     * Registers a map.  Returns true if registration is successful.
+     */
+    public boolean registerMap(MapSchema.MessageFactory factory)
+    {
+        return null == mapMapping.putIfAbsent(factory.typeClass().getName(), 
+                factory);
     }
     
     /**

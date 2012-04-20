@@ -1,4 +1,5 @@
 protostuff-1.0.6-SNAPSHOT
++ Issue 114: Allow collection/map registration on DefaultIdStrategy
 + Issue 111: NumericIdStrategy fails to use the enum ids when the field is an enum array
 + Issue 110: protostuff has problem serilize java.lang.Class Object
 + Issue 108: Ignore null values in json parser
