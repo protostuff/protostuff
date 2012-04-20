@@ -163,9 +163,6 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
          */
         public <T extends Enum<T>> Registry registerEnum(Class<T> clazz, int id)
         {
-            if(!clazz.isEnum() && !clazz.getDeclaringClass().isEnum())
-                throw new IllegalArgumentException("Not an enum: " + clazz);
-            
             if(id < 1)
                 throw new IllegalArgumentException("enum ids start at 1.");
             
