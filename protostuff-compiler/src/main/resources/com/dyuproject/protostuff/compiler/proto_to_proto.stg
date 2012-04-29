@@ -1,0 +1,65 @@
+group proto_to_proto;
+
+map_value_suffix ::= [
+    "Int64": "int64",
+    "UInt64": "uint64",
+    "SInt64": "sint64",
+    "Fixed64": "fixed64",
+    "SFixed64": "sfixed64",
+    "Int32": "int32",
+    "UInt32": "uint32",
+    "SInt32": "sint32",
+    "Fixed32": "fixed32",
+    "SFixed32": "sfixed32",
+    "Bool": "bool",
+    "Float": "float",
+    "Double": "double",
+    "Bytes": "bytes",
+    "String": "string",
+    "EnumField": "enum",
+    "Reference": "ref",
+    default: "def"
+]
+
+annotation_param_type_p ::= [
+    "java.lang.String": "\"",
+    default: ""
+]
+
+extend_by(message, by) ::= <<
+    <by.fields: extend_by_field(field=it); separator="\n">
+>>
+
+extend_by_field(field) ::= <<
+    <if(field.messageField)>
+    <field.annotations:extend_by_field_annotation(field=field, annotation=it); separator="\n">
+    <extend_by_field_modifier(field=field)><field.message.name> <field.name> = <field.number>;
+    <elseif(field.enumField)>
+    <field.annotations:extend_by_field_annotation(field=field, annotation=it); separator="\n">
+    <extend_by_field_modifier(field=field)><field.javaType> <field.name> = <field.number>;
+    <else>
+    <field.annotations:extend_by_field_annotation(field=field, annotation=it); separator="\n">
+    <extend_by_field_modifier(field=field)><map_value_suffix.(field.class.simpleName)> <field.name> = <field.number>;
+    <endif>
+>>
+
+extend_by_field_annotation(field, annotation) ::= <<
+@<annotation.name><extend_by_field_annotation_params(annotation=annotation)>
+>>
+extend_by_field_annotation_params(annotation) ::= <<
+<if(!annotation.params.keys.empty)>
+(<annotation.params.keys:extend_by_field_annotation_param(annotation=annotation, key=it); separator=", ">)
+<endif>
+>>
+extend_by_field_annotation_param(annotation, key) ::= <<
+<key> = <extend_by_field_annotation_param_value(annotation=annotation, key=key)>
+>>
+extend_by_field_annotation_param_value(annotation, key) ::= <<
+<annotation_param_type_p.(annotation.params.(key).class.name)><annotation.params.(key)><annotation_param_type_p.(annotation.params.(key).class.name)>
+>>
+
+extend_by_field_modifier(field) ::= <<
+<if(field.required)>
+required<elseif(field.repeated)>
+repeated<elseif(field.optional)>
+optional<endif> >>

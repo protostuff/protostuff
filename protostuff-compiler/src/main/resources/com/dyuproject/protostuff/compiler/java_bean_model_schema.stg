@@ -1,0 +1,489 @@
+group java_bean_model_schema : java_bean_model_base;
+
+message_block(message, module, options, nested) ::= <<
+<if(!nested)>
+<message:message_header(message=it, module=module, options=options)>
+<endif>
+
+public <if(nested)>static <endif>class <remote_model_schema_name(message=message, name=message.name)>
+       <options.(message.name + ".extends_schema_declaration"); format=" ">
+       <message:message_impl_declaration(message=it, options=options)> {
+
+    <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options, nested="true")>
+    <message:message_default_instance(message=it, options=options)>
+    <field_id0_const_declare(); separator="\n">
+    <message.fields:field_id_const_declare(field=it, options=options); separator="\n">
+    <message:message_constructor(message=it, options=options)>
+    <message:message_impl_schema(message=it, options=options)>
+    <if(options.generate_pipe_schema)>
+    <message:message_pipe_schema(message=it, options=options)>
+    <endif>
+}
+
+>>
+
+setter(field, options) ::= <<set<var(val=field.name, fmt="PC", options=options)>
+>>
+getter(field, options) ::= <<
+<if(field.boolField)>is<else>get<endif><var(val=field.name, fmt="PC", options=options)>
+>>
+pre_cast_val(field) ::= <<
+<if(field.annotationMap.Short)>
+(short)<elseif(field.annotationMap.Byte)>
+(byte)<elseif(field.annotationMap.Char)>
+(char)<endif>
+>>
+post_set_cast_val(field) ::= ""
+pre_get_cast_val(field) ::= "<pre_cast_val(field=field)>"
+post_get_cast_val(field) ::= ""
+set_val(field, options, accessor, value, nocast) ::= <<
+<if(!accessor)>
+<var(val=field.name, fmt="CC", options=options)> = <if(!nocast)><pre_cast_val(field=field)><endif><value><if(!nocast)><post_set_cast_val(field=field)><endif>
+<else>
+<setter(field=field, options=options)>(<if(!nocast)><pre_cast_val(field=field)><endif><value><if(!nocast)><post_set_cast_val(field=field)><endif>)
+<endif>
+>>
+get_val(field, options, accessor, this, nocast) ::= <<
+<if(!accessor)>
+<if(!nocast)><pre_get_cast_val(field=field)><endif><this>.<var(val=field.name, fmt="CC", options=options)><if(!nocast)><post_get_cast_val(field=field)><endif>
+<else>
+<if(!nocast)><pre_get_cast_val(field=field)><endif><this>.<getter(field=field, options=options)>()<if(!nocast)><post_get_cast_val(field=field)><endif>
+<endif>
+>>
+resolve_annotated_native_type(field, boxed, bytesUnboxed) ::= <<
+<if(field.annotationMap.Bytes)>
+<if(bytesUnboxed)>byte[]<else><if(!boxed)>byte[]<else>Byte[]<endif><endif><elseif(field.annotationMap.Short)>
+<if(!boxed)>short<else>Short<endif><elseif(field.annotationMap.Byte)>
+<if(!boxed)>byte<else>Byte<endif><elseif(field.annotationMap.Char)>
+<if(!boxed)>char<else>Char<endif><elseif(field.annotationMap.Boolean)>
+<if(!boxed)>bool<else>Boolean<endif><else>
+<map_primitive_wrapper.(field.javaType)><endif>
+>>
+
+message_constructor(message, options) ::= <<
+
+public <remote_model_schema_name(message=message, name=message.name)>() {}
+
+>>
+
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_declaration"))>
+<options.(message.name + ".implements_declaration")>,
+<else>
+implements
+<endif>
+ Schema\<<remote_model_name(message=message, name=message.name)>\>
+>>
+
+message_default_instance(message, options) ::= <<
+
+static final <remote_model_name(message=message, name=message.name)> DEFAULT_INSTANCE = new <remote_model_name(message=message, name=message.name)>();
+static final Schema\<<remote_model_name(message=message, name=message.name)>\> SCHEMA = new <remote_model_schema_name(message=message, name=message.name)>();
+
+public static <remote_model_name(message=message, name=message.name)> getDefaultInstance() { return DEFAULT_INSTANCE; }
+public static Schema\<<remote_model_name(message=message, name=message.name)>\> getSchema() { return SCHEMA; }
+
+>>
+
+field_id0_const() ::= "FIELD_NONE"
+field_id_const(field, options) ::= "FIELD_<field.name; format=\"UUC\">"
+field_id0_const_declare() ::= <<
+public static final int FIELD_NONE = 0;
+>>
+field_id_const_declare(field, options) ::= <<
+public static final int <field_id_const(field=field, options=options)> = <field.number>;
+>>
+
+message_impl_schema(message, options) ::= <<
+
+public <remote_model_name(message=message, name=message.name)> newMessage() {
+    return new <remote_model_name(message=message, name=message.name)>();
+}
+
+public Class\<<remote_model_name(message=message, name=message.name)>\> typeClass() {
+    return <remote_model_name(message=message, name=message.name)>.class;
+}
+
+public String messageName() {
+    return <remote_model_name(message=message, name=message.name)>.class.getSimpleName();
+}
+
+public String messageFullName() {
+    return <remote_model_name(message=message, name=message.name)>.class.getName();
+}
+
+<message:message_method_is_initialized(message=it, options=options); separator="\n">
+
+<message.fields:rf_ws_check_function_decl(field=it, options=options); separator="\n">
+<message:message_field_merge(message=it, options=options, name="message")>
+<message:message_field_write(message=it, options=options, name="message")>
+<message:message_field_map(message=it, options=options)>
+>>
+
+message_method_is_initialized_delegate(message, options) ::= <<
+public boolean isInitialized(<remote_model_name(message=message, name=message.name)> message) {
+    return message.isInitialized();
+}
+>>
+message_method_is_initialized_true(message, options) ::= <<
+public boolean isInitialized(<remote_model_name(message=message, name=message.name)> message) {
+    return true;
+}
+>>
+message_method_is_initialized(message, options) ::= <<
+
+<if(message.proto.extraOptions.(message.name + ".init.delegate"))>
+<message_method_is_initialized_delegate(message=message, options=options)>
+<elseif(message.proto.extraOptions.java_model_init_delegate)>
+<message_method_is_initialized_delegate(message=message, options=options)>
+<elseif(message.options.java_model_init_delegate)>
+<message_method_is_initialized_delegate(message=message, options=options)>
+<else>
+<message_method_is_initialized_true(message=message, options=options)>
+<endif>
+
+>>
+
+get_message_field_schema_dependency(field, options) ::= "<remote_model_schema_name(message=field.message, name=field.javaType)>.getSchema()"
+
+message_field_merge(message, options, name) ::= <<
+
+public void mergeFrom(Input input, <remote_model_name(message=message, name=message.name)> <name>) throws IOException {
+    for (int fieldIx = input.readFieldNumber(this); fieldIx != <field_id0_const()>; fieldIx = input.readFieldNumber(this)) {
+        mergeFrom(input, <name>, fieldIx);
+    }
+}
+
+public void mergeFrom(Input input, <remote_model_name(message=message, name=message.name)> <name>, int fieldIx) throws IOException {
+    switch (fieldIx) {
+        case <field_id0_const()>:
+            return;
+        <if(message.proto.extraOptions.(message.name + ".schema.field_accessors"))>
+        <message.fields:field_merge_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(message.proto.extraOptions.java_schema_field_accessors)>
+        <message.fields:field_merge_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(message.options.java_schema_field_accessors)>
+        <message.fields:field_merge_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(options.java_schema_field_accessors)>
+        <message.fields:field_merge_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <else>
+        <message.fields:field_merge_switch(field=it, options=options, name=name); separator="\n">
+        <endif>
+        default:
+            input.handleUnknownField(fieldIx, this);
+    }
+}
+
+>>
+
+field_merge_switch(field, options, name, accessor) ::= <<
+case <field_id_const(field=field, options=options)>:
+    <if(field.repeated)><field:repeated_field_merge_switch(field=it, options=options, name=name, accessor=accessor)><else>
+    <field:singular_field_merge_switch(field=it, options=options, name=name, accessor=accessor)><endif>
+>>
+
+singular_field_merge_switch(field, options, name, accessor) ::= <<
+<if(field.messageField)>
+<name>.<set_val(field=field, options=options, accessor=accessor,
+                value=("input.mergeObject(" +
+                       get_val(field=field, options=options, accessor=accessor, this=name) + ", " +
+                       get_message_field_schema_dependency(field=field, options=options) + ")"))>;
+break;
+<elseif(field.enumField)>
+<name>.<set_val(field=field, options=options, accessor=accessor,
+                value=(field.javaType + ".valueOf(input.readEnum())"))>;
+break;
+<else>
+<if(field.annotationMap.Bytes)>
+<name>.<set_val(field=field, options=options, accessor=accessor, value=("input.readByteArray()"))>;
+<else>
+<name>.<set_val(field=field, options=options, accessor=accessor, value=("input.read" + field.class.simpleName + "()"))>;
+<endif>
+
+break;
+<endif>
+>>
+
+rf_ms_get_collection(field, options, name, accessor) ::= <<
+<if(field.annotationMap.Collection.params.name)>
+<if(accessor)>
+<name>.get<var(val=field.annotationMap.Collection.params.name, fmt="PC", options=options)>()
+<else>
+<name>.<var(val=field.annotationMap.Collection.params.name, fmt="CC", options=options)>
+<endif>
+<else>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>
+<endif>
+>>
+rf_ms_set_collection(field, options, name, accessor) ::= <<
+<if(field.annotationMap.Collection.params.name)>
+<if(accessor)>
+<name>.set<var(val=field.annotationMap.Collection.params.name, fmt="PC", options=options)>(new ArrayList\<<rf_ms_collection_type(field=field)>\>());
+<else>
+<name>.<var(val=field.annotationMap.Collection.params.name, fmt="CC", options=options)> = new ArrayList\<<rf_ms_collection_type(field=field)>\>();
+<endif>
+<else>
+<name>.<set_val(field=field, options=options, accessor=accessor, nocast=1, value=("new ArrayList<" + rf_ms_collection_type(field=field) + "\\>()"))>;
+<endif>
+>>
+rf_ms_collection_type(field, options) ::= <<
+<if(field.annotationMap.Collection.params.type)>
+<field.annotationMap.Collection.params.type>
+<else>
+<remote_model_name(message=field.message, name=field.javaType)>
+<endif>
+>>
+
+repeated_field_merge_switch(field, options, name, accessor) ::= <<
+<if(field.messageField)>
+<if(!field.annotationMap.NoCheck)>
+if (<rf_ms_get_collection(field=field, options=options, name=name, accessor=accessor)> == null)
+    <rf_ms_set_collection(field=field, options=options, name=name, accessor=accessor)>
+
+<endif>
+<rf_ms_get_collection(field=field, options=options, name=name, accessor=accessor)>.add(input.mergeObject(null, <get_message_field_schema_dependency(field=field, options=options)>));
+break;
+<elseif(field.enumField)>
+<if(!field.annotationMap.NoCheck)>
+if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)> == null)
+    <name>.<set_val(field=field, options=options, accessor=accessor, nocast=1,
+                    value=("new ArrayList<" + field.javaType + "\\>()"))>;
+
+<endif>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(<field.javaType>.valueOf(input.readEnum()));
+break;
+<else>
+<if(!field.annotationMap.NoCheck)>
+if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)> == null)
+    <name>.<set_val(field=field, options=options, accessor=accessor, nocast=1,
+                    value=("new ArrayList<" + resolve_annotated_native_type(field=field, boxed=1, bytesUnboxed=1) + "\\>()"))>;
+
+<endif>
+<if(field.annotationMap.Bytes)>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(input.readByteArray());
+<else>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(<pre_cast_val(field=field)>input.read<field.class.simpleName>()<post_set_cast_val(field=field)>);
+<endif>
+
+break;
+<endif>
+>>
+
+message_field_write(message, options, name) ::= <<
+
+private static int[] FIELDS_TO_WRITE = { <message.fields:field_id_const(field=it, options=options); separator=", "> };
+
+public int[] getWriteFields() { return FIELDS_TO_WRITE; }
+
+public void writeTo(Output output, <remote_model_name(message=message, name=message.name)> <name>) throws IOException {
+    int[] toWrite = getWriteFields();
+    for (int i = 0; i \< toWrite.length; i++) {
+        writeTo(output, <name>, toWrite[i]);
+    }
+}
+
+public void writeTo(Output output, <remote_model_name(message=message, name=message.name)> <name>, int fieldIx) throws IOException {
+    switch (fieldIx) {
+        case <field_id0_const()>:
+            break;
+        <if(message.proto.extraOptions.(message.name + ".schema.field_accessors"))>
+        <message.fields:field_write_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(message.proto.extraOptions.java_schema_field_accessors)>
+        <message.fields:field_write_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(message.options.java_schema_field_accessors)>
+        <message.fields:field_write_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <elseif(options.java_schema_field_accessors)>
+        <message.fields:field_write_switch(field=it, options=options, name=name, accessor=1); separator="\n">
+        <else>
+        <message.fields:field_write_switch(field=it, options=options, name=name); separator="\n">
+        <endif>
+        default:
+            break;
+    }
+}
+
+>>
+
+field_write_switch(field, options, name, accessor) ::= <<
+case <field_id_const(field=field, options=options)>:
+    <if(field.repeated)>
+    <field:repeated_field_write_switch(field=it, options=options, name=name, accessor=accessor)><else>
+    <field:singular_field_write_switch(field=it, options=options, name=name, accessor=accessor)><endif>
+    break;
+>>
+
+singular_field_write_switch(field, options, name, accessor) ::= <<
+<if(field.required)>
+<if(field.messageField)>
+output.writeObject(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>, <get_message_field_schema_dependency(field=field, options=options)>, false);
+<elseif(field.enumField)>
+output.writeEnum(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>.number, false);
+<else>
+<if(field.annotationMap.Bytes)>
+output.writeByteArray(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>, false);
+<else>
+output.write<field.class.simpleName>(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>, false);
+<endif>
+<endif>
+<else>
+<if(field.messageField)>
+<field:singular_field_accessor_write_check(field=it, options=options)>
+    output.writeObject(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>, <get_message_field_schema_dependency(field=field, options=options)>, false);
+<elseif(field.enumField)>
+<field:singular_field_accessor_write_check(field=it, options=options)>
+    output.writeEnum(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>.number, false);
+
+<else>
+<field:singular_field_accessor_write_check(field=it, options=options)>
+    <if(field.annotationMap.Bytes)>
+    output.writeByteArray(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>, false);
+    <else>
+    output.write<field.class.simpleName>(<field_id_const(field=field, options=options)>, <get_val(field=field, options=options, accessor=accessor, this=name)>, false);
+    <endif>
+<endif>
+<endif>
+>>
+
+rf_ws_get_collection(field, options, name, accessor) ::= <<
+<if(field.annotationMap.Collection.params.name)>
+<if(accessor)>
+<name>.get<var(val=field.annotationMap.Collection.params.name, fmt="PC", options=options)>()
+<else>
+<name>.<var(val=field.annotationMap.Collection.params.name, fmt="CC", options=options)>
+<endif>
+<else>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>
+<endif>
+>>
+rf_ws_collection_type(field, options) ::= <<
+<if(field.annotationMap.Collection.params.type)>
+<field.annotationMap.Collection.params.type>
+<else>
+<remote_model_name(message=field.message, name=field.javaType)>
+<endif>
+>>
+rf_ws_collection_entry(field, options) ::= <<
+<var(val=field.name, fmt="CC", options=options)>Entry
+>>
+rf_ws_check_function_decl(field, options) ::= <<
+<if(field.annotationMap.Collection.params.checkFunction)>
+public boolean <field.annotationMap.Collection.params.checkFunction>(<rf_ws_collection_type(field=field, options=options)> <rf_ws_collection_entry(field=field, options=options)>) {
+    return false;
+}
+<endif>
+>>
+rf_ws_check_function_call(field, options) ::= <<
+<if(field.annotationMap.Collection.params.checkFunction)>
+ && <field.annotationMap.Collection.params.checkFunction>(<rf_ws_collection_entry(field=field, options=options)>)
+<endif>
+>>
+rf_ws_entry_cast(field, options) ::= <<
+<if(field.annotationMap.Collection.params.type)>
+(<remote_model_name(message=field.message, name=field.javaType)>)
+<endif>
+>>
+
+repeated_field_write_switch(field, options, name, accessor) ::= <<
+<if(field.messageField)>
+if (<rf_ws_get_collection(field=field, options=options, name=name, accessor=accessor)> != null) {
+    for (<rf_ws_collection_type(field=field, options=options)> <rf_ws_collection_entry(field=field, options=options)> : <rf_ws_get_collection(field=field, options=options, name=name, accessor=accessor)>) {
+        if (<rf_ws_collection_entry(field=field, options=options)> != null<rf_ws_check_function_call(field=field, options=options)>)
+            output.writeObject(<field_id_const(field=field, options=options)>, <rf_ws_entry_cast(field=field, options=options)><rf_ws_collection_entry(field=field, options=options)>, <get_message_field_schema_dependency(field=field, options=options)>, true);
+    }
+}
+<elseif(field.enumField)>
+if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)> != null) {
+    for (<field.javaType> <rf_ws_collection_entry(field=field, options=options)> : <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>) {
+        if (<rf_ws_collection_entry(field=field, options=options)> != null)
+            output.writeEnum(<field_id_const(field=field, options=options)>, <rf_ws_collection_entry(field=field, options=options)>.number, true);
+    }
+}
+<else>
+if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)> != null) {
+    for (<resolve_annotated_native_type(field=field, boxed=1, bytesUnboxed=1)> <rf_ws_collection_entry(field=field, options=options)> : <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>) {
+        if (<rf_ws_collection_entry(field=field, options=options)> != null)
+            <if(field.annotationMap.Bytes)>
+            output.writeByteArray(<field_id_const(field=field, options=options)>, <rf_ws_collection_entry(field=field, options=options)>, true);
+            <else>
+            output.write<field.class.simpleName>(<field_id_const(field=field, options=options)>, <pre_get_cast_val(field=field)><rf_ws_collection_entry(field=field, options=options)><post_get_cast_val(field=field)>, true);
+            <endif>
+    }
+}
+<endif>
+>>
+
+singular_field_accessor_write_check(field, options) ::= <<
+<if(field.defaultValue)>
+<if(!field.enumField)>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if (<name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+<else>
+if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+<endif>
+<else>
+if (<name>.<getter(field=field, options=options)>() != null)
+<endif>
+<else>
+<if(field.numberField)>
+<if(options.primitive_numbers_if_optional)>
+if (<name>.<getter(field=field, options=options)>() != 0)
+<else>
+if (<name>.<getter(field=field, options=options)>() != null)
+<endif>
+<else>
+if (<name>.<getter(field=field, options=options)>() != null)
+<endif>
+<endif>
+>>
+
+message_field_map(message, options) ::= <<
+<if(options.generate_field_map)>
+public String getFieldName(int number) {
+    switch(number) {
+        <message.fields:field_switch_case(field=it, options=options); separator="\n">
+        default: return null;
+    }
+}
+
+public int getFieldNumber(String name) {
+    final Integer number = fieldMap.get(name);
+    return number == null ? 0 : number.intValue();
+}
+
+final java.util.Map\<String, Integer\> fieldMap = new java.util.HashMap\<String, Integer\>(); {
+    <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
+}
+<else>
+public String getFieldName(int number) {
+    return Integer.toString(number);
+}
+
+public int getFieldNumber(String name) {
+    return Integer.parseInt(name);
+}
+<endif>
+>>
+
+field_map_alias(field, options) ::= <<
+<if(field.annotationMap.Field.params.alias)>
+<field.annotationMap.Field.params.alias><elseif(options.alphanumeric)>
+f<field.number><else>
+<field.name; format="CC"><endif>
+>>
+
+field_switch_case(field, options) ::= <<
+case <field_id_const(field=field, options=options)>: return "<field_map_alias(field=field, options=options)>";
+>>
+
+field_map(field, options, mapVar) ::= <<
+<mapVar>.put("<field_map_alias(field=field, options=options)>", <field_id_const(field=field, options=options)>);
+>>
+
+message_static_schema_ref(message, options) ::= <<
+SCHEMA
+>>

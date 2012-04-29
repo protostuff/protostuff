@@ -1,0 +1,148 @@
+group java_bean_model_model : java_bean_model_base;
+
+message_block(message, module, options, nested) ::= <<
+<if(!nested)>
+<message:message_header(message=it, module=module, options=options)>
+<endif>
+
+public <if(nested)>static <endif>class <remote_model_name(message=message, name=message.name, noprefix=1)>
+       <options.(message.name + ".extends_model_declaration"); format=" ">
+       <message:message_impl_declaration(message=it, options=options)> {
+
+    <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
+    <message.nestedEnumGroups:enum_block(eg=it, module=module, options=options, nested="true")>
+
+    <message.fields:field_defaults_declaration(field=it, options=options); separator="\n">
+    <message.fields:field_declaration(field=it, options=options); separator="\n">
+    <message:message_constructor(message=it, options=options)>
+    <message:message_getters_and_setters(message=it, options=options)>
+    <message:message_impl_serializable(message=it, options=options)>
+    <message:message_impl_message(message=it, options=options)>
+}
+
+>>
+
+message_impl_declaration(message, options) ::= <<
+<if(options.(message.name + ".implements_model_declaration"))>
+<options.(message.name + ".implements_model_declaration")>,
+<else>
+implements 
+<endif>
+Externalizable, Message\<<remote_model_name(message=message, name=message.name, noprefix=1)>\>
+>>
+
+message_constructor(message, options) ::= <<
+
+public <remote_model_name(message=message, name=message.name, noprefix=1)>() {}
+<if(message.requiredFieldPresentOnCurrent)>
+
+public <remote_model_name(message=message, name=message.name, noprefix=1)>(<message.fields:field_declare_constructor_singular(field=it, options=options); separator=",\n">) {
+    <message.fields:field_assign_constructor_singular(field=it, options=options); separator="\n">
+}
+
+<endif>
+
+>>
+
+field_declare_constructor_singular(field, options) ::= <<
+<if(field.required)>
+<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>
+<endif>
+>>
+
+field_assign_constructor_singular(field, options) ::= <<
+<if(field.required)>
+this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+<endif>
+>>
+
+message_getters_and_setters(message, options) ::= <<
+<message.fields:field_getters_and_setters(field=it, options=options, message=message)>
+>>
+
+field_getters_and_setters(field, options, message) ::= <<
+
+<if(field.repeated)>
+
+public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">List() {
+    return <var(val=field.name, fmt="CC", options=options)>;
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=(remote_model_name(message=message, name=message.name, noprefix=1)))> set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>) {
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+<if(options.generate_helper_methods)>
+
+public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index) {
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : <var(val=field.name, fmt="CC", options=options)>.get(index);
+}
+
+public int get<field.name; format="PC">Count() {
+    return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=(remote_model_name(message=message, name=message.name, noprefix=1)))> add<field.name; format="PC">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>) {
+    if(this.<var(val=field.name, fmt="CC", options=options)> == null)
+        this.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+    this.<var(val=field.name, fmt="CC", options=options)>.add(<var(val=field.name, fmt="CC", options=options)>);
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<endif>
+
+<else>
+
+public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">() {
+    <if(field.enumField)>
+    <if(field.required)>
+    return <var(val=field.name, fmt="CC", options=options)>;
+    <else>
+    return <var(val=field.name, fmt="CC", options=options)> == null ? <field.defaultValueAsString> : <var(val=field.name, fmt="CC", options=options)>;
+    <endif>
+    <else>
+    return <var(val=field.name, fmt="CC", options=options)>;
+    <endif>
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=(remote_model_name(message=message, name=message.name, noprefix=1)))> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>) {
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<endif>
+>>
+
+builder_pattern_return_type(field, options, type) ::= <<
+<if(options.builder_pattern)>
+<type>
+<else>
+void
+<endif>
+>>
+
+builder_pattern_return(field, options) ::= <<
+<if(options.builder_pattern)>
+return this;
+<endif>
+>>
+
+message_impl_serializable(message, options) ::= <<
+
+public void readExternal(ObjectInput in) throws IOException {
+    GraphIOUtil.mergeDelimitedFrom(in, this, cachedSchema());
+}
+
+public void writeExternal(ObjectOutput out) throws IOException {
+    GraphIOUtil.writeDelimitedTo(out, this, cachedSchema());
+}
+
+>>
+
+message_impl_message(message, options) ::= <<
+
+public Schema\<<remote_model_name(message=message, name=message.name, noprefix=1)>\> cachedSchema() {
+    return <message.proto.javaPackageName>.<remote_model_schema_name(message=message, name=message.name)>.getSchema();
+}
+
+>>

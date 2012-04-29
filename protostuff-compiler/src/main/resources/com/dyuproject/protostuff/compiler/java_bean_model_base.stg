@@ -1,0 +1,72 @@
+group java_bean_model_base : java_bean;
+
+message_header(message, module, options) ::= <<
+<header_text(prefix="// ", module=module, proto=message.proto)>
+
+package <message.proto.javaPackageName>;
+
+import java.io.IOException;
+<if(message.repeatedFieldPresent)>
+import java.util.ArrayList;
+import java.util.List;
+<endif>
+
+
+<if(message.bytesFieldPresent)>
+import com.dyuproject.protostuff.ByteString;
+<else>
+<if(message.bytesOrStringDefaultValuePresent)>
+import com.dyuproject.protostuff.ByteString;
+<endif>
+<endif>
+
+import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.Output;
+<if(options.generate_pipe_schema)>
+import com.dyuproject.protostuff.Pipe;
+<endif>
+
+import com.dyuproject.protostuff.Schema;
+<if(message.requiredFieldPresent)>
+import com.dyuproject.protostuff.UninitializedMessageException;
+<endif>
+
+<message.proto.messages:message_header_import(message=it, module=module, options=options)>
+
+>>
+message_header_import(message, module, options) ::= <<
+<if(message.annotationMap.Import)>
+<message.annotationMap.Import.params:message_header_import_import(import=it, module=module, options=options); separator="\n">
+<endif>
+>>
+message_header_import_import(import, module, options) ::= <<
+import <import>;
+>>
+
+remote_model_package(message, name) ::= <<
+<if(message.extraOptions.("mpackage"))>
+<message.extraOptions.("mpackage")><elseif(message.extraOptions.java_model_package)>
+<message.extraOptions.java_model_package><elseif(message.proto.extraOptions.(name + ".package"))>
+<message.proto.extraOptions.(name + ".package")><else>
+<message.proto.extraOptions.java_model_package><endif>
+>>
+
+remote_model_suffix(message, name) ::= <<
+<if(message.extraOptions.("msuffix"))>
+<message.extraOptions.("msuffix")><elseif(message.extraOptions.java_model_suffix)>
+<message.extraOptions.java_model_suffix><elseif(message.proto.extraOptions.(name + ".suffix"))>
+<message.proto.extraOptions.(name + ".suffix")><else>
+<message.proto.extraOptions.java_model_suffix><endif>
+>>
+
+remote_model_generic(message) ::= <<
+<if(message.annotationMap.Generic)>
+<if(message.annotationMap.Generic.params.model)>
+\<<message.annotationMap.Generic.params.model>\>
+<endif>
+<endif>
+>>
+
+remote_model_name(message, name, noprefix) ::= "<if(!noprefix)><remote_model_package(message=message, name=name)><endif><name><remote_model_suffix(message=message, name=name)>"
+remote_model_schema_name(message, name) ::= "<name><remote_model_suffix(message=message, name=name)>Schema"
+
