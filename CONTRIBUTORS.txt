@@ -3,6 +3,11 @@ Thanks to:
     * j2me module
   Alexander Dvorkovyy
     * deployment to maven central
+  Ivan Prisyazhniy
+    * proto_extender (compiler/codegen)
+    * java_bean_model (compiler/codegen)
+  Igor Scherbak
+    * proto_extender (compiler/codegen)
 
 Patch contributors:
   J.D. Zamfirescu
