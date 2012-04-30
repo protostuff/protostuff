@@ -165,12 +165,18 @@ public final class CompilerMain
         System.err.println("  java -cp -jar protostuff-compiler.jar modules.properties");
         
         System.err.println("\nThe properties file would look like:\n");
-        System.err.println("modules = foo");
+        System.err.println("modules = foo,bar");
         System.err.println("foo.source = path/to/your/proto/file/or/dir");
         System.err.println("foo.output = java_bean");
         System.err.println("foo.outputDir = src/main/java");
         System.err.println("foo.encoding = UTF-8");
         System.err.println("foo.options = key1:value1,key2:value2");
+        
+        System.err.println("bar.source = path/to/your/proto/file/or/dir");
+        System.err.println("bar.output = java_bean");
+        System.err.println("bar.outputDir = target/generated");
+        System.err.println("bar.encoding = UTF-8");
+        System.err.println("bar.options = separate_schema,generate_field_map");
         
         System.err.println("\n===================================================\n");
         
