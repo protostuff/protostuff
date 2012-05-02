@@ -10,6 +10,7 @@ protostuff-1.0.6-SNAPSHOT
   -Dprotostuff.runtime.morph_map_interfaces (new)
 + Issue 115: protostuff has problem to serialize java.lang.Throwable Object
 + Issue 120: Add serialization support for empty/singleton/synchronized/unmodifiable/checked collection/set/sortedset/list/map/sortedmap
++ Issue 118: Doc improvement for the compiler help message
 + Issue 104: 2 new compilers: proto_extender, java_bean_model (by Ivan Prisyazhniy and Igor Scherbak)
 + Issue 114: Allow collection/map registration on DefaultIdStrategy
 + Issue 111: NumericIdStrategy fails to use the enum ids when the field is an enum array
