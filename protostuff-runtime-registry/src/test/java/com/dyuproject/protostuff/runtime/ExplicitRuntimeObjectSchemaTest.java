@@ -29,6 +29,7 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
 import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.CollectionSchema;
@@ -46,8 +47,17 @@ import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWit
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCollection;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCustomArrayListAndHashMap;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithMap;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithObjectCollectionFields;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithObjectCollectionNullKV;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithObjectMapFields;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithShortArrayAsDelegate;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithSingletonAsDelegate;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithSingletonMapNullKV;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithThrowable;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithThrowableArray;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Size;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.WrapsBat;
+import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
 
 /**
  * Test for {@link ExplicitIdStrategy}.
@@ -66,7 +76,7 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
         String strategy = System.getProperty("test_id_strategy");
         runTest = strategy == null || strategy.equals("explicit");
         
-        if(runTest)
+        if(runTest || true)
         {
             System.setProperty("protostuff.runtime.id_strategy_factory", 
                     "com.dyuproject.protostuff.runtime.ExplicitRuntimeObjectSchemaTest$IdStrategyFactory");
@@ -95,12 +105,14 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
         {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)
                 .registerCollection(CollectionSchema.MessageFactories.HashSet, 2)
-                .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3);
-                
+                .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3)
+                .registerCollection(CollectionSchema.MessageFactories.LinkedList, 4)
+                .registerCollection(CollectionSchema.MessageFactories.TreeSet, 5);
             
             r.registerMap(MapSchema.MessageFactories.HashMap, 1)
                 .registerMap(MapSchema.MessageFactories.LinkedHashMap, 2)
-                .registerMap(CustomHashMap.MESSAGE_FACTORY, 3);
+                .registerMap(CustomHashMap.MESSAGE_FACTORY, 3)
+                .registerMap(MapSchema.MessageFactories.TreeMap, 4);
             
             r.registerEnum(Size.class, 1)
                 .registerEnum(GuitarPickup.class, 2);
@@ -115,8 +127,21 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
                 .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
                 .registerPojo(WrapsBat.class, 9)
                 .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10)
-                .registerPojo(PojoWithClassFields.class, 11);
+                .registerPojo(PojoWithClassFields.class, 11)
+                .registerPojo(PojoWithObjectCollectionFields.class, 12)
+                .registerPojo(PojoWithObjectCollectionNullKV.class, 13)
+                .registerPojo(PojoWithObjectMapFields.class, 14)
+                .registerPojo(PojoWithSingletonMapNullKV.class, 15)
+                .registerPojo(PojoWithThrowable.class, 16)
+                .registerPojo(Throwable.class, 17)
+                .registerPojo(Exception.class, 18)
+                .registerPojo(RuntimeException.class, 19)
+                .registerPojo(PojoWithThrowableArray.class, 20)
+                .registerPojo(PojoWithSingletonAsDelegate.class, 21)
+                .registerPojo(PojoWithShortArrayAsDelegate.class, 22);
             
+            r.registerDelegate(new ShortArrayDelegate(), 1);
+            r.registerDelegate(SINGLETON_DELEGATE, 2);
             
             r = null;
         }

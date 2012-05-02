@@ -21,6 +21,7 @@ import java.util.EnumSet;
 import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
@@ -49,7 +50,7 @@ final class RuntimeRepeatedFieldFactory
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
             final java.lang.reflect.Field f, final MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inline)
+            final Delegate<Object> inline)
     {
         return new Field<T>(inline.getFieldType(), number, name, true)
         {
@@ -362,10 +363,11 @@ final class RuntimeRepeatedFieldFactory
     
     private static <T> Field<T> createCollectionObjectV(int number, String name, 
             final java.lang.reflect.Field f, final MessageFactory messageFactory, 
-            IdStrategy strategy)
+            PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
         return new RuntimeObjectField<T>(
-                FieldType.MESSAGE, number, name, true, strategy)
+                FieldType.MESSAGE, number, name, true, 
+                factory, strategy)
         {
             {
                 f.setAccessible(true);
@@ -429,10 +431,10 @@ final class RuntimeRepeatedFieldFactory
             protected void transfer(Pipe pipe, Input input, Output output, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, schema.pipeSchema, repeated);
+                output.writeObject(number, pipe, schema.getPipeSchema(), repeated);
             }
             @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object message)
+            public void setValue(Object value, Object message)
             {
                 try
                 {
@@ -463,6 +465,17 @@ final class RuntimeRepeatedFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
+            if(null != f.getAnnotation(Morph.class))
+            {
+                // can be used to override the configured system property:
+                // RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS
+                
+                // In this context, Morph annotation will force using a collection
+                // schema only for this particular field.
+                return RuntimeCollectionFieldFactory.getFactory().create(number, 
+                        name, f, strategy);
+            }
+            
             if(EnumSet.class.isAssignableFrom(f.getType()))
             {
                 final Class<Object> enumType = (Class<Object>)getGenericType(f, 0, false);
@@ -482,10 +495,10 @@ final class RuntimeRepeatedFieldFactory
             if(genericType == null)
             {
                 // the value is not a simple parameterized type.
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+                return createCollectionObjectV(number, name, f, messageFactory, PolymorphicSchemaFactories.OBJECT, strategy);
             }
             
-            final RuntimeFieldFactory<Object> inline = getInline(genericType);
+            final Delegate<Object> inline = getDelegateOrInline(genericType, strategy);
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
             
@@ -495,36 +508,38 @@ final class RuntimeRepeatedFieldFactory
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType, strategy);
             
-            if(isComplexComponentType(genericType))
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+            final PolymorphicSchema.Factory factory = 
+                    PolymorphicSchemaFactories.getFactoryFromRepeatedValueGenericType(genericType);
+            if(factory != null)
+                return createCollectionObjectV(number, name, f, messageFactory, factory, strategy);
             
-            if(POJO == pojo(genericType) || strategy.isRegistered(genericType))
+            if(POJO == pojo(genericType, f.getAnnotation(Morph.class)) || strategy.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
             
             if(genericType.isInterface())
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+                return createCollectionObjectV(number, name, f, messageFactory, PolymorphicSchemaFactories.OBJECT, strategy);
             
             return createCollectionPolymorphicV(number, name, f, messageFactory, genericType, strategy);
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Collection<?> readFrom(Input input) throws IOException
+        public Collection<?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Collection<?> value, 
+        public void writeTo(Output output, int number, Collection<?> value, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }

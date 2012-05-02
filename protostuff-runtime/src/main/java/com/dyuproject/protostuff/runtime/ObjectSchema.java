@@ -39,6 +39,7 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_ARR
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_MAPPED;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_COLLECTION;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DELEGATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ENUM_MAP;
@@ -49,8 +50,11 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_MAP;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_OBJECT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POLYMORPHIC_COLLECTION;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POLYMORPHIC_MAP;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_THROWABLE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.INT32;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.INT64;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.SHORT;
@@ -70,6 +74,7 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_AR
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_MAPPED;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_COLLECTION;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DATE;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DELEGATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DOUBLE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ENUM_MAP;
@@ -80,12 +85,16 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_INT64;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_MAP;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_OBJECT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_POJO;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_POLYMOPRHIC_MAP;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_POLYMORPHIC_COLLECTION;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_SHORT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_STRING;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_THROWABLE;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -106,7 +115,7 @@ import com.dyuproject.protostuff.StatefulOutput;
  * @author David Yu
  * @created Feb 1, 2011
  */
-public abstract class ObjectSchema implements Schema<Object>
+public abstract class ObjectSchema extends PolymorphicSchema
 {
     
     static final int ID_ENUM_VALUE = 1;
@@ -117,6 +126,14 @@ public abstract class ObjectSchema implements Schema<Object>
     {
         switch(number)
         {
+            case ID_POLYMORPHIC_COLLECTION:
+                return STR_POLYMORPHIC_COLLECTION;
+            case ID_POLYMORPHIC_MAP:
+                return STR_POLYMOPRHIC_MAP;
+            case ID_DELEGATE:
+                return STR_DELEGATE;
+            case ID_THROWABLE:
+                return STR_THROWABLE;
             case ID_BOOL:
                 return STR_BOOL;
             case ID_BYTE:
@@ -184,6 +201,14 @@ public abstract class ObjectSchema implements Schema<Object>
         
         switch(name.charAt(0))
         {
+            case 'B': 
+                return 28;
+            case 'C':
+                return 29;
+            case 'D':
+                return 30;
+            case 'Z':
+                return 52;
             case '_':
                 return 127;
             case 'a':
@@ -244,11 +269,22 @@ public abstract class ObjectSchema implements Schema<Object>
         }
     }
     
-    public final IdStrategy strategy;
+    protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this)
+    {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            transferObject(this, pipe, input, output, strategy);
+        }
+    };
     
     public ObjectSchema(IdStrategy strategy)
     {
-        this.strategy = strategy;
+        super(strategy);
+    }
+    
+    public Pipe.Schema<Object> getPipeSchema()
+    {
+        return pipeSchema;
     }
 
     public String getFieldName(int number)
@@ -261,11 +297,6 @@ public abstract class ObjectSchema implements Schema<Object>
         return number(name);
     }
 
-    public boolean isInitialized(Object owner)
-    {
-        return true;
-    }
-
     public String messageFullName()
     {
         return Object.class.getName();
@@ -274,17 +305,6 @@ public abstract class ObjectSchema implements Schema<Object>
     public String messageName()
     {
         return Object.class.getSimpleName();
-    }
-
-    public Object newMessage()
-    {
-        // cannot instantiate because the type is dynamic.
-        throw new UnsupportedOperationException();
-    }
-
-    public Class<? super Object> typeClass()
-    {
-        return Object.class;
     }
 
     public void mergeFrom(Input input, Object owner) throws IOException
@@ -427,6 +447,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 break;
                 
             case ID_ARRAY:
+            {
                 final ArrayWrapper arrayWrapper = newArrayWrapper(input, schema, false, 
                         strategy);
                 
@@ -439,7 +460,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
                 
                 return arrayWrapper.array;
-                
+            }   
             case ID_OBJECT:
                 if(input.readUInt32() != 0)
                     throw new ProtostuffException("Corrupt input.");
@@ -449,6 +470,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 break;
                 
             case ID_ARRAY_MAPPED:
+            {
                 final ArrayWrapper mArrayWrapper = newArrayWrapper(input, schema, true, 
                         strategy);
                 
@@ -461,7 +483,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
                 
                 return mArrayWrapper.array;
-                
+            }   
             case ID_CLASS:
                 value = strategy.resolveClassFrom(input, false, false);
                 break;
@@ -478,6 +500,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 break;
                 
             case ID_ENUM:
+            {
                 final EnumIO<?> eio = strategy.resolveEnumFrom(input);
                 
                 if(input.readFieldNumber(schema) != ID_ENUM_VALUE)
@@ -485,8 +508,9 @@ public abstract class ObjectSchema implements Schema<Object>
                 
                 value = eio.readFrom(input);
                 break;
-                
+            }   
             case ID_ENUM_SET:
+            {
                 final Collection<?> es = strategy.resolveEnumFrom(input).newEnumSet();
                 
                 if(input instanceof GraphInput)
@@ -498,8 +522,9 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>)es);
                 
                 return es;
-                
+            }   
             case ID_ENUM_MAP:
+            {
                 final Map<?,Object> em = strategy.resolveEnumFrom(input).newEnumMap();
                 
                 if(input instanceof GraphInput)
@@ -511,8 +536,9 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>)em);
                 
                 return em;
-                
+            }   
             case ID_COLLECTION:
+            {
                 final Collection<Object> collection = strategy.resolveCollectionFrom(
                         input).newMessage();
                 
@@ -525,8 +551,9 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
                 
                 return collection;
-                
+            }   
             case ID_MAP:
+            {
                 final Map<Object,Object> map = 
                     strategy.resolveMapFrom(input).newMessage();
                 
@@ -539,8 +566,53 @@ public abstract class ObjectSchema implements Schema<Object>
                 strategy.MAP_SCHEMA.mergeFrom(input, map);
                 
                 return map;
+            }
+            case ID_POLYMORPHIC_COLLECTION:
+            {
+                if(0 != input.readUInt32())
+                    throw new ProtostuffException("Corrupt input.");
                 
+                final Object collection = PolymorphicCollectionSchema.readObjectFrom(input, 
+                        strategy.POLYMORPHIC_COLLECTION_SCHEMA, owner, strategy);
+                
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(collection, owner);
+                }
+                
+                return collection;
+            }
+            case ID_POLYMORPHIC_MAP:
+            {
+                if(0 != input.readUInt32())
+                    throw new ProtostuffException("Corrupt input.");
+                
+                final Object map = PolymorphicMapSchema.readObjectFrom(input, 
+                        strategy.POLYMORPHIC_MAP_SCHEMA, owner, strategy);
+                
+                if(input instanceof GraphInput)
+                {
+                    // update the actual reference.
+                    ((GraphInput)input).updateLast(map, owner);
+                }
+                
+                return map;
+            }
+            case ID_DELEGATE:
+            {
+                final Delegate<Object> delegate = strategy.resolveDelegateFrom(input);
+                if(1 != input.readFieldNumber(schema))
+                    throw new ProtostuffException("Corrupt input.");
+                
+                value = delegate.readFrom(input);
+                break;
+            }
+            case ID_THROWABLE:
+                return PolymorphicThrowableSchema.readObjectFrom(input, schema, owner, 
+                        strategy, number);
             case ID_POJO:
+            {
                 final Schema<Object> derivedSchema = strategy.resolvePojoFrom(
                         input, number).getSchema();
                 
@@ -554,7 +626,7 @@ public abstract class ObjectSchema implements Schema<Object>
                 
                 derivedSchema.mergeFrom(input, pojo);
                 return pojo;
-                
+            }   
             default:
                 throw new ProtostuffException("Corrupt input.  Unknown field number: " + number);
         }
@@ -576,6 +648,15 @@ public abstract class ObjectSchema implements Schema<Object>
             Schema<?> currentSchema, IdStrategy strategy) throws IOException
     {
         final Class<Object> clazz = (Class<Object>)value.getClass();
+        
+        final Delegate<Object> delegate = strategy.tryWriteDelegateIdTo(output, 
+                ID_DELEGATE, clazz);
+        
+        if(delegate != null)
+        {
+            delegate.writeTo(output, 1, value, false);
+            return;
+        }
         
         final RuntimeFieldFactory<Object> inline = RuntimeFieldFactory.getInline(clazz);
         if(inline != null)
@@ -672,6 +753,22 @@ public abstract class ObjectSchema implements Schema<Object>
         
         if(Map.class.isAssignableFrom(clazz))
         {
+            if(Collections.class == clazz.getDeclaringClass())
+            {
+                output.writeUInt32(ID_POLYMORPHIC_MAP, 0, false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            strategy.POLYMORPHIC_MAP_SCHEMA, currentSchema);
+                }
+                
+                PolymorphicMapSchema.writeNonPublicMapTo(output, value, 
+                        strategy.POLYMORPHIC_MAP_SCHEMA, strategy);
+                return;
+            }
+            
             if(EnumMap.class.isAssignableFrom(clazz))
             {
                 strategy.writeEnumIdTo(output, ID_ENUM_MAP, 
@@ -694,6 +791,22 @@ public abstract class ObjectSchema implements Schema<Object>
         
         if(Collection.class.isAssignableFrom(clazz))
         {
+            if(Collections.class == clazz.getDeclaringClass())
+            {
+                output.writeUInt32(ID_POLYMORPHIC_COLLECTION, 0, false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            strategy.POLYMORPHIC_COLLECTION_SCHEMA, currentSchema);
+                }
+                
+                PolymorphicCollectionSchema.writeNonPublicCollectionTo(output, value, 
+                        strategy.POLYMORPHIC_COLLECTION_SCHEMA, strategy);
+                return;
+            }
+            
             if(EnumSet.class.isAssignableFrom(clazz))
             {
                 strategy.writeEnumIdTo(output, ID_ENUM_SET, 
@@ -714,6 +827,14 @@ public abstract class ObjectSchema implements Schema<Object>
             return;
         }
         
+        if(Throwable.class.isAssignableFrom(clazz))
+        {
+            // throwable
+            PolymorphicThrowableSchema.writeObjectTo(output, value, currentSchema, 
+                    strategy);
+            return;
+        }
+        
         // pojo
         final Schema<Object> schema = strategy.writePojoIdTo(output, ID_POJO, clazz);
         
@@ -722,7 +843,7 @@ public abstract class ObjectSchema implements Schema<Object>
             // update using the derived schema.
             ((StatefulOutput)output).updateLast(schema, currentSchema);
         }
-        
+
         schema.writeTo(output, value);
     }
     
@@ -732,8 +853,6 @@ public abstract class ObjectSchema implements Schema<Object>
         final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
         switch(number)
         {
-            case 0:
-                return;
             case ID_BOOL:
                 BOOL.transfer(pipe, input, output, number, false);
                 break;
@@ -850,6 +969,54 @@ public abstract class ObjectSchema implements Schema<Object>
                 
                 Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
                 return;
+                
+            case ID_POLYMORPHIC_COLLECTION:
+                if(0 != input.readUInt32())
+                    throw new ProtostuffException("Corrupt input.");
+                output.writeUInt32(number, 0, false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, pipeSchema);
+                }
+                
+                Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, 
+                        pipe, input, output);
+                return;
+                
+            case ID_POLYMORPHIC_MAP:
+                if(0 != input.readUInt32())
+                    throw new ProtostuffException("Corrupt input.");
+                output.writeUInt32(number, 0, false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, pipeSchema);
+                }
+                
+                Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, 
+                        pipe, input, output);
+                return;
+            case ID_DELEGATE:
+            {
+                final Delegate<Object> delegate = strategy.transferDelegateId(input, 
+                        output, number);
+                if(1 != input.readFieldNumber(pipeSchema.wrappedSchema))
+                    throw new ProtostuffException("Corrupt input.");
+                
+                delegate.transfer(pipe, input, output, 1, false);
+                break;
+            }
+            
+            case ID_THROWABLE:
+                PolymorphicThrowableSchema.transferObject(pipeSchema, pipe, input, 
+                        output, strategy, number);
+                return;
+                
             case ID_POJO:
                 final Pipe.Schema<Object> derivedPipeSchema = strategy.transferPojoId(
                         input, output, number).getPipeSchema();
@@ -870,21 +1037,10 @@ public abstract class ObjectSchema implements Schema<Object>
             throw new ProtostuffException("Corrupt input.");
     }
     
-    protected abstract void setValue(Object value, Object owner);
-    
-    protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
-            ObjectSchema.this)
-    {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            transferObject(this, pipe, input, output, strategy);
-        }
-    };
-    
     /**
      * An array wrapper internally used for adding objects.
      */
-    private static final class ArrayWrapper implements Collection<Object>
+    static final class ArrayWrapper implements Collection<Object>
     {
         final Object array;
         int offset = 0;

@@ -23,28 +23,20 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Feb 1, 2011
  */
-abstract class RuntimeObjectField<T> extends Field<T>
+abstract class RuntimeObjectField<T> extends Field<T> implements PolymorphicSchema.Handler
 {
     
     /**
-     * The schema of the object (dynamic) field.
+     * The polymorphic schema.
      */
-    public final ObjectSchema schema;
+    public final PolymorphicSchema schema;
     
     public RuntimeObjectField(FieldType type, int number, String name, boolean repeated, 
-            IdStrategy strategy)
+            PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
         super(type, number, name, repeated);
         
-        schema = new ObjectSchema(strategy)
-        {
-            protected void setValue(Object value, Object owner)
-            {
-                RuntimeObjectField.this.setValue(value, owner);
-            }
-        };
+        schema = factory.newSchema(strategy, this);
     }
-    
-    protected abstract void setValue(Object value, Object owner);
 
 }

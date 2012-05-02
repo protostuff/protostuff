@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.runtime;
 
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_POJO;
 
 import java.io.IOException;
 
@@ -34,8 +35,6 @@ import com.dyuproject.protostuff.StatefulOutput;
 public abstract class DerivativeSchema implements Schema<Object>
 {
     
-    private static final String FIELD_NAME_TYPE_METADATA = "_";
-    
     public final IdStrategy strategy;
     
     public DerivativeSchema(IdStrategy strategy)
@@ -45,7 +44,7 @@ public abstract class DerivativeSchema implements Schema<Object>
 
     public String getFieldName(int number)
     {
-        return number == ID_POJO ? FIELD_NAME_TYPE_METADATA : null;
+        return number == ID_POJO ? STR_POJO : null;
     }
 
     public int getFieldNumber(String name)

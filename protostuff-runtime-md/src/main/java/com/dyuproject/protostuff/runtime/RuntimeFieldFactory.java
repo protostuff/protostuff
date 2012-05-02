@@ -18,7 +18,6 @@ import static com.dyuproject.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_
 import static com.dyuproject.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
 //import static com.dyuproject.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -30,11 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.WireFormat.FieldType;
+import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
@@ -43,7 +39,7 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public abstract class RuntimeFieldFactory<V>
+public abstract class RuntimeFieldFactory<V> implements Delegate<V>
 {
     
     static final int ID_BOOL = 1, ID_BYTE = 2, ID_CHAR = 3, ID_SHORT = 4, 
@@ -63,7 +59,13 @@ public abstract class RuntimeFieldFactory<V>
         ID_ENUM = 24, 
         ID_COLLECTION = 25, 
         ID_MAP = 26, 
-        // pojo fields limited to 126
+        
+        ID_POLYMORPHIC_COLLECTION = 28, 
+        ID_POLYMORPHIC_MAP = 29, 
+        ID_DELEGATE = 30, 
+        ID_THROWABLE = 52, 
+        
+        // pojo fields limited to 126 if not explicitly using @Tag annotations
         ID_POJO = 127;
     
     static final String STR_BOOL = "a", STR_BYTE = "b", STR_CHAR = "c", STR_SHORT = "d", 
@@ -83,7 +85,13 @@ public abstract class RuntimeFieldFactory<V>
         STR_ENUM = "x", 
         STR_COLLECTION = "y",
         STR_MAP = "z", 
-        // pojo fields limited to 126
+        
+        STR_POLYMORPHIC_COLLECTION = "B", 
+        STR_POLYMOPRHIC_MAP = "C", 
+        STR_DELEGATE = "D", 
+        STR_THROWABLE = "Z", 
+        
+        // pojo fields limited to 126 if not explicitly using @Tag annotations
         STR_POJO = "_";
     
     
@@ -111,6 +119,8 @@ public abstract class RuntimeFieldFactory<V>
     static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO;
     
     static final RuntimeFieldFactory<Collection<?>> COLLECTION;
+
+    static final RuntimeFieldFactory<Object> DELEGATE;
     
     static
     {
@@ -157,6 +167,8 @@ public abstract class RuntimeFieldFactory<V>
             OBJECT = RuntimeReflectionFieldFactory.OBJECT;
             POJO = RuntimeReflectionFieldFactory.POJO;
             POLYMORPHIC_POJO = RuntimeReflectionFieldFactory.POLYMORPHIC_POJO;
+
+            DELEGATE = RuntimeReflectionFieldFactory.DELEGATE;
         //}
         
         COLLECTION = COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? 
@@ -203,6 +215,9 @@ public abstract class RuntimeFieldFactory<V>
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz, 
             IdStrategy strategy)
     {
+        if(strategy.isDelegateRegistered(clazz))
+            return DELEGATE;
+
         if(Message.class.isAssignableFrom(clazz))
             return POJO;
         
@@ -216,8 +231,12 @@ public abstract class RuntimeFieldFactory<V>
         // Of all the scalar (inline) fields, java.lang.Number is the only abstract
         // super type, hence we can filter it here
         // Note that it has 10 built-in subtypes
-        if(clazz.isArray() || Object.class == clazz || Number.class == clazz || Class.class == clazz)
+        if(clazz.isArray() || Object.class == clazz || Number.class == clazz 
+                || Class.class == clazz || Enum.class == clazz
+                || Throwable.class.isAssignableFrom(clazz))
+        {
             return OBJECT;
+        }
         
         if(Map.class.isAssignableFrom(clazz))
             return RuntimeMapFieldFactory.MAP;
@@ -240,20 +259,26 @@ public abstract class RuntimeFieldFactory<V>
         if(clazz.isInterface())
             return strategy.isRegistered(clazz) ? POJO : OBJECT;
         
-        return POJO == pojo(clazz) || strategy.isRegistered(clazz) ? 
-                POJO : POLYMORPHIC_POJO;
+        // checks delegated to POLYMORPHIC_POJO
+        return POLYMORPHIC_POJO;
     }
     
-    static RuntimeFieldFactory<?> pojo(Class<?> clazz)
+    static RuntimeFieldFactory<?> pojo(Class<?> clazz, Morph morph)
     {
-        return (Modifier.isAbstract(clazz.getModifiers()) 
-            || (!Modifier.isFinal(clazz.getModifiers()) && 
-                    MORPH_NON_FINAL_POJOS)) ? POLYMORPHIC_POJO : POJO;
-    }
-    
-    static boolean isComplexComponentType(Class<?> clazz)
-    {
-        return clazz.isArray() || Object.class == clazz || Number.class == clazz || Class.class == clazz;
+        if(Modifier.isFinal(clazz.getModifiers()))
+            return POJO;
+        
+        if(Modifier.isAbstract(clazz.getModifiers()))
+            return POLYMORPHIC_POJO;
+        
+        // the user can annotate fields with @Morph to have full control if
+        // he knows a certain field will be set with a subtype.
+        // To reverse the behavior (no subtype will be set), annotate with @Morph(false)
+        // This is an optimization that requires the user's full knowledge of his dataset.
+        if(morph != null)
+            return morph.value() ? POLYMORPHIC_POJO : POJO;
+        
+        return MORPH_NON_FINAL_POJOS ? POLYMORPHIC_POJO : POJO;
     }
 
     static Class<?> getGenericType(java.lang.reflect.Field f, 
@@ -270,6 +295,17 @@ public abstract class RuntimeFieldFactory<V>
         {
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> Delegate<T> getDelegateOrInline(Class<T> typeClass, 
+            IdStrategy strategy)
+    {
+        Delegate<T> d = strategy.getDelegate(typeClass);
+        if(d == null)
+            d = (RuntimeFieldFactory<T>)__inlineValues.get(typeClass.getName());
+        
+        return d;
     }
     
     /**
@@ -306,17 +342,5 @@ public abstract class RuntimeFieldFactory<V>
      */
     public abstract <T> Field<T> create(int number, java.lang.String name, 
             java.lang.reflect.Field field, IdStrategy strategy);
-    
-    protected abstract FieldType getFieldType();
-    
-    protected abstract V readFrom(Input input) throws IOException;
-    
-    protected abstract void writeTo(Output output, int number, V value, 
-            boolean repeated) throws IOException;
-    
-    protected abstract void transfer(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException;
-    
-    protected abstract Class<?> typeClass();
 
 }

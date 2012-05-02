@@ -37,6 +37,8 @@
                 <copy todir="${project.build.directory}/extra-test-sources">  
                   <fileset dir="../protostuff-runtime/src/test/java">  
                     <exclude name="**/ImmutableObjectsTest.java" />
+                    <exclude name="**/EnumSetAndMapTest.java" />
+                    <exclude name="**/*RuntimeObjectSchemaTest.java" />
                   </fileset>  
                 </copy>
               </tasks>

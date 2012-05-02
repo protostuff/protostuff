@@ -22,6 +22,7 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTES;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE_ARRAY;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DELEGATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
@@ -40,6 +41,7 @@ import java.util.Date;
 import com.dyuproject.protostuff.ByteString;
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
@@ -67,7 +69,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -85,7 +87,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -107,32 +109,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeUInt32(number, input.readUInt32(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
-        protected Character readFrom(Input input) throws IOException
+        public Character readFrom(Input input) throws IOException
         {
             return Character.valueOf((char)input.readUInt32());
         }
-        protected void writeTo(Output output, int number, Character value, boolean repeated) 
+        public void writeTo(Output output, int number, Character value, boolean repeated) 
         throws IOException
         {
             output.writeUInt32(number, value.charValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Character.class;
         }
@@ -148,7 +150,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -166,7 +168,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -188,32 +190,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeUInt32(number, input.readUInt32(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
-        protected Short readFrom(Input input) throws IOException
+        public Short readFrom(Input input) throws IOException
         {
             return Short.valueOf((short)input.readUInt32());
         }
-        protected void writeTo(Output output, int number, Short value, boolean repeated) 
+        public void writeTo(Output output, int number, Short value, boolean repeated) 
         throws IOException
         {
             output.writeUInt32(number, value.shortValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Short.class;
         }
@@ -229,7 +231,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -247,7 +249,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -269,32 +271,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeUInt32(number, input.readUInt32(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
-        protected Byte readFrom(Input input) throws IOException
+        public Byte readFrom(Input input) throws IOException
         {
             return Byte.valueOf((byte)input.readUInt32());
         }
-        protected void writeTo(Output output, int number, Byte value, boolean repeated) 
+        public void writeTo(Output output, int number, Byte value, boolean repeated) 
         throws IOException
         {
             output.writeUInt32(number, value.byteValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Byte.class;
         }
@@ -311,7 +313,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -329,7 +331,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -351,32 +353,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeInt32(number, input.readInt32(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeInt32(number, input.readInt32(), repeated);
         }
-        protected Integer readFrom(Input input) throws IOException
+        public Integer readFrom(Input input) throws IOException
         {
             return Integer.valueOf(input.readInt32());
         }
-        protected void writeTo(Output output, int number, Integer value, boolean repeated) 
+        public void writeTo(Output output, int number, Integer value, boolean repeated) 
         throws IOException
         {
             output.writeInt32(number, value.intValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.INT32;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Integer.class;
         }
@@ -393,7 +395,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -411,7 +413,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -433,32 +435,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeInt64(number, input.readInt64(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeInt64(number, input.readInt64(), repeated);
         }
-        protected Long readFrom(Input input) throws IOException
+        public Long readFrom(Input input) throws IOException
         {
             return Long.valueOf(input.readInt64());
         }
-        protected void writeTo(Output output, int number, Long value, boolean repeated) 
+        public void writeTo(Output output, int number, Long value, boolean repeated) 
         throws IOException
         {
             output.writeInt64(number, value.longValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.INT64;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Long.class;
         }
@@ -475,7 +477,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -493,7 +495,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -515,32 +517,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeFloat(number, input.readFloat(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeFloat(number, input.readFloat(), repeated);
         }
-        protected Float readFrom(Input input) throws IOException
+        public Float readFrom(Input input) throws IOException
         {
             return new Float(input.readFloat());
         }
-        protected void writeTo(Output output, int number, Float value, boolean repeated) 
+        public void writeTo(Output output, int number, Float value, boolean repeated) 
         throws IOException
         {
             output.writeFloat(number, value.floatValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.FLOAT;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Float.class;
         }
@@ -557,7 +559,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -575,7 +577,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -597,32 +599,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeDouble(number, input.readDouble(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeDouble(number, input.readDouble(), repeated);
         }
-        protected Double readFrom(Input input) throws IOException
+        public Double readFrom(Input input) throws IOException
         {
             return new Double(input.readDouble());
         }
-        protected void writeTo(Output output, int number, Double value, boolean repeated) 
+        public void writeTo(Output output, int number, Double value, boolean repeated) 
         throws IOException
         {
             output.writeDouble(number, value.doubleValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.DOUBLE;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Double.class;
         }
@@ -639,7 +641,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -657,7 +659,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -679,32 +681,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeBool(number, input.readBool(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeBool(number, input.readBool(), repeated);
         }
-        protected Boolean readFrom(Input input) throws IOException
+        public Boolean readFrom(Input input) throws IOException
         {
             return input.readBool() ? Boolean.TRUE : Boolean.FALSE;
         }
-        protected void writeTo(Output output, int number, Boolean value, boolean repeated) 
+        public void writeTo(Output output, int number, Boolean value, boolean repeated) 
         throws IOException
         {
             output.writeBool(number, value.booleanValue(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.BOOL;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Boolean.class;
         }
@@ -720,7 +722,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -735,7 +737,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -752,32 +754,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     input.transferByteRangeTo(output, true, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, true, number, repeated);
         }
-        protected String readFrom(Input input) throws IOException
+        public String readFrom(Input input) throws IOException
         {
             return input.readString();
         }
-        protected void writeTo(Output output, int number, String value, boolean repeated) 
+        public void writeTo(Output output, int number, String value, boolean repeated) 
         throws IOException
         {
             output.writeString(number, value, repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.STRING;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return String.class;
         }
@@ -793,7 +795,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -808,7 +810,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -825,32 +827,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     input.transferByteRangeTo(output, false, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
-        protected ByteString readFrom(Input input) throws IOException
+        public ByteString readFrom(Input input) throws IOException
         {
             return input.readBytes();
         }
-        protected void writeTo(Output output, int number, ByteString value, boolean repeated) 
+        public void writeTo(Output output, int number, ByteString value, boolean repeated) 
         throws IOException
         {
             output.writeBytes(number, value, repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return ByteString.class;
         }
@@ -866,7 +868,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }                    
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -881,7 +883,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -898,32 +900,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     input.transferByteRangeTo(output, false, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
-        protected byte[] readFrom(Input input) throws IOException
+        public byte[] readFrom(Input input) throws IOException
         {
             return input.readByteArray();
         }
-        protected void writeTo(Output output, int number, byte[] value, boolean repeated) 
+        public void writeTo(Output output, int number, byte[] value, boolean repeated) 
         throws IOException
         {
             output.writeByteArray(number, value, repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return byte[].class;
         }
@@ -940,7 +942,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 } 
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -955,7 +957,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     final Enum<?> existing;
                     try
@@ -974,31 +976,31 @@ public final class RuntimeReflectionFieldFactory
                     if(existing != null)
                         EnumIO.writeTo(output, number, repeated, existing);
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     EnumIO.transfer(pipe, input, output, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Integer readFrom(Input input) throws IOException
+        public Integer readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Integer value, boolean repeated) throws IOException
+        public void writeTo(Output output, int number, Integer value, boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }
@@ -1020,7 +1022,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -1035,7 +1037,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }                   
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     final Object existing;
                     try
@@ -1054,32 +1056,32 @@ public final class RuntimeReflectionFieldFactory
                     if(existing != null)
                         output.writeObject(number, existing, getSchema(), false);
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeObject(number, pipe, getPipeSchema(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Object readFrom(Input input) throws IOException
+        public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Object value, boolean repeated) 
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
         throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }
@@ -1091,6 +1093,9 @@ public final class RuntimeReflectionFieldFactory
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
+            if(POJO == pojo(f.getType(), f.getAnnotation(Morph.class)))
+                return POJO.create(number, name, f, strategy);
+            
             return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
                     FieldType.MESSAGE, number, name, false, strategy)
@@ -1098,7 +1103,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     final Object value = input.mergeObject(message, schema);
                     if(input instanceof GraphInput && 
@@ -1119,7 +1124,7 @@ public final class RuntimeReflectionFieldFactory
                         }
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     final Object existing;
                     try
@@ -1138,12 +1143,12 @@ public final class RuntimeReflectionFieldFactory
                     if(existing != null)
                         output.writeObject(number, existing, schema, false);
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeObject(number, pipe, schema.pipeSchema, false);
                 }
-                protected void doMergeFrom(Input input, Schema<Object> schema, 
+                public void doMergeFrom(Input input, Schema<Object> schema, 
                         Object message) throws IOException
                 {
                     try
@@ -1174,25 +1179,25 @@ public final class RuntimeReflectionFieldFactory
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Object readFrom(Input input) throws IOException
+        public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Object value, boolean repeated) 
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
         throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }
@@ -1204,12 +1209,13 @@ public final class RuntimeReflectionFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             return new RuntimeObjectField<T>( 
-                    FieldType.MESSAGE, number, name, false, strategy)
+                    FieldType.MESSAGE, number, name, false, 
+                    PolymorphicSchemaFactories.getFactoryFromField(f.getType()), strategy)
             {
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     final Object value = input.mergeObject(message, schema);
                     if(input instanceof GraphInput && 
@@ -1230,7 +1236,7 @@ public final class RuntimeReflectionFieldFactory
                         }
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     final Object existing;
                     try
@@ -1249,12 +1255,12 @@ public final class RuntimeReflectionFieldFactory
                     if(existing != null)
                         output.writeObject(number, existing, schema, false);
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
-                    output.writeObject(number, pipe, schema.pipeSchema, false);
+                    output.writeObject(number, pipe, schema.getPipeSchema(), false);
                 }
-                protected void setValue(Object value, Object message)
+                public void setValue(Object value, Object message)
                 {
                     try
                     {
@@ -1271,25 +1277,25 @@ public final class RuntimeReflectionFieldFactory
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Object readFrom(Input input) throws IOException
+        public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Object value, boolean repeated) 
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
         throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.MESSAGE;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Object.class;
         }
@@ -1304,7 +1310,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -1319,7 +1325,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -1336,32 +1342,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     input.transferByteRangeTo(output, true, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, true, number, repeated);
         }
-        protected BigDecimal readFrom(Input input) throws IOException
+        public BigDecimal readFrom(Input input) throws IOException
         {
             return new BigDecimal(input.readString());
         }
-        protected void writeTo(Output output, int number, BigDecimal value, boolean repeated) 
+        public void writeTo(Output output, int number, BigDecimal value, boolean repeated) 
         throws IOException
         {
             output.writeString(number, value.toString(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.STRING;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return BigDecimal.class;
         }
@@ -1376,7 +1382,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -1391,7 +1397,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -1408,32 +1414,32 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     input.transferByteRangeTo(output, false, number, repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
-        protected BigInteger readFrom(Input input) throws IOException
+        public BigInteger readFrom(Input input) throws IOException
         {
             return new BigInteger(input.readByteArray());
         }
-        protected void writeTo(Output output, int number, BigInteger value, boolean repeated) 
+        public void writeTo(Output output, int number, BigInteger value, boolean repeated) 
         throws IOException
         {
             output.writeByteArray(number, value.toByteArray(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return BigInteger.class;
         }
@@ -1448,7 +1454,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     f.setAccessible(true);
                 }
-                protected void mergeFrom(Input input, T message) throws IOException
+                public void mergeFrom(Input input, T message) throws IOException
                 {
                     try
                     {
@@ -1463,7 +1469,7 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void writeTo(Output output, T message) throws IOException
+                public void writeTo(Output output, T message) throws IOException
                 {
                     try
                     {
@@ -1480,34 +1486,115 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
-                protected void transfer(Pipe pipe, Input input, Output output, 
+                public void transfer(Pipe pipe, Input input, Output output, 
                         boolean repeated) throws IOException
                 {
                     output.writeFixed64(number, input.readFixed64(), repeated);
                 }
             };
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             output.writeFixed64(number, input.readFixed64(), repeated);
         }
-        protected Date readFrom(Input input) throws IOException
+        public Date readFrom(Input input) throws IOException
         {
             return new Date(input.readFixed64());
         }
-        protected void writeTo(Output output, int number, Date value, boolean repeated) 
+        public void writeTo(Output output, int number, Date value, boolean repeated) 
         throws IOException
         {
             output.writeFixed64(number, value.getTime(), repeated);
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             return FieldType.FIXED64;
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             return Date.class;
+        }
+    };
+    
+    public static final RuntimeFieldFactory<Object> DELEGATE = new RuntimeFieldFactory<Object>(ID_DELEGATE)
+    {
+        @SuppressWarnings("unchecked")
+        public <T> Field<T> create(int number, String name, 
+                final java.lang.reflect.Field f, IdStrategy strategy)
+        {
+            final Delegate<Object> delegate = strategy.getDelegate(
+                    (Class<Object>)f.getType());
+            
+            return new Field<T>(FieldType.BYTES, number, name)
+            {
+                {
+                    f.setAccessible(true);
+                }
+                public void mergeFrom(Input input, T message) throws IOException
+                {
+                    final Object value = delegate.readFrom(input);
+                    
+                    try
+                    {
+                        f.set(message, value);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+                public void writeTo(Output output, T message) throws IOException
+                {
+                    final Object value;
+                    try
+                    {
+                        value = (Object)f.get(message);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    if(value != null)
+                        delegate.writeTo(output, number, value, false);
+                }
+                public void transfer(Pipe pipe, Input input, Output output, 
+                        boolean repeated) throws IOException
+                {
+                    delegate.transfer(pipe, input, output, number, repeated);
+                }
+            };
+        }
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
+                boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        public Object readFrom(Input input) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        public void writeTo(Output output, int number, Object value, boolean repeated) 
+        throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+        public FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+        public Class<?> typeClass()
+        {
+            throw new UnsupportedOperationException();
         }
     };
 

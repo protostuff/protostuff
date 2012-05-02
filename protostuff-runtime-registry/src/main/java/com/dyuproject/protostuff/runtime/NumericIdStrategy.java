@@ -76,13 +76,21 @@ public abstract class NumericIdStrategy extends IdStrategy
             CID_DATE = 21, CID_OBJECT = 22, 
             CID_ENUM_SET = 23, CID_ENUM_MAP = 24, CID_ENUM = 25, 
             CID_COLLECTION = 26, CID_MAP = 27, 
-            CID_POJO = 28, CID_CLASS = 29;
+            CID_POJO = 28, CID_CLASS = 29, CID_DELEGATE = 30;
     
     protected void writeArrayIdTo(Output output, Class<?> componentType) 
             throws IOException
     {
         // shouldn't happen
         assert !componentType.isArray();
+        
+        final RegisteredDelegate<?> rd = getRegisteredDelegate(componentType);
+        if(rd != null)
+        {
+            output.writeUInt32(RuntimeFieldFactory.ID_ARRAY, 
+                    (rd.id << 5) | CID_DELEGATE, false);
+            return;
+        }
         
         final RuntimeFieldFactory<?> inline = 
                 RuntimeFieldFactory.getInline(componentType);
@@ -146,6 +154,14 @@ public abstract class NumericIdStrategy extends IdStrategy
         
         final int id = array ? 
                 RuntimeFieldFactory.ID_CLASS_ARRAY : RuntimeFieldFactory.ID_CLASS;
+        
+        final RegisteredDelegate<?> rd = getRegisteredDelegate(componentType);
+        if(rd != null)
+        {
+            output.writeUInt32(id, 
+                    (rd.id << 5) | CID_DELEGATE, false);
+            return;
+        }
         
         final RuntimeFieldFactory<?> inline = 
                 RuntimeFieldFactory.getInline(componentType);
@@ -257,12 +273,19 @@ public abstract class NumericIdStrategy extends IdStrategy
                 
             case CID_CLASS:
                 return Class.class;
+                
+            case CID_DELEGATE:
+                return delegateClass(id >>> 5);
         }
         
         throw new RuntimeException("Should not happen.");
     }
 
+    protected abstract RegisteredDelegate<?> getRegisteredDelegate(Class<?> clazz);
+    
     protected abstract Class<?> enumClass(int id);
+    
+    protected abstract Class<?> delegateClass(int id);
     
     protected abstract Class<?> collectionClass(int id);
     
@@ -279,5 +302,26 @@ public abstract class NumericIdStrategy extends IdStrategy
         List<T> l = Collections.nCopies(size, null);
         return new ArrayList<T>(l);
     }
+    
+    protected static <T> void grow(ArrayList<T> list, int size)
+    {
+        int previousSize = list.size();
+        
+        list.ensureCapacity(size);
+        List<T> l = Collections.nCopies(size - previousSize, null);
+        list.addAll(l);
+    }
 
+    
+    protected static final class RegisteredDelegate<T>
+    {
+        public final int id;
+        public final Delegate<T> delegate;
+        
+        RegisteredDelegate(int id, Delegate<T> delegate)
+        {
+            this.id = id;
+            this.delegate = delegate;
+        }
+    }
 }

@@ -33,11 +33,9 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.dyuproject.protostuff.CollectionSchema;
@@ -67,14 +65,15 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         
         public Registry()
         {
-            this(10, 10, 10, 10);
+            this(10, 10, 10, 10, 10);
         }
         
         public Registry(
                 int initialCollectionSize, 
                 int initialMapSize, 
                 int initialEnumSize, 
-                int initialPojoSize)
+                int initialPojoSize,
+                int initialDelegateSize)
         {
             IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMapping = 
                     newMap(initialCollectionSize);
@@ -99,11 +98,17 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             
             ArrayList<BaseHS<?>> pojos = newList(initialPojoSize + 1);
             
+            IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping = 
+                    newMap(initialDelegateSize);
+            
+            ArrayList<RegisteredDelegate<?>> delegates = newList(initialDelegateSize + 1);
+            
             strategy = new ExplicitIdStrategy(
                     collectionMapping, collections, 
                     mapMapping, maps, 
                     enumMapping, enums, 
-                    pojoMapping, pojos);
+                    pojoMapping, pojos, 
+                    delegateMapping, delegates);
         }
         
         /**
@@ -289,6 +294,33 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             
             return this;
         }
+        
+        /**
+         * Register a {@link Delegate} and assign an id.
+         * 
+         * Delegate ids start at 1.
+         */
+        public <T> Registry registerDelegate(Delegate<T> delegate, int id)
+        {
+            if(id < 1)
+                throw new IllegalArgumentException("delegate ids start at 1.");
+            
+            if(id >= strategy.delegates.size())
+                grow(strategy.delegates, id+1);
+            else if(strategy.delegates.get(id) != null)
+            {
+                throw new IllegalArgumentException("Duplicate id registration: " + id + 
+                        " (" + delegate.typeClass() + ")");
+            }
+            
+            RegisteredDelegate<T> rd = new RegisteredDelegate<T>(id, delegate);
+            strategy.delegates.set(id, rd);
+            // just in case
+            if(strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
+                throw new IllegalArgumentException("Duplicate registration for: " + delegate.typeClass());
+            
+            return this;
+        }
     }
     
 
@@ -309,6 +341,10 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     
     final ArrayList<BaseHS<?>> pojos;
     
+    final IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping;
+    
+    final ArrayList<RegisteredDelegate<?>> delegates;
+    
     public ExplicitIdStrategy(
             IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMapping, 
             ArrayList<RegisteredCollectionFactory> collections, 
@@ -317,7 +353,9 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping, 
             ArrayList<RegisteredEnumIO> enums, 
             IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping, 
-            ArrayList<BaseHS<?>> pojos)
+            ArrayList<BaseHS<?>> pojos,
+            IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping, 
+            ArrayList<RegisteredDelegate<?>> delegates)
     {
         this.collectionMapping = collectionMapping;
         this.collections = collections;
@@ -327,6 +365,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         this.enums = enums;
         this.pojoMapping = pojoMapping;
         this.pojos = pojos;
+        this.delegateMapping = delegateMapping;
+        this.delegates = delegates;
     }
     
     public boolean isRegistered(Class<?> typeClass)
@@ -465,6 +505,64 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return reio.eio;
     }
     
+    public boolean isDelegateRegistered(Class<?> typeClass)
+    {
+        return delegateMapping.containsKey(typeClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
+    {
+        final RegisteredDelegate<T> rd = (RegisteredDelegate<T>)delegateMapping.get(
+                typeClass);
+        
+        return rd == null ? null : rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> tryWriteDelegateIdTo(Output output, int fieldNumber, 
+            Class<T> clazz) throws IOException
+    {
+        final RegisteredDelegate<T> rd = (RegisteredDelegate<T>)delegateMapping.get(
+                clazz);
+        
+        if(rd == null)
+            return null;
+        
+        output.writeUInt32(fieldNumber, rd.id, false);
+        
+        return rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> transferDelegateId(Input input, Output output, int fieldNumber)
+            throws IOException
+    {
+        final int id = input.readUInt32();
+        
+        final RegisteredDelegate<T> rd = id < delegates.size() ? 
+                (RegisteredDelegate<T>)delegates.get(id) : null;
+        if(rd == null)
+            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+        
+        output.writeUInt32(fieldNumber, id, false);
+        
+        return rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> resolveDelegateFrom(Input input) throws IOException
+    {
+        final int id = input.readUInt32();
+        
+        final RegisteredDelegate<T> rd = id < delegates.size() ? 
+                (RegisteredDelegate<T>)delegates.get(id) : null;
+        if(rd == null)
+            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+        
+        return rd.delegate;
+    }
+    
     @SuppressWarnings("unchecked")
     protected <T> Schema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz)
             throws IOException
@@ -559,6 +657,12 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return reio.eio.enumClass;
     }
     
+    protected Class<?> delegateClass(int id)
+    {
+        final RegisteredDelegate<?> rd = id < delegates.size() ? delegates.get(id) : null;
+        return rd == null ? null : rd.delegate.typeClass();
+    }
+    
     protected Class<?> pojoClass(int id)
     {
         final BaseHS<?> wrapper = id < pojos.size() ? pojos.get(id) : null;
@@ -569,6 +673,11 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         }
         
         return wrapper.getSchema().typeClass();
+    }
+    
+    protected RegisteredDelegate<?> getRegisteredDelegate(Class<?> clazz)
+    {
+        return delegateMapping.get(clazz);
     }
     
     protected int getEnumId(Class<?> clazz)
@@ -625,15 +734,6 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     static <K, V> IdentityHashMap<K, V> newMap(int size)
     {
         return new IdentityHashMap<K, V>(size);
-    }
-    
-    static <T> void grow(ArrayList<T> list, int size)
-    {
-        int previousSize = list.size();
-        
-        list.ensureCapacity(size);
-        List<T> l = Collections.nCopies(size - previousSize, null);
-        list.addAll(l);
     }
 
     static final class RegisteredCollectionFactory implements CollectionSchema.MessageFactory

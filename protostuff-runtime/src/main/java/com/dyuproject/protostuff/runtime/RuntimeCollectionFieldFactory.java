@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.EnumSet;
 
@@ -22,8 +23,10 @@ import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
 import com.dyuproject.protostuff.GraphInput;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
+import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -80,7 +83,7 @@ final class RuntimeCollectionFieldFactory
     
     private static <T> Field<T> createCollectionInlineV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inline)
+            final Delegate<Object> inline)
     {
         return new RuntimeCollectionField<T,Object>(
                 inline.getFieldType(), 
@@ -351,7 +354,7 @@ final class RuntimeCollectionFieldFactory
             throws IOException
             {
                 final Object value = input.mergeObject(collection, 
-                        strategy.POLYMORPHIC_COLLECTION_VALUE_SCHEMA);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
                 
                 if(input instanceof GraphInput && 
                         ((GraphInput)input).isCurrentMessageReference())
@@ -363,19 +366,21 @@ final class RuntimeCollectionFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, value, 
-                        strategy.POLYMORPHIC_COLLECTION_VALUE_SCHEMA, repeated);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
             protected void transferValue(Pipe pipe, Input input, Output output, 
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, 
-                        strategy.POLYMORPHIC_COLLECTION_VALUE_SCHEMA.pipeSchema, repeated);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema, repeated);
             }
         };
     }
     
     private static <T> Field<T> createCollectionObjectV(int number, String name, 
-            final java.lang.reflect.Field f, MessageFactory messageFactory, final IdStrategy strategy)
+            final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, 
+            final IdStrategy strategy)
     {
         return new RuntimeCollectionField<T,Object>(
                 FieldType.MESSAGE, 
@@ -429,8 +434,7 @@ final class RuntimeCollectionFieldFactory
             protected void addValueFrom(Input input, Collection<Object> collection) 
             throws IOException
             {
-                final Object value = input.mergeObject(collection, 
-                        strategy.OBJECT_COLLECTION_VALUE_SCHEMA);
+                final Object value = input.mergeObject(collection, valueSchema);
                 
                 if(input instanceof GraphInput && 
                         ((GraphInput)input).isCurrentMessageReference())
@@ -441,14 +445,12 @@ final class RuntimeCollectionFieldFactory
             protected void writeValueTo(Output output, int fieldNumber, Object value, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, value, 
-                        strategy.OBJECT_COLLECTION_VALUE_SCHEMA, repeated);
+                output.writeObject(fieldNumber, value, valueSchema, repeated);
             }
             protected void transferValue(Pipe pipe, Input input, Output output, 
                     int number, boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, 
-                        strategy.OBJECT_COLLECTION_VALUE_SCHEMA.pipeSchema, repeated);
+                output.writeObject(number, pipe, valuePipeSchema, repeated);
             }
         };
     }
@@ -458,6 +460,25 @@ final class RuntimeCollectionFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
+            final Class<?> clazz = f.getType();
+            if(Modifier.isAbstract(clazz.getModifiers()))
+            {
+                if(!clazz.isInterface())
+                {
+                    // abstract class
+                    return OBJECT.create(number, name, f, strategy);
+                }
+                
+                final Morph morph = f.getAnnotation(Morph.class);
+                if(morph == null)
+                {
+                    if(RuntimeEnv.MORPH_COLLECTION_INTERFACES)
+                        return OBJECT.create(number, name, f, strategy);
+                }
+                else if(morph.value())
+                    return OBJECT.create(number, name, f, strategy);
+            }
+            
             if(EnumSet.class.isAssignableFrom(f.getType()))
             {
                 final Class<Object> enumType = (Class<Object>)getGenericType(f, 0, false);
@@ -478,10 +499,13 @@ final class RuntimeCollectionFieldFactory
             if(genericType == null)
             {
                 // the value is not a simple parameterized type.
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+                return createCollectionObjectV(number, name, f, messageFactory, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy);
             }
             
-            final RuntimeFieldFactory<Object> inline = getInline(genericType);
+            final Delegate<Object> inline = getDelegateOrInline(genericType, strategy);
             if(inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory, inline);
             
@@ -491,36 +515,49 @@ final class RuntimeCollectionFieldFactory
             if(genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory, genericType, strategy);
             
-            if(isComplexComponentType(genericType))
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+            final PolymorphicSchema ps = 
+                    PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                            genericType, strategy);
+            if(ps != null)
+            {
+                return createCollectionObjectV(number, name, f, messageFactory, 
+                        ps, 
+                        ps.getPipeSchema(), 
+                        strategy);
+            }
             
-            if(POJO == pojo(genericType) || strategy.isRegistered(genericType))
+            if(POJO == pojo(genericType, f.getAnnotation(Morph.class)) || strategy.isRegistered(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
             
             if(genericType.isInterface())
-                return createCollectionObjectV(number, name, f, messageFactory, strategy);
+            {
+                return createCollectionObjectV(number, name, f, messageFactory, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy);
+            }
             
             return createCollectionPolymorphicV(number, name, f, messageFactory, genericType, strategy);
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Collection<?> readFrom(Input input) throws IOException
+        public Collection<?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Collection<?> value, 
+        public void writeTo(Output output, int number, Collection<?> value, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }

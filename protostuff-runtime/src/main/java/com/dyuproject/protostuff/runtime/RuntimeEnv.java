@@ -47,6 +47,50 @@ public final class RuntimeEnv
     public static final boolean MORPH_NON_FINAL_POJOS;
     
     /**
+     * Disabled by default.  If true, type metadata will be included on serialization 
+     * for fields that are collection interfaces. 
+     * Enabling this is useful if you want to retain the actual collection impl used.
+     * 
+     * If disabled, type metadata will not be included and instead, will be mapped 
+     * to a default impl.
+     * <pre>
+     * Collection = ArrayList
+     * List = ArrayList
+     * Set = HashSet
+     * SortedSet = TreeSet
+     * NavigableSet = TreeSet
+     * Queue = LinkedList
+     * BlockingQueue = LinkedBlockingQueue
+     * Deque = LinkedList
+     * BlockingDequeue = LinkedBlockingDeque
+     * </pre>
+     * 
+     * You can optionally enable only for a particular field by annotation it with 
+     * {@link com.dyuproject.protostuff.Morph}.
+     */
+    public static final boolean MORPH_COLLECTION_INTERFACES;
+    
+    /**
+     * Disabled by default.  If true, type metadata will be included on serialization 
+     * for fields that are map interfaces. 
+     * Enabling this is useful if you want to retain the actual map impl used.
+     * 
+     * If disabled, type metadata will not be included and instead, will be mapped 
+     * to a default impl.
+     * <pre>
+     * Map = HashMap
+     * SortedMap = TreeMap
+     * NavigableMap = TreeMap
+     * ConcurrentMap = ConcurrentHashMap
+     * ConcurrentNavigableMap = ConcurrentSkipListMap
+     * </pre>
+     * 
+     * You can optionally enable only for a particular field by annotation it with 
+     * {@link com.dyuproject.protostuff.Morph}.
+     */
+    public static final boolean MORPH_MAP_INTERFACES;
+    
+    /**
      * On repeated fields, the List/Collection itself is not serialized (only its values).
      * If you enable this option, the repeated field will be serialized as a 
      * standalone message with a collection schema.  Even if the List/Collection is empty, 
@@ -122,6 +166,12 @@ public final class RuntimeEnv
         
         MORPH_NON_FINAL_POJOS = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.morph_non_final_pojos", "false"));
+        
+        MORPH_COLLECTION_INTERFACES = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.morph_collection_interfaces", "false"));
+        
+        MORPH_MAP_INTERFACES = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.morph_map_interfaces", "false"));
         
         COLLECTION_SCHEMA_ON_REPEATED_FIELDS = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.collection_schema_on_repeated_fields", "false"));

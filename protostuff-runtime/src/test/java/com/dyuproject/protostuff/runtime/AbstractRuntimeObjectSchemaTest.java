@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +24,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.ByteString;
@@ -36,6 +44,8 @@ import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
+import com.dyuproject.protostuff.runtime.SampleDelegates.Singleton;
 
 /**
  * Ser/deser tests for {@link ObjectSchema}.
@@ -769,7 +779,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         
     }
     
-    static <T> ArrayList<T> newList(T[] args)
+    static <T> ArrayList<T> newList(T ... args)
     {
         ArrayList<T> list = new ArrayList<T>();
         
@@ -1431,7 +1441,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         Pojo pFromStream = new Pojo();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1453,7 +1463,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithArray pFromStream = new PojoWithArray();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1475,7 +1485,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithArray2D pFromStream = new PojoWithArray2D();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1497,7 +1507,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithCollection pFromStream = new PojoWithCollection();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1519,7 +1529,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithMap pFromStream = new PojoWithMap();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1737,7 +1747,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         WrapsBat pFromStream = new WrapsBat();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -1908,7 +1918,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithCustomArrayListAndHashMap pFromStream = new PojoWithCustomArrayListAndHashMap();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
@@ -2441,9 +2451,1291 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithClassFields pFromStream = new PojoWithClassFields();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
-        assertEquals(p, pFromByteArray);
+        assertEquals(p, pFromStream);
         
         roundTrip(p, schema, pipeSchema);
     }
+    
+    static class PojoWithObjectCollectionFields
+    {
+        Object emptySet, emptyList, 
+            singletonSet, singletonList,  
+            setFromMap, copiesList, 
+            unmodifiableCollection, 
+            unmodifiableSet, 
+            unmodifiableSortedSet, 
+            unmodifiableList, 
+            unmodifiableRandomAccessList, 
+            synchronizedCollection, 
+            synchronizedSet, 
+            synchronizedSortedSet, 
+            synchronizedList, 
+            synchronizedRandomAccessList, 
+            checkedCollection, 
+            checkedSet, 
+            checkedSortedSet, 
+            checkedList, 
+            checkedRandomAccessList;
+        
+        PojoWithObjectCollectionFields fill()
+        {
+            LinkedList<String> ll = new LinkedList<String>();
+            ll.add("zero");
+            HashMap<String,Boolean> empty = newMap();
+            
+            TreeSet<String> ts = new TreeSet<String>();
+            ts.add("two");
+            
+            EnumSet<Size> es = EnumSet.allOf(Size.class);
+            
+            emptySet = Collections.emptySet();
+            emptyList = Collections.emptyList();
+            singletonSet = Collections.singleton("three");
+            singletonList = Collections.singletonList("four");
+            setFromMap = Collections.newSetFromMap(empty);
+            copiesList = Collections.nCopies(1, "five");
+            
+            unmodifiableCollection = Collections.unmodifiableCollection(
+                    Collections.emptyList()); // no equals impl
+            unmodifiableSet = Collections.unmodifiableSet(Collections.emptySet());
+            unmodifiableSortedSet = Collections.unmodifiableSortedSet(ts);
+            unmodifiableList = Collections.unmodifiableList(ll);
+            unmodifiableRandomAccessList = Collections.unmodifiableList(
+                    newList("six"));
+            
+            assertTrue(unmodifiableRandomAccessList.getClass().getName().endsWith(
+                    "RandomAccessList"));
+            
+            synchronizedCollection = Collections.synchronizedCollection(
+                    Collections.emptyList()); // no equals impl
+            synchronizedSet = Collections.synchronizedSet(es);
+            synchronizedSortedSet = Collections.synchronizedSortedSet(ts);
+            synchronizedList = Collections.synchronizedList(ll);
+            synchronizedRandomAccessList = Collections.synchronizedList(
+                    newList("seven"));
+            
+            assertTrue(synchronizedRandomAccessList.getClass().getName().endsWith(
+                    "RandomAccessList"));
+            
+            checkedCollection = Collections.checkedCollection(
+                    newList("eight"), String.class); // no equals impl
+            checkedSet = Collections.checkedSet(es, Size.class);
+            checkedSortedSet = Collections.checkedSortedSet(ts, String.class);
+            checkedList = Collections.checkedList(ll, String.class);
+            checkedRandomAccessList = Collections.checkedList(
+                    newList("nine"), String.class);
+            
+            assertTrue(checkedRandomAccessList.getClass().getName().endsWith(
+                    "RandomAccessList"));
+            
+            return this;
+        }
 
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((checkedList == null) ? 0 : checkedList.hashCode());
+            result = prime * result
+                    + ((checkedRandomAccessList == null) ? 0 : checkedRandomAccessList.hashCode());
+            result = prime * result + ((checkedSet == null) ? 0 : checkedSet.hashCode());
+            result = prime * result
+                    + ((checkedSortedSet == null) ? 0 : checkedSortedSet.hashCode());
+            result = prime * result + ((copiesList == null) ? 0 : copiesList.hashCode());
+            result = prime * result + ((emptyList == null) ? 0 : emptyList.hashCode());
+            result = prime * result + ((emptySet == null) ? 0 : emptySet.hashCode());
+            result = prime * result + ((setFromMap == null) ? 0 : setFromMap.hashCode());
+            result = prime * result + ((singletonList == null) ? 0 : singletonList.hashCode());
+            result = prime * result + ((singletonSet == null) ? 0 : singletonSet.hashCode());
+            result = prime * result
+                    + ((synchronizedList == null) ? 0 : synchronizedList.hashCode());
+            result = prime
+                    * result
+                    + ((synchronizedRandomAccessList == null) ? 0 : synchronizedRandomAccessList
+                            .hashCode());
+            result = prime * result + ((synchronizedSet == null) ? 0 : synchronizedSet.hashCode());
+            result = prime * result
+                    + ((synchronizedSortedSet == null) ? 0 : synchronizedSortedSet.hashCode());
+            result = prime * result
+                    + ((unmodifiableList == null) ? 0 : unmodifiableList.hashCode());
+            result = prime
+                    * result
+                    + ((unmodifiableRandomAccessList == null) ? 0 : unmodifiableRandomAccessList
+                            .hashCode());
+            result = prime * result + ((unmodifiableSet == null) ? 0 : unmodifiableSet.hashCode());
+            result = prime * result
+                    + ((unmodifiableSortedSet == null) ? 0 : unmodifiableSortedSet.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithObjectCollectionFields other = (PojoWithObjectCollectionFields)obj;
+            if (checkedList == null)
+            {
+                if (other.checkedList != null)
+                    return false;
+            }
+            else if (!checkedList.equals(other.checkedList))
+                return false;
+            if (checkedRandomAccessList == null)
+            {
+                if (other.checkedRandomAccessList != null)
+                    return false;
+            }
+            else if (!checkedRandomAccessList.equals(other.checkedRandomAccessList))
+                return false;
+            if (checkedSet == null)
+            {
+                if (other.checkedSet != null)
+                    return false;
+            }
+            else if (!checkedSet.equals(other.checkedSet))
+                return false;
+            if (checkedSortedSet == null)
+            {
+                if (other.checkedSortedSet != null)
+                    return false;
+            }
+            else if (!checkedSortedSet.equals(other.checkedSortedSet))
+                return false;
+            if (copiesList == null)
+            {
+                if (other.copiesList != null)
+                    return false;
+            }
+            else if (!copiesList.equals(other.copiesList))
+                return false;
+            if (emptyList == null)
+            {
+                if (other.emptyList != null)
+                    return false;
+            }
+            else if (!emptyList.equals(other.emptyList))
+                return false;
+            if (emptySet == null)
+            {
+                if (other.emptySet != null)
+                    return false;
+            }
+            else if (!emptySet.equals(other.emptySet))
+                return false;
+            if (setFromMap == null)
+            {
+                if (other.setFromMap != null)
+                    return false;
+            }
+            else if (!setFromMap.equals(other.setFromMap))
+                return false;
+            if (singletonList == null)
+            {
+                if (other.singletonList != null)
+                    return false;
+            }
+            else if (!singletonList.equals(other.singletonList))
+                return false;
+            if (singletonSet == null)
+            {
+                if (other.singletonSet != null)
+                    return false;
+            }
+            else if (!singletonSet.equals(other.singletonSet))
+                return false;
+            if (synchronizedList == null)
+            {
+                if (other.synchronizedList != null)
+                    return false;
+            }
+            else if (!synchronizedList.equals(other.synchronizedList))
+                return false;
+            if (synchronizedRandomAccessList == null)
+            {
+                if (other.synchronizedRandomAccessList != null)
+                    return false;
+            }
+            else if (!synchronizedRandomAccessList.equals(other.synchronizedRandomAccessList))
+                return false;
+            if (synchronizedSet == null)
+            {
+                if (other.synchronizedSet != null)
+                    return false;
+            }
+            else if (!synchronizedSet.equals(other.synchronizedSet))
+                return false;
+            if (synchronizedSortedSet == null)
+            {
+                if (other.synchronizedSortedSet != null)
+                    return false;
+            }
+            else if (!synchronizedSortedSet.equals(other.synchronizedSortedSet))
+                return false;
+            if (unmodifiableList == null)
+            {
+                if (other.unmodifiableList != null)
+                    return false;
+            }
+            else if (!unmodifiableList.equals(other.unmodifiableList))
+                return false;
+            if (unmodifiableRandomAccessList == null)
+            {
+                if (other.unmodifiableRandomAccessList != null)
+                    return false;
+            }
+            else if (!unmodifiableRandomAccessList.equals(other.unmodifiableRandomAccessList))
+                return false;
+            if (unmodifiableSet == null)
+            {
+                if (other.unmodifiableSet != null)
+                    return false;
+            }
+            else if (!unmodifiableSet.equals(other.unmodifiableSet))
+                return false;
+            if (unmodifiableSortedSet == null)
+            {
+                if (other.unmodifiableSortedSet != null)
+                    return false;
+            }
+            else if (!unmodifiableSortedSet.equals(other.unmodifiableSortedSet))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithObjectCollectionFields [emptySet=" + emptySet + ", emptyList="
+                    + emptyList + ", singletonSet=" + singletonSet + ", singletonList="
+                    + singletonList + ", setFromMap=" + setFromMap + ", copiesList=" + copiesList
+                    + ", unmodifiableCollection=" + unmodifiableCollection + ", unmodifiableSet="
+                    + unmodifiableSet + ", unmodifiableSortedSet=" + unmodifiableSortedSet
+                    + ", unmodifiableList=" + unmodifiableList + ", unmodifiableRandomAccessList="
+                    + unmodifiableRandomAccessList + ", synchronizedCollection="
+                    + synchronizedCollection + ", synchronizedSet=" + synchronizedSet
+                    + ", synchronizedSortedSet=" + synchronizedSortedSet + ", synchronizedList="
+                    + synchronizedList + ", synchronizedRandomAccessList="
+                    + synchronizedRandomAccessList + ", checkedCollection=" + checkedCollection
+                    + ", checkedSet=" + checkedSet + ", checkedSortedSet=" + checkedSortedSet
+                    + ", checkedList=" + checkedList + ", checkedRandomAccessList="
+                    + checkedRandomAccessList + "]";
+        }
+
+        static void verify(PojoWithObjectCollectionFields p1, PojoWithObjectCollectionFields p2)
+        {
+            assertEquals("EmptySet", p1.emptySet.getClass().getSimpleName());
+            assertEquals("EmptySet", p2.emptySet.getClass().getSimpleName());
+            
+            assertEquals("EmptyList", p1.emptyList.getClass().getSimpleName());
+            assertEquals("EmptyList", p2.emptyList.getClass().getSimpleName());
+            
+            assertEquals("SingletonSet", p1.singletonSet.getClass().getSimpleName());
+            assertEquals("SingletonSet", p2.singletonSet.getClass().getSimpleName());
+            
+            assertEquals("SingletonList", p1.singletonList.getClass().getSimpleName());
+            assertEquals("SingletonList", p2.singletonList.getClass().getSimpleName());
+            
+            assertEquals("SetFromMap", p1.setFromMap.getClass().getSimpleName());
+            assertEquals("SetFromMap", p2.setFromMap.getClass().getSimpleName());
+            
+            assertEquals("CopiesList", p1.copiesList.getClass().getSimpleName());
+            assertEquals("CopiesList", p2.copiesList.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableCollection", p1.unmodifiableCollection.getClass().getSimpleName());
+            assertEquals("UnmodifiableCollection", p2.unmodifiableCollection.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableSet", p1.unmodifiableSet.getClass().getSimpleName());
+            assertEquals("UnmodifiableSet", p2.unmodifiableSet.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableSortedSet", p1.unmodifiableSortedSet.getClass().getSimpleName());
+            assertEquals("UnmodifiableSortedSet", p2.unmodifiableSortedSet.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableList", p1.unmodifiableList.getClass().getSimpleName());
+            assertEquals("UnmodifiableList", p2.unmodifiableList.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableRandomAccessList", p1.unmodifiableRandomAccessList.getClass().getSimpleName());
+            assertEquals("UnmodifiableRandomAccessList", p2.unmodifiableRandomAccessList.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedCollection", p1.synchronizedCollection.getClass().getSimpleName());
+            assertEquals("SynchronizedCollection", p2.synchronizedCollection.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedSet", p1.synchronizedSet.getClass().getSimpleName());
+            assertEquals("SynchronizedSet", p2.synchronizedSet.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedSortedSet", p1.synchronizedSortedSet.getClass().getSimpleName());
+            assertEquals("SynchronizedSortedSet", p2.synchronizedSortedSet.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedList", p1.synchronizedList.getClass().getSimpleName());
+            assertEquals("SynchronizedList", p2.synchronizedList.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedRandomAccessList", p1.synchronizedRandomAccessList.getClass().getSimpleName());
+            assertEquals("SynchronizedRandomAccessList", p2.synchronizedRandomAccessList.getClass().getSimpleName());
+            
+            assertEquals("CheckedCollection", p1.checkedCollection.getClass().getSimpleName());
+            assertEquals("CheckedCollection", p2.checkedCollection.getClass().getSimpleName());
+            
+            assertEquals("CheckedSet", p1.checkedSet.getClass().getSimpleName());
+            assertEquals("CheckedSet", p2.checkedSet.getClass().getSimpleName());
+            
+            assertEquals("CheckedSortedSet", p1.checkedSortedSet.getClass().getSimpleName());
+            assertEquals("CheckedSortedSet", p2.checkedSortedSet.getClass().getSimpleName());
+            
+            assertEquals("CheckedList", p1.checkedList.getClass().getSimpleName());
+            assertEquals("CheckedList", p2.checkedList.getClass().getSimpleName());
+            
+            assertEquals("CheckedRandomAccessList", p1.checkedRandomAccessList.getClass().getSimpleName());
+            assertEquals("CheckedRandomAccessList", p2.checkedRandomAccessList.getClass().getSimpleName());
+        }
+    }
+    
+    public void testPojoWithObjectCollectionFields() throws Exception
+    {
+        Schema<PojoWithObjectCollectionFields> schema = RuntimeSchema.getSchema(PojoWithObjectCollectionFields.class);
+        Pipe.Schema<PojoWithObjectCollectionFields> pipeSchema = 
+            ((MappedSchema<PojoWithObjectCollectionFields>)schema).pipeSchema;
+        
+        PojoWithObjectCollectionFields p = new PojoWithObjectCollectionFields().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithObjectCollectionFields pFromByteArray = new PojoWithObjectCollectionFields();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithObjectCollectionFields pFromStream = new PojoWithObjectCollectionFields();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+        PojoWithObjectCollectionFields.verify(pFromByteArray, pFromStream);
+    }
+    
+    static class PojoWithObjectCollectionNullKV
+    {
+        
+        Object singletonSetNullValue, singletonListNullValue, copiesListNullValue;
+        
+        PojoWithObjectCollectionNullKV fill()
+        {
+            String v = null;
+            
+            singletonSetNullValue = Collections.singleton(v);
+            singletonListNullValue = Collections.singletonList(v);
+            copiesListNullValue = Collections.nCopies(10, v);
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result
+                    + ((copiesListNullValue == null) ? 0 : copiesListNullValue.hashCode());
+            result = prime * result
+                    + ((singletonListNullValue == null) ? 0 : singletonListNullValue.hashCode());
+            result = prime * result
+                    + ((singletonSetNullValue == null) ? 0 : singletonSetNullValue.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithObjectCollectionNullKV other = (PojoWithObjectCollectionNullKV)obj;
+            if (copiesListNullValue == null)
+            {
+                if (other.copiesListNullValue != null)
+                    return false;
+            }
+            else if (!copiesListNullValue.equals(other.copiesListNullValue))
+                return false;
+            if (singletonListNullValue == null)
+            {
+                if (other.singletonListNullValue != null)
+                    return false;
+            }
+            else if (!singletonListNullValue.equals(other.singletonListNullValue))
+                return false;
+            if (singletonSetNullValue == null)
+            {
+                if (other.singletonSetNullValue != null)
+                    return false;
+            }
+            else if (!singletonSetNullValue.equals(other.singletonSetNullValue))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithObjectCollectionNullKV [singletonSetNullValue=" + singletonSetNullValue
+                    + ", singletonListNullValue=" + singletonListNullValue
+                    + ", copiesListNullValue=" + copiesListNullValue + "]";
+        }
+        
+    }
+    
+    public void testPojoWithObjectCollectionNullKV() throws Exception
+    {
+        Schema<PojoWithObjectCollectionNullKV> schema = RuntimeSchema.getSchema(PojoWithObjectCollectionNullKV.class);
+        Pipe.Schema<PojoWithObjectCollectionNullKV> pipeSchema = 
+            ((MappedSchema<PojoWithObjectCollectionNullKV>)schema).pipeSchema;
+        
+        PojoWithObjectCollectionNullKV p = new PojoWithObjectCollectionNullKV().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithObjectCollectionNullKV pFromByteArray = new PojoWithObjectCollectionNullKV();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithObjectCollectionNullKV pFromStream = new PojoWithObjectCollectionNullKV();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    static class PojoWithObjectMapFields
+    {
+        
+        Object emptyMap, singletonMap, 
+            unmodifiableMap, unmodifiableSortedMap, 
+            synchronizedMap, synchronizedSortedMap, 
+            checkedMap, checkedSortedMap;
+            
+        PojoWithObjectMapFields fill()
+        {
+            TreeMap<String,String> tm = new TreeMap<String,String>();
+            tm.put("foo", "bar");
+            
+            EnumMap<GuitarPickup,Size> em = new EnumMap<GuitarPickup, Size>(GuitarPickup.class);
+            em.put(GuitarPickup.CONTACT, Size.SMALL);
+            
+            emptyMap = Collections.emptyMap();
+            singletonMap = Collections.singletonMap("key", "value");
+            
+            unmodifiableMap = Collections.unmodifiableMap(Collections.emptyMap());
+            unmodifiableSortedMap = Collections.unmodifiableSortedMap(tm);
+            
+            synchronizedMap = Collections.synchronizedMap(em);
+            synchronizedSortedMap = Collections.synchronizedSortedMap(tm);
+            
+            checkedMap = Collections.checkedMap(em, 
+                    GuitarPickup.class, Size.class);
+            checkedSortedMap = Collections.checkedSortedMap(tm, 
+                    String.class, String.class);
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((checkedMap == null) ? 0 : checkedMap.hashCode());
+            result = prime * result
+                    + ((checkedSortedMap == null) ? 0 : checkedSortedMap.hashCode());
+            result = prime * result + ((emptyMap == null) ? 0 : emptyMap.hashCode());
+            result = prime * result + ((singletonMap == null) ? 0 : singletonMap.hashCode());
+            result = prime * result + ((synchronizedMap == null) ? 0 : synchronizedMap.hashCode());
+            result = prime * result
+                    + ((synchronizedSortedMap == null) ? 0 : synchronizedSortedMap.hashCode());
+            result = prime * result + ((unmodifiableMap == null) ? 0 : unmodifiableMap.hashCode());
+            result = prime * result
+                    + ((unmodifiableSortedMap == null) ? 0 : unmodifiableSortedMap.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithObjectMapFields other = (PojoWithObjectMapFields)obj;
+            if (checkedMap == null)
+            {
+                if (other.checkedMap != null)
+                    return false;
+            }
+            else if (!checkedMap.equals(other.checkedMap))
+                return false;
+            if (checkedSortedMap == null)
+            {
+                if (other.checkedSortedMap != null)
+                    return false;
+            }
+            else if (!checkedSortedMap.equals(other.checkedSortedMap))
+                return false;
+            if (emptyMap == null)
+            {
+                if (other.emptyMap != null)
+                    return false;
+            }
+            else if (!emptyMap.equals(other.emptyMap))
+                return false;
+            if (singletonMap == null)
+            {
+                if (other.singletonMap != null)
+                    return false;
+            }
+            else if (!singletonMap.equals(other.singletonMap))
+                return false;
+            if (synchronizedMap == null)
+            {
+                if (other.synchronizedMap != null)
+                    return false;
+            }
+            else if (!synchronizedMap.equals(other.synchronizedMap))
+                return false;
+            if (synchronizedSortedMap == null)
+            {
+                if (other.synchronizedSortedMap != null)
+                    return false;
+            }
+            else if (!synchronizedSortedMap.equals(other.synchronizedSortedMap))
+                return false;
+            if (unmodifiableMap == null)
+            {
+                if (other.unmodifiableMap != null)
+                    return false;
+            }
+            else if (!unmodifiableMap.equals(other.unmodifiableMap))
+                return false;
+            if (unmodifiableSortedMap == null)
+            {
+                if (other.unmodifiableSortedMap != null)
+                    return false;
+            }
+            else if (!unmodifiableSortedMap.equals(other.unmodifiableSortedMap))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithObjectMapFields [emptyMap=" + emptyMap + ", singletonMap="
+                    + singletonMap + ", unmodifiableMap=" + unmodifiableMap
+                    + ", unmodifiableSortedMap=" + unmodifiableSortedMap + ", synchronizedMap="
+                    + synchronizedMap + ", synchronizedSortedMap=" + synchronizedSortedMap
+                    + ", checkedMap=" + checkedMap + ", checkedSortedMap=" + checkedSortedMap + "]";
+        }
+        
+        static void verify(PojoWithObjectMapFields p1, PojoWithObjectMapFields p2)
+        {
+            assertEquals("EmptyMap", p1.emptyMap.getClass().getSimpleName());
+            assertEquals("EmptyMap", p2.emptyMap.getClass().getSimpleName());
+            
+            assertEquals("SingletonMap", p1.singletonMap.getClass().getSimpleName());
+            assertEquals("SingletonMap", p2.singletonMap.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableMap", p1.unmodifiableMap.getClass().getSimpleName());
+            assertEquals("UnmodifiableMap", p2.unmodifiableMap.getClass().getSimpleName());
+            
+            assertEquals("UnmodifiableSortedMap", p1.unmodifiableSortedMap.getClass().getSimpleName());
+            assertEquals("UnmodifiableSortedMap", p2.unmodifiableSortedMap.getClass().getSimpleName());
+            
+            assertEquals("SynchronizedMap", p1.synchronizedMap.getClass().getSimpleName());
+            assertEquals("SynchronizedMap", p2.synchronizedMap.getClass().getSimpleName());
+
+            assertEquals("SynchronizedSortedMap", p1.synchronizedSortedMap.getClass().getSimpleName());
+            assertEquals("SynchronizedSortedMap", p2.synchronizedSortedMap.getClass().getSimpleName());
+            
+            assertEquals("CheckedMap", p1.checkedMap.getClass().getSimpleName());
+            assertEquals("CheckedMap", p2.checkedMap.getClass().getSimpleName());
+            
+            assertEquals("CheckedSortedMap", p1.checkedSortedMap.getClass().getSimpleName());
+            assertEquals("CheckedSortedMap", p2.checkedSortedMap.getClass().getSimpleName());
+        }
+    }
+    
+    public void testPojoWithObjectMapFields() throws Exception
+    {
+        Schema<PojoWithObjectMapFields> schema = RuntimeSchema.getSchema(PojoWithObjectMapFields.class);
+        Pipe.Schema<PojoWithObjectMapFields> pipeSchema = 
+            ((MappedSchema<PojoWithObjectMapFields>)schema).pipeSchema;
+        
+        PojoWithObjectMapFields p = new PojoWithObjectMapFields().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithObjectMapFields pFromByteArray = new PojoWithObjectMapFields();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithObjectMapFields pFromStream = new PojoWithObjectMapFields();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+        
+        PojoWithObjectMapFields.verify(pFromByteArray, pFromStream);
+    }
+    
+    static class PojoWithSingletonMapNullKV
+    {
+        
+        Object nullKey, nullValue, nullBoth;
+        
+        PojoWithSingletonMapNullKV fill()
+        {
+            String k1 = null, v1 = "v1";
+            nullKey = Collections.singletonMap(k1, v1);
+            
+            String k2 = "k2", v2 = null;
+            nullValue = Collections.singletonMap(k2, v2);
+            
+            String k3 = null, v3 = null;
+            nullBoth = Collections.singletonMap(k3, v3);
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((nullBoth == null) ? 0 : nullBoth.hashCode());
+            result = prime * result + ((nullKey == null) ? 0 : nullKey.hashCode());
+            result = prime * result + ((nullValue == null) ? 0 : nullValue.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithSingletonMapNullKV other = (PojoWithSingletonMapNullKV)obj;
+            if (nullBoth == null)
+            {
+                if (other.nullBoth != null)
+                    return false;
+            }
+            else if (!nullBoth.equals(other.nullBoth))
+                return false;
+            if (nullKey == null)
+            {
+                if (other.nullKey != null)
+                    return false;
+            }
+            else if (!nullKey.equals(other.nullKey))
+                return false;
+            if (nullValue == null)
+            {
+                if (other.nullValue != null)
+                    return false;
+            }
+            else if (!nullValue.equals(other.nullValue))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithSingletonMapNullKV [nullKey=" + nullKey + ", nullValue=" + nullValue
+                    + ", nullBoth=" + nullBoth + "]";
+        }
+        
+    }
+    
+    public void testPojoWithSingletonMapNullKV() throws Exception
+    {
+        Schema<PojoWithSingletonMapNullKV> schema = RuntimeSchema.getSchema(PojoWithSingletonMapNullKV.class);
+        Pipe.Schema<PojoWithSingletonMapNullKV> pipeSchema = 
+            ((MappedSchema<PojoWithSingletonMapNullKV>)schema).pipeSchema;
+        
+        PojoWithSingletonMapNullKV p = new PojoWithSingletonMapNullKV().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithSingletonMapNullKV pFromByteArray = new PojoWithSingletonMapNullKV();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithSingletonMapNullKV pFromStream = new PojoWithSingletonMapNullKV();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    static class PojoWithThrowable
+    {
+        Object o1, o2;
+        Throwable t1, t2;
+        Exception e1, e2;
+        RuntimeException re1, re2;
+        
+        List<Throwable> l1;
+        List<Object> l2;
+        Object l3, l4;
+        
+        Map<String,Throwable> m1;
+        Map<String,Object> m2;
+        Map<Throwable,Throwable> m3;
+        Object m4, m5, m6;
+        
+        PojoWithThrowable fill()
+        {
+            t1 = new Throwable("t1");
+            t2 = new Exception("t2", t1);
+            
+            o1 = t1;
+            o2 = t2;
+            
+            e1 = new Exception("e1");
+            e2 = new RuntimeException("e2", e1);
+            
+            re1 = new RuntimeException("re1");
+            re2 = new RuntimeException("re2", re1);
+            
+            l1 = newList(t1, e1, re1);
+            l2 = newList(o2, e2, re2);
+            l3 = l1;
+            l4 = l2;
+            
+            m1 = newMap();
+            m1.put("t1", t1);
+            
+            m2 = newMap();
+            m2.put("e1", e1);
+            
+            m3 = newMap();
+            m3.put(e2, re2);
+            
+            m4 = m1;
+            m5 = m2;
+            m6 = m3;
+            
+            return this;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            // Throwable does not implement Object.equals()
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            
+            return toString().equals(obj.toString());
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "PojoWithThrowable [o1=" + o1 + ", o2=" + o2 + ", t1=" + t1 + ", t2=" + t2
+                    + ", e1=" + e1 + ", e2=" + e2 + ", re1=" + re1 + ", re2=" + re2 + ", l1=" + l1
+                    + ", l2=" + l2 + ", l3=" + l3 + ", l4=" + l4 + ", m1=" + m1 + ", m2=" + m2
+                    + ", m3=" + m3 + ", m4=" + m4 + ", m5=" + m5 + ", m6=" + m6 + "]";
+        }
+        
+    }
+    
+    public void testPojoWithThrowable() throws Exception
+    {
+        Schema<PojoWithThrowable> schema = RuntimeSchema.getSchema(PojoWithThrowable.class);
+        Pipe.Schema<PojoWithThrowable> pipeSchema = 
+            ((MappedSchema<PojoWithThrowable>)schema).pipeSchema;
+        
+        PojoWithThrowable p = new PojoWithThrowable().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithThrowable pFromByteArray = new PojoWithThrowable();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithThrowable pFromStream = new PojoWithThrowable();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    static class PojoWithThrowableArray
+    {
+        Throwable[] t1, t2;
+        Exception[] e1, e2;
+        RuntimeException[] re1, re2;
+        
+        Object[] o1, o2;
+        
+        PojoWithThrowableArray fill()
+        {
+            t1 = new Throwable[]{new Throwable("t1")};
+            t2 = new Throwable[]{new Exception("t2", t1[0])};
+            
+            e1 = new Exception[]{new Exception("e1")};
+            e2 = new Exception[]{new RuntimeException("e2", e1[0])};
+            
+            re1 = new RuntimeException[]{new RuntimeException("re1")};
+            re2 = new RuntimeException[]{new RuntimeException("re2", re1[0])};
+            
+            o1 = new Object[]{t2[0]};
+            o2 = new Object[]{e2[0]};
+            
+            return this;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            
+            PojoWithThrowableArray other = (PojoWithThrowableArray)obj;
+            if (t1 == null)
+            {
+                if (other.t1 != null)
+                    return false;
+            }
+            else if (other.t1 == null || t1.length != other.t1.length || !t1[0].toString().equals(other.t1[0].toString()))
+                return false;
+            
+            if (t2 == null)
+            {
+                if (other.t2 != null)
+                    return false;
+            }
+            else if (other.t2 == null || t2.length != other.t2.length || !t2[0].toString().equals(other.t2[0].toString()))
+                return false;
+            
+            if (e1 == null)
+            {
+                if (other.e1 != null)
+                    return false;
+            }
+            else if (other.e1 == null || e1.length != other.e1.length || !e1[0].toString().equals(other.e1[0].toString()))
+                return false;
+            
+            if (e2 == null)
+            {
+                if (other.e2 != null)
+                    return false;
+            }
+            else if (other.e2 == null || e2.length != other.e2.length || !e2[0].toString().equals(other.e2[0].toString()))
+                return false;
+            
+            if (re1 == null)
+            {
+                if (other.re1 != null)
+                    return false;
+            }
+            else if (other.re1 == null || re1.length != other.re1.length || !re1[0].toString().equals(other.re1[0].toString()))
+                return false;
+            
+            if (re2 == null)
+            {
+                if (other.re2 != null)
+                    return false;
+            }
+            else if (other.re2 == null || re2.length != other.re2.length || !re2[0].toString().equals(other.re2[0].toString()))
+                return false;
+            
+            return true;
+        }
+    }
+    
+    public void testPojoWithThrowableArray() throws Exception
+    {
+        Schema<PojoWithThrowableArray> schema = RuntimeSchema.getSchema(PojoWithThrowableArray.class);
+        Pipe.Schema<PojoWithThrowableArray> pipeSchema = 
+            ((MappedSchema<PojoWithThrowableArray>)schema).pipeSchema;
+        
+        PojoWithThrowableArray p = new PojoWithThrowableArray().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithThrowableArray pFromByteArray = new PojoWithThrowableArray();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithThrowableArray pFromStream = new PojoWithThrowableArray();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    static class PojoWithSingletonAsDelegate
+    {
+        Singleton s1;
+        Object s2;
+        
+        List<Singleton> l1;
+        List<Object> l2;
+        Object l3, l4;
+        
+        Map<String,Singleton> m1;
+        Map<String,Object> m2;
+        Map<Singleton, Singleton> m3;
+        Map<Object,Object> m4;
+        Object m5, m6, m7, m8;
+        
+        PojoWithSingletonAsDelegate fill()
+        {
+            s2 = s1 = Singleton.INSTANCE;
+            
+            l3 = l1 = newList(Singleton.INSTANCE);
+            
+            l2 = newList();
+            l2.add(Singleton.INSTANCE);
+            l4 = l2;
+            
+            m1 = newMap();
+            m1.put("s1", s1);
+            
+            m2 = newMap();
+            m2.put("s1", s1);
+            
+            m3 = newMap();
+            m3.put(s1, s1);
+            
+            m4 = newMap();
+            m4.put(s1, "s1");
+            
+            m5 = m1;
+            m6 = m2;
+            m7 = m3;
+            m8 = m4;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((l1 == null) ? 0 : l1.hashCode());
+            result = prime * result + ((l2 == null) ? 0 : l2.hashCode());
+            result = prime * result + ((l3 == null) ? 0 : l3.hashCode());
+            result = prime * result + ((l4 == null) ? 0 : l4.hashCode());
+            result = prime * result + ((m1 == null) ? 0 : m1.hashCode());
+            result = prime * result + ((m2 == null) ? 0 : m2.hashCode());
+            result = prime * result + ((m3 == null) ? 0 : m3.hashCode());
+            result = prime * result + ((m4 == null) ? 0 : m4.hashCode());
+            result = prime * result + ((m5 == null) ? 0 : m5.hashCode());
+            result = prime * result + ((m6 == null) ? 0 : m6.hashCode());
+            result = prime * result + ((m7 == null) ? 0 : m7.hashCode());
+            result = prime * result + ((m8 == null) ? 0 : m8.hashCode());
+            result = prime * result + ((s1 == null) ? 0 : s1.hashCode());
+            result = prime * result + ((s2 == null) ? 0 : s2.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithSingletonAsDelegate other = (PojoWithSingletonAsDelegate)obj;
+            if (l1 == null)
+            {
+                if (other.l1 != null)
+                    return false;
+            }
+            else if (!l1.equals(other.l1))
+                return false;
+            if (l2 == null)
+            {
+                if (other.l2 != null)
+                    return false;
+            }
+            else if (!l2.equals(other.l2))
+                return false;
+            if (l3 == null)
+            {
+                if (other.l3 != null)
+                    return false;
+            }
+            else if (!l3.equals(other.l3))
+                return false;
+            if (l4 == null)
+            {
+                if (other.l4 != null)
+                    return false;
+            }
+            else if (!l4.equals(other.l4))
+                return false;
+            if (m1 == null)
+            {
+                if (other.m1 != null)
+                    return false;
+            }
+            else if (!m1.equals(other.m1))
+                return false;
+            if (m2 == null)
+            {
+                if (other.m2 != null)
+                    return false;
+            }
+            else if (!m2.equals(other.m2))
+                return false;
+            if (m3 == null)
+            {
+                if (other.m3 != null)
+                    return false;
+            }
+            else if (!m3.equals(other.m3))
+                return false;
+            if (m4 == null)
+            {
+                if (other.m4 != null)
+                    return false;
+            }
+            else if (!m4.equals(other.m4))
+                return false;
+            if (m5 == null)
+            {
+                if (other.m5 != null)
+                    return false;
+            }
+            else if (!m5.equals(other.m5))
+                return false;
+            if (m6 == null)
+            {
+                if (other.m6 != null)
+                    return false;
+            }
+            else if (!m6.equals(other.m6))
+                return false;
+            if (m7 == null)
+            {
+                if (other.m7 != null)
+                    return false;
+            }
+            else if (!m7.equals(other.m7))
+                return false;
+            if (m8 == null)
+            {
+                if (other.m8 != null)
+                    return false;
+            }
+            else if (!m8.equals(other.m8))
+                return false;
+            if (s1 == null)
+            {
+                if (other.s1 != null)
+                    return false;
+            }
+            else if (!s1.equals(other.s1))
+                return false;
+            if (s2 == null)
+            {
+                if (other.s2 != null)
+                    return false;
+            }
+            else if (!s2.equals(other.s2))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithSingletonAsDelegate [s1=" + s1 + ", s2=" + s2 + ", l1=" + l1 + ", l2="
+                    + l2 + ", l3=" + l3 + ", l4=" + l4 + ", m1=" + m1 + ", m2=" + m2 + ", m3=" + m3
+                    + ", m4=" + m4 + ", m5=" + m5 + ", m6=" + m6 + ", m7=" + m7 + ", m8=" + m8
+                    + "]";
+        }
+        
+    }
+    
+    public void testPojoWithSingletonAsDelegate() throws Exception
+    {
+        if(RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
+        {
+            ((DefaultIdStrategy)RuntimeEnv.ID_STRATEGY).registerDelegate(
+                    SINGLETON_DELEGATE);
+        }
+        
+        Schema<PojoWithSingletonAsDelegate> schema = RuntimeSchema.getSchema(PojoWithSingletonAsDelegate.class);
+        Pipe.Schema<PojoWithSingletonAsDelegate> pipeSchema = 
+            ((MappedSchema<PojoWithSingletonAsDelegate>)schema).pipeSchema;
+        
+        PojoWithSingletonAsDelegate p = new PojoWithSingletonAsDelegate().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithSingletonAsDelegate pFromByteArray = new PojoWithSingletonAsDelegate();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithSingletonAsDelegate pFromStream = new PojoWithSingletonAsDelegate();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+
+    
+    static class PojoWithShortArrayAsDelegate
+    {
+        short[] s1;
+        Object s2;
+        
+        List<short[]> l1;
+        List<Object> l2;
+        Object l3, l4;
+        
+        Map<String,short[]> m1;
+        Map<String,Object> m2;
+        Map<short[], short[]> m3;
+        Map<Object,Object> m4;
+        Object m5, m6, m7, m8;
+        
+        PojoWithShortArrayAsDelegate fill()
+        {
+            short[] s = new short[]{0x7f7f,0x7e7e};
+            
+            s2 = s1 = s;
+            
+            l3 = l1 = newList(s);
+            
+            l2 = newList();
+            l2.add(s);
+            l4 = l2;
+            
+            m1 = newMap();
+            m1.put("s1", s1);
+            
+            m2 = newMap();
+            m2.put("s1", s1);
+            
+            m3 = newMap();
+            m3.put(s1, s1);
+            
+            m4 = newMap();
+            m4.put(s1, "s1");
+            
+            m5 = m1;
+            m6 = m2;
+            m7 = m3;
+            m8 = m4;
+            
+            return this;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(s1);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithShortArrayAsDelegate other = (PojoWithShortArrayAsDelegate)obj;
+            if (s1 == null)
+            {
+                if (other.s1 != null)
+                    return false;
+            }
+            else if(other.s1 == null || !Arrays.equals(s1, other.s1))
+                return false;
+
+            return true;
+        }
+        
+    }
+    
+    public void testPojoWithShortArrayAsDelegate() throws Exception
+    {
+        ShortArrayDelegate delegate = null;
+        if(RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
+        {
+            if(!((DefaultIdStrategy)RuntimeEnv.ID_STRATEGY).registerDelegate(
+                    delegate = new ShortArrayDelegate()))
+            {
+                // couldn't register
+                delegate = null;
+            }
+        }
+        
+        Schema<PojoWithShortArrayAsDelegate> schema = RuntimeSchema.getSchema(PojoWithShortArrayAsDelegate.class);
+        Pipe.Schema<PojoWithShortArrayAsDelegate> pipeSchema = 
+            ((MappedSchema<PojoWithShortArrayAsDelegate>)schema).pipeSchema;
+        
+        PojoWithShortArrayAsDelegate p = new PojoWithShortArrayAsDelegate().fill();
+
+        byte[] data = toByteArray(p, schema);
+        
+        PojoWithShortArrayAsDelegate pFromByteArray = new PojoWithShortArrayAsDelegate();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+        
+        PojoWithShortArrayAsDelegate pFromStream = new PojoWithShortArrayAsDelegate();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+        
+        roundTrip(p, schema, pipeSchema);
+        
+        if(delegate != null)
+        {
+            System.err.println("registered short array delegate.");
+            assertTrue(delegate.writes != 0);
+            assertTrue(delegate.reads != 0);
+            assertTrue(delegate.transfers != 0);
+        }
+    }
+    
 }

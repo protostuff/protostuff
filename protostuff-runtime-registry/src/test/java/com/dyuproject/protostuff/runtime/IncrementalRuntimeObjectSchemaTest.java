@@ -29,6 +29,7 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
 import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.CollectionSchema;
@@ -47,6 +48,7 @@ import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWit
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithMap;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Size;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.WrapsBat;
+import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
 
 /**
  * Test for {@link IncrementalIdStrategy}.
@@ -78,10 +80,10 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
         static int INSTANCE_COUNT = 0;
         
         IncrementalIdStrategy.Registry r = new IncrementalIdStrategy.Registry(
-                80, 11, 
                 20, 11, 
                 20, 11, 
-                20, 11);
+                20, 11, 
+                80, 11);
         
         public IdStrategyFactory()
         {
@@ -119,6 +121,8 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
                 .registerPojo(WrapsBat.class, 9)
                 .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
             
+            r.registerDelegate(new ShortArrayDelegate(), 1);
+            r.registerDelegate(SINGLETON_DELEGATE, 2);
             
             r = null;
         }

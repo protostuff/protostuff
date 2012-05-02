@@ -48,6 +48,8 @@ public final class DefaultIdStrategy extends IdStrategy
     final ConcurrentHashMap<String,MapSchema.MessageFactory> mapMapping = 
             new ConcurrentHashMap<String,MapSchema.MessageFactory>();
     
+    final ConcurrentHashMap<String, Delegate<?>> delegateMapping = 
+            new ConcurrentHashMap<String, Delegate<?>>();
     
     /**
      * Registers a pojo.
@@ -74,6 +76,15 @@ public final class DefaultIdStrategy extends IdStrategy
     {
         return null == enumMapping.putIfAbsent(enumClass.getName(), 
                 EnumIO.newEnumIO(enumClass));
+    }
+    
+    /**
+     * Registers a delegate. Returns true if registration is successful.
+     */
+    public <T> boolean registerDelegate(Delegate<T> delegate)
+    {
+        return null == delegateMapping.putIfAbsent(delegate.typeClass().getName(), 
+                delegate);
     }
     
     /**
@@ -112,6 +123,20 @@ public final class DefaultIdStrategy extends IdStrategy
         
         return last == null || (last instanceof Mapped<?> && 
                 ((Mapped<?>)last).typeClass == typeClass);
+    }
+    
+
+    @Override
+    public boolean isDelegateRegistered(Class<?> typeClass)
+    {
+        return delegateMapping.containsKey(typeClass.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
+    {
+        return (Delegate<T>)delegateMapping.get(typeClass.getName());
     }
     
     public boolean isRegistered(Class<?> typeClass)
@@ -347,6 +372,45 @@ public final class DefaultIdStrategy extends IdStrategy
     protected EnumIO<?> resolveEnumFrom(Input input) throws IOException 
     {
         return getEnumIO(input.readString(), true);
+    }
+    
+    protected <T> Delegate<T> tryWriteDelegateIdTo(Output output, int fieldNumber, 
+            Class<T> clazz) throws IOException
+    {
+        final Delegate<T> delegate = getDelegate(clazz);
+        if(delegate == null)
+            return null;
+        
+        output.writeString(fieldNumber, clazz.getName(), false);
+        
+        return delegate;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> transferDelegateId(Input input, Output output, 
+            int fieldNumber) throws IOException
+    {
+        final String className = input.readString();
+        
+        final Delegate<T> delegate = (Delegate<T>)delegateMapping.get(className);
+        if(delegate == null)
+            throw new UnknownTypeException("delegate: " + className + " (Outdated registry)");
+        
+        output.writeString(fieldNumber, className, false);
+        
+        return delegate;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> resolveDelegateFrom(Input input) throws IOException
+    {
+        final String className = input.readString();
+        
+        final Delegate<T> delegate = (Delegate<T>)delegateMapping.get(className);
+        if(delegate == null)
+            throw new UnknownTypeException("delegate: " + className + " (Outdated registry)");
+        
+        return delegate;
     }
     
     protected <T> Schema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz) 

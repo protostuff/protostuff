@@ -64,6 +64,18 @@ public abstract class IdStrategy
         public void postCreate();
     }
     
+    /**
+     * Returns true if there is a {@link Delegate} explicitly registered for the 
+     * {@code typeClass}.
+     */
+    public abstract boolean isDelegateRegistered(Class<?> typeClass);
+
+
+    /**
+     * Returns the {@link Delegate delegate}.
+     */
+    public abstract <T> Delegate<T> getDelegate(Class<? super T> typeClass);
+    
     
     /**
      * Returns true if the {@code typeClass} is explicitly registered.
@@ -144,6 +156,19 @@ public abstract class IdStrategy
     protected abstract <T> Schema<T> writeMessageIdTo(Output output, int fieldNumber, 
             Message<T> message) throws IOException;
     
+    // delegate
+    
+    /**
+     * If this method returns null, the clazz was not registered as a delegate.
+     */
+    protected abstract <T> Delegate<T> tryWriteDelegateIdTo(Output output, 
+            int fieldNumber, Class<T> clazz) throws IOException;
+    
+    protected abstract <T> Delegate<T> transferDelegateId(Input input, Output output, 
+            int fieldNumber) throws IOException;
+    
+    protected abstract <T> Delegate<T> resolveDelegateFrom(Input input) throws IOException;
+    
     // array
     
     protected abstract void writeArrayIdTo(Output output, Class<?> componentType) 
@@ -168,7 +193,7 @@ public abstract class IdStrategy
     
     // polymorphic requirements
     
-    final DerivativeSchema POLYMORPHIC_COLLECTION_VALUE_SCHEMA = 
+    final DerivativeSchema POLYMORPHIC_POJO_ELEMENT_SCHEMA = 
             new DerivativeSchema(this)
     {
         @SuppressWarnings("unchecked")
@@ -177,30 +202,10 @@ public abstract class IdStrategy
         {
             final Object value = derivedSchema.newMessage();
 
-            // the owner will always be a Collection
-            ((Collection<Object>)owner).add(value);
-
-            if (input instanceof GraphInput)
-            {
-                // update the actual reference.
-                ((GraphInput)input).updateLast(value, owner);
-            }
-
-            derivedSchema.mergeFrom(input, value);
-        }
-    };
-    
-    final DerivativeSchema POLYMORPHIC_MAP_VALUE_SCHEMA = 
-            new DerivativeSchema(this)
-    {
-        @SuppressWarnings("unchecked")
-        protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
-                Object owner) throws IOException
-        {
-            final Object value = derivedSchema.newMessage();
-
-            // the owner will always be the MapWrapper
-            ((MapWrapper<Object, Object>)owner).setValue(value);
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
 
             if (input instanceof GraphInput)
             {
@@ -214,23 +219,77 @@ public abstract class IdStrategy
     
     // object polymorphic schema requirements
     
-    final ObjectSchema OBJECT_COLLECTION_VALUE_SCHEMA = new ObjectSchema(this)
+    final ArraySchema ARRAY_ELEMENT_SCHEMA = new ArraySchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            // the owner will always be a Collection
-            ((Collection<Object>)owner).add(value);
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
         }
     };
     
-    final ObjectSchema OBJECT_MAP_VALUE_SCHEMA = new ObjectSchema(this)
+    final NumberSchema NUMBER_ELEMENT_SCHEMA = new NumberSchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            // the owner will always be the MapWrapper
-            ((MapWrapper<Object, Object>)owner).setValue(value);
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
+        }
+    };
+    
+    final ClassSchema CLASS_ELEMENT_SCHEMA = new ClassSchema(this)
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
+        }
+    };
+    
+    final PolymorphicEnumSchema POLYMORPHIC_ENUM_ELEMENT_SCHEMA = 
+            new PolymorphicEnumSchema(this)
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
+        }
+    };
+    
+    final PolymorphicThrowableSchema POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA = 
+            new PolymorphicThrowableSchema(this)
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
+        }
+    };
+    
+    final ObjectSchema OBJECT_ELEMENT_SCHEMA = new ObjectSchema(this)
+    {
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object value, Object owner)
+        {
+            if(MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
         }
     };
     
@@ -277,15 +336,17 @@ public abstract class IdStrategy
         @SuppressWarnings("unchecked")
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            if(PMapWrapper.class.isAssignableFrom(owner.getClass()))
+            if(PMapWrapper.class == owner.getClass())
             {
                 // called from ENTRY_SCHEMA
-                ((PMapWrapper)owner).setValue(ObjectSchema.readObjectFrom(input, this, owner, IdStrategy.this));
+                ((PMapWrapper)owner).setValue(ObjectSchema.readObjectFrom(input, 
+                        this, owner, IdStrategy.this));
             }
             else
             {
                 // called from COLLECTION_SCHEMA
-                ((Collection<Object>)owner).add(ObjectSchema.readObjectFrom(input, this, owner, IdStrategy.this));
+                ((Collection<Object>)owner).add(ObjectSchema.readObjectFrom(input, 
+                        this, owner, IdStrategy.this));
             }
         }
 
@@ -736,6 +797,247 @@ public abstract class IdStrategy
         }
     };
     
+    final Schema<Object> OBJECT_SCHEMA = new Schema<Object>()
+    {
+        public String getFieldName(int number)
+        {
+            return ObjectSchema.name(number);
+        }
+
+        public int getFieldNumber(String name)
+        {
+            return ObjectSchema.number(name);
+        }
+
+        public boolean isInitialized(Object owner)
+        {
+            return true;
+        }
+
+        public String messageFullName()
+        {
+            return Object.class.getName();
+        }
+
+        public String messageName()
+        {
+            return Object.class.getSimpleName();
+        }
+
+        public Object newMessage()
+        {
+            // cannot instantiate because the type is dynamic.
+            throw new UnsupportedOperationException();
+        }
+
+        public Class<? super Object> typeClass()
+        {
+            return Object.class;
+        }
+
+        public void mergeFrom(Input input, Object owner) throws IOException
+        {
+            ((Wrapper)owner).value = ObjectSchema.readObjectFrom(input, this, owner, 
+                    IdStrategy.this);
+        }
+
+        public void writeTo(Output output, Object message) throws IOException
+        {
+            ObjectSchema.writeObjectTo(output, message, this, IdStrategy.this);
+        }
+    };
+    
+    final Pipe.Schema<Object> OBJECT_PIPE_SCHEMA = 
+        new Pipe.Schema<Object>(OBJECT_SCHEMA)
+    {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            ObjectSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+        }
+    };
+    
+    
+    final Schema<Object> CLASS_SCHEMA = new Schema<Object>()
+    {
+        public String getFieldName(int number)
+        {
+            return ClassSchema.name(number);
+        }
+
+        public int getFieldNumber(String name)
+        {
+            return ClassSchema.number(name);
+        }
+
+        public boolean isInitialized(Object owner)
+        {
+            return true;
+        }
+
+        public String messageFullName()
+        {
+            return Class.class.getName();
+        }
+
+        public String messageName()
+        {
+            return Class.class.getSimpleName();
+        }
+
+        public Object newMessage()
+        {
+            // cannot instantiate because the type is dynamic.
+            throw new UnsupportedOperationException();
+        }
+
+        public Class<? super Object> typeClass()
+        {
+            return Object.class;
+        }
+
+        public void mergeFrom(Input input, Object owner) throws IOException
+        {
+            ((Wrapper)owner).value = ClassSchema.readObjectFrom(input, this, owner, 
+                    IdStrategy.this);
+        }
+
+        public void writeTo(Output output, Object message) throws IOException
+        {
+            ClassSchema.writeObjectTo(output, message, this, IdStrategy.this);
+        }
+    };
+    
+    final Pipe.Schema<Object> CLASS_PIPE_SCHEMA = 
+        new Pipe.Schema<Object>(CLASS_SCHEMA)
+    {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            ClassSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+        }
+    };
+    
+    final Schema<Object> POLYMORPHIC_COLLECTION_SCHEMA = new Schema<Object>()
+    {
+        public String getFieldName(int number)
+        {
+            return PolymorphicCollectionSchema.name(number);
+        }
+
+        public int getFieldNumber(String name)
+        {
+            return PolymorphicCollectionSchema.number(name);
+        }
+
+        public boolean isInitialized(Object owner)
+        {
+            return true;
+        }
+
+        public String messageFullName()
+        {
+            return Collection.class.getName();
+        }
+
+        public String messageName()
+        {
+            return Collection.class.getSimpleName();
+        }
+
+        public Object newMessage()
+        {
+            // cannot instantiate because the type is dynamic.
+            throw new UnsupportedOperationException();
+        }
+
+        public Class<? super Object> typeClass()
+        {
+            return Object.class;
+        }
+
+        public void mergeFrom(Input input, Object owner) throws IOException
+        {
+            ((Wrapper)owner).value = PolymorphicCollectionSchema.readObjectFrom(input, 
+                    this, owner, IdStrategy.this);
+        }
+
+        public void writeTo(Output output, Object message) throws IOException
+        {
+            PolymorphicCollectionSchema.writeObjectTo(output, message, this, 
+                    IdStrategy.this);
+        }
+    };
+    
+    final Pipe.Schema<Object> POLYMORPHIC_COLLECTION_PIPE_SCHEMA = 
+        new Pipe.Schema<Object>(POLYMORPHIC_COLLECTION_SCHEMA)
+    {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            PolymorphicCollectionSchema.transferObject(this, pipe, input, output, 
+                    IdStrategy.this);
+        }
+    };
+    
+    final Schema<Object> POLYMORPHIC_MAP_SCHEMA = new Schema<Object>()
+    {
+        public String getFieldName(int number)
+        {
+            return PolymorphicMapSchema.name(number);
+        }
+
+        public int getFieldNumber(String name)
+        {
+            return PolymorphicMapSchema.number(name);
+        }
+
+        public boolean isInitialized(Object owner)
+        {
+            return true;
+        }
+
+        public String messageFullName()
+        {
+            return Map.class.getName();
+        }
+
+        public String messageName()
+        {
+            return Map.class.getSimpleName();
+        }
+
+        public Object newMessage()
+        {
+            // cannot instantiate because the type is dynamic.
+            throw new UnsupportedOperationException();
+        }
+
+        public Class<? super Object> typeClass()
+        {
+            return Object.class;
+        }
+
+        public void mergeFrom(Input input, Object owner) throws IOException
+        {
+            ((Wrapper)owner).value = PolymorphicMapSchema.readObjectFrom(input, 
+                    this, owner, IdStrategy.this);
+        }
+
+        public void writeTo(Output output, Object message) throws IOException
+        {
+            PolymorphicMapSchema.writeObjectTo(output, message, this, 
+                    IdStrategy.this);
+        }
+    };
+    
+    final Pipe.Schema<Object> POLYMORPHIC_MAP_PIPE_SCHEMA = 
+        new Pipe.Schema<Object>(POLYMORPHIC_MAP_SCHEMA)
+    {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            PolymorphicMapSchema.transferObject(this, pipe, input, output, 
+                    IdStrategy.this);
+        }
+    };
+    
     private static final class PMapWrapper implements Entry<Object,Object>
     {
         
@@ -764,6 +1066,11 @@ public abstract class IdStrategy
             return last;
         }
         
+    }
+    
+    static final class Wrapper
+    {
+        Object value;
     }
 
 }

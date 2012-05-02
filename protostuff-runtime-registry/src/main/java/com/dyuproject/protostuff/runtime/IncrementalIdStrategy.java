@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -75,10 +76,11 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     {
         public IdStrategy create()
         {
-            return new IncrementalIdStrategy(64, 1, 
-                    16, 1, 
+            return new IncrementalIdStrategy(
                     CollectionSchema.MessageFactories.values().length, 1, 
-                    MapSchema.MessageFactories.values().length, 1);
+                    MapSchema.MessageFactories.values().length, 1, 
+                    16, 1, // enums
+                    64, 1); // pojos
         }
 
         public void postCreate()
@@ -96,15 +98,16 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         public final IncrementalIdStrategy strategy;
         
         public Registry(
-                int pojoIdMax, int pojoIdStart, 
-                int enumIdMax, int enumIdStart, 
                 int collectionIdMax, int collectionIdStart,
-                int mapIdMax, int mapIdStart)
+                int mapIdMax, int mapIdStart,
+                int enumIdMax, int enumIdStart, 
+                int pojoIdMax, int pojoIdStart)
         {
-            strategy = new IncrementalIdStrategy(pojoIdMax, pojoIdStart, 
-                    enumIdMax, enumIdStart, 
+            strategy = new IncrementalIdStrategy(
                     collectionIdMax, collectionIdStart, 
-                    mapIdMax, mapIdStart);
+                    mapIdMax, mapIdStart, 
+                    enumIdMax, enumIdStart, 
+                    pojoIdMax, pojoIdStart);
         }
         
         /**
@@ -299,15 +302,34 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             
             return this;
         }
+        
+        /**
+         * Register a {@link Delegate} and assign an id.
+         * 
+         * Delegate ids start at 1.
+         */
+        public <T> Registry registerDelegate(Delegate<T> delegate, int id)
+        {
+            if(id < 1)
+                throw new IllegalArgumentException("delegate ids start at 1.");
+            
+            if(id >= strategy.delegates.size())
+                grow(strategy.delegates, id+1);
+            else if(strategy.delegates.get(id) != null)
+            {
+                throw new IllegalArgumentException("Duplicate id registration: " + id + 
+                        " (" + delegate.typeClass() + ")");
+            }
+            
+            RegisteredDelegate<T> rd = new RegisteredDelegate<T>(id, delegate);
+            strategy.delegates.set(id, rd);
+            // just in case
+            if(strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
+                throw new IllegalArgumentException("Duplicate registration for: " + delegate.typeClass());
+            
+            return this;
+        }
     }
-    
-    final ConcurrentHashMap<Class<?>, BaseHS<?>> pojoMapping;
-    
-    final ArrayList<BaseHS<?>> pojos;
-    
-    final ConcurrentHashMap<Class<?>,RuntimeEnumIO> enumMapping;
-    
-    final ArrayList<RuntimeEnumIO> enums;
     
     final ConcurrentHashMap<Class<?>,RuntimeCollectionFactory> collectionMapping;
     
@@ -317,29 +339,33 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     
     final ArrayList<RuntimeMapFactory> maps;
     
+    final ConcurrentHashMap<Class<?>,RuntimeEnumIO> enumMapping;
+    
+    final ArrayList<RuntimeEnumIO> enums;
+    
+    final ConcurrentHashMap<Class<?>, BaseHS<?>> pojoMapping;
+    
+    final ArrayList<BaseHS<?>> pojos;
+    
+    final IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping;
+    
+    final ArrayList<RegisteredDelegate<?>> delegates;
+    
     final AtomicInteger pojoId, enumId, collectionId, mapId;
     final int pojoIdStart, enumIdStart, collectionIdStart, mapIdStart;
     
     public IncrementalIdStrategy(
-            int pojoIdMax, int pojoIdStart, 
-            int enumIdMax, int enumIdStart, 
             int collectionIdMax, int collectionIdStart,
-            int mapIdMax, int mapIdStart)
+            int mapIdMax, int mapIdStart,
+            int enumIdMax, int enumIdStart, 
+            int pojoIdMax, int pojoIdStart)
+            //int delegateIdMax, int delegateIdStart)
     {
-        assert pojoIdMax > pojoIdStart;
-        assert enumIdMax > enumIdStart;
         assert collectionIdMax > collectionIdStart;
         assert mapIdMax > mapIdStart;
-        
-        this.pojoIdStart = pojoIdStart;
-        pojoId = new AtomicInteger(pojoIdStart);
-        pojoMapping = new ConcurrentHashMap<Class<?>, BaseHS<?>>(pojoIdMax);
-        pojos = newList(pojoIdMax + 1);
-        
-        this.enumIdStart = enumIdStart;
-        enumId = new AtomicInteger(enumIdStart);
-        enumMapping = new ConcurrentHashMap<Class<?>, RuntimeEnumIO>(enumIdMax);
-        enums = newList(enumIdMax + 1);
+        assert enumIdMax > enumIdStart;
+        assert pojoIdMax > pojoIdStart;
+        //assert delegateIdMax > delegateIdStart;
         
         this.collectionIdStart = collectionIdStart;
         collectionId = new AtomicInteger(collectionIdStart);
@@ -351,6 +377,21 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         mapId = new AtomicInteger(mapIdStart);
         mapMapping = new ConcurrentHashMap<Class<?>, RuntimeMapFactory>(mapIdMax);
         maps = newList(mapIdMax + 1);
+        
+        this.enumIdStart = enumIdStart;
+        enumId = new AtomicInteger(enumIdStart);
+        enumMapping = new ConcurrentHashMap<Class<?>, RuntimeEnumIO>(enumIdMax);
+        enums = newList(enumIdMax + 1);
+        
+        this.pojoIdStart = pojoIdStart;
+        pojoId = new AtomicInteger(pojoIdStart);
+        pojoMapping = new ConcurrentHashMap<Class<?>, BaseHS<?>>(pojoIdMax);
+        pojos = newList(pojoIdMax + 1);
+        
+        // delegates require explicit registration
+        delegateMapping = new IdentityHashMap<Class<?>, RegisteredDelegate<?>>(
+                10);//delegateIdMax);
+        delegates = newList(11);//delegateIdMax + 1);
     }
     
     public boolean isRegistered(Class<?> typeClass)
@@ -588,6 +629,64 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return reio.eio;
     }
     
+    public boolean isDelegateRegistered(Class<?> typeClass)
+    {
+        return delegateMapping.containsKey(typeClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
+    {
+        final RegisteredDelegate<T> rd = (RegisteredDelegate<T>)delegateMapping.get(
+                typeClass);
+        
+        return rd == null ? null : rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> tryWriteDelegateIdTo(Output output, int fieldNumber, 
+            Class<T> clazz) throws IOException
+    {
+        final RegisteredDelegate<T> rd = (RegisteredDelegate<T>)delegateMapping.get(
+                clazz);
+        
+        if(rd == null)
+            return null;
+        
+        output.writeUInt32(fieldNumber, rd.id, false);
+        
+        return rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> transferDelegateId(Input input, Output output, int fieldNumber)
+            throws IOException
+    {
+        final int id = input.readUInt32();
+        
+        final RegisteredDelegate<T> rd = id < delegates.size() ? 
+                (RegisteredDelegate<T>)delegates.get(id) : null;
+        if(rd == null)
+            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+        
+        output.writeUInt32(fieldNumber, id, false);
+        
+        return rd.delegate;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Delegate<T> resolveDelegateFrom(Input input) throws IOException
+    {
+        final int id = input.readUInt32();
+        
+        final RegisteredDelegate<T> rd = id < delegates.size() ? 
+                (RegisteredDelegate<T>)delegates.get(id) : null;
+        if(rd == null)
+            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+        
+        return rd.delegate;
+    }
+    
     protected <T> Schema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz)
             throws IOException
     {
@@ -675,6 +774,12 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return reio.eio.enumClass;
     }
     
+    protected Class<?> delegateClass(int id)
+    {
+        final RegisteredDelegate<?> rd = id < delegates.size() ? delegates.get(id) : null;
+        return rd == null ? null : rd.delegate.typeClass();
+    }
+    
     protected Class<?> pojoClass(int id)
     {
         final BaseHS<?> wrapper = id < pojos.size() ? pojos.get(id) : null;
@@ -682,6 +787,11 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             throw new UnknownTypeException("Unknown pojo id: " + id);
         
         return wrapper.getSchema().typeClass();
+    }
+    
+    protected RegisteredDelegate<?> getRegisteredDelegate(Class<?> clazz)
+    {
+        return delegateMapping.get(clazz);
     }
     
     protected int getEnumId(Class<?> clazz)

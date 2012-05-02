@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -23,8 +24,10 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
 import com.dyuproject.protostuff.MapSchema.MessageFactory;
 import com.dyuproject.protostuff.Message;
+import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
+import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -74,7 +77,7 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapInlineKEnumV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inlineK, 
+            final Delegate<Object> inlineK, 
             final Class<Object> clazzV, IdStrategy strategy)
     {
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
@@ -162,8 +165,8 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapInlineKInlineV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inlineK, 
-            final RuntimeFieldFactory<Object> inlineV)
+            final Delegate<Object> inlineK, 
+            final Delegate<Object> inlineV)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -248,7 +251,7 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapInlineKPojoV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inlineK, 
+            final Delegate<Object> inlineK, 
             final Class<Object> clazzV, IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
@@ -336,7 +339,7 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapInlineKPolymorphicV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inlineK, 
+            final Delegate<Object> inlineK, 
             final Class<Object> clazzV, final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
@@ -407,7 +410,7 @@ final class RuntimeMapFieldFactory
                     Object key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.POLYMORPHIC_MAP_VALUE_SCHEMA);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -427,13 +430,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema, 
                         repeated);
             }
         };
@@ -441,7 +444,9 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapInlineKObjectV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final RuntimeFieldFactory<Object> inlineK, final IdStrategy strategy)
+            final Delegate<Object> inlineK, 
+            final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, 
+            final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
                 number, name, messageFactory)
@@ -511,7 +516,7 @@ final class RuntimeMapFieldFactory
                     Object key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.OBJECT_MAP_VALUE_SCHEMA);
+                        valueSchema);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -531,13 +536,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.OBJECT_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, valueSchema, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, valuePipeSchema, 
                         repeated);
             }
         };
@@ -635,7 +640,7 @@ final class RuntimeMapFieldFactory
     private static <T> Field<T> createMapEnumKInlineV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final Class<Object> clazzK, 
-            final RuntimeFieldFactory<Object> inlineV, IdStrategy strategy)
+            final Delegate<Object> inlineV, IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         
@@ -884,7 +889,7 @@ final class RuntimeMapFieldFactory
                     Enum<?> key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.POLYMORPHIC_MAP_VALUE_SCHEMA);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -904,13 +909,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema, 
                         repeated);
             }
         };
@@ -918,7 +923,9 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapEnumKObjectV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final Class<Object> clazzK, final IdStrategy strategy)
+            final Class<Object> clazzK, 
+            final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, 
+            final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         
@@ -990,7 +997,7 @@ final class RuntimeMapFieldFactory
                     Enum<?> key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.OBJECT_MAP_VALUE_SCHEMA);
+                        valueSchema);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -1010,13 +1017,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.OBJECT_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, valueSchema, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, valuePipeSchema, 
                         repeated);
             }
         };
@@ -1114,7 +1121,7 @@ final class RuntimeMapFieldFactory
     private static <T> Field<T> createMapPojoKInlineV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
             final Class<Object> clazzK, 
-            final RuntimeFieldFactory<Object> inlineV, IdStrategy strategy)
+            final Delegate<Object> inlineV, IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
         
@@ -1363,7 +1370,7 @@ final class RuntimeMapFieldFactory
                     Object key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.POLYMORPHIC_MAP_VALUE_SCHEMA);
+                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -1383,13 +1390,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.POLYMORPHIC_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema, 
                         repeated);
             }
         };
@@ -1397,7 +1404,9 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapPojoKObjectV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
-            final Class<Object> clazzK, final IdStrategy strategy)
+            final Class<Object> clazzK, 
+            final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, 
+            final IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
         
@@ -1469,7 +1478,7 @@ final class RuntimeMapFieldFactory
                     Object key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.OBJECT_MAP_VALUE_SCHEMA);
+                        valueSchema);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -1489,13 +1498,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.OBJECT_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, valueSchema, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, valuePipeSchema, 
                         repeated);
             }
         };
@@ -1503,6 +1512,8 @@ final class RuntimeMapFieldFactory
     
     private static <T> Field<T> createMapObjectKObjectV(int number, String name, 
             final java.lang.reflect.Field f, MessageFactory messageFactory, 
+            final Schema<Object> keySchema, final Pipe.Schema<Object> keyPipeSchema,
+            final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, 
             final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
@@ -1557,7 +1568,7 @@ final class RuntimeMapFieldFactory
             protected Object kFrom(Input input, MapWrapper<Object,Object> wrapper) 
             throws IOException
             {
-                final Object value = input.mergeObject(wrapper, strategy.OBJECT_MAP_VALUE_SCHEMA);
+                final Object value = input.mergeObject(wrapper, keySchema);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -1571,20 +1582,20 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, keyPipeSchema, 
                         repeated);
             }
             protected void kTo(Output output, int fieldNumber, Object key, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, key, strategy.OBJECT_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, key, keySchema, 
                         repeated);
             }
             protected void vPutFrom(Input input, MapWrapper<Object,Object> wrapper, 
                     Object key) throws IOException
             {
                 final Object value = input.mergeObject(wrapper, 
-                        strategy.OBJECT_MAP_VALUE_SCHEMA);
+                        valueSchema);
                 if(value != wrapper)
                 {
                     // referenced.
@@ -1604,13 +1615,13 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(fieldNumber, val, strategy.OBJECT_MAP_VALUE_SCHEMA, 
+                output.writeObject(fieldNumber, val, valueSchema, 
                         repeated);
             }
             protected void vTransfer(Pipe pipe, Input input, Output output, int number, 
                     boolean repeated) throws IOException
             {
-                output.writeObject(number, pipe, strategy.OBJECT_MAP_VALUE_SCHEMA.pipeSchema, 
+                output.writeObject(number, pipe, valuePipeSchema, 
                         repeated);
             }
         };
@@ -1622,6 +1633,25 @@ final class RuntimeMapFieldFactory
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
+            final Class<?> clazz = f.getType();
+            if(Modifier.isAbstract(clazz.getModifiers()))
+            {
+                if(!clazz.isInterface())
+                {
+                    // abstract class
+                    return OBJECT.create(number, name, f, strategy);
+                }
+                
+                final Morph morph = f.getAnnotation(Morph.class);
+                if(morph == null)
+                {
+                    if(RuntimeEnv.MORPH_MAP_INTERFACES)
+                        return OBJECT.create(number, name, f, strategy);
+                }
+                else if(morph.value())
+                    return OBJECT.create(number, name, f, strategy);
+            }
+            
             final MessageFactory messageFactory;
             if(EnumMap.class.isAssignableFrom(f.getType()))
             {
@@ -1643,40 +1673,89 @@ final class RuntimeMapFieldFactory
             if(clazzK == null)
             {
                 // the key is not a simple parameterized type.
-                return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+                return createMapObjectKObjectV(number, name, f, messageFactory, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy);
             }
             
             final Class<Object> clazzV = (Class<Object>)getGenericType(f, 1, true);
             if(clazzV == null)
             {
                 // the value is not a simple parameterized type.
-                final RuntimeFieldFactory<Object> inlineK = getInline(clazzK);
+                final Delegate<Object> inlineK = getDelegateOrInline(clazzK, strategy);
                 if(inlineK != null)
-                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy);
+                {
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
                 if(Message.class.isAssignableFrom(clazzK))
-                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                {
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
                 if(clazzK.isEnum())
-                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                {
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
-                if(isComplexComponentType(clazzK))
-                    return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+                final PolymorphicSchema psK = 
+                        PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                                clazzK, strategy);
                 
-                if(POJO == pojo(clazzK) || strategy.isRegistered(clazzK))
-                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                if(psK != null)
+                {
+                    return createMapObjectKObjectV(number, name, f, messageFactory, 
+                            psK, 
+                            psK.getPipeSchema(), 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
-                if(clazzK.isInterface())
-                    return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+                if(POJO == pojo(clazzK, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzK))
+                {
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
-                return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+                /*if(clazzK.isInterface())
+                {
+                    return createMapObjectKObjectV(number, name, f, messageFactory, 
+                            strategy.OBJECT_COLLECTION_VALUE_SCHEMA, 
+                            strategy.OBJECT_COLLECTION_VALUE_SCHEMA.pipeSchema, 
+                            strategy.OBJECT_COLLECTION_VALUE_SCHEMA, 
+                            strategy.OBJECT_COLLECTION_VALUE_SCHEMA.pipeSchema, 
+                            strategy);
+                }
+                
+                // TODO add createMapPolymorphicKObjectV?*/
+                return createMapObjectKObjectV(number, name, f, messageFactory, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy);
             }
             
-            final RuntimeFieldFactory<Object> inlineK = getInline(clazzK);
+            final Delegate<Object> inlineK = getDelegateOrInline(clazzK, strategy);
             
             if(inlineK != null)
             {
-                final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
+                final Delegate<Object> inlineV = getDelegateOrInline(clazzV, strategy);
                 if(inlineV != null)
                     return createMapInlineKInlineV(number, name, f, messageFactory, inlineK, inlineV);
                 
@@ -1686,21 +1765,34 @@ final class RuntimeMapFieldFactory
                 if(clazzV.isEnum())
                     return createMapInlineKEnumV(number, name, f, messageFactory, inlineK, clazzV, strategy);
                 
-                if(isComplexComponentType(clazzV))
-                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy);
+                final PolymorphicSchema psV = 
+                        PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                                clazzV, strategy);
+                if(psV != null)
+                {
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, 
+                            psV, 
+                            psV.getPipeSchema(), 
+                            strategy);
+                }
                 
-                if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
+                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
                     return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV, strategy);
                 
                 if(clazzV.isInterface())
-                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy);
+                {
+                    return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
                 return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV, strategy);
             }
 
             if(clazzK.isEnum())
             {
-                final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
+                final Delegate<Object> inlineV = getDelegateOrInline(clazzV, strategy);
                 if(inlineV != null)
                     return createMapEnumKInlineV(number, name, f, messageFactory, clazzK, inlineV, strategy);
                 
@@ -1710,24 +1802,47 @@ final class RuntimeMapFieldFactory
                 if(clazzV.isEnum())
                     return createMapEnumKEnumV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
-                if(isComplexComponentType(clazzV))
-                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                final PolymorphicSchema psV = 
+                        PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                                clazzV, strategy);
+                if(psV != null)
+                {
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, 
+                            psV, 
+                            psV.getPipeSchema(), 
+                            strategy);
+                }
                 
-                if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
+                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
                     return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
                 if(clazzV.isInterface())
-                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                {
+                    return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
                 return createMapEnumKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV, strategy);
             }
             
-            if(isComplexComponentType(clazzK))
-                return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
-            
-            if(POJO == pojo(clazzK) || strategy.isRegistered(clazzK))
+            final PolymorphicSchema psK = 
+                    PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                            clazzK, strategy);
+            if(psK != null)
             {
-                final RuntimeFieldFactory<Object> inlineV = getInline(clazzV);
+                return createMapObjectKObjectV(number, name, f, messageFactory, 
+                        psK, 
+                        psK.getPipeSchema(), 
+                        strategy.OBJECT_ELEMENT_SCHEMA, 
+                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                        strategy);
+            }
+            
+            if(POJO == pojo(clazzK, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzK))
+            {
+                final Delegate<Object> inlineV = getDelegateOrInline(clazzV, strategy);
                 if(inlineV != null)
                     return createMapPojoKInlineV(number, name, f, messageFactory, clazzK, inlineV, strategy);
                 
@@ -1737,39 +1852,57 @@ final class RuntimeMapFieldFactory
                 if(clazzV.isEnum())
                     return createMapPojoKEnumV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
-                if(isComplexComponentType(clazzV))
-                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
-                
-                if(POJO == pojo(clazzV) || strategy.isRegistered(clazzV))
+                final PolymorphicSchema psV = 
+                        PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(
+                                clazzV, strategy);
+                if(psV != null)
+                {
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
+                            psV, 
+                            psV.getPipeSchema(), 
+                            strategy);
+                }
+                    
+                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
                     return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
                 if(clazzV.isInterface())
-                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, strategy);
+                {
+                    return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
+                            strategy.OBJECT_ELEMENT_SCHEMA, 
+                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                            strategy);
+                }
                 
                 return createMapPojoKPolymorphicV(number, name, f, messageFactory, clazzK, clazzV, strategy);
             }
             
-            return createMapObjectKObjectV(number, name, f, messageFactory, strategy);
+            return createMapObjectKObjectV(number, name, f, messageFactory, 
+                    strategy.OBJECT_ELEMENT_SCHEMA, 
+                    strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                    strategy.OBJECT_ELEMENT_SCHEMA, 
+                    strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, 
+                    strategy);
         }
-        protected void transfer(Pipe pipe, Input input, Output output, int number, 
+        public void transfer(Pipe pipe, Input input, Output output, int number, 
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected Map<?,?> readFrom(Input input) throws IOException
+        public Map<?,?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected void writeTo(Output output, int number, Map<?,?>  value, boolean repeated) 
+        public void writeTo(Output output, int number, Map<?,?>  value, boolean repeated) 
         throws IOException
         {
             throw new UnsupportedOperationException();
         }
-        protected FieldType getFieldType()
+        public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
-        protected Class<?> typeClass()
+        public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
         }
