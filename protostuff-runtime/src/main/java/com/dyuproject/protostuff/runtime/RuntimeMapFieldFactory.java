@@ -1655,7 +1655,7 @@ final class RuntimeMapFieldFactory
             final MessageFactory messageFactory;
             if(EnumMap.class.isAssignableFrom(f.getType()))
             {
-                final Class<Object> enumType = (Class<Object>)getGenericType(f, 0, false);
+                final Class<Object> enumType = (Class<Object>)getGenericType(f, 0);
                 if(enumType == null)
                 {
                     // still handle the serialization of EnumMaps even without generics
@@ -1669,7 +1669,7 @@ final class RuntimeMapFieldFactory
                 messageFactory = strategy.getMapFactory(f.getType());
             }
             
-            final Class<Object> clazzK = (Class<Object>)getGenericType(f, 0, true);
+            final Class<Object> clazzK = (Class<Object>)getGenericType(f, 0);
             if(clazzK == null)
             {
                 // the key is not a simple parameterized type.
@@ -1681,7 +1681,7 @@ final class RuntimeMapFieldFactory
                         strategy);
             }
             
-            final Class<Object> clazzV = (Class<Object>)getGenericType(f, 1, true);
+            final Class<Object> clazzV = (Class<Object>)getGenericType(f, 1);
             if(clazzV == null)
             {
                 // the value is not a simple parameterized type.

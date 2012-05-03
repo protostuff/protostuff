@@ -18,6 +18,8 @@ import static com.dyuproject.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_
 import static com.dyuproject.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
 //import static com.dyuproject.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -281,15 +283,49 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         return MORPH_NON_FINAL_POJOS ? POLYMORPHIC_POJO : POJO;
     }
 
-    static Class<?> getGenericType(java.lang.reflect.Field f, 
-            int index, boolean checkByteArray)
+    static Class<?> getGenericType(java.lang.reflect.Field f, int index)
     {
         try
         {
             Type type = ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[index];
-            // TODO find more efficient way to check byte[].class?
-            return checkByteArray && "byte[]".equals(type.toString()) ? byte[].class : 
-                (Class<?>)type;
+            if(type instanceof GenericArrayType)
+            {
+                int dimensions = 1;
+                Type componentType = ((GenericArrayType)type).getGenericComponentType();
+                while(componentType instanceof GenericArrayType)
+                {
+                    dimensions++;
+                    componentType = ((GenericArrayType)componentType).getGenericComponentType();
+                }
+                
+                // TODO is there a more efficient way (reflection) to obtain an array class? 
+                
+                if(dimensions == 1)
+                    return Array.newInstance((Class<?>)componentType, 0).getClass();
+                
+                final int[] arg = new int[dimensions];
+                arg[0] = 0;
+                return Array.newInstance((Class<?>)componentType, arg).getClass();
+            }
+            
+            if(type instanceof ParameterizedType)
+            {
+                // TODO in the future, we can opt to do recursive type
+                // inspection which can avoid including type metadata even with 
+                // very complex nested generic types (E.g a List<List<List<String>>>).
+                
+                // special handling when generic type is either Class<?> or Enum<?> 
+                Object rawType = ((ParameterizedType)type).getRawType();
+                if(Class.class == rawType)
+                    return Class.class;
+                
+                if(Enum.class == rawType)
+                    return Enum.class;
+                
+                return null;
+            }
+            
+            return (Class<?>)type;
         }
         catch(Exception e)
         {

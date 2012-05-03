@@ -478,7 +478,7 @@ final class RuntimeRepeatedFieldFactory
             
             if(EnumSet.class.isAssignableFrom(f.getType()))
             {
-                final Class<Object> enumType = (Class<Object>)getGenericType(f, 0, false);
+                final Class<Object> enumType = (Class<Object>)getGenericType(f, 0);
                 if(enumType == null)
                 {
                     // still handle the serialization of EnumSets even without generics
@@ -491,7 +491,7 @@ final class RuntimeRepeatedFieldFactory
             
             final MessageFactory messageFactory = strategy.getCollectionFactory(f.getType());
             
-            final Class<Object> genericType = (Class<Object>)getGenericType(f, 0, true);
+            final Class<Object> genericType = (Class<Object>)getGenericType(f, 0);
             if(genericType == null)
             {
                 // the value is not a simple parameterized type.
