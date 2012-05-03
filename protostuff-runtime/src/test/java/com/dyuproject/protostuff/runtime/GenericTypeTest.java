@@ -60,6 +60,8 @@ public class GenericTypeTest extends TestCase
         Collection<Class<?>> cClass;
         List<Enum<?>> cEnum;
         
+        Collection<PojoWithCollectionAndMapGenericTypes> cPojo;
+        
         @SuppressWarnings("rawtypes")
         Set<Class[]> cClassArray;
         
@@ -95,6 +97,9 @@ public class GenericTypeTest extends TestCase
         
         assertTrue(Class.class == genericTypeFrom(c, "cClass", 0));
         assertTrue(Enum.class == genericTypeFrom(c, "cEnum", 0));
+        
+        assertTrue(PojoWithCollectionAndMapGenericTypes.class == 
+                genericTypeFrom(c, "cPojo", 0));
         
         assertTrue(Class[].class == genericTypeFrom(c, "cClassArray", 0));
         
