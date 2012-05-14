@@ -2,7 +2,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>com.dyuproject.protostuff</groupId>
-    <version>1.0.6</version>
+    <version>1.0.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
