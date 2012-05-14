@@ -526,7 +526,7 @@ final class RuntimeCollectionFieldFactory
                         strategy);
             }
             
-            if(POJO == pojo(genericType, f.getAnnotation(Morph.class)) || strategy.isRegistered(genericType))
+            if(pojo(genericType, f.getAnnotation(Morph.class), strategy))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
             
             if(genericType.isInterface())

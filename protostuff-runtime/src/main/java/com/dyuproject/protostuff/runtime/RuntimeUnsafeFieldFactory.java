@@ -815,7 +815,7 @@ public final class RuntimeUnsafeFieldFactory
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if(POJO == pojo(f.getType(), f.getAnnotation(Morph.class)))
+            if(pojo(f.getType(), f.getAnnotation(Morph.class), strategy))
                 return POJO.create(number, name, f, strategy);
             
             final long offset = us.objectFieldOffset(f);

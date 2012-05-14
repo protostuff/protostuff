@@ -1093,7 +1093,7 @@ public final class RuntimeReflectionFieldFactory
         public <T> Field<T> create(int number, java.lang.String name, 
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if(POJO == pojo(f.getType(), f.getAnnotation(Morph.class)))
+            if(pojo(f.getType(), f.getAnnotation(Morph.class), strategy))
                 return POJO.create(number, name, f, strategy);
             
             return new RuntimeDerivativeField<T>(

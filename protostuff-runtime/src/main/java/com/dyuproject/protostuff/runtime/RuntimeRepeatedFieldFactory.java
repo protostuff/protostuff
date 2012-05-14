@@ -513,7 +513,7 @@ final class RuntimeRepeatedFieldFactory
             if(factory != null)
                 return createCollectionObjectV(number, name, f, messageFactory, factory, strategy);
             
-            if(POJO == pojo(genericType, f.getAnnotation(Morph.class)) || strategy.isRegistered(genericType))
+            if(pojo(genericType, f.getAnnotation(Morph.class), strategy))
                 return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
             
             if(genericType.isInterface())

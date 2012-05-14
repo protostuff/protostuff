@@ -1,4 +1,5 @@
-protostuff-1.0.7-SNAPSHOT
+protostuff-1.0.7 2012-05-14
++ bugfix: an abstract class mapped to a single impl was not honored (bug introduced only in 1.0.6)
 
 protostuff-1.0.6 2012-05-14
 + allow @Tag annotations to override the field name

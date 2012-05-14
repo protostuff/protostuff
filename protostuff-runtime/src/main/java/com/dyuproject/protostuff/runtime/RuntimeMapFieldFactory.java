@@ -1724,7 +1724,7 @@ final class RuntimeMapFieldFactory
                             strategy);
                 }
                 
-                if(POJO == pojo(clazzK, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzK))
+                if(pojo(clazzK, f.getAnnotation(Morph.class), strategy))
                 {
                     return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
                             strategy.OBJECT_ELEMENT_SCHEMA, 
@@ -1776,7 +1776,7 @@ final class RuntimeMapFieldFactory
                             strategy);
                 }
                 
-                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
+                if(pojo(clazzV, f.getAnnotation(Morph.class), strategy))
                     return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, clazzV, strategy);
                 
                 if(clazzV.isInterface())
@@ -1813,7 +1813,7 @@ final class RuntimeMapFieldFactory
                             strategy);
                 }
                 
-                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
+                if(pojo(clazzV, f.getAnnotation(Morph.class), strategy))
                     return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
                 if(clazzV.isInterface())
@@ -1840,7 +1840,7 @@ final class RuntimeMapFieldFactory
                         strategy);
             }
             
-            if(POJO == pojo(clazzK, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzK))
+            if(pojo(clazzK, f.getAnnotation(Morph.class), strategy))
             {
                 final Delegate<Object> inlineV = getDelegateOrInline(clazzV, strategy);
                 if(inlineV != null)
@@ -1863,7 +1863,7 @@ final class RuntimeMapFieldFactory
                             strategy);
                 }
                     
-                if(POJO == pojo(clazzV, f.getAnnotation(Morph.class)) || strategy.isRegistered(clazzV))
+                if(pojo(clazzV, f.getAnnotation(Morph.class), strategy))
                     return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, clazzV, strategy);
                 
                 if(clazzV.isInterface())

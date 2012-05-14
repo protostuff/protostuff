@@ -37,10 +37,10 @@ public class CollectionTest extends TestCase
     
     static
     {
-        // this is necessary to be able to map interfaces to their respective 
+        // this is necessary to be able to map interfaces/abstract types to their respective 
         // implementations and to avoid including type metadata during serialization.
         RuntimeSchema.map(ITask.class, Task.class);
-        RuntimeSchema.map(IEmployee.class, Employee.class);
+        RuntimeSchema.map(AbstractEmployee.class, Employee.class);
     }
     
     public interface ITask
@@ -55,16 +55,16 @@ public class CollectionTest extends TestCase
         void setTags(Collection<String> tags);
     }
     
-    public interface IEmployee
+    public static abstract class AbstractEmployee
     {
-        void setId(int id);
-        int getId();
+        public abstract void setId(int id);
+        public abstract int getId();
         
-        Collection<String> getDepartments();
-        void setDepartments(Collection<String> departments);
+        public abstract Collection<String> getDepartments();
+        public abstract void setDepartments(Collection<String> departments);
         
-        Collection<ITask> getTasks();
-        void setTasks(Collection<ITask> tasks);
+        public abstract Collection<ITask> getTasks();
+        public abstract void setTasks(Collection<ITask> tasks);
         
     }
     
@@ -253,7 +253,7 @@ public class CollectionTest extends TestCase
     }
 
     
-    public static class Employee implements IEmployee
+    public static class Employee extends AbstractEmployee
     {
         
         int id;
@@ -390,7 +390,7 @@ public class CollectionTest extends TestCase
         
         Task p2 = new Task();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        System.err.println(p2);
+        //System.err.println(p2);
 
         assertEquals(p, p2);
     }
@@ -406,7 +406,7 @@ public class CollectionTest extends TestCase
         
         ITask p2 = new Task();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        System.err.println(p2);
+        //System.err.println(p2);
 
         assertEquals(p, p2);
     }
@@ -439,7 +439,7 @@ public class CollectionTest extends TestCase
         
         Employee p2 = new Employee();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        System.err.println(p2);
+        //System.err.println(p2);
         
         assertEquals(p, p2);
     }
@@ -447,7 +447,7 @@ public class CollectionTest extends TestCase
     public void testIEmployee() throws Exception
     {
         // Because we mapped IEmployee to Employee, this is ok.
-        Schema<IEmployee> schema = RuntimeSchema.getSchema(IEmployee.class);
+        Schema<AbstractEmployee> schema = RuntimeSchema.getSchema(AbstractEmployee.class);
         
         Collection<String> departments = new ArrayList<String>();
         departments.add("Engineering");
@@ -456,7 +456,7 @@ public class CollectionTest extends TestCase
         Collection<ITask> tasks = new ArrayList<ITask>();
         tasks.add(filledTask());
         
-        IEmployee p = new Employee();
+        AbstractEmployee p = new Employee();
 
         p.setId(1);
         p.setDepartments(departments);
@@ -464,11 +464,45 @@ public class CollectionTest extends TestCase
 
         byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
         
-        IEmployee p2 = new Employee();
+        AbstractEmployee p2 = new Employee();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        System.err.println(p2);
+        //System.err.println(p2);
         
         assertEquals(p, p2);
+    }
+    
+    interface IFoo
+    {
+        
+    }
+    
+    static abstract class AbstractFoo
+    {
+        
+    }
+    
+    static class PojoWithMappedAbstractTypes
+    {
+        ITask task;
+        AbstractEmployee employee;
+        
+        IFoo ifoo;
+        AbstractFoo afoo;
+    }
+    
+    public void testPojoWithMappedAbstractTypes()
+    {
+        MappedSchema<PojoWithMappedAbstractTypes> schema = 
+                (MappedSchema<PojoWithMappedAbstractTypes>)RuntimeSchema.getSchema(
+                        PojoWithMappedAbstractTypes.class, RuntimeEnv.ID_STRATEGY);
+        
+        assertTrue(schema.fields.length == 4);
+        
+        assertTrue(schema.fields[0] instanceof RuntimeMessageField);
+        assertTrue(schema.fields[1] instanceof RuntimeMessageField);
+        
+        assertTrue(schema.fields[2] instanceof RuntimeObjectField);
+        assertTrue(schema.fields[3] instanceof RuntimeDerivativeField);
     }
 
 }

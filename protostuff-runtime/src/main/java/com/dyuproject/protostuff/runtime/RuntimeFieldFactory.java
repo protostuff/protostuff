@@ -267,22 +267,23 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         return POLYMORPHIC_POJO;
     }
     
-    static RuntimeFieldFactory<?> pojo(Class<?> clazz, Morph morph)
+    static boolean pojo(Class<?> clazz, Morph morph, IdStrategy strategy)
     {
         if(Modifier.isFinal(clazz.getModifiers()))
-            return POJO;
+            return true;
         
+        // check if user mapped an impl to this class
         if(Modifier.isAbstract(clazz.getModifiers()))
-            return POLYMORPHIC_POJO;
+            return strategy.isRegistered(clazz);
         
         // the user can annotate fields with @Morph to have full control if
         // he knows a certain field will be set with a subtype.
         // To reverse the behavior (no subtype will be set), annotate with @Morph(false)
         // This is an optimization that requires the user's full knowledge of his dataset.
         if(morph != null)
-            return morph.value() ? POLYMORPHIC_POJO : POJO;
+            return !morph.value();
         
-        return MORPH_NON_FINAL_POJOS ? POLYMORPHIC_POJO : POJO;
+        return !MORPH_NON_FINAL_POJOS;
     }
     
     static Class<?> getGenericType(java.lang.reflect.Field f, int index)
