@@ -101,6 +101,15 @@ public class AnnotatedFieldsTest extends AbstractTest
         @Tag(0)
         int id;
     }
+    
+    static class EntityWithFieldAlias
+    {
+        @Tag(400)
+        double field400;
+        
+        @Tag(value = 200, alias="f200")
+        int field200;
+    }
 
     public void testEntityFullyAnnotated()
     {
@@ -182,6 +191,29 @@ public class AnnotatedFieldsTest extends AbstractTest
         {
             // expected
         }
+    }
+    
+    static <T> void verify(MappedSchema<T> schema, int number, String name, int offset)
+    {
+        assertEquals(schema.fields[offset].name, name);
+        assertEquals(schema.fields[offset].number, number);
+        
+        assertEquals(name, schema.getFieldName(number));
+        assertEquals(number, schema.getFieldNumber(name));
+    }
+    
+    public void testEntityWithFieldAlias()
+    {
+        MappedSchema<EntityWithFieldAlias> schema = 
+                (MappedSchema<EntityWithFieldAlias>)RuntimeSchema.getSchema(
+                        EntityWithFieldAlias.class, RuntimeEnv.ID_STRATEGY);
+        
+        assertTrue(schema.fields.length == 2);
+        
+        // The field with the smallest field number will be written first.
+        // In this case, field200 (despite field400 being declared 1st)
+        verify(schema, 200, "f200", 0);
+        verify(schema, 400, "field400", 1);
     }
 
 }

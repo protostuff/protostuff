@@ -45,4 +45,10 @@ import java.lang.annotation.Target;
 public @interface Tag
 {
     int value();
+    
+    /**
+     * Overrides the field name (useful for non-binary formats like json/xml/yaml).
+     * Optional.
+     */
+    String alias() default "";
 }

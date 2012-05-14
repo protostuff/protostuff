@@ -198,8 +198,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     continue;
                 }
                 
-                int fieldMapping;
-                Tag tag = f.getAnnotation(Tag.class);
+                final Tag tag = f.getAnnotation(Tag.class);
+                final int fieldMapping;
+                final String name;
                 if(tag == null)
                 {
                     // Fields gets assigned mapping tags according to their definition order
@@ -209,6 +210,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                                 "all fields must be annotated with @" + Tag.class.getSimpleName());
                     }
                     fieldMapping = ++i;
+                    
+                    name = f.getName();
                 }
                 else
                 {
@@ -226,10 +229,12 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                         throw new RuntimeException("Invalid field number: " + 
                                 fieldMapping + " on " + typeClass);
                     }
+                    
+                    name = tag.alias().isEmpty() ? f.getName() : tag.alias();
                 }
                 
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
-                        f.getType(), strategy).create(fieldMapping, f.getName(), f, strategy);
+                        f.getType(), strategy).create(fieldMapping, name, f, strategy);
                 fields.add(field);
                 
                 maxFieldMapping = Math.max(maxFieldMapping, fieldMapping);
