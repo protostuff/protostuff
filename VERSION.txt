@@ -1,4 +1,6 @@
-protostuff-1.0.6-SNAPSHOT
+protostuff-1.0.7-SNAPSHOT
+
+protostuff-1.0.6 2012-05-14
 + allow @Tag annotations to override the field name
   - E.g @Tag(value=1, alias="foo")
   - useful for non-binary formats like json/xml/yaml
