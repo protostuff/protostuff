@@ -34,15 +34,21 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import com.dyuproject.protostuff.ByteString;
+import com.dyuproject.protostuff.CollectionSchema;
 import com.dyuproject.protostuff.Input;
+import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Pipe;
+import com.dyuproject.protostuff.Schema;
 
 /**
  * Base class for numeric id strategies.
@@ -324,4 +330,63 @@ public abstract class NumericIdStrategy extends IdStrategy
             this.delegate = delegate;
         }
     }
+    
+    /**
+     * Register your pojos/enums/collections/maps/delegates here.
+     */
+    public interface Registry
+    {
+        /**
+         * Collection ids start at 1.
+         */
+        public <T extends Collection<?>> Registry registerCollection(
+                CollectionSchema.MessageFactory factory, int id);
+        
+        /**
+         * Map ids start at 1.
+         */
+        public <T extends Map<?,?>> Registry registerMap(
+                MapSchema.MessageFactory factory, int id);
+        
+        /**
+         * Enum ids start at 1.
+         */
+        public <T extends Enum<T>> Registry registerEnum(Class<T> clazz, int id);
+        
+        /**
+         * Enum ids start at 1.
+         */
+        public Registry registerEnum(EnumIO<?> eio, int id);
+        
+        /**
+         * Pojo ids start at 1.
+         */
+        public <T> Registry registerPojo(Class<T> clazz, int id);
+        
+        /**
+         * Pojo ids start at 1.
+         */
+        public <T> Registry registerPojo(Schema<T> schema, Pipe.Schema<T> pipeSchema, 
+                int id);
+        
+        /**
+         * If you are sure that you are only using a single implementation of 
+         * your interface/abstract class, then it makes sense to map it directly 
+         * to its impl class to avoid writing the type.
+         * 
+         * Note that the type is always written when your field is 
+         * {@link java.lang.Object}. 
+         * 
+         * Pojo ids start at 1.
+         */
+        public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass);
+        
+        /**
+         * Register a {@link Delegate} and assign an id.
+         * 
+         * Delegate ids start at 1.
+         */
+        public <T> Registry registerDelegate(Delegate<T> delegate, int id);
+    }
+    
 }

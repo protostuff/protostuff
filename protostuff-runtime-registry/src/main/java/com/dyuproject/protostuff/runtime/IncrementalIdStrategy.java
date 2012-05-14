@@ -90,9 +90,9 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     }
     
     /**
-     * This Registry is only way to register your pojos/enums/collections/maps.
+     * This Registry is only way to register your pojos/enums/collections/maps/delegates.
      */
-    public static class Registry
+    public static class Registry implements NumericIdStrategy.Registry
     {
         
         public final IncrementalIdStrategy strategy;
