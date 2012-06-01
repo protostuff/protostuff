@@ -13,9 +13,9 @@ message Person {
     
     @DefaultGender(value=MALE)
     enum Gender {
-        @Alias(value="m")
+        @Alias(value="m", type=Person)
         MALE = 1;
-        @Alias(value="f")
+        @Alias(value="f", type=Person)
         FEMALE = 2;
     }
     
@@ -29,6 +29,9 @@ message Person {
             
             @DeeperMessageFieldAnnotation(nullable=false,version=1.1)
             repeated Person person = 2;
+            
+            @TestNested(type=Person, g=Gender)
+            optional string key = 3;
         }
     }
     
@@ -38,6 +41,9 @@ message Person {
 @PersonExtras
 extend Person {
     @Validate optional string country = 100;
+    
+    @TestExtend(type=Person, g=Person.Gender)
+    optional string key = 101;
 }
 
 @SomeServiceAnnotation
@@ -47,5 +53,6 @@ service PersonService {
     @AuthRequired(role=admin)
     rpc Put (Person) returns (Person);
     
+    @TestRpc(type=Person, g=Person.Gender)
     rpc List (Person.ListRequest) returns (Person.ListRequest.Response);
 }

@@ -61,12 +61,14 @@ public class AnnotationTest extends TestCase
         Annotation maleA = male.getAnnotation("Alias");
         assertNotNull(maleA);
         assertEquals("m", maleA.getValue("value"));
+        assertTrue(person == maleA.getValue("type"));
         
         EnumGroup.Value female = gender.getValue(1);
         assertNotNull(female);
         Annotation femaleA = female.getAnnotation("Alias");
         assertNotNull(femaleA);
         assertEquals("f", femaleA.getValue("value"));
+        assertTrue(person == femaleA.getValue("type"));
         
         Message listRequest = person.getNestedMessage("ListRequest");
         assertNotNull(listRequest);
@@ -90,6 +92,14 @@ public class AnnotationTest extends TestCase
         assertTrue(deeperMessageFieldAnnotation.getParams().size() == 2);
         assertEquals(false, deeperMessageFieldAnnotation.getValue("nullable"));
         assertEquals(Float.valueOf(1.1f), deeperMessageFieldAnnotation.getValue("version"));
+        
+        Field<?> keyField = response.getField("key");
+        assertNotNull(keyField);
+        
+        Annotation testNested = keyField.getAnnotation("TestNested");
+        assertNotNull(testNested);
+        assertTrue(person == testNested.getValue("type"));
+        assertTrue(gender == testNested.getValue("g"));
         
         Collection<Extension> extensions = proto.getExtensions();
         assertTrue(extensions.size() == 1);
@@ -125,6 +135,13 @@ public class AnnotationTest extends TestCase
         assertTrue(authRequired.getParams().size() == 1);
         assertEquals("admin", authRequired.getValue("role"));
         
+        Service.RpcMethod list = personService.getRpcMethod("List");
+        assertNotNull(list);
+        
+        Annotation testRpc = list.getAnnotation("TestRpc");
+        assertNotNull(testRpc);
+        assertTrue(person == testRpc.getValue("type"));
+        assertTrue(gender == testRpc.getValue("g"));
     }
 
 }

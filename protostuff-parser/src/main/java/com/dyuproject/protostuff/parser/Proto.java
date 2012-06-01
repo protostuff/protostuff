@@ -362,13 +362,12 @@ public class Proto extends AnnotationContainer implements HasOptions
         }
     }
     
-    void addAnnotationsTo(Field<?> target)
+    void addAnnotationsTo(Field<?> target, String enclosingNamespace)
     {
         if(target.addAnnotations(annotations, true))
         {
             if(refOffset != references.size())
             {
-                String enclosingNamespace = target.getOwner().getFullName();
                 int size = references.size();
                 while(refOffset < size)
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;

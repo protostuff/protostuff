@@ -303,6 +303,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             .toString();
     }
     
+    public String getEnclosingNamespace()
+    {
+        return getFullName();
+    }
+    
     public String getFullName()
     {
         StringBuilder buffer = new StringBuilder();

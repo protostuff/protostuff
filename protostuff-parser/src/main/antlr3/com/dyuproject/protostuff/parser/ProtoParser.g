@@ -218,7 +218,7 @@ message_field [Proto proto, HasFields message]
         } 
         (field_options[proto, message, fieldHolder.field])? {
             if(fieldHolder.field != null) {
-                proto.addAnnotationsTo(fieldHolder.field);
+                proto.addAnnotationsTo(fieldHolder.field, message.getEnclosingNamespace());
                 message.addField(fieldHolder.field);
             }
         }

@@ -25,4 +25,5 @@ public interface HasFields extends HasOptions
 
     void addField(Field<?> field);
 
+    String getEnclosingNamespace();
 }

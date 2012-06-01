@@ -1,4 +1,5 @@
 protostuff-1.0.8-SNAPSHOT
++ Issue 124: proto-parser throws NPE when an annotation on a field contains a reference
 
 protostuff-1.0.7 2012-05-14
 + bugfix: an abstract class mapped to a single impl was not honored (bug introduced on 1.0.6)
