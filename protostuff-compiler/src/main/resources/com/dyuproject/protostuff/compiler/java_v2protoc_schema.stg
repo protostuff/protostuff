@@ -173,7 +173,11 @@ output.writeObject(<field.number>, message.get<field.name; format="PC">(), <fiel
 <elseif(field.bytesField)>
 output.writeByteArray(<field.number>, message.get<field.name; format="PC">().toByteArray(), false);
 <elseif(field.enumField)>
+<if(options.enums_by_name)>
+output.writeString(<field.number>, message.get<field.name; format="PC">().name(), false);
+<else>
 output.writeEnum(<field.number>, message.get<field.name; format="PC">().getNumber(), false);
+<endif>
 <else>
 output.write<field.class.simpleName>(<field.number>, message.get<field.name; format="PC">(), false);
 <endif>
@@ -185,7 +189,7 @@ builder.<setOrAdd><field.name; format="PC">(input.mergeObject(<field.message:mes
 <elseif(field.bytesField)>
 builder.<setOrAdd><field.name; format="PC">(com.google.protobuf.ByteString.copyFrom(input.readByteArray()));
 <elseif(field.enumField)>
-builder.<setOrAdd><field.name; format="PC">(<field.enumGroup:enum_fullname(eg=it, options=options)>.valueOf(input.readEnum()));
+builder.<setOrAdd><field.name; format="PC">(<field.enumGroup:enum_fullname(eg=it, options=options)>.valueOf(input.read<if(options.enums_by_name)>String<else>Enum<endif>()));
 
 <else>
 builder.<setOrAdd><field.name; format="PC">(input.read<field.class.simpleName>());
