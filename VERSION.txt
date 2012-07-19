@@ -1,7 +1,7 @@
 protostuff-1.0.8-SNAPSHOT
 + Issue 129: Default value of optional bool properties is ignored.
 + added enums_by_name compiler option for java_v2protoc_schema (thanks to vitalyper)
-+ Issue 124: proto-parser throws NPE when an annotation on a field contains a referencez
++ Issue 124: proto-parser throws NPE when an annotation on a field contains a reference
 
 protostuff-1.0.7 2012-05-14
 + bugfix: an abstract class mapped to a single impl was not honored (bug introduced on 1.0.6)
