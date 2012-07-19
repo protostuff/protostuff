@@ -188,7 +188,7 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 >>
 
 field_defaults_declaration(field, options) ::= <<
-<if(field.defaultValue)>
+<if(field.defaultValueSet)>
 <if(!field.enumField)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
@@ -244,7 +244,7 @@ field_singular_type(field, options) ::= <<
 >>
 
 field_assign_defaults(field, options) ::= <<
-<if(field.defaultValue)>
+<if(field.defaultValueSet)>
 <if(!field.enumField)>
  = DEFAULT_<field.name; format="UUC">
 <endif>
@@ -569,7 +569,7 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 >>
 
 singular_field_write_check(field, options) ::= <<
-<if(field.defaultValue)>
+<if(field.defaultValueSet)>
 <if(!field.enumField)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
