@@ -74,21 +74,25 @@ public final class StringSerializer
         (byte)'8', (byte)'0', (byte)'8'
     };
     
-    static final int ONE_BYTE_EXCLUSIVE = 0x00000080/3 + 1;
+    static final int TWO_BYTE_LOWER_LIMIT = 1 << 7;
     
-    static final int TWO_BYTE_LOWER_LIMIT = 0x00000080;
+    static final int ONE_BYTE_EXCLUSIVE = TWO_BYTE_LOWER_LIMIT/3 + 1;
+    
+    
+    static final int THREE_BYTE_LOWER_LIMIT = 1 << 14;
 
-    static final int TWO_BYTE_EXCLUSIVE = 0x00000800/3 + 1;
+    static final int TWO_BYTE_EXCLUSIVE = THREE_BYTE_LOWER_LIMIT/3 + 1;
     
-    static final int THREE_BYTE_LOWER_LIMIT = 0x00000800;
+    
+    static final int FOUR_BYTE_LOWER_LIMIT = 1 << 21;
 
-    static final int THREE_BYTE_EXCLUSIVE = 0x00008000/3 + 1;
+    static final int THREE_BYTE_EXCLUSIVE = FOUR_BYTE_LOWER_LIMIT/3 + 1;
     
-    static final int FOUR_BYTE_LOWER_LIMIT = 0x00008000;
+    
+    static final int FIVE_BYTE_LOWER_LIMIT = 1 << 28;
 
-    static final int FOUR_BYTE_EXCLUSIVE = 0x00080000/3 + 1;
+    static final int FOUR_BYTE_EXCLUSIVE = FIVE_BYTE_LOWER_LIMIT/3 + 1;
     
-    static final int FIVE_BYTE_LOWER_LIMIT = 0x00080000;
     
     static void putBytesFromInt(int i, final int offset, final int size, final byte[] buf)
     {

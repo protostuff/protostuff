@@ -53,45 +53,26 @@ public class StreamedStringSerializerTest extends TestCase
 
     public void testVarDelimitedBoundryTwoByte() throws Exception
     {
-        int size = 0x800-16; // takes 2 bytes for size and is larger than buffer
+        int size = StringSerializer.THREE_BYTE_LOWER_LIMIT-1; // takes 2 bytes for size and is larger than buffer
 
-        checkVarDelimitedBoundry(1, size);
-        checkVarDelimitedBoundry(2, size);
-        checkVarDelimitedBoundry(3, size);
+        checkVarDelimitedBoundry(1, size); // 1st str does not fit
+        checkVarDelimitedBoundry(2, size); // 1st str fits
+        checkVarDelimitedBoundry(3, size); // 2nd str varint doesn't fit
+        checkVarDelimitedBoundry(4, size); // Only 2nd varint fits (slow)
     }
 
     public void testVarDelimitedBoundryThreeByte() throws Exception
     {
-        int size = 0x800+16; // takes 3 bytes for size
+        int size = StringSerializer.FOUR_BYTE_LOWER_LIMIT-1; // takes 3 bytes for size
 
-        checkVarDelimitedBoundry(1, size);
-        checkVarDelimitedBoundry(2, size);
-        checkVarDelimitedBoundry(3, size);
-        checkVarDelimitedBoundry(4, size);
+        checkVarDelimitedBoundry(1, size); // 1st str does not fit
+        checkVarDelimitedBoundry(2, size); // 1st str fits
+        checkVarDelimitedBoundry(3, size); // 2nd str varint doesn't fit
+        checkVarDelimitedBoundry(4, size); // same as above
+        checkVarDelimitedBoundry(5, size); // Only 2nd varint fits (slow)
     }
 
-    public void testVarDelimitedBoundryFourByte() throws Exception
-    {
-        int size = 0x8000+16; // takes 4 bytes for size
-
-        checkVarDelimitedBoundry(1, size);
-        checkVarDelimitedBoundry(2, size);
-        checkVarDelimitedBoundry(3, size);
-        checkVarDelimitedBoundry(4, size);
-        checkVarDelimitedBoundry(5, size);
-    }
-
-    public void testVarDelimitedBoundryFiveByte() throws Exception
-    {
-        int size = 0x80000+16; // takes 5 bytes for size
-
-        checkVarDelimitedBoundry(1, size);
-        checkVarDelimitedBoundry(2, size);
-        checkVarDelimitedBoundry(3, size);
-        checkVarDelimitedBoundry(4, size);
-        checkVarDelimitedBoundry(5, size);
-        checkVarDelimitedBoundry(6, size);
-    }
+    // 4-byte & 5-byte ommitted (256mb length string = eats 512mb memory as char is 16 bit)
 
     public String repeatChar(char ch, int times)
     {
@@ -280,7 +261,13 @@ public class StreamedStringSerializerTest extends TestCase
         int expectedLen = 130 * 21;
         assertTrue(moreThan2048.length() == expectedLen);
         
-        checkVarDelimited(moreThan2048, 3, expectedLen);
+        checkVarDelimited(moreThan2048, 2, expectedLen);
+        
+        String str16383 = repeatChar('z', 16383);
+        String str16384 = str16383 + "g";
+        
+        checkVarDelimited(str16383, 2, str16383.length());
+        checkVarDelimited(str16384, 3, str16384.length());
     }
     
     public void testUTF8FixedDelimited() throws Exception
