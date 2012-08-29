@@ -44,4 +44,8 @@ Patch contributors:
   Brice Jaglin
     * protostuff-runtime - annotations on pojo's fields to have explicit control of field numbers.
 
+  baetz.alexander
+    * protostuff-compiler - Issue 128 patch
+    * protostuff-maven-plugin - Issue 128 patch
+
   

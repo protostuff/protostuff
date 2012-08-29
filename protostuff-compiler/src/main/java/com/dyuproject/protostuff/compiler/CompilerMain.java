@@ -67,6 +67,22 @@ public final class CompilerMain
         return file.exists() ? new FileInputStream(file) : null;
     }
     
+    public static List<ProtoModule> loadModules(File file, File baseDirForSource, 
+            File baseDirForOutput)
+    {
+        Properties props = new Properties();
+        try
+        {
+            props.load(new FileInputStream(file));
+        }
+        catch(IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        
+        return loadModules(props, baseDirForSource, baseDirForOutput);
+    }
+    
     public static List<ProtoModule> loadModules(InputStream in)
     {
         Properties props = new Properties();
@@ -79,10 +95,16 @@ public final class CompilerMain
             throw new RuntimeException(e);
         }
         
-        return loadModules(props);
+        return loadModules(props, null, null);
     }
     
     public static List<ProtoModule> loadModules(Properties props)
+    {
+        return loadModules(props, null, null);
+    }
+    
+    public static List<ProtoModule> loadModules(Properties props, 
+            File baseDirForSource, File baseDirForOutput)
     {
         String moduleString = props.getProperty("modules");
         if(moduleString==null || moduleString.length()==0)
@@ -117,8 +139,8 @@ public final class CompilerMain
             
             String options = props.getProperty(m + ".options");
             
-            ProtoModule module = new ProtoModule(new File(source), output, 
-                    encoding, new File(outputDir));
+            ProtoModule module = newProtoModule(source, output, encoding, outputDir, 
+                    baseDirForSource, baseDirForOutput);
             
             module.setCachingProtoLoader(loader);
             
@@ -132,6 +154,30 @@ public final class CompilerMain
         }
         
         return modules;
+    }
+    
+    static ProtoModule newProtoModule(String source, String output, String encoding, 
+            String outputDir, File baseDirForSource, File baseDirForOutput)
+    {
+        if(baseDirForSource != null)
+        {
+            if(baseDirForOutput != null)
+            {
+                return new ProtoModule(new File(baseDirForSource, source), output, 
+                        encoding, new File(baseDirForOutput, outputDir));
+            }
+            
+            return new ProtoModule(new File(baseDirForSource, source), output, 
+                    encoding, new File(outputDir));
+        }
+        
+        if(baseDirForOutput != null)
+        {
+            return new ProtoModule(new File(source), output, 
+                    encoding, new File(baseDirForOutput, outputDir));
+        }
+        
+        return new ProtoModule(new File(source), output, encoding, new File(outputDir));
     }
     
     public static void addOptionsTo(ProtoModule module, String[] options)

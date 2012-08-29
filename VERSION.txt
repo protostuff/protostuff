@@ -5,6 +5,7 @@ protostuff-1.0.8-SNAPSHOT
   This is a bug that was overlooked but doesn't have major side effects because of the way varint encoding works.
 + Issue 131: option can't be used as a field name in maven-plugin
 + Issue 129: Default value of optional bool properties is ignored.
++ Issue 128: Maven-Plugin fails for multi-module projects
 + added enums_by_name compiler option for java_v2protoc_schema (thanks to vitalyper)
 + Issue 124: proto-parser throws NPE when an annotation on a field contains a reference
 

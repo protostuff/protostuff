@@ -15,7 +15,6 @@
 package com.dyuproject.protostuff.mojo;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -81,6 +80,28 @@ public class ProtoCompilerMojo extends AbstractMojo
      * @parameter
      */
     protected File modulesFile;    
+    
+    /**
+     * If not specified, the directory where the file is located will be used as its 
+     * base dir.
+     *
+     * This is only relevent when {@link #modulesFile is provided}. 
+     *
+     * @parameter
+     * @since 1.0.8
+     */
+    protected File sourceBaseDir;
+    
+    /**
+     * If not specified, the directory where the file is located will be used as its 
+     * base dir.
+     * 
+     * This is only relevent when {@link #modulesFile is provided}.
+     *
+     * @parameter
+     * @since 1.0.8
+     */
+    protected File outputBaseDir;
     
     /**
      * The modules to generate code from
@@ -176,8 +197,18 @@ public class ProtoCompilerMojo extends AbstractMojo
                 if(!modulesFile.exists())
                     throw new MojoExecutionException(modulesFile + " does not exist.");
                 
-                CompilerMain.compile(CompilerMain.loadModules(
-                        new FileInputStream(modulesFile)));
+                File parent = modulesFile.getParentFile();
+                File sourceBaseDir = this.sourceBaseDir, 
+                        outputBaseDir = this.outputBaseDir;
+                
+                if(sourceBaseDir == null)
+                    sourceBaseDir = parent;
+                
+                if(outputBaseDir == null)
+                    outputBaseDir = parent;
+                
+                CompilerMain.compile(CompilerMain.loadModules(modulesFile, 
+                        sourceBaseDir, outputBaseDir));
             }
             catch(Exception e)
             {
