@@ -1,4 +1,8 @@
 protostuff-1.0.8-SNAPSHOT
++ Issue 133: When the varint of large strings (2kb or more) are serialized, unnecessary bytes are written
+  A 2kb string previously needed 3 bytes for its varint.
+  Now anything under 16kb will only need 2 bytes.
+  This is a bug that was overlooked but doesn't have major side effects because of the way varint encoding works.
 + Issue 129: Default value of optional bool properties is ignored.
 + added enums_by_name compiler option for java_v2protoc_schema (thanks to vitalyper)
 + Issue 124: proto-parser throws NPE when an annotation on a field contains a reference
