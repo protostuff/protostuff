@@ -38,7 +38,7 @@ public class ReservedWordsAsVariablesTest extends TestCase
         Message test = proto.getMessage("Test");
         assertNotNull(test);
         
-        assertTrue(test.getFields().size() == 32);
+        assertTrue(test.getFields().size() == 33);
         
         assertTrue(test.getField("optional").number == 1);
         assertTrue(test.getField("repeated").number == 2);
@@ -72,6 +72,7 @@ public class ReservedWordsAsVariablesTest extends TestCase
         assertTrue(test.getField("bytes").number == 30);
         assertTrue(test.getField("default").number == 31);
         assertTrue(test.getField("max").number == 32);
+        assertTrue(test.getField("option").number == 33);
     }
 
 }

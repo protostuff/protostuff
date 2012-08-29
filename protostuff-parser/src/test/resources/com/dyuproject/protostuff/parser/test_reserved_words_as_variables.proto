@@ -34,6 +34,6 @@ message Test {
   optional bytes bytes = 30;
   optional string default = 31;
   optional string max = 32;
-  
+  optional string option = 33;
 
 }
