@@ -31,5 +31,10 @@ public abstract class AbstractTest extends TestCase
     {
         return LinkedBuffer.allocate(BUF_SIZE);
     }
+    
+    public static LinkedBuffer buf(int size)
+    {
+        return LinkedBuffer.allocate(size);
+    }
 
 }

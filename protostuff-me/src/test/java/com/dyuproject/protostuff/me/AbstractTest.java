@@ -34,6 +34,11 @@ public abstract class AbstractTest extends TestCase
         return LinkedBuffer.allocate(BUF_SIZE);
     }
     
+    public static LinkedBuffer buf(int size)
+    {
+        return LinkedBuffer.allocate(size);
+    }
+    
     static int getInteger(String propertyName, int defaultIfNone)
     {
         String prop = System.getProperty(propertyName);

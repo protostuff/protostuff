@@ -323,4 +323,101 @@ public final class ProtostuffIOUtil
         return list;
     }
 
+
+    /**
+     * Optimal/Optional mergeDelimitedFrom - If the message does not fit the buffer, 
+     * no merge is done and this method will return false.
+     * 
+     * This is strictly for reading a single message from the stream because the 
+     * buffer is aggressively filled when reading the delimited size (which could 
+     * result into reading more bytes than it has to).
+     * 
+     * The remaining bytes will be drained (consumed and discared) when the message 
+     * is too large.
+     */
+    public static boolean optMergeDelimitedFrom(InputStream in, 
+            Object message, Schema schema, 
+            LinkedBuffer buffer) throws IOException
+    {
+        return optMergeDelimitedFrom(in, message, schema, true, buffer);
+    }
+    
+    /**
+     * Optimal/Optional mergeDelimitedFrom - If the message does not fit the buffer, 
+     * no merge is done and this method will return false.
+     * 
+     * This is strictly for reading a single message from the stream because the 
+     * buffer is aggressively filled when reading the delimited size (which could 
+     * result into reading more bytes than it has to).
+     */
+    public static boolean optMergeDelimitedFrom(InputStream in, 
+            Object message, Schema schema, boolean drainRemainingBytesIfTooLarge,  
+            LinkedBuffer buffer) throws IOException
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in, 
+                drainRemainingBytesIfTooLarge, buffer);
+        
+        if(buffer.start == buffer.offset)
+        {
+            // read offset not set ... message too large
+            return false;
+        }
+        
+        final ByteArrayInput input = new ByteArrayInput(buffer.buffer, 
+                buffer.offset, size, true);
+        try
+        {
+            schema.mergeFrom(input, message);
+            input.checkLastTagWas(0);
+        }
+        catch(ArrayIndexOutOfBoundsException e)
+        {
+            throw ProtobufException.truncatedMessage(e);
+        }
+        finally
+        {
+            // reset
+            buffer.offset = buffer.start;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Optimal writeDelimitedTo - The varint32 prefix is written to the buffer instead 
+     * of directly writing to outputstream.
+     * 
+     * @return the size of the message
+     */
+    public static int optWriteDelimitedTo(final OutputStream out, final Object message, 
+            final Schema schema, final LinkedBuffer buffer) throws IOException
+    {
+        if(buffer.start != buffer.offset)
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        
+        final ProtostuffOutput output = new ProtostuffOutput(buffer);
+        
+        // leave space for varint32
+        buffer.offset = buffer.start + 5;
+        output.size += 5;
+        
+        schema.writeTo(output, message);
+        
+        final int size = output.size - 5;
+        
+        final int delimOffset = IOUtil.putVarInt32AndGetOffset(size, buffer.buffer, 
+                buffer.start);
+        
+        // write to stream
+        out.write(buffer.buffer, delimOffset, buffer.offset - delimOffset);
+        
+        // flush remaining
+        if(buffer.next != null)
+            LinkedBuffer.writeTo(out, buffer.next);
+        
+        return size;
+    }
 }

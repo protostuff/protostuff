@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Common io utils for between protostuff and protobuf formats.
+ * Common io utils for the supported formats.
  *
  * @author David Yu
  * @created Nov 12, 2009
@@ -45,8 +45,7 @@ final class IOUtil
         }
         catch(ArrayIndexOutOfBoundsException ae)
         {
-            throw new RuntimeException("Reading from a byte array threw an IOException (should " + 
-                    "never happen).");
+            throw new RuntimeException("Truncated.");
         }
         catch (IOException e)
         {
@@ -213,6 +212,156 @@ final class IOUtil
             if(read == -1)
                 throw ProtobufException.truncatedMessage();
         }
+    }
+    
+    /**
+     * Fills the buffer based from the varint32 read from the input stream.
+     * 
+     * The buffer's read offset is not set if the data (varint32 size + message size) 
+     * is too large to fit in the buffer.
+     * 
+     * @return the delimited size read.
+     */
+    static int fillBufferWithDelimitedMessageFrom(InputStream in, 
+            boolean drainRemainingBytesIfTooLarge, 
+            LinkedBuffer lb) throws IOException
+    {
+        final byte[] buf = lb.buffer;
+        int offset = lb.start, 
+                len = buf.length - offset, 
+                read = in.read(buf, offset, len);
+        
+        if(read < 1)
+            throw new EOFException("fillBufferWithDelimitedMessageFrom");
+        
+        int last = offset + read, size = buf[offset++];
+        if(0 != (size & 0x80))
+        {
+            size = size & 0x7f;
+            
+            for (int shift = 7;; shift += 7)
+            {
+                if(offset == last)
+                {
+                    // read too few bytes
+                    read = in.read(buf, last, len - (last - lb.start));
+                    if(read < 1)
+                        throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                    
+                    last += read;
+                }
+                
+                byte b = buf[offset++];
+                size |= (b & 0x7f) << shift;
+                
+                if (0 == (b & 0x80))
+                    break;
+                
+                if(shift == 28)
+                {
+                    // discard the remaining bytes (5)
+                    for (int i = 0;;)
+                    {
+                        if(offset == last)
+                        {
+                            // read more
+                            read = in.read(buf, last, len - (last - lb.start));
+                            if(read < 1)
+                                throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                            
+                            last += read;
+                        }
+                        
+                        if (buf[offset++] >= 0)
+                            break;
+                        
+                        if (5 == ++i)
+                        {
+                            // we've already consumed 10 bytes
+                            throw ProtobufException.malformedVarint();
+                        }
+                    }
+                    
+                }
+            }
+        }
+        
+        final int partial = last - offset;
+        if(partial < size)
+        {
+            // need to read more
+            final int delimSize = offset - lb.start;
+            if((size + delimSize) > len)
+            {
+                // too large.
+                
+                if(!drainRemainingBytesIfTooLarge)
+                    return size;
+                
+                // drain the remaining bytes
+                for(int remaining = size - partial; remaining > 0;)
+                {
+                    read = in.read(buf, lb.start, Math.min(remaining, len));
+                    if(read < 1)
+                        throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                    
+                    remaining -= read;
+                }
+                
+                return size;
+            }
+            
+            // read the remaining bytes
+            fillBufferFrom(in, buf, last, size - partial);
+        }
+        
+        // set the read offset (start of message)
+        lb.offset = offset;
+        
+        return size;
+    }
+    
+    /**
+     * Returns the offset where the first byte is written.
+     * This method assumes that 5 bytes will be writable starting at the 
+     * {@code variableOffset}.
+     */
+    static int putVarInt32AndGetOffset(final int value, 
+            final byte[] buffer, final int variableOffset)
+    {
+        switch(ProtobufOutput.computeRawVarint32Size(value))
+        {
+            case 1:
+                buffer[variableOffset+4] = (byte)value;
+                return variableOffset+4;
+                
+            case 2:
+                buffer[variableOffset+3] = (byte)((value & 0x7F) | 0x80);
+                buffer[variableOffset+4] = (byte)(value >>> 7);
+                return variableOffset+3;
+                
+            case 3:
+                buffer[variableOffset+2] = (byte)((value & 0x7F) | 0x80);
+                buffer[variableOffset+3] = (byte)((value >>> 7 & 0x7F) | 0x80);
+                buffer[variableOffset+4] = (byte)(value >>> 14);
+                return variableOffset+2;
+                
+            case 4:
+                buffer[variableOffset+1] = (byte)((value & 0x7F) | 0x80);
+                buffer[variableOffset+2] = (byte)((value >>> 7 & 0x7F) | 0x80);
+                buffer[variableOffset+3] = (byte)((value >>> 14 & 0x7F) | 0x80);
+                buffer[variableOffset+4] = (byte)(value >>> 21);
+                return variableOffset+1;
+                
+            default:
+                buffer[variableOffset] = (byte)((value & 0x7F) | 0x80);
+                buffer[variableOffset+1] = (byte)((value >>> 7 & 0x7F) | 0x80);
+                buffer[variableOffset+2] = (byte)((value >>> 14 & 0x7F) | 0x80);
+                buffer[variableOffset+3] = (byte)((value >>> 21 & 0x7F) | 0x80);
+                buffer[variableOffset+4] = (byte)(value >>> 28);
+                return variableOffset;
+        }
+
     }
 
 }
