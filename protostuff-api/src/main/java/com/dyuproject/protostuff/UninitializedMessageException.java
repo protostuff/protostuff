@@ -70,6 +70,17 @@ public final class UninitializedMessageException extends RuntimeException {
     this.targetSchema = targetSchema;
   }
   
+  public UninitializedMessageException(String msg, Message<?> targetMessage) {
+    this(msg, targetMessage, targetMessage.cachedSchema());
+  }
+  
+  public UninitializedMessageException(String msg, Object targetMessage, 
+      Schema<?> targetSchema) {
+    super(msg);
+    this.targetMessage = targetMessage;
+    this.targetSchema = targetSchema;
+  }
+  
   @SuppressWarnings("unchecked")
   public <T> T getTargetMessage() {
     return (T)targetMessage;
