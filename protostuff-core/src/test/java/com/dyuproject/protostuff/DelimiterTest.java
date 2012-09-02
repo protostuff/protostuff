@@ -111,6 +111,33 @@ public abstract class DelimiterTest extends AbstractTest
         assertEquals(message, parsedMessage);
     }
     
+    public void testFooEmpty() throws Exception
+    {
+        Schema<Foo> schema = Foo.getSchema();
+        Foo message = new Foo();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int size = optWriteDelimitedTo(out, message, schema, buf());
+        int delimSize = ProtobufOutput.computeRawVarint32Size(size);
+        byte[] data = out.toByteArray();
+        
+        int expectedSize = size + delimSize;
+        assertEquals(expectedSize, data.length);
+        verifyOptData(data, message, schema, buf());
+        
+        // empty
+        assertEquals(size, 0);
+        assertEquals(delimSize, 1);
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        
+        Foo parsedMessage = schema.newMessage();
+        boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf());
+        assertTrue(merged);
+        
+        assertEquals(message, parsedMessage);
+    }
+    
     public void testFooTooLarge() throws Exception
     {
         Schema<Foo> schema = Foo.getSchema();

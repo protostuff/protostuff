@@ -128,11 +128,13 @@ public final class ProtobufIOUtil
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} 
      * using the given {@code schema}.
+     * 
+     * @return the size of the message
      */
-    public static void mergeDelimitedFrom(InputStream in, Object message, Schema schema) 
+    public static int mergeDelimitedFrom(InputStream in, Object message, Schema schema) 
     throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, message, schema, false);
+        return IOUtil.mergeDelimitedFrom(in, message, schema, false);
     }
     
     /**
@@ -142,21 +144,25 @@ public final class ProtobufIOUtil
      * The delimited message size must not be larger than the 
      * {@code buffer}'s size/capacity.
      * {@link ProtobufException} "size limit exceeded" is thrown otherwise.
+     * 
+     * @return the size of the message
      */
-    public static void mergeDelimitedFrom(InputStream in, Object message, Schema schema, 
+    public static int mergeDelimitedFrom(InputStream in, Object message, Schema schema, 
             LinkedBuffer buffer) throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, buffer.buffer, message, schema, false);
+        return IOUtil.mergeDelimitedFrom(in, buffer.buffer, message, schema, false);
     }
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Merges from the {@link DataInput}.
+     * 
+     * @return the size of the message
      */
-    public static void mergeDelimitedFrom(DataInput in, Object message, Schema schema) 
+    public static int mergeDelimitedFrom(DataInput in, Object message, Schema schema) 
     throws IOException
     {
-        IOUtil.mergeDelimitedFrom(in, message, schema, false);
+        return IOUtil.mergeDelimitedFrom(in, message, schema, false);
     }
     
     /**
@@ -387,6 +393,12 @@ public final class ProtobufIOUtil
         
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in, 
                 drainRemainingBytesIfTooLarge, buffer);
+        
+        if(size == 0)
+        {
+            // empty message
+            return true;
+        }
         
         if(buffer.start == buffer.offset)
         {

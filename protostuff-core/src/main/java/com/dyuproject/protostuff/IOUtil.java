@@ -82,7 +82,7 @@ final class IOUtil
      * A ProtobufException (sizeLimitExceeded) will be thrown if the 
      * size of the delimited message is larger.
      */
-    static <T> void mergeDelimitedFrom(InputStream in, byte[] buf, T message, 
+    static <T> int mergeDelimitedFrom(InputStream in, byte[] buf, T message, 
             Schema<T> schema, boolean decodeNestedMessageAsGroup) throws IOException
     {
         final int size = in.read();
@@ -90,6 +90,10 @@ final class IOUtil
             throw new EOFException("mergeDelimitedFrom");
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
+        
         if(len != 0)
         {
             // not an empty message
@@ -113,13 +117,15 @@ final class IOUtil
             }
             input.checkLastTagWas(0);
         }
+        
+        return len;
     }
     
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} 
      * using the given {@code schema}.
      */
-    static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
+    static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final int size = in.read();
@@ -127,6 +133,10 @@ final class IOUtil
             throw new EOFException("mergeDelimitedFrom");
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
+        
         if(len != 0)
         {
             // not an empty message
@@ -137,7 +147,7 @@ final class IOUtil
                         decodeNestedMessageAsGroup);
                 schema.mergeFrom(input, message);
                 input.checkLastTagWas(0);
-                return;
+                return len;
             }
             
             byte[] buf = new byte[len];
@@ -154,17 +164,22 @@ final class IOUtil
             }
             input.checkLastTagWas(0);
         }
+        
+        return len;
     }
 
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Merges from the {@link DataInput}.
      */
-    static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
+    static <T> int mergeDelimitedFrom(DataInput in, T message, Schema<T> schema, 
             boolean decodeNestedMessageAsGroup) throws IOException
     {
         final byte size = in.readByte();
         final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
         
         if(len != 0)
         {
@@ -198,6 +213,8 @@ final class IOUtil
         // check it since this message is embedded in the DataInput.
         if(!schema.isInitialized(message))
             throw new UninitializedMessageException(message, schema);
+        
+        return len;
     }
     
     /**
@@ -285,6 +302,17 @@ final class IOUtil
                 }
             }
         }
+        
+        if(size == 0)
+        {
+            if(offset != last)
+                throw ProtobufException.misreportedSize();
+            
+            return size;
+        }
+        
+        if(size < 0)
+            throw ProtobufException.negativeSize();
         
         final int partial = last - offset;
         if(partial < size)

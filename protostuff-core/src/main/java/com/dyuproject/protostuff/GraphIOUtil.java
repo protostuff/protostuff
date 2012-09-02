@@ -94,8 +94,10 @@ public final class GraphIOUtil
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} 
      * using the given {@code schema}.
+     * 
+     * @return the size of the message
      */
-    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
+    public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) 
     throws IOException
     {
         final int size = in.read();
@@ -103,6 +105,10 @@ public final class GraphIOUtil
             throw ProtobufException.truncatedMessage();
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
+        
         if(len != 0)
         {
             // not an empty message
@@ -114,7 +120,7 @@ public final class GraphIOUtil
                 final GraphCodedInput graphInput = new GraphCodedInput(input);
                 schema.mergeFrom(graphInput, message);
                 input.checkLastTagWas(0);
-                return;
+                return len;
             }
             
             final byte[] buf = new byte[len];
@@ -132,6 +138,8 @@ public final class GraphIOUtil
             }
             input.checkLastTagWas(0);
         }
+        
+        return len;
     }
     
     /**
@@ -141,8 +149,10 @@ public final class GraphIOUtil
      * The delimited message size must not be larger than the 
      * {@code buffer}'s size/capacity.  
      * {@link ProtobufException} "size limit exceeded" is thrown otherwise.
+     * 
+     * @return the size of the message
      */
-    public static <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
+    public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, 
             LinkedBuffer buffer) throws IOException
     {
         final int size = in.read();
@@ -152,6 +162,10 @@ public final class GraphIOUtil
         final byte[] buf = buffer.buffer;
         
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
+        
         if(len != 0)
         {
             // not an empty message
@@ -176,17 +190,24 @@ public final class GraphIOUtil
             }
             input.checkLastTagWas(0);
         }
+        
+        return len;
     }
     
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}.
      * Merges from the {@link DataInput}.
+     * 
+     * @return the size of the message
      */
-    public static <T> void mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
+    public static <T> int mergeDelimitedFrom(DataInput in, T message, Schema<T> schema) 
     throws IOException
     {
         final byte size = in.readByte();
         final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
+        
+        if(len < 0)
+            throw ProtobufException.negativeSize();
         
         if(len != 0)
         {
@@ -222,6 +243,8 @@ public final class GraphIOUtil
         // check it since this message is embedded in the DataInput.
         if(!schema.isInitialized(message))
             throw new UninitializedMessageException(message, schema);
+        
+        return len;
     }
     
     /**
@@ -365,6 +388,12 @@ public final class GraphIOUtil
         
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in, 
                 drainRemainingBytesIfTooLarge, buffer);
+        
+        if(size == 0)
+        {
+            // empty message
+            return true;
+        }
         
         if(buffer.start == buffer.offset)
         {
