@@ -383,7 +383,7 @@ public final class ByteArrayInput implements Input
         return value;
     }
     
-    <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException
+    private <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException
     {
         if(value == null)
             value = schema.newMessage();

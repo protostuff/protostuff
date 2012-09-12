@@ -251,7 +251,7 @@ public final class CodedInput implements Input {
   }
 
   /** Reads a message field value from the stream (using the {@code group} encoding). */
-  Object mergeObjectEncodedAsGroup(Object value, final Schema schema) throws IOException {
+  private Object mergeObjectEncodedAsGroup(Object value, final Schema schema) throws IOException {
     //if (recursionDepth >= recursionLimit) {
     //  throw ProtobufException.recursionLimitExceeded();
     //}

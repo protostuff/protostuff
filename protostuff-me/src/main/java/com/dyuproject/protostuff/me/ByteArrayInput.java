@@ -368,7 +368,7 @@ public final class ByteArrayInput implements Input
         return value;
     }
     
-    Object mergeObjectEncodedAsGroup(Object value, final Schema schema) throws IOException
+    private Object mergeObjectEncodedAsGroup(Object value, final Schema schema) throws IOException
     {
         if(value == null)
             value = schema.newMessage();
