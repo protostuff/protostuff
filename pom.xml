@@ -253,8 +253,8 @@
   
     <junit-version>3.8.2</junit-version>
     <protobuf-version>2.3.0</protobuf-version>
-    <jackson-version>1.7.9</jackson-version>
-    <woodstox-version>4.1.1</woodstox-version>
+    <jackson-version>1.9.9</jackson-version>
+    <woodstox-version>4.1.3</woodstox-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
 
