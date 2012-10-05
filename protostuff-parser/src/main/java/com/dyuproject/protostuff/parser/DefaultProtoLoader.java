@@ -102,7 +102,10 @@ public class DefaultProtoLoader implements Proto.Loader
         // last resort (defaults to classpath lookup).
         Proto protoFromOtherResource = loadFromOtherResource(path, importer);
         if(protoFromOtherResource == null)
-            throw new IllegalStateException("Imported proto " + path + " not found.");
+        {
+            throw new IllegalStateException("Imported proto " + path + 
+                    " not found. (" + importer.getSourcePath() + ")");
+        }
         
         return protoFromOtherResource;
     }
