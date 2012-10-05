@@ -28,6 +28,16 @@ import java.util.StringTokenizer;
 public class DefaultProtoLoader implements Proto.Loader
 {
     
+    protected static final int ALL = 0, 
+            PROTO_PATH_ONLY = 1, 
+            PROTO_PATH_AND_CLASSPATH = 2;
+    
+    /**
+     * The default proto search strategy to use.
+     */
+    public static final int DEFAULT_PROTO_SEARCH_STRATEGY = Integer.getInteger(
+            "proto_search_strategy", ALL);
+    
     public static final DefaultProtoLoader DEFAULT_INSTANCE = new DefaultProtoLoader();
     
     private static final ArrayList<File> __protoLoadDirs = new ArrayList<File>();
@@ -59,7 +69,100 @@ public class DefaultProtoLoader implements Proto.Loader
         return DEFAULT_INSTANCE;
     }
     
+    protected final int protoSearchStrategy;
+    
+    public DefaultProtoLoader()
+    {
+        this(DEFAULT_PROTO_SEARCH_STRATEGY);
+    }
+    
+    public DefaultProtoLoader(int protoSearchStrategy)
+    {
+        this.protoSearchStrategy = protoSearchStrategy;
+    }
+    
     public Proto load(String path, Proto importer) throws Exception
+    {
+        switch(protoSearchStrategy)
+        {
+            case ALL:
+                return searchFromAll(path, importer);
+            
+            case PROTO_PATH_ONLY:
+                return searchFromProtoPathOnly(path, importer);
+            
+            case PROTO_PATH_AND_CLASSPATH:
+                return searchFromProtoPathAndClasspath(path, importer);
+            
+            default:
+                return searchFromAll(path, importer);
+        }
+    }
+    
+    /**
+     * Search from proto_path only.  For full protoc compatibility, use this.
+     * 
+     * <pre>
+     * Enable via:
+     * -Dproto_path=$path -Dproto_search_strategy=1
+     * </pre>
+     */
+    protected Proto searchFromProtoPathOnly(String path, Proto importer) throws Exception
+    {
+        // proto_path
+        File protoFile;
+        for(File dir : __protoLoadDirs)
+        {
+            if((protoFile=new File(dir, path)).exists())
+                return loadFrom(protoFile, importer);
+        }
+        
+        throw new IllegalStateException("Imported proto " + path + 
+                " not found. (" + importer.getSourcePath() + ")");
+    }
+    
+    /**
+     * Search from proto_path and classpath (in that order).
+     * 
+     * <pre>
+     * Enable via:
+     * -Dproto_path=$path -Dproto_search_strategy=2
+     * </pre>
+     */
+    protected Proto searchFromProtoPathAndClasspath(String path, Proto importer) 
+            throws Exception
+    {
+        // proto_path
+        File protoFile;
+        for(File dir : __protoLoadDirs)
+        {
+            if((protoFile=new File(dir, path)).exists())
+                return loadFrom(protoFile, importer);
+        }
+        
+        // classpath
+        Proto protoFromOtherResource = loadFromOtherResource(path, importer);
+        if(protoFromOtherResource == null)
+        {
+            throw new IllegalStateException("Imported proto " + path + 
+                    " not found. (" + importer.getSourcePath() + ")");
+        }
+        
+        return protoFromOtherResource;
+    }
+    
+    /**
+     * Search from every possible resource.
+     * Also loads from a remote url (if path starts with http://).
+     * 
+     * <pre>
+     * Search order is: 
+     * 1. relative path
+     * 2. proto_path
+     * 3. classpath
+     * </pre>
+     */
+    protected Proto searchFromAll(String path, Proto importer) throws Exception
     {
         if(path.startsWith("http://"))
         {
