@@ -93,6 +93,22 @@ public class PluginProtoCompiler extends STCodeGenerator
             __resolver = resolver;
     }
     
+    /**
+     * Returns null if template is not found.
+     */
+    public static StringTemplate getTemplateFrom(StringTemplateGroup group, 
+            String template)
+    {
+        try
+        {
+            return group.lookupTemplate(template);
+        }
+        catch(IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+    
     private static GroupResolver __resolver = GROUP_RESOLVER;
     
     public final ProtoModule module;
@@ -107,16 +123,9 @@ public class PluginProtoCompiler extends STCodeGenerator
         group = resolveSTG(module);
         
         this.module = module;
-        boolean protoBlock = false;
-        try
-        {
-            protoBlock = group.lookupTemplate("proto_block") != null;
-        }
-        catch(IllegalArgumentException e)
-        {
-            protoBlock = false;
-        }
-        this.protoBlock = protoBlock;
+        
+        protoBlock = getTemplateFrom(group, "proto_block") != null;
+        
         fileExtension = getFileExtension(module.getOutput());
         javaOutput = ".java".equalsIgnoreCase(fileExtension);
     }
@@ -163,8 +172,8 @@ public class PluginProtoCompiler extends STCodeGenerator
             return;
         }
         
-        boolean hasEnumBlock = group.lookupTemplate("enum_block")!=null;
-        boolean hasMessageBlock = group.lookupTemplate("message_block")!=null;
+        boolean hasEnumBlock = getTemplateFrom(group, "enum_block") != null;
+        boolean hasMessageBlock = getTemplateFrom(group, "message_block") != null;
         
         String packageName = javaOutput ? proto.getJavaPackageName() : proto.getPackageName();
         

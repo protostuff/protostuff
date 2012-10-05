@@ -1,4 +1,5 @@
 protostuff-1.0.8-SNAPSHOT
++ Issue 135: PluginProtoCompiler throws IllegalStateException when one of the rules (message_block, enum_block) is missing
 + Issue 133: When the varint of large strings (2kb or more) are serialized, unnecessary bytes are written
   A 2kb string previously needed 3 bytes for its varint.
   Now anything under 16kb will only need 2 bytes.
