@@ -42,6 +42,13 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
  */
 public class PluginProtoCompiler extends STCodeGenerator
 {
+    
+    /**
+     * To enable, specify -Dppc.check_filename_placeholder=true
+     */
+    protected static final boolean CHECK_FILENAME_PLACEHOLDER = 
+            Boolean.getBoolean("ppc.check_filename_placeholder");
+    
     /**
      * Resolve the stg from the module.
      */
@@ -114,9 +121,14 @@ public class PluginProtoCompiler extends STCodeGenerator
     public final ProtoModule module;
     public final StringTemplateGroup group;
     public final boolean protoBlock, javaOutput;
-    public final String fileExtension;
-
+    public final String fileExtension, outputName, outputPrefix, outputSuffix;
+    
     public PluginProtoCompiler(ProtoModule module)
+    {
+        this(module, CHECK_FILENAME_PLACEHOLDER);
+    }
+
+    public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder)
     {
         super(module.getOutput());
         
@@ -128,6 +140,45 @@ public class PluginProtoCompiler extends STCodeGenerator
         
         fileExtension = getFileExtension(module.getOutput());
         javaOutput = ".java".equalsIgnoreCase(fileExtension);
+        
+        outputName = getOutputName(module.getOutput());
+        
+        final int placeHolder = checkFilenamePlaceHolder ? outputName.indexOf('$') : -1;
+        if(placeHolder == -1)
+        {
+            // no placeholder
+            outputPrefix = "";
+            outputSuffix = "";
+        }
+        else if(placeHolder == 0)
+        {
+            // suffix only
+            outputPrefix = "";
+            outputSuffix = outputName.substring(1);
+        }
+        else if(placeHolder == outputName.length()-1)
+        {
+            // prefix only
+            outputPrefix = outputName.substring(0, outputName.length()-1);
+            outputSuffix = "";
+        }
+        else
+        {
+            // has both prefix and suffix
+            outputPrefix = outputName.substring(0, placeHolder);
+            outputSuffix = outputName.substring(placeHolder+1);
+        }
+    }
+    
+    /**
+     * Strips the "java.stg" in "foo.java.stg".
+     */
+    static String getOutputName(String resource)
+    {
+        final int secondToTheLastDot = resource.lastIndexOf('.', resource.length()-5), 
+                slash = resource.lastIndexOf('/', secondToTheLastDot);
+        
+        return resource.substring(slash+1, secondToTheLastDot);
     }
     
     /**
@@ -160,6 +211,11 @@ public class PluginProtoCompiler extends STCodeGenerator
     {
         return __resolver.resolveSTG(module);
     }
+    
+    protected String resolveFileName(String name)
+    {
+        return outputPrefix + name + outputSuffix + fileExtension;
+    }
 
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
@@ -181,7 +237,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             for(EnumGroup eg : proto.getEnumGroups())
             {
-                String fileName = eg.getName() + fileExtension;
+                String fileName = resolveFileName(eg.getName());
                 
                 Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
                 AutoIndentWriter out = new AutoIndentWriter(writer);
@@ -200,7 +256,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             for(Message m : proto.getMessages())
             {
-                String fileName = m.getName() + fileExtension;
+                String fileName = resolveFileName(m.getName());
                 
                 Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
                 AutoIndentWriter out = new AutoIndentWriter(writer);
@@ -236,15 +292,25 @@ public class PluginProtoCompiler extends STCodeGenerator
                 name = outerClassname;
         }
         
-        String outerFilePrefix = module.getOption("outer_file_prefix");
-        if(outerFilePrefix != null)
-            name = outerFilePrefix + name;
-        
-        String outerFileSuffix = module.getOption("outer_file_suffix");
-        if(outerFileSuffix != null)
-            name += outerFileSuffix;
-        
-        String fileName = name + fileExtension;
+        final String fileName;
+        if(outputPrefix.isEmpty() && outputSuffix.isEmpty())
+        {
+            // resolve the prefix/suffix from module option
+            String outerFilePrefix = module.getOption("outer_file_prefix");
+            if(outerFilePrefix != null)
+                name = outerFilePrefix + name;
+            
+            String outerFileSuffix = module.getOption("outer_file_suffix");
+            if(outerFileSuffix != null)
+                name += outerFileSuffix;
+            
+            fileName = name + fileExtension;
+        }
+        else
+        {
+            // use the placeholder in the output name
+            fileName = resolveFileName(name);
+        }
         
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
         
