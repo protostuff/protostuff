@@ -171,7 +171,7 @@ public class PluginProtoCompiler extends STCodeGenerator
     }
     
     /**
-     * Strips the "java.stg" in "foo.java.stg".
+     * Returns "foo" from "path/to/foo.java.stg".
      */
     static String getOutputName(String resource)
     {
