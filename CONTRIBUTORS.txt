@@ -8,6 +8,9 @@ Thanks to:
     * java_bean_model (compiler/codegen)
   Igor Scherbak
     * proto_extender (compiler/codegen)
+  John Koepi
+    * ProtoToProtoCompiler
+    * JavaBeanModelCompiler
 
 Patch contributors:
   J.D. Zamfirescu
