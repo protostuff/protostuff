@@ -67,6 +67,25 @@ public final class CompilerMain
         return file.exists() ? new FileInputStream(file) : null;
     }
     
+    static Properties propsFrom(String resource) throws IOException
+    {
+        File file = new File(resource);
+        if(!file.exists())
+            return null;
+        
+        Properties props = new Properties();
+        try
+        {
+            props.load(new FileInputStream(file));
+        }
+        catch(IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        
+        return props;
+    }
+    
     public static List<ProtoModule> loadModules(File file, File baseDirForSource, 
             File baseDirForOutput)
     {
@@ -122,38 +141,51 @@ public final class CompilerMain
         ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
         for(String m : COMMA.split(moduleString))
         {
-            m = m.trim();
-            String source = props.getProperty(m + ".source");
-            if(source==null)
-                throw new IllegalStateException(m + " must have a source");
-            
-            String output = props.getProperty(m + ".output");
-            if(output==null)
-                throw new IllegalStateException(m + " must have an output");
-            
-            String outputDir = props.getProperty(m + ".outputDir");
-            if(outputDir==null)
-                throw new IllegalStateException(m + " must have an outputDir");
-            
-            String encoding = props.getProperty(m + ".encoding");
-            
-            String options = props.getProperty(m + ".options");
-            
-            ProtoModule module = newProtoModule(source, output, encoding, outputDir, 
-                    baseDirForSource, baseDirForOutput);
-            
-            module.setCachingProtoLoader(loader);
-            
-            if(globalOptions != null)
-                addOptionsTo(module, globalOptions);
-            
-            if(options != null)
-                addOptionsTo(module, COMMA.split(options));
-            
-            modules.add(module);
+            modules.add(loadModule(props, m.trim(), loader, 
+                    baseDirForSource, baseDirForOutput, 
+                    globalOptions, null));
         }
         
         return modules;
+    }
+    
+    public static ProtoModule loadModule(Properties props, 
+            String name, CachingProtoLoader loader, 
+            File baseDirForSource, File baseDirForOutput, 
+            String[] globalOptions, String[] profileOptions)
+    {
+        String source = props.getProperty(name + ".source");
+        if(source==null)
+            throw new IllegalStateException(name + " must have a source");
+        
+        String output = props.getProperty(name + ".output");
+        if(output==null)
+            throw new IllegalStateException(name + " must have an output");
+        
+        String outputDir = props.getProperty(name + ".outputDir");
+        if(outputDir==null)
+            throw new IllegalStateException(name + " must have an outputDir");
+        
+        String encoding = props.getProperty(name + ".encoding");
+        
+        String options = props.getProperty(name + ".options");
+        
+        ProtoModule module = newProtoModule(source, output, encoding, outputDir, 
+                baseDirForSource, baseDirForOutput);
+        
+        module.setCachingProtoLoader(loader);
+        
+        if(globalOptions != null)
+            addOptionsTo(module, globalOptions);
+        
+        if(options != null)
+            addOptionsTo(module, COMMA.split(options));
+        
+        // can override previous options
+        if(profileOptions != null)
+            addOptionsTo(module, profileOptions);
+        
+        return module;
     }
     
     static ProtoModule newProtoModule(String source, String output, String encoding, 
@@ -276,58 +308,182 @@ public final class CompilerMain
             compile(m);
     }
     
-    public static void main(String[] args) throws Exception
+    static void compileProfile(Properties props, String profile, 
+            CachingProtoLoader loader, String[] globalOptions, 
+            final int nestCount) throws Exception
     {
-        if(args.length==0)
+        String moduleString = props.getProperty(profile);
+        if(moduleString == null || moduleString.length() == 0)
         {
-            Properties props = System.getProperties();            
-            
-            String source = props.getProperty("source");            
-            String output = props.getProperty("output");
-            String outputDir = props.getProperty("outputDir");
-            String encoding = props.getProperty("encoding");
-            String options = props.getProperty("options");
-            
-            if(source==null || output==null || outputDir==null)
-                usage();
-            else
-            {
-                ProtoModule module = new ProtoModule(new File(source), output, 
-                        encoding, new File(outputDir));
-                
-                if(options!=null)
-                {
-                    for(String o : COMMA.split(options))
-                    {
-                        int idx = o.indexOf(':');
-                        if(idx==-1)
-                            module.setOption(o.trim(), "");
-                        else
-                            module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
-                    }
-                }
-                
-                compile(module);
-            }
-            return;
+            throw new RuntimeException("No modules for profile: " + profile);
         }
         
-        for(String s : args)
+        for(int i = 0; i < nestCount; i++)
         {
-            InputStream in = getInputStream(s);
-            if(in==null)
+            System.out.print("  ");
+        }
+        System.out.println(profile);
+        
+        final long start = System.nanoTime();
+        
+        String profileOptionsParam = props.getProperty(profile + ".options");
+        String[] profileOptions = profileOptionsParam == null ? null : 
+            COMMA.split(profileOptionsParam);
+        
+        for(String m : COMMA.split(moduleString))
+        {
+            m = m.trim();
+            
+            if(m.charAt(0) == '@')
             {
-                System.err.println(s + " does not exist");
+                // referencing another profile
+                compileProfile(props, m, loader, globalOptions, nestCount+1);
                 continue;
             }
             
-            List<ProtoModule> modules = loadModules(in);
-            if(modules==null)
-                return;
-            
-            compile(modules);
+            compile(loadModule(props, m, loader, null, null, 
+                    globalOptions, profileOptions));
         }
         
+        final long end = System.nanoTime();
+        
+        for(int i = 0; i < nestCount; i++)
+        {
+            System.out.print("  ");
+        }
+        
+        double ms = (end-start)/1000000;
+        System.out.println(ms + " ms\n");
+    }
+    
+    static void compileWithNoArgs() throws Exception
+    {
+        Properties props = System.getProperties();            
+        
+        String source = props.getProperty("source");            
+        String output = props.getProperty("output");
+        String outputDir = props.getProperty("outputDir");
+        String encoding = props.getProperty("encoding");
+        String options = props.getProperty("options");
+        
+        if(source == null || output == null || outputDir == null)
+        {
+            usage();
+            return;
+        }
+
+        ProtoModule module = new ProtoModule(new File(source), output, 
+                encoding, new File(outputDir));
+        
+        if(options != null)
+        {
+            for(String o : COMMA.split(options))
+            {
+                int idx = o.indexOf(':');
+                if(idx == -1)
+                    module.setOption(o.trim(), "");
+                else
+                    module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+            }
+        }
+        
+        compile(module);
+    }
+    
+    static void compileWithArgs(final String[] args, int offset, final int limit) 
+            throws Exception
+    {
+        String propsResource = args[offset++];
+        Properties props = propsFrom(propsResource);
+        if(props == null)
+        {
+            System.err.println(propsResource + " does not exist.");
+            return;
+        }
+        
+        String globalOptionsParam = props.getProperty("global_options");
+        String[] globalOptions = globalOptionsParam == null ? null : 
+            COMMA.split(globalOptionsParam);
+
+        final CachingProtoLoader loader = 
+                ("true".equals(props.getProperty("cache_protos")) || 
+                "true".equals(System.getProperty("cache_protos"))) ? 
+                        new CachingProtoLoader() : null;
+        
+        for(String arg;;)
+        {
+            if(offset != limit && (arg = args[offset]).charAt(0) == '@')
+            {
+                // activating a profile
+                do
+                {
+                    compileProfile(props, arg, loader, globalOptions, 0);
+                }
+                while(++offset != limit && (arg=args[offset]).charAt(0) == '@');
+                
+                if(offset == limit)
+                    return;
+                
+                if((props = propsFrom(arg)) == null)
+                {
+                    // the next properties file does not exist.
+                    System.err.println(arg + " does not exist.");
+                    return;
+                }
+                
+                globalOptionsParam = props.getProperty("global_options");
+                globalOptions = globalOptionsParam == null ? null : 
+                    COMMA.split(globalOptionsParam);
+                
+                continue;
+            }
+
+            // compile the csv from "modules" property
+            String moduleString = props.getProperty("modules");
+            if(moduleString == null || moduleString.length() == 0)
+            {
+                System.err.println("Errors on: " + args[offset-1]);
+                propsErr();
+                return;
+            }
+            
+            for(String m : COMMA.split(moduleString))
+            {
+                m = m.trim();
+                
+                if(m.charAt(0) == '@')
+                {
+                    // referencing another profile
+                    compileProfile(props, m, loader, globalOptions, 0);
+                    continue;
+                }
+                
+                compile(loadModule(props, m, loader, null, null, 
+                        globalOptions, null));
+            }
+            
+            if(offset == limit)
+                return;
+            
+            if((props = propsFrom((arg = args[offset++]))) == null)
+            {
+                // the next properties file does not exist.
+                System.err.println(arg + " does not exist.");
+                return;
+            }
+            
+            globalOptionsParam = props.getProperty("global_options");
+            globalOptions = globalOptionsParam == null ? null : 
+                COMMA.split(globalOptionsParam);
+        }
+    }
+    
+    public static void main(String[] args) throws Exception
+    {
+        if(args.length == 0)
+            compileWithNoArgs();
+        else
+            compileWithArgs(args, 0, args.length);
     }
 
 }
