@@ -221,9 +221,22 @@ public final class CompilerMain
         {
             int idx = o.indexOf(':');
             if(idx == -1)
-                module.setOption(o.trim(), "");
+            {
+                String key = o.trim();
+                if(key.charAt(0) == '!')
+                {
+                    // remove key
+                    module.getOptions().remove(key.substring(1));
+                }
+                else
+                {
+                    module.setOption(key, "");
+                }
+            }
             else
+            {
                 module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+            }
         }
     }
     
