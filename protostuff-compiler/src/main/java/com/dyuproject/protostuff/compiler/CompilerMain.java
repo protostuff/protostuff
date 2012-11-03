@@ -143,7 +143,7 @@ public final class CompilerMain
         {
             modules.add(loadModule(props, m.trim(), loader, 
                     baseDirForSource, baseDirForOutput, 
-                    globalOptions, null));
+                    globalOptions, null, null));
         }
         
         return modules;
@@ -152,7 +152,7 @@ public final class CompilerMain
     public static ProtoModule loadModule(Properties props, 
             String name, CachingProtoLoader loader, 
             File baseDirForSource, File baseDirForOutput, 
-            String[] globalOptions, String[] profileOptions)
+            String[] globalOptions, String[] profileOptions, String[] rootProfileOptions)
     {
         String source = props.getProperty(name + ".source");
         if(source==null)
@@ -184,6 +184,9 @@ public final class CompilerMain
         // can override previous options
         if(profileOptions != null)
             addOptionsTo(module, profileOptions);
+        
+        if(rootProfileOptions != null)
+            addOptionsTo(module, rootProfileOptions);
         
         return module;
     }
@@ -309,7 +312,8 @@ public final class CompilerMain
     }
     
     static void compileProfile(Properties props, String profile, 
-            CachingProtoLoader loader, String[] globalOptions, 
+            CachingProtoLoader loader, 
+            String[] globalOptions, String[] rootProfileOptions, 
             final int nestCount) throws Exception
     {
         String moduleString = props.getProperty(profile);
@@ -337,12 +341,15 @@ public final class CompilerMain
             if(m.charAt(0) == '@')
             {
                 // referencing another profile
-                compileProfile(props, m, loader, globalOptions, nestCount+1);
+                compileProfile(props, m, loader, globalOptions, 
+                        nestCount == 0 ? profileOptions : rootProfileOptions, 
+                                nestCount+1);
                 continue;
             }
             
             compile(loadModule(props, m, loader, null, null, 
-                    globalOptions, profileOptions));
+                    globalOptions, profileOptions, 
+                    nestCount == 0 ? profileOptions : rootProfileOptions));
         }
         
         final long end = System.nanoTime();
@@ -417,7 +424,7 @@ public final class CompilerMain
                 // activating a profile
                 do
                 {
-                    compileProfile(props, arg, loader, globalOptions, 0);
+                    compileProfile(props, arg, loader, globalOptions, null, 0);
                 }
                 while(++offset != limit && (arg=args[offset]).charAt(0) == '@');
                 
@@ -454,12 +461,12 @@ public final class CompilerMain
                 if(m.charAt(0) == '@')
                 {
                     // referencing another profile
-                    compileProfile(props, m, loader, globalOptions, 0);
+                    compileProfile(props, m, loader, globalOptions, null, 0);
                     continue;
                 }
                 
                 compile(loadModule(props, m, loader, null, null, 
-                        globalOptions, null));
+                        globalOptions, null, null));
             }
             
             if(offset == limit)
