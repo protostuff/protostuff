@@ -67,12 +67,8 @@ public final class CompilerMain
         return file.exists() ? new FileInputStream(file) : null;
     }
     
-    static Properties propsFrom(String resource) throws IOException
+    static Properties propsFrom(File file) throws IOException
     {
-        File file = new File(resource);
-        if(!file.exists())
-            return null;
-        
         Properties props = new Properties();
         try
         {
@@ -84,6 +80,12 @@ public final class CompilerMain
         }
         
         return props;
+    }
+    
+    static Properties propsFrom(String resource) throws IOException
+    {
+        File file = new File(resource);
+        return file.exists() ? propsFrom(file) : null;
     }
     
     public static List<ProtoModule> loadModules(File file, File baseDirForSource, 
@@ -372,7 +374,7 @@ public final class CompilerMain
             System.out.print("  ");
         }
         
-        double ms = (end-start)/1000000;
+        long ms = (end-start)/1000000;
         System.out.println(ms + " ms\n");
     }
     
@@ -430,21 +432,41 @@ public final class CompilerMain
                 "true".equals(System.getProperty("cache_protos"))) ? 
                         new CachingProtoLoader() : null;
         
-        for(String arg;;)
+        boolean selectedProfileOrModule = false;
+        for(String arg = propsResource;;)
         {
-            if(offset != limit && (arg = args[offset]).charAt(0) == '@')
+            if(offset != limit)
             {
-                // activating a profile
-                do
+                if((arg = args[offset]).charAt(0) == '@')
                 {
+                    // activating a profile
                     compileProfile(props, arg, loader, globalOptions, null, 0);
+                    
+                    selectedProfileOrModule = true;
+                    offset++;
+                    continue;
                 }
-                while(++offset != limit && (arg=args[offset]).charAt(0) == '@');
                 
+                if(!new File(arg).exists())
+                {
+                    // specific module
+                    compile(loadModule(props, arg, loader, null, null, 
+                            globalOptions, null, null));
+                    
+                    selectedProfileOrModule = true;
+                    offset++;
+                    continue;
+                }
+            }
+            
+            if(selectedProfileOrModule)
+            {
                 if(offset == limit)
                     return;
                 
-                if((props = propsFrom(arg)) == null)
+                selectedProfileOrModule = false;
+                
+                if((props = propsFrom((arg = args[offset++]))) == null)
                 {
                     // the next properties file does not exist.
                     System.err.println(arg + " does not exist.");
@@ -462,7 +484,7 @@ public final class CompilerMain
             String moduleString = props.getProperty("modules");
             if(moduleString == null || moduleString.length() == 0)
             {
-                System.err.println("Errors on: " + args[offset-1]);
+                System.err.println("Errors on: " + arg);
                 propsErr();
                 return;
             }
