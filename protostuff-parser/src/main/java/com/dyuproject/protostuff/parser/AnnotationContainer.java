@@ -39,6 +39,19 @@ public class AnnotationContainer implements HasAnnotations
     {
         return annotations;
     }
+    
+    /**
+     * Short-hand for {@link #getAnnotationMap()}.
+     * 
+     * You then can use:
+     * <pre>
+     * &lt;if(message.a.("SomeAnnotation"))&gt;
+     * </pre>
+     */
+    public final Map<String, Annotation> getA()
+    {
+        return annotations;
+    } 
 
     public Collection<Annotation> getAnnotations()
     {
@@ -60,6 +73,28 @@ public class AnnotationContainer implements HasAnnotations
             source.clear();
         
         return true;
+    }
+    
+    /**
+     * Shorthand for annotations.isEmpty().
+     * 
+     * <pre>
+     * You can then use:
+     * &lt;if(message.emptyA)&gt;
+     * </pre>
+     * 
+     * <pre>
+     * Note that this does not work on stringtemplate: 
+     * &lt;if(message.annotationMap.empty)&gt;
+     * 
+     * Even though {@link java.util.Map#isEmpty()} exists. 
+     * </pre>
+     * 
+     * 
+     */
+    public final boolean isEmptyA()
+    {
+        return annotations.isEmpty();
     }
 
 }
