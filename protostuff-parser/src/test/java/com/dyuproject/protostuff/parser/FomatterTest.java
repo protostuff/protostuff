@@ -87,6 +87,7 @@ public class FomatterTest extends TestCase
         
         verify(f, "Some Foo", "someFoo");
         verify(f, "Some Foo", "some_foo");
+        verify(f, "Some Foo", "SomeFoo");
     }
 
 }
