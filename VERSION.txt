@@ -1,4 +1,6 @@
 protostuff-1.0.8-SNAPSHOT
++ new protostuff-runtime-view module
+  - select fields to include on ser/deser, without re-creating the expensive runtime fields.
 + Issue 135: PluginProtoCompiler throws IllegalStateException when one of the rules (message_block, enum_block) is missing
 + Issue 133: When the varint of large strings (2kb or more) are serialized, unnecessary bytes are written
   A 2kb string previously needed 3 bytes for its varint.

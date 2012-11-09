@@ -316,7 +316,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
     }
     
-    final Instantiator<T> instantiator;
+    public final Instantiator<T> instantiator;
     
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, 
             int lastFieldNumber, Constructor<T> constructor)

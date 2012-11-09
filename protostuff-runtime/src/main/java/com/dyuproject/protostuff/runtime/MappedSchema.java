@@ -38,7 +38,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     protected final Class<T> typeClass;
     protected final Field<T>[] fields, fieldsByNumber;
     protected final Map<String,Field<T>> fieldsByName;
-    protected final PipeSchema pipeSchema;
+    protected final Pipe.Schema<T> pipeSchema;
     
     @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Field<T>[] fields, int lastFieldNumber)
@@ -67,7 +67,8 @@ public abstract class MappedSchema<T> implements Schema<T>
             fieldsByNumber[f.number] = f;
             //f.owner = this;
         }
-        pipeSchema = new PipeSchema();
+        
+        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
     
     @SuppressWarnings("unchecked")
@@ -99,12 +100,13 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
         
         this.fields = (Field<T>[])new Field<?>[fields.size()];
-        for(int i=1, j=0; i<fieldsByNumber.length; i++)
+        for(int i = 1, j = 0; i < fieldsByNumber.length; i++)
         {
-            if(fieldsByNumber[i]!=null)
+            if(fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-        pipeSchema = new PipeSchema();
+        
+        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
     
     @SuppressWarnings("unchecked")
@@ -132,12 +134,13 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
         
         this.fields = (Field<T>[])new Field<?>[fields.size()];
-        for(int i=1, j=0; i<fieldsByNumber.length; i++)
+        for(int i = 1, j = 0; i < fieldsByNumber.length; i++)
         {
-            if(fieldsByNumber[i]!=null)
+            if(fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-        pipeSchema = new PipeSchema();
+        
+        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
     
     /**
@@ -201,29 +204,6 @@ public abstract class MappedSchema<T> implements Schema<T>
     public Pipe.Schema<T> getPipeSchema()
     {
         return pipeSchema;
-    }
-    
-    final class PipeSchema extends Pipe.Schema<T>
-    {
-        public PipeSchema()
-        {
-            super(MappedSchema.this);
-        }
-
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(MappedSchema.this); number != 0; 
-                    number = input.readFieldNumber(MappedSchema.this))
-            {
-                final Field<T> field = number < fieldsByNumber.length ? 
-                        fieldsByNumber[number] : null;
-                
-                if(field == null)
-                    input.handleUnknownField(number, MappedSchema.this);
-                else
-                    field.transfer(pipe, input, output, field.repeated);
-            }
-        }
     }
     
     /**
