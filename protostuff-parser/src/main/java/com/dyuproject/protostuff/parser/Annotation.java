@@ -40,6 +40,23 @@ public class Annotation implements HasName
         return params;
     }
     
+    /**
+     * Shorthand for {@link #getParams()}.
+     * 
+     * <pre>
+     * If you have an annotation like &#64;Foo(id = 1), you then can use:
+     * &lt;if(message.a.("Foo")&gt;
+     * &lt;if(message.a.("Foo").p.("id")&gt;
+     * ...
+     * &lt;endif&gt;
+     * &lt;endif&gt;
+     * </pre>
+     */
+    public final LinkedHashMap<String,Object> getP()
+    {
+        return params;
+    }
+    
     void put(String key, Object value)
     {
         if(params.put(key, value) != null)
