@@ -171,7 +171,15 @@ public interface Formatter
                 
                 for(int i = 1, len = buffer.length(); i < len; i++)
                 {
-                    c = buffer.charAt(i);
+                    if(' ' == (c = buffer.charAt(i)))
+                    {
+                        // move to the next
+                        if(++i != len && (c=buffer.charAt(i)) > 96 && c < 123 )
+                            buffer.setCharAt(i, (char)(c-32));
+                        
+                        continue;
+                    }
+                    
                     if(c == '_' && len != i+1)
                     {
                         buffer.setCharAt(i, ' ');

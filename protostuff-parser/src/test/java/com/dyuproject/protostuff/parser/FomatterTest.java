@@ -36,6 +36,9 @@ public class FomatterTest extends TestCase
         
         verify(f, "someFoo", "some_foo");
         verify(f, "someFoo", "SomeFoo");
+        
+        // verify that it does not change anything
+        verify(f, "someFoo", "someFoo");
     }
     
     public void testCCU()
@@ -53,6 +56,9 @@ public class FomatterTest extends TestCase
         
         verify(f, "some_foo", "someFoo");
         verify(f, "some_foo", "SomeFoo");
+        
+        // verify that it does not change anything
+        verify(f, "some_foo", "some_foo");
     }
     
     public void testUCU()
@@ -71,6 +77,9 @@ public class FomatterTest extends TestCase
         verify(f, "SOME_FOO", "someFoo");
         verify(f, "SOME_FOO", "SomeFoo");
         verify(f, "SOME_FOO", "some_foo");
+        
+        // verify that it does not change anything
+        verify(f, "SOME_FOO", "SOME_FOO");
     }
     
     public void testPC()
@@ -79,6 +88,9 @@ public class FomatterTest extends TestCase
         
         verify(f, "SomeFoo", "someFoo");
         verify(f, "SomeFoo", "some_foo");
+        
+        // verify that it does not change anything
+        verify(f, "SomeFoo", "SomeFoo");
     }
     
     public void testPCS()
@@ -88,6 +100,8 @@ public class FomatterTest extends TestCase
         verify(f, "Some Foo", "someFoo");
         verify(f, "Some Foo", "some_foo");
         verify(f, "Some Foo", "SomeFoo");
+        
+        // verify that it does not change anything
+        verify(f, "Some Foo", "Some Foo");
     }
-
 }
