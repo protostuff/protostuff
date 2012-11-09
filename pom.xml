@@ -232,6 +232,7 @@
     <module>protostuff-runtime</module>
     <module>protostuff-runtime-md</module>
     <module>protostuff-runtime-registry</module>
+    <module>protostuff-runtime-view</module>
     <module>protostuff-json</module>
     <module>protostuff-xml</module>
     <module>protostuff-yaml</module>
