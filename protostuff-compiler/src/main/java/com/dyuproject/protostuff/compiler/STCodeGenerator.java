@@ -28,6 +28,7 @@ import org.antlr.stringtemplate.StringTemplateErrorListener;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.StringTemplateGroupLoader;
 
+import com.dyuproject.protostuff.parser.Formatter;
 import com.dyuproject.protostuff.parser.Proto;
 import com.dyuproject.protostuff.parser.ProtoUtil;
 
@@ -42,10 +43,13 @@ public abstract class STCodeGenerator implements ProtoCompiler
     
     public static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
     
-    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
-        new ConcurrentHashMap<Class<?>, AttributeRenderer>();
-    
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
+    
+    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
+            new ConcurrentHashMap<Class<?>, AttributeRenderer>();
+    
+    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = 
+            new ConcurrentHashMap<String, Formatter>();
     
     public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
             TEMPLATE_BASE, new StringTemplateErrorListener()
@@ -86,8 +90,23 @@ public abstract class STCodeGenerator implements ProtoCompiler
         });
         
         GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
+        
+        Formatter.BUILTIN.addAllTo(DEFAULT_FORMATTERS);
     }
     
+    /**
+     * Formats the string n times.
+     * 
+     * <pre>
+     * For example:
+     * input = "some_foo"
+     * formatters = ["PCS", "UPPER"]
+     * 
+     * Output:
+     * 1st pass: "Some Foo"
+     * 2nd pass: "SOME FOO"
+     * </pre>
+     */
     public static String chainedFormat(String str, String[] formats)
     {
         // chained formatting
@@ -98,61 +117,17 @@ public abstract class STCodeGenerator implements ProtoCompiler
         return formatted;
     }
     
+    /**
+     * Formats the string {@code str} using the format {@code formatName}.
+     * 
+     * If the formatter with the name does not exist, the input string will be 
+     * appended with the formatName.
+     */
     public static String format(String str, String formatName)
     {
-        if("UPPER".equals(formatName))
-            return str.toUpperCase();
-        
-        if("LOWER".equals(formatName))
-            return str.toLowerCase();
-        
-        // camel-case
-        if("CC".equals(formatName))
-            return ProtoUtil.toCamelCase(str).toString();
-        
-        // camel-case with trailing underscore
-        if("CCU".equals(formatName))
-            return ProtoUtil.toCamelCase(str).append('_').toString();
-        
-        // pascal-case
-        if("PC".equals(formatName))
-            return ProtoUtil.toPascalCase(str).toString();
-        
-        // underscore-case
-        if("UC".equals(formatName))
-            return ProtoUtil.toUnderscoreCase(str).toString();
-        
-        // underscore-case with trailing underscore
-        if("UCU".equals(formatName))
-            return ProtoUtil.toUnderscoreCase(str).append('_').toString();
-        
-        // "upper-cased" underscore-case
-        if("UUC".equals(formatName))
-            return ProtoUtil.toUnderscoreCase(str).toString().toUpperCase();
-        
-        // pascal case with space .. e.g. someFoo/some_foo becomes "Some Foo"
-        if("PCS".equals(formatName))
-        {
-            StringBuilder buffer = ProtoUtil.toUnderscoreCase(str);
-            char c = buffer.charAt(0);
-            if(c>96 && c<123)
-                buffer.setCharAt(0, (char)(c-32));
-            
-            for(int i = 1, len = buffer.length(); i < len; i++)
-            {
-                c = buffer.charAt(i);
-                if(c == '_' && len != i+1)
-                {
-                    buffer.setCharAt(i, ' ');
-                    
-                    c = buffer.charAt(i+1);
-                    if(c>96 && c<123)
-                        buffer.setCharAt(++i, (char)(c-32));
-                }
-            }
-            return buffer.toString();
-        }
-            
+        final Formatter formatter = DEFAULT_FORMATTERS.get(formatName);
+        if(formatter != null)
+            return formatter.format(str);
         
         // regex replace
         int eq = formatName.indexOf("==");
@@ -170,9 +145,20 @@ public abstract class STCodeGenerator implements ProtoCompiler
         return str + formatName;
     }
     
-    public static void setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar)
+    /**
+     * Returns true if there was no previous attribute renderer with the same class.
+     */
+    public static boolean setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar)
     {
-        DEFAULT_RENDERERS.put(typeClass, ar);
+        return null == DEFAULT_RENDERERS.put(typeClass, ar);
+    }
+    
+    /**
+     * Returns true if there was no previous formatter with the same name.
+     */
+    public static boolean setFormatter(String name, Formatter f)
+    {
+        return null == DEFAULT_FORMATTERS.put(name, f);
     }
      
     public static StringTemplateGroup getSTG(String groupName)
