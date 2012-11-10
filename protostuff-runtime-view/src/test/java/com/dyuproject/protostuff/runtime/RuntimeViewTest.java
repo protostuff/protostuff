@@ -82,6 +82,20 @@ public class RuntimeViewTest extends AbstractTest
                 null, args);
     }
     
+    static Schema<Baz> in1(String ... args)
+    {
+        return RuntimeView.createFrom(rs(), 
+                RuntimeView.FACTORY.INCLUDE, 
+                null, args);
+    }
+    
+    static Schema<Baz> in2(String ... args)
+    {
+        return RuntimeView.createFrom(rs(), 
+                RuntimeView.FACTORY.INCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
+                null, args);
+    }
+    
     static Schema<Baz> EQ(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
@@ -136,6 +150,9 @@ public class RuntimeViewTest extends AbstractTest
         assertEquals(WITHOUT_ID_LEN, len(ex1("id")));
         assertEquals(WITHOUT_ID_LEN, len(ex2("id")));
         
+        assertEquals(WITHOUT_ID_LEN, len(in1("name", "timestamp")));
+        assertEquals(WITHOUT_ID_LEN, len(in2("name", "timestamp")));
+        
         assertEquals(WITHOUT_ID_LEN, len(NOTEQ(STR_FN_ID)));
         assertEquals(WITHOUT_ID_LEN, len(GT(STR_FN_ID)));
         assertEquals(WITHOUT_ID_LEN, len(RANGE(STR_FN_NAME, STR_FN_TIMESTAMP)));
@@ -146,6 +163,9 @@ public class RuntimeViewTest extends AbstractTest
         assertEquals(WITHOUT_NAME_LEN, len(ex1("name")));
         assertEquals(WITHOUT_NAME_LEN, len(ex2("name")));
         
+        assertEquals(WITHOUT_NAME_LEN, len(in1("id", "timestamp")));
+        assertEquals(WITHOUT_NAME_LEN, len(in2("id", "timestamp")));
+        
         assertEquals(WITHOUT_NAME_LEN, len(NOTEQ(STR_FN_NAME)));
         assertEquals(WITHOUT_NAME_LEN, len(NOTRANGE(STR_FN_NAME, STR_FN_NAME)));
     }
@@ -154,6 +174,9 @@ public class RuntimeViewTest extends AbstractTest
     {
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(ex1("timestamp")));
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(ex2("timestamp")));
+        
+        assertEquals(WITHOUT_TIMESTAMP_LEN, len(in1("id", "name")));
+        assertEquals(WITHOUT_TIMESTAMP_LEN, len(in2("id", "name")));
         
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(NOTEQ(STR_FN_TIMESTAMP)));
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(LT(STR_FN_TIMESTAMP)));
@@ -165,6 +188,9 @@ public class RuntimeViewTest extends AbstractTest
         assertEquals(ID_LEN, len(ex1("name", "timestamp")));
         assertEquals(ID_LEN, len(ex2("name", "timestamp")));
         
+        assertEquals(ID_LEN, len(in1("id")));
+        assertEquals(ID_LEN, len(in2("id")));
+        
         assertEquals(ID_LEN, len(EQ(STR_FN_ID)));
         assertEquals(ID_LEN, len(LT(STR_FN_NAME)));
         assertEquals(ID_LEN, len(RANGE(STR_FN_ID, STR_FN_ID)));
@@ -175,6 +201,9 @@ public class RuntimeViewTest extends AbstractTest
         assertEquals(NAME_LEN, len(ex1("id", "timestamp")));
         assertEquals(NAME_LEN, len(ex2("id", "timestamp")));
         
+        assertEquals(NAME_LEN, len(in1("name")));
+        assertEquals(NAME_LEN, len(in2("name")));
+        
         assertEquals(NAME_LEN, len(EQ(STR_FN_NAME)));
         assertEquals(NAME_LEN, len(RANGE(STR_FN_NAME, STR_FN_NAME)));
     }
@@ -183,6 +212,9 @@ public class RuntimeViewTest extends AbstractTest
     {
         assertEquals(TIMESTAMP_LEN, len(ex1("id", "name")));
         assertEquals(TIMESTAMP_LEN, len(ex2("id", "name")));
+        
+        assertEquals(TIMESTAMP_LEN, len(in1("timestamp")));
+        assertEquals(TIMESTAMP_LEN, len(in2("timestamp")));
         
         assertEquals(TIMESTAMP_LEN, len(EQ(STR_FN_TIMESTAMP)));
         assertEquals(TIMESTAMP_LEN, len(GT(STR_FN_NAME)));
