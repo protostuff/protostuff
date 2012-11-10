@@ -150,20 +150,12 @@ public final class RuntimeView
                     String[] args)
             {
                 if(pf == null)
-                    throw new IllegalArgumentException("pf must not be null.");
+                    throw new IllegalArgumentException("Predicate.Factory arg must not be null.");
                 
                 final Predicate predicate = pf.create(args);
                 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
-                    
-                    public String getFieldName(int number)
-                    {
-                        final Field<T> field = number < fieldsByNumber.length ? 
-                                fieldsByNumber[number] : null;
-                                
-                        return field != null && predicate.apply(field) ? field.name : null;
-                    }
                     
                     public int getFieldNumber(String name)
                     {
@@ -186,6 +178,16 @@ public final class RuntimeView
                         }
                     }
                     
+                    public String getFieldName(int number)
+                    {
+                        // only called on writes
+                        // the predicate already applied during writeTo (the method below)
+                        final Field<T> field = number < fieldsByNumber.length ? 
+                                fieldsByNumber[number] : null;
+                                
+                        return field == null ? null : field.name;
+                    }
+                    
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for(Field<T> f : fields)
@@ -199,78 +201,11 @@ public final class RuntimeView
         },
         
         /**
-         * Copies the map.  
-         * The extra map lookups during write makes this slower than the others.
+         * Exclude the fields for merging and writing.
          * 
          * The args param is required (the field names to exclude).
          */
-        EXCLUDE_VIA_COPY_MAP
-        {
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
-                    Map<String, Field<T>> byName,
-                    Instantiator<T> instantiator, 
-                    Predicate.Factory pf, 
-                    String[] args)
-            {
-                final HashMap<String,Field<T>> fieldsByName = copyAndExclude(byName, args);
-                
-                return new BaseSchema<T>(typeClass, instantiator)
-                {
-                    
-                    public String getFieldName(int number)
-                    {
-                        final Field<T> field = number < fieldsByNumber.length ? 
-                                fieldsByNumber[number] : null;
-                                
-                        return field != null && fieldsByName.containsKey(field.name) ? 
-                                field.name : null;
-                    }
-                    
-                    public int getFieldNumber(String name)
-                    {
-                        final Field<T> field = fieldsByName.get(name);
-                        return field == null ? 0 : field.number;
-                    }
-                    
-                    public void mergeFrom(Input input, T message) throws IOException
-                    {
-                        for (int number = input.readFieldNumber(this); number != 0; 
-                                number = input.readFieldNumber(this))
-                        {
-                            final Field<T> field = number < fieldsByNumber.length ? 
-                                    fieldsByNumber[number] : null;
-
-                            if(field == null || !fieldsByName.containsKey(field.name))
-                                input.handleUnknownField(number, this);
-                            else
-                                field.mergeFrom(input, message);
-                        }
-                    }
-                    
-                    public void writeTo(Output output, T message) throws IOException
-                    {
-                        for(Field<T> f : fields)
-                        {
-                            // this extra lookup is expensive
-                            if(fieldsByName.containsKey(f.name))
-                                f.writeTo(output, message);
-                        }
-                    }
-                };
-            }
-        },
-        
-        /**
-         * Copies both the map and the array.
-         * 
-         * Performs better than {@link #EXCLUDE_VIA_COPY_MAP} for writes.
-         * 
-         * The args param is required (the field names to exclude).
-         */
-        EXCLUDE_VIA_COPY_BOTH
+        EXCLUDE
         {
             public <T> Schema<T> create(
                     Class<T> typeClass,
@@ -281,7 +216,8 @@ public final class RuntimeView
                     Predicate.Factory factory, 
                     String[] args)
             {
-                final HashMap<String,Field<T>> fieldsByName = copyAndExclude(byName, args);
+                final HashMap<String,Field<T>> fieldsByName = copyAndExclude(typeClass, 
+                        byName, args);
                 
                 @SuppressWarnings("unchecked")
                 final Field<T>[] fields = (Field<T>[])new Field<?>[fieldsByName.size()];
@@ -332,15 +268,84 @@ public final class RuntimeView
                     }
                 };
             }
-        }
+        },
+        
+        
+        /**
+         * Optimized only for merging.  If you need to do writes, use {@link #EXCLUDE} 
+         * instead.  The extra map lookups during writes makes this slower than 
+         * {@link #EXCLUDE}.
+         * 
+         * The args param is required (the field names to exclude).
+         */
+        EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY
+        {
+            public <T> Schema<T> create(
+                    Class<T> typeClass,
+                    final Field<T>[] fields,
+                    final Field<T>[] fieldsByNumber,
+                    Map<String, Field<T>> byName,
+                    Instantiator<T> instantiator, 
+                    Predicate.Factory pf, 
+                    String[] args)
+            {
+                final HashMap<String,Field<T>> fieldsByName = copyAndExclude(typeClass, 
+                        byName, args);
+                
+                return new BaseSchema<T>(typeClass, instantiator)
+                {
+                    
+                    public String getFieldName(int number)
+                    {
+                        final Field<T> field = number < fieldsByNumber.length ? 
+                                fieldsByNumber[number] : null;
+                                
+                        return field != null && fieldsByName.containsKey(field.name) ? 
+                                field.name : null;
+                    }
+                    
+                    public int getFieldNumber(String name)
+                    {
+                        final Field<T> field = fieldsByName.get(name);
+                        return field == null ? 0 : field.number;
+                    }
+                    
+                    public void mergeFrom(Input input, T message) throws IOException
+                    {
+                        for (int number = input.readFieldNumber(this); number != 0; 
+                                number = input.readFieldNumber(this))
+                        {
+                            final Field<T> field = number < fieldsByNumber.length ? 
+                                    fieldsByNumber[number] : null;
+
+                            if(field == null || !fieldsByName.containsKey(field.name))
+                                input.handleUnknownField(number, this);
+                            else
+                                field.mergeFrom(input, message);
+                        }
+                    }
+                    
+                    public void writeTo(Output output, T message) throws IOException
+                    {
+                        for(Field<T> f : fields)
+                        {
+                            // this extra lookup makes this slower
+                            // hence use EXCLUDE instead
+                            if(fieldsByName.containsKey(f.name))
+                                f.writeTo(output, message);
+                        }
+                    }
+                };
+            }
+        },
         ;
     }
     
-    static <T> HashMap<String,Field<T>> copyAndExclude(
+    static <T> HashMap<String,Field<T>> copyAndExclude(Class<T> typeClass, 
             Map<String, Field<T>> byName, final String[] args)
     {
         if(args == null || args.length == 0)
-            throw new IllegalArgumentException("args must not be empty.");
+            throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
         
         // copy
         final HashMap<String,Field<T>> fieldsByName = 
@@ -352,7 +357,7 @@ public final class RuntimeView
             if(null == fieldsByName.remove(name))
             {
                 throw new IllegalArgumentException(name + 
-                        " field is unknown or is a duplicate.");
+                        " field is either a duplicate or not a field of " + typeClass);
             }
         }
         

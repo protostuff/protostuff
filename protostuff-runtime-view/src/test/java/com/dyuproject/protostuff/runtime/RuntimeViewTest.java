@@ -71,14 +71,14 @@ public class RuntimeViewTest extends AbstractTest
     static Schema<Baz> ex1(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.EXCLUDE_VIA_COPY_MAP, 
+                RuntimeView.FACTORY.EXCLUDE, 
                 null, args);
     }
     
     static Schema<Baz> ex2(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.EXCLUDE_VIA_COPY_BOTH, 
+                RuntimeView.FACTORY.EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
                 null, args);
     }
     
