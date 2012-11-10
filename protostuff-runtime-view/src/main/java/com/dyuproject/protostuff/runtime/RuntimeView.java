@@ -156,7 +156,6 @@ public final class RuntimeView
                 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
-                    
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
@@ -180,8 +179,8 @@ public final class RuntimeView
                     
                     public String getFieldName(int number)
                     {
-                        // only called on writes
-                        // the predicate already applied during writeTo (the method below)
+                        // only called during writes
+                        // the predicate already applied on writeTo (the method below)
                         final Field<T> field = number < fieldsByNumber.length ? 
                                 fieldsByNumber[number] : null;
                                 
@@ -230,16 +229,6 @@ public final class RuntimeView
                 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
-                    
-                    public String getFieldName(int number)
-                    {
-                        final Field<T> field = number < fieldsByNumber.length ? 
-                                fieldsByNumber[number] : null;
-                                
-                        return field != null && fieldsByName.containsKey(field.name) ? 
-                                field.name : null;
-                    }
-                    
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
@@ -259,6 +248,15 @@ public final class RuntimeView
                             else
                                 field.mergeFrom(input, message);
                         }
+                    }
+                    
+                    public String getFieldName(int number)
+                    {
+                        // only called during writes
+                        final Field<T> field = number < fieldsByNumber.length ? 
+                                fieldsByNumber[number] : null;
+                                
+                        return field == null ? null : field.name;
                     }
                     
                     public void writeTo(Output output, T message) throws IOException
@@ -294,16 +292,6 @@ public final class RuntimeView
                 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
-                    
-                    public String getFieldName(int number)
-                    {
-                        final Field<T> field = number < fieldsByNumber.length ? 
-                                fieldsByNumber[number] : null;
-                                
-                        return field != null && fieldsByName.containsKey(field.name) ? 
-                                field.name : null;
-                    }
-                    
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
@@ -323,6 +311,16 @@ public final class RuntimeView
                             else
                                 field.mergeFrom(input, message);
                         }
+                    }
+                    
+                    public String getFieldName(int number)
+                    {
+                        // only called during writes
+                        // already filtered on writeTo (the method below)
+                        final Field<T> field = number < fieldsByNumber.length ? 
+                                fieldsByNumber[number] : null;
+                                
+                        return field == null ? null : field.name;
                     }
                     
                     public void writeTo(Output output, T message) throws IOException
