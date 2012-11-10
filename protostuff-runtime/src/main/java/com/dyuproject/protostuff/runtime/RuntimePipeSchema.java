@@ -20,6 +20,7 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Runtime pipe schema.
@@ -30,9 +31,9 @@ import com.dyuproject.protostuff.Schema;
 public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
 {
     
-    final MappedSchema.Field<T>[] fieldsByNumber;
+    final Field<T>[] fieldsByNumber;
     
-    public RuntimePipeSchema(Schema<T> schema, MappedSchema.Field<T>[] fieldsByNumber)
+    public RuntimePipeSchema(Schema<T> schema, Field<T>[] fieldsByNumber)
     {
         super(schema);
         
@@ -44,7 +45,7 @@ public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
         for(int number = input.readFieldNumber(wrappedSchema); number != 0; 
                 number = input.readFieldNumber(wrappedSchema))
         {
-            final MappedSchema.Field<T> field = number < fieldsByNumber.length ? 
+            final Field<T> field = number < fieldsByNumber.length ? 
                     fieldsByNumber[number] : null;
             
             if(field == null)

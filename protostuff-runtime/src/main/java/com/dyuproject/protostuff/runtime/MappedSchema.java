@@ -168,7 +168,11 @@ public abstract class MappedSchema<T> implements Schema<T>
     
     public String getFieldName(int number)
     {
-        return fieldsByNumber.length>number ? fieldsByNumber[number].name : null;
+        // only called on writes
+        final Field<T> field = number < fieldsByNumber.length ? 
+                fieldsByNumber[number] : null;
+                
+        return field == null ? null : field.name;
     }
     
     public int getFieldNumber(String name)
