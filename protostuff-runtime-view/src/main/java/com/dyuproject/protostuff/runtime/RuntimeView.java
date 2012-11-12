@@ -131,7 +131,7 @@ public final class RuntimeView
      * ahead-of-time filter (which is usually done at application startup).
      * </pre>
      */
-    public enum FACTORY implements Factory
+    public enum Factories implements Factory
     {
         /**
          * Filters the fields to include based on a {@link Predicate}.

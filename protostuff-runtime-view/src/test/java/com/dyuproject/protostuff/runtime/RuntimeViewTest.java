@@ -71,71 +71,71 @@ public class RuntimeViewTest extends AbstractTest
     static Schema<Baz> ex1(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.EXCLUDE, 
+                RuntimeView.Factories.EXCLUDE, 
                 null, args);
     }
     
     static Schema<Baz> ex2(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
+                RuntimeView.Factories.EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
                 null, args);
     }
     
     static Schema<Baz> in1(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.INCLUDE, 
+                RuntimeView.Factories.INCLUDE, 
                 null, args);
     }
     
     static Schema<Baz> in2(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.INCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
+                RuntimeView.Factories.INCLUDE_OPTIMIZED_FOR_MERGE_ONLY, 
                 null, args);
     }
     
     static Schema<Baz> EQ(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.EQ, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.EQ, args);
     }
     
     static Schema<Baz> NOTEQ(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.NOTEQ, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.NOTEQ, args);
     }
     
     static Schema<Baz> GT(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.GT, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.GT, args);
     }
     
     static Schema<Baz> LT(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.LT, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.LT, args);
     }
     
     static Schema<Baz> RANGE(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.RANGE, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.RANGE, args);
     }
     
     static Schema<Baz> NOTRANGE(String ... args)
     {
         return RuntimeView.createFrom(rs(), 
-                RuntimeView.FACTORY.PREDICATE, 
-                Predicate.FACTORY.NOTRANGE, args);
+                RuntimeView.Factories.PREDICATE, 
+                Predicate.Factories.NOTRANGE, args);
     }
     
     // tests

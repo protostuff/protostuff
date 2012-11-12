@@ -127,7 +127,7 @@ public interface Predicate
     /**
      * Built-in factories that filters based on the field number.
      */
-    public enum FACTORY implements Predicate.Factory
+    public enum Factories implements Predicate.Factory
     {
         EQ
         {
