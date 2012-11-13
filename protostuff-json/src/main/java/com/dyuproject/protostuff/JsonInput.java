@@ -38,8 +38,16 @@ import org.codehaus.jackson.JsonToken;
 public final class JsonInput implements Input
 {
     
-    private final JsonParser parser;
-    private final boolean numeric;
+    /**
+     * The wrapped json parser.
+     */
+    public final JsonParser parser;
+    
+    /**
+     * If true, the field number will be used on json keys.
+     */
+    public final boolean numeric;
+    
     private boolean lastRepeated;
     private String lastName;
     private int lastNumber;
