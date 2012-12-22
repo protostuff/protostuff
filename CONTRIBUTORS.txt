@@ -51,4 +51,7 @@ Patch contributors:
     * protostuff-compiler - Issue 128 patch
     * protostuff-maven-plugin - Issue 128 patch
 
+  Max Lunin
+    * protostuff-core - Issue 138
+
   
