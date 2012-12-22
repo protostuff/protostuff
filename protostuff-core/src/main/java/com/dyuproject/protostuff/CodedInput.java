@@ -300,6 +300,10 @@ public final class CodedInput implements Input {
   /** Read a {@code bytes} field value from the stream. */
   public ByteString readBytes() throws IOException {
     final int size = readRawVarint32();
+    if (size == 0) {
+      return ByteString.EMPTY;
+    }
+    
     if (size <= (bufferSize - bufferPos) && size > 0) {
       // Fast path:  We already have the bytes in a contiguous buffer, so
       //   just copy directly from it.
@@ -650,14 +654,21 @@ public final class CodedInput implements Input {
 
   /**
    * Resets the current size counter to zero (see {@link #setSizeLimit(int)}).
+   * The field {@code totalBytesRetired} will be negative if the initial 
+   * position was not zero.
    */
   public void resetSizeCounter() {
-    totalBytesRetired = 0;
+    totalBytesRetired = -bufferPos;
   }
 
   /**
-   * Sets {@code currentLimit} to (current position) + {@code byteLimit}.  This
-   * is called when descending into a length-delimited embedded message.
+   * Note that {@code pushLimit()} does NOT affect how many bytes the
+   * {@code CodedInputStream} reads from an underlying {@code InputStream} when
+   * refreshing its buffer.  If you need to prevent reading past a certain
+   * point in the underlying {@code InputStream} (e.g. because you expect it to
+   * contain more data after the end of the message which you need to handle
+   * differently) then you must place a wrapper around your {@code InputStream}
+   * which limits the amount of data that can be read from it.
    *
    * @return the old limit.
    */
@@ -731,7 +742,7 @@ public final class CodedInput implements Input {
 
   /**
    * Called with {@code this.buffer} is empty to read more bytes from the
-   * input.  If {@code mustSucceed} is true, refillBuffer() gurantees that
+   * input.  If {@code mustSucceed} is true, refillBuffer() guarantees that
    * either there will be at least one byte in the buffer when it returns
    * or it will throw an exception.  If {@code mustSucceed} is false,
    * refillBuffer() returns false if no more bytes were available.
@@ -922,19 +933,19 @@ public final class CodedInput implements Input {
     } else {
       // Skipping more bytes than are in the buffer.  First skip what we have.
       int pos = bufferSize - bufferPos;
-      totalBytesRetired += pos;
-      bufferPos = 0;
-      bufferSize = 0;
+      bufferPos = bufferSize;
 
-      // Then skip directly from the InputStream for the rest.
-      while (pos < size) {
-        final int n = (input == null) ? -1 : (int) input.skip(size - pos);
-        if (n <= 0) {
-          throw ProtobufException.truncatedMessage();
-        }
-        pos += n;
-        totalBytesRetired += n;
+      // Keep refilling the buffer until we get to the point we wanted to skip
+      // to.  This has the side effect of ensuring the limits are updated
+      // correctly.
+      refillBuffer(true);
+      while (size - pos > bufferSize) {
+        pos += bufferSize;
+        bufferPos = bufferSize;
+        refillBuffer(true);
       }
+
+      bufferPos = size - pos; 
     }
   }
 
