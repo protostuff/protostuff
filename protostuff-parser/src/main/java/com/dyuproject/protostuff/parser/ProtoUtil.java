@@ -17,9 +17,11 @@ package com.dyuproject.protostuff.parser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 
 import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 
 /**
@@ -33,10 +35,11 @@ public final class ProtoUtil
     
     private ProtoUtil() {}
     
-    public static void loadFrom(InputStream in, Proto target) throws Exception
+    /**
+     * Loads the proto from an {@link ANTLRReaderStream}.
+     */
+    public static void loadFrom(ANTLRReaderStream input, Proto target) throws Exception
     {
-        // Create an input character stream from standard in
-        ANTLRInputStream input = new ANTLRInputStream(in);
         // Create an ExprLexer that feeds from that stream
         ProtoLexer lexer = new ProtoLexer(input);
         // Create a stream of tokens fed by the lexer
@@ -45,6 +48,22 @@ public final class ProtoUtil
         ProtoParser parser = new ProtoParser(tokens);
         // Begin parsing at rule parse
         parser.parse(target);
+    }
+    
+    /**
+     * Loads the proto from an {@link InputStream}.
+     */
+    public static void loadFrom(InputStream in, Proto target) throws Exception
+    {
+        loadFrom(new ANTLRInputStream(in), target);
+    }
+    
+    /**
+     * Loads the proto from a {@link Reader}.
+     */
+    public static void loadFrom(Reader reader, Proto target) throws Exception
+    {
+        loadFrom(new ANTLRReaderStream(reader), target);
     }
     
     public static Proto parseProto(File file)

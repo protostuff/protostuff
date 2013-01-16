@@ -1,6 +1,7 @@
 protostuff-1.0.8-SNAPSHOT
 + new protostuff-runtime-view module
   - select fields to include on ser/deser, without re-creating the expensive runtime fields.
++ Issue 139: Add functionality to load protobuf schema from Reader
 + Issue 138: CodedIpnut.skipRawBytes() incorrectly updates totalBytesRetired when going outside of its buffer.
   - thanks to Max Lanin
 + Issue 135: PluginProtoCompiler throws IllegalStateException when one of the rules (message_block, enum_block) is missing
