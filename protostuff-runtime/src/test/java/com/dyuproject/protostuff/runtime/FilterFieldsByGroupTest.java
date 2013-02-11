@@ -190,7 +190,7 @@ public class FilterFieldsByGroupTest extends AbstractTest
     public void testIt() throws Exception
     {
         // contains all fields
-        DefaultIdStrategy primary = new DefaultIdStrategy(null, 0);
+        DefaultIdStrategy primary = new DefaultIdStrategy();
         
         DefaultIdStrategy g1 = new DefaultIdStrategy(primary, GROUP1);
         DefaultIdStrategy g2 = new DefaultIdStrategy(primary, GROUP2);
