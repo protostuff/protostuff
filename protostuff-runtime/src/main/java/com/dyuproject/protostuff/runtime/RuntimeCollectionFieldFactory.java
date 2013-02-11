@@ -27,6 +27,7 @@ import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -87,7 +88,8 @@ final class RuntimeCollectionFieldFactory
     {
         return new RuntimeCollectionField<T,Object>(
                 inline.getFieldType(), 
-                number, name, messageFactory)
+                number, name, f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -158,8 +160,9 @@ final class RuntimeCollectionFieldFactory
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         return new RuntimeCollectionField<T,Enum<?>>(
-                FieldType.ENUM, 
-                number, name, messageFactory)
+                FieldType.ENUM, number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -230,8 +233,9 @@ final class RuntimeCollectionFieldFactory
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(genericType, true);
         return new RuntimeCollectionField<T,Object>(
-                FieldType.MESSAGE, 
-                number, name, messageFactory)
+                FieldType.MESSAGE, number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -302,8 +306,9 @@ final class RuntimeCollectionFieldFactory
             Class<Object> genericType, final IdStrategy strategy)
     {
         return new RuntimeCollectionField<T,Object>(
-                FieldType.MESSAGE, 
-                number, name, messageFactory)
+                FieldType.MESSAGE, number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -383,8 +388,9 @@ final class RuntimeCollectionFieldFactory
             final IdStrategy strategy)
     {
         return new RuntimeCollectionField<T,Object>(
-                FieldType.MESSAGE, 
-                number, name, messageFactory)
+                FieldType.MESSAGE, number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);

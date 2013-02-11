@@ -23,6 +23,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
 import com.dyuproject.protostuff.MapSchema.MessageFactory;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -42,10 +43,10 @@ abstract class RuntimeMapField<T,K,V> extends Field<T>
      */
     protected final MapSchema<K,V> schema;
     
-    public RuntimeMapField(FieldType type, int number, String name, 
+    public RuntimeMapField(FieldType type, int number, String name, Tag tag, 
             MessageFactory messageFactory)
     {
-        super(type,number,name,false);
+        super(type, number, name, false, tag);
         schema = new MapSchema<K,V>(messageFactory)
         {
             protected K readKeyFrom(Input input, MapWrapper<K,V> wrapper) 

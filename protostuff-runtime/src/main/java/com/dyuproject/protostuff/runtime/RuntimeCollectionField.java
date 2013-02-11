@@ -22,6 +22,7 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -41,10 +42,10 @@ abstract class RuntimeCollectionField<T,V> extends Field<T>
      */
     protected final CollectionSchema<V> schema;
 
-    public RuntimeCollectionField(FieldType type, int number, String name, 
+    public RuntimeCollectionField(FieldType type, int number, String name, Tag tag, 
             MessageFactory messageFactory)
     {
-        super(type,number,name, false);
+        super(type, number, name, false, tag);
         schema = new CollectionSchema<V>(messageFactory)
         {
             protected void addValueFrom(Input input, Collection<V> collection) 

@@ -84,6 +84,11 @@ public abstract class NumericIdStrategy extends IdStrategy
             CID_COLLECTION = 26, CID_MAP = 27, 
             CID_POJO = 28, CID_CLASS = 29, CID_DELEGATE = 30;
     
+    protected NumericIdStrategy(IdStrategy primaryGroup, int groupId)
+    {
+        super(primaryGroup, groupId);
+    }
+    
     protected void writeArrayIdTo(Output output, Class<?> componentType) 
             throws IOException
     {

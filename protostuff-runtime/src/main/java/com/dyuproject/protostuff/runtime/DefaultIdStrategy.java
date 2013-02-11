@@ -51,6 +51,16 @@ public final class DefaultIdStrategy extends IdStrategy
     final ConcurrentHashMap<String, Delegate<?>> delegateMapping = 
             new ConcurrentHashMap<String, Delegate<?>>();
     
+    public DefaultIdStrategy()
+    {
+        super(null, 0);
+    }
+    
+    public DefaultIdStrategy(IdStrategy primaryGroup, int groupId)
+    {
+        super(primaryGroup, groupId);
+    }
+    
     /**
      * Registers a pojo.
      * Returns true if registration is successful or if the same exact schema 

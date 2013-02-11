@@ -65,10 +65,26 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         
         public Registry()
         {
-            this(10, 10, 10, 10, 10);
+            this(null, 0, 10, 10, 10, 10, 10);
         }
         
         public Registry(
+                int initialCollectionSize, 
+                int initialMapSize, 
+                int initialEnumSize, 
+                int initialPojoSize,
+                int initialDelegateSize)
+        {
+            this(null, 0, 
+                    initialCollectionSize, 
+                    initialMapSize, 
+                    initialEnumSize, 
+                    initialPojoSize, 
+                    initialDelegateSize);
+        }
+        
+        public Registry(
+                IdStrategy primaryGroup, int groupId, 
                 int initialCollectionSize, 
                 int initialMapSize, 
                 int initialEnumSize, 
@@ -104,6 +120,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             ArrayList<RegisteredDelegate<?>> delegates = newList(initialDelegateSize + 1);
             
             strategy = new ExplicitIdStrategy(
+                    primaryGroup, groupId, 
                     collectionMapping, collections, 
                     mapMapping, maps, 
                     enumMapping, enums, 
@@ -353,10 +370,38 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping, 
             ArrayList<RegisteredEnumIO> enums, 
             IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping, 
+            ArrayList<BaseHS<?>> pojos, 
+            IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping, 
+            ArrayList<RegisteredDelegate<?>> delegates)
+    {
+        this(null, 0, 
+                collectionMapping, 
+                collections, 
+                mapMapping, 
+                maps, 
+                enumMapping, 
+                enums, 
+                pojoMapping, 
+                pojos, 
+                delegateMapping, 
+                delegates);
+    }
+    
+    public ExplicitIdStrategy(
+            IdStrategy primaryGroup, int groupId, 
+            IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMapping, 
+            ArrayList<RegisteredCollectionFactory> collections, 
+            IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping, 
+            ArrayList<RegisteredMapFactory> maps, 
+            IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping, 
+            ArrayList<RegisteredEnumIO> enums, 
+            IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping, 
             ArrayList<BaseHS<?>> pojos,
             IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping, 
             ArrayList<RegisteredDelegate<?>> delegates)
     {
+        super(primaryGroup, groupId);
+        
         this.collectionMapping = collectionMapping;
         this.collections = collections;
         this.mapMapping = mapMapping;

@@ -26,6 +26,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Message;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -52,7 +53,8 @@ final class RuntimeRepeatedFieldFactory
             final java.lang.reflect.Field f, final MessageFactory messageFactory, 
             final Delegate<Object> inline)
     {
-        return new Field<T>(inline.getFieldType(), number, name, true)
+        return new Field<T>(inline.getFieldType(), number, name, true, 
+                f.getAnnotation(Tag.class))
         {
             {
                 f.setAccessible(true);
@@ -121,7 +123,8 @@ final class RuntimeRepeatedFieldFactory
             final Class<Object> genericType, IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
-        return new Field<T>(FieldType.ENUM, number, name, true)
+        return new Field<T>(FieldType.ENUM, number, name, true, 
+                f.getAnnotation(Tag.class))
         {
             {
                 f.setAccessible(true);
@@ -188,7 +191,8 @@ final class RuntimeRepeatedFieldFactory
     {
         return new RuntimeMessageField<T,Object>(
                 genericType, strategy.getSchemaWrapper(genericType, true), 
-                FieldType.MESSAGE, number, name, true)
+                FieldType.MESSAGE, number, name, true, 
+                f.getAnnotation(Tag.class))
         {
             
             {
@@ -259,7 +263,9 @@ final class RuntimeRepeatedFieldFactory
             final Class<Object> genericType, IdStrategy strategy)
     {
         return new RuntimeDerivativeField<T>(
-                genericType, FieldType.MESSAGE, number, name, true, strategy)
+                genericType, FieldType.MESSAGE, number, name, true, 
+                f.getAnnotation(Tag.class), 
+                strategy)
         {
             {
                 f.setAccessible(true);
@@ -367,6 +373,7 @@ final class RuntimeRepeatedFieldFactory
     {
         return new RuntimeObjectField<T>(
                 FieldType.MESSAGE, number, name, true, 
+                f.getAnnotation(Tag.class), 
                 factory, strategy)
         {
             {

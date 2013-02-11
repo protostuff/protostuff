@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -53,10 +54,10 @@ abstract class RuntimeDerivativeField<T> extends Field<T>
     public final Class<Object> typeClass;
     
     public RuntimeDerivativeField(Class<Object> typeClass, 
-            FieldType type, int number, String name, boolean repeated,
+            FieldType type, int number, String name, boolean repeated, Tag tag, 
             IdStrategy strategy)
     {
-        super(type, number, name, repeated);
+        super(type, number, name, repeated, tag);
         this.typeClass = typeClass;
         
         schema = new DerivativeSchema(strategy)

@@ -103,7 +103,22 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 int enumIdMax, int enumIdStart, 
                 int pojoIdMax, int pojoIdStart)
         {
+            this(null, 0, 
+                    collectionIdMax, collectionIdStart, 
+                    mapIdMax, mapIdStart, 
+                    enumIdMax, enumIdStart, 
+                    pojoIdMax, pojoIdStart);
+        }
+        
+        public Registry(
+                IdStrategy primaryGroup, int groupId, 
+                int collectionIdMax, int collectionIdStart,
+                int mapIdMax, int mapIdStart,
+                int enumIdMax, int enumIdStart, 
+                int pojoIdMax, int pojoIdStart)
+        {
             strategy = new IncrementalIdStrategy(
+                    primaryGroup, groupId, 
                     collectionIdMax, collectionIdStart, 
                     mapIdMax, mapIdStart, 
                     enumIdMax, enumIdStart, 
@@ -359,8 +374,24 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             int mapIdMax, int mapIdStart,
             int enumIdMax, int enumIdStart, 
             int pojoIdMax, int pojoIdStart)
+    {
+        this(null, 0, 
+                collectionIdMax, collectionIdStart, 
+                mapIdMax, mapIdStart, 
+                enumIdMax, enumIdStart, 
+                pojoIdMax, pojoIdStart);
+    }
+    
+    public IncrementalIdStrategy(
+            IdStrategy primaryGroup, int groupId, 
+            int collectionIdMax, int collectionIdStart,
+            int mapIdMax, int mapIdStart,
+            int enumIdMax, int enumIdStart, 
+            int pojoIdMax, int pojoIdStart)
             //int delegateIdMax, int delegateIdStart)
     {
+        super(primaryGroup, groupId);
+        
         assert collectionIdMax > collectionIdStart;
         assert mapIdMax > mapIdStart;
         assert enumIdMax > enumIdStart;

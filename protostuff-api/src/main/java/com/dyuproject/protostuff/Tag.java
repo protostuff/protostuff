@@ -51,4 +51,13 @@ public @interface Tag
      * Optional.
      */
     String alias() default "";
+    
+    /**
+     * A value of 0x1F means the first 5 groups (1,2,4,8,16 - bits) will include 
+     * this field.  
+     * A <b>negative</b> value of 0x1F means the first 5 groups will <b>exclude</b> 
+     * this field.
+     * Optional.
+     */
+    int groupFilter() default 0;
 }

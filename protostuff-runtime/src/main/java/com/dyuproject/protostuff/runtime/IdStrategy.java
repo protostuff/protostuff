@@ -25,12 +25,37 @@ import com.dyuproject.protostuff.Schema;
  * 
  * The underlying impl will determine how the type (id) should be written.
  * 
+ * An {@link IdStrategy} is standalone if the {@link #primaryGroup} is not set.
+ * 
  * @author Leo Romanoff
  * @author David Yu
  * 
  */
 public abstract class IdStrategy
 {
+    
+    public final IdStrategy primaryGroup;
+    public final int groupId;
+    
+    protected IdStrategy(IdStrategy primaryGroup, int groupId)
+    {
+        if(primaryGroup != null)
+        {
+            if(groupId <= 0 || 0 != (groupId & (groupId-1)))
+            {
+                throw new RuntimeException(
+                        "The groupId must be a power of two (1,2,4,8,etc).");
+            }
+        }
+        else if(groupId != 0)
+        {
+            throw new RuntimeException("An IdStrategy without a primaryGroup " +
+            		"(standalone) must have a groupId of zero.");
+        }
+        
+        this.primaryGroup = primaryGroup;
+        this.groupId = groupId;
+    }
     
     /**
      * Thrown when a type is not known by the IdStrategy.

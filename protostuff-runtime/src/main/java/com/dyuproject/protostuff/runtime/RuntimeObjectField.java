@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -32,9 +33,10 @@ abstract class RuntimeObjectField<T> extends Field<T> implements PolymorphicSche
     public final PolymorphicSchema schema;
     
     public RuntimeObjectField(FieldType type, int number, String name, boolean repeated, 
+            Tag tag, 
             PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
-        super(type, number, name, repeated);
+        super(type, number, name, repeated, tag);
         
         schema = factory.newSchema(strategy, this);
     }

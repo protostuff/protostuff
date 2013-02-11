@@ -45,6 +45,7 @@ import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -103,7 +104,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.UINT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name, 
+                    f.getAnnotation(Tag.class))
             {                 
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -160,7 +162,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.UINT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -217,7 +220,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.UINT32, number, name)
+            return new Field<T>(FieldType.UINT32, number, name, 
+                    f.getAnnotation(Tag.class))
             {                  
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -275,7 +279,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.INT32, number, name)
+            return new Field<T>(FieldType.INT32, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -333,7 +338,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.INT64, number, name)
+            return new Field<T>(FieldType.INT64, number, name, 
+                    f.getAnnotation(Tag.class))
             {                  
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -391,7 +397,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.FLOAT, number, name)
+            return new Field<T>(FieldType.FLOAT, number, name, 
+                    f.getAnnotation(Tag.class))
             {                   
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -449,7 +456,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.DOUBLE, number, name)
+            return new Field<T>(FieldType.DOUBLE, number, name, 
+                    f.getAnnotation(Tag.class))
             {                   
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -507,7 +515,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final boolean primitive = f.getType().isPrimitive();
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.BOOL, number, name)
+            return new Field<T>(FieldType.BOOL, number, name, 
+                    f.getAnnotation(Tag.class))
             {              
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -564,7 +573,8 @@ public final class RuntimeUnsafeFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.STRING, number, name)
+            return new Field<T>(FieldType.STRING, number, name, 
+                    f.getAnnotation(Tag.class))
             {                  
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -613,7 +623,8 @@ public final class RuntimeUnsafeFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.BYTES, number, name)
+            return new Field<T>(FieldType.BYTES, number, name, 
+                    f.getAnnotation(Tag.class))
             {                  
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -662,7 +673,8 @@ public final class RuntimeUnsafeFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.BYTES, number, name)
+            return new Field<T>(FieldType.BYTES, number, name, 
+                    f.getAnnotation(Tag.class))
             {                 
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -712,7 +724,8 @@ public final class RuntimeUnsafeFieldFactory
         {
             final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f.getType());
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.ENUM, number, name)
+            return new Field<T>(FieldType.ENUM, number, name, 
+                    f.getAnnotation(Tag.class))
             { 
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -766,7 +779,8 @@ public final class RuntimeUnsafeFieldFactory
             final long offset = us.objectFieldOffset(f);
             return new RuntimeMessageField<T,Object>(
                     type, strategy.getSchemaWrapper(type, true), 
-                    FieldType.MESSAGE, number, name, false)
+                    FieldType.MESSAGE, number, name, false, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -821,7 +835,9 @@ public final class RuntimeUnsafeFieldFactory
             final long offset = us.objectFieldOffset(f);
             return new RuntimeDerivativeField<T>(
                     (Class<Object>)f.getType(), 
-                    FieldType.MESSAGE, number, name, false, strategy)
+                    FieldType.MESSAGE, number, name, false, 
+                    f.getAnnotation(Tag.class), 
+                    strategy)
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -897,6 +913,7 @@ public final class RuntimeUnsafeFieldFactory
             final long offset = us.objectFieldOffset(f);
             return new RuntimeObjectField<T>( 
                     FieldType.MESSAGE, number, name, false, 
+                    f.getAnnotation(Tag.class), 
                     PolymorphicSchemaFactories.getFactoryFromField(f.getType()), strategy)
             {
                 public void mergeFrom(Input input, T message) throws IOException
@@ -955,7 +972,8 @@ public final class RuntimeUnsafeFieldFactory
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.STRING, number, name)
+            return new Field<T>(FieldType.STRING, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -1003,7 +1021,8 @@ public final class RuntimeUnsafeFieldFactory
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.BYTES, number, name)
+            return new Field<T>(FieldType.BYTES, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -1051,7 +1070,8 @@ public final class RuntimeUnsafeFieldFactory
         public <T> Field<T> create(int number, String name, final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.FIXED64, number, name)
+            return new Field<T>(FieldType.FIXED64, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {
@@ -1104,7 +1124,8 @@ public final class RuntimeUnsafeFieldFactory
                     (Class<Object>)f.getType());
             
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.BYTES, number, name)
+            return new Field<T>(FieldType.BYTES, number, name, 
+                    f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message) throws IOException
                 {

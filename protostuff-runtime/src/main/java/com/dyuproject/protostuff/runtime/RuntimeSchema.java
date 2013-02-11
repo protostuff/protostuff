@@ -181,6 +181,65 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                         "class nor interface: \"" + typeClass.getName());
         }
         
+        // check if this is part of a group
+        if(strategy.primaryGroup != null)
+        {
+            // only pojos created by runtime schema support groups
+            final Schema<T> s = strategy.primaryGroup.getSchemaWrapper(
+                    typeClass, true).getSchema();
+            if(s instanceof RuntimeSchema)
+            {
+                final RuntimeSchema<T> rs = (RuntimeSchema<T>)s;
+                
+                final ArrayList<Field<T>> fields = new ArrayList<MappedSchema.Field<T>>(
+                        rs.fields.length);
+                
+                for(Field<T> f : rs.fields)
+                {
+                    final int groupFilter = f.groupFilter;
+                    if(groupFilter != 0)
+                    {
+                        final int set; // set for exclusion
+                        if(groupFilter > 0)
+                        {
+                            // inclusion
+                            set = ~groupFilter & 0x7FFFFFFF;
+                        }
+                        else
+                        {
+                            // exclusion
+                            set = -groupFilter;
+                        }
+                        
+                        if(0 != (strategy.groupId & set))
+                        {
+                            // this field is excluded on the current group id
+                            continue;
+                        }
+                    }
+                    
+                    fields.add(f);
+                }
+                
+                final int size = fields.size();
+                if(size == rs.fields.length)
+                {
+                    // nothing is excluded
+                    return rs;
+                }
+                
+                if(size == 0)
+                {
+                    throw new RuntimeException("All fields were excluded for " + 
+                            rs.messageFullName() + " on group " + strategy.groupId);
+                }
+                
+                return new RuntimeSchema<T>(typeClass, fields, 
+                        // the last field
+                        fields.get(size-1).number, rs.instantiator);
+            }
+        }
+        
         final Map<String,java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
         final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(fieldMap.size());
         int i = 0;

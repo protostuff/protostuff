@@ -23,6 +23,7 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
 /**
@@ -220,18 +221,24 @@ public abstract class MappedSchema<T> implements Schema<T>
         public final int number;
         public final String name;
         public final boolean repeated;
+        public final int groupFilter;
+        //public final Tag tag;
         
-        public Field(FieldType type, int number, String name, boolean repeated)
+        public Field(FieldType type, int number, String name, boolean repeated, 
+                Tag tag)
         {
             this.type = type;
             this.number = number;
             this.name = name;
             this.repeated = repeated;
+            this.groupFilter = tag == null ? 0 : tag.groupFilter();
+            //this.tag = tag;
         }
         
-        public Field(FieldType type, int number, String name)
+        public Field(FieldType type, int number, String name, 
+                Tag tag)
         {
-            this(type, number, name, false);
+            this(type, number, name, false, tag);
         }
 
         /**

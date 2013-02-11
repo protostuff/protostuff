@@ -28,6 +28,7 @@ import com.dyuproject.protostuff.Morph;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
@@ -83,7 +84,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -169,7 +172,9 @@ final class RuntimeMapFieldFactory
             final Delegate<Object> inlineV)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -257,7 +262,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -343,7 +350,9 @@ final class RuntimeMapFieldFactory
             final Class<Object> clazzV, final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -449,7 +458,9 @@ final class RuntimeMapFieldFactory
             final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -557,7 +568,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
         
         return new RuntimeMapField<T,Enum<?>,Enum<?>>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -645,7 +658,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -734,7 +749,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -822,7 +839,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -930,7 +949,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         
         return new RuntimeMapField<T,Enum<?>,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -1038,7 +1059,9 @@ final class RuntimeMapFieldFactory
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
         
         return new RuntimeMapField<T,Object,Enum<?>>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -1126,7 +1149,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -1215,7 +1240,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             {
                 f.setAccessible(true);
@@ -1303,7 +1330,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -1411,7 +1440,9 @@ final class RuntimeMapFieldFactory
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
         
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
@@ -1517,7 +1548,9 @@ final class RuntimeMapFieldFactory
             final IdStrategy strategy)
     {
         return new RuntimeMapField<T,Object,Object>(FieldType.MESSAGE, 
-                number, name, messageFactory)
+                number, name, 
+                f.getAnnotation(Tag.class), 
+                messageFactory)
         {
             
             {
