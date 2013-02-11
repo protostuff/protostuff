@@ -116,6 +116,19 @@ public final class RuntimeView
         }
     }
     
+    public static abstract class PostFilteredSchema<T> extends BaseSchema<T>
+    {
+        public final Field<T>[] fields;
+        
+        protected PostFilteredSchema(Class<T> typeClass, Instantiator<T> instantiator, 
+                Field<T>[] fields)
+        {
+            super(typeClass, instantiator);
+            
+            this.fields = fields;
+        }
+    }
+    
     /**
      * Built-in view schema factories.
      * 
@@ -202,7 +215,8 @@ public final class RuntimeView
         /**
          * Exclude the fields for merging and writing.
          * 
-         * The args param is required (the field names to exclude).
+         * The args param is required (the field names to exclude) if 
+         * {@link Predicate.Factory} is not provided.
          */
         EXCLUDE
         {
@@ -215,11 +229,12 @@ public final class RuntimeView
                     Predicate.Factory factory, 
                     String[] args)
             {
-                final HashMap<String,Field<T>> fieldsByName = copyAndExclude(typeClass, 
-                        byName, args);
+                final HashMap<String,Field<T>> fieldsByName = factory == null ? 
+                        copyAndExclude(typeClass, byName, args) : 
+                            copyAndExclude(typeClass, byName, factory.create(args));
                 
                 @SuppressWarnings("unchecked")
-                final Field<T>[] fields = (Field<T>[])new Field<?>[fieldsByName.size()];
+                Field<T>[] fields = (Field<T>[])new Field<?>[fieldsByName.size()];
                 for(int i = 1, j = 0; i < fieldsByNumber.length; i++)
                 {
                     Field<T> field = fieldsByNumber[i];
@@ -227,7 +242,7 @@ public final class RuntimeView
                         fields[j++] = field;
                 }
                 
-                return new BaseSchema<T>(typeClass, instantiator)
+                return new PostFilteredSchema<T>(typeClass, instantiator, fields)
                 {
                     public int getFieldNumber(String name)
                     {
@@ -358,7 +373,7 @@ public final class RuntimeView
                 int maxFieldNumber = includeAndAddTo(fieldsByName, typeClass, byName, args);
                 
                 @SuppressWarnings("unchecked")
-                final Field<T>[] fields = (Field<T>[])new Field<?>[fieldsByName.size()];
+                Field<T>[] fields = (Field<T>[])new Field<?>[fieldsByName.size()];
                 for(int i = 1, j = 0; i <= maxFieldNumber; i++)
                 {
                     Field<T> field = fieldsByNumber[i];
@@ -366,7 +381,7 @@ public final class RuntimeView
                         fields[j++] = field;
                 }
                 
-                return new BaseSchema<T>(typeClass, instantiator)
+                return new PostFilteredSchema<T>(typeClass, instantiator, fields)
                 {
                     public int getFieldNumber(String name)
                     {
@@ -477,6 +492,27 @@ public final class RuntimeView
             }
         }
         ;
+    }
+    
+    static <T> HashMap<String,Field<T>> copyAndExclude(Class<T> typeClass, 
+            Map<String, Field<T>> byName, final Predicate predicate)
+    {
+        // copy
+        final HashMap<String,Field<T>> map = new HashMap<String,Field<T>>(byName);
+        
+        for(Field<T> f : byName.values())
+        {
+            if(predicate.apply(f))
+                map.remove(f.name);
+        }
+        
+        if(map.size() == 0)
+        {
+            throw new IllegalArgumentException("No fields are left.  " +
+                    "Everything was excluded.");
+        }
+        
+        return map;
     }
     
     static <T> HashMap<String,Field<T>> copyAndExclude(Class<T> typeClass, 
