@@ -921,7 +921,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         else
                         {
                             // create new
-                            this.schema = schema = RuntimeSchema.createFrom(typeClass, strategy);
+                            this.schema = schema = strategy.newSchema(typeClass);
                         }
                     }
                 }

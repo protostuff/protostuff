@@ -627,7 +627,7 @@ public final class DefaultIdStrategy extends IdStrategy
                         else
                         {
                             // create new
-                            this.schema = schema = RuntimeSchema.createFrom(typeClass, strategy);
+                            this.schema = schema = strategy.newSchema(typeClass);
                         }
                     }
                 }

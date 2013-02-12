@@ -2,6 +2,7 @@ package com.dyuproject.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.ProtostuffException;
 import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /***
  * This base class handles all the IO for reading and writing polymorphic fields.
@@ -55,6 +57,76 @@ public abstract class IdStrategy
         
         this.primaryGroup = primaryGroup;
         this.groupId = groupId;
+    }
+    
+    /**
+     * Generates a schema from the given class.  If this strategy is part of a group, 
+     * the existing fields of that group's schema will be re-used.
+     */
+    protected <T> Schema<T> newSchema(Class<T> typeClass)
+    {
+        // check if this is part of a group
+        if(primaryGroup != null)
+        {
+            // only pojos created by runtime schema support groups
+            final Schema<T> s = primaryGroup.getSchemaWrapper(
+                    typeClass, true).getSchema();
+            if(s instanceof RuntimeSchema)
+            {
+                final RuntimeSchema<T> rs = (RuntimeSchema<T>)s;
+                
+                final ArrayList<Field<T>> fields = new ArrayList<MappedSchema.Field<T>>(
+                        rs.fields.length);
+                
+                for(Field<T> f : rs.fields)
+                {
+                    final int groupFilter = f.groupFilter;
+                    if(groupFilter != 0)
+                    {
+                        final int set; // set for exclusion
+                        if(groupFilter > 0)
+                        {
+                            // inclusion
+                            set = ~groupFilter & 0x7FFFFFFF;
+                        }
+                        else
+                        {
+                            // exclusion
+                            set = -groupFilter;
+                        }
+                        
+                        if(0 != (groupId & set))
+                        {
+                            // this field is excluded on the current group id
+                            continue;
+                        }
+                    }
+                    
+                    fields.add(f);
+                }
+                
+                final int size = fields.size();
+                if(size == rs.fields.length)
+                {
+                    // nothing is excluded
+                    return rs;
+                }
+                
+                if(size == 0)
+                {
+                    throw new RuntimeException("All fields were excluded for " + 
+                            rs.messageFullName() + " on group " + groupId);
+                }
+                
+                return new RuntimeSchema<T>(typeClass, fields, 
+                        // the last field
+                        fields.get(size-1).number, rs.instantiator);
+            }
+            
+            return s;
+        }
+
+        return RuntimeSchema.createFrom(typeClass, this);
     }
     
     /**
