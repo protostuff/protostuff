@@ -54,4 +54,7 @@ Patch contributors:
   Max Lunin
     * protostuff-core - Issue 138
 
+  Ryszard Wiśniewski
+    * protostuff-runtime - Issue 140 patch
+
   
