@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Represents the message defined in the {@link Proto}.
@@ -162,7 +163,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return fields;
     }
     
-    public Collection<Field<?>> getFields()
+    public List<Field<?>> getFields()
     {
         return sortedFields;
     }
