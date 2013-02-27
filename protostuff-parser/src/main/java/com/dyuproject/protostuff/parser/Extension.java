@@ -122,8 +122,8 @@ public class Extension extends AnnotationContainer implements HasFields
                 getEnclosingNamespace());
         if (extendedMessage == null)
         {
-            throw new IllegalStateException("The message " + getExtendedMessageFullName()
-                    + " is not defined.");
+            throw err("The message " + getExtendedMessageFullName()
+                    + " is not defined", getProto());
         }
         extendedMessage.extend(this);
         

@@ -96,5 +96,13 @@ public class AnnotationContainer implements HasAnnotations
     {
         return annotations.isEmpty();
     }
+    
+    public static IllegalStateException err(String msg, Proto proto)
+    {
+        if(proto == null)
+            return new IllegalStateException(msg);
+        
+        return new IllegalStateException(msg + " (" + proto.getSourcePath() + ")");
+    }
 
 }

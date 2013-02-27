@@ -38,7 +38,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         this.name = name;
         this.proto = proto;
         if(proto.services.put(name, this) != null)
-            throw new IllegalStateException("Duplicate service: " + name);
+            throw err("Duplicate service: " + name, proto);
     }
 
     public String getName()
@@ -91,7 +91,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
     public void putExtraOption(String key, Object value)
     {
         if(extraOptions.put(key, value) != null)
-            throw new IllegalStateException("Duplicate service option: " + key);
+            throw err("Duplicate service option: " + key, getProto());
     }
     
     public Object getExtraOption(String name)
@@ -135,8 +135,8 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             
             if(rpcMethods.put(name, this) != null)
             {
-                throw new IllegalStateException("Duplicate rpc method: " + name + 
-                        " from service " + Service.this.name);
+                throw err("Duplicate rpc method: " + name + 
+                        " from service " + Service.this.name, getProto());
             }
         }
 
@@ -217,7 +217,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         public void putExtraOption(String key, Object value)
         {
             if(extraOptions.put(key, value) != null)
-                throw new IllegalStateException("Duplicate rpc option: " + key);
+                throw err("Duplicate rpc option: " + key, getProto());
         }
         
         public Object getExtraOption(String name)
@@ -238,7 +238,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
                 Message argType = proto.findMessageReference(fullArgName, proto.getPackageName());
                 if(argType == null)
                 {
-                    throw new IllegalStateException("The message " + fullArgName + " is not defined.");
+                    throw err("The message " + fullArgName + " is not defined", getProto());
                 }
                 this.argType = argType;
             }
@@ -249,7 +249,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
                 Message returnType = proto.findMessageReference(fullReturnName, proto.getPackageName());
                 if(returnType == null)
                 {
-                    throw new IllegalStateException("The message " + fullReturnName + " is not defined.");
+                    throw err("The message " + fullReturnName + " is not defined", getProto());
                 }
                 this.returnType = returnType;
             }

@@ -159,7 +159,7 @@ public class Proto extends AnnotationContainer implements HasOptions
     public void putExtraOption(String key, Object value)
     {
         if(extraOptions.put(key, value) != null)
-            throw new IllegalStateException("Duplicate proto option: " + key);
+            throw err("Duplicate proto option: " + key, this);
     }
     
     @SuppressWarnings("unchecked")
@@ -186,7 +186,7 @@ public class Proto extends AnnotationContainer implements HasOptions
     void addMessage(Message message)
     {
         if(messages.put(message.name, message) != null)
-            throw new IllegalStateException("Duplicate message: " + message.name);
+            throw err("Duplicate message: " + message.name, this);
         
         message.proto = this;
     }
@@ -209,7 +209,7 @@ public class Proto extends AnnotationContainer implements HasOptions
     void addEnumGroup(EnumGroup enumGroup)
     {
         if(enumGroups.put(enumGroup.name, enumGroup) != null)
-            throw new IllegalStateException("Duplicate enum: " + enumGroup.name);
+            throw err("Duplicate enum: " + enumGroup.name, this);
         
         enumGroup.proto = this;
     }
@@ -282,7 +282,7 @@ public class Proto extends AnnotationContainer implements HasOptions
     void postParse()
     {
         if(packageName == null)
-            throw new IllegalStateException("proto package not defined in " + getSourcePath());
+            throw err("proto package not defined", this);
         
         String javaPkg = (String)extraOptions.get("java_package");
         String javaPackageName = javaPkg==null || javaPkg.length()==0 ? 

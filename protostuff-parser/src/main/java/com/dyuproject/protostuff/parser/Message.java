@@ -125,8 +125,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     {
         if(nestedMessages.put(message.name, message) != null)
         {
-            throw new IllegalStateException("Duplicate nested message: " + 
-                    message.name + " from message: " + name);
+            throw err("Duplicate nested message: " + 
+                    message.name + " from message: " + name, getProto());
         }
         
         message.parentMessage = this;
@@ -151,8 +151,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     {
         if(nestedEnumGroups.put(enumGroup.name, enumGroup) != null)
         {
-            throw new IllegalStateException("Duplicate nested enum: " + 
-                    enumGroup.name + " from message: " + name);
+            throw err("Duplicate nested enum: " + 
+                    enumGroup.name + " from message: " + name, getProto());
         }
         
         enumGroup.parentMessage = this;
@@ -224,8 +224,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     {
         if (isExtensible() == false)
         {
-            throw new IllegalStateException("Message " + getFullName()
-                    + " does not define extension range.");
+            throw err("Message " + getFullName()
+                    + " does not define extension range", getProto());
         }
 
         for (Field<?> field : extension.getFields())
@@ -242,13 +242,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             }
             if (inRange == false)
             {
-                throw new IllegalStateException("Extension '" + field.getName()
-                        + "' is outside extension range.");
+                throw err("Extension '" + field.getName()
+                        + "' is outside extension range", getProto());
             }
             if (this.extensions.containsKey(number))
             {
-                throw new IllegalStateException("Extension already defined for number '" + number
-                        + "'.");
+                throw err("Extension already defined for number '" + number
+                        + "'", getProto());
             }
             this.extensions.put(number, field);
         }
@@ -263,7 +263,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     public void putExtraOption(String key, Object value)
     {
         if(extraOptions.put(key, value) != null)
-            throw new IllegalStateException("Duplicate message option: " + key);
+            throw err("Duplicate message option: " + key, getProto());
     }
     
     public LinkedHashMap<String,Object> getStandardOptions()
@@ -618,7 +618,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                     continue;
                 }
                 
-                throw new IllegalStateException("unknown field: " + fullRefName);
+                throw err("unknown field: " + fullRefName, getProto());
             }
         }
         sortedFields.addAll(fields.values());
@@ -669,8 +669,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             ef.defaultValue = enumGroup.getValue(refName);
             if(ef.defaultValue == null)
             {
-                throw new IllegalStateException("The field: " + ef.name + 
-                        " contains an unknown enum value: " + refName);
+                throw err("The field: " + ef.name + 
+                        " contains an unknown enum value: " + refName, owner.getProto());
             }
         }
         copy(fr, ef);

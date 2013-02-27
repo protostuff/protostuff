@@ -97,7 +97,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     public void putExtraOption(java.lang.String key, Object value)
     {
         if(extraOptions.put(key, value) != null)
-            throw new IllegalStateException("Duplicate field option: " + key);
+            throw err("Duplicate field option: " + key, owner == null ? null : owner.getProto());
     }
     
     /**
@@ -217,7 +217,10 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     public int compareTo(Field<?> f)
     {
         if(f.number==number)
-            throw new IllegalStateException("The field: " + f.name + " cannot have the same number as " + name);
+        {
+            throw err("The field: " + f.name + " cannot have the same number as " + 
+                    name, owner == null ? null : owner.getProto());
+        }
         
         return f.number < number ? 1 : -1;
     }

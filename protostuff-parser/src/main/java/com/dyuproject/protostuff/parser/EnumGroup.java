@@ -103,7 +103,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     public void putExtraOption(String key, Object value)
     {
         if(extraOptions.put(key, value) != null)
-            throw new IllegalStateException("Duplicate enum option: " + key);
+            throw err("Duplicate enum option: " + key, getProto());
     }
     
     public LinkedHashMap<String,Object> getStandardOptions()
@@ -252,7 +252,10 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         public int compareTo(Value o)
         {
             if(o.name.equals(name))
-                throw new IllegalStateException("The enum " + enumGroup.name + " contains the same values.");
+            {
+                throw err("The enum " + enumGroup.name + " contains the same values", 
+                        enumGroup.getProto());
+            }
             
             // if equal, sort by order of declaration
             return o.number < number ? 1 : -1;
