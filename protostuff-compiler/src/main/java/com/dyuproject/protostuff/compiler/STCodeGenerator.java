@@ -51,8 +51,8 @@ public abstract class STCodeGenerator implements ProtoCompiler
     static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = 
             new ConcurrentHashMap<String, Formatter>();
     
-    public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(
-            TEMPLATE_BASE, new StringTemplateErrorListener()
+    public static final StringTemplateErrorListener ERROR_LISTENER = 
+            new StringTemplateErrorListener()
     {
         public void error(String msg, Throwable e)
         {
@@ -62,7 +62,31 @@ public abstract class STCodeGenerator implements ProtoCompiler
         {
             System.err.println("warning: " + msg);
         }
-    });
+    };
+    
+    public static final CommonGroupLoader GROUP_LOADER = 
+            new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
+    
+    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER = 
+            new AttributeRenderer()
+    {
+        public String toString(Object o)
+        {
+            return (String)o;
+        }
+
+        public String toString(Object o, String formatName)
+        {
+            String str = (String)o;
+            if(formatName==null)
+                return str;
+            
+            String[] formats = FORMAT_DELIM.split(formatName);
+            
+            return formats.length == 0 ? format(str, formatName) : 
+                chainedFormat(str, formats);
+        }
+    };
     
     static
     {
@@ -70,24 +94,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
         
         // attribute renderers
         
-        setAttributeRenderer(String.class, new AttributeRenderer(){
-            public String toString(Object o)
-            {
-                return (String)o;
-            }
-
-            public String toString(Object o, String formatName)
-            {
-                String str = (String)o;
-                if(formatName==null)
-                    return str;
-                
-                String[] formats = FORMAT_DELIM.split(formatName);
-                
-                return formats.length == 0 ? format(str, formatName) : 
-                    chainedFormat(str, formats);
-            }
-        });
+        setAttributeRenderer(String.class, STRING_ATTRIBUTE_RENDERER);
         
         GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
         
