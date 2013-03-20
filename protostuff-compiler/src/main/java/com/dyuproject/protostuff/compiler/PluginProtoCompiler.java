@@ -241,7 +241,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         return outputPrefix + name + outputSuffix + fileExtension;
     }
 
-    protected void compile(ProtoModule module, Proto proto) throws IOException
+    public void compile(ProtoModule module, Proto proto) throws IOException
     {
         if(!this.module.getOutput().startsWith(module.getOutput()))
         {
