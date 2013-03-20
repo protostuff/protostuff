@@ -120,23 +120,47 @@ public class PluginProtoCompiler extends STCodeGenerator
     
     public final ProtoModule module;
     public final StringTemplateGroup group;
-    public final boolean protoBlock, javaOutput;
+    public final StringTemplate enumBlockTemplate, messageBlockTemplate, protoBlockTemplate;
+    public final boolean javaOutput;
     public final String fileExtension, outputName, outputPrefix, outputSuffix;
     
     public PluginProtoCompiler(ProtoModule module)
     {
         this(module, CHECK_FILENAME_PLACEHOLDER);
     }
-
+    
     public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder)
+    {
+        this(module ,checkFilenamePlaceHolder, resolveSTG(module));
+    }
+
+    public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder, 
+            StringTemplateGroup group)
     {
         super(module.getOutput());
         
-        group = resolveSTG(module);
-        
         this.module = module;
+        this.group = group;
         
-        protoBlock = getTemplateFrom(group, "proto_block") != null;
+        protoBlockTemplate = getTemplateFrom(group, "proto_block");
+        if(protoBlockTemplate == null)
+        {
+            // validate that at least enum_block or message_block is present.
+            enumBlockTemplate = getTemplateFrom(group, "enum_block");
+            messageBlockTemplate = getTemplateFrom(group, "message_block");
+            
+            if(enumBlockTemplate == null && messageBlockTemplate == null)
+            {
+                throw new IllegalStateException("At least one of these templates " +
+                		"(proto_block|message_block|enum_block) " +
+                        "need to be declared in the .stg resource.");
+            }
+        }
+        else
+        {
+            enumBlockTemplate = null;
+            messageBlockTemplate = null;
+        }
         
         fileExtension = getFileExtension(module.getOutput());
         javaOutput = ".java".equalsIgnoreCase(fileExtension);
@@ -219,71 +243,73 @@ public class PluginProtoCompiler extends STCodeGenerator
 
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
-        if(this.module != module)
-            throw new IllegalArgumentException("Wrong module.");
-        
-        if(protoBlock)
+        if(!this.module.getOutput().startsWith(module.getOutput()))
         {
-            compileProtoBlock(module, proto);
+            throw new IllegalArgumentException("Wrong module: " + 
+                    this.module.getOutput() + " != " + module.getOutput());
+        }
+        
+        final String packageName = javaOutput ? proto.getJavaPackageName() : 
+            proto.getPackageName();
+        
+        if(protoBlockTemplate != null)
+        {
+            compileProtoBlock(module, proto, packageName, protoBlockTemplate);
             return;
         }
         
-        boolean hasEnumBlock = getTemplateFrom(group, "enum_block") != null;
-        boolean hasMessageBlock = getTemplateFrom(group, "message_block") != null;
-        
-        String packageName = javaOutput ? proto.getJavaPackageName() : proto.getPackageName();
-        
-        if(hasEnumBlock)
-        {
-            for(EnumGroup eg : proto.getEnumGroups())
-            {
-                String fileName = resolveFileName(eg.getName());
-                
-                Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
-                AutoIndentWriter out = new AutoIndentWriter(writer);
-                
-                StringTemplate enumBlock = group.getInstanceOf("enum_block");
-                enumBlock.setAttribute("eg", eg);
-                enumBlock.setAttribute("module", module);
-                enumBlock.setAttribute("options", module.getOptions());
+        if(enumBlockTemplate != null)
+            compileEnumBlock(module, proto, packageName, enumBlockTemplate);
 
-                enumBlock.write(out);
-                writer.close();
-            }
-        }
-
-        if(hasMessageBlock)
+        if(messageBlockTemplate != null)
+            compileMessageBlock(module, proto, packageName, messageBlockTemplate);
+    }
+    
+    public void compileEnumBlock(ProtoModule module, Proto proto, 
+            String packageName, StringTemplate enumBlockTemplate) throws IOException
+    {
+        for(EnumGroup eg : proto.getEnumGroups())
         {
-            for(Message m : proto.getMessages())
-            {
-                String fileName = resolveFileName(m.getName());
-                
-                Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
-                AutoIndentWriter out = new AutoIndentWriter(writer);
-                
-                StringTemplate messageBlock = group.getInstanceOf("message_block");
-                messageBlock.setAttribute("message", m);
-                messageBlock.setAttribute("module", module);
-                messageBlock.setAttribute("options", module.getOptions());
+            String fileName = resolveFileName(eg.getName());
+            
+            Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+            AutoIndentWriter out = new AutoIndentWriter(writer);
+            
+            StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
+            enumBlock.setAttribute("eg", eg);
+            enumBlock.setAttribute("module", module);
+            enumBlock.setAttribute("options", module.getOptions());
 
-                messageBlock.write(out);
-                writer.close();
-            }
-        }
-        
-        if(!hasEnumBlock && !hasMessageBlock)
-        {
-            throw new IllegalStateException("At least one of these templates(proto_block| " +
-            		"message_block|enum_block)need to be declared in the .stg resource.");
+            enumBlock.write(out);
+            writer.close();
         }
     }
     
-    protected void compileProtoBlock(ProtoModule module, Proto proto) throws IOException
+    public void compileMessageBlock(ProtoModule module, Proto proto, 
+            String packageName, StringTemplate messageBlockTemplate) throws IOException
     {
-        String packageName = javaOutput ? proto.getJavaPackageName() : proto.getPackageName();
+        for(Message m : proto.getMessages())
+        {
+            String fileName = resolveFileName(m.getName());
+            
+            Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+            AutoIndentWriter out = new AutoIndentWriter(writer);
+            
+            StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
+            messageBlock.setAttribute("message", m);
+            messageBlock.setAttribute("module", module);
+            messageBlock.setAttribute("options", module.getOptions());
 
-        String name = ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(".proto", 
-                "")).toString();
+            messageBlock.write(out);
+            writer.close();
+        }
+    }
+    
+    public void compileProtoBlock(ProtoModule module, Proto proto, 
+            String packageName, StringTemplate protoBlockTemplate) throws IOException
+    {
+        String name = ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(
+                ".proto", "")).toString();
         
         if(javaOutput)
         {
@@ -315,13 +341,13 @@ public class PluginProtoCompiler extends STCodeGenerator
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
         
         AutoIndentWriter out = new AutoIndentWriter(writer);
-        StringTemplate protoOuterBlock = group.getInstanceOf("proto_block");
         
-        protoOuterBlock.setAttribute("proto", proto);
-        protoOuterBlock.setAttribute("module", module);
-        protoOuterBlock.setAttribute("options", module.getOptions());
+        StringTemplate protoBlock = protoBlockTemplate.getInstanceOf();
+        protoBlock.setAttribute("proto", proto);
+        protoBlock.setAttribute("module", module);
+        protoBlock.setAttribute("options", module.getOptions());
         
-        protoOuterBlock.write(out);
+        protoBlock.write(out);
         writer.close();
     }
 

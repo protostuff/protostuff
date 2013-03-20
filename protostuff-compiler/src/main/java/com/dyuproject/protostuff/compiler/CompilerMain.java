@@ -41,6 +41,16 @@ public final class CompilerMain
     static final HashMap<String,ProtoCompiler> __compilers = 
         new HashMap<String,ProtoCompiler>();
     
+    /**
+     * When there is no matching compiler for the {@link ProtoModule#getOutput()}.
+     */
+    public interface CompilerResolver
+    {
+        ProtoCompiler resolve(ProtoModule module);
+    }
+    
+    private static CompilerResolver __compilerResolver = null;
+    
     static
     {        
         addCompiler(new ProtoToJavaBeanCompiler());
@@ -49,6 +59,11 @@ public final class CompilerMain
         addCompiler(new ProtoToJavaV2ProtocSchemaCompiler());
         addCompiler(new ProtoToJavaBeanModelCompiler());
         addCompiler(new ProtoToProtoCompiler());
+    }
+    
+    public static void setCompilerResolver(CompilerResolver resolver)
+    {
+        __compilerResolver = resolver;
     }
     
     public static void addCompiler(ProtoCompiler compiler)
@@ -291,9 +306,11 @@ public final class CompilerMain
         {
             output = output.trim();
             ProtoCompiler compiler = __compilers.get(output);
-            if(compiler==null)
+            if(compiler == null)
             {
-                if(output.endsWith(".stg"))
+                if(__compilerResolver != null)
+                    compiler = __compilerResolver.resolve(module);
+                else if(output.endsWith(".stg"))
                 {
                     // custom code generator
                     compiler = new PluginProtoCompiler(module);
