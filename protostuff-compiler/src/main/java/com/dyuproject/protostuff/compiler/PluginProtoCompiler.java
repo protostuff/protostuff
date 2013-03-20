@@ -259,50 +259,50 @@ public class PluginProtoCompiler extends STCodeGenerator
         }
         
         if(enumBlockTemplate != null)
-            compileEnumBlock(module, proto, packageName, enumBlockTemplate);
+        {
+            for(EnumGroup eg : proto.getEnumGroups())
+                compileEnumBlock(module, eg, packageName, enumBlockTemplate);
+        }
 
         if(messageBlockTemplate != null)
-            compileMessageBlock(module, proto, packageName, messageBlockTemplate);
+        {
+            for(Message message : proto.getMessages())
+                compileMessageBlock(module, message, packageName, messageBlockTemplate);
+        }
     }
     
-    public void compileEnumBlock(ProtoModule module, Proto proto, 
+    public void compileEnumBlock(ProtoModule module, EnumGroup eg, 
             String packageName, StringTemplate enumBlockTemplate) throws IOException
     {
-        for(EnumGroup eg : proto.getEnumGroups())
-        {
-            String fileName = resolveFileName(eg.getName());
-            
-            Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
-            AutoIndentWriter out = new AutoIndentWriter(writer);
-            
-            StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
-            enumBlock.setAttribute("eg", eg);
-            enumBlock.setAttribute("module", module);
-            enumBlock.setAttribute("options", module.getOptions());
+        String fileName = resolveFileName(eg.getName());
+        
+        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+        AutoIndentWriter out = new AutoIndentWriter(writer);
+        
+        StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
+        enumBlock.setAttribute("eg", eg);
+        enumBlock.setAttribute("module", module);
+        enumBlock.setAttribute("options", module.getOptions());
 
-            enumBlock.write(out);
-            writer.close();
-        }
+        enumBlock.write(out);
+        writer.close();
     }
     
-    public void compileMessageBlock(ProtoModule module, Proto proto, 
+    public void compileMessageBlock(ProtoModule module, Message message, 
             String packageName, StringTemplate messageBlockTemplate) throws IOException
     {
-        for(Message m : proto.getMessages())
-        {
-            String fileName = resolveFileName(m.getName());
-            
-            Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
-            AutoIndentWriter out = new AutoIndentWriter(writer);
-            
-            StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
-            messageBlock.setAttribute("message", m);
-            messageBlock.setAttribute("module", module);
-            messageBlock.setAttribute("options", module.getOptions());
+        String fileName = resolveFileName(message.getName());
+        
+        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+        AutoIndentWriter out = new AutoIndentWriter(writer);
+        
+        StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
+        messageBlock.setAttribute("message", message);
+        messageBlock.setAttribute("module", module);
+        messageBlock.setAttribute("options", module.getOptions());
 
-            messageBlock.write(out);
-            writer.close();
-        }
+        messageBlock.write(out);
+        writer.close();
     }
     
     public void compileProtoBlock(ProtoModule module, Proto proto, 
