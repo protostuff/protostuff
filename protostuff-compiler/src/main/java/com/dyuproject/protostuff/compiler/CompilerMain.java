@@ -76,12 +76,6 @@ public final class CompilerMain
         return __compilers.get(output) != null;
     }
     
-    public static InputStream getInputStream(String resource) throws IOException
-    {
-        File file = new File(resource);
-        return file.exists() ? new FileInputStream(file) : null;
-    }
-    
     static Properties propsFrom(File file) throws IOException
     {
         Properties props = new Properties();
@@ -167,7 +161,8 @@ public final class CompilerMain
     public static ProtoModule loadModule(Properties props, 
             String name, CachingProtoLoader loader, 
             File baseDirForSource, File baseDirForOutput, 
-            Properties globalOptions, String[] profileOptions, String[] rootProfileOptions)
+            Properties globalOptions, 
+            String[] profileOptions, String[] rootProfileOptions)
     {
         String source = props.getProperty(name + ".source");
         if(source==null)
@@ -190,18 +185,18 @@ public final class CompilerMain
         
         module.setCachingProtoLoader(loader);
         
-        if(globalOptions != null)
-            module.getOptions().putAll(globalOptions);
+        module.getOptions().putAll(globalOptions);
+        module.config = props;
         
         if(options != null)
-            addOptionsTo(module, COMMA.split(options));
+            addOptionsTo(module.getOptions(), COMMA.split(options), props);
         
         // can override previous options
         if(profileOptions != null)
-            addOptionsTo(module, profileOptions);
+            addOptionsTo(module.getOptions(), profileOptions, props);
         
         if(rootProfileOptions != null)
-            addOptionsTo(module, rootProfileOptions);
+            addOptionsTo(module.getOptions(), rootProfileOptions, props);
         
         return module;
     }
@@ -232,30 +227,43 @@ public final class CompilerMain
     
     public static void addOptionsTo(ProtoModule module, String[] options)
     {
-        addOptionsTo(module.getOptions(), options);
+        addOptionsTo(module.getOptions(), options, module.getConfig());
     }
     
-    public static void addOptionsTo(Properties target, String[] options)
+    public static void addOptionsTo(final Properties target, final String[] options, 
+            final Properties config)
     {
         for(String o : options)
         {
             int idx = o.indexOf(':');
-            if(idx == -1)
-            {
-                String key = o.trim();
-                if(key.charAt(0) == '!')
-                {
-                    // remove key
-                    target.remove(key.substring(1));
-                }
-                else
-                {
-                    target.setProperty(key, "");
-                }
-            }
-            else
+            if(idx != -1)
             {
                 target.setProperty(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+                continue;
+            }
+
+            String key = o.trim();
+            switch(key.charAt(0))
+            {
+                case '!':
+                    // remove key
+                    target.remove(key.substring(1));
+                    break;
+                    
+                case '_':
+                    // could be a reference to a csv entry in config
+                    if(config != null)
+                    {
+                        String csv = config.getProperty(key);
+                        if(csv != null)
+                        {
+                            // include the csv from config props
+                            addOptionsTo(target, COMMA.split(csv), config);
+                        }
+                    }
+                    
+                default:
+                    target.setProperty(key, "");
             }
         }
     }
@@ -552,7 +560,7 @@ public final class CompilerMain
         
         String csv = props.getProperty(key);
         if(csv != null)
-            addOptionsTo(options, COMMA.split(csv));
+            addOptionsTo(options, COMMA.split(csv), props);
         
         return options;
     }

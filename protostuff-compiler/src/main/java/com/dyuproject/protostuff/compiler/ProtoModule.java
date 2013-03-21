@@ -36,6 +36,7 @@ public class ProtoModule implements Serializable
     
     
     private Properties options = new Properties();
+    Properties config;
     
     private CachingProtoLoader protoLoader;
     
@@ -178,6 +179,9 @@ public class ProtoModule implements Serializable
         this.protoLoader = protoLoader;
     }
     
-    
+    public Properties getConfig()
+    {
+        return config;
+    }
 
 }
