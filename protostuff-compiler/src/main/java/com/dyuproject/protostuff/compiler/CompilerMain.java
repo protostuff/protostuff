@@ -151,9 +151,7 @@ public final class CompilerMain
         CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ? 
                 new CachingProtoLoader() : null;
                 
-        String globalOptionsParam = props.getProperty("global_options");
-        String[] globalOptions = globalOptionsParam == null ? null : 
-            COMMA.split(globalOptionsParam);
+        Properties globalOptions = newGlobalOptions(props);
         
         ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
         for(String m : COMMA.split(moduleString))
@@ -169,7 +167,7 @@ public final class CompilerMain
     public static ProtoModule loadModule(Properties props, 
             String name, CachingProtoLoader loader, 
             File baseDirForSource, File baseDirForOutput, 
-            String[] globalOptions, String[] profileOptions, String[] rootProfileOptions)
+            Properties globalOptions, String[] profileOptions, String[] rootProfileOptions)
     {
         String source = props.getProperty(name + ".source");
         if(source==null)
@@ -193,7 +191,7 @@ public final class CompilerMain
         module.setCachingProtoLoader(loader);
         
         if(globalOptions != null)
-            addOptionsTo(module, globalOptions);
+            module.getOptions().putAll(globalOptions);
         
         if(options != null)
             addOptionsTo(module, COMMA.split(options));
@@ -234,6 +232,11 @@ public final class CompilerMain
     
     public static void addOptionsTo(ProtoModule module, String[] options)
     {
+        addOptionsTo(module.getOptions(), options);
+    }
+    
+    public static void addOptionsTo(Properties target, String[] options)
+    {
         for(String o : options)
         {
             int idx = o.indexOf(':');
@@ -243,16 +246,16 @@ public final class CompilerMain
                 if(key.charAt(0) == '!')
                 {
                     // remove key
-                    module.getOptions().remove(key.substring(1));
+                    target.remove(key.substring(1));
                 }
                 else
                 {
-                    module.setOption(key, "");
+                    target.setProperty(key, "");
                 }
             }
             else
             {
-                module.setOption(o.substring(0, idx).trim(), o.substring(idx+1).trim());
+                target.setProperty(o.substring(0, idx).trim(), o.substring(idx+1).trim());
             }
         }
     }
@@ -301,7 +304,7 @@ public final class CompilerMain
     
     public static void compile(ProtoModule module) throws Exception
     {
-        String options = module.getOptions().toString();
+        String strOptions = null;
         for(String output : COMMA.split(module.getOutput()))
         {
             output = output.trim();
@@ -329,8 +332,12 @@ public final class CompilerMain
                     .append(" to output: ")
                     .append(output);
                 
-                if(options.length()>2)
-                    buffer.append(' ').append(options);
+                // lazy
+                if(strOptions == null)
+                    strOptions = module.getOptions().toString();
+                
+                if(strOptions.length() > 2)
+                    buffer.append(' ').append(strOptions);
                 
                 System.out.println(buffer.toString());
             }
@@ -345,7 +352,7 @@ public final class CompilerMain
     
     static void compileProfile(Properties props, String profile, 
             CachingProtoLoader loader, 
-            String[] globalOptions, String[] rootProfileOptions, 
+            Properties globalOptions, String[] rootProfileOptions, 
             final int nestCount) throws Exception
     {
         String moduleString = props.getProperty(profile);
@@ -440,9 +447,7 @@ public final class CompilerMain
             return;
         }
         
-        String globalOptionsParam = props.getProperty("global_options");
-        String[] globalOptions = globalOptionsParam == null ? null : 
-            COMMA.split(globalOptionsParam);
+        Properties globalOptions = newGlobalOptions(props);
 
         final CachingProtoLoader loader = 
                 ("true".equals(props.getProperty("cache_protos")) || 
@@ -490,9 +495,7 @@ public final class CompilerMain
                     return;
                 }
                 
-                globalOptionsParam = props.getProperty("global_options");
-                globalOptions = globalOptionsParam == null ? null : 
-                    COMMA.split(globalOptionsParam);
+                globalOptions = newGlobalOptions(props);
                 
                 continue;
             }
@@ -531,10 +534,27 @@ public final class CompilerMain
                 return;
             }
             
-            globalOptionsParam = props.getProperty("global_options");
-            globalOptions = globalOptionsParam == null ? null : 
-                COMMA.split(globalOptionsParam);
+            globalOptions = newGlobalOptions(props);
         }
+    }
+    
+    public static Properties newGlobalOptions(Properties props)
+    {
+        return newOptions(props, "global_options");
+    }
+    
+    /**
+     * Returns an option ({@link Properties}) that contains the csv entries.
+     */
+    public static Properties newOptions(Properties props, String key)
+    {
+        Properties options = new Properties();
+        
+        String csv = props.getProperty(key);
+        if(csv != null)
+            addOptionsTo(options, COMMA.split(csv));
+        
+        return options;
     }
     
     public static void main(String[] args) throws Exception
