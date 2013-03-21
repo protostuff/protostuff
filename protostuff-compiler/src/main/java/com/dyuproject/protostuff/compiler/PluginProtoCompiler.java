@@ -236,7 +236,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         return __resolver.resolveSTG(module);
     }
     
-    protected String resolveFileName(String name)
+    public String resolveFileName(String name)
     {
         return outputPrefix + name + outputSuffix + fileExtension;
     }
@@ -261,21 +261,26 @@ public class PluginProtoCompiler extends STCodeGenerator
         if(enumBlockTemplate != null)
         {
             for(EnumGroup eg : proto.getEnumGroups())
-                compileEnumBlock(module, eg, packageName, enumBlockTemplate);
+            {
+                compileEnumBlock(module, eg, packageName, 
+                        resolveFileName(eg.getName()), enumBlockTemplate);
+            }
         }
 
         if(messageBlockTemplate != null)
         {
             for(Message message : proto.getMessages())
-                compileMessageBlock(module, message, packageName, messageBlockTemplate);
+            {
+                compileMessageBlock(module, message, packageName, 
+                        resolveFileName(message.getName()), messageBlockTemplate);
+            }
         }
     }
     
-    public void compileEnumBlock(ProtoModule module, EnumGroup eg, 
-            String packageName, StringTemplate enumBlockTemplate) throws IOException
+    public static void compileEnumBlock(ProtoModule module, EnumGroup eg, 
+            String packageName, String fileName, 
+            StringTemplate enumBlockTemplate) throws IOException
     {
-        String fileName = resolveFileName(eg.getName());
-        
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
         AutoIndentWriter out = new AutoIndentWriter(writer);
         
@@ -288,11 +293,10 @@ public class PluginProtoCompiler extends STCodeGenerator
         writer.close();
     }
     
-    public void compileMessageBlock(ProtoModule module, Message message, 
-            String packageName, StringTemplate messageBlockTemplate) throws IOException
+    public static void compileMessageBlock(ProtoModule module, Message message, 
+            String packageName, String fileName, 
+            StringTemplate messageBlockTemplate) throws IOException
     {
-        String fileName = resolveFileName(message.getName());
-        
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
         AutoIndentWriter out = new AutoIndentWriter(writer);
         
