@@ -153,7 +153,7 @@ public class PluginProtoCompiler extends STCodeGenerator
             {
                 throw new IllegalStateException("At least one of these templates " +
                 		"(proto_block|message_block|enum_block) " +
-                        "need to be declared in the .stg resource.");
+                        "need to be declared in " + module.getOutput());
             }
         }
         else
