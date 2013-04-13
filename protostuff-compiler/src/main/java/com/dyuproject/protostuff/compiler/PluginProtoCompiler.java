@@ -283,6 +283,16 @@ public class PluginProtoCompiler extends STCodeGenerator
             StringTemplate enumBlockTemplate) throws IOException
     {
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+        
+        compileEnumBlockTo(writer, module, eg, enumBlockTemplate);
+        
+        writer.close();
+    }
+    
+    public static void compileEnumBlockTo(Writer writer, 
+            ProtoModule module, EnumGroup eg, 
+            StringTemplate enumBlockTemplate) throws IOException
+    {
         AutoIndentWriter out = new AutoIndentWriter(writer);
         
         StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
@@ -291,7 +301,6 @@ public class PluginProtoCompiler extends STCodeGenerator
         enumBlock.setAttribute("options", module.getOptions());
 
         enumBlock.write(out);
-        writer.close();
     }
     
     public static void compileMessageBlock(ProtoModule module, Message message, 
@@ -299,6 +308,16 @@ public class PluginProtoCompiler extends STCodeGenerator
             StringTemplate messageBlockTemplate) throws IOException
     {
         Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+        
+        compileMessageBlockTo(writer, module, message, messageBlockTemplate);
+        
+        writer.close();
+    }
+    
+    public static void compileMessageBlockTo(Writer writer, 
+            ProtoModule module, Message message, 
+            StringTemplate messageBlockTemplate) throws IOException
+    {
         AutoIndentWriter out = new AutoIndentWriter(writer);
         
         StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
@@ -307,7 +326,6 @@ public class PluginProtoCompiler extends STCodeGenerator
         messageBlock.setAttribute("options", module.getOptions());
 
         messageBlock.write(out);
-        writer.close();
     }
     
     public void compileProtoBlock(ProtoModule module, Proto proto, 
