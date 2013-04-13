@@ -178,7 +178,8 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             // suffix only
             outputPrefix = "";
-            outputSuffix = outputName.substring(1);
+            // check if provided text is only 1 char "$"
+            outputSuffix = outputName.length() == 1 ? "" : outputName.substring(1);
         }
         else if(placeHolder == outputName.length()-1)
         {
