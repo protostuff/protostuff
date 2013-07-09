@@ -201,7 +201,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             throw new IllegalArgumentException("Invalid field number " + field.number 
                     + " from field " + field.name);
         }
-        fields.put(field.name, field);
+        
+        if(fields.put(field.name, field) != null)
+            throw err("Duplicate message field: " + field.name, getProto());
     }
     
     public void defineExtensionRange(int first, int last)

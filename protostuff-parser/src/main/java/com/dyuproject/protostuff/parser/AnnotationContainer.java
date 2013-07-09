@@ -32,7 +32,8 @@ public class AnnotationContainer implements HasAnnotations
 
     public void add(Annotation annotation)
     {
-        annotations.put(annotation.name, annotation);
+        if(annotations.put(annotation.name, annotation) != null)
+            throw err("Duplicate annotation: " + annotation.name, null);
     }
 
     public Map<String, Annotation> getAnnotationMap()

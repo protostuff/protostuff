@@ -73,11 +73,13 @@ public class Extension extends AnnotationContainer implements HasFields
 
     public void addField(Field<?> field)
     {
-        this.fields.put(field.getName(), field);
+        if(fields.put(field.name, field) != null)
+            throw err("Duplicate extension field: " + field.name, getProto());
     }
     
     public void putStandardOption(String key, Object value)
     {
+        putExtraOption(key, value);
         standardOptions.put(key, value);
     }
     
@@ -93,7 +95,8 @@ public class Extension extends AnnotationContainer implements HasFields
     
     public void putExtraOption(String key, Object value)
     {
-        extraOptions.put(key, value);
+        if(extraOptions.put(key, value) != null)
+            throw err("Duplicate extension option: " + key, getProto());
     }
     
     public LinkedHashMap<String,Object> getExtraOptions()
