@@ -253,7 +253,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         {
             if(o.name.equals(name))
             {
-                throw err("The enum " + enumGroup.name + " contains the same values", 
+                throw err("The enum " + enumGroup.name + " has duplicate names: " + name, 
                         enumGroup.getProto());
             }
             
