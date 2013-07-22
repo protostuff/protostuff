@@ -80,6 +80,26 @@ public class Annotation implements HasName
         return name;
     }
     
+    /**
+     * Shorthand for params.isEmpty().
+     * 
+     * <pre>
+     * You can then use:
+     * &lt;if(message.a.("Foo").emptyP&gt;
+     * </pre>
+     * 
+     * <pre>
+     * Note that this does not work on stringtemplate: 
+     * &lt;if(message.a.("Foo").empty)&gt;
+     * 
+     * Even though {@link java.util.Map#isEmpty()} exists. 
+     * </pre>
+     */
+    public final boolean isEmptyP()
+    {
+        return params.isEmpty();
+    }
+    
     public String toString()
     {
         return new StringBuilder()
