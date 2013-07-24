@@ -169,7 +169,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     void add(Value value)
     {
-        value.enumGroup = this;
+        value.setEnumGroup(this);
         values.add(value);
         sortedValues.add(value);
     }
@@ -213,6 +213,8 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         final String name;
         final int number;
         EnumGroup enumGroup;
+        
+        final EnumField field = new EnumField();
 
         public Value(String name, int number)
         {
@@ -236,12 +238,38 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             return number;
         }
         
+        void setEnumGroup(EnumGroup enumGroup)
+        {
+            this.enumGroup = enumGroup;
+            field.enumGroup = enumGroup;
+        }
+        
         /**
          * @return the enumGroup
          */
         public EnumGroup getEnumGroup()
         {
             return enumGroup;
+        }
+        
+        // options
+        
+        public LinkedHashMap<java.lang.String,Object> getStandardOptions()
+        {
+            return field.getStandardOptions();
+        }
+        
+        public LinkedHashMap<java.lang.String,Object> getExtraOptions()
+        {
+            return field.getExtraOptions();
+        }
+        
+        /**
+         * Returns the options configured.
+         */
+        public LinkedHashMap<java.lang.String,Object> getOptions()
+        {
+            return field.getOptions();
         }
 
         public String toString()

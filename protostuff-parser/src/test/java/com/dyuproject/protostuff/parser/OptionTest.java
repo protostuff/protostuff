@@ -48,6 +48,12 @@ public class OptionTest extends TestCase
         EnumGroup baz = proto.getEnumGroup("Baz");
         assertNotNull(baz);
         assertEquals(Float.valueOf(1.0f), baz.getExtraOption("random.enum.option"));
+        
+        EnumGroup.Value a = baz.getValue("A");
+        assertEquals(1, a.getOptions().get("some_int"));
+        assertEquals(Boolean.TRUE, a.getOptions().get("some_bool"));
+        assertEquals("foo", a.getOptions().get("some_string"));
+        assertEquals("none", a.getOptions().get("default"));
     }
 
 }

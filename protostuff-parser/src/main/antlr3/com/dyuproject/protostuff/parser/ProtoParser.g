@@ -259,13 +259,13 @@ field_type [Proto proto, HasFields message, FieldHolder fieldHolder]
     ;
     
 field_options [Proto proto, HasFields message, Field field]
-    :   LEFTSQUARE field_options_keyval[proto, message, field] 
-        (COMMA field_options_keyval[proto, message, field])* RIGHTSQUARE
+    :   LEFTSQUARE field_options_keyval[proto, message, field, true] 
+        (COMMA field_options_keyval[proto, message, field, true])* RIGHTSQUARE
     ;
     
-field_options_keyval [Proto proto, HasFields message, Field field]
+field_options_keyval [Proto proto, HasFields message, Field field, boolean checkDefault]
     :   key=(DEFAULT|ID) ASSIGN (STRING_LITERAL {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -280,7 +280,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, getStringFromStringLiteral($STRING_LITERAL.text));
         } 
     |   NUMFLOAT {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -295,7 +295,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, Float.valueOf($NUMFLOAT.text));
         } 
     |   NUMINT {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -318,7 +318,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, Integer.valueOf($NUMINT.text));
         }
     |   NUMDOUBLE {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
 
@@ -333,7 +333,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, Double.valueOf($NUMDOUBLE.text));
         }
     |   HEX {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -362,7 +362,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, $HEX.text);
         }
     |   OCTAL {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -387,7 +387,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, $OCTAL.text);
         }
     |   TRUE {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -400,7 +400,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putExtraOption($key.text, Boolean.TRUE);
         }    
     |   FALSE {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -414,7 +414,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
         }
     |   val=ID {
             boolean refOption = false;
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -463,7 +463,7 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             field.putStandardOption($key.text, $FULL_ID.text);
         }
     |   EXP {
-            if("default".equals($key.text)) {
+            if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -477,15 +477,15 @@ field_options_keyval [Proto proto, HasFields message, Field field]
             
             field.putExtraOption($key.text, $EXP.text);
         }
-    |   signed_constant[proto, message, field, $key.text] {
+    |   signed_constant[proto, message, field, $key.text, checkDefault] {
             field.putExtraOption($key.text, $signed_constant.text);
         }
         )
     ;
     
-signed_constant [Proto proto, HasFields message, Field field, String key]
+signed_constant [Proto proto, HasFields message, Field field, String key, boolean checkDefault]
     :   MINUS ID {
-            if("default".equals(key)) {
+            if(checkDefault && "default".equals(key)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
                 
@@ -538,11 +538,19 @@ enum_body [Proto proto, Message message, EnumGroup enumGroup]
     ;
 
 enum_field [Proto proto, Message message, EnumGroup enumGroup]
-    :   ID ASSIGN NUMINT SEMICOLON! {
-            EnumGroup.Value v = new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text));
+@init {
+    EnumGroup.Value v = null;
+}
+    :   ID ASSIGN NUMINT {
+            v = new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text));
             enumGroup.add(v);
             proto.addAnnotationsTo(v);
-        }
+        } (enum_options[proto, enumGroup, v])? SEMICOLON! 
+    ;
+
+enum_options [Proto proto, EnumGroup enumGroup, EnumGroup.Value v]
+    :   LEFTSQUARE field_options_keyval[proto, null, v.field, false] 
+        (COMMA field_options_keyval[proto, null, v.field, false])* RIGHTSQUARE
     ;
     
 service_block [Proto proto]

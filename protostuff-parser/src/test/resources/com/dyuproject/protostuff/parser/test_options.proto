@@ -14,7 +14,7 @@ message AMessage {
 enum Baz {
   option random.enum.option = 1.0;
   
-  A = 1;
+  A = 1 [some_int = 1, some_bool = true, some_string = "foo", default = "none"];
   Z = 26;
   
 }
