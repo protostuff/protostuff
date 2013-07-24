@@ -202,7 +202,13 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             proto.references.add(new ConfiguredReference(standardOptions, extraOptions, fullName));
         
         for(Value v : values.values())
-            proto.references.add(new ConfiguredReference(v.field.standardOptions, v.field.extraOptions, fullName));
+        {
+            if(!v.field.standardOptions.isEmpty())
+            {
+                proto.references.add(new ConfiguredReference(
+                        v.field.standardOptions, v.field.extraOptions, fullName));
+            }
+        }
     }
     
     public ArrayList<Value> getUniqueSortedValues()
