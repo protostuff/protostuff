@@ -193,14 +193,16 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     {
         Collections.sort(sortedValues);
         
-        Proto proto = getProto();
-        proto.fullyQualifiedEnumGroups.put(getFullName(), this);
+        final Proto proto = getProto();
+        final String fullName = getFullName();
+        
+        proto.fullyQualifiedEnumGroups.put(fullName, this);
         
         if(!standardOptions.isEmpty())
-            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
+            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, fullName));
         
         for(Value v : values.values())
-            proto.references.add(new ConfiguredReference(v.field.standardOptions, v.field.extraOptions, getFullName()));
+            proto.references.add(new ConfiguredReference(v.field.standardOptions, v.field.extraOptions, fullName));
     }
     
     public ArrayList<Value> getUniqueSortedValues()
