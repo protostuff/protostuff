@@ -172,12 +172,12 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         value.enumGroup = this;
         values.add(value);
         sortedValues.add(value);
-        // sort along the way?
-        Collections.sort(sortedValues);
     }
     
     void cacheFullyQualifiedName()
     {
+        Collections.sort(sortedValues);
+        
         Proto proto = getProto();
         proto.fullyQualifiedEnumGroups.put(getFullName(), this);
         
