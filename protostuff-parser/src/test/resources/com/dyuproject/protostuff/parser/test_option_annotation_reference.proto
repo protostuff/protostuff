@@ -21,7 +21,20 @@ message Car {
   option fqcn_message = test_annotations.Person.ListRequest;
   option fqcn_enum = test_annotations.Person.Gender;
   
-  required int32 id = 1;
+  required int32 id = 1 [
+    self = Car,
+    local_enum = Gender,
+    nested = Part,
+    nested_enum = Condition,
+    deeper = Part.Tire,
+  
+    imported_message = Person,
+    imported_enum = Person.Gender,
+  
+    fqcn_message = test_annotations.Person.ListRequest,
+    fqcn_enum = test_annotations.Person.Gender
+  ];
+
   optional Gender local = 2 [local_enum=Gender, local_nested_message=Car.Part];
   optional Person.Gender imported = 3 [imported_enum=Person.Gender, imported_nested_message=Person.ListRequest];
   optional Condition condition = 4 [owner = Car, req = false];
@@ -51,8 +64,20 @@ message Car {
 }
 
 enum Gender {
-    FEMALE = 1;
-    MALE = 2;
+  FEMALE = 1;
+  MALE = 2 [
+    self = Car,
+    local_enum = Gender,
+    nested = Car.Part,
+    nested_enum = Car.Condition,
+    deeper = Car.Part.Tire,
+  
+    imported_message = Person,
+    imported_enum = Person.Gender,
+  
+    fqcn_message = test_annotations.Person.ListRequest,
+    fqcn_enum = test_annotations.Person.Gender
+  ];
 }
 
 @A(public = true, target = Car)

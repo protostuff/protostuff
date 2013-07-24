@@ -131,6 +131,33 @@ public class ConfiguredReferenceTest extends TestCase
         assertTrue(car.getOptions().get("imported_enum") == importedGender);
         assertTrue(car.getOptions().get("fqcn_message") == listRequest);
         assertTrue(car.getOptions().get("fqcn_enum") == importedGender);
+        
+        Field.Int32 id = (Field.Int32)car.getField("id");
+        assertNotNull(id);
+        
+        assertTrue(id.getOptions().get("self") == car);
+        assertTrue(id.getOptions().get("local_enum") == localGender);
+        assertTrue(id.getOptions().get("nested") == part);
+        assertTrue(id.getOptions().get("nested_enum") == condition);
+        assertTrue(id.getOptions().get("deeper") == tire);
+        assertTrue(id.getOptions().get("imported_message") == person);
+        assertTrue(id.getOptions().get("imported_enum") == importedGender);
+        assertTrue(id.getOptions().get("fqcn_message") == listRequest);
+        assertTrue(id.getOptions().get("fqcn_enum") == importedGender);
+        
+        
+        EnumGroup.Value male = localGender.getValue("MALE");
+        assertNotNull(male);
+        
+        assertTrue(male.getOptions().get("self") == car);
+        assertTrue(male.getOptions().get("local_enum") == localGender);
+        assertTrue(male.getOptions().get("nested") == part);
+        assertTrue(male.getOptions().get("nested_enum") == condition);
+        assertTrue(male.getOptions().get("deeper") == tire);
+        assertTrue(male.getOptions().get("imported_message") == person);
+        assertTrue(male.getOptions().get("imported_enum") == importedGender);
+        assertTrue(male.getOptions().get("fqcn_message") == listRequest);
+        assertTrue(male.getOptions().get("fqcn_enum") == importedGender);
     }
     
     static void verifyPart(Message part)

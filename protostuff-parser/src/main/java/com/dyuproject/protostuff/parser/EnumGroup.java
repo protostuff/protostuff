@@ -31,10 +31,13 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     String name;
     Message parentMessage;
     Proto proto;
-    final ArrayList<Value> values = new ArrayList<Value>();
+    final LinkedHashMap<String,Value> values = new LinkedHashMap<String,Value>();
     final ArrayList<Value> sortedValues = new ArrayList<Value>();
     final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
     final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
+    
+    private ArrayList<Value> indexedValues;
+    private ArrayList<Value> uniqueSortedValues;
     
     public EnumGroup()
     {
@@ -134,20 +137,23 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     public Value getValue(int index)
     {
-        return values.get(index);
+        if(indexedValues == null)
+            indexedValues = new ArrayList<Value>(values.values());
+        
+        return indexedValues.get(index);
     }
     
     public Value getValue(String name)
     {
-        for(Value v : values)
-        {
-            if(v.name.equals(name))
-                return v;
-        }
-        return null;
+        return values.get(name);
     }
     
     public Collection<Value> getValues()
+    {
+        return values.values();
+    }
+    
+    public LinkedHashMap<String,Value> getValueMap()
     {
         return values;
     }
@@ -159,7 +165,10 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     public Value getFirstValue()
     {
-        return values.get(0);
+        if(indexedValues == null)
+            indexedValues = new ArrayList<Value>(values.values());
+        
+        return indexedValues.get(0);
     }
     
     public int getValueCount()
@@ -169,8 +178,14 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     void add(Value value)
     {
+        if(values.put(value.name, value) != null)
+        {
+            throw err("The enum " + name + " has duplicate names: " + value.name, 
+                    getProto());
+        }
+        
         value.setEnumGroup(this);
-        values.add(value);
+        
         sortedValues.add(value);
     }
     
@@ -183,19 +198,25 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         
         if(!standardOptions.isEmpty())
             proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
+        
+        for(Value v : values.values())
+            proto.references.add(new ConfiguredReference(v.field.standardOptions, v.field.extraOptions, getFullName()));
     }
     
     public ArrayList<Value> getUniqueSortedValues()
     {
-        ArrayList<Value> uniqueSorted = new ArrayList<Value>();
+        if(uniqueSortedValues != null)
+            return uniqueSortedValues;
+        
+        uniqueSortedValues = new ArrayList<Value>();
         Value last = null;
         for(Value v : sortedValues)
         {
             if(last==null || v.number!=last.number)
-                uniqueSorted.add(v);
+                uniqueSortedValues.add(v);
             last = v;
         }
-        return uniqueSorted;
+        return uniqueSortedValues;
     }
     
     public String toString()
@@ -279,12 +300,6 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
 
         public int compareTo(Value o)
         {
-            if(o.name.equals(name))
-            {
-                throw err("The enum " + enumGroup.name + " has duplicate names: " + name, 
-                        enumGroup.getProto());
-            }
-            
             // if equal, sort by order of declaration
             return o.number < number ? 1 : -1;
         }

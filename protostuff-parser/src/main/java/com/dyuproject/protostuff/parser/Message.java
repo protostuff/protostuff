@@ -520,7 +520,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     void resolveReferences(Message root)
     {
-        getProto();
+        final Proto proto = getProto();
+        final String fullName = getFullName();
+        
         for(Field<?> f : fields.values())
         {
             f.owner = this;
@@ -583,7 +585,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 String packageName = fr.packageName;
                 String fullRefName = (packageName == null ? refName : packageName + '.' + refName);
 
-                HasName refObj = proto.findReference(fullRefName, getFullName());
+                HasName refObj = proto.findReference(fullRefName, fullName);
                 if (refObj instanceof Message)
                 {
                     MessageField mf = newMessageField((Message) refObj, fr, this);
@@ -598,6 +600,10 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                         if(mf.isRequired())
                             requiredMessageFieldCount++;
                     }
+                    
+                    // references inside options
+                    if(!mf.standardOptions.isEmpty())
+                        proto.references.add(new ConfiguredReference(mf.standardOptions, mf.extraOptions, fullName));
                     
                     continue;
                 }
@@ -617,11 +623,19 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                             requiredEnumFieldCount++;
                     }
                     
+                    // references inside options
+                    if(!ef.standardOptions.isEmpty())
+                        proto.references.add(new ConfiguredReference(ef.standardOptions, ef.extraOptions, fullName));
+                    
                     continue;
                 }
                 
                 throw err("unknown field: " + fullRefName, getProto());
             }
+            
+            // references inside options
+            if(!f.standardOptions.isEmpty())
+                proto.references.add(new ConfiguredReference(f.standardOptions, f.extraOptions, fullName));
         }
         sortedFields.addAll(fields.values());
         Collections.sort(sortedFields);
