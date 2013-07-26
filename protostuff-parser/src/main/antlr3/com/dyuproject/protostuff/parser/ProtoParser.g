@@ -71,12 +71,20 @@ statement [Proto proto]
     ;
 
 // some keywords that might possibly be used as a variable
-var
-    :   ID | TO | PKG | SYNTAX | IMPORT | OPTION | MESSAGE | SERVICE | ENUM |  
+var_reserved
+    :   TO | PKG | SYNTAX | IMPORT | OPTION | MESSAGE | SERVICE | ENUM |  
         REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | 
         RETURNS | INT32 | INT64 | UINT32 | UINT64 | SINT32 | SINT64 | 
         FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE | BOOL | 
         STRING | BYTES | DEFAULT | MAX | VOID
+    ; 
+
+var
+    :   ID | var_reserved
+    ;
+
+var_full
+    :   FULL_ID | var
     ;
 
 annotation_entry [Proto proto]
@@ -92,8 +100,9 @@ annotation_entry [Proto proto]
     ;
 
 annotation_keyval [Proto proto, Annotation annotation]
-    :   k=var ASSIGN (
-                ID { annotation.putRef($k.text, $ID.text); }
+    :   k=var_full ASSIGN (
+                vr=var_reserved { annotation.put($k.text, $vr.text); }
+            |   ID { annotation.putRef($k.text, $ID.text); }
             |   fid=FULL_ID { annotation.putRef($k.text, $fid.text); }
             |   NUMFLOAT { annotation.put($k.text, Float.valueOf($NUMFLOAT.text)); }
             |   NUMINT { annotation.put($k.text, Integer.valueOf($NUMINT.text)); }
@@ -101,7 +110,6 @@ annotation_keyval [Proto proto, Annotation annotation]
             |   TRUE { annotation.put($k.text, Boolean.TRUE); }
             |   FALSE { annotation.put($k.text, Boolean.FALSE); }
             |   STRING_LITERAL { annotation.put($k.text, getStringFromStringLiteral($STRING_LITERAL.text)); }
-            |   v=var { annotation.put($k.text, $v.text); }
         )
     ;
 
@@ -142,8 +150,9 @@ header_import [Proto proto]
     ;
 
 option_entry [Proto proto, HasOptions ho]
-    :   OPTION LEFTPAREN? k=(ID|FULL_ID) RIGHTPAREN? ASSIGN (
-                id=ID { ho.putStandardOption($k.text, $id.text); }
+    :   OPTION LEFTPAREN? k=var_full RIGHTPAREN? ASSIGN (
+                vr=var_reserved { ho.putExtraOption($k.text, $vr.text); }
+            |   id=ID { ho.putStandardOption($k.text, $id.text); }
             |   fid=FULL_ID { ho.putStandardOption($k.text, $fid.text); }
             |   NUMFLOAT { ho.putExtraOption($k.text, Float.valueOf($NUMFLOAT.text)); }
             |   NUMINT { ho.putExtraOption($k.text, Integer.valueOf($NUMINT.text)); }
@@ -264,7 +273,10 @@ field_options [Proto proto, HasFields message, Field field]
     ;
     
 field_options_keyval [Proto proto, HasFields message, Field field, boolean checkDefault]
-    :   key=(DEFAULT|ID) ASSIGN (STRING_LITERAL {
+    :   key=var_full ASSIGN (vr=var_reserved {
+            field.putExtraOption($key.text, $vr.text);
+        } 
+    |   STRING_LITERAL {
             if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)
                     throw new IllegalStateException("a field can only have a single default value");
@@ -278,7 +290,7 @@ field_options_keyval [Proto proto, HasFields message, Field field, boolean check
             }
             
             field.putExtraOption($key.text, getStringFromStringLiteral($STRING_LITERAL.text));
-        } 
+        }
     |   NUMFLOAT {
             if(checkDefault && "default".equals($key.text)) {
                 if(field.defaultValue!=null || field.modifier == Field.Modifier.REPEATED)

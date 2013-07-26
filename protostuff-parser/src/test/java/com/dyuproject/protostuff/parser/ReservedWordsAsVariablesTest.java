@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff.parser;
 
 import java.io.File;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -29,11 +30,12 @@ public class ReservedWordsAsVariablesTest extends TestCase
     
     public void testIt() throws Exception
     {
-        File f = ProtoParserTest.getFile("com/dyuproject/protostuff/parser/test_reserved_words_as_variables.proto");
-        assertTrue(f.exists());
+        File file = ProtoParserTest.getFile(
+                "com/dyuproject/protostuff/parser/test_reserved_words_as_variables.proto");
+        assertTrue(file.exists());
         
-        Proto proto = new Proto(f);
-        ProtoUtil.loadFrom(f, proto);
+        Proto proto = new Proto(file);
+        ProtoUtil.loadFrom(file, proto);
         
         Message test = proto.getMessage("Test");
         assertNotNull(test);
@@ -73,6 +75,50 @@ public class ReservedWordsAsVariablesTest extends TestCase
         assertTrue(test.getField("default").number == 31);
         assertTrue(test.getField("max").number == 32);
         assertTrue(test.getField("option").number == 33);
+        
+        // message annotation
+        Annotation messageConfig = test.getAnnotation("Config");
+        assertNotNull(messageConfig);
+        verifyConfig(messageConfig.getParams());
+        // message option
+        verifyConfig(test.getOptions());
+        
+        Field<?> f = test.getField("optional");
+        assertNotNull(f);
+        // field annotation
+        Annotation fConfig = f.getAnnotation("Config");
+        assertNotNull(fConfig);
+        verifyConfig(fConfig.getParams());
+        // field option
+        verifyConfig(f.getOptions());
+        
+        EnumGroup e = test.getNestedEnumGroup("E");
+        assertNotNull(e);
+        // enum annotation
+        Annotation eConfig = e.getAnnotation("Config");
+        assertNotNull(eConfig);
+        verifyConfig(eConfig.getParams());
+        // enum option
+        verifyConfig(e.getOptions());
+        
+        EnumGroup.Value v = e.getValue("FOO");
+        assertNotNull(v);
+        // enum field annotation
+        Annotation vConfig = v.getAnnotation("Config");
+        assertNotNull(vConfig);
+        verifyConfig(vConfig.getParams());
+        // enum field option
+        verifyConfig(v.getOptions());
+    }
+    
+    static void verifyConfig(Map<String,Object> optionOrAnnotationMap)
+    {
+        assertEquals(optionOrAnnotationMap.get("optional"), "required");
+        assertEquals(optionOrAnnotationMap.get("import"), "package");
+        assertEquals(optionOrAnnotationMap.get("default"), "default");
+        assertEquals(optionOrAnnotationMap.get("bool"), "bool");
+        assertEquals(optionOrAnnotationMap.get("option"), "option");
+        assertEquals(optionOrAnnotationMap.get("package.import"), "repeated");
     }
 
 }

@@ -1,7 +1,73 @@
 package test_reserved_words_as_variables;
 
+@Config(
+  optional = required, 
+  import = package, 
+  default = default, 
+  bool = bool, 
+  option = option, 
+  package.import = repeated
+)
 message Test {
-  optional bool optional = 1;
+
+  option optional = required;
+  option import = package;
+  option default = default;
+  option bool = bool;
+  option option = option;
+  option package.import = repeated;
+
+  @Config(
+    optional = required, 
+    import = package, 
+    default = default, 
+    bool = bool, 
+    option = option, 
+    package.import = repeated
+  )
+  enum E {
+    option optional = required;
+    option import = package;
+    option default = default;
+    option bool = bool;
+    option option = option;
+    option package.import = repeated;
+
+    @Config(
+      optional = required, 
+      import = package, 
+      default = default, 
+      bool = bool, 
+      option = option, 
+      package.import = repeated
+    )
+    FOO = 1 [
+      optional = required, 
+      import = package, 
+      default = default, 
+      bool = bool, 
+      option = option, 
+      package.import = repeated
+    ];
+  }
+
+  @Config(
+    optional = required, 
+    import = package, 
+    default = default, 
+    bool = bool, 
+    option = option, 
+    package.import = repeated
+  )
+  optional bool optional = 1 [
+    optional = required, 
+    import = package, 
+    default = default, 
+    bool = bool, 
+    option = option, 
+    package.import = repeated
+  ];
+
   repeated bool repeated = 2;
   required bool required = 3;
   
