@@ -3,10 +3,16 @@ package test_option_annotation_reference;
 import "test_annotations.proto";
 
 @Name(value="Car")
-@Local(self=Car, local_enum=Gender, nested=Part, nested_enum=Condition, deeper=Part.Tire)
-@Imported(imported_message=Person, imported_enum=Person.Gender)
+@Local(self=Car, local_enum=Gender, nested=Part, nested_enum=Condition, deeper=Part.Tire, 
+  gender = Gender.MALE)
+@Imported(imported_message=Person, imported_enum=Person.Gender, 
+  gender = Person.Gender.FEMALE)
 @FQCN(fqcn_message=test_annotations.Person.ListRequest, fqcn_enum=test_annotations.Person.Gender)
 message Car {
+
+  // resolved if -Dprotostuff.resolve_enum_value_ref=true
+  option local_gender = Gender.MALE;
+  option imported_gender = Person.Gender.FEMALE;
 
   option name = "Car";
   option self = Car;

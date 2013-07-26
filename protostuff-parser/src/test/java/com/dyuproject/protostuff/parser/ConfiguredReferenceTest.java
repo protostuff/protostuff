@@ -115,6 +115,11 @@ public class ConfiguredReferenceTest extends TestCase
         assertTrue(fqcn.getValue("fqcn_message") == listRequest);
         assertTrue(fqcn.getValue("fqcn_enum") == importedGender);
         
+        if(ConfiguredReference.RESOLVE_ENUM_VALUE_REF)
+        {
+            assertTrue(local.getValue("gender") == localGender.getValue("MALE"));
+            assertTrue(imported.getValue("gender") == importedGender.getValue("FEMALE"));
+        }
     }
     
     static void verifyCarOptions(Message car, Message part, Message tire, 
@@ -158,6 +163,12 @@ public class ConfiguredReferenceTest extends TestCase
         assertTrue(male.getOptions().get("imported_enum") == importedGender);
         assertTrue(male.getOptions().get("fqcn_message") == listRequest);
         assertTrue(male.getOptions().get("fqcn_enum") == importedGender);
+        
+        if(ConfiguredReference.RESOLVE_ENUM_VALUE_REF)
+        {
+            assertTrue(car.getOptions().get("local_gender") == localGender.getValue("MALE"));
+            assertTrue(car.getOptions().get("imported_gender") == importedGender.getValue("FEMALE"));
+        }
     }
     
     static void verifyPart(Message part)

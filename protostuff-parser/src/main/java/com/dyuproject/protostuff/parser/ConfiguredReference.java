@@ -39,6 +39,9 @@ import java.util.LinkedHashMap;
  */
 public class ConfiguredReference
 {
+    public static final boolean RESOLVE_ENUM_VALUE_REF = Boolean.getBoolean(
+            "protostuff.resolve_enum_value_ref");
+    
     // could be same
     final LinkedHashMap<String,Object> source, destination;
     String enclosingNamespace;
@@ -67,12 +70,30 @@ public class ConfiguredReference
             Object val = source.get(key);
             if(val instanceof String)
             {
-                HasName hn = proto.findReference((String)val, 
-                        enclosingNamespace == null ? proto.getPackageName() : 
-                            enclosingNamespace);
+                String refName = (String)val;
+                String ns = enclosingNamespace == null ? proto.getPackageName() : 
+                    enclosingNamespace;
+                
+                HasName hn = proto.findReference(refName, ns);
                 
                 if(hn != null)
                     destination.put(key, hn);
+                else if(RESOLVE_ENUM_VALUE_REF)
+                {
+                    int dot = refName.lastIndexOf('.');
+                    if(dot > 0)
+                    {
+                        String egName = refName.substring(0, dot);
+                        hn = proto.findReference(egName, ns);
+                        if(hn instanceof EnumGroup)
+                        {
+                            EnumGroup eg = (EnumGroup)hn;
+                            EnumGroup.Value v = eg.getValue(refName.substring(dot + 1));
+                            if(v != null)
+                                destination.put(key, v);
+                        }
+                    }
+                }
             }
         }
     }
