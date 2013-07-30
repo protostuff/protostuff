@@ -59,5 +59,10 @@ public class Mutable<T>
     {
         return current;
     }
+    
+    public T getLast()
+    {
+        return last;
+    }
 
 }
