@@ -16,6 +16,7 @@ package com.dyuproject.protostuff.compiler;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -27,7 +28,7 @@ import java.util.Properties;
 public class ProtoModule implements Serializable
 {
 
-    private static final long serialVersionUID = 6231036933426077264L;
+    private static final long serialVersionUID = 6231036933426077777L;
     
     private File source;
     private String output;
@@ -39,6 +40,8 @@ public class ProtoModule implements Serializable
     Properties config;
     
     private CachingProtoLoader protoLoader;
+    
+    private HashMap<String,Object> attributes = new HashMap<String,Object>();
     
     public ProtoModule()
     {
@@ -184,4 +187,21 @@ public class ProtoModule implements Serializable
         return config;
     }
 
+    public void setAttribute(String key, Object value)
+    {
+        attributes.put(key, value);
+    }
+    
+    /**
+     * Alias for {@link #getAttributes()}.
+     */
+    public HashMap<String,Object> getAttrs()
+    {
+        return attributes;
+    }
+    
+    public HashMap<String,Object> getAttributes()
+    {
+        return attributes;
+    }
 }
