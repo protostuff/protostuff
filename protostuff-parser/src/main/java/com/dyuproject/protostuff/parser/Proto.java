@@ -114,6 +114,20 @@ public class Proto extends AnnotationContainer implements HasOptions
         return packageName == null ? null : packageName.getValue();
     }
     
+    /**
+     * Returns the package name that was configured in the proto.
+     * Note that {@link #getPackageName()} will have the same value as this, 
+     * if the compiler options did not have entries that override it.
+     */
+    public String getOriginalPackageName()
+    {
+        if(packageName == null)
+            return null;
+        
+        String original = packageName.getLast();
+        return original != null ? original : packageName.getValue();
+    }
+    
     public Mutable<String> getMutableJavaPackageName()
     {
         return javaPackageName;
@@ -122,6 +136,20 @@ public class Proto extends AnnotationContainer implements HasOptions
     public String getJavaPackageName()
     {
         return javaPackageName.getValue();
+    }
+    
+    /**
+     * Returns the java package name that was configured in the proto.
+     * Note that {@link #getJavaPackageName()} will have the same value as this, 
+     * if the compiler options did not have entries that override it.
+     */
+    public String getOriginalJavaPackageName()
+    {
+        if(javaPackageName == null)
+            return null;
+        
+        String original = javaPackageName.getLast();
+        return original != null ? original : javaPackageName.getValue();
     }
     
     void setPackageName(String packageName)
