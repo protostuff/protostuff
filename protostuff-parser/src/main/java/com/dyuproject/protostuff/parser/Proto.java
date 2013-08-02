@@ -51,6 +51,8 @@ public class Proto extends AnnotationContainer implements HasOptions
     final ArrayList<ConfiguredReference> references = new ArrayList<ConfiguredReference>();
     int refOffset;
     
+    private String sourcePath;
+    
     public Proto()
     {
         this((File)null, DefaultProtoLoader.DEFAULT_INSTANCE, null);
@@ -101,7 +103,10 @@ public class Proto extends AnnotationContainer implements HasOptions
     
     public String getSourcePath()
     {
-        return file == null ? String.valueOf(url) : file.toString();
+        if(sourcePath == null)
+            sourcePath = file == null ? String.valueOf(url) : file.toString();
+            
+        return sourcePath;
     }
     
     public Mutable<String> getMutablePackageName()
