@@ -56,6 +56,11 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return rpcMethods.values();
     }
     
+    public LinkedHashMap<String,RpcMethod> getRpcMethodMap()
+    {
+        return rpcMethods;
+    }
+    
     public RpcMethod getRpcMethod(String name)
     {
         return rpcMethods.get(name);
