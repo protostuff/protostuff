@@ -17,6 +17,7 @@ package com.dyuproject.protostuff.parser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 
 /**
@@ -27,6 +28,13 @@ import java.util.LinkedHashMap;
  */
 public class EnumGroup extends AnnotationContainer implements HasName, HasOptions
 {
+    
+    /**
+     * Disabled by default (the earlier protoc 2.x versions enabled this by default, but 
+     * was changed later on).
+     */
+    public static final boolean ENUM_ALLOW_ALIAS = Boolean.parseBoolean(
+            "protostuff.enum_allow_alias");
     
     String name;
     Message parentMessage;
@@ -191,7 +199,18 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     void cacheFullyQualifiedName()
     {
-        Collections.sort(sortedValues);
+        final Boolean b = (Boolean)getOptions().get("allow_alias");
+        if(b != null)
+        {
+            if(b.booleanValue())
+                Collections.sort(sortedValues);
+            else
+                Collections.sort(sortedValues, Value.NO_ALIAS_COMPARATOR);
+        }
+        else if(ENUM_ALLOW_ALIAS)
+            Collections.sort(sortedValues);
+        else
+            Collections.sort(sortedValues, Value.NO_ALIAS_COMPARATOR);
         
         final Proto proto = getProto();
         final String fullName = getFullName();
@@ -239,6 +258,24 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
 
     public static class Value extends AnnotationContainer implements Comparable<Value>, HasName
     {
+        public static final Comparator<Value> NO_ALIAS_COMPARATOR = 
+                new Comparator<Value>()
+        {
+            public int compare(Value v1, Value v2)
+            {
+                if(v1.number == v2.number)
+                {
+                    throw err("The enum value " + 
+                            v2.enumGroup.getName() + "." + v2.getName() + 
+                            " cannot have the same number as " + 
+                            v1.enumGroup.getName() + "." + v1.getName(), 
+                            v2.enumGroup.getProto());
+                }
+                
+                return v1.number - v2.number;
+            }
+        };
+        
         final String name;
         final int number;
         EnumGroup enumGroup;
