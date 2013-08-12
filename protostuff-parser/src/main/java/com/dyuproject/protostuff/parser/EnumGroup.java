@@ -308,6 +308,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         {
             this.enumGroup = enumGroup;
             field.enumGroup = enumGroup;
+            field.name = name;
         }
         
         /**
