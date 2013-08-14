@@ -280,7 +280,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         final int number;
         EnumGroup enumGroup;
         
-        final EnumField field = new EnumField();
+        final EnumField field = new EnumField(this);
 
         public Value(String name, int number)
         {

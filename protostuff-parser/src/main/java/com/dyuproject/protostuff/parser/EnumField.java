@@ -27,18 +27,30 @@ public class EnumField extends Field<EnumGroup.Value>
 {
     
     //java.lang.String javaType;
+    final EnumGroup.Value ev;
     EnumGroup enumGroup;
     boolean defaultValueSet;
     
     public EnumField()
     {
-        super(true);
+        this((EnumGroup.Value)null);
     }
 
     public EnumField(EnumGroup enumGroup)
     {
-        this();
+        this((EnumGroup.Value)null);
         this.enumGroup = enumGroup;
+    }
+    
+    public EnumField(EnumGroup.Value ev)
+    {
+        super(true);
+        this.ev = ev;
+    }
+    
+    public EnumGroup.Value getEv()
+    {
+        return ev;
     }
     
     public void putExtraOption(java.lang.String key, Object value)
@@ -53,7 +65,7 @@ public class EnumField extends Field<EnumGroup.Value>
                 proto = owner.getProto();
                 ofOwner = " of " + owner.getRelativeName();
             }
-            else if(enumGroup != null && defaultValue == null)
+            else if(ev != null)
             {
                 // enum field/value
                 proto = enumGroup.getProto();
