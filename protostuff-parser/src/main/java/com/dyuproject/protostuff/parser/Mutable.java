@@ -64,5 +64,10 @@ public class Mutable<T>
     {
         return last;
     }
+    
+    public boolean isOverridden()
+    {
+        return last != null;
+    }
 
 }
