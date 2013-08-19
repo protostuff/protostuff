@@ -29,6 +29,15 @@ message Response {
   }
 }
 
+message Hello {
+
+  required string text = 1;
+
+  service S {
+    rpc greet (Hello) returns (Response);
+  }
+}
+
 service SimpleRpc {
   rpc Local (Request) returns (Response) {
     option (rpc.is_streaming_rpc) = true;

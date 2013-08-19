@@ -29,11 +29,14 @@ import java.util.List;
 public class Message extends AnnotationContainer implements HasName, HasFields
 {
     
-    String name;
-    Proto proto;
-    Message parentMessage;
+    final String name;
+    final Message parentMessage;
+    final Proto proto;
+    
     final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<String, Message>();
     final LinkedHashMap<String,EnumGroup> nestedEnumGroups = new LinkedHashMap<String,EnumGroup>();
+    final LinkedHashMap<String,Service> nestedServices = new LinkedHashMap<String,Service>();
+    
     final LinkedHashMap<String,Field<?>> fields = new LinkedHashMap<String,Field<?>>();
     final ArrayList<Extension> nestedExtensions = new ArrayList<Extension>();
     final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
@@ -58,14 +61,21 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     int requiredBytesFieldCount, repeatedBytesFieldCount, singularBytesFieldCount;
     int requiredStringFieldCount, repeatedStringFieldCount, singularStringFieldCount;
     
-    public Message()
-    {
-        
-    }
-    
-    public Message(String name)
+    public Message(String name, Message parentMessage, Proto proto)
     {
         this.name = name;
+        this.parentMessage = parentMessage;
+        
+        if(parentMessage != null)
+        {
+            this.proto = parentMessage.getProto();
+            parentMessage.addNestedMessage(this);
+        }
+        else
+        {
+            this.proto = proto;
+            proto.addMessage(this);
+        }
     }
     
     public String getName()
@@ -75,10 +85,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     
     public Proto getProto()
     {
-        Proto p = proto;
-        if(p==null)
-            proto = p = parentMessage.getProto();
-        return p;
+        return proto;
     }
     
     public Message getRootMessage()
@@ -128,9 +135,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             throw err("Duplicate nested message: " + 
                     message.name + " from message: " + name, getProto());
         }
-        
-        message.parentMessage = this;
     }
+    
+    /* ================================================== */
     
     public LinkedHashMap<String,EnumGroup> getNestedEnumGroupMap()
     {
@@ -154,9 +161,35 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             throw err("Duplicate nested enum: " + 
                     enumGroup.name + " from message: " + name, getProto());
         }
-        
-        enumGroup.parentMessage = this;
     }
+    
+    /* ================================================== */
+    
+    public LinkedHashMap<String,Service> getNestedServiceMap()
+    {
+        return nestedServices;
+    }
+    
+    public Collection<Service> getNestedServices()
+    {
+        return nestedServices.values();
+    }
+    
+    public Service getNestedService(String name)
+    {
+        return nestedServices.get(name);
+    }
+    
+    void addNestedService(Service service)
+    {
+        if(nestedServices.put(service.name, service) != null)
+        {
+            throw err("Duplicate nested service: " + 
+                    service.name + " from message: " + name, getProto());
+        }
+    }
+    
+    /* ================================================== */
     
     public LinkedHashMap<String,Field<?>> getFieldMap()
     {
@@ -642,6 +675,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         
         for(Extension extension : this.nestedExtensions)
             extension.resolveReferences();
+        
+        for(Service s : nestedServices.values())
+            s.resolveReferences();
         
         for(Message m : nestedMessages.values())
             m.resolveReferences(root);

@@ -65,7 +65,7 @@ statement [Proto proto]
     |   message_block[proto, null]
     |   enum_block[proto, null]
     |   extend_block[proto, null]
-    |   service_block[proto]
+    |   service_block[proto, null]
     |   annotation_entry[proto]
     |   option_entry[proto, proto]
     ;
@@ -171,12 +171,7 @@ message_block [Proto proto, Message parent]
     Message message = null;
 }
     :   MESSAGE ID { 
-            message = new Message($ID.text);
-            if(parent==null)
-                proto.addMessage(message);
-            else
-                parent.addNestedMessage(message);
-                
+            message = new Message($ID.text, parent, proto);
             proto.addAnnotationsTo(message);
         } 
         LEFTCURLY (message_body[proto, message])* RIGHTCURLY {
@@ -189,6 +184,7 @@ message_body [Proto proto, Message message]
     :   message_block[proto, message]
     |   message_field[proto, message]
     |   enum_block[proto, message]
+    |   service_block[proto, message]
     |   extend_block[proto, message]
     |   extensions_range[proto, message]
     |   annotation_entry[proto]
@@ -529,12 +525,7 @@ enum_block [Proto proto, Message message]
     EnumGroup enumGroup = null;
 }
     :   ENUM ID { 
-            enumGroup = new EnumGroup($ID.text); 
-            if(message==null)
-                proto.addEnumGroup(enumGroup);
-            else
-                message.addNestedEnumGroup(enumGroup);
-            
+            enumGroup = new EnumGroup($ID.text, message, proto);
             proto.addAnnotationsTo(enumGroup);
         } 
         LEFTCURLY (enum_body[proto, message, enumGroup])* RIGHTCURLY {
@@ -554,8 +545,7 @@ enum_field [Proto proto, Message message, EnumGroup enumGroup]
     EnumGroup.Value v = null;
 }
     :   ID ASSIGN NUMINT {
-            v = new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text));
-            enumGroup.add(v);
+            v = new EnumGroup.Value($ID.text, Integer.parseInt($NUMINT.text), enumGroup);
             proto.addAnnotationsTo(v);
         } (enum_options[proto, enumGroup, v])? SEMICOLON! 
     ;
@@ -565,12 +555,12 @@ enum_options [Proto proto, EnumGroup enumGroup, EnumGroup.Value v]
         (COMMA field_options_keyval[proto, null, v.field, false])* RIGHTSQUARE
     ;
     
-service_block [Proto proto]
+service_block [Proto proto, Message message]
 @init {
     Service service = null;
 }
     :   SERVICE ID { 
-            service = new Service($ID.text, proto); 
+            service = new Service($ID.text, message, proto); 
             proto.addAnnotationsTo(service);
         } LEFTCURLY
         (service_body[proto, service])+ RIGHTCURLY (SEMICOLON?)! {

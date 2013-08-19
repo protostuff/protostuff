@@ -36,9 +36,10 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     public static final boolean ENUM_ALLOW_ALIAS = Boolean.parseBoolean(
             "protostuff.enum_allow_alias");
     
-    String name;
-    Message parentMessage;
-    Proto proto;
+    final String name;
+    final Message parentMessage;
+    final Proto proto;
+    
     final LinkedHashMap<String,Value> values = new LinkedHashMap<String,Value>();
     final ArrayList<Value> sortedValues = new ArrayList<Value>();
     final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
@@ -47,14 +48,21 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     private ArrayList<Value> indexedValues;
     private ArrayList<Value> uniqueSortedValues;
     
-    public EnumGroup()
-    {
-        
-    }
-    
-    public EnumGroup(String name)
+    public EnumGroup(String name, Message parentMessage, Proto proto)
     {
         this.name = name;
+        this.parentMessage = parentMessage;
+        
+        if(parentMessage != null)
+        {
+            this.proto = parentMessage.getProto();
+            parentMessage.addNestedEnumGroup(this);
+        }
+        else
+        {
+            this.proto = proto;
+            proto.addEnumGroup(this);
+        }
     }
     
     public String getName()
@@ -87,6 +95,8 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         return isNested() ? parentMessage.getRelativeName() + "." + name : name;
     }
     
+    /* ================================================== */
+    
     public Message getParentMessage()
     {
         return parentMessage;
@@ -94,16 +104,15 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     
     public boolean isNested()
     {
-        return parentMessage!=null;
+        return parentMessage != null;
     }
     
     public Proto getProto()
     {
-        Proto p = proto;
-        if(p==null)
-            p = proto = parentMessage.getProto();
-        return p;
+        return proto;
     }
+    
+    /* ================================================== */
     
     public void putStandardOption(String key, Object value)
     {
@@ -192,8 +201,6 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
                     getProto());
         }
         
-        value.setEnumGroup(this);
-        
         sortedValues.add(value);
     }
     
@@ -278,14 +285,20 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         
         final String name;
         final int number;
-        EnumGroup enumGroup;
+        final EnumGroup enumGroup;
         
         public final EnumField field = new EnumField(this);
 
-        public Value(String name, int number)
+        public Value(String name, int number, EnumGroup enumGroup)
         {
             this.name = name;
             this.number = number;
+            this.enumGroup = enumGroup;
+            
+            field.enumGroup = enumGroup;
+            field.name = name;
+            
+            enumGroup.add(this);
         }
 
         /**
@@ -302,13 +315,6 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         public int getNumber()
         {
             return number;
-        }
-        
-        void setEnumGroup(EnumGroup enumGroup)
-        {
-            this.enumGroup = enumGroup;
-            field.enumGroup = enumGroup;
-            field.name = name;
         }
         
         /**

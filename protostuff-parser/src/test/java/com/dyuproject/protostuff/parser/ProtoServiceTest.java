@@ -200,6 +200,24 @@ public class ProtoServiceTest extends TestCase
         assertNotNull(jpForeignDeeperFull);
         assertTrue(jpForeignDeeperFull.getArgType() == jpFooDeeper);
         assertTrue(jpForeignDeeperFull.getReturnType() == jpBarDeeper);
+        
+        verifyNested(proto.getMessage("Hello"), response);
     }
 
+    static void verifyNested(Message hello, Message response)
+    {
+        assertNotNull(hello);
+        
+        Service s = hello.getNestedService("S");
+        assertNotNull(s);
+        
+        RpcMethod greet = s.getRpcMethod("greet");
+        assertNotNull(greet);
+        
+        Message req = greet.getArgType();
+        assertTrue(req == hello);
+        
+        Message res = greet.getReturnType();
+        assertTrue(res == response);
+    }
 }

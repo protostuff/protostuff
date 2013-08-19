@@ -220,8 +220,6 @@ public class Proto extends AnnotationContainer implements HasOptions
     {
         if(messages.put(message.name, message) != null)
             throw err("Duplicate message: " + message.name, this);
-        
-        message.proto = this;
     }
     
     public Map<String,EnumGroup> getEnumGroupMap()
@@ -243,8 +241,6 @@ public class Proto extends AnnotationContainer implements HasOptions
     {
         if(enumGroups.put(enumGroup.name, enumGroup) != null)
             throw err("Duplicate enum: " + enumGroup.name, this);
-        
-        enumGroup.proto = this;
     }
     
     public Map<String,Service> getServiceMap()
@@ -260,6 +256,12 @@ public class Proto extends AnnotationContainer implements HasOptions
     public Service getService(String name)
     {
         return services.get(name);
+    }
+    
+    void addService(Service service)
+    {
+        if(services.put(service.name, service) != null)
+            throw err("Duplicate service: " + service.name, this);
     }
 
     public void addExtension(Extension extension)

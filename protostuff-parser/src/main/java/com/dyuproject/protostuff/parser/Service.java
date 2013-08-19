@@ -27,18 +27,29 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
 {
     
     final String name;
+    final Message parentMessage;
     final Proto proto;
+    
     final LinkedHashMap<String,RpcMethod> rpcMethods = new LinkedHashMap<String,RpcMethod>();
     
     final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
     final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
     
-    public Service(String name, Proto proto)
+    public Service(String name, Message parentMessage, Proto proto)
     {
         this.name = name;
-        this.proto = proto;
-        if(proto.services.put(name, this) != null)
-            throw err("Duplicate service: " + name, proto);
+        this.parentMessage = parentMessage;
+        
+        if(parentMessage != null)
+        {
+            this.proto = parentMessage.getProto();
+            parentMessage.addNestedService(this);
+        }
+        else
+        {
+            this.proto = proto;
+            proto.addService(this);
+        }
     }
 
     public String getName()
@@ -46,10 +57,49 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return name;
     }
     
+    public String getFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        if(isNested())
+            buffer.append(parentMessage.getFullName()).append('.').append(name);
+        else
+            buffer.append(getProto().getPackageName()).append('.').append(name);
+        return buffer.toString();
+    }
+    
+    public String getJavaFullName()
+    {
+        StringBuilder buffer = new StringBuilder();
+        if(isNested())
+            buffer.append(parentMessage.getJavaFullName()).append('.').append(name);
+        else
+            buffer.append(getProto().getJavaPackageName()).append('.').append(name);
+        return buffer.toString();
+    }
+    
+    public String getRelativeName()
+    {
+        return isNested() ? parentMessage.getRelativeName() + "." + name : name;
+    }
+    
+    /* ================================================== */
+    
+    public Message getParentMessage()
+    {
+        return parentMessage;
+    }
+    
+    public boolean isNested()
+    {
+        return parentMessage != null;
+    }
+    
     public Proto getProto()
     {
         return proto;
     }
+    
+    /* ================================================== */
     
     public Collection<RpcMethod> getRpcMethods()
     {
