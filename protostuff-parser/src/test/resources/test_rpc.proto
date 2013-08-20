@@ -22,6 +22,16 @@ message Response {
   
   message Inner {
     required string name = 1;
+
+    service I {
+      rpc getChild (Inner) returns (Deeper);
+      rpc getParent (Inner) returns (Response);
+      rpc getHello (Inner) returns (Hello);
+
+      rpc fetchChild (Request.Inner) returns (Request.Inner.Deeper);
+      rpc fetchParent (Request.Inner) returns (Request);
+      rpc fetchHello (Request.Inner) returns (Hello);
+    }
     
     message Deeper {
       required string name = 1;

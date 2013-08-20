@@ -119,7 +119,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
     RpcMethod addRpcMethod(String name, String argName, String argPackage, 
             String retName, String retPackage)
     {
-        return new RpcMethod(name, argName, argPackage, retName, retPackage);
+        return new RpcMethod(name, this, argName, argPackage, retName, retPackage);
     }
     
     public LinkedHashMap<String,Object> getStandardOptions()
@@ -168,30 +168,38 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             proto.references.add(new ConfiguredReference(standardOptions, extraOptions, proto.getPackageName()));
     }
     
-    public class RpcMethod extends AnnotationContainer implements HasName, HasOptions
+    public static class RpcMethod extends AnnotationContainer implements HasName, HasOptions
     {
         
         final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
         final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
         
+        final String name;
+        final Service service;
         final int index;
-        final String name, argName, argPackage, retName, retPackage;
+        
+        final String argName, argPackage, retName, retPackage;
+        
         Message argType, returnType;
         
-        RpcMethod(String name, String argName, String argPackage, String retName, 
-                String retPackage)
+        RpcMethod(String name, Service service, 
+                String argName, String argPackage, 
+                String retName, String retPackage)
         {
-            index = rpcMethods.size();
             this.name = name;
+            this.service = service;
+            index = service.rpcMethods.size();
+            
             this.argName = argName;
             this.argPackage = argPackage;
+            
             this.retName = retName;
             this.retPackage = retPackage;
             
-            if(rpcMethods.put(name, this) != null)
+            if(service.rpcMethods.put(name, this) != null)
             {
                 throw err("Duplicate rpc method: " + name + 
-                        " from service " + Service.this.name, getProto());
+                        " from service " + service.name, service.getProto());
             }
         }
 
@@ -205,9 +213,19 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             return index;
         }
         
+        public Proto getProto()
+        {
+            return service.getProto();
+        }
+        
+        public Service getService()
+        {
+            return service;
+        }
+        
         public Service getOwner()
         {
-            return Service.this;
+            return service;
         }
         
         public Message getArgType()
@@ -287,25 +305,34 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         
         void resolveReferences()
         {
+            final Proto proto = getProto();
+            
+            String enclosingNs = service.isNested() ? 
+                    service.parentMessage.getFullName() : proto.getPackageName();
+                    
             String fullArgName = (argPackage != null ? argPackage + '.' + argName : argName);
             if(!"void".equals(fullArgName))
             {
-                Message argType = proto.findMessageReference(fullArgName, proto.getPackageName());
+                Message argType = proto.findMessageReference(fullArgName, enclosingNs);
                 if(argType == null)
                 {
-                    throw err("The message " + fullArgName + " is not defined", getProto());
+                    throw err("The message " + fullArgName + " is not defined", 
+                            proto);
                 }
+                
                 this.argType = argType;
             }
             
             String fullReturnName = (retPackage != null ? retPackage + '.' + retName : retName);
             if(!"void".equals(fullReturnName))
             {
-                Message returnType = proto.findMessageReference(fullReturnName, proto.getPackageName());
+                Message returnType = proto.findMessageReference(fullReturnName, enclosingNs);
                 if(returnType == null)
                 {
-                    throw err("The message " + fullReturnName + " is not defined", getProto());
+                    throw err("The message " + fullReturnName + " is not defined", 
+                            proto);
                 }
+                
                 this.returnType = returnType;
             }
             

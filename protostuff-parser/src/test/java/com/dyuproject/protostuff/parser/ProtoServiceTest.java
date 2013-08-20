@@ -201,10 +201,12 @@ public class ProtoServiceTest extends TestCase
         assertTrue(jpForeignDeeperFull.getArgType() == jpFooDeeper);
         assertTrue(jpForeignDeeperFull.getReturnType() == jpBarDeeper);
         
-        verifyNested(proto.getMessage("Hello"), response);
+        verifyNested(proto.getMessage("Hello"), response, 
+                responseInner, requestInner);
     }
 
-    static void verifyNested(Message hello, Message response)
+    static void verifyNested(Message hello, Message response, 
+            Message responseInner, Message requestInner)
     {
         assertNotNull(hello);
         
@@ -219,5 +221,50 @@ public class ProtoServiceTest extends TestCase
         
         Message res = greet.getReturnType();
         assertTrue(res == response);
+        
+        Service i = responseInner.getNestedService("I");
+        assertNotNull(i);
+        
+        RpcMethod getChild = i.getRpcMethod("getChild");
+        assertNotNull(getChild);
+        assertNotNull(getChild.getArgType());
+        assertTrue(getChild.getArgType() == responseInner);
+        assertNotNull(getChild.getReturnType());
+        assertTrue(getChild.getReturnType() == responseInner.getNestedMessage("Deeper"));
+        
+        RpcMethod getParent = i.getRpcMethod("getParent");
+        assertNotNull(getParent);
+        assertNotNull(getParent.getArgType());
+        assertTrue(getParent.getArgType() == responseInner);
+        assertNotNull(getParent.getReturnType());
+        assertTrue(getParent.getReturnType() == responseInner.getParentMessage());
+        
+        RpcMethod getHello = i.getRpcMethod("getHello");
+        assertNotNull(getHello);
+        assertNotNull(getHello.getArgType());
+        assertTrue(getHello.getArgType() == responseInner);
+        assertNotNull(getHello.getReturnType());
+        assertTrue(getHello.getReturnType() == hello);
+        
+        RpcMethod fetchChild = i.getRpcMethod("fetchChild");
+        assertNotNull(fetchChild);
+        assertNotNull(fetchChild.getArgType());
+        assertTrue(fetchChild.getArgType() == requestInner);
+        assertNotNull(fetchChild.getReturnType());
+        assertTrue(fetchChild.getReturnType() == requestInner.getNestedMessage("Deeper"));
+        
+        RpcMethod fetchParent = i.getRpcMethod("fetchParent");
+        assertNotNull(fetchParent);
+        assertNotNull(fetchParent.getArgType());
+        assertTrue(fetchParent.getArgType() == requestInner);
+        assertNotNull(fetchParent.getReturnType());
+        assertTrue(fetchParent.getReturnType() == requestInner.getParentMessage());
+        
+        RpcMethod fetchHello = i.getRpcMethod("fetchHello");
+        assertNotNull(fetchHello);
+        assertNotNull(fetchHello.getArgType());
+        assertTrue(fetchHello.getArgType() == requestInner);
+        assertNotNull(fetchHello.getReturnType());
+        assertTrue(fetchHello.getReturnType() == hello);
     }
 }
