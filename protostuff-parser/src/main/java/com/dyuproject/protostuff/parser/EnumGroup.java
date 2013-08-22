@@ -325,6 +325,14 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             return enumGroup;
         }
         
+        /**
+         * Alias to {@link #getEnumGroup()}.
+         */
+        public EnumGroup getEg()
+        {
+            return enumGroup;
+        }
+        
         // options
         
         public LinkedHashMap<java.lang.String,Object> getStandardOptions()
