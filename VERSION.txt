@@ -15,7 +15,7 @@ protostuff-1.0.8-SNAPSHOT
 + Issue 128: Maven-Plugin fails for multi-module projects
 + added enums_by_name compiler option for java_v2protoc_schema (thanks to vitalyper)
 + Issue 124: proto-parser throws NPE when an annotation on a field contains a reference
-+ update jackson-core-asl to 1.9.10
++ update jackson-core-asl to 1.9.13
 + update woodstox-core-asl to 4.1.3
 
 protostuff-1.0.7 2012-05-14
