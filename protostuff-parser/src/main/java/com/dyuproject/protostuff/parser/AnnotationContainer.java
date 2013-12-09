@@ -103,7 +103,7 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
         if(proto == null)
             return new IllegalStateException(msg);
         
-        return new IllegalStateException(msg + " (" + proto.getSourcePath() + ")");
+        return new IllegalStateException(msg + " [" + proto.getSourcePath() + "]");
     }
 
 }
