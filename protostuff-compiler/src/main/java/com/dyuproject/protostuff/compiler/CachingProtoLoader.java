@@ -46,7 +46,7 @@ import com.dyuproject.protostuff.parser.Proto;
  */
 public class CachingProtoLoader extends DefaultProtoLoader
 {
-    final Map<String,Proto> loadedProtos;
+    public final Map<String,Proto> loadedProtos;
     
     public CachingProtoLoader()
     {
