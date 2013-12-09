@@ -109,6 +109,11 @@ public class Extension extends AnnotationContainer implements HasFields
         return extraOptions.get(key);
     }
     
+    public LinkedHashMap<String,Object> getO()
+    {
+        return getOptions();
+    }
+    
     public LinkedHashMap<String,Object> getOptions()
     {
         return extraOptions;

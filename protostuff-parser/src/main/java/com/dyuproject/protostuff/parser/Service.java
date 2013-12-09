@@ -154,6 +154,11 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return extraOptions.get(name);
     }
     
+    public LinkedHashMap<String,Object> getO()
+    {
+        return getOptions();
+    }
+    
     public LinkedHashMap<String,Object> getOptions()
     {
         return extraOptions;
@@ -296,6 +301,11 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         public Object getExtraOption(String name)
         {
             return extraOptions.get(name);
+        }
+        
+        public LinkedHashMap<String,Object> getO()
+        {
+            return getOptions();
         }
         
         public LinkedHashMap<String,Object> getOptions()

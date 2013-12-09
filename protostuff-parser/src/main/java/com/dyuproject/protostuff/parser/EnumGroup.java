@@ -141,6 +141,11 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         return extraOptions;
     }
     
+    public LinkedHashMap<java.lang.String,Object> getO()
+    {
+        return getOptions();
+    }
+    
     public LinkedHashMap<String,Object> getOptions()
     {
         return extraOptions;

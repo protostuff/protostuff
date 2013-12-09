@@ -76,6 +76,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         return extraOptions;
     }
     
+    public LinkedHashMap<java.lang.String,Object> getO() 
+    {
+        return getOptions();
+    }
+    
     /**
      * Returns this options
      */

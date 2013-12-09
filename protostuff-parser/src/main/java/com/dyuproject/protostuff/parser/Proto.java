@@ -182,6 +182,11 @@ public class Proto extends AnnotationContainer implements HasOptions
     {
         return extraOptions;
     }
+    
+    public LinkedHashMap<String,Object> getO()
+    {
+        return getOptions();
+    }
 
     public LinkedHashMap<String,Object> getOptions()
     {

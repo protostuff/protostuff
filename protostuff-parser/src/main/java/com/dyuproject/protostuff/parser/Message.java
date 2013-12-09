@@ -322,6 +322,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return (V)extraOptions.get(key);
     }
     
+    public LinkedHashMap<String,Object> getO()
+    {
+        return getOptions();
+    }
+    
     public LinkedHashMap<String,Object> getOptions()
     {
         return extraOptions;
