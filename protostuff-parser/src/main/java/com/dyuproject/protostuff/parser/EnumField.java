@@ -153,4 +153,9 @@ public class EnumField extends Field<EnumGroup.Value>
 
         return path + targetPackage.replace('.', '/') + "/";
     }
+
+    public Proto getProto()
+    {
+        return ev != null ? ev.getProto() : super.getProto();
+    }
 }

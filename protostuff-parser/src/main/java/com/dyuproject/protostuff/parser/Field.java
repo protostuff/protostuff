@@ -61,6 +61,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         this.packable = packable;
     }
     
+    public Proto getProto()
+    {
+        return owner == null ? null : owner.getProto();
+    }
+    
     public LinkedHashMap<java.lang.String,Object> getStandardOptions()
     {
         return standardOptions;

@@ -91,6 +91,11 @@ public class Proto extends AnnotationContainer implements HasOptions
         this.importer = importer;
     }
     
+    public Proto getProto()
+    {
+        return this;
+    }
+    
     public ErrorMap getError()
     {
         return ErrorMap.INSTANCE;

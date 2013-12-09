@@ -317,6 +317,11 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             return number;
         }
         
+        public Proto getProto()
+        {
+            return enumGroup.getProto();
+        }
+        
         /**
          * @return the enumGroup
          */

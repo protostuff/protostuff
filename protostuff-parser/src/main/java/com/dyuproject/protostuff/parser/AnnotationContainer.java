@@ -24,7 +24,7 @@ import java.util.Map;
  * @author David Yu
  * @created Dec 30, 2010
  */
-public class AnnotationContainer implements HasAnnotations
+public abstract class AnnotationContainer implements HasAnnotations, HasProto
 {
     
     final LinkedHashMap<String,Annotation> annotations = 
