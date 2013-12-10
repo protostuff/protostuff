@@ -1,4 +1,4 @@
-protostuff-1.0.8-SNAPSHOT
+protostuff-1.0.8 2013-12-10
 + Issue 140: Multiple runtime schema contexts (IdStrategy groups)
 + new protostuff-runtime-view module
   - select fields to include on ser/deser, without re-creating the expensive runtime fields.
