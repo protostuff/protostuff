@@ -196,7 +196,8 @@ public abstract class NumberSchema extends PolymorphicSchema
         }
         
         // AtomicInteger/AtomicLong
-        final Schema<Object> schema = strategy.writePojoIdTo(output, ID_POJO, clazz);
+        final Schema<Object> schema = strategy.writePojoIdTo(
+                output, ID_POJO, clazz).getSchema();
         
         if(output instanceof StatefulOutput)
         {

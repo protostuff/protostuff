@@ -3375,6 +3375,18 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             
             return true;
         }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithThrowableArray [t1=" + Arrays.toString(t1) + ", t2="
+                    + Arrays.toString(t2) + ", e1=" + Arrays.toString(e1) + ", e2="
+                    + Arrays.toString(e2) + ", re1=" + Arrays.toString(re1) + ", re2="
+                    + Arrays.toString(re2) + ", o1=" + Arrays.toString(o1) + ", o2="
+                    + Arrays.toString(o2) + "]";
+        }
+        
+        
     }
     
     public void testPojoWithThrowableArray() throws Exception

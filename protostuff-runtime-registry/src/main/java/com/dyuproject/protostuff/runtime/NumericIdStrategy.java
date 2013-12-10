@@ -324,15 +324,15 @@ public abstract class NumericIdStrategy extends IdStrategy
     }
 
     
-    protected static final class RegisteredDelegate<T>
+    protected static final class RegisteredDelegate<T> extends HasDelegate<T>
     {
         public final int id;
-        public final Delegate<T> delegate;
-        
+
         RegisteredDelegate(int id, Delegate<T> delegate)
         {
+            super(delegate);
+            
             this.id = id;
-            this.delegate = delegate;
         }
     }
     

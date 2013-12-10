@@ -65,6 +65,12 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         ID_POLYMORPHIC_COLLECTION = 28, 
         ID_POLYMORPHIC_MAP = 29, 
         ID_DELEGATE = 30, 
+
+        ID_ARRAY_DELEGATE = 32, 
+        ID_ARRAY_SCALAR = 33, 
+        ID_ARRAY_ENUM = 34, 
+        ID_ARRAY_POJO = 35, 
+
         ID_THROWABLE = 52, 
         
         // pojo fields limited to 126 if not explicitly using @Tag annotations
@@ -91,6 +97,12 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         STR_POLYMORPHIC_COLLECTION = "B", 
         STR_POLYMOPRHIC_MAP = "C", 
         STR_DELEGATE = "D", 
+
+        STR_ARRAY_DELEGATE = "F", 
+        STR_ARRAY_SCALAR = "G", 
+        STR_ARRAY_ENUM = "H", 
+        STR_ARRAY_POJO = "I", 
+
         STR_THROWABLE = "Z", 
         
         // pojo fields limited to 126 if not explicitly using @Tag annotations

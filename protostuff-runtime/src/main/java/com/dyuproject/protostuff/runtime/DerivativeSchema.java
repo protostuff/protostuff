@@ -100,7 +100,7 @@ public abstract class DerivativeSchema implements Schema<Object>
     public void writeTo(final Output output, final Object value) throws IOException
     {
         final Schema<Object> schema = strategy.writePojoIdTo(
-                output, ID_POJO, (Class<Object>)value.getClass());
+                output, ID_POJO, (Class<Object>)value.getClass()).getSchema();
         
         if(output instanceof StatefulOutput)
         {

@@ -27,6 +27,7 @@ import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
+import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Determines how enums are serialized/deserialized. 
@@ -36,7 +37,7 @@ import com.dyuproject.protostuff.Pipe;
  * @author David Yu
  * @created Oct 20, 2010
  */
-public abstract class EnumIO<E extends Enum<E>>
+public abstract class EnumIO<E extends Enum<E>> implements PolymorphicSchema.Factory
 {
     
     // Used by ObjectSchema to ser/deser both EnumMap and EnumSet.
@@ -189,9 +190,17 @@ public abstract class EnumIO<E extends Enum<E>>
     private volatile CollectionSchema.MessageFactory enumSetFactory;
     private volatile MapSchema.MessageFactory enumMapFactory;
     
+    final ArraySchemas.Base genericElementSchema = new ArraySchemas.EnumArray(null, this);
+    
     public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
+    }
+    
+    public PolymorphicSchema newSchema(Class<?> typeClass, 
+            IdStrategy strategy, Handler handler)
+    {
+        return new ArraySchemas.EnumArray(handler, this);
     }
     
     /**

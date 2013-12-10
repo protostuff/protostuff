@@ -25,7 +25,11 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.DATE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.DOUBLE;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.FLOAT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_DELEGATE;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_ENUM;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_MAPPED;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_POJO;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_SCALAR;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -60,7 +64,11 @@ import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.INT64;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.SHORT;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STRING;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_DELEGATE;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_ENUM;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_MAPPED;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_POJO;
+import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_SCALAR;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BIGDECIMAL;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BIGINTEGER;
 import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BOOL;
@@ -132,8 +140,19 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 return STR_POLYMOPRHIC_MAP;
             case ID_DELEGATE:
                 return STR_DELEGATE;
+                
+            case ID_ARRAY_DELEGATE:
+                return STR_ARRAY_DELEGATE;
+            case ID_ARRAY_SCALAR:
+                return STR_ARRAY_SCALAR;
+            case ID_ARRAY_ENUM:
+                return STR_ARRAY_ENUM;
+            case ID_ARRAY_POJO:
+                return STR_ARRAY_POJO;
+                
             case ID_THROWABLE:
                 return STR_THROWABLE;
+                
             case ID_BOOL:
                 return STR_BOOL;
             case ID_BYTE:
@@ -187,6 +206,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 return STR_COLLECTION;
             case ID_MAP:
                 return STR_MAP;
+                
             case ID_POJO:
                 return STR_POJO;
             default:
@@ -207,10 +227,21 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 return 29;
             case 'D':
                 return 30;
+                
+            case 'F':
+                return 32;
+            case 'G':
+                return 33;
+            case 'H':
+                return 34;
+            case 'I':
+                return 35;
+                
             case 'Z':
                 return 52;
             case '_':
                 return 127;
+                
             case 'a':
                 return 1;
             case 'b':
@@ -601,12 +632,40 @@ public abstract class ObjectSchema extends PolymorphicSchema
             }
             case ID_DELEGATE:
             {
-                final Delegate<Object> delegate = strategy.resolveDelegateFrom(input);
+                final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
                 if(1 != input.readFieldNumber(schema))
                     throw new ProtostuffException("Corrupt input.");
                 
-                value = delegate.readFrom(input);
+                value = hd.delegate.readFrom(input);
                 break;
+            }
+            case ID_ARRAY_DELEGATE:
+            {
+                final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
+                
+                return hd.genericElementSchema.readFrom(input, owner);
+            }
+            case ID_ARRAY_SCALAR:
+            {
+                final int arrayId = input.readUInt32(), 
+                        id = ArraySchemas.toInlineId(arrayId);
+                
+                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id, 
+                        ArraySchemas.isPrimitive(arrayId));
+                
+                return arraySchema.readFrom(input, owner);
+            }
+            case ID_ARRAY_ENUM:
+            {
+                final EnumIO<?> eio = strategy.resolveEnumFrom(input);
+                
+                return eio.genericElementSchema.readFrom(input, owner);
+            }
+            case ID_ARRAY_POJO:
+            {
+                final HasSchema<Object> hs = strategy.resolvePojoFrom(input, number);
+                
+                return hs.genericElementSchema.readFrom(input, owner);
             }
             case ID_THROWABLE:
                 return PolymorphicThrowableSchema.readObjectFrom(input, schema, owner, 
@@ -649,12 +708,12 @@ public abstract class ObjectSchema extends PolymorphicSchema
     {
         final Class<Object> clazz = (Class<Object>)value.getClass();
         
-        final Delegate<Object> delegate = strategy.tryWriteDelegateIdTo(output, 
+        final HasDelegate<Object> hd = strategy.tryWriteDelegateIdTo(output, 
                 ID_DELEGATE, clazz);
         
-        if(delegate != null)
+        if(hd != null)
         {
-            delegate.writeTo(output, 1, value, false);
+            hd.delegate.writeTo(output, 1, value, false);
             return;
         }
         
@@ -697,8 +756,97 @@ public abstract class ObjectSchema extends PolymorphicSchema
         
         if(clazz.isArray())
         {
-            int dimensions = 1;
             Class<?> componentType = clazz.getComponentType();
+            
+            final HasDelegate<Object> hdArray = strategy.tryWriteDelegateIdTo(output, 
+                    ID_ARRAY_DELEGATE, (Class<Object>)componentType);
+            
+            if(hdArray != null)
+            {
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(hdArray.genericElementSchema, 
+                            currentSchema);
+                }
+                
+                hdArray.genericElementSchema.writeTo(output, value);
+                return;
+            }
+            
+            final RuntimeFieldFactory<?> inlineArray = RuntimeFieldFactory.getInline(
+                    componentType);
+            if(inlineArray != null)
+            {
+                // scalar
+                final boolean primitive = componentType.isPrimitive();
+                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(
+                        inlineArray.id, primitive);
+                
+                output.writeUInt32(ID_ARRAY_SCALAR, 
+                        ArraySchemas.toArrayId(inlineArray.id, primitive), 
+                        false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(arraySchema, currentSchema);
+                }
+                
+                arraySchema.writeTo(output, value);
+                return;
+            }
+            
+            if(componentType.isEnum())
+            {
+                // enum
+                final EnumIO<?> eio = strategy.getEnumIO(componentType);
+                
+                strategy.writeEnumIdTo(output, ID_ARRAY_ENUM, componentType);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(eio.genericElementSchema, 
+                            currentSchema);
+                }
+                
+                eio.genericElementSchema.writeTo(output, value);
+                return;
+            }
+            
+            if(Message.class.isAssignableFrom(componentType) || 
+                    strategy.isRegistered(componentType))
+            {
+                // messsage / registered pojo
+                final HasSchema<Object> hs = strategy.writePojoIdTo(output, 
+                        ID_ARRAY_POJO, (Class<Object>)componentType);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(hs.genericElementSchema, 
+                            currentSchema);
+                }
+                
+                hs.genericElementSchema.writeTo(output, value);
+                return;
+            }
+            
+            /*if(!Throwable.class.isAssignableFrom(componentType))
+            {
+                boolean create = Message.class.isAssignableFrom(componentType);
+                HasSchema<Object> hs = strategy.getSchemaWrapper(
+                        (Class<Object>)componentType, create);
+                if(hs != null)
+                {
+                    
+                }
+            }*/
+
+            
+            // complex type
+            int dimensions = 1;
             while(componentType.isArray())
             {
                 dimensions++;
@@ -836,7 +984,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
         }
         
         // pojo
-        final Schema<Object> schema = strategy.writePojoIdTo(output, ID_POJO, clazz);
+        final Schema<Object> schema = strategy.writePojoIdTo(
+                output, ID_POJO, clazz).getSchema();
         
         if(output instanceof StatefulOutput)
         {
@@ -1003,13 +1152,89 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 return;
             case ID_DELEGATE:
             {
-                final Delegate<Object> delegate = strategy.transferDelegateId(input, 
+                final HasDelegate<Object> hd = strategy.transferDelegateId(input, 
                         output, number);
                 if(1 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
                 
-                delegate.transfer(pipe, input, output, 1, false);
+                hd.delegate.transfer(pipe, input, output, 1, false);
                 break;
+            }
+            
+            case ID_ARRAY_DELEGATE:
+            {
+                final HasDelegate<Object> hd = strategy.transferDelegateId(input, 
+                        output, number);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            hd.genericElementSchema.getPipeSchema(), 
+                            pipeSchema);
+                }
+                
+                Pipe.transferDirect(hd.genericElementSchema.getPipeSchema(), 
+                        pipe, input, output);
+                return;
+            }
+            
+            case ID_ARRAY_SCALAR:
+            {
+                final int arrayId = input.readUInt32(), 
+                        id = ArraySchemas.toInlineId(arrayId);
+                
+                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id, 
+                        ArraySchemas.isPrimitive(arrayId));
+                
+                output.writeUInt32(number, arrayId, false);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(arraySchema.getPipeSchema(), 
+                            pipeSchema);
+                }
+                
+                Pipe.transferDirect(arraySchema.getPipeSchema(), pipe, input, output);
+                return;
+            }
+            
+            case ID_ARRAY_ENUM:
+            {
+                final EnumIO<?> eio = strategy.resolveEnumFrom(input);
+                
+                strategy.writeEnumIdTo(output, number, eio.enumClass);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            eio.genericElementSchema.getPipeSchema(), 
+                            pipeSchema);
+                }
+                
+                Pipe.transferDirect(eio.genericElementSchema.getPipeSchema(), 
+                        pipe, input, output);
+                return;
+            }
+            
+            case ID_ARRAY_POJO:
+            {
+                final HasSchema<Object> hs = strategy.transferPojoId(input, output, 
+                        number);
+                
+                if(output instanceof StatefulOutput)
+                {
+                    // update using the derived schema.
+                    ((StatefulOutput)output).updateLast(
+                            hs.genericElementSchema.getPipeSchema(), 
+                            pipeSchema);
+                }
+                
+                Pipe.transferDirect(hs.genericElementSchema.getPipeSchema(), 
+                        pipe, input, output);
+                return;
             }
             
             case ID_THROWABLE:

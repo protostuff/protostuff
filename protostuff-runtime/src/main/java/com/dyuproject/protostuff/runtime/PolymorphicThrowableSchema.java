@@ -132,7 +132,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
             IdStrategy strategy) throws IOException
     {
         final Schema<Object> schema = strategy.writePojoIdTo(output, ID_THROWABLE, 
-                (Class<Object>)value.getClass());
+                (Class<Object>)value.getClass()).getSchema();
         
         if(output instanceof StatefulOutput)
         {

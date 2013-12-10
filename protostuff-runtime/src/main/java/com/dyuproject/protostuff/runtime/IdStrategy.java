@@ -167,6 +167,11 @@ public abstract class IdStrategy
      */
     public abstract boolean isDelegateRegistered(Class<?> typeClass);
 
+    
+    /**
+     * Returns the {@link Delegate delegate}.
+     */
+    public abstract <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass);
 
     /**
      * Returns the {@link Delegate delegate}.
@@ -241,7 +246,7 @@ public abstract class IdStrategy
     
     // pojo
     
-    protected abstract <T> Schema<T> writePojoIdTo(Output output, int fieldNumber, 
+    protected abstract <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber, 
             Class<T> clazz) throws IOException;
     
     protected abstract <T> HasSchema<T> transferPojoId(Input input, Output output, 
@@ -258,13 +263,13 @@ public abstract class IdStrategy
     /**
      * If this method returns null, the clazz was not registered as a delegate.
      */
-    protected abstract <T> Delegate<T> tryWriteDelegateIdTo(Output output, 
+    protected abstract <T> HasDelegate<T> tryWriteDelegateIdTo(Output output, 
             int fieldNumber, Class<T> clazz) throws IOException;
     
-    protected abstract <T> Delegate<T> transferDelegateId(Input input, Output output, 
+    protected abstract <T> HasDelegate<T> transferDelegateId(Input input, Output output, 
             int fieldNumber) throws IOException;
     
-    protected abstract <T> Delegate<T> resolveDelegateFrom(Input input) throws IOException;
+    protected abstract <T> HasDelegate<T> resolveDelegateFrom(Input input) throws IOException;
     
     // array
     

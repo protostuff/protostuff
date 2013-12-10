@@ -45,8 +45,44 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     
     ARRAY
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
+            @SuppressWarnings("unchecked")
+            Class<Object> ct = (Class<Object>)typeClass.getComponentType();
+            
+            RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(
+                    ct, strategy);
+            
+            if(rff == RuntimeFieldFactory.DELEGATE)
+            {
+                // delegate
+                return strategy.getDelegateWrapper(ct).newSchema(
+                        typeClass, strategy, handler);
+            }
+            
+            if(rff.id > 0 && rff.id < 15)
+            {
+                // scalar
+                return ArraySchemas.newSchema(rff.id, ct, 
+                        typeClass, strategy, handler);
+            }
+            
+            if(ct.isEnum())
+            {
+                // enum
+                return strategy.getEnumIO(ct).newSchema(typeClass, strategy, handler);
+            }
+            
+            if(rff == RuntimeFieldFactory.POJO || 
+                    (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && 
+                    RuntimeFieldFactory.pojo(ct, null, strategy)))
+            {
+                // pojo
+                return strategy.getSchemaWrapper(ct, true).newSchema(
+                        typeClass, strategy, handler);
+            }
+            
             return new ArraySchema(strategy)
             {
                 protected void setValue(Object value, Object owner)
@@ -58,7 +94,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     }, 
     NUMBER
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new NumberSchema(strategy)
             {
@@ -71,7 +108,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     }, 
     CLASS
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new ClassSchema(strategy)
             {
@@ -84,7 +122,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     }, 
     ENUM
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new PolymorphicEnumSchema(strategy)
             {
@@ -97,7 +136,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     }, 
     COLLECTION
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new PolymorphicCollectionSchema(strategy)
             {
@@ -110,7 +150,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     }, 
     MAP
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new PolymorphicMapSchema(strategy)
             {
@@ -123,7 +164,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     THROWABLE
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new PolymorphicThrowableSchema(strategy)
             {
@@ -136,7 +178,8 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     OBJECT
     {
-        public PolymorphicSchema newSchema(IdStrategy strategy, final Handler handler)
+        public PolymorphicSchema newSchema(Class<?> typeClass, 
+                IdStrategy strategy, final Handler handler)
         {
             return new ObjectSchema(strategy)
             {
@@ -204,7 +247,41 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
             Class<?> clazz, IdStrategy strategy)
     {
         if(clazz.isArray())
+        {
+            @SuppressWarnings("unchecked")
+            Class<Object> ct = (Class<Object>)clazz.getComponentType();
+            
+            RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(
+                    ct, strategy);
+            
+            if(rff == RuntimeFieldFactory.DELEGATE)
+            {
+                // delegate
+                return strategy.getDelegateWrapper(ct).genericElementSchema;
+            }
+            
+            if(rff.id > 0 && rff.id < 15)
+            {
+                // scalar
+                return ArraySchemas.getGenericElementSchema(rff.id);
+            }
+            
+            if(ct.isEnum())
+            {
+                // enum
+                return strategy.getEnumIO(ct).genericElementSchema;
+            }
+            
+            if(rff == RuntimeFieldFactory.POJO || 
+                    (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && 
+                    RuntimeFieldFactory.pojo(ct, null, strategy)))
+            {
+                // pojo
+                return strategy.getSchemaWrapper(ct, true).genericElementSchema;
+            }
+            
             return strategy.ARRAY_ELEMENT_SCHEMA;
+        }
         
         if(Number.class == clazz)
             return strategy.NUMBER_ELEMENT_SCHEMA;
