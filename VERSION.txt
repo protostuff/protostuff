@@ -1,3 +1,5 @@
+protostuff-1.0.9-SNAPSHOT
+
 protostuff-1.0.8 2013-12-10
 + Issue 140: Multiple runtime schema contexts (IdStrategy groups)
 + new protostuff-runtime-view module
