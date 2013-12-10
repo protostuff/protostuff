@@ -76,7 +76,7 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
         String strategy = System.getProperty("test_id_strategy");
         runTest = strategy == null || strategy.equals("explicit");
         
-        if(runTest || true)
+        if(runTest)
         {
             System.setProperty("protostuff.runtime.id_strategy_factory", 
                     "com.dyuproject.protostuff.runtime.ExplicitRuntimeObjectSchemaTest$IdStrategyFactory");
