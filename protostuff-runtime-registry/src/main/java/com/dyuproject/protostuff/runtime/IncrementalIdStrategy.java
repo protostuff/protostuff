@@ -677,10 +677,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     @SuppressWarnings("unchecked")
     public <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass)
     {
-        final RegisteredDelegate<T> rd = (RegisteredDelegate<T>)delegateMapping.get(
-                typeClass);
-        
-        return rd == null ? null : rd;
+        return (HasDelegate<T>)delegateMapping.get(typeClass);
     }
 
     @SuppressWarnings("unchecked")
