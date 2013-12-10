@@ -18,9 +18,9 @@
     </developer>
   </developers>
   <scm>
-  	<url>https://protostuff.googlecode.com/svn/tags/protostuff-1.0.5-SNAPSHOT</url>
-    <connection>scm:svn:https://protostuff.googlecode.com/svn/tags/protostuff-1.0.5-SNAPSHOT</connection>
-    <developerConnection>scm:svn:https://protostuff.googlecode.com/svn/tags/protostuff-1.0.5-SNAPSHOT</developerConnection>    
+  	<url>https://protostuff.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:https://protostuff.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://protostuff.googlecode.com/svn/trunk</developerConnection>
   </scm>
   <licenses>
     <license>
