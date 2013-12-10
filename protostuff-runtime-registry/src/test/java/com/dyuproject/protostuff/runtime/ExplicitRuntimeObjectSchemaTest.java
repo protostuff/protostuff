@@ -138,7 +138,8 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
                 .registerPojo(RuntimeException.class, 19)
                 .registerPojo(PojoWithThrowableArray.class, 20)
                 .registerPojo(PojoWithSingletonAsDelegate.class, 21)
-                .registerPojo(PojoWithShortArrayAsDelegate.class, 22);
+                .registerPojo(PojoWithShortArrayAsDelegate.class, 22)
+                .registerPojo(StackTraceElement.class, 23);
             
             r.registerDelegate(new ShortArrayDelegate(), 1);
             r.registerDelegate(SINGLETON_DELEGATE, 2);
