@@ -461,7 +461,7 @@ public final class B64Code
      * as described in RFC 1521.
      * <p> Avoids creating extra copies of the input/output.
      * <p> Note this code has been flattened for performance.
-     * @param input byte array to decode.
+     * @param input char array to decode.
      * @param inOffset the offset.
      * @param inLen the length.
      * @return byte array containing the decoded form of the input.
