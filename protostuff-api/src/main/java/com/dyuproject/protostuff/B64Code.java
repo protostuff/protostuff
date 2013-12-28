@@ -39,8 +39,8 @@ import java.io.OutputStream;
  * <p> Note that in a web context the usual case is to not want
  * linebreaks or other white space in the encoded output.
  * 
- * All methods that begin with c will use char arrays as output on encode, and 
- * as input on decode.
+ * All methods that begin with 'c' will use char arrays (as output on encode, 
+ * as input on decode).
  *
  * @author Brett Sealey (bretts)
  * @author Greg Wilkins (gregw)
