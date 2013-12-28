@@ -38,6 +38,9 @@ import java.io.OutputStream;
  * 1521. If you require this you must pre/post process your data.
  * <p> Note that in a web context the usual case is to not want
  * linebreaks or other white space in the encoded output.
+ * 
+ * All methods that begin with c will use char arrays as output on encode, and 
+ * as input on decode.
  *
  * @author Brett Sealey (bretts)
  * @author Greg Wilkins (gregw)
@@ -87,6 +90,24 @@ public final class B64Code
         return output;
     }
     
+    /**
+     * Fast Base 64 encode as described in RFC 1421.
+     */
+    public static char[] cencode(byte[] input)
+    {
+        return cencode(input, 0, input.length);
+    }
+    
+    /**
+     * Fast Base 64 encode as described in RFC 1421.
+     */
+    public static char[] cencode(byte[] input, int inOffset, int inLen)
+    {
+        final char[] output = new char[((inLen+2)/3)*4];
+        cencode(input, inOffset, inLen, output , 0);
+        return output;
+    }
+    
     // ------------------------------------------------------------------
     /**
      * Fast Base 64 encode as described in RFC 1421.
@@ -126,6 +147,53 @@ public final class B64Code
                 output[outOffset++]=nibble2code[(b0>>>2)&0x3f];
                 output[outOffset++]=nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
                 output[outOffset++]=nibble2code[(b1<<2)&0x3f];
+                output[outOffset++]=pad;
+                break;
+
+            default:
+                throw new IllegalStateException("should not happen");
+        }
+    }
+    
+    // ------------------------------------------------------------------
+    /**
+     * Fast Base 64 encode as described in RFC 1421.
+     * <p>Does not insert whitespace as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     */
+    private static void cencode(final byte[] input, int inOffset, final int inLen, 
+            final char[] output, int outOffset)
+    {
+        byte b0, b1, b2;
+        final int remaining = inLen%3, stop = inOffset + (inLen-remaining);
+        while (inOffset < stop)
+        {
+            b0=input[inOffset++];
+            b1=input[inOffset++];
+            b2=input[inOffset++];
+            output[outOffset++]=(char)nibble2code[(b0>>>2)&0x3f];
+            output[outOffset++]=(char)nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+            output[outOffset++]=(char)nibble2code[(b1<<2)&0x3f|(b2>>>6)&0x03];
+            output[outOffset++]=(char)nibble2code[b2&077];
+        }
+        
+        switch(remaining)
+        {
+            case 0:
+                break;
+            case 1:
+                b0=input[inOffset++];
+                output[outOffset++]=(char)nibble2code[(b0>>>2)&0x3f];
+                output[outOffset++]=(char)nibble2code[(b0<<4)&0x3f];
+                output[outOffset++]=pad;
+                output[outOffset++]=pad;
+                break;
+            case 2:
+                b0=input[inOffset++];
+                b1=input[inOffset++];
+                output[outOffset++]=(char)nibble2code[(b0>>>2)&0x3f];
+                output[outOffset++]=(char)nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+                output[outOffset++]=(char)nibble2code[(b1<<2)&0x3f];
                 output[outOffset++]=pad;
                 break;
 
@@ -344,6 +412,14 @@ public final class B64Code
         return decode(b, 0, b.length);
     }
     
+    /**
+     * Fast Base 64 decode as described in RFC 1421.
+     */
+    public static byte[] cdecode(final char[] b)
+    {
+        return cdecode(b, 0, b.length);
+    }
+    
     /* ------------------------------------------------------------ */
     /**
      * Fast Base 64 decode as described in RFC 1421.
@@ -380,6 +456,40 @@ public final class B64Code
     }
     
     /**
+     * Fast Base 64 decode as described in RFC 1421.
+     * <p>Does not attempt to cope with extra whitespace
+     * as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     * <p> Note this code has been flattened for performance.
+     * @param input byte array to decode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return byte array containing the decoded form of the input.
+     * @throws IllegalArgumentException if the input is not a valid
+     *         B64 encoding.
+     */
+    public static byte[] cdecode(final char[] input, int inOffset, final int inLen)
+    {
+        if(inLen == 0)
+            return ByteString.EMPTY_BYTE_ARRAY;
+        
+        if (inLen%4!=0)
+            throw new IllegalArgumentException("Input block size is not 4");
+
+        int withoutPaddingLen = inLen, limit = inOffset + inLen;
+        while (input[--limit]==pad)
+            withoutPaddingLen--;
+
+        // Create result array of exact required size.
+        final int outLen=((withoutPaddingLen)*3)/4;
+        final byte[] output=new byte[outLen];
+
+        cdecode(input, inOffset, inLen, output, 0, outLen);
+
+        return output;
+    }
+    
+    /**
      * Returns the length of the decoded base64 input (written to the 
      * provided {@code output} byte array).
      * The {@code output} byte array must have enough capacity or it will fail.
@@ -407,6 +517,62 @@ public final class B64Code
     }
     
     private static void decode(final byte[] input, int inOffset, final int inLen, 
+            final byte[] output, int outOffset, final int outLen)
+    {
+        int stop=(outLen/3)*3;
+        byte b0,b1,b2,b3;
+        try
+        {
+            while (outOffset<stop)
+            {
+                b0=code2nibble[input[inOffset++]];
+                b1=code2nibble[input[inOffset++]];
+                b2=code2nibble[input[inOffset++]];
+                b3=code2nibble[input[inOffset++]];
+                if (b0<0 || b1<0 || b2<0 || b3<0)
+                    throw new IllegalArgumentException("Not B64 encoded");
+
+                output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                output[outOffset++]=(byte)(b1<<4|b2>>>2);
+                output[outOffset++]=(byte)(b2<<6|b3);
+            }
+
+            if (outLen!=outOffset)
+            {
+                switch (outLen%3)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        b0=code2nibble[input[inOffset++]];
+                        b1=code2nibble[input[inOffset++]];
+                        if (b0<0 || b1<0)
+                            throw new IllegalArgumentException("Not B64 encoded");
+                        output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                        break;
+                    case 2:
+                        b0=code2nibble[input[inOffset++]];
+                        b1=code2nibble[input[inOffset++]];
+                        b2=code2nibble[input[inOffset++]];
+                        if (b0<0 || b1<0 || b2<0)
+                            throw new IllegalArgumentException("Not B64 encoded");
+                        output[outOffset++]=(byte)(b0<<2|b1>>>4);
+                        output[outOffset++]=(byte)(b1<<4|b2>>>2);
+                        break;
+
+                    default:
+                        throw new IllegalStateException("should not happen");
+                }
+            }
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            throw new IllegalArgumentException("char "+inOffset
+                    +" was not B64 encoded");
+        }
+    }
+    
+    private static void cdecode(final char[] input, int inOffset, final int inLen, 
             final byte[] output, int outOffset, final int outLen)
     {
         int stop=(outLen/3)*3;

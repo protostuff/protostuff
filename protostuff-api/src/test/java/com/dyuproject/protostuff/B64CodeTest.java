@@ -18,9 +18,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
-
 import junit.framework.TestCase;
+
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for base 64 encoding.
@@ -121,6 +121,53 @@ public class B64CodeTest extends TestCase
         }
     }
 
+    public void testRoundtripFromString() throws Exception
+    {
+        for(String str : new String[]{
+                "abcdefghijklmnopqrstuvwxyz", 
+                "0123456789", 
+                "abcdefghijklmnopqrstuvwxyz0123456789"
+                })
+        {
+            verifyRoundTrip(str.getBytes("UTF-8"));
+        }
+    }
+    
+    public void testRoundtrip()
+    {
+        for(byte[] b : new byte[][]{
+                new byte[]{0,0,0,0}, 
+                new byte[]{0,0,0,0,1,1,1,1}, 
+                new byte[]{1,1,1,1,1,1,1,1}, 
+                new byte[]{0,1,2,3,4,5,6,7,8,9},
+                new byte[]{10,11,12,13,14,15,16,17,18,19}, 
+                new byte[]{20,21,22,23,24,25,26,27,28,29}, 
+                new byte[]{30,31,32,33,34,35,36,37,38,39}, 
+                new byte[]{40,41,42,43,44,45,46,47,48,49}, 
+                new byte[]{50,51,52,53,54,55,56,57,58,59}, 
+                new byte[]{60,61,62,63,64,65,66,67,68,69}, 
+                new byte[]{70,71,72,73,74,75,76,77,78,79}, 
+                new byte[]{80,81,82,83,84,85,86,87,88,89}, 
+                new byte[]{90,91,92,93,94,95,96,97,98,99}, 
+                new byte[]{100,101,102,103,104,105,106,107,108,109},
+                new byte[]{110,111,112,113,114,115,116,117,118,119}, 
+                new byte[]{120,121,122,123,124,125,126,127}
+                })
+        {
+            verifyRoundTrip(b);
+        }
+    }
+    
+    void verifyRoundTrip(final byte[] raw)
+    {
+        byte[] encoded = B64Code.encode(raw);
+        byte[] decoded = B64Code.decode(encoded);
+        assertTrue(Arrays.equals(raw, decoded));
+        
+        char[] cencoded = B64Code.cencode(raw);
+        verifyArrayContentEqual(cencoded, encoded);
+        assertTrue(Arrays.equals(raw, B64Code.cdecode(cencoded)));
+    }
     
     static String str(char c, int size)
     {
@@ -158,8 +205,14 @@ public class B64CodeTest extends TestCase
         
         LinkedBuffer.writeTo(out, tail);
         
+        verifyB64(str, prefix, out.toByteArray());
         
-        byte[] result = out.toByteArray();
+        //System.err.println(gg.length + " == " + decoded.length + " | " + 
+        //        str.equals(strd) + " | " + str + " == " + strd);
+    }
+
+    static void verifyB64(String str, String prefix, byte[] result)
+    {
         //System.err.println(new String(result, prefix.length(), result.length - prefix.length()));
         byte[] decoded = B64Code.decode(result, prefix.length(), result.length - prefix.length());
         
@@ -167,8 +220,22 @@ public class B64CodeTest extends TestCase
         
         assertEquals(str, strd);
         
-        //System.err.println(gg.length + " == " + decoded.length + " | " + 
-        //        str.equals(strd) + " | " + str + " == " + strd);
+        char[] cresult = toCharArray(result);
+        byte[] decoded2 = B64Code.cdecode(cresult, prefix.length(), cresult.length - prefix.length());
+        assertTrue(Arrays.equals(decoded, decoded2));
+        
+        char[] cencoded = B64Code.cencode(decoded);
+        byte[] encoded = B64Code.encode(decoded);
+        
+        assertTrue(cencoded.length == encoded.length);
+        
+        verifyArrayContentEqual(cencoded, encoded);
+    }
+    
+    static void verifyArrayContentEqual(char[] cencoded, byte[] encoded)
+    {
+        for(int i = 0, len = encoded.length; i < len; i++)
+            assertTrue(cencoded[i] == encoded[i]);
     }
     
     static void testBuffer(String str, LinkedBuffer tail) throws IOException
@@ -189,10 +256,14 @@ public class B64CodeTest extends TestCase
         tail = B64Code.encode(data, 0, data.length, session, tail);
         
         byte[] result = session.toByteArray();
-        //System.err.println(result.length - prefix.length());
-        //System.err.println(new String(result, prefix.length(), result.length - prefix.length()));
-        byte[] decoded = B64Code.decode(result, prefix.length(), result.length - prefix.length());
-        String strd = new String(decoded);
-        assertEquals(str, strd);
+        verifyB64(str, prefix, result);
+    }
+    
+    static char[] toCharArray(byte[] buf)
+    {
+        char[] c = new char[buf.length];
+        for(int i = 0; i < buf.length; i++)
+            c[i] = (char)buf[i];
+        return c;
     }
 }

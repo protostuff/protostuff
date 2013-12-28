@@ -14,6 +14,7 @@
 
 package com.dyuproject.protostuff;
 
+import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -23,8 +24,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
-
 /**
  * An input used for reading data with xml format.
  * 
@@ -33,6 +32,7 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  */
 public final class XmlInput implements Input
 {
+    private static final byte[] EMPTY = new byte[0];
 
     private final XMLStreamReader parser;
     private boolean emptyMessage = false;
@@ -59,6 +59,44 @@ public final class XmlInput implements Input
         try
         {
             return parser.nextTag();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlInputException(e);
+        }
+    }
+    
+    private byte[] getB64Decoded() throws IOException
+    {
+        try
+        {
+            for(int next = parser.next();; next = parser.next())
+            {
+                switch(next)
+                {
+                    case CHARACTERS:
+                        byte[] decoded = B64Code.cdecode(parser.getTextCharacters(), 
+                                parser.getTextStart(), parser.getTextLength());
+                                
+                        while(END_ELEMENT != parser.next());
+                        
+                        // move to next element
+                        parser.nextTag();
+                        
+                        return decoded;
+                        
+                    case END_ELEMENT:
+                        // empty bytestring
+                        
+                        // move to next element
+                        parser.nextTag();
+                        
+                        return EMPTY;
+
+                    default:
+                        continue;
+                }
+            }
         }
         catch (XMLStreamException e)
         {
@@ -233,7 +271,7 @@ public final class XmlInput implements Input
 
     public byte[] readByteArray() throws IOException
     {
-        return STRING.ser(getText());
+        return getB64Decoded();
     }
     
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException

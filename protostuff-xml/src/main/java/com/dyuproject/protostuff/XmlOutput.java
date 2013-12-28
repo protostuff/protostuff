@@ -73,6 +73,24 @@ public final class XmlOutput implements Output, StatefulOutput
         }
     }
     
+    private static void writeB64Encoded(final XMLStreamWriter writer, final String name, 
+            final char[] value) throws IOException
+    {
+        try
+        {
+            writer.writeStartElement(name);
+            
+            if(value != null)
+                writer.writeCharacters(value, 0, value.length);
+            
+            writer.writeEndElement();
+        }
+        catch (XMLStreamException e)
+        {
+            throw new XmlOutputException(e);
+        }
+    }
+    
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
@@ -155,17 +173,8 @@ public final class XmlOutput implements Output, StatefulOutput
     
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
-        final XMLStreamWriter writer = this.writer;
-        try
-        {
-            writer.writeStartElement(schema.getFieldName(fieldNumber));
-            writer.writeCData(STRING.deser(value));
-            writer.writeEndElement();
-        }
-        catch (XMLStreamException e)
-        {
-            throw new XmlOutputException(e);
-        }
+        writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
+                value.length == 0 ? null : B64Code.cencode(value));
     }
     
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
@@ -174,19 +183,11 @@ public final class XmlOutput implements Output, StatefulOutput
         if(utf8String)
         {
             writeString(fieldNumber, STRING.deser(value, offset, length), repeated);
-            return;
         }
-
-        final XMLStreamWriter writer = this.writer;
-        try
+        else
         {
-            writer.writeStartElement(schema.getFieldName(fieldNumber));
-            writer.writeCData(STRING.deser(value, offset, length));
-            writer.writeEndElement();
-        }
-        catch (XMLStreamException e)
-        {
-            throw new XmlOutputException(e);
+            writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
+                    length == 0 ? null : B64Code.cencode(value, offset, length));
         }
     }
     

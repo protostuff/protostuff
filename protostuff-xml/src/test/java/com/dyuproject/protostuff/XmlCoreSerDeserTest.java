@@ -61,6 +61,19 @@ public class XmlCoreSerDeserTest extends TestCase
         }
     }
     
+    public void testBarWithEmptyStringAndByteString() throws Exception
+    {
+        Bar barCompare = new Bar();
+        bar.setSomeBytes(ByteString.copyFromUtf8(new String("")));
+        bar.setSomeString(new String(""));
+        
+        Bar dbar = new Bar();            
+        
+        byte[] data = XmlIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
+        XmlIOUtil.mergeFrom(data, dbar, dbar.cachedSchema());
+        SerializableObjects.assertEquals(barCompare, dbar);
+    }
+    
     public void testBaz() throws Exception
     {
         for(Baz bazCompare : new Baz[]{baz, negativeBaz})
