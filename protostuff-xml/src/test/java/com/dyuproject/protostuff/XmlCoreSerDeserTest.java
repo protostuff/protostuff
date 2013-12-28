@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -64,14 +65,18 @@ public class XmlCoreSerDeserTest extends TestCase
     public void testBarWithEmptyStringAndByteString() throws Exception
     {
         Bar barCompare = new Bar();
-        bar.setSomeBytes(ByteString.copyFromUtf8(new String("")));
-        bar.setSomeString(new String(""));
+        barCompare.setSomeBytes(ByteString.copyFromUtf8(new String("")));
+        barCompare.setSomeString(new String(""));
         
         Bar dbar = new Bar();            
         
         byte[] data = XmlIOUtil.toByteArray(barCompare, barCompare.cachedSchema());
         XmlIOUtil.mergeFrom(data, dbar, dbar.cachedSchema());
         SerializableObjects.assertEquals(barCompare, dbar);
+        
+        // test equal serialization on both xml outputs
+        assertTrue(Arrays.equals(data, XmlXIOUtil.toByteArray(barCompare, 
+                barCompare.cachedSchema(), LinkedBuffer.allocate(256))));
     }
     
     public void testBaz() throws Exception
