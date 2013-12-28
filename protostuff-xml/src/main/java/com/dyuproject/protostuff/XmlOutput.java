@@ -30,6 +30,8 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 public final class XmlOutput implements Output, StatefulOutput
 {
     
+    static final char[] EMPTY = new char[0];
+    
     private final XMLStreamWriter writer;
     private Schema<?> schema;
     
@@ -79,10 +81,7 @@ public final class XmlOutput implements Output, StatefulOutput
         try
         {
             writer.writeStartElement(name);
-            
-            if(value != null)
-                writer.writeCharacters(value, 0, value.length);
-            
+            writer.writeCharacters(value, 0, value.length);
             writer.writeEndElement();
         }
         catch (XMLStreamException e)
@@ -174,7 +173,7 @@ public final class XmlOutput implements Output, StatefulOutput
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
         writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
-                value.length == 0 ? null : B64Code.cencode(value));
+                value.length == 0 ? EMPTY : B64Code.cencode(value));
     }
     
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
@@ -187,7 +186,7 @@ public final class XmlOutput implements Output, StatefulOutput
         else
         {
             writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
-                    length == 0 ? null : B64Code.cencode(value, offset, length));
+                    length == 0 ? EMPTY : B64Code.cencode(value, offset, length));
         }
     }
     
