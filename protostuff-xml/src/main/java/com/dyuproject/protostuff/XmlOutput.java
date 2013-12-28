@@ -201,9 +201,7 @@ public final class XmlOutput implements Output, StatefulOutput
         {
             writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
             
-            writer.writeStartElement(schema.messageName());
             schema.writeTo(this, value);
-            writer.writeEndElement();
             
             writer.writeEndElement();
         }

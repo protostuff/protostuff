@@ -66,19 +66,6 @@ public final class XmlInput implements Input
         }
     }
     
-    private void endAndNextTag() throws IOException
-    {
-        try
-        {
-            parser.nextTag();
-            parser.nextTag();
-        }
-        catch (XMLStreamException e)
-        {
-            throw new XmlInputException(e);
-        }
-    }
-    
     private String getText() throws IOException
     {
         try
@@ -251,43 +238,19 @@ public final class XmlInput implements Input
     
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
-        //final String simpleName = schema.messageName();
-        if(nextTag() != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
-            throw new XmlInputException("Expecting token END_ELEMENT: " + schema.messageName());
-        
-        if(nextTag() == END_ELEMENT)
-        {
-            // empty message
-            emptyMessage = true;
-            
-            //if(!simpleName.equals(parser.getLocalName()))
-            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
-            
-            if(value == null)
-                value = schema.newMessage();
-            
-            schema.mergeFrom(this, value);
-            
-            if(!schema.isInitialized(value))
-                throw new UninitializedMessageException(value, schema);
-            
-            // move to end element (field) then onto the next
-            endAndNextTag();
-            return value;
-        }
+        emptyMessage = nextTag() == END_ELEMENT;
         
         if(value == null)
             value = schema.newMessage();
+        
         schema.mergeFrom(this, value);
         
         if(!schema.isInitialized(value))
             throw new UninitializedMessageException(value, schema);
         
-        //if(!simpleName.equals(parser.getLocalName()))
-        //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+        // onto the next
+        nextTag();
         
-        // move to end element (field) then onto the next
-        endAndNextTag();
         return value;
     }
 
