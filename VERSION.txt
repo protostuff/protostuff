@@ -1,6 +1,11 @@
 protostuff-1.1.0-SNAPSHOT
++ NOTE: The 1.1.x versions will be not be wire-compatible with the ff:
+  - protostuff-runtime-1.0.x
+  - protostuff-xml-1.0.x
 + Issue 151: optimize xml format
 + Issue 119: Reflection-based array operations are rather expensive
+
+===================================================================
 
 protostuff-1.0.8 2013-12-10
 + Issue 140: Multiple runtime schema contexts (IdStrategy groups)
