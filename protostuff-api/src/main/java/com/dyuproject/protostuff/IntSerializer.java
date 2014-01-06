@@ -26,6 +26,24 @@ public final class IntSerializer
     private IntSerializer() {}
     
     /**
+     * Writes the 16-bit int into the buffer starting with the most significant byte.
+     */
+    public static void writeInt16(final int value, final byte[] buffer, int offset)
+    {
+        buffer[offset++] = (byte)((value >>>  8) & 0xFF);
+        buffer[offset] = (byte)value;
+    }
+    
+    /**
+     * Writes the 16-bit int into the buffer starting with the least significant byte.
+     */
+    public static void writeInt16LE(final int value, final byte[] buffer, int offset)
+    {
+        buffer[offset++] = (byte)value;
+        buffer[offset] = (byte)((value >>>  8) & 0xFF);
+    }
+    
+    /**
      * Writes the 32-bit int into the buffer starting with the most significant byte.
      */
     public static void writeInt32(final int value, final byte[] buffer, int offset)

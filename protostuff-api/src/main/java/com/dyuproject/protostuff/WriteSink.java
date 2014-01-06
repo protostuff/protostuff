@@ -108,6 +108,40 @@ public enum WriteSink
             return lb;
         }
         
+        public LinkedBuffer writeInt16(final int value, 
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            session.size += 2;
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                // grow
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+            
+            IntSerializer.writeInt16(value, lb.buffer, lb.offset);
+            lb.offset += 2;
+            
+            return lb;
+        }
+        
+        public LinkedBuffer writeInt16LE(final int value, 
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            session.size += 2;
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                // grow
+                lb = new LinkedBuffer(session.nextBufferSize, lb);
+            }
+            
+            IntSerializer.writeInt16LE(value, lb.buffer, lb.offset);
+            lb.offset += 2;
+            
+            return lb;
+        }
+        
         public LinkedBuffer writeInt32(final int value, 
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -335,6 +369,42 @@ public enum WriteSink
             return lb;
         }
         
+        public LinkedBuffer writeInt16(final int value, 
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            session.size += 2;
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                // flush and reset
+                session.out.write(lb.buffer, lb.start, lb.offset-lb.start);
+                lb.offset = lb.start;
+            }
+            
+            IntSerializer.writeInt16(value, lb.buffer, lb.offset);
+            lb.offset += 2;
+            
+            return lb;
+        }
+        
+        public LinkedBuffer writeInt16LE(final int value, 
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            session.size += 2;
+            
+            if(lb.offset + 2 > lb.buffer.length)
+            {
+                // flush and reset
+                session.out.write(lb.buffer, lb.start, lb.offset-lb.start);
+                lb.offset = lb.start;
+            }
+            
+            IntSerializer.writeInt16LE(value, lb.buffer, lb.offset);
+            lb.offset += 2;
+            
+            return lb;
+        }
+        
         public LinkedBuffer writeInt32(final int value, 
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -553,6 +623,12 @@ public enum WriteSink
     {
         return writeInt64(Double.doubleToRawLongBits(value), session, lb);
     }
+    
+    public abstract LinkedBuffer writeInt16(final int value, 
+            final WriteSession session, final LinkedBuffer lb) throws IOException;
+    
+    public abstract LinkedBuffer writeInt16LE(final int value, 
+            final WriteSession session, final LinkedBuffer lb) throws IOException;
     
     public abstract LinkedBuffer writeInt32LE(final int value, 
             final WriteSession session, final LinkedBuffer lb) throws IOException;
