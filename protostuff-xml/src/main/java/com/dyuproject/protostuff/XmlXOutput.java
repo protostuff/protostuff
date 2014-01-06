@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Optimized xml output. 
+ * Optimized xml output.  
+ * The string values are not escaped (its assumed are no xml control chars or 
+ * that they've been validated and xml-escaped on input).
  * 
  * @author David Yu
  * @created Aug 30, 2012
