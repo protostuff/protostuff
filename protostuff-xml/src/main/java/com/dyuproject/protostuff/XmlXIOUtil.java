@@ -136,41 +136,5 @@ public final class XmlXIOUtil
         
         return output.size;
     }
-    
-    /**
-     * Serializes the {@code message}, prefixed with its length, into an 
-     * {@link OutputStream}.
-     * 
-     * @return the size of the message
-     */
-    public static <T> int writeDelimitedTo(final OutputStream out, final T message, 
-            final Schema<T> schema, final LinkedBuffer buffer) throws IOException
-    {
-        if(buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
-        final XmlXOutput output = new XmlXOutput(buffer, schema);
-        
-        final String name = schema.messageName();
-        
-        // header and start root element
-        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                output.sink.writeStrAscii(name, output, 
-                        output.sink.writeByte(XmlXOutput.START_TAG, output, 
-                                output.sink.writeByteArray(HEADER, output, output.tail))));
-        
-        schema.writeTo(output, message);
-        
-        // end root element
-        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                output.sink.writeStrAscii(name, output, 
-                        output.sink.writeByteArray(XmlXOutput.START_SLASH_TAG, output, output.tail)));
-        
-        ProtobufOutput.writeRawVarInt32Bytes(out, output.size);
-        
-        LinkedBuffer.writeTo(out, buffer);
-        
-        return output.size;
-    }
 
 }
