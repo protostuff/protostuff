@@ -202,7 +202,7 @@ public final class B64Code
         }
     }
     
-    private static int encodeExplicit(final byte[] input, int inOffset, final int inLen, 
+    /*private static int encodeExplicit(final byte[] input, int inOffset, final int inLen, 
             final byte[] output, int outOffset, int loops)
     {
         for (byte b0, b1, b2; loops-->0;)
@@ -217,7 +217,7 @@ public final class B64Code
         }
         
         return inOffset;
-    }
+    }*/
     
     /**
      * Encodes the byte array into the {@link LinkedBuffer} and grows when full.
@@ -298,104 +298,72 @@ public final class B64Code
      * Encodes the byte array into the {@link LinkedBuffer} and flushes 
      * to the {@link OutputStream} when buffer is full.
      */
-    public static LinkedBuffer encode(final byte[] input, int inOffset, int inLen,
-            final WriteSession session, final OutputStream out, 
+    public static LinkedBuffer sencode(final byte[] input, int inOffset, int inLen,
+            final WriteSession session, 
             final LinkedBuffer lb) throws IOException
     {
         int outputSize = ((inLen+2)/3)*4;
         session.size += outputSize;
         
-        final int available = lb.buffer.length - lb.offset;
+        int available = lb.buffer.length - lb.offset;
         if(outputSize > available)
         {
-            final int bufSize = lb.buffer.length - lb.start;
-            if(outputSize > bufSize)
+            final byte[] buffer = lb.buffer;
+            int offset = lb.offset, remaining = inLen%3, chunks = available/4;
+            byte b0, b1, b2;
+            
+            for(int stop = inOffset + (inLen-remaining); inOffset < stop; chunks--)
             {
-                // still larger than buffer size.
-                int chunks = available/4;
                 if(chunks == 0)
                 {
                     // available size is less than 4
                     // flush and reset
-                    out.write(lb.buffer, lb.start, lb.offset-lb.start);
-                    lb.offset = lb.start;
-                    
-                    final int loops = bufSize/4, inProcessLen = loops*3, outProcessLen = loops*4;
-                    do
-                    {
-                        inOffset = encodeExplicit(input, inOffset, 0, lb.buffer, 
-                                lb.offset, loops);
-                        
-                        out.write(lb.buffer, lb.offset, outProcessLen);
-                        inLen -= inProcessLen;
-                        outputSize -= outProcessLen;
-                    }
-                    while(inLen > inProcessLen);
-                    
-                    // write remaining
-                    encode(input, inOffset, inLen, lb.buffer, lb.offset);
-                    lb.offset += outputSize;
-                    
-                    return lb;
+                    offset = session.flush(buffer, lb.start, offset-lb.start);
+                    //available = buffer.length - offset;
+                    chunks = (buffer.length - offset)/4;
                 }
                 
-                int inBefore = inOffset;
-                byte[] buffer = lb.buffer;
-                int offset = lb.offset;
-                byte b0, b1, b2;
-                
-                // process available
-                while(chunks-->0)
-                {
-                    b0=input[inOffset++];
-                    b1=input[inOffset++];
-                    b2=input[inOffset++];
-                    buffer[offset++]=nibble2code[(b0>>>2)&0x3f];
-                    buffer[offset++]=nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
-                    buffer[offset++]=nibble2code[(b1<<2)&0x3f|(b2>>>6)&0x03];
-                    buffer[offset++]=nibble2code[b2&077];
-                }
-                
-                inLen -= (inOffset - inBefore);
-                
-                outputSize -= (offset - lb.offset);
-                
-                // flush available
-                out.write(buffer, lb.start, offset-lb.start);
-                // reset
-                lb.offset = lb.start;
-                
-                if(outputSize > bufSize)
-                {
-                    // still larger than buffer size.
-                    final int loops = bufSize/4, inProcessLen = loops*3, outProcessLen = loops*4;
-                    do
-                    {
-                        inOffset = encodeExplicit(input, inOffset, 0, lb.buffer, 
-                                lb.offset, loops);
-                        
-                        out.write(lb.buffer, lb.offset, outProcessLen);
-                        inLen -= inProcessLen;
-                        outputSize -= outProcessLen;
-                    }
-                    while(inLen > inProcessLen);
-                    
-                    // write remaining
-                    encode(input, inOffset, inLen, lb.buffer, lb.offset);
-                    lb.offset += outputSize;
-                    
-                    return lb;
-                }
-                
-                encode(input, inOffset, inLen, lb.buffer, lb.offset);
-                lb.offset += outputSize;
-
-                return lb;
+                b0=input[inOffset++];
+                b1=input[inOffset++];
+                b2=input[inOffset++];
+                buffer[offset++]=nibble2code[(b0>>>2)&0x3f];
+                buffer[offset++]=nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+                buffer[offset++]=nibble2code[(b1<<2)&0x3f|(b2>>>6)&0x03];
+                buffer[offset++]=nibble2code[b2&077];
             }
             
-            // flush and reset
-            out.write(lb.buffer, lb.start, lb.offset-lb.start);
-            lb.offset = lb.start;
+            switch(remaining)
+            {
+                case 0:
+                    break;
+                case 1:
+                    if(chunks == 0)
+                        offset = session.flush(buffer, lb.start, offset-lb.start);
+                    
+                    b0=input[inOffset++];
+                    buffer[offset++]=nibble2code[(b0>>>2)&0x3f];
+                    buffer[offset++]=nibble2code[(b0<<4)&0x3f];
+                    buffer[offset++]=pad;
+                    buffer[offset++]=pad;
+                    break;
+                case 2:
+                    if(chunks == 0)
+                        offset = session.flush(buffer, lb.start, offset-lb.start);
+                    
+                    b0=input[inOffset++];
+                    b1=input[inOffset++];
+                    buffer[offset++]=nibble2code[(b0>>>2)&0x3f];
+                    buffer[offset++]=nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+                    buffer[offset++]=nibble2code[(b1<<2)&0x3f];
+                    buffer[offset++]=pad;
+                    break;
+
+                default:
+                    throw new IllegalStateException("should not happen");
+            }
+            
+            lb.offset = offset;
+            return lb;
         }
         
         encode(input, inOffset, inLen, lb.buffer, lb.offset);

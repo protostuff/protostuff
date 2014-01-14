@@ -193,19 +193,30 @@ public class B64CodeTest extends TestCase
     
     static void testStream(String str, String prefix, LinkedBuffer tail) throws IOException
     {
+        byte[] copy = new byte[tail.offset - tail.start];
+        System.arraycopy(tail.buffer, tail.start, copy, 0, tail.offset - tail.start);
+        
         byte[] data = str.getBytes();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         WriteSession session = new WriteSession(tail, out);
         session.size += (tail.offset - tail.start);
         
-        tail = B64Code.encode(data, 0, data.length, session, out, tail);
+        tail = B64Code.sencode(data, 0, data.length, session, tail);
         
         assertTrue(tail == session.head);
         
         LinkedBuffer.writeTo(out, tail);
         
-        verifyB64(str, prefix, out.toByteArray());
+        byte[] dataFromStream = out.toByteArray();
+        verifyB64(str, prefix, dataFromStream);
+        
+        WriteSession bws = new WriteSession(new LinkedBuffer(copy, 0));
+        bws.tail.offset += copy.length;
+        bws.size += copy.length;
+        bws.tail = B64Code.encode(data, 0, data.length, bws, bws.tail);
+        
+        assertTrue(Arrays.equals(dataFromStream, bws.toByteArray()));
         
         //System.err.println(gg.length + " == " + decoded.length + " | " + 
         //        str.equals(strd) + " | " + str + " == " + strd);
