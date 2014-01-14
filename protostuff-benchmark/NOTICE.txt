@@ -1,3 +1,0 @@
-Parts of the benchmark code are from http://code.google.com/p/thrift-protobuf-compare/
-It is licensed under eclipse public license 1.0
-
