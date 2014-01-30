@@ -128,8 +128,8 @@ public final class JsonXIOUtil
     /**
      * Serializes the {@code messages} into the {@link LinkedBuffer} using the given schema.
      */
-    public static <T> void writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema, 
-            boolean numeric) throws IOException
+    public static <T> void writeListTo(LinkedBuffer buffer, 
+            List<T> messages, Schema<T> schema, boolean numeric)
     {
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
@@ -143,27 +143,35 @@ public final class JsonXIOUtil
         
         final JsonXOutput output = new JsonXOutput(buffer, numeric, schema);
         
-        output.writeStartArray();
-        
-        boolean first = true;
-        for(T m : messages)
+        try
         {
-            if(first)
+            output.writeStartArray();
+            
+            boolean first = true;
+            for(T m : messages)
             {
-                first = false;
-                output.writeStartObject();
+                if(first)
+                {
+                    first = false;
+                    output.writeStartObject();
+                }
+                else
+                    output.writeCommaAndStartObject();
+                
+                schema.writeTo(output, m);
+                if(output.isLastRepeated())
+                    output.writeEndArray();
+                
+                output.writeEndObject().reset();
             }
-            else
-                output.writeCommaAndStartObject();
             
-            schema.writeTo(output, m);
-            if(output.isLastRepeated())
-                output.writeEndArray();
-            
-            output.writeEndObject().clear(false);
+            output.writeEndArray();
         }
-        
-        output.writeEndArray();
+        catch(IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+                    "(should never happen).", e);
+        }
     }
     
     /**
@@ -202,7 +210,7 @@ public final class JsonXIOUtil
             if(output.isLastRepeated())
                 output.writeEndArray();
             
-            output.writeEndObject().clear(false);
+            output.writeEndObject().reset();
         }
         
         output.writeEndArray();

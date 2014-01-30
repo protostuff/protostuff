@@ -46,6 +46,12 @@ public final class ProtostuffOutput extends WriteSession implements Output
         super(buffer, out);
     }
     
+    public ProtostuffOutput(LinkedBuffer buffer, OutputStream out, 
+            FlushHandler flushHandler, int nextBufferSize)
+    {
+        super(buffer, out, flushHandler, nextBufferSize);
+    }
+    
     /**
      * Resets this output for re-use.
      */

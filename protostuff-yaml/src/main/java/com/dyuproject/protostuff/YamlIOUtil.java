@@ -138,29 +138,29 @@ public final class YamlIOUtil
      * @return the total bytes written to the output.
      */
     public static <T> int writeListTo(LinkedBuffer buffer, List<T> messages, 
-            Schema<T> schema) throws IOException
+            Schema<T> schema)
     {
         if(buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
         
         final YamlOutput output = new YamlOutput(buffer, schema);
         
-        output.tail = YamlOutput.writeTag(
-                schema.messageName(), 
-                true, 
-                output.sink, 
-                output, 
-                output.sink.writeByteArray(
-                        START_DIRECTIVE, 
-                        output, 
-                        buffer));
-        
         try
         {
+            output.tail = YamlOutput.writeTag(
+                    schema.messageName(), 
+                    true, 
+                    output.sink, 
+                    output, 
+                    output.sink.writeByteArray(
+                            START_DIRECTIVE, 
+                            output, 
+                            buffer));
+            
             for(T m : messages)
             {
                 schema.writeTo(output.writeSequenceDelim(), m);
-                output.clear(false, false);
+                output.reset();
             }
         }
         catch(IOException e)
@@ -199,9 +199,10 @@ public final class YamlIOUtil
         for(T m : messages)
         {
             schema.writeTo(output.writeSequenceDelim(), m);
-            LinkedBuffer.writeTo(out, buffer);
-            output.clear(true, false);
+            output.reset();
         }
+        
+        LinkedBuffer.writeTo(out, buffer);
         
         return output.getSize();
     }

@@ -28,6 +28,20 @@ import java.io.OutputStream;
 public class WriteSession
 {
     
+    public interface FlushHandler
+    {
+        int flush(WriteSession session, 
+                byte[] buf, int offset, int len) throws IOException;
+        
+        int flush(WriteSession session, 
+                byte[] buf, int offset, int len, 
+                byte[] next, int nextoffset, int nextlen) throws IOException;
+        
+        int flush(WriteSession session, 
+                LinkedBuffer lb, 
+                byte[] buf, int offset, int len) throws IOException;
+    }
+    
     /**
      * The main/root/head buffer of this write session.
      */
@@ -53,6 +67,9 @@ public class WriteSession
      */
     public final OutputStream out;
     
+    
+    public final FlushHandler flushHandler;
+    
     /**
      * The sink of this write session.
      */
@@ -68,16 +85,21 @@ public class WriteSession
         tail = head;
         this.head = head;
         this.nextBufferSize = nextBufferSize;
-        this.out = null;
+        out = null;
+        flushHandler = null;
+        
         sink = WriteSink.BUFFERED;
     }
     
-    public WriteSession(LinkedBuffer head, OutputStream out, int nextBufferSize)
+    public WriteSession(LinkedBuffer head, OutputStream out, FlushHandler flushHandler, 
+            int nextBufferSize)
     {
         tail = head;
         this.head = head;
         this.nextBufferSize = nextBufferSize;
         this.out = out;
+        this.flushHandler = flushHandler;
+        
         sink = WriteSink.STREAMED;
         
         assert out != null;
@@ -85,7 +107,16 @@ public class WriteSession
     
     public WriteSession(LinkedBuffer head, OutputStream out)
     {
-        this(head, out, LinkedBuffer.DEFAULT_BUFFER_SIZE);
+        this(head, out, null, LinkedBuffer.DEFAULT_BUFFER_SIZE);
+    }
+    
+    /**
+     * Resets this session for re-use.
+     * Meant to be overridden by subclasses that have other state to reset.
+     */
+    public void reset()
+    {
+        
     }
     
     /**
@@ -130,6 +161,9 @@ public class WriteSession
     
     protected int flush(byte[] buf, int offset, int len) throws IOException
     {
+        if(flushHandler != null)
+            return flushHandler.flush(this, buf, offset, len);
+        
         out.write(buf, offset, len);
         return offset;
     }
@@ -137,6 +171,9 @@ public class WriteSession
     protected int flush(byte[] buf, int offset, int len, 
             byte[] next, int nextoffset, int nextlen) throws IOException
     {
+        if(flushHandler != null)
+            return flushHandler.flush(this, buf, offset, len, next, nextoffset, nextlen);
+        
         out.write(buf, offset, len);
         out.write(next, nextoffset, nextlen);
         return offset;
@@ -145,6 +182,9 @@ public class WriteSession
     protected int flush(LinkedBuffer lb, 
             byte[] buf, int offset, int len) throws IOException
     {
+        if(flushHandler != null)
+            return flushHandler.flush(this, lb, buf, offset, len);
+        
         out.write(buf, offset, len);
         return lb.start;
     }

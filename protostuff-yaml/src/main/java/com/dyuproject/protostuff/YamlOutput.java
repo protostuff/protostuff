@@ -71,6 +71,14 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
         this.schema = schema;
     }
     
+    public YamlOutput(LinkedBuffer buffer, OutputStream out, 
+            FlushHandler flushHandler, int nextBufferSize, 
+            Schema<?> schema)
+    {
+        super(buffer, out, flushHandler, nextBufferSize);
+        this.schema = schema;
+    }
+    
     public YamlOutput(LinkedBuffer buffer, OutputStream out, Schema<?> schema)
     {
         super(buffer, out);
@@ -80,15 +88,25 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
     /**
      * Resets this output for re-use.
      */
-    public YamlOutput clear(boolean clearBuffer, boolean clearSize)
+    public void reset()
     {
-        if(clearBuffer)
-            tail = head.clear();
-        if(clearSize)
-            size = 0;
-        
         indent = 0;
         lastNumber = 0;
+    }
+    
+    public YamlOutput clear()
+    {
+        super.clear();
+        
+        return this;
+    }
+    
+    /**
+     * Before serializing a message/object tied to a schema, this should be called.
+     */
+    public YamlOutput use(Schema<?> schema)
+    {
+        this.schema = schema;
         
         return this;
     }
@@ -99,15 +117,6 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
         {
             this.schema = schema;
         }
-    }
-    
-    /**
-     * Before serializing a message/object tied to a schema, this should be called.
-     */
-    public YamlOutput use(Schema<?> schema, boolean clearBuffer, boolean clearSize)
-    {
-        this.schema = schema;
-        return clear(clearBuffer, clearSize);
     }
     
     YamlOutput writeSequenceDelim() throws IOException

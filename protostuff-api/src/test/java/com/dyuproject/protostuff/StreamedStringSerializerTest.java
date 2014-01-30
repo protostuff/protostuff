@@ -89,7 +89,7 @@ public class StreamedStringSerializerTest extends TestCase
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int bufferSize = BUF_SIZE;
         final LinkedBuffer lb = new LinkedBuffer(bufferSize);
-        WriteSession session = new WriteSession(lb, out, bufferSize);
+        WriteSession session = new WriteSession(lb, out, null, bufferSize);
 
         // Should fill up the buffer with initialGap byte(s) left
         StreamedStringSerializer.writeUTF8(repeatChar('a', bufferSize-initialGap), session, lb);

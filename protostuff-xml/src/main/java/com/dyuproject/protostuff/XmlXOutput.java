@@ -42,21 +42,34 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
         this.schema = schema;
     }
     
+    public XmlXOutput(LinkedBuffer head, OutputStream out, 
+            FlushHandler flushHandler, int nextBufferSize, 
+            Schema<?> schema)
+    {
+        super(head, out, flushHandler, nextBufferSize);
+        this.schema = schema;
+    }
+    
     public XmlXOutput(LinkedBuffer head, OutputStream out, Schema<?> schema)
     {
         super(head, out);
         this.schema = schema;
     }
     
-    public XmlXOutput use(Schema<?> schema)
-    {
-        this.schema = schema;
-        return this;
-    }
-    
     public XmlXOutput clear()
     {
         super.clear();
+        
+        return this;
+    }
+    
+    /**
+     * Before serializing a message/object tied to a schema, this should be called.
+     */
+    public XmlXOutput use(Schema<?> schema)
+    {
+        this.schema = schema;
+        
         return this;
     }
     

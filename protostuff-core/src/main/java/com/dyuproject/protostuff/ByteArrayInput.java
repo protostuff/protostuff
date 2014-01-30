@@ -76,6 +76,17 @@ public final class ByteArrayInput implements Input
     }
     
     /**
+     * Sets the offset and limit (which effectively re-uses this input).
+     */
+    public ByteArrayInput setBounds(int offset, int limit)
+    {
+        this.offset = offset;
+        this.limit = limit;
+        
+        return this;
+    }
+    
+    /**
      * Returns the current offset (the position). 
      */
     public int currentOffset()

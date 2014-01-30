@@ -94,6 +94,15 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         this.schema = schema;
     }
     
+    public JsonXOutput(LinkedBuffer head, OutputStream out, 
+            FlushHandler flushHandler, int nextBufferSize, 
+            boolean numeric, Schema<?> schema)
+    {
+        super(head, out, flushHandler, nextBufferSize);
+        this.numeric = numeric;
+        this.schema = schema;
+    }
+    
     public JsonXOutput(LinkedBuffer head, OutputStream out, boolean numeric, 
             Schema<?> schema)
     {
@@ -105,13 +114,15 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     /**
      * Resets this output for re-use.
      */
-    public JsonXOutput clear(boolean clearBuffer)
+    public void reset()
     {
-        if(clearBuffer)
-            tail = head.clear();
-        
         lastRepeated = false;
         lastNumber = 0;
+    }
+    
+    public JsonXOutput clear()
+    {
+        super.clear();
         
         return this;
     }
@@ -119,11 +130,11 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     /**
      * Before serializing a message/object tied to a schema, this should be called.
      */
-    public JsonXOutput use(Schema<?> schema, boolean clearBuffer)
+    public JsonXOutput use(Schema<?> schema)
     {
         this.schema = schema;
         
-        return clear(clearBuffer);
+        return this;
     }
     
     /**
