@@ -536,7 +536,10 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
         else
             indent = inc(lastIndent, 2);
 
+        // reset (indention kept though)
         this.schema = schema;
+        lastNumber = 0;
+        
         schema.writeTo(this, value);
         
         // restore state
