@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff;
 
+import java.nio.ByteBuffer;
+
 /**
  * Int32/Int64 serialization
  *
@@ -43,6 +45,11 @@ public final class IntSerializer
         buffer[offset] = (byte)((value >>>  8) & 0xFF);
     }
     
+    public static void writeInt16LE(final int value, ByteBuffer buffer) {
+        buffer.put((byte)value);
+        buffer.put((byte)((value >>>  8) & 0xFF));
+    }
+
     /**
      * Writes the 32-bit int into the buffer starting with the most significant byte.
      */
@@ -65,6 +72,13 @@ public final class IntSerializer
         buffer[offset] = (byte)((value >>> 24) & 0xFF);
     }
     
+    public static void writeInt32LE(final int value, ByteBuffer buffer) {
+        buffer.put((byte)((value >>>  0) & 0xFF));
+        buffer.put((byte)((value >>>  8) & 0xFF));
+        buffer.put((byte)((value >>> 16) & 0xFF));
+        buffer.put((byte)((value >>> 24) & 0xFF));
+    }
+
     /**
      * Writes the 64-bit int into the buffer starting with the most significant byte.
      */
@@ -93,6 +107,17 @@ public final class IntSerializer
         buffer[offset++] = (byte)(value >>> 40);
         buffer[offset++] = (byte)(value >>> 48);
         buffer[offset] = (byte)(value >>> 56);
+    }
+
+    public static void writeInt64LE(final long value, ByteBuffer buffer) {
+        buffer.put((byte)(value >>>  0));
+        buffer.put((byte)(value >>>  8));
+        buffer.put((byte)(value >>> 16));
+        buffer.put((byte)(value >>> 24));
+        buffer.put((byte)(value >>> 32));
+        buffer.put((byte)(value >>> 40));
+        buffer.put((byte)(value >>> 48));
+        buffer.put((byte)(value >>> 56));
     }
 
 }

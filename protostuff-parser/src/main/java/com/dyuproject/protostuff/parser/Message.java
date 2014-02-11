@@ -52,7 +52,9 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     // for root message only
     boolean bytesFieldPresent, repeatedFieldPresent, requiredFieldPresent;
     boolean bytesOrStringDefaultValuePresent;
-    
+    private boolean byteBufferFieldPresent;
+
+
     // for every message
     boolean annotationPresentOnFields;
     int requiredFieldCount, repeatedFieldCount, singularFieldCount;
@@ -391,6 +393,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     {
         return bytesFieldPresent;
     }
+
+    public boolean isByteBufferFieldPresent() { return byteBufferFieldPresent; }
     
     public boolean isBytesOrStringDefaultValuePresent()
     {
@@ -595,7 +599,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                     if(f.isRequired())
                         requiredBytesFieldCount++;
                 }
-                
+
+                if (f.hasOption("ByteBuffer")) {
+                    root.byteBufferFieldPresent = true;
+                }
+
                 if(!root.bytesFieldPresent)
                     root.bytesFieldPresent = true;
                 if(!root.bytesOrStringDefaultValuePresent && f.defaultValue != null)

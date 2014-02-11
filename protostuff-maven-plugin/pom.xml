@@ -23,7 +23,16 @@
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
-      <plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+            </configuration>
+        </plugin>
+
+        <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
@@ -51,6 +60,21 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <tagletArtifacts>
+              <tagletArtifact>
+                  <groupId>org.apache.maven.plugin-tools</groupId>
+                  <artifactId>maven-plugin-tools-javadoc</artifactId>
+                  <version>2.4</version>
+              </tagletArtifact>
+          </tagletArtifacts>
+
+        </configuration>
+
       </plugin>
     </plugins>
   </build>

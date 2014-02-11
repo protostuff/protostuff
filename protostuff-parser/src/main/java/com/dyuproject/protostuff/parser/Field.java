@@ -98,6 +98,11 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         return (V)extraOptions.get(key);
     }
     
+    public boolean hasOption(java.lang.String key)
+    {
+        return extraOptions.containsKey(key);
+    }
+
     public void putStandardOption(java.lang.String key, Object value)
     {
         putExtraOption(key, value);
@@ -407,7 +412,10 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         }
         public java.lang.String getJavaType()
         {
-            return "ByteString";
+            if (hasOption("ByteBuffer"))
+                return "ByteBuffer";
+            else
+                return "ByteString";
         }
         public java.lang.String getDefaultValueAsString()
         {

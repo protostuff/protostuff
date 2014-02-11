@@ -1,0 +1,69 @@
+group java_bean2 : java_bean;
+
+
+field_defaults_declaration(field, options) ::= <<
+<if(field.defaultValueSet)>
+<if(!field.enumField)>
+static final <field.javaType> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
+<endif>
+<endif>
+>>
+
+field_default_value(field, options) ::= <<
+<if(field.defaultValueConstant)>
+<field.defaultValueConstant>
+<else>
+<field.defaultValueAsString><map_primitive_number_suffix.(field.class.simpleName)>
+<endif>
+>>
+
+message_constructor(message, options) ::= <<
+
+public <message.name>() {
+}
+
+public <message.name>(
+   <message.fields:field_declare_constructor_singular(field=it, options=options); separator=",\n">
+) {
+   <message.fields:field_assign_constructor(field=it, options=options); separator="\n">
+}
+
+>>
+
+field_declare_constructor_singular(field, options) ::= <<
+<if(field.repeated)>
+List\<<map_primitive_wrapper.(field.javaType)>\><else>
+<field.javaType><endif> <var(val=field.name, fmt="CC", options=options)>
+>>
+
+field_assign_constructor(field, options) ::= <<
+this.<var(val=field.name, fmt="CC", options=options)> = <if(field.repeated)>java.util.Collections.unmodifiableList(<endif><var(val=field.name, fmt="CC", options=options)><if(field.repeated)>)<endif>;
+>>
+
+message_method_is_initialized(message, options) ::= <<
+public boolean isInitialized(<message.name> message)
+{
+    return true;
+}
+>>
+
+singular_field_write_switch(field, options, name) ::= <<
+<if(field.messageField)>
+<field:singular_field_write_check(field=it, options=options)>
+    output.writeObject(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, <field.javaType>.getSchema(), false);
+<elseif(field.enumField)>
+<field:singular_field_write_check(field=it, options=options)>
+    output.writeEnum(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>.number, false);
+<elseif(field.numberField)>
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<elseif(field.boolField)>
+output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<else>
+<field:singular_field_write_check(field=it, options=options)>
+    output.write<field.class.simpleName>(<field.number>, <name>.<var(val=field.name, fmt="CC", options=options)>, false);
+<endif>
+>>
+
+field_singular_type(field, options) ::= <<
+<field.javaType>
+>>

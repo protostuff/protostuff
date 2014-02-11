@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * An Input lets an application read primitive data types and objects from 
@@ -86,6 +87,11 @@ public interface Input
     
     /** Reads a byte array field value. */
     public byte[] readByteArray() throws IOException;
+
+    /** Reads a byte array/ByteBuffer value. */
+    default ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
     
     /**
      * Merges an object(with schema) field value.

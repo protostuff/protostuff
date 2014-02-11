@@ -6,6 +6,9 @@ message_header(message, module, options) ::= <<
 package <message.proto.javaPackageName>;
 
 import java.io.IOException;
+<if(message.byteBufferFieldPresent)>
+import java.nio.ByteBuffer;
+<endif>
 <if(message.repeatedFieldPresent)>
 import java.util.ArrayList;
 import java.util.List;
