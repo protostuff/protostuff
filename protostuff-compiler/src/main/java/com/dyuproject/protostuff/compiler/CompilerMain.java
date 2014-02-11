@@ -546,9 +546,37 @@ public final class CompilerMain
         }
     }
     
+    static Properties putIncludes(Properties props)
+    {
+        String includes = props.getProperty("includes");
+        if(includes == null)
+            return props;
+
+        for(String include : COMMA.split(includes))
+        {
+            final Properties p;
+            try
+            {
+                p = propsFrom(include.trim());
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+            for(Object key : p.keySet())
+            {
+                if(!props.containsKey(key))
+                    props.put(key, p.get(key));
+            }
+        }
+        
+        return props;
+    }
+    
     public static Properties newGlobalOptions(Properties props)
     {
-        return newOptions(props, "global_options");
+        return newOptions(putIncludes(props), "global_options");
     }
     
     /**
