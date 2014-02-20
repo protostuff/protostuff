@@ -17,59 +17,53 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A ProtostuffOutput w/c can handle cyclic dependencies when serializing 
+ * A ProtostuffOutput w/c can handle cyclic dependencies when serializing
  * objects with graph transformations.
  *
  * @author David Yu
  * @created Dec 10, 2010
  */
-public final class GraphProtostuffOutput extends FilterOutput
-{
-    
+public final class GraphProtostuffOutput extends FilterOutput {
+
     private final IdentityMap/*<Object,Integer>*/ references;
     private int refCount = 0;
-    
-    public GraphProtostuffOutput(ProtostuffOutput output)
-    {
+
+    public GraphProtostuffOutput(ProtostuffOutput output) {
         super(output);
         references = new IdentityMap/*<Object,Integer>*/();
     }
-    
-    public GraphProtostuffOutput(ProtostuffOutput output, int initialCapacity)
-    {
+
+    public GraphProtostuffOutput(ProtostuffOutput output, int initialCapacity) {
         super(output);
         references = new IdentityMap/*<Object,Integer>*/(initialCapacity);
     }
 
-    public void writeObject(int fieldNumber, Object value, Schema schema, 
-            boolean repeated) throws IOException
-    {
+    public void writeObject(int fieldNumber, Object value, Schema schema,
+                            boolean repeated) throws IOException {
         final ProtostuffOutput output = (ProtostuffOutput) this.output;
-        
-        if(references.shouldIncrement(refCount, value, output, fieldNumber))
-        {
+
+        if (references.shouldIncrement(refCount, value, output, fieldNumber)) {
             refCount++;
-            
+
             output.tail = output.sink.writeVarInt32(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP), 
-                    output, 
+                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP),
+                    output,
                     output.tail);
-            
+
             schema.writeTo(this, value);
-            
+
             output.tail = output.sink.writeVarInt32(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP), 
-                    output, 
+                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP),
+                    output,
                     output.tail);
         }
     }
-    
+
     /**
-     * A trimed-down version of IdentityHashMap w/c caters to the 
+     * A trimed-down version of IdentityHashMap w/c caters to the
      * specific needs of {@link GraphOutput}.
      */
-    private static final class IdentityMap
-    {
+    private static final class IdentityMap {
 
         /**
          * The initial capacity used by the no-args constructor. MUST be a power of
@@ -100,7 +94,7 @@ public final class GraphProtostuffOutput extends FilterOutput
 
         /**
          * The number of key-value mappings contained in this identity hash map.
-         * 
+         *
          * @serial
          */
         private int size;
@@ -119,8 +113,7 @@ public final class GraphProtostuffOutput extends FilterOutput
          * Constructs a new, empty identity hash map with a default expected maximum
          * size (21).
          */
-        public IdentityMap()
-        {
+        public IdentityMap() {
             init(DEFAULT_CAPACITY);
         }
 
@@ -129,14 +122,11 @@ public final class GraphProtostuffOutput extends FilterOutput
          * Putting more than the expected number of key-value mappings into the map
          * may cause the internal data structure to grow, which may be somewhat
          * time-consuming.
-         * 
-         * @param expectedMaxSize
-         *            the expected maximum size of the map
-         * @throws IllegalArgumentException
-         *             if <tt>expectedMaxSize</tt> is negative
+         *
+         * @param expectedMaxSize the expected maximum size of the map
+         * @throws IllegalArgumentException if <tt>expectedMaxSize</tt> is negative
          */
-        public IdentityMap(int expectedMaxSize)
-        {
+        public IdentityMap(int expectedMaxSize) {
             if (expectedMaxSize < 0)
                 throw new IllegalArgumentException("expectedMaxSize is negative: " + expectedMaxSize);
             init(capacity(expectedMaxSize));
@@ -150,19 +140,15 @@ public final class GraphProtostuffOutput extends FilterOutput
          * MAXIMUM_CAPACITY. If (3 * expectedMaxSize)/2 is negative, it is assumed
          * that overflow has occurred, and MAXIMUM_CAPACITY is returned.
          */
-        private int capacity(int expectedMaxSize)
-        {
+        private int capacity(int expectedMaxSize) {
             // Compute min capacity for expectedMaxSize given a load factor of 2/3
             int minCapacity = (3 * expectedMaxSize) / 2;
 
             // Compute the appropriate capacity
             int result;
-            if (minCapacity > MAXIMUM_CAPACITY || minCapacity < 0)
-            {
+            if (minCapacity > MAXIMUM_CAPACITY || minCapacity < 0) {
                 result = MAXIMUM_CAPACITY;
-            }
-            else
-            {
+            } else {
                 result = MINIMUM_CAPACITY;
                 while (result < minCapacity)
                     result <<= 1;
@@ -175,8 +161,7 @@ public final class GraphProtostuffOutput extends FilterOutput
          * capacity, which is assumed to be a power of two between MINIMUM_CAPACITY
          * and MAXIMUM_CAPACITY inclusive.
          */
-        private void init(int initCapacity)
-        {
+        private void init(int initCapacity) {
             // assert (initCapacity & -initCapacity) == initCapacity; // power of 2
             // assert initCapacity >= MINIMUM_CAPACITY;
             // assert initCapacity <= MAXIMUM_CAPACITY;
@@ -188,8 +173,7 @@ public final class GraphProtostuffOutput extends FilterOutput
         /**
          * Returns index for Object x.
          */
-        private static int hash(Object x, int length)
-        {
+        private static int hash(Object x, int length) {
             int h = System.identityHashCode(x);
             // Multiply by -127, and left-shift to use least bit as part of hash
             return ((h << 1) - (h << 8)) & (length - 1);
@@ -198,9 +182,8 @@ public final class GraphProtostuffOutput extends FilterOutput
         /**
          * Circularly traverses table of size len.
          */
-        private static int nextKeyIndex(int i, int len)
-        {
-            return (i + 2 < len?i + 2:0);
+        private static int nextKeyIndex(int i, int len) {
+            return (i + 2 < len ? i + 2 : 0);
         }
 
         /*
@@ -279,30 +262,27 @@ public final class GraphProtostuffOutput extends FilterOutput
                 resize(len); // len == 2 * current capacity.
             return null;
         }*/
-        
+
         /**
          * Returns true if the provided int should increment(unique index id).
          */
-        public boolean shouldIncrement(int value, Object k, WriteSession output, 
-                int fieldNumber) throws IOException
-        {
+        public boolean shouldIncrement(int value, Object k, WriteSession output,
+                                       int fieldNumber) throws IOException {
             Object[] tab = table;
             int len = tab.length;
             int i = hash(k, len);
-            
+
             Object item;
-            while ((item = tab[i]) != null)
-            {
-                if (item == k)
-                {
+            while ((item = tab[i]) != null) {
+                if (item == k) {
                     output.tail = output.sink.writeVarInt32(
-                            ((Integer)tab[i + 1]).intValue(), 
-                            output, 
+                            ((Integer) tab[i + 1]).intValue(),
+                            output,
                             output.sink.writeVarInt32(
-                                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_REFERENCE), 
-                                    output, 
+                                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_REFERENCE),
+                                    output,
                                     output.tail));
-                    
+
                     return false;
                 }
                 i = nextKeyIndex(i, len);
@@ -318,19 +298,16 @@ public final class GraphProtostuffOutput extends FilterOutput
 
         /**
          * Resize the table to hold given capacity.
-         * 
-         * @param newCapacity
-         *            the new capacity, must be a power of two.
+         *
+         * @param newCapacity the new capacity, must be a power of two.
          */
-        private void resize(int newCapacity)
-        {
+        private void resize(int newCapacity) {
             // assert (newCapacity & -newCapacity) == newCapacity; // power of 2
             int newLength = newCapacity * 2;
 
             Object[] oldTable = table;
             int oldLength = oldTable.length;
-            if (oldLength == 2 * MAXIMUM_CAPACITY)
-            { // can't expand any further
+            if (oldLength == 2 * MAXIMUM_CAPACITY) { // can't expand any further
                 if (threshold == MAXIMUM_CAPACITY - 1)
                     throw new IllegalStateException("Capacity exhausted.");
                 threshold = MAXIMUM_CAPACITY - 1; // Gigantic map!
@@ -342,11 +319,9 @@ public final class GraphProtostuffOutput extends FilterOutput
             Object[] newTable = new Object[newLength];
             threshold = newLength / 3;
 
-            for (int j = 0; j < oldLength; j += 2)
-            {
+            for (int j = 0; j < oldLength; j += 2) {
                 Object key = oldTable[j];
-                if (key != null)
-                {
+                if (key != null) {
                     Object value = oldTable[j + 1];
                     oldTable[j] = null;
                     oldTable[j + 1] = null;
@@ -361,5 +336,5 @@ public final class GraphProtostuffOutput extends FilterOutput
         }
 
     }
-    
+
 }

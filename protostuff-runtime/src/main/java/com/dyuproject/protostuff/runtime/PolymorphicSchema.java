@@ -39,46 +39,39 @@ import com.dyuproject.protostuff.Schema;
  * @author David Yu
  * @created Apr 30, 2012
  */
-public abstract class PolymorphicSchema implements Schema<Object>
-{
-    
+public abstract class PolymorphicSchema implements Schema<Object> {
+
     /**
-     * The handler who's job is to set the value to the owner. 
+     * The handler who's job is to set the value to the owner.
      */
-    public interface Handler
-    {
+    public interface Handler {
         public void setValue(Object value, Object owner);
     }
-    
+
     /**
      * A factory which creates a schema with the handler connected to it.
      */
-    public interface Factory
-    {
-        public PolymorphicSchema newSchema(Class<?> typeClass, 
-                IdStrategy strategy, Handler handler);
+    public interface Factory {
+        public PolymorphicSchema newSchema(Class<?> typeClass,
+                                           IdStrategy strategy, Handler handler);
     }
-    
+
     public final IdStrategy strategy;
-    
-    public PolymorphicSchema(IdStrategy strategy)
-    {
+
+    public PolymorphicSchema(IdStrategy strategy) {
         this.strategy = strategy;
     }
 
-    public boolean isInitialized(Object message)
-    {
+    public boolean isInitialized(Object message) {
         return true;
     }
 
-    public Object newMessage()
-    {
+    public Object newMessage() {
         // cannot instantiate because the type is dynamic.
         throw new UnsupportedOperationException();
     }
 
-    public Class<? super Object> typeClass()
-    {
+    public Class<? super Object> typeClass() {
         return Object.class;
     }
 
@@ -86,7 +79,7 @@ public abstract class PolymorphicSchema implements Schema<Object>
      * The pipe schema associated with this schema.
      */
     public abstract Pipe.Schema<Object> getPipeSchema();
-    
+
     /**
      * Set the value to the owner.
      */

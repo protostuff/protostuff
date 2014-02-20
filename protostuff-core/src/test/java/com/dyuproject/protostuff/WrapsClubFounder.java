@@ -37,30 +37,25 @@ import java.io.Serializable;
  * @author David Yu
  * @created Mar 25, 2012
  */
-public class WrapsClubFounder implements Serializable
-{
-    
+public class WrapsClubFounder implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private ClubFounder clubFounder;
-    
-    public WrapsClubFounder()
-    {
-        
+
+    public WrapsClubFounder() {
+
     }
-    
-    public WrapsClubFounder(ClubFounder clubFounder)
-    {
+
+    public WrapsClubFounder(ClubFounder clubFounder) {
         this.clubFounder = clubFounder;
     }
 
-    public ClubFounder getClubFounder()
-    {
+    public ClubFounder getClubFounder() {
         return clubFounder;
     }
 
-    public void setClubFounder(ClubFounder clubFounder)
-    {
+    public void setClubFounder(ClubFounder clubFounder) {
         this.clubFounder = clubFounder;
     }
 

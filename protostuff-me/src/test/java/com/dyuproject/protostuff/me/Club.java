@@ -6,150 +6,119 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Message;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Pipe;
-import com.dyuproject.protostuff.me.Schema;
+public final class Club implements Message, Schema {
 
-public final class Club implements Message, Schema
-{
-
-    public static Schema getSchema()
-    {
+    public static Schema getSchema() {
         return DEFAULT_INSTANCE;
     }
 
-    public static Club getDefaultInstance()
-    {
+    public static Club getDefaultInstance() {
         return DEFAULT_INSTANCE;
     }
 
     static final Club DEFAULT_INSTANCE = new Club();
 
-    
+
     private String name;
     private Vector student;
     private Vector partnerClub;
 
-    public Club()
-    {
-        
+    public Club() {
+
     }
 
     // getters and setters
 
     // name
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     // student
 
-    public Vector getStudentList()
-    {
+    public Vector getStudentList() {
         return student;
     }
 
-    public void setStudentList(Vector student)
-    {
+    public void setStudentList(Vector student) {
         this.student = student;
     }
 
-    public Student getStudent(int index)
-    {
-        return student == null ? null : (Student)student.elementAt(index);
+    public Student getStudent(int index) {
+        return student == null ? null : (Student) student.elementAt(index);
     }
 
-    public int getStudentCount()
-    {
+    public int getStudentCount() {
         return student == null ? 0 : student.size();
     }
 
-    public void addStudent(Student student)
-    {
-        if(this.student == null)
+    public void addStudent(Student student) {
+        if (this.student == null)
             this.student = new Vector();
         this.student.addElement(student);
     }
 
     // partnerClub
 
-    public Vector getPartnerClubList()
-    {
+    public Vector getPartnerClubList() {
         return partnerClub;
     }
 
-    public void setPartnerClubList(Vector partnerClub)
-    {
+    public void setPartnerClubList(Vector partnerClub) {
         this.partnerClub = partnerClub;
     }
 
-    public Club getPartnerClub(int index)
-    {
-        return partnerClub == null ? null : (Club)partnerClub.elementAt(index);
+    public Club getPartnerClub(int index) {
+        return partnerClub == null ? null : (Club) partnerClub.elementAt(index);
     }
 
-    public int getPartnerClubCount()
-    {
+    public int getPartnerClubCount() {
         return partnerClub == null ? 0 : partnerClub.size();
     }
 
-    public void addPartnerClub(Club partnerClub)
-    {
-        if(this.partnerClub == null)
+    public void addPartnerClub(Club partnerClub) {
+        if (this.partnerClub == null)
             this.partnerClub = new Vector();
         this.partnerClub.addElement(partnerClub);
     }
 
     // message method
 
-    public Schema cachedSchema()
-    {
+    public Schema cachedSchema() {
         return DEFAULT_INSTANCE;
     }
 
     // schema methods
 
-    public Object /*Club*/ newMessage()
-    {
+    public Object /*Club*/ newMessage() {
         return new Club();
     }
 
-    public Class typeClass()
-    {
+    public Class typeClass() {
         return Club.class;
     }
 
-    public String messageName()
-    {
+    public String messageName() {
         return "Club";
     }
 
-    public String messageFullName()
-    {
+    public String messageFullName() {
         return Club.class.getName();
     }
 
-    public boolean isInitialized(Object /*Club*/ message)
-    {
+    public boolean isInitialized(Object /*Club*/ message) {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*Club*/ messageObj) throws IOException
-    {
-        Club message = (Club)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+    public void mergeFrom(Input input, Object /*Club*/ messageObj) throws IOException {
+        Club message = (Club) messageObj;
+        for (int number = input.readFieldNumber(this); ; number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
@@ -157,86 +126,78 @@ public final class Club implements Message, Schema
                     break;
 
                 case 2:
-                    if(message.student == null)
+                    if (message.student == null)
                         message.student = new Vector();
                     message.student.addElement(input.mergeObject(null, Student.getSchema()));
                     break;
 
                 case 3:
-                    if(message.partnerClub == null)
+                    if (message.partnerClub == null)
                         message.partnerClub = new Vector();
                     message.partnerClub.addElement(input.mergeObject(null, Club.getSchema()));
                     break;
 
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
 
-    public void writeTo(Output output, Object /*Club*/ messageObj) throws IOException
-    {
-        Club message = (Club)messageObj;
-        if(message.name != null)
+    public void writeTo(Output output, Object /*Club*/ messageObj) throws IOException {
+        Club message = (Club) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
 
 
-        if(message.student != null)
-        {
-            for(int i = 0; i < message.student.size(); i++)
-            {
-                Student student = (Student)message.student.elementAt(i);
-                if(student != null)
+        if (message.student != null) {
+            for (int i = 0; i < message.student.size(); i++) {
+                Student student = (Student) message.student.elementAt(i);
+                if (student != null)
                     output.writeObject(2, student, Student.getSchema(), true);
             }
         }
 
 
-        if(message.partnerClub != null)
-        {
-            for(int i = 0; i < message.partnerClub.size(); i++)
-            {
-                Club partnerClub = (Club)message.partnerClub.elementAt(i);
-                if(partnerClub != null)
+        if (message.partnerClub != null) {
+            for (int i = 0; i < message.partnerClub.size(); i++) {
+                Club partnerClub = (Club) message.partnerClub.elementAt(i);
+                if (partnerClub != null)
                     output.writeObject(3, partnerClub, Club.getSchema(), true);
             }
         }
 
     }
 
-    public String getFieldName(int number)
-    {
-        switch(number)
-        {
-            case 1: return "name";
-            case 2: return "student";
-            case 3: return "partnerClub";
-            default: return null;
+    public String getFieldName(int number) {
+        switch (number) {
+            case 1:
+                return "name";
+            case 2:
+                return "student";
+            case 3:
+                return "partnerClub";
+            default:
+                return null;
         }
     }
 
-    public int getFieldNumber(String name)
-    {
-        final Integer number = (Integer)__fieldMap.get(name);
+    public int getFieldNumber(String name) {
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
-    static
-    {
+
+    static {
         __fieldMap.put("name", new Integer(1));
         __fieldMap.put("student", new Integer(2));
         __fieldMap.put("partnerClub", new Integer(3));
     }
-    
-    static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
-    {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
-            {
-                switch(number)
-                {
+
+    static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE) {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+            for (int number = input.readFieldNumber(wrappedSchema); ; number = input.readFieldNumber(wrappedSchema)) {
+                switch (number) {
                     case 0:
                         return;
                     case 1:
@@ -258,8 +219,7 @@ public final class Club implements Message, Schema
         }
     };
 
-    public static Pipe.Schema getPipeSchema()
-    {
+    public static Pipe.Schema getPipeSchema() {
         return PIPE_SCHEMA;
     }
 

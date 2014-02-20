@@ -14,6 +14,8 @@
 
 package com.dyuproject.protostuff.me;
 
+import com.dyuproject.protostuff.me.Foo.EnumSample;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,55 +23,51 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.me.Foo.EnumSample;
-
 /**
- * Test writing/reading to/from streams using writeDelimitedTo, mergeDelimitedFrom, 
+ * Test writing/reading to/from streams using writeDelimitedTo, mergeDelimitedFrom,
  * optWriteDelimitedTo and optMergeDelimitedFrom.
- * 
+ *
  * @author David Yu
  * @created Aug 29, 2012
  */
-public abstract class DelimiterTest extends AbstractTest
-{
-    
+public abstract class DelimiterTest extends AbstractTest {
+
     /**
-     * Serializes the {@code message} (delimited) into 
+     * Serializes the {@code message} (delimited) into
      * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
      */
-    protected abstract int writeDelimitedTo(OutputStream out, Object message, 
-            Schema schema, LinkedBuffer buffer) throws IOException;
-    
+    protected abstract int writeDelimitedTo(OutputStream out, Object message,
+                                            Schema schema, LinkedBuffer buffer) throws IOException;
+
     /**
      * Deserializes from the byte array and data is merged/saved to the message.
      */
-    protected abstract void mergeDelimitedFrom(InputStream in, Object message, 
-            Schema schema, LinkedBuffer buffer) throws IOException;
-    
+    protected abstract void mergeDelimitedFrom(InputStream in, Object message,
+                                               Schema schema, LinkedBuffer buffer) throws IOException;
+
     /**
-     * Serializes the {@code message} (delimited) into 
+     * Serializes the {@code message} (delimited) into
      * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
      */
-    protected abstract int optWriteDelimitedTo(OutputStream out, Object message, 
-            Schema schema, LinkedBuffer buffer) throws IOException;
-    
+    protected abstract int optWriteDelimitedTo(OutputStream out, Object message,
+                                               Schema schema, LinkedBuffer buffer) throws IOException;
+
     /**
      * Deserializes from the byte array and data is merged/saved to the message.
      */
-    protected abstract boolean optMergeDelimitedFrom(InputStream in, Object message, 
-            Schema schema, LinkedBuffer buffer) throws IOException;
-    
-    void verifyOptData(byte[] optData, Object message, Schema schema, 
-            LinkedBuffer buffer) throws IOException
-    {
+    protected abstract boolean optMergeDelimitedFrom(InputStream in, Object message,
+                                                     Schema schema, LinkedBuffer buffer) throws IOException;
+
+    void verifyOptData(byte[] optData, Object message, Schema schema,
+                       LinkedBuffer buffer) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = writeDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
-        
+
         // compare both outputs
         assertEquals(optData.length, data.length);
         
@@ -82,179 +80,172 @@ public abstract class DelimiterTest extends AbstractTest
             s2.append(b).append(' ');
         
         assertEquals(s1.toString(), s2.toString());*/
-        
+
         assertTrue(Arrays.equals(optData, data));
-        
-        
+
+
     }
-    
-    public void testFoo() throws Exception
-    {
+
+    public void testFoo() throws Exception {
         Schema schema = Foo.getSchema();
         Foo message = SerializableObjects.foo;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Foo parsedMessage = new Foo();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf(512));
         assertTrue(merged);
-        
+
         assertEquals(message, parsedMessage);
     }
-    
-    public void testFooEmpty() throws Exception
-    {
+
+    public void testFooEmpty() throws Exception {
         Schema schema = Foo.getSchema();
         Foo message = new Foo();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         // empty
         assertEquals(size, 0);
         assertEquals(delimSize, 1);
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Foo parsedMessage = new Foo();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf());
         assertTrue(merged);
-        
+
         assertEquals(message, parsedMessage);
     }
-    
-    public void testFooTooLarge() throws Exception
-    {
+
+    public void testFooTooLarge() throws Exception {
         Schema schema = Foo.getSchema();
         Foo message = SerializableObjects.newFoo(
-                new Integer[]{90210,-90210, 0, 128}, 
-                new String[]{"ab", "cd"}, 
+                new Integer[]{90210, -90210, 0, 128},
+                new String[]{"ab", "cd"},
                 new Bar[]{SerializableObjects.bar, SerializableObjects.negativeBar},
-                new int[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
-                new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")}, 
-                new Boolean[]{true, false}, 
-                new Float[]{1234.4321f, -1234.4321f, 0f}, 
-                new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
+                new int[]{EnumSample.TYPE0, EnumSample.TYPE2},
+                new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")},
+                new Boolean[]{true, false},
+                new Float[]{1234.4321f, -1234.4321f, 0f},
+                new Double[]{12345678.87654321d, -12345678.87654321d, 0d},
                 new Long[]{7060504030201l, -7060504030201l, 0l});
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize; // 258
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Foo parsedMessage = new Foo();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf(256));
         assertFalse(merged);
     }
-    
-    public void testBar() throws Exception
-    {
+
+    public void testBar() throws Exception {
         Schema schema = Bar.getSchema();
         Bar message = SerializableObjects.bar;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Bar parsedMessage = new Bar();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf());
         assertTrue(merged);
-        
+
         assertEquals(message, parsedMessage);
     }
-    
-    public void testBaz() throws Exception
-    {
+
+    public void testBaz() throws Exception {
         Schema schema = Baz.getSchema();
         Baz message = SerializableObjects.baz;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Baz parsedMessage = new Baz();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf());
         assertTrue(merged);
-        
+
         assertEquals(message, parsedMessage);
     }
-    
-    public void testBarTooLarge2() throws Exception
-    {
+
+    public void testBarTooLarge2() throws Exception {
         Schema schema = Bar.getSchema();
         Bar message = new Bar();
         message.setSomeBytes(ByteString.wrap(
-                new byte[StringSerializer.THREE_BYTE_LOWER_LIMIT-1]));
-        
+                new byte[StringSerializer.THREE_BYTE_LOWER_LIMIT - 1]));
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Bar parsedMessage = new Bar();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf(256));
         assertFalse(merged);
     }
-    
-    public void testBarTooLarge3() throws Exception
-    {
+
+    public void testBarTooLarge3() throws Exception {
         Schema schema = Bar.getSchema();
         Bar message = new Bar();
         message.setSomeBytes(ByteString.wrap(
-                new byte[StringSerializer.FOUR_BYTE_LOWER_LIMIT-1]));
-        
+                new byte[StringSerializer.FOUR_BYTE_LOWER_LIMIT - 1]));
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int size = optWriteDelimitedTo(out, message, schema, buf());
         int delimSize = ProtobufOutput.computeRawVarint32Size(size);
         byte[] data = out.toByteArray();
-        
+
         int expectedSize = size + delimSize;
         assertEquals(expectedSize, data.length);
         verifyOptData(data, message, schema, buf());
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
-        
+
         Bar parsedMessage = new Bar();
         boolean merged = optMergeDelimitedFrom(in, parsedMessage, schema, buf(256));
         assertFalse(merged);

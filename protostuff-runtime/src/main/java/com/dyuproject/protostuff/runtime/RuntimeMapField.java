@@ -14,87 +14,83 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.MapSchema.MapWrapper;
 import com.dyuproject.protostuff.MapSchema.MessageFactory;
+import com.dyuproject.protostuff.Output;
+import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
+import java.io.IOException;
+import java.util.Map;
+
 /**
  * A runtime field for a {@link Map}.
- * Allows null keys and values. 
+ * Allows null keys and values.
  *
  * @author David Yu
  * @created Jan 21, 2011
  */
-abstract class RuntimeMapField<T,K,V> extends Field<T>
-{
-    
+abstract class RuntimeMapField<T, K, V> extends Field<T> {
+
     /**
-     * Since we cannot inherit multiple classes, we create this Map schema simply 
+     * Since we cannot inherit multiple classes, we create this Map schema simply
      * to delegate to the wrapping class' abstract methods.
      */
-    protected final MapSchema<K,V> schema;
-    
-    public RuntimeMapField(FieldType type, int number, String name, Tag tag, 
-            MessageFactory messageFactory)
-    {
+    protected final MapSchema<K, V> schema;
+
+    public RuntimeMapField(FieldType type, int number, String name, Tag tag,
+                           MessageFactory messageFactory) {
         super(type, number, name, false, tag);
-        schema = new MapSchema<K,V>(messageFactory)
-        {
-            protected K readKeyFrom(Input input, MapWrapper<K,V> wrapper) 
-            throws IOException
-            {
+        schema = new MapSchema<K, V>(messageFactory) {
+            protected K readKeyFrom(Input input, MapWrapper<K, V> wrapper)
+                    throws IOException {
                 return kFrom(input, wrapper);
             }
-            protected void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
-            throws IOException
-            {
+
+            protected void putValueFrom(Input input, MapWrapper<K, V> wrapper, K key)
+                    throws IOException {
                 vPutFrom(input, wrapper, key);
             }
-            protected void writeKeyTo(Output output, int fieldNumber, K key, 
-                    boolean repeated) throws IOException
-            {
+
+            protected void writeKeyTo(Output output, int fieldNumber, K key,
+                                      boolean repeated) throws IOException {
                 kTo(output, fieldNumber, key, repeated);
             }
-            protected void writeValueTo(Output output, int fieldNumber, V val, 
-                    boolean repeated) throws IOException
-            {
+
+            protected void writeValueTo(Output output, int fieldNumber, V val,
+                                        boolean repeated) throws IOException {
                 vTo(output, fieldNumber, val, repeated);
             }
-            protected void transferKey(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
-            {
+
+            protected void transferKey(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException {
                 kTransfer(pipe, input, output, number, repeated);
             }
-            protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
-            {
+
+            protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException {
                 vTransfer(pipe, input, output, number, repeated);
             }
         };
     }
-    
-    protected abstract K kFrom(Input input, MapWrapper<K,V> wrapper) throws IOException;
-    
-    protected abstract void vPutFrom(Input input, MapWrapper<K,V> wrapper, K key) 
-    throws IOException;
-    
-    protected abstract void kTo(Output output, int fieldNumber, K key, boolean repeated) 
-    throws IOException;
 
-    protected abstract void vTo(Output output, int fieldNumber, V value, boolean repeated) 
-    throws IOException;
-    
-    protected abstract void kTransfer(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException;
-    
-    protected abstract void vTransfer(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException;
+    protected abstract K kFrom(Input input, MapWrapper<K, V> wrapper) throws IOException;
+
+    protected abstract void vPutFrom(Input input, MapWrapper<K, V> wrapper, K key)
+            throws IOException;
+
+    protected abstract void kTo(Output output, int fieldNumber, K key, boolean repeated)
+            throws IOException;
+
+    protected abstract void vTo(Output output, int fieldNumber, V value, boolean repeated)
+            throws IOException;
+
+    protected abstract void kTransfer(Pipe pipe, Input input, Output output, int number,
+                                      boolean repeated) throws IOException;
+
+    protected abstract void vTransfer(Pipe pipe, Input input, Output output, int number,
+                                      boolean repeated) throws IOException;
 
 }

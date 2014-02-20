@@ -14,60 +14,53 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dyuproject.protostuff.AbstractTest;
 import com.dyuproject.protostuff.GraphTest;
 import com.dyuproject.protostuff.Schema;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Test ser/deser of graph objects (references and cyclic dependencies) with runtime 
+ * Test ser/deser of graph objects (references and cyclic dependencies) with runtime
  * schemas.
  *
  * @author David Yu
  * @created Jan 19, 2011
  */
-public class RuntimeGraphTest extends AbstractTest
-{
-    
-    public static class ClubFounder
-    {
+public class RuntimeGraphTest extends AbstractTest {
+
+    public static class ClubFounder {
         String name;
         Club club;
-        
+
         // getters and setters
 
         // name
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = name;
         }
 
         // club
 
-        public Club getClub()
-        {
+        public Club getClub() {
             return club;
         }
 
-        public void setClub(Club club)
-        {
+        public void setClub(Club club) {
             this.club = club;
         }
-        
-        
+
+
     }
-    
-    public static class Club
-    {
+
+    public static class Club {
         String name;
         List<Student> student;
         List<Club> partnerClub;
@@ -76,119 +69,99 @@ public class RuntimeGraphTest extends AbstractTest
 
         // name
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = name;
         }
 
         // student
 
-        public List<Student> getStudentList()
-        {
+        public List<Student> getStudentList() {
             return student;
         }
 
-        public void setStudentList(List<Student> student)
-        {
+        public void setStudentList(List<Student> student) {
             this.student = student;
         }
 
-        public Student getStudent(int index)
-        {
+        public Student getStudent(int index) {
             return student == null ? null : student.get(index);
         }
 
-        public int getStudentCount()
-        {
+        public int getStudentCount() {
             return student == null ? 0 : student.size();
         }
 
-        public void addStudent(Student student)
-        {
-            if(this.student == null)
+        public void addStudent(Student student) {
+            if (this.student == null)
                 this.student = new ArrayList<Student>();
             this.student.add(student);
         }
 
         // partnerClub
 
-        public List<Club> getPartnerClubList()
-        {
+        public List<Club> getPartnerClubList() {
             return partnerClub;
         }
 
-        public void setPartnerClubList(List<Club> partnerClub)
-        {
+        public void setPartnerClubList(List<Club> partnerClub) {
             this.partnerClub = partnerClub;
         }
 
-        public Club getPartnerClub(int index)
-        {
+        public Club getPartnerClub(int index) {
             return partnerClub == null ? null : partnerClub.get(index);
         }
 
-        public int getPartnerClubCount()
-        {
+        public int getPartnerClubCount() {
             return partnerClub == null ? 0 : partnerClub.size();
         }
 
-        public void addPartnerClub(Club partnerClub)
-        {
-            if(this.partnerClub == null)
+        public void addPartnerClub(Club partnerClub) {
+            if (this.partnerClub == null)
                 this.partnerClub = new ArrayList<Club>();
             this.partnerClub.add(partnerClub);
         }
     }
-    
-    public static class Student
-    {
+
+    public static class Student {
         String name;
         List<Club> club;
-        
+
         // getters and setters
 
         // name
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = name;
         }
 
         // club
 
-        public List<Club> getClubList()
-        {
+        public List<Club> getClubList() {
             return club;
         }
 
-        public void setClubList(List<Club> club)
-        {
+        public void setClubList(List<Club> club) {
             this.club = club;
         }
 
-        public Club getClub(int index)
-        {
+        public Club getClub(int index) {
             return club == null ? null : club.get(index);
         }
 
-        public int getClubCount()
-        {
+        public int getClubCount() {
             return club == null ? 0 : club.size();
         }
 
-        public void addClub(Club club)
-        {
-            if(this.club == null)
+        public void addClub(Club club) {
+            if (this.club == null)
                 this.club = new ArrayList<Club>();
             this.club.add(club);
         }
@@ -239,11 +212,10 @@ public class RuntimeGraphTest extends AbstractTest
           (club-club)
           glee <-> private_club_of_jake_partner_of_glee
      */
-    
-    public void testCyclic() throws Exception
-    {
+
+    public void testCyclic() throws Exception {
         Schema<ClubFounder> schema = RuntimeSchema.getSchema(ClubFounder.class);
-        
+
         ClubFounder founder = new ClubFounder();
         founder.setName("some_glee_club_founder");
 
@@ -288,8 +260,7 @@ public class RuntimeGraphTest extends AbstractTest
         checkLinks(founderFromStream);
     }
 
-    static void addPartnerStudentTo(Club club, String studentName)
-    {
+    static void addPartnerStudentTo(Club club, String studentName) {
         Student student = new Student();
         student.setName(studentName);
         // non-cyclic
@@ -307,8 +278,7 @@ public class RuntimeGraphTest extends AbstractTest
         club.addPartnerClub(privateClub);
     }
 
-    static void checkLinks(ClubFounder founder)
-    {
+    static void checkLinks(ClubFounder founder) {
         assertNotNull(founder);
 
         assertEquals("some_glee_club_founder", founder.getName());
@@ -349,77 +319,71 @@ public class RuntimeGraphTest extends AbstractTest
         // club-club cyclic link
         assertTrue(glee.getPartnerClub(0) == privateClubOfJake);
     }
-    
-    
-    public static class LinkedNode
-    {
+
+
+    public static class LinkedNode {
         String name;
         LinkedNode next;
-        
-        public LinkedNode()
-        {
-            
+
+        public LinkedNode() {
+
         }
-        
-        public LinkedNode(String name, LinkedNode previous)
-        {
+
+        public LinkedNode(String name, LinkedNode previous) {
             this.name = name;
-            if(previous != null)
+            if (previous != null)
                 previous.next = this;
         }
     }
-    
-    public static class LinkedNodeContainer
-    {
+
+    public static class LinkedNodeContainer {
         LinkedNode node;
     }
-    
-    public void testSelfReference() throws Exception
-    {
-        Schema<LinkedNodeContainer> schema = 
-            RuntimeSchema.getSchema(LinkedNodeContainer.class);
-        
+
+    public void testSelfReference() throws Exception {
+        Schema<LinkedNodeContainer> schema =
+                RuntimeSchema.getSchema(LinkedNodeContainer.class);
+
         LinkedNode first = new LinkedNode("first", null);
         LinkedNode second = new LinkedNode("second", first);
         LinkedNode third = new LinkedNode("third", second);
         // self reference
         third.next = third;
-        
+
         LinkedNodeContainer container = new LinkedNodeContainer();
         container.node = first;
-        
+
         verifyGraph(container);
-        
+
         byte[] data = GraphTest.toByteArray(container, schema);
-        
+
         LinkedNodeContainer containerFromByteArray = new LinkedNodeContainer();
         GraphTest.mergeFrom(data, 0, data.length, containerFromByteArray, schema);
-        
+
         verifyGraph(containerFromByteArray);
-        
+
         LinkedNodeContainer containerFromStream = new LinkedNodeContainer();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         GraphTest.mergeFrom(in, containerFromStream, schema);
-        
+
         verifyGraph(containerFromStream);
     }
-    
-    static void verifyGraph(LinkedNodeContainer container)
-    {
+
+    static void verifyGraph(LinkedNodeContainer container) {
         assertNotNull(container);
-        
+
         LinkedNode first = container.node;
         assertNotNull(first);
         assertEquals(first.name, "first");
-        
+
         LinkedNode second = first.next;
         assertNotNull(second);
         assertEquals(second.name, "second");
-        
+
         LinkedNode third = second.next;
         assertNotNull(third);
         assertEquals(third.name, "third");
-        
+
         assertTrue(third == third.next);
     }
 

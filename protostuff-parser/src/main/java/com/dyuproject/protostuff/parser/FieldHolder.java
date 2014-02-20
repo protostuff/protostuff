@@ -20,18 +20,15 @@ package com.dyuproject.protostuff.parser;
  * @author David Yu
  * @created Dec 21, 2009
  */
-public class FieldHolder
-{
-    
+public class FieldHolder {
+
     Field<?> field;
-    
-    void setField(Field<?> field)
-    {
+
+    void setField(Field<?> field) {
         this.field = field;
     }
-    
-    public Field<?> getField()
-    {
+
+    public Field<?> getField() {
         return field;
     }
 

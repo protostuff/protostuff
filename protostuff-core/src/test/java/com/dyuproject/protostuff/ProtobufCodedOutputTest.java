@@ -24,18 +24,15 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class ProtobufCodedOutputTest extends SerDeserTest
-{
-    
+public class ProtobufCodedOutputTest extends SerDeserTest {
+
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         ProtobufIOUtil.mergeDelimitedFrom(in, message, schema);
     }
 
     protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         final ComputedSizeOutput sizeCount = new ComputedSizeOutput(false);
         schema.writeTo(sizeCount, message);
         CodedOutput.writeRawVarInt32Bytes(out, sizeCount.getSize());
@@ -45,16 +42,14 @@ public class ProtobufCodedOutputTest extends SerDeserTest
     }
 
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         final CodedInput input = new CodedInput(data, offset, length, false);
         schema.mergeFrom(input, message);
         input.checkLastTagWas(0);
         assertTrue(input.isAtEnd());
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         return CodedOutput.toByteArray(message, schema, false);
     }
 

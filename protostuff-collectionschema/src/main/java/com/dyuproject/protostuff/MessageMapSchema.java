@@ -24,9 +24,8 @@ import java.util.Map;
  * @author David Yu
  * @created Jun 26, 2010
  */
-public final class MessageMapSchema<K,V> extends MapSchema<K,V>
-{
-    
+public final class MessageMapSchema<K, V> extends MapSchema<K, V> {
+
     /**
      * The schema of the message key.
      */
@@ -43,65 +42,55 @@ public final class MessageMapSchema<K,V> extends MapSchema<K,V>
      * The pipe schema of the message value.
      */
     public final Pipe.Schema<V> vPipeSchema;
-    
-    public MessageMapSchema(Schema<K> kSchema, Schema<V> vSchema)
-    {
+
+    public MessageMapSchema(Schema<K> kSchema, Schema<V> vSchema) {
         this(kSchema, vSchema, null, null);
     }
-    
-    public MessageMapSchema(Schema<K> kSchema, Schema<V> vSchema, 
-            Pipe.Schema<K> kPipeSchema, Pipe.Schema<V> vPipeSchema)
-    {
+
+    public MessageMapSchema(Schema<K> kSchema, Schema<V> vSchema,
+                            Pipe.Schema<K> kPipeSchema, Pipe.Schema<V> vPipeSchema) {
         this.kSchema = kSchema;
         this.vSchema = vSchema;
         this.kPipeSchema = kPipeSchema;
         this.vPipeSchema = vPipeSchema;
     }
 
-    protected K readKeyFrom(Input input, MapWrapper<K,V> wrapper) throws IOException
-    {
+    protected K readKeyFrom(Input input, MapWrapper<K, V> wrapper) throws IOException {
         return input.mergeObject(null, kSchema);
     }
 
-    protected void putValueFrom(Input input, MapWrapper<K,V> wrapper, K key) 
-    throws IOException
-    {
+    protected void putValueFrom(Input input, MapWrapper<K, V> wrapper, K key)
+            throws IOException {
         wrapper.put(key, input.mergeObject(null, vSchema));
     }
 
-    protected void writeKeyTo(Output output, int fieldNumber, K value, boolean repeated) 
-    throws IOException
-    {
+    protected void writeKeyTo(Output output, int fieldNumber, K value, boolean repeated)
+            throws IOException {
         output.writeObject(fieldNumber, value, kSchema, repeated);
     }
 
-    protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated) 
-    throws IOException
-    {
+    protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated)
+            throws IOException {
         output.writeObject(fieldNumber, value, vSchema, repeated);
     }
 
-    protected void transferKey(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException
-    {
-        if(kPipeSchema == null)
-        {
-            throw new RuntimeException("No pipe schema for key: " + 
+    protected void transferKey(Pipe pipe, Input input, Output output, int number,
+                               boolean repeated) throws IOException {
+        if (kPipeSchema == null) {
+            throw new RuntimeException("No pipe schema for key: " +
                     kSchema.typeClass().getName());
         }
-        
+
         output.writeObject(number, pipe, kPipeSchema, repeated);
     }
 
-    protected void transferValue(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException
-    {
-        if(vPipeSchema == null)
-        {
-            throw new RuntimeException("No pipe schema for value: " + 
+    protected void transferValue(Pipe pipe, Input input, Output output, int number,
+                                 boolean repeated) throws IOException {
+        if (vPipeSchema == null) {
+            throw new RuntimeException("No pipe schema for value: " +
                     vSchema.typeClass().getName());
         }
-        
+
         output.writeObject(number, pipe, vPipeSchema, repeated);
     }
 

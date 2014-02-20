@@ -45,12 +45,11 @@
 package com.dyuproject.protostuff;
 
 /**
- * Interface for an enum value for use with code-generated enums. 
+ * Interface for an enum value for use with code-generated enums.
  *
  * @author David Yu
  * @created Jan 8, 2010
  */
-public interface EnumLite<E extends Enum<E>>
-{
+public interface EnumLite<E extends Enum<E>> {
     public int getNumber();
 }

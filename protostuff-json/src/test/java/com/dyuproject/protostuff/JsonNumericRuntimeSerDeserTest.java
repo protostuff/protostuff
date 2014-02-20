@@ -19,15 +19,14 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
-import junit.framework.TestCase;
-
 import com.dyuproject.protostuff.runtime.Bar;
 import com.dyuproject.protostuff.runtime.Baz;
 import com.dyuproject.protostuff.runtime.Foo;
 import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest;
+import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.dyuproject.protostuff.runtime.SerializableObjects;
-import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
+import junit.framework.TestCase;
 
 /**
  * Testing for json ser/deser against runtime messages.
@@ -35,27 +34,23 @@ import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
  * @author David Yu
  * @created Nov 20, 2009
  */
-public class JsonNumericRuntimeSerDeserTest extends TestCase
-{
-    
-    public void testFoo() throws Exception
-    {
+public class JsonNumericRuntimeSerDeserTest extends TestCase {
+
+    public void testFoo() throws Exception {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
-        
+
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
-        
+
         byte[] data = JsonIOUtil.toByteArray(fooCompare, schema, true);
         JsonIOUtil.mergeFrom(data, dfoo, schema, true);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
-    public void testBar() throws Exception
-    {
+
+    public void testBar() throws Exception {
         Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
-        
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
-        {
+
+        for (Bar barCompare : new Bar[]{bar, negativeBar}) {
             Bar dbar = new Bar();
 
             byte[] data = JsonIOUtil.toByteArray(barCompare, schema, true);
@@ -63,28 +58,25 @@ public class JsonNumericRuntimeSerDeserTest extends TestCase
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
-    public void testBaz() throws Exception
-    {
+
+    public void testBaz() throws Exception {
         Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
-        
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
-        {
-            Baz dbaz = new Baz();            
-            
+
+        for (Baz bazCompare : new Baz[]{baz, negativeBaz}) {
+            Baz dbaz = new Baz();
+
             byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, true);
             JsonIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
-    
-    public void testPolymorphic() throws Exception
-    {
+
+    public void testPolymorphic() throws Exception {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
         Zoo zooCompare = PolymorphicSerializationTest.filledZoo();
-        
-        Zoo dzoo = new Zoo();            
-        
+
+        Zoo dzoo = new Zoo();
+
         byte[] data = JsonIOUtil.toByteArray(zooCompare, schema, true);
         JsonIOUtil.mergeFrom(data, dzoo, schema, true);
         SerializableObjects.assertEquals(zooCompare, dzoo);

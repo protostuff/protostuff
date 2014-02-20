@@ -20,11 +20,9 @@ package com.dyuproject.protostuff;
  * @author David Yu
  * @created Dec 4, 2010
  */
-public class KvpNumericTest extends AbstractKvpTest
-{
+public class KvpNumericTest extends AbstractKvpTest {
 
-    public KvpNumericTest()
-    {
+    public KvpNumericTest() {
         super(true);
     }
 

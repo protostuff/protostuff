@@ -21,385 +21,308 @@ import java.util.Collection;
 /**
  * A schema for standard jdk {@link Collection collections}.
  * Null values are not serialized/written.
- * 
- * If your application relies on {@link Object#equals(Object)}, it will fail when a 
- * serialized collection contains null values (The deserialized collection will not 
- * contained the null value).  {@link MapSchema} on the otherhand can contain both 
+ * <p/>
+ * If your application relies on {@link Object#equals(Object)}, it will fail when a
+ * serialized collection contains null values (The deserialized collection will not
+ * contained the null value).  {@link MapSchema} on the otherhand can contain both
  * null keys and null values and still succeeding on {@link Object#equals(Object)}.
  *
  * @author David Yu
  * @created Jan 26, 2011
  */
-public abstract class CollectionSchema<V> implements Schema<Collection<V>>
-{
-    
+public abstract class CollectionSchema<V> implements Schema<Collection<V>> {
+
     public static final String FIELD_NAME_VALUE = "v";
-    
+
     /**
      * Creates new {@code Collection} messages.
      */
-    public interface MessageFactory
-    {
-        
+    public interface MessageFactory {
+
         /**
          * Creates a new {@code Collection} message.
          */
         public <V> Collection<V> newMessage();
-        
+
         /**
          * The type to instantiate.
          */
         public Class<?> typeClass();
     }
-    
-    public enum MessageFactories implements MessageFactory
-    {
+
+    public enum MessageFactories implements MessageFactory {
         // defaults to ArrayList
-        Collection(java.util.ArrayList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Collection(java.util.ArrayList.class) {
+            public <V> Collection<V> newMessage() {
                 return new ArrayList<V>();
             }
         },
         // defaults to ArrayList
-        List(java.util.ArrayList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        List(java.util.ArrayList.class) {
+            public <V> Collection<V> newMessage() {
                 return new ArrayList<V>();
             }
         },
-        ArrayList(java.util.ArrayList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        ArrayList(java.util.ArrayList.class) {
+            public <V> Collection<V> newMessage() {
                 return new ArrayList<V>();
             }
         },
-        LinkedList(java.util.LinkedList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        LinkedList(java.util.LinkedList.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.LinkedList<V>();
             }
         },
-        CopyOnWriteArrayList(java.util.concurrent.CopyOnWriteArrayList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        CopyOnWriteArrayList(java.util.concurrent.CopyOnWriteArrayList.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.CopyOnWriteArrayList<V>();
             }
         },
-        Stack(java.util.Stack.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Stack(java.util.Stack.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.Stack<V>();
             }
         },
-        Vector(java.util.Vector.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Vector(java.util.Vector.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.Vector<V>();
             }
         },
         // defaults to HashSet
-        Set(java.util.HashSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Set(java.util.HashSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.HashSet<V>();
             }
         },
-        HashSet(java.util.HashSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        HashSet(java.util.HashSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.HashSet<V>();
             }
         },
-        LinkedHashSet(java.util.LinkedHashSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        LinkedHashSet(java.util.LinkedHashSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.LinkedHashSet<V>();
             }
         },
         // defaults to TreeSet
-        SortedSet(java.util.TreeSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        SortedSet(java.util.TreeSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.TreeSet<V>();
             }
         },
         // defaults to TreeSet
-        NavigableSet(java.util.TreeSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        NavigableSet(java.util.TreeSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.TreeSet<V>();
             }
         },
-        TreeSet(java.util.TreeSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        TreeSet(java.util.TreeSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.TreeSet<V>();
             }
         },
-        ConcurrentSkipListSet(java.util.concurrent.ConcurrentSkipListSet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        ConcurrentSkipListSet(java.util.concurrent.ConcurrentSkipListSet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.ConcurrentSkipListSet<V>();
             }
         },
-        CopyOnWriteArraySet(java.util.concurrent.CopyOnWriteArraySet.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        CopyOnWriteArraySet(java.util.concurrent.CopyOnWriteArraySet.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.CopyOnWriteArraySet<V>();
             }
         },
         // defaults to LinkedList
-        Queue(java.util.LinkedList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Queue(java.util.LinkedList.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.LinkedList<V>();
             }
         },
         // defaults to LinkedBlockingQueue
-        BlockingQueue(java.util.concurrent.LinkedBlockingQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        BlockingQueue(java.util.concurrent.LinkedBlockingQueue.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.LinkedBlockingQueue<V>();
             }
         },
-        LinkedBlockingQueue(java.util.concurrent.LinkedBlockingQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        LinkedBlockingQueue(java.util.concurrent.LinkedBlockingQueue.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.LinkedBlockingQueue<V>();
             }
         },
         // defaults to LinkedList
-        Deque(java.util.LinkedList.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        Deque(java.util.LinkedList.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.LinkedList<V>();
             }
         },
         // defaults to LinkedBlockingDeque
-        BlockingDeque(java.util.concurrent.LinkedBlockingDeque.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        BlockingDeque(java.util.concurrent.LinkedBlockingDeque.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.LinkedBlockingDeque<V>();
             }
         },
-        LinkedBlockingDeque(java.util.concurrent.LinkedBlockingDeque.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        LinkedBlockingDeque(java.util.concurrent.LinkedBlockingDeque.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.LinkedBlockingDeque<V>();
             }
         },
-        ArrayBlockingQueue(java.util.concurrent.ArrayBlockingQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        ArrayBlockingQueue(java.util.concurrent.ArrayBlockingQueue.class) {
+            public <V> Collection<V> newMessage() {
                 // initialize to same initial value as ArrayList
                 return new java.util.concurrent.ArrayBlockingQueue<V>(10);
             }
         },
-        ArrayDeque(java.util.ArrayDeque.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        ArrayDeque(java.util.ArrayDeque.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.ArrayDeque<V>();
             }
         },
-        ConcurrentLinkedQueue(java.util.concurrent.ConcurrentLinkedQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        ConcurrentLinkedQueue(java.util.concurrent.ConcurrentLinkedQueue.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.ConcurrentLinkedQueue<V>();
             }
         },
-        PriorityBlockingQueue(java.util.concurrent.PriorityBlockingQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        PriorityBlockingQueue(java.util.concurrent.PriorityBlockingQueue.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.concurrent.PriorityBlockingQueue<V>();
             }
         },
-        PriorityQueue(java.util.PriorityQueue.class)
-        {
-            public <V> Collection<V> newMessage()
-            {
+        PriorityQueue(java.util.PriorityQueue.class) {
+            public <V> Collection<V> newMessage() {
                 return new java.util.PriorityQueue<V>();
             }
         };
-        
+
         public final Class<?> typeClass;
-        
-        private MessageFactories(Class<?> typeClass)
-        {
+
+        private MessageFactories(Class<?> typeClass) {
             this.typeClass = typeClass;
         }
-        
-        public Class<?> typeClass()
-        {
+
+        public Class<?> typeClass() {
             return typeClass;
         }
-        
+
         /**
-         * Returns the message factory for the standard jdk {@link Collection} 
+         * Returns the message factory for the standard jdk {@link Collection}
          * implementations.
          */
-        public static MessageFactories getFactory(Class<? extends Collection<?>> clazz)
-        {
-            return clazz.getName().startsWith("java.util") ? 
+        public static MessageFactories getFactory(Class<? extends Collection<?>> clazz) {
+            return clazz.getName().startsWith("java.util") ?
                     MessageFactories.valueOf(clazz.getSimpleName()) : null;
         }
-        
+
         /**
-         * Returns the message factory for the standard jdk {@link Collection} 
+         * Returns the message factory for the standard jdk {@link Collection}
          * implementations.
          */
-        public static MessageFactories getFactory(String name)
-        {
+        public static MessageFactories getFactory(String name) {
             return MessageFactories.valueOf(name);
         }
     }
-    
+
     /**
      * Factory for creating {@link Collection} messages.
      */
     public final MessageFactory messageFactory;
-    
-    public CollectionSchema()
-    {
+
+    public CollectionSchema() {
         this(MessageFactories.ArrayList);
     }
-    
-    public CollectionSchema(MessageFactory messageFactory)
-    {
+
+    public CollectionSchema(MessageFactory messageFactory) {
         this.messageFactory = messageFactory;
     }
-    
+
     /**
      * Adds the value from the input into the {@link Collection}.
      */
     protected abstract void addValueFrom(Input input, Collection<V> collection)
-    throws IOException;
-    
+            throws IOException;
+
     /**
      * Writes the value to the output.
      */
-    protected abstract void writeValueTo(Output output, int fieldNumber, V value, 
-            boolean repeated) throws IOException;
-    
+    protected abstract void writeValueTo(Output output, int fieldNumber, V value,
+                                         boolean repeated) throws IOException;
+
     /**
      * Transfers the value from the input to the output.
      */
-    protected abstract void transferValue(Pipe pipe, Input input, Output output, 
-            int number, boolean repeated) throws IOException;
-    
-    
-    public final String getFieldName(int number)
-    {
+    protected abstract void transferValue(Pipe pipe, Input input, Output output,
+                                          int number, boolean repeated) throws IOException;
+
+
+    public final String getFieldName(int number) {
         return number == 1 ? FIELD_NAME_VALUE : null;
     }
 
-    public final int getFieldNumber(String name)
-    {
-        return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0; 
+    public final int getFieldNumber(String name) {
+        return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
     }
 
-    public final boolean isInitialized(Collection<V> map)
-    {
+    public final boolean isInitialized(Collection<V> map) {
         return true;
     }
 
-    public final String messageFullName()
-    {
+    public final String messageFullName() {
         return Collection.class.getName();
     }
 
-    public final String messageName()
-    {
+    public final String messageName() {
         return Collection.class.getSimpleName();
     }
-    
-    public final Class<? super Collection<V>> typeClass()
-    {
+
+    public final Class<? super Collection<V>> typeClass() {
         return Collection.class;
     }
-    
-    public final Collection<V> newMessage()
-    {
+
+    public final Collection<V> newMessage() {
         return messageFactory.newMessage();
     }
 
-    public void mergeFrom(Input input, Collection<V> message) throws IOException
-    {
-        for(int number = input.readFieldNumber(this);; 
-                number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+    public void mergeFrom(Input input, Collection<V> message) throws IOException {
+        for (int number = input.readFieldNumber(this); ;
+             number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
                     addValueFrom(input, message);
                     break;
                 default:
-                    throw new ProtostuffException("The collection was incorrectly " + 
+                    throw new ProtostuffException("The collection was incorrectly " +
                             "serialized.");
             }
         }
     }
 
-    public void writeTo(Output output, Collection<V> message) throws IOException
-    {
-        for(V value : message)
-        {
+    public void writeTo(Output output, Collection<V> message) throws IOException {
+        for (V value : message) {
             // null values not serialized.
-            if(value != null)
+            if (value != null)
                 writeValueTo(output, 1, value, true);
         }
     }
-    
-    public final Pipe.Schema<Collection<V>> pipeSchema = 
-        new Pipe.Schema<Collection<V>>(CollectionSchema.this)
-    {
 
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(this);; 
-                    number = input.readFieldNumber(this))
-            {
-                switch(number)
-                {
-                    case 0:
-                        return;
-                    case 1:
-                        transferValue(pipe, input, output, 1, true);
-                        break;
-                    default:
-                        throw new ProtostuffException("The collection was incorrectly " + 
-                                "serialized.");
+    public final Pipe.Schema<Collection<V>> pipeSchema =
+            new Pipe.Schema<Collection<V>>(CollectionSchema.this) {
+
+                protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+                    for (int number = input.readFieldNumber(this); ;
+                         number = input.readFieldNumber(this)) {
+                        switch (number) {
+                            case 0:
+                                return;
+                            case 1:
+                                transferValue(pipe, input, output, 1, true);
+                                break;
+                            default:
+                                throw new ProtostuffException("The collection was incorrectly " +
+                                        "serialized.");
+                        }
+                    }
                 }
-            }
-        }
-        
-    };
+
+            };
 
 }

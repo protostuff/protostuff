@@ -23,61 +23,49 @@ import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.Bar;
-import com.dyuproject.protostuff.Baz;
-import com.dyuproject.protostuff.Foo;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.XmlXIOUtil;
-
 /**
  * Tests for XmlXOutput.
- * 
+ *
  * @author David Yu
  * @created Aug 30, 2012
  */
-public class XmlXTest extends com.dyuproject.protostuff.AbstractTest
-{
-    
-    public void testFoo() throws Exception
-    {
+public class XmlXTest extends com.dyuproject.protostuff.AbstractTest {
+
+    public void testFoo() throws Exception {
         Schema<Foo> schema = Foo.getSchema();
         Foo message = foo;
 
-        byte[] data = XmlXIOUtil.toByteArray(message, schema, 
+        byte[] data = XmlXIOUtil.toByteArray(message, schema,
                 buf());
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         XmlXIOUtil.writeTo(out, message, schema, buf());
-        
+
         assertTrue(Arrays.equals(data, out.toByteArray()));
     }
-    
-    public void testBar() throws Exception
-    {
+
+    public void testBar() throws Exception {
         Schema<Bar> schema = Bar.getSchema();
-        for(Bar message : new Bar[]{bar, negativeBar})
-        {
-            byte[] data = XmlXIOUtil.toByteArray(message, schema, 
+        for (Bar message : new Bar[]{bar, negativeBar}) {
+            byte[] data = XmlXIOUtil.toByteArray(message, schema,
                     buf());
-            
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             XmlXIOUtil.writeTo(out, message, schema, buf());
-            
+
             assertTrue(Arrays.equals(data, out.toByteArray()));
         }
     }
-    
-    public void testBaz() throws Exception
-    {
+
+    public void testBaz() throws Exception {
         Schema<Baz> schema = Baz.getSchema();
-        for(Baz message : new Baz[]{baz, negativeBaz})
-        {
-            byte[] data = XmlXIOUtil.toByteArray(message, schema, 
+        for (Baz message : new Baz[]{baz, negativeBaz}) {
+            byte[] data = XmlXIOUtil.toByteArray(message, schema,
                     buf());
-            
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             XmlXIOUtil.writeTo(out, message, schema, buf());
-            
+
             assertTrue(Arrays.equals(data, out.toByteArray()));
         }
     }

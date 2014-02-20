@@ -20,11 +20,9 @@ package com.dyuproject.protostuff;
  * @author David Yu
  * @created Feb 4, 2011
  */
-public class JsonXNumericRuntimeObjectSchemaTest extends JsonXRuntimeObjectSchemaTest
-{
-    
-    protected boolean isNumeric()
-    {
+public class JsonXNumericRuntimeObjectSchemaTest extends JsonXRuntimeObjectSchemaTest {
+
+    protected boolean isNumeric() {
         return true;
     }
 

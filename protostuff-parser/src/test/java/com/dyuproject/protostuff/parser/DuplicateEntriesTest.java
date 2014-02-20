@@ -14,9 +14,9 @@
 
 package com.dyuproject.protostuff.parser;
 
-import java.io.File;
-
 import junit.framework.TestCase;
+
+import java.io.File;
 
 /**
  * Fail-fast exceptions thrown when detecting duplicate proto components.
@@ -24,57 +24,46 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Jul 21, 2011
  */
-public class DuplicateEntriesTest extends TestCase
-{
-    
-    public void assertDup(String source) throws Exception
-    {
+public class DuplicateEntriesTest extends TestCase {
+
+    public void assertDup(String source) throws Exception {
         File f = ProtoParserTest.getFile(source);
         assertTrue(f.exists());
-        
+
         Proto proto = new Proto(f);
-        
-        try
-        {
+
+        try {
             ProtoUtil.loadFrom(f, proto);
-        }
-        catch(IllegalStateException e)
-        {
+        } catch (IllegalStateException e) {
             // expected
-            
+
             return;
         }
-        
+
         assertTrue(false);
     }
-    
-    public void testDupEnum() throws Exception
-    {
+
+    public void testDupEnum() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_enum.proto");
     }
-    
-    public void testDupNestedEnum() throws Exception
-    {
+
+    public void testDupNestedEnum() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_nested_enum.proto");
     }
-    
-    public void testDupMessage() throws Exception
-    {
+
+    public void testDupMessage() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_message.proto");
     }
-    
-    public void testDupNestedMessage() throws Exception
-    {
+
+    public void testDupNestedMessage() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_nested_message.proto");
     }
-    
-    public void testDupRpcMethod() throws Exception
-    {
+
+    public void testDupRpcMethod() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_rpcmethod.proto");
     }
-    
-    public void testDupService() throws Exception
-    {
+
+    public void testDupService() throws Exception {
         assertDup("com/dyuproject/protostuff/parser/test_duplicate_service.proto");
     }
 

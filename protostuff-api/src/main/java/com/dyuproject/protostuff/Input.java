@@ -18,74 +18,107 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * An Input lets an application read primitive data types and objects from 
+ * An Input lets an application read primitive data types and objects from
  * a source of data.
  *
  * @author David Yu
  * @created Nov 9, 2009
  */
-public interface Input
-{
-    
+public interface Input {
+
     /**
      * The underlying implementation should handle the unknown field.
      */
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException;
-    
+
     /**
      * Reads the field number of a message/object tied to the given {@link Schema schema}.
      */
     public <T> int readFieldNumber(Schema<T> schema) throws IOException;
-    
-    /** Reads a variable int field value. */
+
+    /**
+     * Reads a variable int field value.
+     */
     public int readInt32() throws IOException;
-    
-    /** Reads an unsigned int field value. */
+
+    /**
+     * Reads an unsigned int field value.
+     */
     public int readUInt32() throws IOException;
-    
-    /** Reads a signed int field value. */
+
+    /**
+     * Reads a signed int field value.
+     */
     public int readSInt32() throws IOException;
-    
-    /** Reads a fixed int(4 bytes) field value. */
+
+    /**
+     * Reads a fixed int(4 bytes) field value.
+     */
     public int readFixed32() throws IOException;
-    
-    /** Reads a signed+fixed int(4 bytes) field value. */
+
+    /**
+     * Reads a signed+fixed int(4 bytes) field value.
+     */
     public int readSFixed32() throws IOException;
-    
-    /** Reads a variable long field value. */
+
+    /**
+     * Reads a variable long field value.
+     */
     public long readInt64() throws IOException;
-    
-    /** Reads an unsigned long field value. */
+
+    /**
+     * Reads an unsigned long field value.
+     */
     public long readUInt64() throws IOException;
-    
-    /** Reads a signed long field value. */
+
+    /**
+     * Reads a signed long field value.
+     */
     public long readSInt64() throws IOException;
-    
-    /** Reads a fixed long(8 bytes) field value. */
+
+    /**
+     * Reads a fixed long(8 bytes) field value.
+     */
     public long readFixed64() throws IOException;
-    
-    /** Reads a signed+fixed long(8 bytes) field value. */
+
+    /**
+     * Reads a signed+fixed long(8 bytes) field value.
+     */
     public long readSFixed64() throws IOException;
-    
-    /** Reads a float field value. */
+
+    /**
+     * Reads a float field value.
+     */
     public float readFloat() throws IOException;
-    
-    /** Reads a double field value. */
+
+    /**
+     * Reads a double field value.
+     */
     public double readDouble() throws IOException;
-    
-    /** Reads a boolean field value. */
+
+    /**
+     * Reads a boolean field value.
+     */
     public boolean readBool() throws IOException;
-    
-    /** Reads an enum(its number) field value. */
+
+    /**
+     * Reads an enum(its number) field value.
+     */
     public int readEnum() throws IOException;
-    
-    /** Reads a {@link String} field value. */
+
+    /**
+     * Reads a {@link String} field value.
+     */
     public String readString() throws IOException;
-    
-    /** Reads a {@link ByteString} field value. */
+
+    /**
+     * Reads a {@link ByteString} field value.
+     */
     public ByteString readBytes() throws IOException;
-    
-    /** Reads a byte array field value. */
+
+    /**
+     * Reads a byte array field value.
+     */
     public byte[] readByteArray() throws IOException;
 
     public ByteBuffer readByteBuffer() throws IOException;
@@ -95,13 +128,13 @@ public interface Input
      * The provided {@link Schema schema} handles the deserialization for the object.
      */
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException;
-    
+
     /**
      * Transfer the byte range to the output.
      * Capable of zero-copy transfer depending on the type of input.
      */
-    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber, 
-            boolean repeated) throws IOException;
+    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
+                                    boolean repeated) throws IOException;
 
 
 }

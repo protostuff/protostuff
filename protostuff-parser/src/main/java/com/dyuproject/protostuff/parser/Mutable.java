@@ -21,52 +21,43 @@ package com.dyuproject.protostuff.parser;
  * @author David Yu
  * @created May 10, 2010
  */
-public class Mutable<T>
-{
-    
+public class Mutable<T> {
+
     private T current, last;
-    
-    public Mutable(T value)
-    {
-        if(value == null)
+
+    public Mutable(T value) {
+        if (value == null)
             throw new IllegalArgumentException("The arg 'value' cannot be null.");
-        
+
         current = value;
     }
 
-    public void override(T newValue)
-    {
+    public void override(T newValue) {
         // can only override once.
         // needs to be reset before it can be overriden again.
-        if(last == null)
-        {
+        if (last == null) {
             last = current;
             current = newValue;
         }
 
     }
-    
-    public void reset()
-    {
-        if(last != null)
-        {
+
+    public void reset() {
+        if (last != null) {
             current = last;
             last = null;
         }
     }
-    
-    public T getValue()
-    {
+
+    public T getValue() {
         return current;
     }
-    
-    public T getLast()
-    {
+
+    public T getLast() {
         return last;
     }
-    
-    public boolean isOverridden()
-    {
+
+    public boolean isOverridden() {
         return last != null;
     }
 

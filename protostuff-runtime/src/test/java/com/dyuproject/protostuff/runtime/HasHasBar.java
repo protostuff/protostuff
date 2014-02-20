@@ -14,12 +14,12 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import com.dyuproject.protostuff.ProtostuffIOUtil;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
@@ -27,19 +27,16 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public final class HasHasBar implements Externalizable
-{
-    
+public final class HasHasBar implements Externalizable {
+
     private String name;
     private HasBar hasBar;
-    
-    public HasHasBar()
-    {
-        
+
+    public HasHasBar() {
+
     }
 
-    public HasHasBar(String name, HasBar hasBar)
-    {
+    public HasHasBar(String name, HasBar hasBar) {
         this.name = name;
         this.hasBar = hasBar;
     }
@@ -47,45 +44,38 @@ public final class HasHasBar implements Externalizable
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the hasBar
      */
-    public HasBar getHasBar()
-    {
+    public HasBar getHasBar() {
         return hasBar;
     }
 
     /**
      * @param hasBar the hasBar to set
      */
-    public void setHasBar(HasBar hasBar)
-    {
+    public void setHasBar(HasBar hasBar) {
         this.hasBar = hasBar;
     }
 
-    public void readExternal(ObjectInput in) throws IOException
-    {
+    public void readExternal(ObjectInput in) throws IOException {
         ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(HasHasBar.class));
     }
-    
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
+
+    public void writeExternal(ObjectOutput out) throws IOException {
         ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(HasHasBar.class));
     }
-    
-    
+
 
 }

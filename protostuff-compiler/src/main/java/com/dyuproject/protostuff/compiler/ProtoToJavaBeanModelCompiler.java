@@ -39,23 +39,19 @@ import java.io.Writer;
  * @author Ivan Prisyazhniy
  * @created Mar 9, 2012
  */
-public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
-{
-    public ProtoToJavaBeanModelCompiler()
-    {
+public class ProtoToJavaBeanModelCompiler extends STCodeGenerator {
+    public ProtoToJavaBeanModelCompiler() {
         super("java_bean_model");
     }
 
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
+    public void compile(ProtoModule module, Proto proto) throws IOException {
         String javaPackageName = proto.getJavaPackageName();
 
         StringTemplateGroup modelTemplateGroup = getSTG("java_bean_model_model");
         StringTemplateGroup schemaTemplateGroup = getSTG("java_bean_model_schema");
 
         // Enum blocks as is
-        for (EnumGroup eg : proto.getEnumGroups())
-        {
+        for (EnumGroup eg : proto.getEnumGroups()) {
             if (eg.getAnnotation("Transient") != null)
                 continue;
 
@@ -72,30 +68,26 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         }
 
         // Messages and Schemas
-        for (Message m : proto.getMessages())
-        {
+        for (Message m : proto.getMessages()) {
             if (m.getAnnotation("Transient") != null)
                 continue;
 
             // true if its a service message w/c isn't supported atm
-            if (m.getFields().isEmpty())
-            {
+            if (m.getFields().isEmpty()) {
                 System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
             }
 
             // Generate model
             boolean generateModel = shouldGenerateModel(module, proto, m);
-            if (generateModel)
-            {
+            if (generateModel) {
                 // Get model name
                 String modelFullName = getRemoteModelName(modelTemplateGroup, m);
                 // Default package and name for model
                 String modelPackage = javaPackageName;
                 String modelName = modelFullName;
                 // Detect if there is a package
-                if (modelFullName.lastIndexOf('.') > -1)
-                {
+                if (modelFullName.lastIndexOf('.') > -1) {
                     int lastDotIndex = modelFullName.lastIndexOf('.');
                     modelPackage = modelFullName.substring(0, lastDotIndex);
                     modelName = modelFullName.substring(lastDotIndex + 1);
@@ -129,46 +121,39 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         }
     }
 
-    public boolean shouldGenerateModel(ProtoModule module, Proto proto, Message m)
-    {
+    public boolean shouldGenerateModel(ProtoModule module, Proto proto, Message m) {
         boolean generateModel = false;
 
-        if (module.getOptions().containsKey("models"))
-        {
+        if (module.getOptions().containsKey("models")) {
             String optGenerateModel = module.getOption("models");
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (module.getOptions().containsKey("no_models"))
-        {
+        } else if (module.getOptions().containsKey("no_models")) {
             String optGenerateModel = module.getOption("no_models");
             generateModel =
                     !optGenerateModel.equalsIgnoreCase("true") &&
                             !optGenerateModel.equals("1");
         }
 
-        if (proto.getOptions().containsKey("models"))
-        {
+        if (proto.getOptions().containsKey("models")) {
             String optGenerateModel = proto.getExtraOption("models").toString();
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (proto.getOptions().containsKey("no_models"))
-        {
+        } else if (proto.getOptions().containsKey("no_models")) {
             String optGenerateModel = proto.getExtraOption("no_models");
             generateModel =
                     !optGenerateModel.equalsIgnoreCase("true") &&
                             !optGenerateModel.equals("1");
         }
 
-        if (m.getOptions().containsKey("model"))
-        {
+        if (m.getOptions().containsKey("model")) {
             String optGenerateModel = m.getExtraOption("model").toString();
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (m.getOptions().containsKey("no_model"))
-        {
+        } else if (m.getOptions().containsKey("no_model")) {
             String optGenerateModel = m.getExtraOption("no_model");
             generateModel =
                     !optGenerateModel.equalsIgnoreCase("true") &&
@@ -178,8 +163,7 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         return generateModel;
     }
 
-    public String getRemoteModelName(StringTemplateGroup group, Message message) throws IOException
-    {
+    public String getRemoteModelName(StringTemplateGroup group, Message message) throws IOException {
         StringWriter writer = new StringWriter(16);
         NoIndentWriter out = new NoIndentWriter(writer);
 
@@ -194,8 +178,7 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         return result;
     }
 
-    public String getRemoteModelSchemaName(StringTemplateGroup group, Message message) throws IOException
-    {
+    public String getRemoteModelSchemaName(StringTemplateGroup group, Message message) throws IOException {
         StringWriter writer = new StringWriter(16);
         NoIndentWriter out = new NoIndentWriter(writer);
 

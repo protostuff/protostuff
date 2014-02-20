@@ -1,8 +1,5 @@
 package com.dyuproject.protostuff;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag32;
 import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag64;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
@@ -13,13 +10,15 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
 import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 /**
  * Created by ryan on 1/16/14.
  */
 
 
-public final class LowCopyProtostuffOutput implements Output
-{
+public final class LowCopyProtostuffOutput implements Output {
 
     public LinkBuffer buffer;
 
@@ -49,11 +48,8 @@ public final class LowCopyProtostuffOutput implements Output
 //        super.clear();
 //        return this;
 //    }
-
-    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
-        if(value < 0)
-        {
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException {
+        if (value < 0) {
             buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
             buffer.writeVarInt64(value);
 
@@ -64,9 +60,7 @@ public final class LowCopyProtostuffOutput implements Output
 //                            makeTag(fieldNumber, WIRETYPE_VARINT),
 //                            this,
 //                            tail));
-        }
-        else
-        {
+        } else {
             buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
             buffer.writeVarInt32(value);
 
@@ -98,8 +92,7 @@ public final class LowCopyProtostuffOutput implements Output
         }*/
     }
 
-    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt32(value);
 //        tail = sink.writeVarInt32(
@@ -117,8 +110,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt32(encodeZigZag32(value));
 //        tail = sink.writeVarInt32(
@@ -136,8 +128,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(value);
 //        tail = sink.writeInt32LE(
@@ -155,8 +146,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(value);
 //        tail = sink.writeInt32LE(
@@ -174,8 +164,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(value);
 //        tail = sink.writeVarInt64(
@@ -193,8 +182,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(value);
 //        tail = sink.writeVarInt64(
@@ -212,8 +200,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(encodeZigZag64(value));
 //        tail = sink.writeVarInt64(
@@ -231,8 +218,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(value);
 //        tail = sink.writeInt64LE(
@@ -250,8 +236,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(value);
 //        tail = sink.writeInt64LE(
@@ -269,8 +254,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
-    {
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(Float.floatToRawIntBits(value));
 //        tail = sink.writeInt32LE(
@@ -288,8 +272,7 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
-    {
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(Double.doubleToRawLongBits(value));
 //        tail = sink.writeInt64LE(
@@ -307,10 +290,9 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
-    {
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
-        buffer.writeByte(value ? (byte)0x01 : 0x00);
+        buffer.writeByte(value ? (byte) 0x01 : 0x00);
 //        tail = sink.writeByte(
 //                value ? (byte)0x01 : 0x00,
 //                this,
@@ -326,13 +308,11 @@ public final class LowCopyProtostuffOutput implements Output
                 tail);*/
     }
 
-    public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
-    {
+    public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException {
         writeInt32(fieldNumber, number, repeated);
     }
 
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
-    {
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException {
         // TODO the original implementation is a lot more complex, is this compatible?
         byte[] strbytes = value.getBytes("UTF-8");
         writeByteArray(fieldNumber, strbytes, repeated);
@@ -352,13 +332,11 @@ public final class LowCopyProtostuffOutput implements Output
                 writeRawVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), this, tail));*/
     }
 
-    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
-    {
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
-    public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
-    {
+    public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException {
         writeByteRange(false, fieldNumber, bytes, 0, bytes.length, repeated);
 //        buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED));
 //        buffer.writeVarInt32(bytes.length);
@@ -381,8 +359,7 @@ public final class LowCopyProtostuffOutput implements Output
     }
 
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
-                               int offset, int length, boolean repeated) throws IOException
-    {
+                               int offset, int length, boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED));
         buffer.writeVarInt32(length);
         buffer.writeByteArray(value, offset, length);
@@ -400,8 +377,7 @@ public final class LowCopyProtostuffOutput implements Output
     }
 
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
-                                final boolean repeated) throws IOException
-    {
+                                final boolean repeated) throws IOException {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_START_GROUP));
 //        tail = sink.writeVarInt32(
 //                makeTag(fieldNumber, WIRETYPE_START_GROUP),
@@ -416,10 +392,13 @@ public final class LowCopyProtostuffOutput implements Output
 //                this,
 //                tail);
     }
-    /** Writes a ByteBuffer field. */
+
+    /**
+     * Writes a ByteBuffer field.
+     */
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-                writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
-                               value.remaining(), repeated);
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

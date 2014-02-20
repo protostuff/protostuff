@@ -14,15 +14,14 @@
 
 package com.dyuproject.protostuff.mojo;
 
-import java.io.File;
-
+import com.dyuproject.protostuff.compiler.CachingProtoLoader;
+import com.dyuproject.protostuff.compiler.CompilerMain;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
-import com.dyuproject.protostuff.compiler.CachingProtoLoader;
-import com.dyuproject.protostuff.compiler.CompilerMain;
+import java.io.File;
 
 /**
  * Compiles proto files to java/gwt/etc.
@@ -32,9 +31,8 @@ import com.dyuproject.protostuff.compiler.CompilerMain;
  * @goal compile
  * @requiresDependencyResolution runtime
  */
-public class ProtoCompilerMojo extends AbstractMojo
-{
-    
+public class ProtoCompilerMojo extends AbstractMojo {
+
     /**
      * The current Maven project.
      *
@@ -52,7 +50,7 @@ public class ProtoCompilerMojo extends AbstractMojo
      * @since 1.0.1
      */
     private boolean skip;
-    
+
     /**
      * When {@code true}, the protos are cached for re-use.
      * This matters when a certain proto is also used/imported by other modules.
@@ -79,139 +77,117 @@ public class ProtoCompilerMojo extends AbstractMojo
      *
      * @parameter
      */
-    protected File modulesFile;    
-    
+    protected File modulesFile;
+
     /**
-     * If not specified, the directory where the file is located will be used as its 
+     * If not specified, the directory where the file is located will be used as its
      * base dir.
-     *
-     * This is only relevent when {@link #modulesFile is provided}. 
+     * <p/>
+     * This is only relevent when {@link #modulesFile is provided}.
      *
      * @parameter
      * @since 1.0.8
      */
     protected File sourceBaseDir;
-    
+
     /**
-     * If not specified, the directory where the file is located will be used as its 
+     * If not specified, the directory where the file is located will be used as its
      * base dir.
-     * 
+     * <p/>
      * This is only relevent when {@link #modulesFile is provided}.
      *
      * @parameter
      * @since 1.0.8
      */
     protected File outputBaseDir;
-    
+
     /**
      * The modules to generate code from
      *
      * @parameter
      */
     protected ProtoModule[] protoModules;
-    
-    
+
+
     /**
      * @parameter expression="${project.basedir}"
      * @required
      */
     protected File baseDir;
 
-    public void execute() throws MojoExecutionException, MojoFailureException
-    {
-        if (skipMojo())
-        {
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skipMojo()) {
             return;
         }
 
         assert baseDir != null && baseDir.exists() && baseDir.isDirectory();
-        
+
         CachingProtoLoader loader = cacheProtos ? new CachingProtoLoader() : null;
-        
-        if(modulesFile==null)
-        {
-            if(protoModules==null)
-            {
+
+        if (modulesFile == null) {
+            if (protoModules == null) {
                 throw new MojoExecutionException("Either <modules> or <modulesFile> " +
-                                "should be provided.");
+                        "should be provided.");
             }
-            try
-            {
-                for(ProtoModule m : protoModules)
-                {
+            try {
+                for (ProtoModule m : protoModules) {
                     m.setCachingProtoLoader(loader);
-                    if(!CompilerMain.isAvailableOutput(m.getOutput()) && 
+                    if (!CompilerMain.isAvailableOutput(m.getOutput()) &&
                             !baseDir.getAbsoluteFile().equals(
-                                    new File(".").getAbsoluteFile()))
-                    {
+                                    new File(".").getAbsoluteFile())) {
                         // custom stg output executed on a child pom
-                        try
-                        {
+                        try {
                             File relativePath = new File(baseDir, m.getOutput());
-                            if(relativePath.exists())
-                            {
+                            if (relativePath.exists()) {
                                 // update the path module.
                                 m.setOutput(relativePath.getCanonicalPath());
                             }
-                        }
-                        catch(Exception e)
-                        {
+                        } catch (Exception e) {
                             // ignore ... <output> might be an absolute path
                         }
                     }
                     CompilerMain.compile(m);
 
                     // enabled by default unless overridden
-                    if(m.isAddToCompileSourceRoot())
-                    {
+                    if (m.isAddToCompileSourceRoot()) {
                         // Include generated directory to the list of compilation sources
                         project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
-        }
-        else
-        {            
-            try
-            {
-                if(protoModules!=null)
-                {
-                    for (ProtoModule m : protoModules)
-                    {
+        } else {
+            try {
+                if (protoModules != null) {
+                    for (ProtoModule m : protoModules) {
                         m.setCachingProtoLoader(loader);
                         CompilerMain.compile(m);
 
                         // enabled by default unless overridden
-                        if(m.isAddToCompileSourceRoot())
-                        {
+                        if (m.isAddToCompileSourceRoot()) {
                             // Include generated directory to the list of compilation sources
                             project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
                         }
                     }
                 }
-                
-                if(!modulesFile.exists())
+
+                if (!modulesFile.exists())
                     throw new MojoExecutionException(modulesFile + " does not exist.");
-                
+
                 File parent = modulesFile.getParentFile();
-                File sourceBaseDir = this.sourceBaseDir, 
+                File sourceBaseDir = this.sourceBaseDir,
                         outputBaseDir = this.outputBaseDir;
-                
-                if(sourceBaseDir == null)
+
+                if (sourceBaseDir == null)
                     sourceBaseDir = parent;
-                
-                if(outputBaseDir == null)
+
+                if (outputBaseDir == null)
                     outputBaseDir = parent;
-                
-                CompilerMain.compile(CompilerMain.loadModules(modulesFile, 
+
+                CompilerMain.compile(CompilerMain.loadModules(modulesFile,
                         sourceBaseDir, outputBaseDir));
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
@@ -230,14 +206,12 @@ public class ProtoCompilerMojo extends AbstractMojo
      * @since 1.0.1
      */
     protected boolean skipMojo() {
-        if (skip) 
-        {
+        if (skip) {
             getLog().info("Skipping protostuff mojo execution");
             return true;
         }
 
-        if (!forceMojoExecution && "pom".equals(this.project.getPackaging())) 
-        {
+        if (!forceMojoExecution && "pom".equals(this.project.getPackaging())) {
             getLog().info("Skipping protostuff mojo execution for project with packaging type 'pom'");
             return true;
         }

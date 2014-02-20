@@ -24,48 +24,41 @@ import java.util.Collection;
  * @author David Yu
  * @created Jan 26, 2011
  */
-public final class MessageCollectionSchema<V> extends CollectionSchema<V>
-{
+public final class MessageCollectionSchema<V> extends CollectionSchema<V> {
 
     /**
      * The schema of the member (message).
      */
     public final Schema<V> schema;
-    
+
     /**
      * The pipe schema of the member (message).
      */
     public final Pipe.Schema<V> pipeSchema;
-    
-    public MessageCollectionSchema(Schema<V> schema)
-    {
+
+    public MessageCollectionSchema(Schema<V> schema) {
         this(schema, null);
     }
-    
-    public MessageCollectionSchema(Schema<V> schema, Pipe.Schema<V> pipeSchema)
-    {
+
+    public MessageCollectionSchema(Schema<V> schema, Pipe.Schema<V> pipeSchema) {
         this.schema = schema;
         this.pipeSchema = pipeSchema;
     }
 
-    protected void addValueFrom(Input input, Collection<V> collection) throws IOException
-    {
+    protected void addValueFrom(Input input, Collection<V> collection) throws IOException {
         collection.add(input.mergeObject(null, schema));
     }
 
-    protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated) throws IOException
-    {
+    protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated) throws IOException {
         output.writeObject(fieldNumber, value, schema, repeated);
     }
 
-    protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
-    {
-        if(pipeSchema == null)
-        {
-            throw new RuntimeException("No pipe schema for value: " + 
+    protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException {
+        if (pipeSchema == null) {
+            throw new RuntimeException("No pipe schema for value: " +
                     schema.typeClass().getName());
         }
-        
+
         output.writeObject(number, pipe, pipeSchema, repeated);
     }
 

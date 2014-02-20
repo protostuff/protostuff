@@ -23,17 +23,14 @@ import java.util.Map;
  * @author David Yu
  * @created Jun 25, 2010
  */
-public class JsonStringMapSchemaTest extends StringMapSchemaTest
-{
-    
-    public <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
-    throws IOException
-    {
+public class JsonStringMapSchemaTest extends StringMapSchemaTest {
+
+    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
+            throws IOException {
         JsonIOUtil.mergeFrom(data, offset, length, message, schema, false);
     }
-    
-    public <T extends Map<String,String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
-    {
+
+    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException {
         return JsonIOUtil.toByteArray(message, schema, false);
     }
 

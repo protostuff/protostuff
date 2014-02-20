@@ -29,7 +29,7 @@ public class LowCopyProtostuffOutputTest extends TestCase {
                 3.14f,
                 2.7182818284,
                 599L
-                );
+        );
 
         ByteBuffer serForm2 = testObj(testBar, testBar);
         deserTest(testBar, testBar, serForm2);

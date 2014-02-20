@@ -35,7 +35,6 @@ package com.dyuproject.protostuff.runtime;
  * @author David Yu
  * @created Mar 29, 2012
  */
-public interface TestDummy
-{
+public interface TestDummy {
 
 }
