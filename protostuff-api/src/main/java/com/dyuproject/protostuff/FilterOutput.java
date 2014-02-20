@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * A FilterOutput contains some other {@link Output output}, which it uses as its basic 
@@ -128,6 +129,11 @@ public class FilterOutput<F extends Output> implements Output
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         output.writeUInt64(fieldNumber, value, repeated);
+    }
+    /** Writes a ByteBuffer field. */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
+                        value.remaining(), repeated);
     }
 
 }

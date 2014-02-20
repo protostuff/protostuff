@@ -24,6 +24,7 @@ import static com.dyuproject.protostuff.WireFormat.makeTag;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Protobuf serialization where the messages must be fully buffered on memory before 
@@ -771,4 +772,10 @@ public final class ProtobufOutput extends WriteSession implements Output
       // Note:  the right-shift must be arithmetic
       return (n << 1) ^ (n >> 63);
     }
+    /** Writes a ByteBuffer field. */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+            writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
+                           value.remaining(), repeated);
+    }
+
 }

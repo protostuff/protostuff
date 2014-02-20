@@ -17,6 +17,7 @@ package com.dyuproject.protostuff;
 import static com.dyuproject.protostuff.StringSerializer.computeUTF8Size;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * Computes the size of the data to be written.
@@ -236,6 +237,14 @@ public final class ComputedSizeOutput implements Output
         
         size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber, 
                 WireFormat.WIRETYPE_END_GROUP));
+    }
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

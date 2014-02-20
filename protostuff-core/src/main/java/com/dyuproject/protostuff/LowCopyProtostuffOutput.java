@@ -1,6 +1,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag32;
 import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag64;
@@ -414,6 +415,11 @@ public final class LowCopyProtostuffOutput implements Output
 //                makeTag(fieldNumber, WIRETYPE_END_GROUP),
 //                this,
 //                tail);
+    }
+    /** Writes a ByteBuffer field. */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+                writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
+                               value.remaining(), repeated);
     }
 
 }

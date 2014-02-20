@@ -16,6 +16,7 @@ package com.dyuproject.protostuff;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * An optimized json output which is efficient in writing numeric keys and 
@@ -864,6 +865,14 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         table[0x0A] = 'n';
         table[0x0D] = 'r';
         sOutputEscapes = table;
+    }
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

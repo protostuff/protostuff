@@ -18,6 +18,7 @@ import static com.dyuproject.protostuff.StringSerializer.STRING;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * A protobuf output where the writing of bytes is deferred (buffered chunks).
@@ -297,6 +298,14 @@ public final class DeferredOutput implements Output
 
         buffer[offset++] = (byte)tag;
         return buffer;
+    }
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

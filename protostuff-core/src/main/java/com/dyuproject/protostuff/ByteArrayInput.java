@@ -28,6 +28,7 @@ import static com.dyuproject.protostuff.WireFormat.getTagWireType;
 import static com.dyuproject.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
@@ -534,5 +535,9 @@ public final class ByteArrayInput implements Input
         
         offset += length;
     }
-    
+
+    /** Reads a byte array/ByteBuffer value. */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
 }

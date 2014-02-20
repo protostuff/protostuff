@@ -431,4 +431,9 @@ public final class LowCopyProtobufOutput implements Output
 //                tail);
     }
 
+    /** Writes a ByteBuffer field. */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+    writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
+        value.remaining(), repeated);
+    }
 }

@@ -75,12 +75,6 @@ public interface Output
     /** Writes a ByteString(wraps byte array) field. */
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException;
 
-    /** Writes a ByteBuffer field. */
-    default void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
-                value.remaining(), repeated);
-    }
-
     /** Writes a byte array field. */
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException;
     
@@ -91,6 +85,7 @@ public interface Output
     /** Writes an object(using its schema) field. */
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException;
-    
+
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException;
 
 }

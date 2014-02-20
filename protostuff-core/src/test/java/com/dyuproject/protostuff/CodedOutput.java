@@ -48,6 +48,7 @@ package com.dyuproject.protostuff;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
@@ -1343,5 +1344,11 @@ public final class CodedOutput implements Output {
     schema.writeTo(this, value);
     writeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP);
   }
-  //END EXTRA
+   /** Writes a ByteBuffer field. */
+  public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+      writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+              value.remaining(), repeated);
+  }
+
+    //END EXTRA
 }

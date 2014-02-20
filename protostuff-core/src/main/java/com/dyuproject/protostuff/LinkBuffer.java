@@ -33,7 +33,7 @@ public class LinkBuffer {
 
 
     ByteBuffer current;
-    List<ByteBuffer> buffers = new ArrayList<>();
+    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>();
 
     public long size() {
         long size = 0;
@@ -47,7 +47,7 @@ public class LinkBuffer {
     }
 
     public List<ByteBuffer> getBuffers() {
-        List<ByteBuffer> copy = new ArrayList<>(buffers.size());
+        List<ByteBuffer> copy = new ArrayList<ByteBuffer>(buffers.size());
         for (ByteBuffer b : buffers) {
             copy.add(b.duplicate());
         }

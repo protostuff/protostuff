@@ -576,4 +576,10 @@ public final class ByteBufferInput implements Input
 //        offset += length;
     }
 
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
 }

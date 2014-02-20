@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * A FilterInput contains some other {@link Input input}, which it uses as its basic 
@@ -138,5 +139,11 @@ public class FilterInput<F extends Input> implements Input
     {
         input.transferByteRangeTo(output, utf8String, fieldNumber, repeated);
     }
+
+    /** Reads a byte array/ByteBuffer value. */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
+
 
 }

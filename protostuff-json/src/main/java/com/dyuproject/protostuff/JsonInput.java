@@ -25,6 +25,7 @@ import static org.codehaus.jackson.JsonToken.VALUE_STRING;
 import static org.codehaus.jackson.JsonToken.VALUE_TRUE;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
@@ -405,6 +406,13 @@ public final class JsonInput implements Input
             output.writeString(fieldNumber, readString(), repeated);
         else
             output.writeByteArray(fieldNumber, readByteArray(), repeated);
+    }
+
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
     }
 
 }

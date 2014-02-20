@@ -88,11 +88,8 @@ public interface Input
     /** Reads a byte array field value. */
     public byte[] readByteArray() throws IOException;
 
-    /** Reads a byte array/ByteBuffer value. */
-    default ByteBuffer readByteBuffer() throws IOException {
-        return ByteBuffer.wrap(readByteArray());
-    }
-    
+    public ByteBuffer readByteBuffer() throws IOException;
+
     /**
      * Merges an object(with schema) field value.
      * The provided {@link Schema schema} handles the deserialization for the object.
