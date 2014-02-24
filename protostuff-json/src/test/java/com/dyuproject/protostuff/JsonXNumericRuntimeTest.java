@@ -19,16 +19,15 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
-
-import java.io.ByteArrayOutputStream;
-
 import com.dyuproject.protostuff.runtime.Bar;
 import com.dyuproject.protostuff.runtime.Baz;
 import com.dyuproject.protostuff.runtime.Foo;
 import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest;
+import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.dyuproject.protostuff.runtime.SerializableObjects;
-import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Test for JsonXOutput on runtime pojos (polymorphic too).
@@ -36,50 +35,42 @@ import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
  * @author David Yu
  * @created Jan 16, 2011
  */
-public class JsonXNumericRuntimeTest extends AbstractTest
-{
-    
-    public void testFoo() throws Exception
-    {
+public class JsonXNumericRuntimeTest extends AbstractTest {
+
+    public void testFoo() throws Exception {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
-        
+
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
-        
+
         byte[] data = JsonXIOUtil.toByteArray(fooCompare, schema, true, buf());
         JsonIOUtil.mergeFrom(data, dfoo, schema, true);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
-    public void testFooStreamed() throws Exception
-    {
+
+    public void testFooStreamed() throws Exception {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
-        
+
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         LinkedBuffer buffer = buf();
-        try
-        {
+        try {
             JsonXIOUtil.writeTo(out, fooCompare, schema, true, buffer);
-        }
-        finally
-        {
+        } finally {
             buffer.clear();
         }
         byte[] data = out.toByteArray();
-        
+
         JsonIOUtil.mergeFrom(data, dfoo, schema, true);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
-    public void testBar() throws Exception
-    {
+
+    public void testBar() throws Exception {
         Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
-        
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
-        {
+
+        for (Bar barCompare : new Bar[]{bar, negativeBar}) {
             Bar dbar = new Bar();
 
             byte[] data = JsonXIOUtil.toByteArray(barCompare, schema, true, buf());
@@ -87,103 +78,86 @@ public class JsonXNumericRuntimeTest extends AbstractTest
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
-    public void testBarStreamed() throws Exception
-    {
+
+    public void testBarStreamed() throws Exception {
         Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
-        
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
-        {
+
+        for (Bar barCompare : new Bar[]{bar, negativeBar}) {
             Bar dbar = new Bar();
-            
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             LinkedBuffer buffer = buf();
-            try
-            {
+            try {
                 JsonXIOUtil.writeTo(out, barCompare, schema, true, buffer);
-            }
-            finally
-            {
+            } finally {
                 buffer.clear();
             }
             byte[] data = out.toByteArray();
-            
+
             JsonIOUtil.mergeFrom(data, dbar, schema, true);
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
-    public void testBaz() throws Exception
-    {
+
+    public void testBaz() throws Exception {
         Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
-        
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
-        {
-            Baz dbaz = new Baz();            
-            
+
+        for (Baz bazCompare : new Baz[]{baz, negativeBaz}) {
+            Baz dbaz = new Baz();
+
             byte[] data = JsonXIOUtil.toByteArray(bazCompare, schema, true, buf());
             JsonIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
-    
-    public void testBazStreamed() throws Exception
-    {
+
+    public void testBazStreamed() throws Exception {
         Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
-        
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
-        {
-            Baz dbaz = new Baz();            
-            
+
+        for (Baz bazCompare : new Baz[]{baz, negativeBaz}) {
+            Baz dbaz = new Baz();
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             LinkedBuffer buffer = buf();
-            try
-            {
+            try {
                 JsonXIOUtil.writeTo(out, bazCompare, schema, true, buffer);
-            }
-            finally
-            {
+            } finally {
                 buffer.clear();
             }
             byte[] data = out.toByteArray();
-            
+
             JsonIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
-    
-    public void testPolymorphic() throws Exception
-    {
+
+    public void testPolymorphic() throws Exception {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
         Zoo zooCompare = PolymorphicSerializationTest.filledZoo();
-        
-        Zoo dzoo = new Zoo();            
-        
+
+        Zoo dzoo = new Zoo();
+
         byte[] data = JsonXIOUtil.toByteArray(zooCompare, schema, true, buf());
-        
+
         JsonIOUtil.mergeFrom(data, dzoo, schema, true);
         SerializableObjects.assertEquals(zooCompare, dzoo);
     }
-    
-    public void testPolymorphicStreamed() throws Exception
-    {
+
+    public void testPolymorphicStreamed() throws Exception {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
         Zoo zooCompare = PolymorphicSerializationTest.filledZoo();
-        
-        Zoo dzoo = new Zoo();   
-        
+
+        Zoo dzoo = new Zoo();
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         LinkedBuffer buffer = buf();
-        try
-        {
+        try {
             JsonXIOUtil.writeTo(out, zooCompare, schema, true, buffer);
-        }
-        finally
-        {
+        } finally {
             buffer.clear();
         }
         byte[] data = out.toByteArray();
-        
+
         JsonIOUtil.mergeFrom(data, dzoo, schema, true);
         SerializableObjects.assertEquals(zooCompare, dzoo);
     }

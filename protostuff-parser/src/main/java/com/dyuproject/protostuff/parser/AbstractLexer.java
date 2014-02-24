@@ -24,41 +24,34 @@ import org.antlr.runtime.RecognizerSharedState;
  * @author David Yu
  * @created Dec 16, 2009
  */
-public abstract class AbstractLexer extends Lexer
-{
-    
+public abstract class AbstractLexer extends Lexer {
+
     /**
      * Default constructor for the lexer, when you do not yet know what the
      * character stream to be provided is.
      */
-    public AbstractLexer()
-    {
+    public AbstractLexer() {
     }
 
     /**
      * Create a new instance of the lexer using the given character stream as
      * the input to lex into tokens.
-     * 
-     * @param input
-     *            A valid character stream that contains the ruleSrc code you
-     *            wish to compile (or lex at least)
+     *
+     * @param input A valid character stream that contains the ruleSrc code you
+     *              wish to compile (or lex at least)
      */
-    public AbstractLexer(CharStream input)
-    {
-        this(input,new RecognizerSharedState());
+    public AbstractLexer(CharStream input) {
+        this(input, new RecognizerSharedState());
     }
 
     /**
      * Internal constructor for ANTLR - do not use.
-     * 
-     * @param input
-     *            The character stream we are going to lex
-     * @param state
-     *            The shared state object, shared between all lexer comonents
+     *
+     * @param input The character stream we are going to lex
+     * @param state The shared state object, shared between all lexer comonents
      */
-    public AbstractLexer(CharStream input, RecognizerSharedState state)
-    {
-        super(input,state);
+    public AbstractLexer(CharStream input, RecognizerSharedState state) {
+        super(input, state);
     }
 
 }

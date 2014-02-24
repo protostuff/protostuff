@@ -35,27 +35,26 @@ import java.lang.annotation.Target;
 
 /**
  * A field annotation to configure the field number explicitly.
- * 
+ *
  * @author Brice Jaglin
  * @author David Yu
  * @created Mar 30, 2012
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Tag
-{
+public @interface Tag {
     int value();
-    
+
     /**
      * Overrides the field name (useful for non-binary formats like json/xml/yaml).
      * Optional.
      */
     String alias() default "";
-    
+
     /**
-     * A value of 0x1F means the first 5 groups (1,2,4,8,16 - bits) will include 
-     * this field.  
-     * A <b>negative</b> value of 0x1F means the first 5 groups will <b>exclude</b> 
+     * A value of 0x1F means the first 5 groups (1,2,4,8,16 - bits) will include
+     * this field.
+     * A <b>negative</b> value of 0x1F means the first 5 groups will <b>exclude</b>
      * this field.
      * Optional.
      */

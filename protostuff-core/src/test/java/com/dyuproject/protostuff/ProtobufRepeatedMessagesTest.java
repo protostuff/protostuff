@@ -25,17 +25,14 @@ import java.util.List;
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
+    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
         return ProtobufIOUtil.parseListFrom(in, schema);
     }
 
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         ProtobufIOUtil.writeListTo(out, messages, schema, buf());
     }
 

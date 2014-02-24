@@ -23,34 +23,26 @@ import java.io.IOException;
  * @author David Yu
  * @created Jan 15, 2011
  */
-public class JsonBufferReuseTest extends StandardTest
-{
-    
-    private static final ThreadLocal<LinkedBuffer> localBuffer = 
-        new ThreadLocal<LinkedBuffer>()
-    {
-        protected LinkedBuffer initialValue()
-        {
-            return buf();
-        }
-    };
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema) throws IOException
-    {
+public class JsonBufferReuseTest extends StandardTest {
+
+    private static final ThreadLocal<LinkedBuffer> localBuffer =
+            new ThreadLocal<LinkedBuffer>() {
+                protected LinkedBuffer initialValue() {
+                    return buf();
+                }
+            };
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
+                                 Schema<T> schema) throws IOException {
         ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
         JsonIOUtil.mergeFrom(in, message, schema, false, localBuffer.get());
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         final LinkedBuffer buffer = localBuffer.get();
-        try
-        {
+        try {
             return JsonXIOUtil.toByteArray(message, schema, false, buffer);
-        }
-        finally
-        {
+        } finally {
             buffer.clear();
         }
     }

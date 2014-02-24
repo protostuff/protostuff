@@ -30,8 +30,6 @@
 package com.dyuproject.protostuff.runtime;
 
 import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
-import junit.framework.TestCase;
-
 import com.dyuproject.protostuff.CollectionSchema;
 import com.dyuproject.protostuff.MapSchema;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.AcousticGuitar;
@@ -49,6 +47,7 @@ import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWit
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Size;
 import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.WrapsBat;
 import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
+import junit.framework.TestCase;
 
 /**
  * Test for {@link IncrementalIdStrategy}.
@@ -56,101 +55,90 @@ import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
  * @author David Yu
  * @created Mar 29, 2012
  */
-public class IncrementalRuntimeObjectSchemaTest extends TestCase
-{
-    
+public class IncrementalRuntimeObjectSchemaTest extends TestCase {
+
     static final boolean runTest;
-    
-    static
-    {
+
+    static {
         // check whether test/run from root module
         String strategy = System.getProperty("test_id_strategy");
         runTest = strategy == null || strategy.equals("incremental");
-        
-        if(runTest)
-        {
-            System.setProperty("protostuff.runtime.id_strategy_factory", 
+
+        if (runTest) {
+            System.setProperty("protostuff.runtime.id_strategy_factory",
                     "com.dyuproject.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
         }
     }
-    
-    public static class IdStrategyFactory implements IdStrategy.Factory
-    {
-        
+
+    public static class IdStrategyFactory implements IdStrategy.Factory {
+
         static int INSTANCE_COUNT = 0;
-        
+
         IncrementalIdStrategy.Registry r = new IncrementalIdStrategy.Registry(
-                20, 11, 
-                20, 11, 
-                20, 11, 
+                20, 11,
+                20, 11,
+                20, 11,
                 80, 11);
-        
-        public IdStrategyFactory()
-        {
+
+        public IdStrategyFactory() {
             ++INSTANCE_COUNT;
             System.out.println("@INCREMENTAL");
         }
 
-        public IdStrategy create()
-        {
+        public IdStrategy create() {
             return r.strategy;
         }
 
-        public void postCreate()
-        {
+        public void postCreate() {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)
-                .registerCollection(CollectionSchema.MessageFactories.HashSet, 2)
-                .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3);
-                
-            
+                    .registerCollection(CollectionSchema.MessageFactories.HashSet, 2)
+                    .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3);
+
+
             r.registerMap(MapSchema.MessageFactories.HashMap, 1)
-                .registerMap(MapSchema.MessageFactories.LinkedHashMap, 2)
-                .registerMap(CustomHashMap.MESSAGE_FACTORY, 3);
-            
+                    .registerMap(MapSchema.MessageFactories.LinkedHashMap, 2)
+                    .registerMap(CustomHashMap.MESSAGE_FACTORY, 3);
+
             r.registerEnum(Size.class, 1)
-                .registerEnum(GuitarPickup.class, 2);
-            
+                    .registerEnum(GuitarPickup.class, 2);
+
             r.registerPojo(AcousticGuitar.class, 1)
-                .registerPojo(BassGuitar.class, 2)
-                .registerPojo(Pojo.class, 3)
-                .registerPojo(PojoWithArray.class, 4)
-                .registerPojo(PojoWithArray2D.class, 5)
-                .registerPojo(PojoWithCollection.class, 6)
-                .registerPojo(PojoWithMap.class, 7)
-                .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
-                .registerPojo(WrapsBat.class, 9)
-                .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
-            
+                    .registerPojo(BassGuitar.class, 2)
+                    .registerPojo(Pojo.class, 3)
+                    .registerPojo(PojoWithArray.class, 4)
+                    .registerPojo(PojoWithArray2D.class, 5)
+                    .registerPojo(PojoWithCollection.class, 6)
+                    .registerPojo(PojoWithMap.class, 7)
+                    .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
+                    .registerPojo(WrapsBat.class, 9)
+                    .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
+
             r.registerDelegate(new ShortArrayDelegate(), 1);
             r.registerDelegate(SINGLETON_DELEGATE, 2);
-            
+
             r = null;
         }
-        
+
     }
-    
-    public void testProtostuff() throws Exception
-    {
-        if(runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
-        {
+
+    public void testProtostuff() throws Exception {
+        if (runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy) {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
                     "com.dyuproject.protostuff.runtime.ProtostuffRuntimeObjectSchemaTest"
-                    ), false);
-            
+            ), false);
+
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);
         }
     }
-    
-    public void testProtobuf() throws Exception
-    {
-        if(runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
-        {
+
+    public void testProtobuf() throws Exception {
+        if (runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy) {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
                     "com.dyuproject.protostuff.runtime.ProtobufRuntimeObjectSchemaTest"
-                    ), false);
-            
+            ), false);
+
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);
         }
     }

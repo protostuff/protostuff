@@ -19,15 +19,13 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Tests for {@link CodedInput}.
- * 
+ *
  * @author Max Lanin
  * @created Dec 22, 2012
  */
-public class CodedInputTest extends AbstractTest
-{
+public class CodedInputTest extends AbstractTest {
 
-    public void testSkipFieldOverTheBufferBoundary() throws Exception
-    {
+    public void testSkipFieldOverTheBufferBoundary() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int tag = WireFormat.makeTag(1, WireFormat.WIRETYPE_LENGTH_DELIMITED);
         int anotherTag = WireFormat.makeTag(2, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -46,5 +44,5 @@ public class CodedInputTest extends AbstractTest
         ci.skipField(tag);
         assertEquals(0, ci.readTag());
     }
-    
+
 }

@@ -20,9 +20,8 @@ package com.dyuproject.protostuff.parser;
  * @author David Yu
  * @created Jan 8, 2010
  */
-public interface HasName
-{
-    
+public interface HasName {
+
     public String getName();
 
 }

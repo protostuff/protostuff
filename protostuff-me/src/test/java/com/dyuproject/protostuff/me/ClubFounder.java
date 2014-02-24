@@ -5,103 +5,80 @@ package com.dyuproject.protostuff.me;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.me.Input;
-import com.dyuproject.protostuff.me.Message;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Pipe;
-import com.dyuproject.protostuff.me.Schema;
+public final class ClubFounder implements Message, Schema {
 
-public final class ClubFounder implements Message, Schema
-{
-
-    public static Schema getSchema()
-    {
+    public static Schema getSchema() {
         return DEFAULT_INSTANCE;
     }
 
-    public static ClubFounder getDefaultInstance()
-    {
+    public static ClubFounder getDefaultInstance() {
         return DEFAULT_INSTANCE;
     }
 
     static final ClubFounder DEFAULT_INSTANCE = new ClubFounder();
 
-    
+
     private String name;
     private Club club;
 
-    public ClubFounder()
-    {
-        
+    public ClubFounder() {
+
     }
 
     // getters and setters
 
     // name
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     // club
 
-    public Club getClub()
-    {
+    public Club getClub() {
         return club;
     }
 
-    public void setClub(Club club)
-    {
+    public void setClub(Club club) {
         this.club = club;
     }
 
     // message method
 
-    public Schema cachedSchema()
-    {
+    public Schema cachedSchema() {
         return DEFAULT_INSTANCE;
     }
 
     // schema methods
 
-    public Object /*ClubFounder*/ newMessage()
-    {
+    public Object /*ClubFounder*/ newMessage() {
         return new ClubFounder();
     }
 
-    public Class typeClass()
-    {
+    public Class typeClass() {
         return ClubFounder.class;
     }
 
-    public String messageName()
-    {
+    public String messageName() {
         return "ClubFounder";
     }
 
-    public String messageFullName()
-    {
+    public String messageFullName() {
         return ClubFounder.class.getName();
     }
 
-    public boolean isInitialized(Object /*ClubFounder*/ message)
-    {
+    public boolean isInitialized(Object /*ClubFounder*/ message) {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*ClubFounder*/ messageObj) throws IOException
-    {
-        ClubFounder message = (ClubFounder)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+    public void mergeFrom(Input input, Object /*ClubFounder*/ messageObj) throws IOException {
+        ClubFounder message = (ClubFounder) messageObj;
+        for (int number = input.readFieldNumber(this); ; number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
@@ -109,58 +86,53 @@ public final class ClubFounder implements Message, Schema
                     break;
 
                 case 2:
-                    message.club = (Club)input.mergeObject(message.club, Club.getSchema());
+                    message.club = (Club) input.mergeObject(message.club, Club.getSchema());
                     break;
 
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
-    
-    public void writeTo(Output output, Object /*ClubFounder*/ messageObj) throws IOException
-    {
-        ClubFounder message = (ClubFounder)messageObj;
-        if(message.name != null)
+
+    public void writeTo(Output output, Object /*ClubFounder*/ messageObj) throws IOException {
+        ClubFounder message = (ClubFounder) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
 
 
-        if(message.club != null)
-             output.writeObject(2, message.club, Club.getSchema(), false);
+        if (message.club != null)
+            output.writeObject(2, message.club, Club.getSchema(), false);
 
     }
 
-    public String getFieldName(int number)
-    {
-        switch(number)
-        {
-            case 1: return "name";
-            case 2: return "club";
-            default: return null;
+    public String getFieldName(int number) {
+        switch (number) {
+            case 1:
+                return "name";
+            case 2:
+                return "club";
+            default:
+                return null;
         }
     }
 
-    public int getFieldNumber(String name)
-    {
-        final Integer number = (Integer)__fieldMap.get(name);
+    public int getFieldNumber(String name) {
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
-    static
-    {
+
+    static {
         __fieldMap.put("name", new Integer(1));
         __fieldMap.put("club", new Integer(2));
     }
-    
-    static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
-    {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
-            {
-                switch(number)
-                {
+
+    static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE) {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+            for (int number = input.readFieldNumber(wrappedSchema); ; number = input.readFieldNumber(wrappedSchema)) {
+                switch (number) {
                     case 0:
                         return;
                     case 1:
@@ -178,8 +150,7 @@ public final class ClubFounder implements Message, Schema
         }
     };
 
-    public static Pipe.Schema getPipeSchema()
-    {
+    public static Pipe.Schema getPipeSchema() {
         return PIPE_SCHEMA;
     }
 

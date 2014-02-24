@@ -29,45 +29,44 @@
 
 package com.dyuproject.protostuff.runtime;
 
-import java.io.IOException;
-
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.Output;
 import com.dyuproject.protostuff.Pipe;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
+import java.io.IOException;
+
 /**
- * Controls how certain types are serialized and can even override the existing 
+ * Controls how certain types are serialized and can even override the existing
  * serializers because this has higher priority when the fields are being built.
  *
  * @author David Yu
  * @created Apr 20, 2012
  */
-public interface Delegate<V>
-{
-    
+public interface Delegate<V> {
+
     /**
      * The field type (for possible reflective operations in future releases).
      */
     public FieldType getFieldType();
-    
+
     /**
      * Reads the value from the input.
      */
     public V readFrom(Input input) throws IOException;
-    
+
     /**
      * Writes the {@code value} to the output.
      */
-    public void writeTo(Output output, int number, V value, 
-            boolean repeated) throws IOException;
-    
+    public void writeTo(Output output, int number, V value,
+                        boolean repeated) throws IOException;
+
     /**
      * Transfers the type from the input to the output.
      */
-    public void transfer(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException;
-    
+    public void transfer(Pipe pipe, Input input, Output output, int number,
+                         boolean repeated) throws IOException;
+
     /**
      * The class of the target value.
      */

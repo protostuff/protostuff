@@ -22,19 +22,16 @@ import java.io.IOException;
  * @author David Yu
  * @created Oct 8, 2010
  */
-public class XmlStandardTest extends StandardTest
-{
+public class XmlStandardTest extends StandardTest {
 
-    protected <T> void mergeFrom(byte[] data, int offset, int len, T message, 
-            Schema<T> schema)
-            throws IOException
-    {
+    protected <T> void mergeFrom(byte[] data, int offset, int len, T message,
+                                 Schema<T> schema)
+            throws IOException {
         XmlIOUtil.mergeFrom(data, offset, len, message, schema);
-        
+
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         return XmlIOUtil.toByteArray(message, schema);
     }
 

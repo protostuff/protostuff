@@ -22,13 +22,13 @@ import java.io.IOException;
  * @author David Yu
  * @created Jan 4, 2010
  */
-public interface ProtoCompiler
-{
-    
+public interface ProtoCompiler {
+
     /**
      * The unique id that basically is the target output.
      */
     public String getOutputId();
+
     /**
      * Compiles the proto configured/encapsulated in the module.
      */

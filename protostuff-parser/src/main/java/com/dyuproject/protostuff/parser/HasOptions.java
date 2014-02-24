@@ -37,12 +37,11 @@ import java.util.Map;
  * @author David Yu
  * @created Dec 24, 2011
  */
-public interface HasOptions
-{
-    
+public interface HasOptions {
+
     void putStandardOption(String key, Object value);
 
     void putExtraOption(String key, Object value);
-    
-    Map<String,Object> getOptions();
+
+    Map<String, Object> getOptions();
 }

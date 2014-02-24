@@ -22,26 +22,21 @@ import java.io.IOException;
  * @author David Yu
  * @created May 25, 2010
  */
-public class ProtostuffException extends IOException
-{
-    
-    public ProtostuffException()
-    {
+public class ProtostuffException extends IOException {
+
+    public ProtostuffException() {
         super();
     }
-    
-    public ProtostuffException(String message)
-    {
+
+    public ProtostuffException(String message) {
         super(message);
     }
-    
-    public ProtostuffException(String message, Throwable cause)
-    {
+
+    public ProtostuffException(String message, Throwable cause) {
         super(message);
     }
-    
-    public ProtostuffException(Throwable cause)
-    {
+
+    public ProtostuffException(Throwable cause) {
         super();
     }
 

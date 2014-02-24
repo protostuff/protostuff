@@ -14,121 +14,101 @@
 
 package com.dyuproject.protostuff.runtime;
 
+import com.dyuproject.protostuff.AbstractTest;
+import com.dyuproject.protostuff.ProtobufIOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
+import com.dyuproject.protostuff.Schema;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.ProtobufIOUtil;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-
 /**
  * Test ser/deser for subclasses that inherit from non-abstract base types.
- * 
+ * <p/>
  * Run this standalone to execute the actual tests.
- * 
+ *
  * @author David Yu
  * @created Jan 21, 2011
  */
-public class InheritanceTest extends AbstractTest
-{
-    
-    static
-    {
+public class InheritanceTest extends AbstractTest {
+
+    static {
         // must enable to support inheritance on non-abstract base types.
         System.setProperty("protostuff.runtime.morph_non_final_pojos", "true");
     }
 
-    public static class InputDevice
-    {
+    public static class InputDevice {
         private String name;
 
-        public InputDevice()
-        {
+        public InputDevice() {
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = name;
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass())
-            {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            final InputDevice other = (InputDevice)obj;
-            if ((this.name == null)?(other.name != null):!this.name.equals(other.name))
-            {
+            final InputDevice other = (InputDevice) obj;
+            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
                 return false;
             }
             return true;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int hash = 7;
-            hash = 47 * hash + (this.name != null?this.name.hashCode():0);
+            hash = 47 * hash + (this.name != null ? this.name.hashCode() : 0);
             return hash;
         }
 
     }
 
-    public static class Mouse extends InputDevice
-    {
+    public static class Mouse extends InputDevice {
         private int numberOfButtons;
 
-        public Mouse()
-        {
+        public Mouse() {
         }
 
-        public int getNumberOfButtons()
-        {
+        public int getNumberOfButtons() {
             return numberOfButtons;
         }
 
-        public void setNumberOfButtons(int numberOfButtons)
-        {
+        public void setNumberOfButtons(int numberOfButtons) {
             this.numberOfButtons = numberOfButtons;
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass())
-            {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Mouse other = (Mouse)obj;
-            if (this.numberOfButtons != other.numberOfButtons)
-            {
+            final Mouse other = (Mouse) obj;
+            if (this.numberOfButtons != other.numberOfButtons) {
                 return false;
             }
             return true;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int hash = 7;
             hash = 83 * hash + this.numberOfButtons;
             return hash;
@@ -136,46 +116,37 @@ public class InheritanceTest extends AbstractTest
 
     }
 
-    public static class KeyBoard extends InputDevice
-    {
+    public static class KeyBoard extends InputDevice {
         private int numberOfKeys;
 
-        public KeyBoard()
-        {
+        public KeyBoard() {
         }
 
-        public int getNumberOfKeys()
-        {
+        public int getNumberOfKeys() {
             return numberOfKeys;
         }
 
-        public void setNumberOfKeys(int numberOfKeys)
-        {
+        public void setNumberOfKeys(int numberOfKeys) {
             this.numberOfKeys = numberOfKeys;
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass())
-            {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            final KeyBoard other = (KeyBoard)obj;
-            if (this.numberOfKeys != other.numberOfKeys)
-            {
+            final KeyBoard other = (KeyBoard) obj;
+            if (this.numberOfKeys != other.numberOfKeys) {
                 return false;
             }
             return true;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int hash = 5;
             hash = 67 * hash + this.numberOfKeys;
             return hash;
@@ -183,71 +154,59 @@ public class InheritanceTest extends AbstractTest
 
     }
 
-    public static class InputSystem
-    {
+    public static class InputSystem {
         List<InputDevice> inputDevices;
 
-        public InputSystem()
-        {
+        public InputSystem() {
         }
 
-        public List<InputDevice> getInputDevices()
-        {
+        public List<InputDevice> getInputDevices() {
             return inputDevices;
         }
 
-        public void setInputDevices(List<InputDevice> inputDevices)
-        {
+        public void setInputDevices(List<InputDevice> inputDevices) {
             this.inputDevices = inputDevices;
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass())
-            {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            final InputSystem other = (InputSystem)obj;
-            if (this.inputDevices != other.inputDevices && (this.inputDevices == null || !this.inputDevices.equals(other.inputDevices)))
-            {
+            final InputSystem other = (InputSystem) obj;
+            if (this.inputDevices != other.inputDevices && (this.inputDevices == null || !this.inputDevices.equals(other.inputDevices))) {
                 return false;
             }
             return true;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int hash = 3;
-            hash = 67 * hash + (this.inputDevices != null?this.inputDevices.hashCode():0);
+            hash = 67 * hash + (this.inputDevices != null ? this.inputDevices.hashCode() : 0);
             return hash;
         }
 
     }
-    
+
     boolean skipTests = false;
-    
-    public void setUp() throws Exception
-    {
+
+    public void setUp() throws Exception {
         System.setProperty("protostuff.morph_non_final_pojos", "true");
         skipTests = !RuntimeEnv.MORPH_NON_FINAL_POJOS;
         super.setUp();
     }
 
-    public void testInheritance() throws IOException
-    {
-        if(skipTests)
-        {
+    public void testInheritance() throws IOException {
+        if (skipTests) {
             System.err.println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
             return;
         }
         System.err.println("executing inheritance test for protostuff ... ");
-        
+
         Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();
@@ -269,16 +228,14 @@ public class InheritanceTest extends AbstractTest
 
         assertEquals(sys, deserSystem);
     }
-    
-    public void testInheritanceProtobuf() throws IOException
-    {
-        if(skipTests)
-        {
+
+    public void testInheritanceProtobuf() throws IOException {
+        if (skipTests) {
             System.err.println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
             return;
         }
         System.err.println("executing inheritance test for protobuf ... ");
-        
+
         Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();

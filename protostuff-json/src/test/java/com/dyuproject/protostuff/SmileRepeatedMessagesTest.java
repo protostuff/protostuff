@@ -25,17 +25,14 @@ import java.util.List;
  * @author David Yu
  * @created Feb 11, 2011
  */
-public class SmileRepeatedMessagesTest extends RepeatedMessagesTest
-{
-    
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
+public class SmileRepeatedMessagesTest extends RepeatedMessagesTest {
+
+    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
         return SmileIOUtil.parseListFrom(in, schema, false);
     }
 
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         SmileIOUtil.writeListTo(out, messages, schema, false);
     }
 

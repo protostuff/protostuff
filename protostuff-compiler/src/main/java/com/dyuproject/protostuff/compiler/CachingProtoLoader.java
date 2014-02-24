@@ -29,14 +29,14 @@
 
 package com.dyuproject.protostuff.compiler;
 
+import com.dyuproject.protostuff.parser.DefaultProtoLoader;
+import com.dyuproject.protostuff.parser.Proto;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.dyuproject.protostuff.parser.DefaultProtoLoader;
-import com.dyuproject.protostuff.parser.Proto;
 
 /**
  * A proto loader that caches the protos for re-use.
@@ -44,42 +44,36 @@ import com.dyuproject.protostuff.parser.Proto;
  * @author David Yu
  * @created Dec 4, 2011
  */
-public class CachingProtoLoader extends DefaultProtoLoader
-{
-    public final Map<String,Proto> loadedProtos;
-    
-    public CachingProtoLoader()
-    {
-        this(new HashMap<String,Proto>());
+public class CachingProtoLoader extends DefaultProtoLoader {
+    public final Map<String, Proto> loadedProtos;
+
+    public CachingProtoLoader() {
+        this(new HashMap<String, Proto>());
     }
-    
-    public CachingProtoLoader(Map<String,Proto> loadedProtos)
-    {
+
+    public CachingProtoLoader(Map<String, Proto> loadedProtos) {
         this.loadedProtos = loadedProtos;
     }
-    
-    public Collection<Proto> getCachedProtos()
-    {
+
+    public Collection<Proto> getCachedProtos() {
         return loadedProtos.values();
     }
-    
-    public Proto loadFrom(File file, Proto importer) throws Exception
-    {
+
+    public Proto loadFrom(File file, Proto importer) throws Exception {
         String key = file.getCanonicalPath();
         Proto proto = loadedProtos.get(key);
-        if(proto == null)
+        if (proto == null)
             loadedProtos.put(key, proto = super.loadFrom(file, null));
-        
+
         return proto;
     }
-    
-    public Proto loadFrom(URL resource, Proto importer) throws Exception
-    {
+
+    public Proto loadFrom(URL resource, Proto importer) throws Exception {
         String key = resource.toExternalForm();
         Proto proto = loadedProtos.get(key);
-        if(proto == null)
+        if (proto == null)
             loadedProtos.put(key, proto = super.loadFrom(resource, null));
-        
+
         return proto;
     }
 }

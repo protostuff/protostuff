@@ -14,16 +14,15 @@
 
 package com.dyuproject.protostuff.compiler;
 
-import java.io.IOException;
-import java.io.Writer;
-
+import com.dyuproject.protostuff.parser.EnumGroup;
+import com.dyuproject.protostuff.parser.Message;
+import com.dyuproject.protostuff.parser.Proto;
 import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import com.dyuproject.protostuff.parser.EnumGroup;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * Compiles proto files to gwt overlays source (java) files.
@@ -31,27 +30,23 @@ import com.dyuproject.protostuff.parser.Proto;
  * @author David Yu
  * @created Jan 13, 2010
  */
-public class ProtoToGwtOverlayCompiler extends STCodeGenerator
-{
+public class ProtoToGwtOverlayCompiler extends STCodeGenerator {
 
-    public ProtoToGwtOverlayCompiler()
-    {
+    public ProtoToGwtOverlayCompiler() {
         super("gwt_overlay");
     }
 
-    protected void compile(ProtoModule module, Proto proto) throws IOException
-    {
+    protected void compile(ProtoModule module, Proto proto) throws IOException {
         String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("emulation_mode")==null ? 
+        String template = module.getOption("emulation_mode") == null ?
                 "gwt_overlay" : "gwt_overlay_emulation_mode";
         StringTemplateGroup group = getSTG(template);
-        
-        for(EnumGroup eg : proto.getEnumGroups())
-        {
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, eg.getName()+".java");
+
+        for (EnumGroup eg : proto.getEnumGroups()) {
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, eg.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate enumBlock = group.getInstanceOf("enum_block");
             enumBlock.setAttribute("eg", eg);
             enumBlock.setAttribute("module", module);
@@ -60,20 +55,18 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             enumBlock.write(out);
             writer.close();
         }
-        
-        for(Message m : proto.getMessages())
-        {
+
+        for (Message m : proto.getMessages()) {
             // true if its a service message w/c isn't supported atm
-            if(m.getFields().isEmpty())
-            {
+            if (m.getFields().isEmpty()) {
                 System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
             }
-            
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, m.getName()+".java");
+
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, m.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("message", m);
             messageBlock.setAttribute("module", module);
@@ -82,7 +75,7 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             messageBlock.write(out);
             writer.close();
         }
-        
+
     }
 
 }

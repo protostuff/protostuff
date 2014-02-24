@@ -22,17 +22,14 @@ import java.io.IOException;
  * @author David Yu
  * @created Oct 8, 2010
  */
-public class JsonNumericStandardTest extends StandardTest
-{
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema) throws IOException
-    {
+public class JsonNumericStandardTest extends StandardTest {
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
+                                 Schema<T> schema) throws IOException {
         JsonIOUtil.mergeFrom(data, 0, data.length, message, schema, true);
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         return JsonIOUtil.toByteArray(message, schema, true);
     }
 }

@@ -14,12 +14,12 @@
 
 package com.dyuproject.protostuff;
 
+import com.dyuproject.protostuff.StringSerializer.STRING;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-
-import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Test jsonx ser/deser for runtime {@link Map} fields.
@@ -27,60 +27,55 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created Jan 22, 2011
  */
-public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
-{
-    
-    protected boolean isNumeric()
-    {
+public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest {
+
+    protected boolean isNumeric() {
         return false;
     }
-    
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
     }
 
-    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
-    {
+    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException {
         JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
     }
-    
-    protected <T> void roundTrip(T message, Schema<T> schema, 
-            Pipe.Schema<T> pipeSchema) throws Exception
-    {
+
+    protected <T> void roundTrip(T message, Schema<T> schema,
+                                 Pipe.Schema<T> pipeSchema) throws Exception {
         byte[] json = JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
-        
+
         ByteArrayInputStream jsonStream = new ByteArrayInputStream(json);
-        
+
         byte[] protostuff = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(json, 0, json.length, isNumeric()), pipeSchema, buf());
-        
+
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
-        
+
         assertTrue(protostuff.length == protostuffFromStream.length);
         assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
-        
+
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
         SerializableObjects.assertEquals(message, parsedMessage);
-        
+
         ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
-        
+
         byte[] jsonRoundTrip = JsonXIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, isNumeric(), buf());
-        
+
         byte[] jsonRoundTripFromStream = JsonXIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, isNumeric(), buf());
-        
+
         assertTrue(jsonRoundTrip.length == jsonRoundTripFromStream.length);
-        
+
         String strJsonRoundTrip = STRING.deser(jsonRoundTrip);
-        
+
         assertEquals(strJsonRoundTrip, STRING.deser(jsonRoundTripFromStream));
-        
+
         assertTrue(jsonRoundTrip.length == json.length);
-        
+
         assertEquals(strJsonRoundTrip, STRING.deser(json));
     }
 
