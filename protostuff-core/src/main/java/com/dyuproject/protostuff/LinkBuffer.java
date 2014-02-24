@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * A list of ByteBuffers.
- *
+ * <p/>
  * Created by ryan on 1/22/14.
  */
 public class LinkBuffer {
@@ -91,7 +91,6 @@ public class LinkBuffer {
     }
 
 
-
     // lengthy implementation junk now.
     public LinkBuffer writeByte(final byte value) throws IOException {
         ensureCapacity(1);
@@ -144,7 +143,7 @@ public class LinkBuffer {
         int locPtr = 0;
         while (true) {
             if ((value & ~0x7F) == 0) {
-               buf[locPtr++] = (byte)value;
+                buf[locPtr++] = (byte) value;
                 // thing;
                 ensureCapacity(locPtr);
                 current.put(buf, 0, locPtr);
@@ -167,7 +166,7 @@ public class LinkBuffer {
 
         while (true) {
             if ((value & ~0x7F) == 0) {
-                buf[locPtr++] = (byte)value;
+                buf[locPtr++] = (byte) value;
                 //current.put((byte) value);
                 current.put(buf);
                 return this;
@@ -186,7 +185,7 @@ public class LinkBuffer {
 
         while (true) {
             if ((value & ~0x7FL) == 0) {
-                buf[locPtr++] = (byte)value;
+                buf[locPtr++] = (byte) value;
                 ensureCapacity(locPtr);
                 current.put(buf, 0, locPtr);
                 return this;
@@ -208,7 +207,7 @@ public class LinkBuffer {
 
         while (true) {
             if ((value & ~0x7FL) == 0) {
-                buf[locPtr++] = (byte)value;
+                buf[locPtr++] = (byte) value;
                 current.put(buf);
                 return this;
             } else {

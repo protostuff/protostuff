@@ -25,18 +25,15 @@ import java.util.List;
  * @author David Yu
  * @created Oct 8, 2010
  */
-public class XmlRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class XmlRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
+    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
         return XmlIOUtil.parseListFrom(in, schema);
     }
 
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         XmlIOUtil.writeListTo(out, messages, schema);
     }
-    
+
 }

@@ -22,11 +22,9 @@ import java.util.Map;
  * @author David Yu
  * @created Jan 22, 2011
  */
-public class JsonNumericRuntimeMapTest extends AbstractJsonRuntimeMapTest
-{
+public class JsonNumericRuntimeMapTest extends AbstractJsonRuntimeMapTest {
 
-    protected boolean isNumeric()
-    {
+    protected boolean isNumeric() {
         return true;
     }
 

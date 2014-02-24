@@ -18,122 +18,104 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * A FilterOutput contains some other {@link Output output}, which it uses as its basic 
+ * A FilterOutput contains some other {@link Output output}, which it uses as its basic
  * sink of data.
  *
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class FilterOutput<F extends Output> implements Output
-{
-    
+public class FilterOutput<F extends Output> implements Output {
+
     protected final F output;
-    
-    public FilterOutput(F output)
-    {
+
+    public FilterOutput(F output) {
         this.output = output;
     }
 
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
-    {
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException {
         output.writeBool(fieldNumber, value, repeated);
     }
 
-    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
-    {
+    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException {
         output.writeByteArray(fieldNumber, value, repeated);
     }
-    
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
-            int offset, int length, boolean repeated) throws IOException
-    {
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
+                               int offset, int length, boolean repeated) throws IOException {
         output.writeByteRange(utf8String, fieldNumber, value, offset, length, repeated);
     }
 
-    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
-    {
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
         output.writeBytes(fieldNumber, value, repeated);
     }
 
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
-    {
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException {
         output.writeDouble(fieldNumber, value, repeated);
     }
 
-    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeEnum(fieldNumber, value, repeated);
     }
 
-    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeFixed32(fieldNumber, value, repeated);
     }
 
-    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         output.writeFixed64(fieldNumber, value, repeated);
     }
 
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
-    {
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException {
         output.writeFloat(fieldNumber, value, repeated);
     }
 
-    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         output.writeInt64(fieldNumber, value, repeated);
     }
-    
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException
-    {
+
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated)
+            throws IOException {
         output.writeObject(fieldNumber, value, schema, repeated);
     }
 
-    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeSFixed32(fieldNumber, value, repeated);
     }
 
-    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         output.writeSFixed64(fieldNumber, value, repeated);
     }
 
-    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeSInt32(fieldNumber, value, repeated);
     }
 
-    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         output.writeSInt64(fieldNumber, value, repeated);
     }
 
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
-    {
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException {
         output.writeString(fieldNumber, value, repeated);
     }
 
-    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         output.writeUInt32(fieldNumber, value, repeated);
     }
 
-    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         output.writeUInt64(fieldNumber, value, repeated);
     }
-    /** Writes a ByteBuffer field. */
+
+    /**
+     * Writes a ByteBuffer field.
+     */
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
-                        value.remaining(), repeated);
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

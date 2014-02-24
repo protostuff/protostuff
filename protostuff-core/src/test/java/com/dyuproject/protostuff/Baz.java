@@ -27,125 +27,107 @@ import java.util.HashMap;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
-{
-    
+public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable {
+
     static final Baz DEFAULT_INSTANCE = new Baz();
-    
-    public static Schema<Baz> getSchema()
-    {
+
+    public static Schema<Baz> getSchema() {
         return DEFAULT_INSTANCE;
     }
-    
-    private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
-    static
-    {
+
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+
+    static {
         __fieldMap.put("id", 1);
         __fieldMap.put("name", 2);
         __fieldMap.put("timestamp", 3);
     }
-    
+
     private int id;
     private String name;
     private long timestamp;
-    
-    public Baz()
-    {
-        
+
+    public Baz() {
+
     }
-    
+
     public Baz(
-            int id, 
-            String name, 
-            long timestamp)
-    {
+            int id,
+            String name,
+            long timestamp) {
         this.id = id;
         this.name = name;
         this.timestamp = timestamp;
-    }    
+    }
 
     /**
      * @return the id
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the timestamp
      */
-    public long getTimestamp()
-    {
+    public long getTimestamp() {
         return timestamp;
     }
 
     /**
      * @param timestamp the timestamp to set
      */
-    public void setTimestamp(long timestamp)
-    {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Schema<Baz> cachedSchema()
-    {        
+    public Schema<Baz> cachedSchema() {
         return this;
     }
-    
-    public boolean isInitialized(Baz message)
-    {
+
+    public boolean isInitialized(Baz message) {
         return true;
     }
 
-    public Baz newMessage()
-    {
+    public Baz newMessage() {
         return new Baz();
     }
-    
-    public Class<Baz> typeClass()
-    {
+
+    public Class<Baz> typeClass() {
         return Baz.class;
     }
-    
-    public String messageName()
-    {
+
+    public String messageName() {
         return getClass().getSimpleName();
     }
-    
-    public String messageFullName()
-    {
+
+    public String messageFullName() {
         return getClass().getName();
     }
 
-    public String getFieldName(int number)
-    {
-        switch(number)
-        {
+    public String getFieldName(int number) {
+        switch (number) {
             case 1:
                 return "id";
             case 2:
@@ -159,41 +141,34 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         }
     }
 
-    public int getFieldNumber(String name)
-    {        
+    public int getFieldNumber(String name) {
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
-    
-    public void readExternal(ObjectInput in) throws IOException
-    {
+
+    public void readExternal(ObjectInput in) throws IOException {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
+    public void writeExternal(ObjectOutput out) throws IOException {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
-    public void writeTo(Output output, Baz message) throws IOException
-    {
-        if(message.id != 0)
+    public void writeTo(Output output, Baz message) throws IOException {
+        if (message.id != 0)
             output.writeInt32(1, message.id, false);
-        
-        if(message.name != null)
+
+        if (message.name != null)
             output.writeString(2, message.name, false);
-        
-        if(message.timestamp != 0l)
+
+        if (message.timestamp != 0l)
             output.writeInt64(3, message.timestamp, false);
     }
-    
 
-    public void mergeFrom(Input input, Baz message) throws IOException
-    {
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+
+    public void mergeFrom(Input input, Baz message) throws IOException {
+        for (int number = input.readFieldNumber(this); ; number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
@@ -211,15 +186,11 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         }
     }
 
-    static final Pipe.Schema<Baz> PIPE_SCHEMA = new Pipe.Schema<Baz>(DEFAULT_INSTANCE)
-    {
+    static final Pipe.Schema<Baz> PIPE_SCHEMA = new Pipe.Schema<Baz>(DEFAULT_INSTANCE) {
 
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
-            {
-                switch(number)
-                {
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+            for (int number = input.readFieldNumber(wrappedSchema); ; number = input.readFieldNumber(wrappedSchema)) {
+                switch (number) {
                     case 0:
                         return;
                     case 1:
@@ -235,43 +206,38 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
                         input.handleUnknownField(number, wrappedSchema);
                 }
             }
-            
+
         }
 
     };
-    
-    public static Pipe.Schema<Baz> getPipeSchema()
-    {
+
+    public static Pipe.Schema<Baz> getPipeSchema() {
         return PIPE_SCHEMA;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (int)(timestamp ^ (timestamp >>> 32));
+        result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
         return result;
     }
 
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Baz other = (Baz)obj;
+        Baz other = (Baz) obj;
         if (id != other.id)
             return false;
-        if (name == null)
-        {
+        if (name == null) {
             if (other.name != null)
                 return false;
-        }
-        else if (!name.equals(other.name))
+        } else if (!name.equals(other.name))
             return false;
         if (timestamp != other.timestamp)
             return false;
@@ -279,10 +245,9 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Baz [id=" + id + ", name=" + name + ", timestamp=" + timestamp + "]";
     }
-    
-    
+
+
 }

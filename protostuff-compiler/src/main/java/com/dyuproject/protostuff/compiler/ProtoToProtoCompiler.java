@@ -21,7 +21,11 @@ import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,17 +37,14 @@ import java.util.regex.Pattern;
  * @author Ivan Prisyazhniy, Igor Scherbak
  * @created Mar 9, 2012
  */
-public class ProtoToProtoCompiler extends STCodeGenerator
-{
+public class ProtoToProtoCompiler extends STCodeGenerator {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    public ProtoToProtoCompiler()
-    {
+    public ProtoToProtoCompiler() {
         super("proto_extender");
     }
 
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
+    public void compile(ProtoModule module, Proto proto) throws IOException {
         StringTemplateGroup group = getSTG("proto_to_proto");
 
         // Prepare writer
@@ -55,8 +56,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         StringBuilder builder = new StringBuilder();
         BufferedReader reader = new BufferedReader(new FileReader(proto.getFile()));
         String line = reader.readLine();
-        while (line != null)
-        {
+        while (line != null) {
             builder.append(line);
             builder.append(LINE_SEPARATOR);
             line = reader.readLine();
@@ -65,11 +65,9 @@ public class ProtoToProtoCompiler extends STCodeGenerator
 
         String data = builder.toString();
 
-        for (Message message : proto.getMessages())
-        {
+        for (Message message : proto.getMessages()) {
             Annotation annotation = message.getAnnotation("Extend");
-            if (annotation != null)
-            {
+            if (annotation != null) {
                 Object byMessageRef = annotation.getValue("by");
                 if (byMessageRef == null)
                     throw new IllegalArgumentException("By parameter of attribute @Extend is not specified");
@@ -84,8 +82,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
             }
 
             Object extOpt = message.getExtraOption("extends");
-            if (extOpt != null)
-            {
+            if (extOpt != null) {
                 if (!(extOpt instanceof Message))
                     throw new IllegalArgumentException("Option extends specified not a message reference");
 
@@ -100,8 +97,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         writer.close();
     }
 
-    public static String extendBy(StringTemplateGroup group, Message extend, Message by) throws IOException
-    {
+    public static String extendBy(StringTemplateGroup group, Message extend, Message by) throws IOException {
         StringWriter stringer = new StringWriter(16);
         NoIndentWriter out = new NoIndentWriter(stringer);
 
@@ -113,15 +109,13 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         return stringer.toString();
     }
 
-    public static String injectAfterAnnotation(Message extend, Message by, String extendProto, String byContent)
-    {
+    public static String injectAfterAnnotation(Message extend, Message by, String extendProto, String byContent) {
         // Insert after annotated message
         Pattern messageRegexp = Pattern.compile("[\\n\\r]?([ \\t]*)(message\\s+" + extend.getName() + "\\s+\\{)", Pattern.MULTILINE);
 
         int messageIndex = -1, openBracketIndex = -1;
         Matcher matcher = messageRegexp.matcher(extendProto);
-        if (matcher.find())
-        {
+        if (matcher.find()) {
             // Calculate indentation of option
             int is = matcher.start(1), ie = matcher.end(1);
             String indentation = generateIndentation(extendProto.substring(is, ie), 4 /* spaces */);
@@ -139,8 +133,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         String annotationSpace = extendProto.substring(0, messageIndex);
         matcher = annotationRegexp.matcher(annotationSpace);
         int astart = -1, aend = 0;
-        while (matcher.find(aend))
-        {
+        while (matcher.find(aend)) {
             astart = matcher.start(1);
             aend = matcher.end(1);
         }
@@ -150,23 +143,20 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         return extendProto;
     }
 
-    public static String injectAfterOption(Message extend, Message by, String extendProto, String byContent)
-    {
+    public static String injectAfterOption(Message extend, Message by, String extendProto, String byContent) {
         Pattern messageRegexp = Pattern.compile("([\\n\\r]?[ \\t]*message\\s+" + extend.getName() +
                 "\\s+\\{[^{}]*[\\n\\r][ \\t]*)(option\\s+extends\\s+=\\s+" + by.getName() +
                 "\\s*;)", Pattern.MULTILINE);
 
         Matcher matcher = messageRegexp.matcher(extendProto);
 
-        if (matcher.find())
-        {
+        if (matcher.find()) {
             // Calculate indentation of option
             Pattern indentRegexp = Pattern.compile("[\\n\\r]([ \\t]+)option\\s+extends\\s+=\\s+" + by.getName() +
                     "\\s*;", Pattern.MULTILINE);
             Matcher indent = indentRegexp.matcher(extendProto.substring(matcher.start(), matcher.end()));
             String indentation = "";
-            if (indent.find())
-            {
+            if (indent.find()) {
                 int is = matcher.start() + indent.start(1), ie = matcher.start() + indent.end(1);
                 indentation = generateIndentation(extendProto.substring(is, ie), 0);
             }
@@ -182,14 +172,12 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         return extendProto;
     }
 
-    public static String insertIndentation(String content, String indent)
-    {
+    public static String insertIndentation(String content, String indent) {
         if (!content.startsWith(LINE_SEPARATOR)) content = indent + content;
         return content.replace(LINE_SEPARATOR, LINE_SEPARATOR + indent);
     }
 
-    public static String generateIndentation(String indentation, int length)
-    {
+    public static String generateIndentation(String indentation, int length) {
         if (indentation == null)
             indentation = "";
 
@@ -200,8 +188,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         return builder.toString();
     }
 
-    public static String generateTimestamp(Message extend, Message by)
-    {
+    public static String generateTimestamp(Message extend, Message by) {
         return "Extended by " + by.getName() + " at " + new Date();
     }
 }

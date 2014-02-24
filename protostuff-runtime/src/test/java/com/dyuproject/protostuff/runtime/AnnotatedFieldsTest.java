@@ -33,16 +33,14 @@ import com.dyuproject.protostuff.Tag;
 
 /**
  * Test for runtime schemas to handle annotation-based field mapping.
- * 
+ *
  * @author Brice Jaglin
  * @author David Yu
  * @created Mar 30, 2012
  */
-public class AnnotatedFieldsTest extends AbstractTest
-{
+public class AnnotatedFieldsTest extends AbstractTest {
 
-    public static class EntityFullyAnnotated
-    {
+    public static class EntityFullyAnnotated {
 
         @Tag(3)
         int id;
@@ -55,8 +53,7 @@ public class AnnotatedFieldsTest extends AbstractTest
         String alias;
     }
 
-    public static class EntityPartlyAnnotated1
-    {
+    public static class EntityPartlyAnnotated1 {
 
         @Tag(3)
         int id;
@@ -69,8 +66,7 @@ public class AnnotatedFieldsTest extends AbstractTest
         String alias;
     }
 
-    public static class EntityPartlyAnnotated2
-    {
+    public static class EntityPartlyAnnotated2 {
 
         // Missing annotation
         int id;
@@ -79,15 +75,13 @@ public class AnnotatedFieldsTest extends AbstractTest
         String name;
     }
 
-    public static class EntityInvalidAnnotated1
-    {
+    public static class EntityInvalidAnnotated1 {
 
         @Tag(-1)
         int id;
     }
 
-    public static class EntityInvalidAnnotated2
-    {
+    public static class EntityInvalidAnnotated2 {
 
         @Tag(2)
         int id;
@@ -95,28 +89,25 @@ public class AnnotatedFieldsTest extends AbstractTest
         @Tag(2)
         int other;
     }
-    
-    static class EntityInvalidTagNumber
-    {
+
+    static class EntityInvalidTagNumber {
         @Tag(0)
         int id;
     }
-    
-    static class EntityWithFieldAlias
-    {
+
+    static class EntityWithFieldAlias {
         @Tag(400)
         double field400;
-        
-        @Tag(value = 200, alias="f200")
+
+        @Tag(value = 200, alias = "f200")
         int field200;
     }
 
-    public void testEntityFullyAnnotated()
-    {
-        MappedSchema<EntityFullyAnnotated> schema = 
-                (MappedSchema<EntityFullyAnnotated>)RuntimeSchema.getSchema(
+    public void testEntityFullyAnnotated() {
+        MappedSchema<EntityFullyAnnotated> schema =
+                (MappedSchema<EntityFullyAnnotated>) RuntimeSchema.getSchema(
                         EntityFullyAnnotated.class, RuntimeEnv.ID_STRATEGY);
-        
+
         assertTrue(schema.fields.length == 2);
         assertEquals(schema.fields[0].name, "id");
         assertEquals(schema.fields[0].number, 3);
@@ -128,88 +119,66 @@ public class AnnotatedFieldsTest extends AbstractTest
         assertNull(schema.fieldsByName.get("alias"));
     }
 
-    public void testEntityPartlyAnnotated1()
-    {
-        try
-        {
+    public void testEntityPartlyAnnotated1() {
+        try {
             RuntimeSchema.getSchema(EntityPartlyAnnotated1.class);
             fail();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // expected
         }
     }
 
-    public void testEntityPartlyAnnotated2()
-    {
-        try
-        {
+    public void testEntityPartlyAnnotated2() {
+        try {
             RuntimeSchema.getSchema(EntityPartlyAnnotated2.class);
             fail();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // expected
         }
     }
 
-    public void testEntityInvalidAnnotated1()
-    {
-        try
-        {
+    public void testEntityInvalidAnnotated1() {
+        try {
             RuntimeSchema.getSchema(EntityInvalidAnnotated1.class);
             fail();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // expected
         }
     }
 
-    public void testEntityInvalidAnnotated2()
-    {
-        try
-        {
+    public void testEntityInvalidAnnotated2() {
+        try {
             RuntimeSchema.getSchema(EntityInvalidAnnotated1.class);
             fail();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // expected
         }
     }
-    
-    public void testEntityInvalidTagNumber() throws Exception
-    {
-        try
-        {
+
+    public void testEntityInvalidTagNumber() throws Exception {
+        try {
             RuntimeSchema.getSchema(EntityInvalidTagNumber.class);
             fail();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // expected
         }
     }
-    
-    static <T> void verify(MappedSchema<T> schema, int number, String name, int offset)
-    {
+
+    static <T> void verify(MappedSchema<T> schema, int number, String name, int offset) {
         assertEquals(schema.fields[offset].name, name);
         assertEquals(schema.fields[offset].number, number);
-        
+
         assertEquals(name, schema.getFieldName(number));
         assertEquals(number, schema.getFieldNumber(name));
     }
-    
-    public void testEntityWithFieldAlias()
-    {
-        MappedSchema<EntityWithFieldAlias> schema = 
-                (MappedSchema<EntityWithFieldAlias>)RuntimeSchema.getSchema(
+
+    public void testEntityWithFieldAlias() {
+        MappedSchema<EntityWithFieldAlias> schema =
+                (MappedSchema<EntityWithFieldAlias>) RuntimeSchema.getSchema(
                         EntityWithFieldAlias.class, RuntimeEnv.ID_STRATEGY);
-        
+
         assertTrue(schema.fields.length == 2);
-        
+
         // The field with the smallest field number will be written first.
         // In this case, field200 (despite field400 being declared 1st)
         verify(schema, 200, "f200", 0);

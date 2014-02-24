@@ -16,8 +16,7 @@ package com.dyuproject.protostuff.parser;
 
 import java.util.Collection;
 
-public interface HasFields extends HasOptions
-{
+public interface HasFields extends HasOptions {
 
     Collection<Field<?>> getFields();
 

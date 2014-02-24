@@ -39,74 +39,61 @@ import java.util.Set;
  * @author David Yu
  * @created Nov 1, 2011
  */
-public final class ErrorMap implements Map<String,Object>
-{
-    
-    static final ErrorMap INSTANCE = new ErrorMap();
-    
-    private ErrorMap(){}
+public final class ErrorMap implements Map<String, Object> {
 
-    public void clear()
-    {
-        
+    static final ErrorMap INSTANCE = new ErrorMap();
+
+    private ErrorMap() {
     }
 
-    public boolean containsKey(Object arg0)
-    {
+    public void clear() {
+
+    }
+
+    public boolean containsKey(Object arg0) {
         // error mechanism called by stringtemplate
         throw new IllegalStateException(String.valueOf(arg0));
     }
 
-    public Object get(Object arg0)
-    {
+    public Object get(Object arg0) {
         return containsKey(arg0);
     }
-    
-    public boolean containsValue(Object arg0)
-    {
+
+    public boolean containsValue(Object arg0) {
         throw new UnsupportedOperationException();
     }
 
-    public Set<java.util.Map.Entry<String, Object>> entrySet()
-    {
+    public Set<java.util.Map.Entry<String, Object>> entrySet() {
         throw new UnsupportedOperationException();
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return false;
     }
 
-    public Set<String> keySet()
-    {
+    public Set<String> keySet() {
         throw new UnsupportedOperationException();
     }
 
-    public Object put(String arg0, Object arg1)
-    {
+    public Object put(String arg0, Object arg1) {
         throw new UnsupportedOperationException();
     }
 
-    public void putAll(Map<? extends String, ? extends Object> arg0)
-    {
+    public void putAll(Map<? extends String, ? extends Object> arg0) {
         throw new UnsupportedOperationException();
     }
 
-    public Object remove(Object arg0)
-    {
+    public Object remove(Object arg0) {
         throw new UnsupportedOperationException();
     }
 
-    public int size()
-    {
+    public int size() {
         return 1;
     }
 
-    public Collection<Object> values()
-    {
+    public Collection<Object> values() {
         throw new UnsupportedOperationException();
     }
-    
-    
+
 
 }

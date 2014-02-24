@@ -22,22 +22,19 @@ import java.io.Serializable;
  * @author David Yu
  * @created Nov 12, 2009
  */
-public class HasBar implements Serializable
-{
+public class HasBar implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private String name;
     private Bar bar;
 
-    public HasBar()
-    {
-        
+    public HasBar() {
+
     }
-    
-    public HasBar(int id, String name, Bar bar)
-    {
+
+    public HasBar(int id, String name, Bar bar) {
         this.id = id;
         this.name = name;
         this.bar = bar;
@@ -46,51 +43,44 @@ public class HasBar implements Serializable
     /**
      * @return the id
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the bar
      */
-    public Bar getBar()
-    {
+    public Bar getBar() {
         return bar;
     }
 
     /**
      * @param bar the bar to set
      */
-    public void setBar(Bar bar)
-    {
+    public void setBar(Bar bar) {
         this.bar = bar;
     }
-    
-    
+
 
 }

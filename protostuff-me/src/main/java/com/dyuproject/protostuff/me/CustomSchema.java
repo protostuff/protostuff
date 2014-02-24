@@ -17,64 +17,53 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A schema (helper class) that wraps another schema and allows its subclasses to 
+ * A schema (helper class) that wraps another schema and allows its subclasses to
  * override certain methods for more customization.
  *
  * @author David Yu
  * @created May 28, 2010
  */
-public abstract class CustomSchema/*<T>*/ implements Schema/*<T>*/
-{
-    
+public abstract class CustomSchema/*<T>*/ implements Schema/*<T>*/ {
+
     protected final Schema/*<T>*/ schema;
-    
-    public CustomSchema(Schema/*<T>*/ schema)
-    {
+
+    public CustomSchema(Schema/*<T>*/ schema) {
         this.schema = schema;
     }
 
-    public String getFieldName(int number)
-    {
+    public String getFieldName(int number) {
         return schema.getFieldName(number);
     }
 
-    public int getFieldNumber(String name)
-    {
+    public int getFieldNumber(String name) {
         return schema.getFieldNumber(name);
     }
 
-    public boolean isInitialized(Object message)
-    {
+    public boolean isInitialized(Object message) {
         return schema.isInitialized(message);
     }
 
-    public void mergeFrom(Input input, Object message) throws IOException
-    {
+    public void mergeFrom(Input input, Object message) throws IOException {
         schema.mergeFrom(input, message);
     }
 
-    public String messageFullName()
-    {
+    public String messageFullName() {
         return schema.messageFullName();
     }
 
-    public String messageName()
-    {
+    public String messageName() {
         return schema.messageName();
     }
 
-    public Object newMessage()
-    {
+    public Object newMessage() {
         return schema.newMessage();
     }
 
-    public Class/*<? super T>*/ typeClass()
-    {
+    public Class/*<? super T>*/ typeClass() {
         return schema.typeClass();
     }
 
-    public void writeTo(Output output, Object message) throws IOException
-    {
+    public void writeTo(Output output, Object message) throws IOException {
         schema.writeTo(output, message);
     }
 

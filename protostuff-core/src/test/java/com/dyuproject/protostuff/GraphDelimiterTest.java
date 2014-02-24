@@ -20,38 +20,33 @@ import java.io.OutputStream;
 
 /**
  * Delimiter tests for the graph format
- * 
+ *
  * @author David Yu
  * @created Aug 29, 2012
  */
-public class GraphDelimiterTest extends DelimiterTest
-{
-    
+public class GraphDelimiterTest extends DelimiterTest {
+
     @Override
     protected <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
+                                       LinkedBuffer buffer) throws IOException {
         return GraphIOUtil.writeDelimitedTo(out, message, schema, buffer);
     }
 
     @Override
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
+                                          LinkedBuffer buffer) throws IOException {
         GraphIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
     }
 
     @Override
     protected <T> int optWriteDelimitedTo(OutputStream out, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
+                                          LinkedBuffer buffer) throws IOException {
         return GraphIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
     }
 
     @Override
     protected <T> boolean optMergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
+                                                LinkedBuffer buffer) throws IOException {
         return GraphIOUtil.optMergeDelimitedFrom(in, message, schema, buffer);
     }
 

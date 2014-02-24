@@ -14,14 +14,14 @@
 
 package com.dyuproject.protostuff;
 
+import com.dyuproject.protostuff.StringSerializer.STRING;
+import com.dyuproject.protostuff.runtime.AbstractRuntimeMapTest;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
-
-import com.dyuproject.protostuff.StringSerializer.STRING;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeMapTest;
 
 /**
  * Test json ser/deser for runtime {@link Map} fields.
@@ -29,69 +29,63 @@ import com.dyuproject.protostuff.runtime.AbstractRuntimeMapTest;
  * @author David Yu
  * @created Jan 22, 2011
  */
-public abstract class AbstractJsonRuntimeMapTest extends AbstractRuntimeMapTest
-{
-    
+public abstract class AbstractJsonRuntimeMapTest extends AbstractRuntimeMapTest {
+
     protected abstract boolean isNumeric();
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema) throws IOException
-    {
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
+                                 Schema<T> schema) throws IOException {
         JsonIOUtil.mergeFrom(data, offset, length, message, schema, isNumeric());
     }
 
-    protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
-    throws IOException
-    {
+    protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
+            throws IOException {
         JsonIOUtil.mergeFrom(in, message, schema, isNumeric());
     }
-    
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         return JsonIOUtil.toByteArray(message, schema, isNumeric());
     }
 
-    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
-    {
+    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException {
         JsonIOUtil.writeTo(out, message, schema, isNumeric());
     }
 
-    protected <T> void roundTrip(T message, Schema<T> schema, 
-            Pipe.Schema<T> pipeSchema) throws Exception
-    {
+    protected <T> void roundTrip(T message, Schema<T> schema,
+                                 Pipe.Schema<T> pipeSchema) throws Exception {
         byte[] json = JsonIOUtil.toByteArray(message, schema, isNumeric());
-        
+
         ByteArrayInputStream jsonStream = new ByteArrayInputStream(json);
-        
+
         byte[] protostuff = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(json, 0, json.length, isNumeric()), pipeSchema, buf());
-        
+
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
-        
+
         assertTrue(protostuff.length == protostuffFromStream.length);
         assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
-        
+
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
         SerializableObjects.assertEquals(message, parsedMessage);
-        
+
         ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
-        
+
         byte[] jsonRoundTrip = JsonIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, isNumeric());
-        
+
         byte[] jsonRoundTripFromStream = JsonIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, isNumeric());
-        
+
         assertTrue(jsonRoundTrip.length == jsonRoundTripFromStream.length);
-        
+
         String strJsonRoundTrip = STRING.deser(jsonRoundTrip);
-        
+
         assertEquals(strJsonRoundTrip, STRING.deser(jsonRoundTripFromStream));
-        
+
         assertTrue(jsonRoundTrip.length == json.length);
-        
+
         assertEquals(strJsonRoundTrip, STRING.deser(json));
     }
 

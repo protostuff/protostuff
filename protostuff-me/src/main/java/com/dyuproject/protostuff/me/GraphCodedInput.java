@@ -19,146 +19,125 @@ import java.util.Vector;
 
 
 /**
- * A CodedInput w/c can handle cyclic dependencies when deserializing 
+ * A CodedInput w/c can handle cyclic dependencies when deserializing
  * objects with graph transformations.
  *
  * @author David Yu
  * @created Jan 17, 2011
  */
-public final class GraphCodedInput extends FilterInput 
-implements GraphInput, Schema
-{
-    
+public final class GraphCodedInput extends FilterInput
+        implements GraphInput, Schema {
+
     private final Vector references;
     private int lastRef = -1;
-    
+
     private Schema lastSchema;
     private boolean messageReference = false;
-    
-    public GraphCodedInput(CodedInput input)
-    {
+
+    public GraphCodedInput(CodedInput input) {
         super(input);
-        
+
         // protostuff format only.
-       //assert input.decodeNestedMessageAsGroup;
-        
+        //assert input.decodeNestedMessageAsGroup;
+
         references = new Vector();
     }
 
-    public GraphCodedInput(CodedInput input, int initialCapacity)
-    {
+    public GraphCodedInput(CodedInput input, int initialCapacity) {
         super(input);
-        
+
         // protostuff format only.
-       //assert input.decodeNestedMessageAsGroup;
-        
+        //assert input.decodeNestedMessageAsGroup;
+
         references = new Vector(initialCapacity);
     }
-    
-    public void updateLast(Object morphedMessage, Object lastMessage)
-    {
-        final int last = references.size()-1;
-        if(lastMessage != null && lastMessage == references.elementAt(last))
-        {
+
+    public void updateLast(Object morphedMessage, Object lastMessage) {
+        final int last = references.size() - 1;
+        if (lastMessage != null && lastMessage == references.elementAt(last)) {
             // update the reference
             references.setElementAt(morphedMessage, last);
         }
     }
-    
-    public boolean isCurrentMessageReference()
-    {
+
+    public boolean isCurrentMessageReference() {
         return messageReference;
     }
-    
-    public int readFieldNumber(Schema schema) throws IOException
-    {
+
+    public int readFieldNumber(Schema schema) throws IOException {
         final int fieldNumber = input.readFieldNumber(schema);
-        if(WireFormat.getTagWireType(((CodedInput) input).getLastTag()) == WireFormat.WIRETYPE_REFERENCE)
-        {
+        if (WireFormat.getTagWireType(((CodedInput) input).getLastTag()) == WireFormat.WIRETYPE_REFERENCE) {
             // a reference.
             lastRef = input.readUInt32();
             messageReference = true;
-        }
-        else
-        {
+        } else {
             // always unset.
             messageReference = false;
         }
-        
+
         return fieldNumber;
     }
-    
+
     //@SuppressWarnings("unchecked")
-    public Object mergeObject(Object value, Schema schema) throws IOException
-    {
-        if(messageReference)
-        {
+    public Object mergeObject(Object value, Schema schema) throws IOException {
+        if (messageReference) {
             // a reference.
             return references.elementAt(lastRef);
         }
 
-        lastSchema = (Schema)schema;
-        
-        if(value == null)
+        lastSchema = (Schema) schema;
+
+        if (value == null)
             value = schema.newMessage();
-        
+
         references.addElement(value);
-        
+
         input.mergeObject(value, this);
-        
+
         return value;
     }
-    
-    public String getFieldName(int number)
-    {
+
+    public String getFieldName(int number) {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public int getFieldNumber(String name)
-    {
+    public int getFieldNumber(String name) {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public boolean isInitialized(Object owner)
-    {
+    public boolean isInitialized(Object owner) {
         return true;
     }
 
-    public String messageFullName()
-    {
+    public String messageFullName() {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public String messageName()
-    {
+    public String messageName() {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public Object newMessage()
-    {
+    public Object newMessage() {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public Class typeClass()
-    {
+    public Class typeClass() {
         throw new RuntimeException("Unsupported operation");
     }
 
-    public void mergeFrom(Input input, final Object message) throws IOException
-    {
+    public void mergeFrom(Input input, final Object message) throws IOException {
         final Schema schema = lastSchema;
-        
+
         // merge using this input.
         schema.mergeFrom(this, message);
-        if(!schema.isInitialized(message))
+        if (!schema.isInitialized(message))
             throw new UninitializedMessageException(message, schema);
-        
+
         // restore
         lastSchema = schema;
     }
 
-    public void writeTo(Output output, Object message) throws IOException
-    {
+    public void writeTo(Output output, Object message) throws IOException {
         // only using mergeFrom.
         throw new RuntimeException("Unsupported operation");
     }

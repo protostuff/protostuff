@@ -15,17 +15,15 @@
 package com.dyuproject.protostuff;
 
 /**
- * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric) 
+ * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric)
  * ser/deser.
  *
  * @author David Yu
  * @created Jan 27, 2011
  */
-public class JsonXNumericRuntimeCollectionSchemaTest extends JsonXRuntimeCollectionSchemaTest
-{
+public class JsonXNumericRuntimeCollectionSchemaTest extends JsonXRuntimeCollectionSchemaTest {
 
-    protected boolean isNumeric()
-    {
+    protected boolean isNumeric() {
         return true;
     }
 

@@ -42,7 +42,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Morph
-{
+public @interface Morph {
     boolean value() default true;
 }

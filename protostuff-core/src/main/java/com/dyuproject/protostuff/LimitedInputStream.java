@@ -49,72 +49,59 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An InputStream implementations which reads from some other InputStream 
+ * An InputStream implementations which reads from some other InputStream
  * but is limited to a particular number of bytes.
  *
  * @author David Yu
  * @created Jan 14, 2010
  */
-public final class LimitedInputStream extends FilterInputStream
-{
+public final class LimitedInputStream extends FilterInputStream {
     private int limit;
 
-    public LimitedInputStream(InputStream in)
-    {
+    public LimitedInputStream(InputStream in) {
         super(in);
     }
-    
-    public LimitedInputStream(InputStream in, int limit)
-    {
+
+    public LimitedInputStream(InputStream in, int limit) {
         super(in);
         this.limit = limit;
     }
-    
-    LimitedInputStream limit(int limit)
-    {
+
+    LimitedInputStream limit(int limit) {
         this.limit = limit;
         return this;
     }
 
-    public int available() throws IOException
-    {
+    public int available() throws IOException {
         return Math.min(super.available(), limit);
     }
 
-    public int read() throws IOException
-    {
-        if (limit <= 0)
-        {
+    public int read() throws IOException {
+        if (limit <= 0) {
             return -1;
         }
         final int result = super.read();
-        if (result >= 0)
-        {
+        if (result >= 0) {
             --limit;
         }
         return result;
     }
 
-    public int read(final byte[] b, final int off, int len) throws IOException
-    {
-        if (limit <= 0)
-        {
+    public int read(final byte[] b, final int off, int len) throws IOException {
+        if (limit <= 0) {
             return -1;
         }
         len = Math.min(len, limit);
         final int result = super.read(b, off, len);
-        if (result >= 0)
-        {
+        if (result >= 0) {
             limit -= result;
         }
         return result;
     }
 
-    public long skip(final long n) throws IOException
-    {
+    public long skip(final long n) throws IOException {
         final long result = super.skip(Math.min(n, limit));
-        if (result >= 0)
-        {
+        if (result >= 0) {
             limit -= result;
         }
         return result;

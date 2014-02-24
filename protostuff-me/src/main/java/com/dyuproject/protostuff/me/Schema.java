@@ -18,21 +18,20 @@ import java.io.IOException;
 
 /**
  * Handles the serialization and deserialization of a message/object tied to this.
- * 
+ * <p/>
  * Basically, any object can be serialized via protobuf.
  * As long as its schema is provided, it does not need to implement {@link Message}.
  * This was designed with "unobtrusive" in mind.
- * The goal was to be able to serialize/deserialize any existing object without 
+ * The goal was to be able to serialize/deserialize any existing object without
  * having to touch its source.
- * This will enable you to customize the serialization of objects from 
+ * This will enable you to customize the serialization of objects from
  * 3rd party libraries.
  *
  * @author David Yu
  * @created Nov 9, 2009
  */
-public interface Schema/*<T>*/
-{
-    
+public interface Schema/*<T>*/ {
+
     /**
      * Gets the field name associated with the number.
      * This is particularly useful when serializing to different formats (Eg. JSON).
@@ -42,7 +41,7 @@ public interface Schema/*<T>*/
      * </pre>
      */
     public String getFieldName(int number);
-    
+
     /**
      * Gets the field number associated with the name.
      * This is particularly useful when serializing to different formats (Eg. JSON).
@@ -52,39 +51,39 @@ public interface Schema/*<T>*/
      * </pre>
      */
     public int getFieldNumber(String name);
-    
+
     /**
      * Returns true if there is no required field or if all the required fields are set.
      */
     public boolean isInitialized(Object message);
-    
+
     /**
      * Creates the message/object tied to this schema.
      */
     public Object newMessage();
-    
+
     /**
      * Returns the simple name of the message tied to this schema.
      * Allows custom schemas to provide a custom name other than typeClass().getSimpleName();
      */
     public String messageName();
-    
+
     /**
      * Returns the full name of the message tied to this schema.
      * Allows custom schemas to provide a custom name other than typeClass().getName();
      */
     public String messageFullName();
-    
+
     /**
      * Gets the class of the message.
      */
     public Class typeClass();
-    
+
     /**
      * Deserializes a message/object from the {@link Input input}.
      */
     public void mergeFrom(Input input, Object message) throws IOException;
-    
+
     /**
      * Serializes a message/object to the {@link Output output}.
      */

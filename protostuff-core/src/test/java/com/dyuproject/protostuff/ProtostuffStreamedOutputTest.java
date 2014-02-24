@@ -25,40 +25,32 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Sep 19, 2010
  */
-public class ProtostuffStreamedOutputTest extends SerDeserTest
-{
+public class ProtostuffStreamedOutputTest extends SerDeserTest {
 
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema);
     }
 
     protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buf());
     }
 
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try
-        {
+        try {
             ProtostuffIOUtil.writeTo(out, message, schema, buf());
-        }
-        catch(IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+        } catch (IOException e) {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
-        
+
         return out.toByteArray();
     }
 

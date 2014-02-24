@@ -29,19 +29,16 @@ import java.io.ObjectOutputStream;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public final class HasHasBar implements Message, Schema, Externalizable
-{
-    
+public final class HasHasBar implements Message, Schema, Externalizable {
+
     private String name;
     private HasBar hasBar;
-    
-    public HasHasBar()
-    {
-        
+
+    public HasHasBar() {
+
     }
 
-    public HasHasBar(String name, HasBar hasBar)
-    {
+    public HasHasBar(String name, HasBar hasBar) {
         this.name = name;
         this.hasBar = hasBar;
     }
@@ -49,83 +46,68 @@ public final class HasHasBar implements Message, Schema, Externalizable
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the hasBar
      */
-    public HasBar getHasBar()
-    {
+    public HasBar getHasBar() {
         return hasBar;
     }
 
     /**
      * @param hasBar the hasBar to set
      */
-    public void setHasBar(HasBar hasBar)
-    {
+    public void setHasBar(HasBar hasBar) {
         this.hasBar = hasBar;
     }
 
-    public Schema cachedSchema()
-    {
+    public Schema cachedSchema() {
         return this;
     }
 
-    public String getFieldName(int number)
-    {
+    public String getFieldName(int number) {
         return String.valueOf(number);
     }
 
-    public int getFieldNumber(String name)
-    {
+    public int getFieldNumber(String name) {
         return Integer.parseInt(name);
     }
 
-    public boolean isInitialized(Object messageObj)
-    {
-        HasHasBar message = (HasHasBar)messageObj;
+    public boolean isInitialized(Object messageObj) {
+        HasHasBar message = (HasHasBar) messageObj;
         return message.hasBar != null;
     }
 
-    public HasHasBar newMessage()
-    {
+    public HasHasBar newMessage() {
         return new HasHasBar();
     }
-    
-    public Class typeClass()
-    {
+
+    public Class typeClass() {
         return HasHasBar.class;
     }
-    
-    public String messageName()
-    {
+
+    public String messageName() {
         return "HasHasBar";
     }
-    
-    public String messageFullName()
-    {
+
+    public String messageFullName() {
         return getClass().getName();
     }
 
-    public void mergeFrom(Input input, Object messageObj) throws IOException
-    {
-        HasHasBar message = (HasHasBar)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+    public void mergeFrom(Input input, Object messageObj) throws IOException {
+        HasHasBar message = (HasHasBar) messageObj;
+        for (int number = input.readFieldNumber(this); ; number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
@@ -140,61 +122,47 @@ public final class HasHasBar implements Message, Schema, Externalizable
         }
     }
 
-    public void writeTo(Output output, Object messageObj) throws IOException
-    {
-        HasHasBar message = (HasHasBar)messageObj;
-        if(message.name!=null)
+    public void writeTo(Output output, Object messageObj) throws IOException {
+        HasHasBar message = (HasHasBar) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
         writeHasBar(output, 2, message.hasBar, false);
     }
-    
-    public void readExternal(ObjectInput in) throws IOException
-    {
+
+    public void readExternal(ObjectInput in) throws IOException {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
+    public void writeExternal(ObjectOutput out) throws IOException {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
-    
-    static HasBar readHasBar(Input input) throws IOException
-    {
+
+    static HasBar readHasBar(Input input) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 input.readByteArray()));
-        try
-        {
-            return (HasBar)ois.readObject();
-        }
-        catch (Exception e)
-        {
+        try {
+            return (HasBar) ois.readObject();
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
-        }
-        finally
-        {
+        } finally {
             ois.close();
         }
     }
-    
-    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated) 
-    throws IOException
-    {
+
+    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated)
+            throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        try
-        {
+        try {
             oos.writeObject(hasBar);
             output.writeByteArray(fieldNumber, baos.toByteArray(), repeated);
-        }
-        finally
-        {
+        } finally {
             oos.close();
         }
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((hasBar == null) ? 0 : hasBar.hashCode());
@@ -203,32 +171,26 @@ public final class HasHasBar implements Message, Schema, Externalizable
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HasHasBar other = (HasHasBar)obj;
-        if (hasBar == null)
-        {
+        HasHasBar other = (HasHasBar) obj;
+        if (hasBar == null) {
             if (other.hasBar != null)
                 return false;
-        }
-        else if (!hasBar.equals(other.hasBar))
+        } else if (!hasBar.equals(other.hasBar))
             return false;
-        if (name == null)
-        {
+        if (name == null) {
             if (other.name != null)
                 return false;
-        }
-        else if (!name.equals(other.name))
+        } else if (!name.equals(other.name))
             return false;
         return true;
     }
-    
-    
+
 
 }

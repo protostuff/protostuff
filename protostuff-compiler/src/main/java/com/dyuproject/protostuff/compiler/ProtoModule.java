@@ -25,31 +25,28 @@ import java.util.Properties;
  * @author David Yu
  * @created Jan 5, 2010
  */
-public class ProtoModule implements Serializable
-{
+public class ProtoModule implements Serializable {
 
     private static final long serialVersionUID = 6231036933426077777L;
-    
+
     private File source;
     private String output;
     private String encoding;
     private File outputDir;
-    
-    
+
+
     private Properties options = new Properties();
     Properties config;
-    
+
     private CachingProtoLoader protoLoader;
-    
-    private HashMap<String,Object> attributes = new HashMap<String,Object>();
-    
-    public ProtoModule()
-    {
-        
+
+    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+
+    public ProtoModule() {
+
     }
-    
-    public ProtoModule(File source, String output, String encoding, File outputDir)
-    {
+
+    public ProtoModule(File source, String output, String encoding, File outputDir) {
         super();
         this.source = source;
         this.output = output;
@@ -58,150 +55,116 @@ public class ProtoModule implements Serializable
     }
 
 
-
     /**
      * @return the source
      */
-    public File getSource()
-    {
+    public File getSource() {
         return source;
     }
-
-
 
 
     /**
      * @param source the source to set
      */
-    public void setSource(File source)
-    {
+    public void setSource(File source) {
         this.source = source;
     }
-
-
 
 
     /**
      * @return the output
      */
-    public String getOutput()
-    {
+    public String getOutput() {
         return output;
     }
-
-
 
 
     /**
      * @param output the output to set
      */
-    public void setOutput(String output)
-    {
+    public void setOutput(String output) {
         this.output = output;
     }
-
-
 
 
     /**
      * @return the encoding
      */
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return encoding;
     }
-
-
 
 
     /**
      * @param encoding the encoding to set
      */
-    public void setEncoding(String encoding)
-    {
+    public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
-
-
 
 
     /**
      * @return the outputDir
      */
-    public File getOutputDir()
-    {
+    public File getOutputDir() {
         return outputDir;
     }
-
-
 
 
     /**
      * @param outputDir the outputDir to set
      */
-    public void setOutputDir(File outputDir)
-    {
+    public void setOutputDir(File outputDir) {
         this.outputDir = outputDir;
     }
-
-
 
 
     /**
      * @return the options
      */
-    public Properties getOptions()
-    {
+    public Properties getOptions() {
         return options;
     }
+
     /**
      * @param options
      */
-    public void setOptions(Properties options)
-    {
+    public void setOptions(Properties options) {
         this.options.putAll(options);
     }
-    
-    public String getOption(String key)
-    {
+
+    public String getOption(String key) {
         return options.getProperty(key);
     }
-    
-    public void setOption(String key, String value)
-    {
+
+    public void setOption(String key, String value) {
         options.setProperty(key, value);
     }
 
-    public CachingProtoLoader getCachingProtoLoader()
-    {
+    public CachingProtoLoader getCachingProtoLoader() {
         return protoLoader;
     }
 
-    public void setCachingProtoLoader(CachingProtoLoader protoLoader)
-    {
+    public void setCachingProtoLoader(CachingProtoLoader protoLoader) {
         this.protoLoader = protoLoader;
     }
-    
-    public Properties getConfig()
-    {
+
+    public Properties getConfig() {
         return config;
     }
 
-    public void setAttribute(String key, Object value)
-    {
+    public void setAttribute(String key, Object value) {
         attributes.put(key, value);
     }
-    
+
     /**
      * Alias for {@link #getAttributes()}.
      */
-    public HashMap<String,Object> getAttrs()
-    {
+    public HashMap<String, Object> getAttrs() {
         return attributes;
     }
-    
-    public HashMap<String,Object> getAttributes()
-    {
+
+    public HashMap<String, Object> getAttributes() {
         return attributes;
     }
 }

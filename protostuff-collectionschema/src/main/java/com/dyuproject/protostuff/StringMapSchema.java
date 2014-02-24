@@ -24,33 +24,28 @@ import java.util.Map;
  * @author David Yu
  * @created Jun 25, 2010
  */
-public class StringMapSchema<V> extends MapSchema<String,V>
-{
-    
+public class StringMapSchema<V> extends MapSchema<String, V> {
+
     /**
      * The schema for Map<String,String>
      */
-    public static final StringMapSchema<String> VALUE_STRING = new StringMapSchema<String>(null)
-    {
-        protected void putValueFrom(Input input, MapWrapper<String,String> wrapper, 
-                String key) throws IOException
-        {
+    public static final StringMapSchema<String> VALUE_STRING = new StringMapSchema<String>(null) {
+        protected void putValueFrom(Input input, MapWrapper<String, String> wrapper,
+                                    String key) throws IOException {
             wrapper.put(key, input.readString());
         }
 
-        protected void writeValueTo(Output output, int fieldNumber, String value, 
-                boolean repeated) throws IOException
-        {
+        protected void writeValueTo(Output output, int fieldNumber, String value,
+                                    boolean repeated) throws IOException {
             output.writeString(fieldNumber, value, repeated);
         }
-        
-        protected void transferValue(Pipe pipe, Input input, Output output, int number, 
-                boolean repeated) throws IOException
-        {
+
+        protected void transferValue(Pipe pipe, Input input, Output output, int number,
+                                     boolean repeated) throws IOException {
             input.transferByteRangeTo(output, true, number, repeated);
         }
     };
-    
+
     /**
      * The schema of the message value.
      */
@@ -59,57 +54,48 @@ public class StringMapSchema<V> extends MapSchema<String,V>
      * The pipe schema of the message value.
      */
     public final Pipe.Schema<V> vPipeSchema;
-    
-    public StringMapSchema(Schema<V> vSchema)
-    {
+
+    public StringMapSchema(Schema<V> vSchema) {
         this(vSchema, null);
     }
-    
-    public StringMapSchema(Schema<V> vSchema, Pipe.Schema<V> vPipeSchema)
-    {
+
+    public StringMapSchema(Schema<V> vSchema, Pipe.Schema<V> vPipeSchema) {
         this.vSchema = vSchema;
         this.vPipeSchema = vPipeSchema;
     }
 
-    protected final String readKeyFrom(Input input, MapWrapper<String,V> wrapper) 
-    throws IOException
-    {
+    protected final String readKeyFrom(Input input, MapWrapper<String, V> wrapper)
+            throws IOException {
         return input.readString();
     }
-    
-    protected void putValueFrom(Input input, MapWrapper<String,V> wrapper, String key) 
-    throws IOException
-    {
+
+    protected void putValueFrom(Input input, MapWrapper<String, V> wrapper, String key)
+            throws IOException {
         wrapper.put(key, input.mergeObject(null, vSchema));
     }
 
-    protected final void writeKeyTo(Output output, int fieldNumber, String value, 
-            boolean repeated) throws IOException
-    {
+    protected final void writeKeyTo(Output output, int fieldNumber, String value,
+                                    boolean repeated) throws IOException {
         output.writeString(fieldNumber, value, repeated);
     }
-    
-    protected void writeValueTo(Output output, int fieldNumber, V value, 
-            boolean repeated) throws IOException
-    {
+
+    protected void writeValueTo(Output output, int fieldNumber, V value,
+                                boolean repeated) throws IOException {
         output.writeObject(fieldNumber, value, vSchema, repeated);
     }
 
-    protected void transferKey(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException
-    {
+    protected void transferKey(Pipe pipe, Input input, Output output, int number,
+                               boolean repeated) throws IOException {
         input.transferByteRangeTo(output, true, number, repeated);
     }
 
-    protected void transferValue(Pipe pipe, Input input, Output output, int number, 
-            boolean repeated) throws IOException
-    {
-        if(vPipeSchema == null)
-        {
-            throw new RuntimeException("No pipe schema for value: " + 
+    protected void transferValue(Pipe pipe, Input input, Output output, int number,
+                                 boolean repeated) throws IOException {
+        if (vPipeSchema == null) {
+            throw new RuntimeException("No pipe schema for value: " +
                     vSchema.typeClass().getName());
         }
-        
+
         output.writeObject(number, pipe, vPipeSchema, repeated);
     }
 

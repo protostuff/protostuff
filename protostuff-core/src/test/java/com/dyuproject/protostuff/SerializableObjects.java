@@ -14,11 +14,10 @@
 
 package com.dyuproject.protostuff;
 
-import java.util.Arrays;
-
+import com.dyuproject.protostuff.Foo.EnumSample;
 import junit.framework.Assert;
 
-import com.dyuproject.protostuff.Foo.EnumSample;
+import java.util.Arrays;
 
 /**
  * The objects to be tested.
@@ -26,56 +25,53 @@ import com.dyuproject.protostuff.Foo.EnumSample;
  * @author David Yu
  * @created Nov 13, 2009
  */
-public final class SerializableObjects
-{
-    
+public final class SerializableObjects {
+
     public static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
-    public static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
+    public static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED,
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
 
-    
-    public static final Baz baz = new Baz(567, "baz", 202020202);  
-    public static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
+
+    public static final Baz baz = new Baz(567, "baz", 202020202);
+    public static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED,
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
-    
+
     public static final Foo foo = newFoo(
-            new Integer[]{90210,-90210, 0}, 
-            new String[]{"ab", "cd"}, 
+            new Integer[]{90210, -90210, 0},
+            new String[]{"ab", "cd"},
             new Bar[]{bar, negativeBar},
-            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
-            new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")}, 
-            new Boolean[]{true, false}, 
-            new Float[]{1234.4321f, -1234.4321f, 0f}, 
-            new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
+            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2},
+            new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")},
+            new Boolean[]{true, false},
+            new Float[]{1234.4321f, -1234.4321f, 0f},
+            new Double[]{12345678.87654321d, -12345678.87654321d, 0d},
             new Long[]{7060504030201l, -7060504030201l, 0l});
 
-    
+
     public static Foo newFoo(
-            Integer[] someInt, 
-            String[] someString, 
-            Bar[] someBar, 
+            Integer[] someInt,
+            String[] someString,
+            Bar[] someBar,
             EnumSample[] someEnum,
             ByteString[] someBytes,
             Boolean[] someBoolean,
             Float[] someFloat,
             Double[] someDouble,
-            Long[] someLong)
-    {
-        
+            Long[] someLong) {
+
         return new Foo(
                 someInt == null ? null : Arrays.asList(someInt),
-                someString == null ? null : Arrays.asList(someString), 
-                someBar == null ? null : Arrays.asList(someBar), 
-                someEnum == null ? null : Arrays.asList(someEnum), 
-                someBytes == null ? null : Arrays.asList(someBytes), 
-                someBoolean == null ? null : Arrays.asList(someBoolean), 
-                someFloat == null ? null : Arrays.asList(someFloat), 
+                someString == null ? null : Arrays.asList(someString),
+                someBar == null ? null : Arrays.asList(someBar),
+                someEnum == null ? null : Arrays.asList(someEnum),
+                someBytes == null ? null : Arrays.asList(someBytes),
+                someBoolean == null ? null : Arrays.asList(someBoolean),
+                someFloat == null ? null : Arrays.asList(someFloat),
                 someDouble == null ? null : Arrays.asList(someDouble),
                 someLong == null ? null : Arrays.asList(someLong));
     }
-    
-    public static <T> void assertEquals(T m1, T m2)
-    {
+
+    public static <T> void assertEquals(T m1, T m2) {
         Assert.assertEquals(m1, m2);
     }
     

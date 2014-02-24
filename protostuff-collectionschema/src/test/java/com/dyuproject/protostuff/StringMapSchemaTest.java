@@ -24,186 +24,170 @@ import java.util.Map;
  * @author David Yu
  * @created Jun 25, 2010
  */
-public abstract class StringMapSchemaTest extends AbstractTest
-{
-    
+public abstract class StringMapSchemaTest extends AbstractTest {
+
     public static final StringMapSchema<String> SCHEMA = StringMapSchema.VALUE_STRING;
-    
-    public abstract <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, 
-            int length, T message, Schema<T> schema) throws IOException;
-    
-    private <T extends Map<String,String>> void mergeFrom(byte[] data, T message, Schema<T> schema) throws IOException
-    {
+
+    public abstract <T extends Map<String, String>> void mergeFrom(byte[] data, int offset,
+                                                                   int length, T message, Schema<T> schema) throws IOException;
+
+    private <T extends Map<String, String>> void mergeFrom(byte[] data, T message, Schema<T> schema) throws IOException {
         mergeFrom(data, 0, data.length, message, schema);
     }
-    
-    public abstract <T extends Map<String,String>> byte[] toByteArray(T message, 
-            Schema<T> schema) throws IOException;
-    
-    protected Map<String,String> newMap()
-    {
-        return new HashMap<String,String>();
+
+    public abstract <T extends Map<String, String>> byte[] toByteArray(T message,
+                                                                       Schema<T> schema) throws IOException;
+
+    protected Map<String, String> newMap() {
+        return new HashMap<String, String>();
     }
-    
-    public void testEmptyMap() throws Exception
-    {
-        Map<String,String> map = newMap();
-        
+
+    public void testEmptyMap() throws Exception {
+        Map<String, String> map = newMap();
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testSingleEntry() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testSingleEntry() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testSingleEntryNullValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testSingleEntryNullValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("key", null);
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testSingleEntryEmptyString() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testSingleEntryEmptyString() throws Exception {
+        Map<String, String> map = newMap();
         map.put("", "");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testSingleEntryEmptyKey() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testSingleEntryEmptyKey() throws Exception {
+        Map<String, String> map = newMap();
         map.put("", "value");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testSingleEntryEmptyValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testSingleEntryEmptyValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("key", "");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testTwoEntries() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testTwoEntries() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testTwoEntriesContainsNullValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testTwoEntriesContainsNullValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", null);
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testTwoEntriesContainsEmptyKey() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testTwoEntriesContainsEmptyKey() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("", "");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testTwoEntriesContainsEmptyValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testTwoEntriesContainsEmptyValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntries() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntries() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
         map.put("ttttttttwwwwwwwwoooooooo", "two");
         map.put("three?", "3!");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntriesContainNullValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntriesContainNullValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
         map.put("ttttttttwwwwwwwwoooooooo", "two");
         map.put("three?", "3!");
         map.put("four", null);
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntriesContainNullValues() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntriesContainNullValues() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
@@ -211,51 +195,48 @@ public abstract class StringMapSchemaTest extends AbstractTest
         map.put("three?", "3!");
         map.put("four", null);
         map.put("five", null);
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntriesContainsEmptyKey() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntriesContainsEmptyKey() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
         map.put("ttttttttwwwwwwwwoooooooo", "two");
         map.put("three?", "3!");
         map.put("", "value");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntriesContainsEmptyValue() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntriesContainsEmptyValue() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
         map.put("ttttttttwwwwwwwwoooooooo", "two");
         map.put("three?", "3!");
         map.put("four", "");
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }
-    
-    public void testMultipleEntriesContainsEmptyKeyAndNullValues() throws Exception
-    {
-        Map<String,String> map = newMap();
+
+    public void testMultipleEntriesContainsEmptyKeyAndNullValues() throws Exception {
+        Map<String, String> map = newMap();
         map.put("foo", "bar");
         map.put("bar", "baz");
         map.put("one", "oooooooonnnnnnnnneeeeeeee");
@@ -266,10 +247,10 @@ public abstract class StringMapSchemaTest extends AbstractTest
         map.put("", null);
         map.put("seven", null);
         map.put("eight", null);
-        
+
         byte[] data = toByteArray(map, SCHEMA);
-        
-        Map<String,String> mapCompare = newMap();
+
+        Map<String, String> mapCompare = newMap();
         mergeFrom(data, mapCompare, SCHEMA);
         assertEquals(map, mapCompare);
     }

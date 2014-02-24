@@ -14,13 +14,12 @@
 
 package com.dyuproject.protostuff;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import com.dyuproject.protostuff.StringSerializer.STRING;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * An output used for writing data with xml format.
@@ -28,189 +27,150 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created May 24, 2010
  */
-public final class XmlOutput implements Output, StatefulOutput
-{
-    
+public final class XmlOutput implements Output, StatefulOutput {
+
     static final char[] EMPTY = new char[0];
-    
+
     private final XMLStreamWriter writer;
     private Schema<?> schema;
-    
-    public XmlOutput(XMLStreamWriter writer)
-    {
+
+    public XmlOutput(XMLStreamWriter writer) {
         this(writer, null);
     }
-    
-    public XmlOutput(XMLStreamWriter writer, Schema<?> schema)
-    {
+
+    public XmlOutput(XMLStreamWriter writer, Schema<?> schema) {
         this.writer = writer;
         this.schema = schema;
     }
-    
-    public XmlOutput use(Schema<?> schema)
-    {
+
+    public XmlOutput use(Schema<?> schema) {
         this.schema = schema;
         return this;
     }
-    
-    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
-    {
-        if(lastSchema != null && lastSchema == this.schema)
-        {
+
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema) {
+        if (lastSchema != null && lastSchema == this.schema) {
             this.schema = schema;
         }
     }
-    
-    private static void write(final XMLStreamWriter writer, final String name, 
-            final String value) throws IOException
-    {
-        try
-        {
+
+    private static void write(final XMLStreamWriter writer, final String name,
+                              final String value) throws IOException {
+        try {
             writer.writeStartElement(name);
             writer.writeCharacters(value);
             writer.writeEndElement();
-        }
-        catch (XMLStreamException e)
-        {
+        } catch (XMLStreamException e) {
             throw new XmlOutputException(e);
         }
     }
-    
-    private static void writeB64Encoded(final XMLStreamWriter writer, final String name, 
-            final char[] value) throws IOException
-    {
-        try
-        {
+
+    private static void writeB64Encoded(final XMLStreamWriter writer, final String name,
+                                        final char[] value) throws IOException {
+        try {
             writer.writeStartElement(name);
             writer.writeCharacters(value, 0, value.length);
             writer.writeEndElement();
-        }
-        catch (XMLStreamException e)
-        {
+        } catch (XMLStreamException e) {
             throw new XmlOutputException(e);
         }
     }
-    
-    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
-    
-    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
-    
-    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
-    
-    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
-    
-    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Long.toString(value));
     }
-    
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
-    {
+
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Float.toString(value));
     }
-    
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
-    {
+
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Double.toString(value));
     }
-    
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
-    {
+
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), String.valueOf(value));
     }
-    
-    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), Integer.toString(value));
     }
-    
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
-    {
+
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException {
         write(writer, schema.getFieldName(fieldNumber), value);
     }
-    
-    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
-    {
+
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
-    
-    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
-    {
-        writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
+
+    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException {
+        writeB64Encoded(writer, schema.getFieldName(fieldNumber),
                 value.length == 0 ? EMPTY : B64Code.cencode(value));
     }
-    
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
-            int offset, int length, boolean repeated) throws IOException
-    {
-        if(utf8String)
-        {
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
+                               int offset, int length, boolean repeated) throws IOException {
+        if (utf8String) {
             writeString(fieldNumber, STRING.deser(value, offset, length), repeated);
-        }
-        else
-        {
-            writeB64Encoded(writer, schema.getFieldName(fieldNumber), 
+        } else {
+            writeB64Encoded(writer, schema.getFieldName(fieldNumber),
                     length == 0 ? EMPTY : B64Code.cencode(value, offset, length));
         }
     }
-    
-    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
-            final boolean repeated) throws IOException
-    {
+
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
+                                final boolean repeated) throws IOException {
         final Schema<?> lastSchema = this.schema;
         this.schema = schema;
-        
+
         final XMLStreamWriter writer = this.writer;
-        try
-        {
+        try {
             writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
-            
+
             schema.writeTo(this, value);
-            
+
             writer.writeEndElement();
-        }
-        catch (XMLStreamException e)
-        {
+        } catch (XMLStreamException e) {
             throw new XmlOutputException(e);
         }
-        
+
         // restore state
         this.schema = lastSchema;
     }

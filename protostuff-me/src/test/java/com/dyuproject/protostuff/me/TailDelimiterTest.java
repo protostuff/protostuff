@@ -27,208 +27,195 @@ import java.util.Vector;
  * @author David Yu
  * @created Oct 5, 2010
  */
-public class TailDelimiterTest extends AbstractTest
-{
-    
-    public int writeListTo(OutputStream out, Vector messages, Schema schema) 
-    throws IOException
-    {
-        return ProtostuffIOUtil.writeListTo(out, messages, schema, 
+public class TailDelimiterTest extends AbstractTest {
+
+    public int writeListTo(OutputStream out, Vector messages, Schema schema)
+            throws IOException {
+        return ProtostuffIOUtil.writeListTo(out, messages, schema,
                 new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE));
     }
-    
-    public Vector parseListFrom(InputStream in, Schema schema) 
-    throws IOException
-    {
+
+    public Vector parseListFrom(InputStream in, Schema schema)
+            throws IOException {
         return ProtostuffIOUtil.parseListFrom(in, schema);
     }
-    
-    public void testBar() throws Exception
-    {
+
+    public void testBar() throws Exception {
         Vector bars = new Vector();
         bars.addElement(SerializableObjects.bar);
         bars.addElement(SerializableObjects.negativeBar);
-        
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
-        byte[] data = out.toByteArray();
-        
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Vector parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
-        
-        assertTrue(parsedBars.size() == bars.size());
-        for(int i=0; i<parsedBars.size(); i++)
-            SerializableObjects.assertEquals(bars.elementAt(i), parsedBars.elementAt(i));
-    }
-    
-    public void testEmptyBar() throws Exception
-    {
-        Vector bars = new Vector();
-        bars.addElement(new Bar());
-        bars.addElement(new Bar());
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
 
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
-        
+
         assertTrue(parsedBars.size() == bars.size());
-        for(int i=0; i<parsedBars.size(); i++)
+        for (int i = 0; i < parsedBars.size(); i++)
             SerializableObjects.assertEquals(bars.elementAt(i), parsedBars.elementAt(i));
     }
-    
-    public void testEmptyBar2() throws Exception
-    {
+
+    public void testEmptyBar() throws Exception {
         Vector bars = new Vector();
         bars.addElement(new Bar());
-        
+        bars.addElement(new Bar());
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
-        
+
         assertTrue(parsedBars.size() == bars.size());
-        for(int i=0; i<parsedBars.size(); i++)
+        for (int i = 0; i < parsedBars.size(); i++)
             SerializableObjects.assertEquals(bars.elementAt(i), parsedBars.elementAt(i));
     }
-    
-    public void testEmptyBarInner() throws Exception
-    {
+
+    public void testEmptyBar2() throws Exception {
+        Vector bars = new Vector();
+        bars.addElement(new Bar());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+        byte[] data = out.toByteArray();
+
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        Vector parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
+
+        assertTrue(parsedBars.size() == bars.size());
+        for (int i = 0; i < parsedBars.size(); i++)
+            SerializableObjects.assertEquals(bars.elementAt(i), parsedBars.elementAt(i));
+    }
+
+    public void testEmptyBarInner() throws Exception {
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         Vector bars = new Vector();
         bars.addElement(bar);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
-        
+
         assertTrue(parsedBars.size() == bars.size());
-        for(int i=0; i<parsedBars.size(); i++)
+        for (int i = 0; i < parsedBars.size(); i++)
             SerializableObjects.assertEquals(bars.elementAt(i), parsedBars.elementAt(i));
     }
-    
-    public void testFoo() throws Exception
-    {
+
+    public void testFoo() throws Exception {
         Vector foos = new Vector();
         foos.addElement(SerializableObjects.foo);
         foos.addElement(SerializableObjects.foo);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
-    
-    public void testEmptyList() throws Exception
-    {
+
+    public void testEmptyList() throws Exception {
         Vector foos = new Vector();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
-    
-    public void testEmptyFoo() throws Exception
-    {
+
+    public void testEmptyFoo() throws Exception {
         Vector foos = new Vector();
         foos.addElement(new Foo());
         foos.addElement(new Foo());
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
-    
-    public void testEmptyFoo2() throws Exception
-    {
+
+    public void testEmptyFoo2() throws Exception {
         Vector foos = new Vector();
         foos.addElement(new Foo());
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
-    
-    public void testEmptyFooInner() throws Exception
-    {
+
+    public void testEmptyFooInner() throws Exception {
         Vector bars = new Vector();
         bars.addElement(new Bar());
-        
+
         Vector foos = new Vector();
         Foo foo = new Foo();
         foo.setSomeBarList(bars);
-        
+
         foos.addElement(foo);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
-    
-    public void testEmptyFooInner2() throws Exception
-    {
+
+    public void testEmptyFooInner2() throws Exception {
         Vector bars = new Vector();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.addElement(bar);
-        
+
         Vector foos = new Vector();
         Foo foo = new Foo();
         foo.setSomeBarList(bars);
-        
+
         foos.addElement(foo);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Vector parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
-        
+
         assertTrue(parsedFoos.size() == foos.size());
-        for(int i=0; i<parsedFoos.size(); i++)
+        for (int i = 0; i < parsedFoos.size(); i++)
             SerializableObjects.assertEquals(foos.elementAt(i), parsedFoos.elementAt(i));
     }
 

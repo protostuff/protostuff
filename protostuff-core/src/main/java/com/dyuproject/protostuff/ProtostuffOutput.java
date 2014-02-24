@@ -34,54 +34,45 @@ import java.nio.ByteBuffer;
  * @author David Yu
  * @created Sep 19, 2010
  */
-public final class ProtostuffOutput extends WriteSession implements Output
-{
-    
-    public ProtostuffOutput(LinkedBuffer buffer)
-    {
+public final class ProtostuffOutput extends WriteSession implements Output {
+
+    public ProtostuffOutput(LinkedBuffer buffer) {
         super(buffer);
     }
-    
-    public ProtostuffOutput(LinkedBuffer buffer, OutputStream out)
-    {
+
+    public ProtostuffOutput(LinkedBuffer buffer, OutputStream out) {
         super(buffer, out);
     }
-    
-    public ProtostuffOutput(LinkedBuffer buffer, OutputStream out, 
-            FlushHandler flushHandler, int nextBufferSize)
-    {
+
+    public ProtostuffOutput(LinkedBuffer buffer, OutputStream out,
+                            FlushHandler flushHandler, int nextBufferSize) {
         super(buffer, out, flushHandler, nextBufferSize);
     }
-    
+
     /**
      * Resets this output for re-use.
      */
-    public ProtostuffOutput clear()
-    {
+    public ProtostuffOutput clear() {
         super.clear();
         return this;
     }
-    
-    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
-        if(value < 0)
-        {
+
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException {
+        if (value < 0) {
             tail = sink.writeVarInt64(
-                    value, 
-                    this, 
+                    value,
+                    this,
                     sink.writeVarInt32(
-                            makeTag(fieldNumber, WIRETYPE_VARINT), 
-                            this, 
+                            makeTag(fieldNumber, WIRETYPE_VARINT),
+                            this,
                             tail));
-        }
-        else
-        {
+        } else {
             tail = sink.writeVarInt32(
-                    value, 
-                    this, 
+                    value,
+                    this,
                     sink.writeVarInt32(
-                            makeTag(fieldNumber, WIRETYPE_VARINT), 
-                            this, 
+                            makeTag(fieldNumber, WIRETYPE_VARINT),
+                            this,
                             tail));
         }
         
@@ -103,15 +94,14 @@ public final class ProtostuffOutput extends WriteSession implements Output
                     tail);
         }*/
     }
-    
-    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         tail = sink.writeVarInt32(
-                value, 
-                this, 
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawVarInt32(
@@ -120,15 +110,14 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 this, 
                 tail);*/
     }
-    
-    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         tail = sink.writeVarInt32(
-                encodeZigZag32(value), 
-                this, 
+                encodeZigZag32(value),
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawVarInt32(
@@ -137,32 +126,14 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 this, 
                 tail);*/
     }
-    
-    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         tail = sink.writeInt32LE(
-                value, 
-                this, 
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED32), 
-                        this, 
-                        tail));
-        
-        /*tail = writeTagAndRawLittleEndian32(
-                makeTag(fieldNumber, WIRETYPE_FIXED32), 
-                value, 
-                this, 
-                tail);*/
-    }
-    
-    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
-        tail = sink.writeInt32LE(
-                value, 
-                this, 
-                sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED32), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_FIXED32),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawLittleEndian32(
@@ -172,14 +143,29 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 tail);*/
     }
 
-    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
-        tail = sink.writeVarInt64(
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
+        tail = sink.writeInt32LE(
+                value,
+                this,
+                sink.writeVarInt32(
+                        makeTag(fieldNumber, WIRETYPE_FIXED32),
+                        this,
+                        tail));
+        
+        /*tail = writeTagAndRawLittleEndian32(
+                makeTag(fieldNumber, WIRETYPE_FIXED32), 
                 value, 
                 this, 
+                tail);*/
+    }
+
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException {
+        tail = sink.writeVarInt64(
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawVarInt64(
@@ -188,15 +174,14 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 this, 
                 tail);*/
     }
-    
-    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         tail = sink.writeVarInt64(
-                value, 
-                this, 
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawVarInt64(
@@ -205,49 +190,30 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 this, 
                 tail);*/
     }
-    
-    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         tail = sink.writeVarInt64(
+                encodeZigZag64(value),
+                this,
+                sink.writeVarInt32(
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
+                        tail));
+        
+        /*tail = writeTagAndRawVarInt64(
+                makeTag(fieldNumber, WIRETYPE_VARINT), 
                 encodeZigZag64(value), 
                 this, 
-                sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
-                        tail));
-        
-        /*tail = writeTagAndRawVarInt64(
-                makeTag(fieldNumber, WIRETYPE_VARINT), 
-                encodeZigZag64(value), 
-                this, 
                 tail);*/
     }
-    
-    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         tail = sink.writeInt64LE(
-                value, 
-                this, 
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED64), 
-                        this, 
-                        tail));
-        
-        /*tail = writeTagAndRawLittleEndian64(
-                makeTag(fieldNumber, WIRETYPE_FIXED64), 
-                value, 
-                this, 
-                tail);*/
-    }
-    
-    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
-        tail = sink.writeInt64LE(
-                value, 
-                this, 
-                sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED64), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_FIXED64),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawLittleEndian64(
@@ -257,14 +223,29 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 tail);*/
     }
 
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
-    {
-        tail = sink.writeInt32LE(
-                Float.floatToRawIntBits(value), 
-                this, 
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
+        tail = sink.writeInt64LE(
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED32), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_FIXED64),
+                        this,
+                        tail));
+        
+        /*tail = writeTagAndRawLittleEndian64(
+                makeTag(fieldNumber, WIRETYPE_FIXED64), 
+                value, 
+                this, 
+                tail);*/
+    }
+
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException {
+        tail = sink.writeInt32LE(
+                Float.floatToRawIntBits(value),
+                this,
+                sink.writeVarInt32(
+                        makeTag(fieldNumber, WIRETYPE_FIXED32),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawLittleEndian32(
@@ -274,14 +255,13 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 tail);*/
     }
 
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
-    {
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException {
         tail = sink.writeInt64LE(
-                Double.doubleToRawLongBits(value), 
-                this, 
+                Double.doubleToRawLongBits(value),
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_FIXED64), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_FIXED64),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawLittleEndian64(
@@ -291,14 +271,13 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 tail);*/
     }
 
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
-    {
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException {
         tail = sink.writeByte(
-                value ? (byte)0x01 : 0x00, 
-                this, 
+                value ? (byte) 0x01 : 0x00,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_VARINT), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_VARINT),
+                        this,
                         tail));
         
         /*tail = writeTagAndRawVarInt32(
@@ -308,19 +287,17 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 tail);*/
     }
 
-    public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
-    {
+    public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException {
         writeInt32(fieldNumber, number, repeated);
     }
 
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
-    {
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException {
         tail = sink.writeStrUTF8VarDelimited(
-                value, 
-                this, 
+                value,
+                this,
                 sink.writeVarInt32(
-                        makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
-                        this, 
+                        makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
+                        this,
                         tail));
         
         /*tail = writeUTF8VarDelimited(
@@ -329,22 +306,20 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 writeRawVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), this, tail));*/
     }
 
-    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
-    {
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
-    
-    public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
-    {
+
+    public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException {
         tail = sink.writeByteArray(
                 bytes, 0, bytes.length,
-                this, 
+                this,
                 sink.writeVarInt32(
-                        bytes.length, 
-                        this, 
+                        bytes.length,
+                        this,
                         sink.writeVarInt32(
-                                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
-                                this, 
+                                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
+                                this,
                                 tail)));
         
         /*tail = writeTagAndByteArray(
@@ -353,42 +328,42 @@ public final class ProtostuffOutput extends WriteSession implements Output
                 this, 
                 tail);*/
     }
-    
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
-            int offset, int length, boolean repeated) throws IOException
-    {
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
+                               int offset, int length, boolean repeated) throws IOException {
         tail = sink.writeByteArray(
-                value, offset, length, 
-                this, 
+                value, offset, length,
+                this,
                 sink.writeVarInt32(
-                        length, 
-                        this, 
+                        length,
+                        this,
                         sink.writeVarInt32(
-                                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), 
-                                this, 
+                                makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
+                                this,
                                 tail)));
     }
-    
-    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
-            final boolean repeated) throws IOException
-    {
+
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
+                                final boolean repeated) throws IOException {
         tail = sink.writeVarInt32(
-                makeTag(fieldNumber, WIRETYPE_START_GROUP), 
-                this, 
+                makeTag(fieldNumber, WIRETYPE_START_GROUP),
+                this,
                 tail);
-        
+
         schema.writeTo(this, value);
-        
+
         tail = sink.writeVarInt32(
-                makeTag(fieldNumber, WIRETYPE_END_GROUP), 
-                this, 
+                makeTag(fieldNumber, WIRETYPE_END_GROUP),
+                this,
                 tail);
     }
 
-    /** Writes a ByteBuffer field. */
+    /**
+     * Writes a ByteBuffer field.
+     */
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-                writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
-                                value.remaining(), repeated);
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

@@ -23,17 +23,14 @@ import java.util.Map;
  * @author David Yu
  * @created Jun 25, 2010
  */
-public class XmlStringMapSchemaTest extends StringMapSchemaTest
-{
-    
-    public <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
-    throws IOException
-    {
+public class XmlStringMapSchemaTest extends StringMapSchemaTest {
+
+    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
+            throws IOException {
         XmlIOUtil.mergeFrom(data, offset, length, message, schema);
     }
-    
-    public <T extends Map<String,String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
-    {
+
+    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException {
         return XmlIOUtil.toByteArray(message, schema);
     }
 

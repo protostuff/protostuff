@@ -24,29 +24,24 @@ import java.io.OutputStream;
  * @author David Yu
  * @created Sep 19, 2010
  */
-public class ProtostuffBufferedOutputTest extends SerDeserTest
-{
-    
+public class ProtostuffBufferedOutputTest extends SerDeserTest {
+
     protected void mergeDelimitedFrom(InputStream in, Message message, Schema schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema);
     }
 
     protected void writeDelimitedTo(OutputStream out, Message message, Schema schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buf());
     }
 
     protected void mergeFrom(byte[] data, int offset, int length, Message message, Schema schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
-    
-    protected byte[] toByteArray(Message message, Schema schema)
-    {
+
+    protected byte[] toByteArray(Message message, Schema schema) {
         return ProtostuffIOUtil.toByteArray(message, schema, buf());
     }
 

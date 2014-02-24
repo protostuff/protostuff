@@ -50,45 +50,45 @@ package com.dyuproject.protostuff.me;
  * Thrown when attempting to build a protocol message that is missing required
  * fields.  This is a {@code RuntimeException} because it normally represents
  * a programming error:  it happens when some code which constructs a message
- * fails to set all the fields. 
+ * fails to set all the fields.
  *
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
 public final class UninitializedMessageException extends RuntimeException {
-  
-  public final Object targetMessage;
-  public final Schema targetSchema;
-  
-  public UninitializedMessageException(Message targetMessage) {
-    this(targetMessage, targetMessage.cachedSchema());
-  }
-  
-  public UninitializedMessageException(Object targetMessage, Schema targetSchema) {
-    this.targetMessage = targetMessage;
-    this.targetSchema = targetSchema;
-  }
-  
-  public UninitializedMessageException(String msg, Message targetMessage) {
-    this(msg, targetMessage, targetMessage.cachedSchema());
-  }
-    
-  public UninitializedMessageException(String msg, Object targetMessage, 
-      Schema targetSchema) {
-    super(msg);
-    this.targetMessage = targetMessage;
-    this.targetSchema = targetSchema;
-  }
-  
-  //@SuppressWarnings("unchecked")
-  public Object getTargetMessage() {
-    return targetMessage;
-  }
-  
-  //@SuppressWarnings("unchecked")
-  public Schema getTargetSchema() {
-    return targetSchema;
-  }
+
+    public final Object targetMessage;
+    public final Schema targetSchema;
+
+    public UninitializedMessageException(Message targetMessage) {
+        this(targetMessage, targetMessage.cachedSchema());
+    }
+
+    public UninitializedMessageException(Object targetMessage, Schema targetSchema) {
+        this.targetMessage = targetMessage;
+        this.targetSchema = targetSchema;
+    }
+
+    public UninitializedMessageException(String msg, Message targetMessage) {
+        this(msg, targetMessage, targetMessage.cachedSchema());
+    }
+
+    public UninitializedMessageException(String msg, Object targetMessage,
+                                         Schema targetSchema) {
+        super(msg);
+        this.targetMessage = targetMessage;
+        this.targetSchema = targetSchema;
+    }
+
+    //@SuppressWarnings("unchecked")
+    public Object getTargetMessage() {
+        return targetMessage;
+    }
+
+    //@SuppressWarnings("unchecked")
+    public Schema getTargetSchema() {
+        return targetSchema;
+    }
   
   /*@public UninitializedMessageException(final MessageLite message) {
     super("Message was missing required fields.  (Lite runtime could not " +

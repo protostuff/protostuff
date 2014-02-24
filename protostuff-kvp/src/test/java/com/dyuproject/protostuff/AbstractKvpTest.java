@@ -23,45 +23,35 @@ import java.io.IOException;
  * @author David Yu
  * @created Dec 4, 2010
  */
-public abstract class AbstractKvpTest extends NoNestedMessageTest
-{
-    
+public abstract class AbstractKvpTest extends NoNestedMessageTest {
+
     protected final boolean numeric;
 
-    public AbstractKvpTest(boolean numeric)
-    {
+    public AbstractKvpTest(boolean numeric) {
         this.numeric = numeric;
     }
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, 
-            T message, Schema<T> schema) throws IOException
-    {
-        try
-        {
-            schema.mergeFrom(new KvpByteArrayInput(data, offset, length, numeric), 
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length,
+                                 T message, Schema<T> schema) throws IOException {
+        try {
+            schema.mergeFrom(new KvpByteArrayInput(data, offset, length, numeric),
                     message);
-        }
-        catch(ArrayIndexOutOfBoundsException e)
-        {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw new ProtostuffException("Truncated message.", e);
         }
     }
 
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
+    protected <T> byte[] toByteArray(T message, Schema<T> schema) {
         final KvpOutput output = new KvpOutput(buf(), schema, numeric);
-        try
-        {
+        try {
             schema.writeTo(output, message);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+        } catch (IOException e) {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         byte[] data = output.toByteArray();
         //System.err.println(data.length + " | " + getClass().getSimpleName());
         return data;
     }
-    
+
 }

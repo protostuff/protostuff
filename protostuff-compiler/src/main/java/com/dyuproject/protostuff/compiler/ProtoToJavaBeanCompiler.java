@@ -14,16 +14,15 @@
 
 package com.dyuproject.protostuff.compiler;
 
-import java.io.IOException;
-import java.io.Writer;
-
+import com.dyuproject.protostuff.parser.EnumGroup;
+import com.dyuproject.protostuff.parser.Message;
+import com.dyuproject.protostuff.parser.Proto;
 import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import com.dyuproject.protostuff.parser.EnumGroup;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * Compiles proto files to protobuf java messages (pojos).
@@ -31,44 +30,39 @@ import com.dyuproject.protostuff.parser.Proto;
  * @author David Yu
  * @created Jan 4, 2010
  */
-public class ProtoToJavaBeanCompiler extends STCodeGenerator
-{
-    
-    public ProtoToJavaBeanCompiler()
-    {
+public class ProtoToJavaBeanCompiler extends STCodeGenerator {
+
+    public ProtoToJavaBeanCompiler() {
         this("java_bean");
     }
 
     public ProtoToJavaBeanCompiler(String id) {
         super(id);
     }
-    
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
+
+    public void compile(ProtoModule module, Proto proto) throws IOException {
         String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("separate_schema")==null ? 
+        String template = module.getOption("separate_schema") == null ?
                 "java_bean" : "java_bean_separate_schema";
         StringTemplateGroup group = getSTG(template);
-        
+
         writeEnums(module, proto, javaPackageName, group);
-            
+
         writeMessages(module, proto, javaPackageName, group);
     }
-        
+
     protected void writeMessages(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
-        for(Message m : proto.getMessages())
-        {
+        for (Message m : proto.getMessages()) {
             // true if its a service message w/c isn't supported atm
-            if(m.getFields().isEmpty())
-            {
+            if (m.getFields().isEmpty()) {
                 System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
             }
-            
-            Writer writer = CompilerUtil.newWriter(module, 
+
+            Writer writer = CompilerUtil.newWriter(module,
                     javaPackageName, m.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("message", m);
             messageBlock.setAttribute("module", module);
@@ -80,8 +74,7 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
     }
 
     protected void writeEnums(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
-        for(EnumGroup eg : proto.getEnumGroups())
-        {
+        for (EnumGroup eg : proto.getEnumGroups()) {
             Writer writer = CompilerUtil.newWriter(module,
                     javaPackageName, eg.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);

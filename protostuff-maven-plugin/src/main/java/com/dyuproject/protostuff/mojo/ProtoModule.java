@@ -15,16 +15,15 @@
 package com.dyuproject.protostuff.mojo;
 
 /**
- * Specifically for the maven-plugin.  This allows you to not specify 
+ * Specifically for the maven-plugin.  This allows you to not specify
  * implementation="com.dyuproject.protostuff.protocompiler.ProtoModule"
  * on your <pre><protoModule></protoModule></pre> tags
  *
  * @author David Yu
  * @created Jan 14, 2010
  */
-public class ProtoModule extends com.dyuproject.protostuff.compiler.ProtoModule
-{
-    
+public class ProtoModule extends com.dyuproject.protostuff.compiler.ProtoModule {
+
     private static final long serialVersionUID = -1491907620177689686L;
 
     private boolean addToCompileSourceRoot = true;
@@ -32,21 +31,18 @@ public class ProtoModule extends com.dyuproject.protostuff.compiler.ProtoModule
     /**
      * @return the addToCompileSourceRoot
      */
-    public boolean isAddToCompileSourceRoot()
-    {
+    public boolean isAddToCompileSourceRoot() {
         return addToCompileSourceRoot;
     }
 
     /**
      * Set this to true to include the output dir to the list of compilation sources.
-     * 
+     *
      * @param addToCompileSourceRoot the addToCompileSourceRoot to set
      */
-    public void setAddToCompileSourceRoot(boolean addToCompileSourceRoot)
-    {
+    public void setAddToCompileSourceRoot(boolean addToCompileSourceRoot) {
         this.addToCompileSourceRoot = addToCompileSourceRoot;
     }
-    
-    
+
 
 }

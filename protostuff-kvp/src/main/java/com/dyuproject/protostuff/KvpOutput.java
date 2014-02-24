@@ -25,258 +25,231 @@ import java.nio.ByteBuffer;
  * A kvp encoding is a binary encoding w/c contains a key-value sequence.
  * On the wire, a serialized field (key-value) would look like:
  * [key-len][key][value-len][value]
- * 
+ * <p/>
  * The keys and values are length-delimited (uint16 little endian).
- * 
+ * <p/>
  * Note that this encoding does not support nested messages.
- * This encoding is mostly useful for headers w/c contain information about 
+ * This encoding is mostly useful for headers w/c contain information about
  * the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  *
  * @author David Yu
  * @created Nov 30, 2010
  */
-public final class KvpOutput extends WriteSession implements Output
-{
-    
+public final class KvpOutput extends WriteSession implements Output {
+
     final byte[] numBuf = new byte[2];
     final boolean numeric;
     private Schema<?> schema;
-    
 
-    public KvpOutput(LinkedBuffer head, Schema<?> schema, boolean numeric)
-    {
+
+    public KvpOutput(LinkedBuffer head, Schema<?> schema, boolean numeric) {
         super(head);
         this.schema = schema;
         this.numeric = numeric;
     }
-    
-    public KvpOutput(LinkedBuffer head, OutputStream out, Schema<?> schema, 
-            boolean numeric)
-    {
+
+    public KvpOutput(LinkedBuffer head, OutputStream out, Schema<?> schema,
+                     boolean numeric) {
         super(head, out);
         this.schema = schema;
         this.numeric = numeric;
     }
-    
-    public KvpOutput use(Schema<?> schema, boolean clearBuffer)
-    {
+
+    public KvpOutput use(Schema<?> schema, boolean clearBuffer) {
         this.schema = schema;
-        if(clearBuffer)
+        if (clearBuffer)
             tail = head.clear();
-        
+
         return this;
     }
-    
-    private LinkedBuffer writeField(final int number, final LinkedBuffer lb) 
-            throws IOException
-    {
-        if(numeric)
-        {
+
+    private LinkedBuffer writeField(final int number, final LinkedBuffer lb)
+            throws IOException {
+        if (numeric) {
             final int len = stringSize(number);
-            numBuf[0] = (byte)len;
-            numBuf[1] = (byte)((len >>> 8) & 0xFF);
-            
+            numBuf[0] = (byte) len;
+            numBuf[1] = (byte) ((len >>> 8) & 0xFF);
+
             return sink.writeStrFromInt(
-                    number, 
-                    this, 
+                    number,
+                    this,
                     sink.writeByteArray(
-                            numBuf, 0, 2, 
-                            this, 
+                            numBuf, 0, 2,
+                            this,
                             lb));
         }
-        
+
         return sink.writeStrUTF8FixedDelimited(
-                schema.getFieldName(number), 
-                true, 
-                this, 
+                schema.getFieldName(number),
+                true,
+                this,
                 lb);
     }
-    
-    private LinkedBuffer writeField(final int number, final int valueLen, 
-            LinkedBuffer lb) throws IOException
-    {
-        if(numeric)
-        {
+
+    private LinkedBuffer writeField(final int number, final int valueLen,
+                                    LinkedBuffer lb) throws IOException {
+        if (numeric) {
             final int len = stringSize(number);
-            numBuf[0] = (byte)len;
-            numBuf[1] = (byte)((len >>> 8) & 0xFF);
-            
+            numBuf[0] = (byte) len;
+            numBuf[1] = (byte) ((len >>> 8) & 0xFF);
+
             lb = sink.writeStrFromInt(
-                    number, 
-                    this, 
+                    number,
+                    this,
                     sink.writeByteArray(
-                            numBuf, 0, 2,  
-                            this, 
+                            numBuf, 0, 2,
+                            this,
                             lb));
-            
+
             // value len prefix
-            numBuf[0] = (byte)valueLen;
-            numBuf[1] = (byte)((valueLen >>> 8) & 0xFF);
-            
+            numBuf[0] = (byte) valueLen;
+            numBuf[1] = (byte) ((valueLen >>> 8) & 0xFF);
+
             return sink.writeByteArray(numBuf, 0, 2, this, lb);
         }
-        
+
         // value len prefix
-        numBuf[0] = (byte)valueLen;
-        numBuf[1] = (byte)((valueLen >>> 8) & 0xFF);
-        
+        numBuf[0] = (byte) valueLen;
+        numBuf[1] = (byte) ((valueLen >>> 8) & 0xFF);
+
         return sink.writeByteArray(
-                numBuf, 0, 2, 
-                this, 
+                numBuf, 0, 2,
+                this,
                 sink.writeStrUTF8FixedDelimited(
-                        schema.getFieldName(number), 
-                        true, 
-                        this, 
+                        schema.getFieldName(number),
+                        true,
+                        this,
                         lb));
     }
 
-    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
-    {
+    public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException {
         tail = sink.writeByte(
-                (byte)(value ? 0x31 : 0x30), 
-                this, 
+                (byte) (value ? 0x31 : 0x30),
+                this,
                 writeField(
-                        fieldNumber, 
-                        1, 
+                        fieldNumber,
+                        1,
                         tail));
     }
 
-    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
-    {
+    public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException {
         tail = sink.writeByteArray(
-                value, 
-                this, 
+                value,
+                this,
                 writeField(
-                        fieldNumber, 
-                        value.length, 
+                        fieldNumber,
+                        value.length,
                         tail));
     }
 
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, int offset, int length, boolean repeated) throws IOException
-    {
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, int offset, int length, boolean repeated) throws IOException {
         tail = sink.writeByteArray(
-                value, offset, length, 
-                this, 
+                value, offset, length,
+                this,
                 writeField(
-                        fieldNumber, 
-                        length, 
+                        fieldNumber,
+                        length,
                         tail));
     }
 
-    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
-    {
+    public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
-    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
-    {
+    public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException {
         // TODO optimize
         final String str = Double.toString(value);
         tail = sink.writeStrAscii(
-                str, 
-                this, 
+                str,
+                this,
                 writeField(
-                        fieldNumber, 
-                        str.length(), 
+                        fieldNumber,
+                        str.length(),
                         tail));
     }
 
-    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException {
         writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         writeInt64(fieldNumber, value, repeated);
     }
 
-    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
-    {
+    public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException {
         // TODO optimize
         final String str = Float.toString(value);
         tail = sink.writeStrAscii(
-                str, 
-                this, 
+                str,
+                this,
                 writeField(
-                        fieldNumber, 
-                        str.length(), 
+                        fieldNumber,
+                        str.length(),
                         tail));
     }
 
-    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
         tail = sink.writeStrFromInt(
-                value, 
-                this, 
+                value,
+                this,
                 writeField(
-                        fieldNumber, 
-                        size, 
+                        fieldNumber,
+                        size,
                         tail));
-        
+
     }
 
-    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
         tail = sink.writeStrFromLong(
-                value, 
-                this, 
+                value,
+                this,
                 writeField(
-                        fieldNumber, 
-                        size, 
+                        fieldNumber,
+                        size,
                         tail));
     }
 
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException
-    {
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException {
         writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException {
         writeInt64(fieldNumber, value, repeated);
     }
 
-    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         writeInt64(fieldNumber, value, repeated);
     }
 
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
-    {
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException {
         tail = sink.writeStrUTF8FixedDelimited(
-                value, 
-                true, 
-                this, 
+                value,
+                true,
+                this,
                 writeField(
-                        fieldNumber, 
+                        fieldNumber,
                         tail));
     }
 
-    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
-    {
+    public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException {
         writeInt32(fieldNumber, value, repeated);
     }
 
-    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
-    {
+    public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException {
         writeInt64(fieldNumber, value, repeated);
     }
 

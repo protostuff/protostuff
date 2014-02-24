@@ -27,44 +27,39 @@ import java.util.Vector;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public abstract class SerDeserTest extends StandardTest
-{
-    
+public abstract class SerDeserTest extends StandardTest {
+
     /**
-     * Serializes the {@code message} (delimited) into 
+     * Serializes the {@code message} (delimited) into
      * an {@link OutputStream} via {@link DeferredOutput}.
      */
     protected void writeDelimitedTo(OutputStream out, Message message)
-    throws IOException
-    {
+            throws IOException {
         writeDelimitedTo(out, message, message.cachedSchema());
     }
-    
+
     /**
-     * Serializes the {@code message} (delimited) into 
+     * Serializes the {@code message} (delimited) into
      * an {@link OutputStream} via {@link DeferredOutput} using the given schema.
      */
     protected abstract void writeDelimitedTo(OutputStream out, Message message, Schema schema)
-    throws IOException;
-    
+            throws IOException;
+
     /**
      * Deserializes from the byte array and data is merged/saved to the message.
      */
-    protected abstract void mergeDelimitedFrom(InputStream in, Message message, Schema schema) 
-    throws IOException;
-    
-    public void testFooSkipMessage() throws Exception
-    {
-        final CustomSchema fooSchema = new CustomSchema(SerializableObjects.foo.cachedSchema())
-        {
-            public void writeTo(Output output, Object message) throws IOException
-            {
+    protected abstract void mergeDelimitedFrom(InputStream in, Message message, Schema schema)
+            throws IOException;
+
+    public void testFooSkipMessage() throws Exception {
+        final CustomSchema fooSchema = new CustomSchema(SerializableObjects.foo.cachedSchema()) {
+            public void writeTo(Output output, Object message) throws IOException {
                 // 10 is an unknown field
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };
-        
+
         Foo fooCompare = SerializableObjects.foo;
         Foo dfoo = new Foo();
 
@@ -72,45 +67,38 @@ public abstract class SerDeserTest extends StandardTest
         mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
-    public void testBarSkipMessage() throws Exception
-    {
-        final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema())
-        {
-            public void writeTo(Output output, Object message) throws IOException
-            {
+
+    public void testBarSkipMessage() throws Exception {
+        final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema()) {
+            public void writeTo(Output output, Object message) throws IOException {
                 // 10 is an unknown field
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };
-        
-        for(Bar barCompare : new Bar[]{SerializableObjects.bar, SerializableObjects.negativeBar})
-        {
-            Bar dbar = new Bar();            
+
+        for (Bar barCompare : new Bar[]{SerializableObjects.bar, SerializableObjects.negativeBar}) {
+            Bar dbar = new Bar();
 
             byte[] output = toByteArray(barCompare, barSchema);
             mergeFrom(output, 0, output.length, dbar, barSchema);
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
+
     /**
-     * Foo shares field numbers (and type) with Bar except that foo's fields are 
+     * Foo shares field numbers (and type) with Bar except that foo's fields are
      * all repeated (w/c is alright).
      * Bar also shares the same field and type (1&2) with Baz.
      */
-    public void testShareFieldNumberAndTypeAndSkipMessage() throws Exception
-    {
-        final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema())
-        {
-            public void writeTo(Output output, Object message) throws IOException
-            {
+    public void testShareFieldNumberAndTypeAndSkipMessage() throws Exception {
+        final CustomSchema barSchema = new CustomSchema(SerializableObjects.bar.cachedSchema()) {
+            public void writeTo(Output output, Object message) throws IOException {
                 output.writeObject(10, SerializableObjects.baz, Baz.getSchema(), false);
                 super.writeTo(output, message);
             }
         };
-        
+
         final Baz baz = new Baz();
         baz.setId(1);
         baz.setName("baz");
@@ -120,145 +108,137 @@ public abstract class SerDeserTest extends StandardTest
         bar.setSomeString("bar");
         bar.setSomeDouble(100.001d);
         bar.setSomeFloat(10.01f);
-        
+
         byte[] coded = toByteArray(bar, barSchema);
-        
+
         Foo foo = new Foo();
         // we expect this to succeed, skipping the baz field.
         mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema());
-        
-        assertTrue(bar.getSomeInt() == ((Integer)foo.getSomeIntList().elementAt(0)).intValue());
+
+        assertTrue(bar.getSomeInt() == ((Integer) foo.getSomeIntList().elementAt(0)).intValue());
         assertEquals(bar.getSomeString(), foo.getSomeStringList().elementAt(0));
-        assertTrue(bar.getSomeDouble() == ((Double)foo.getSomeDoubleList().elementAt(0)).doubleValue());
-        assertTrue(bar.getSomeFloat() == ((Float)foo.getSomeFloatList().elementAt(0)).floatValue());
+        assertTrue(bar.getSomeDouble() == ((Double) foo.getSomeDoubleList().elementAt(0)).doubleValue());
+        assertTrue(bar.getSomeFloat() == ((Float) foo.getSomeFloatList().elementAt(0)).floatValue());
     }
-    
-    
-    public void testFooDelimited() throws Exception
-    {
+
+
+    public void testFooDelimited() throws Exception {
         Foo fooCompare = SerializableObjects.foo;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
         mergeDelimitedFrom(in, foo, foo.cachedSchema());
-        
+
         SerializableObjects.assertEquals(foo, fooCompare);
     }
-    
-    public void testEmptyFooDelimited() throws Exception
-    {
+
+    public void testEmptyFooDelimited() throws Exception {
         Foo fooCompare = new Foo();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
         mergeDelimitedFrom(in, foo, foo.cachedSchema());
-        
+
         SerializableObjects.assertEquals(foo, fooCompare);
     }
-    
-    public void testEmptyInnerFooDelimited() throws Exception
-    {
+
+    public void testEmptyInnerFooDelimited() throws Exception {
         Foo fooCompare = new Foo();
         Vector bars = new Vector();
         bars.addElement(new Bar());
         fooCompare.setSomeBarList(bars);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, fooCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Foo foo = new Foo();
         mergeDelimitedFrom(in, foo, foo.cachedSchema());
-        
+
         SerializableObjects.assertEquals(foo, fooCompare);
     }
-    
-    public void testBarDelimited() throws Exception
-    {
+
+    public void testBarDelimited() throws Exception {
         Bar barCompare = SerializableObjects.bar;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
         mergeDelimitedFrom(in, bar, bar.cachedSchema());
-        
+
         SerializableObjects.assertEquals(bar, barCompare);
     }
-    
-    public void testEmptyBarDelimited() throws Exception
-    {
+
+    public void testEmptyBarDelimited() throws Exception {
         Bar barCompare = new Bar();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
         mergeDelimitedFrom(in, bar, bar.cachedSchema());
-        
+
         SerializableObjects.assertEquals(bar, barCompare);
     }
-    
-    public void testEmptyInnerBarDelimited() throws Exception
-    {
+
+    public void testEmptyInnerBarDelimited() throws Exception {
         Bar barCompare = new Bar();
         barCompare.setSomeBaz(new Baz());
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, barCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Bar bar = new Bar();
         mergeDelimitedFrom(in, bar, bar.cachedSchema());
-        
+
         SerializableObjects.assertEquals(bar, barCompare);
     }
-    
-    public void testBazDelimited() throws Exception
-    {
+
+    public void testBazDelimited() throws Exception {
         Baz bazCompare = SerializableObjects.baz;
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, bazCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
         mergeDelimitedFrom(in, baz, baz.cachedSchema());
-        
+
         SerializableObjects.assertEquals(baz, bazCompare);
     }
-    
-    public void testEmptyBazDelimited() throws Exception
-    {
+
+    public void testEmptyBazDelimited() throws Exception {
         Baz bazCompare = new Baz();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeDelimitedTo(out, bazCompare);
         byte[] data = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         Baz baz = new Baz();
         mergeDelimitedFrom(in, baz, baz.cachedSchema());
-        
+
         SerializableObjects.assertEquals(baz, bazCompare);
     }
-    
-    
+
+
     // COMMENT OUT because j2me does not recognize java.io.Externalizable 
     // java.io.NotSerializableException is thrown instead.
     /*
@@ -361,23 +341,21 @@ public abstract class SerDeserTest extends StandardTest
         Foo parsedFoo = (Foo)in.readObject();
         SerializableObjects.assertEquals(parsedFoo, foo);
     }*/
-    
-    static void assertEquals(HasHasBar h1, HasHasBar h2)
-    {
+
+    static void assertEquals(HasHasBar h1, HasHasBar h2) {
         // true if both are null
-        if(h1 == h2)
+        if (h1 == h2)
             return;
-        
+
         assertEquals(h1.getName(), h2.getName());
         assertEquals(h1.getHasBar(), h2.getHasBar());
     }
-    
-    static void assertEquals(HasBar h1, HasBar h2)
-    {
+
+    static void assertEquals(HasBar h1, HasBar h2) {
         // true if both are null
-        if(h1 == h2)
+        if (h1 == h2)
             return;
-        
+
         assertTrue(h1.getId() == h2.getId());
         assertEquals(h1.getName(), h2.getName());
         SerializableObjects.assertEquals(h1.getBar(), h2.getBar());

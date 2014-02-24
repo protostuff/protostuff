@@ -28,19 +28,17 @@ import java.util.List;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
-{
-    
+public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable {
+
     static final Foo DEFAULT_INSTANCE = new Foo();
-    
-    public static Foo getSchema()
-    {
+
+    public static Foo getSchema() {
         return DEFAULT_INSTANCE;
     }
-    
-    private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
-    static
-    {
+
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+
+    static {
         __fieldMap.put("someInt", 1);
         __fieldMap.put("someString", 2);
         __fieldMap.put("someBar", 3);
@@ -51,27 +49,22 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         __fieldMap.put("someDouble", 8);
         __fieldMap.put("someLong", 9);
     }
-    
-    public enum EnumSample
-    {
+
+    public enum EnumSample {
         TYPE0(0), TYPE1(1), TYPE2(2), TYPE3(3), TYPE4(4);
-        
+
         public final int number;
-        
-        EnumSample(int number)
-        {
+
+        EnumSample(int number) {
             this.number = number;
-        }       
-        
-        public int getNumber()
-        {
+        }
+
+        public int getNumber() {
             return number;
         }
-        
-        public static EnumSample valueOf(int number)
-        {
-            switch(number)
-            {
+
+        public static EnumSample valueOf(int number) {
+            switch (number) {
                 case 0:
                     return TYPE0;
                 case 1:
@@ -86,7 +79,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             return null;
         }
     }
-    
+
     private List<Integer> someInt;
     private List<String> someString;
     private List<Bar> someBar;
@@ -96,23 +89,21 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     private List<Float> someFloat;
     private List<Double> someDouble;
     private List<Long> someLong;
-    
-    public Foo()
-    {
+
+    public Foo() {
 
     }
 
     public Foo(
-            List<Integer> someInt, 
-            List<String> someString, 
-            List<Bar> someBar, 
-            List<EnumSample> someEnum, 
+            List<Integer> someInt,
+            List<String> someString,
+            List<Bar> someBar,
+            List<EnumSample> someEnum,
             List<ByteString> someBytes,
-            List<Boolean> someBoolean, 
-            List<Float> someFloat, 
-            List<Double> someDouble, 
-            List<Long> someLong)
-    {
+            List<Boolean> someBoolean,
+            List<Float> someFloat,
+            List<Double> someDouble,
+            List<Long> someLong) {
         this.someInt = someInt;
         this.someString = someString;
         this.someBar = someBar;
@@ -127,181 +118,155 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     /**
      * @return the someInt
      */
-    public List<Integer> getSomeInt()
-    {
+    public List<Integer> getSomeInt() {
         return someInt;
     }
 
     /**
      * @param someInt the someInt to set
      */
-    public void setSomeInt(List<Integer> someInt)
-    {
+    public void setSomeInt(List<Integer> someInt) {
         this.someInt = someInt;
     }
 
     /**
      * @return the someString
      */
-    public List<String> getSomeString()
-    {
+    public List<String> getSomeString() {
         return someString;
     }
 
     /**
      * @param someString the someString to set
      */
-    public void setSomeString(List<String> someString)
-    {
+    public void setSomeString(List<String> someString) {
         this.someString = someString;
     }
 
     /**
      * @return the someBar
      */
-    public List<Bar> getSomeBar()
-    {
+    public List<Bar> getSomeBar() {
         return someBar;
     }
 
     /**
      * @param someBar the someBar to set
      */
-    public void setSomeBar(List<Bar> someBar)
-    {
+    public void setSomeBar(List<Bar> someBar) {
         this.someBar = someBar;
     }
 
     /**
      * @return the someEnum
      */
-    public List<EnumSample> getSomeEnum()
-    {
+    public List<EnumSample> getSomeEnum() {
         return someEnum;
     }
 
     /**
      * @param someEnum the someEnum to set
      */
-    public void setSomeEnum(List<EnumSample> someEnum)
-    {
+    public void setSomeEnum(List<EnumSample> someEnum) {
         this.someEnum = someEnum;
     }
 
     /**
      * @return the someBytes
      */
-    public List<ByteString> getSomeBytes()
-    {
+    public List<ByteString> getSomeBytes() {
         return someBytes;
     }
 
     /**
      * @param someBytes the someBytes to set
      */
-    public void setSomeBytes(List<ByteString> someBytes)
-    {
+    public void setSomeBytes(List<ByteString> someBytes) {
         this.someBytes = someBytes;
     }
 
     /**
      * @return the someBoolean
      */
-    public List<Boolean> getSomeBoolean()
-    {
+    public List<Boolean> getSomeBoolean() {
         return someBoolean;
     }
 
     /**
      * @param someBoolean the someBoolean to set
      */
-    public void setSomeBoolean(List<Boolean> someBoolean)
-    {
+    public void setSomeBoolean(List<Boolean> someBoolean) {
         this.someBoolean = someBoolean;
     }
 
     /**
      * @return the someFloat
      */
-    public List<Float> getSomeFloat()
-    {
+    public List<Float> getSomeFloat() {
         return someFloat;
     }
 
     /**
      * @param someFloat the someFloat to set
      */
-    public void setSomeFloat(List<Float> someFloat)
-    {
+    public void setSomeFloat(List<Float> someFloat) {
         this.someFloat = someFloat;
     }
 
     /**
      * @return the someDouble
      */
-    public List<Double> getSomeDouble()
-    {
+    public List<Double> getSomeDouble() {
         return someDouble;
     }
 
     /**
      * @param someDouble the someDouble to set
      */
-    public void setSomeDouble(List<Double> someDouble)
-    {
+    public void setSomeDouble(List<Double> someDouble) {
         this.someDouble = someDouble;
     }
 
     /**
      * @return the someLong
      */
-    public List<Long> getSomeLong()
-    {
+    public List<Long> getSomeLong() {
         return someLong;
     }
 
     /**
      * @param someLong the someLong to set
      */
-    public void setSomeLong(List<Long> someLong)
-    {
+    public void setSomeLong(List<Long> someLong) {
         this.someLong = someLong;
     }
 
-    public Schema<Foo> cachedSchema()
-    {
+    public Schema<Foo> cachedSchema() {
         return this;
     }
-    
-    public boolean isInitialized(Foo message)
-    {
+
+    public boolean isInitialized(Foo message) {
         return true;
     }
 
-    public Foo newMessage()
-    {
+    public Foo newMessage() {
         return new Foo();
     }
-    
-    public Class<Foo> typeClass()
-    {
+
+    public Class<Foo> typeClass() {
         return Foo.class;
     }
-    
-    public String messageName()
-    {
+
+    public String messageName() {
         return getClass().getSimpleName();
     }
-    
-    public String messageFullName()
-    {
+
+    public String messageFullName() {
         return getClass().getName();
     }
 
-    public String getFieldName(int number)
-    {
-        switch(number)
-        {
+    public String getFieldName(int number) {
+        switch (number) {
             case 1:
                 return "someInt";
             case 2:
@@ -325,139 +290,119 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         }
     }
 
-    public int getFieldNumber(String name)
-    {
+    public int getFieldNumber(String name) {
         Integer number = __fieldMap.get(name);
-        return number==null ? 0 : number.intValue();
+        return number == null ? 0 : number.intValue();
     }
-    
-    public void readExternal(ObjectInput in) throws IOException
-    {
+
+    public void readExternal(ObjectInput in) throws IOException {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
+    public void writeExternal(ObjectOutput out) throws IOException {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
-    public void writeTo(Output output, Foo message) throws IOException
-    {
-        if(message.someInt!=null)
-        {
-            for(int value : message.someInt)
+    public void writeTo(Output output, Foo message) throws IOException {
+        if (message.someInt != null) {
+            for (int value : message.someInt)
                 output.writeInt32(1, value, true);
         }
-        if(message.someString!=null)
-        {
-            for(String value : message.someString)
+        if (message.someString != null) {
+            for (String value : message.someString)
                 output.writeString(2, value, true);
         }
-        if(message.someBar!=null)
-        {
-            for(Bar value : message.someBar)
+        if (message.someBar != null) {
+            for (Bar value : message.someBar)
                 output.writeObject(3, value, Bar.getSchema(), true);
         }
-        if(message.someEnum!=null)
-        {
-            for(EnumSample value : message.someEnum)
+        if (message.someEnum != null) {
+            for (EnumSample value : message.someEnum)
                 output.writeEnum(4, value.number, true);
         }
-        if(message.someBytes!=null)
-        {
-            for(ByteString value : message.someBytes)
+        if (message.someBytes != null) {
+            for (ByteString value : message.someBytes)
                 output.writeBytes(5, value, true);
         }
-        if(message.someBoolean!=null)
-        {
-            for(boolean value : message.someBoolean)
+        if (message.someBoolean != null) {
+            for (boolean value : message.someBoolean)
                 output.writeBool(6, value, true);
         }
-        if(message.someFloat!=null)
-        {
-            for(Float value : message.someFloat)
+        if (message.someFloat != null) {
+            for (Float value : message.someFloat)
                 output.writeFloat(7, value, true);
         }
-        if(message.someDouble!=null)
-        {
-            for(Double value : message.someDouble)
+        if (message.someDouble != null) {
+            for (Double value : message.someDouble)
                 output.writeDouble(8, value, true);
         }
-        if(message.someLong!=null)
-        {
-            for(Long value : message.someLong)
+        if (message.someLong != null) {
+            for (Long value : message.someLong)
                 output.writeInt64(9, value, true);
         }
     }
-    
-    public void mergeFrom(Input input, Foo message) throws IOException
-    {
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-        {
-            switch(number)
-            {
+
+    public void mergeFrom(Input input, Foo message) throws IOException {
+        for (int number = input.readFieldNumber(this); ; number = input.readFieldNumber(this)) {
+            switch (number) {
                 case 0:
                     return;
                 case 1:
-                    if(message.someInt==null)
+                    if (message.someInt == null)
                         message.someInt = new ArrayList<Integer>();
                     message.someInt.add(input.readInt32());
                     break;
                 case 2:
-                    if(message.someString==null)
+                    if (message.someString == null)
                         message.someString = new ArrayList<String>();
                     message.someString.add(input.readString());
                     break;
                 case 3:
-                    if(message.someBar==null)
+                    if (message.someBar == null)
                         message.someBar = new ArrayList<Bar>();
                     message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
-                    if(message.someEnum==null)
+                    if (message.someEnum == null)
                         message.someEnum = new ArrayList<EnumSample>();
                     message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
-                    if(message.someBytes==null)
+                    if (message.someBytes == null)
                         message.someBytes = new ArrayList<ByteString>();
                     message.someBytes.add(input.readBytes());
                     break;
                 case 6:
-                    if(message.someBoolean==null)
+                    if (message.someBoolean == null)
                         message.someBoolean = new ArrayList<Boolean>();
                     message.someBoolean.add(input.readBool());
                     break;
                 case 7:
-                    if(message.someFloat==null)
+                    if (message.someFloat == null)
                         message.someFloat = new ArrayList<Float>();
                     message.someFloat.add(input.readFloat());
                     break;
                 case 8:
-                    if(message.someDouble==null)
+                    if (message.someDouble == null)
                         message.someDouble = new ArrayList<Double>();
                     message.someDouble.add(input.readDouble());
                     break;
                 case 9:
-                    if(message.someLong==null)
+                    if (message.someLong == null)
                         message.someLong = new ArrayList<Long>();
                     message.someLong.add(input.readInt64());
                     break;
                 default:
                     input.handleUnknownField(number, this);
             }
-        }        
+        }
     }
-    
-    static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE)
-    {
 
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
-            {
-                switch(number)
-                {
+    static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE) {
+
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+            for (int number = input.readFieldNumber(wrappedSchema); ; number = input.readFieldNumber(wrappedSchema)) {
+                switch (number) {
                     case 0:
                         return;
                     case 1:
@@ -493,14 +438,12 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             }
         }
     };
-    
-    public static Pipe.Schema<Foo> getPipeSchema()
-    {
+
+    public static Pipe.Schema<Foo> getPipeSchema() {
         return PIPE_SCHEMA;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((someBar == null) ? 0 : someBar.hashCode());
@@ -515,88 +458,67 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return result;
     }
 
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Foo other = (Foo)obj;
-        if (someBar == null)
-        {
+        Foo other = (Foo) obj;
+        if (someBar == null) {
             if (other.someBar != null)
                 return false;
-        }
-        else if (!someBar.equals(other.someBar))
+        } else if (!someBar.equals(other.someBar))
             return false;
-        if (someBoolean == null)
-        {
+        if (someBoolean == null) {
             if (other.someBoolean != null)
                 return false;
-        }
-        else if (!someBoolean.equals(other.someBoolean))
+        } else if (!someBoolean.equals(other.someBoolean))
             return false;
-        if (someBytes == null)
-        {
+        if (someBytes == null) {
             if (other.someBytes != null)
                 return false;
-        }
-        else if (!someBytes.equals(other.someBytes))
+        } else if (!someBytes.equals(other.someBytes))
             return false;
-        if (someDouble == null)
-        {
+        if (someDouble == null) {
             if (other.someDouble != null)
                 return false;
-        }
-        else if (!someDouble.equals(other.someDouble))
+        } else if (!someDouble.equals(other.someDouble))
             return false;
-        if (someEnum == null)
-        {
+        if (someEnum == null) {
             if (other.someEnum != null)
                 return false;
-        }
-        else if (!someEnum.equals(other.someEnum))
+        } else if (!someEnum.equals(other.someEnum))
             return false;
-        if (someFloat == null)
-        {
+        if (someFloat == null) {
             if (other.someFloat != null)
                 return false;
-        }
-        else if (!someFloat.equals(other.someFloat))
+        } else if (!someFloat.equals(other.someFloat))
             return false;
-        if (someInt == null)
-        {
+        if (someInt == null) {
             if (other.someInt != null)
                 return false;
-        }
-        else if (!someInt.equals(other.someInt))
+        } else if (!someInt.equals(other.someInt))
             return false;
-        if (someLong == null)
-        {
+        if (someLong == null) {
             if (other.someLong != null)
                 return false;
-        }
-        else if (!someLong.equals(other.someLong))
+        } else if (!someLong.equals(other.someLong))
             return false;
-        if (someString == null)
-        {
+        if (someString == null) {
             if (other.someString != null)
                 return false;
-        }
-        else if (!someString.equals(other.someString))
+        } else if (!someString.equals(other.someString))
             return false;
         return true;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Foo [someBar=" + someBar + ", someBoolean=" + someBoolean + ", someBytes=" + someBytes + ", someDouble=" + someDouble + ", someEnum="
                 + someEnum + ", someFloat=" + someFloat + ", someInt=" + someInt + ", someLong=" + someLong + ", someString=" + someString + "]";
     }
-    
-    
+
 
 }

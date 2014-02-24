@@ -18,161 +18,213 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A filter for the fields that need to be included.
- * 
+ *
  * @author David Yu
  * @created Nov 9, 2012
  */
-public interface Predicate
-{
+public interface Predicate {
     /**
      * Returns true if the field is included.
      */
     public boolean apply(Field<?> f);
-    
+
     /**
      * Returns true if the field is included.
-     * 
+     * <p/>
      * The predicate logic can be dynamic based on the contents of the message.
      */
     public boolean apply(Field<?> f, Object message);
-    
-    public interface Factory
-    {
+
+    public interface Factory {
         /**
          * Creates a new predicate based from the args.
          */
         public Predicate create(String[] args);
     }
-    
-    
+
+
     /**
      * A predicate that includes only a single field with the provided number.
      */
-    public static final class EQ implements Predicate, Predicate.Factory
-    {
+    public static final class EQ implements Predicate, Predicate.Factory {
         final int num;
-        EQ(int num) { this.num = num; }
-        public boolean apply(Field<?> f) { return f.number == num; }
-        public boolean apply(Field<?> f, Object message) { return f.number == num; }
+
+        EQ(int num) {
+            this.num = num;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number == num;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number == num;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
      * A predicate that includes all fields except the provided number.
      */
-    public static final class NOTEQ implements Predicate, Predicate.Factory
-    {
+    public static final class NOTEQ implements Predicate, Predicate.Factory {
         final int num;
-        NOTEQ(int num) { this.num = num; }
-        public boolean apply(Field<?> f) { return f.number != num; }
-        public boolean apply(Field<?> f, Object message) { return f.number != num; }
+
+        NOTEQ(int num) {
+            this.num = num;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number != num;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number != num;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
      * A predicate that includes fields that are greater than the provider number.
      */
-    public static final class GT implements Predicate, Predicate.Factory
-    {
+    public static final class GT implements Predicate, Predicate.Factory {
         final int num;
-        GT(int num) { this.num = num; }
-        public boolean apply(Field<?> f) { return f.number > num; }
-        public boolean apply(Field<?> f, Object message) { return f.number > num; }
+
+        GT(int num) {
+            this.num = num;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number > num;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number > num;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
      * A predicate that includes fields that are lesser than the provider number.
      */
-    public static final class LT implements Predicate, Predicate.Factory
-    {
+    public static final class LT implements Predicate, Predicate.Factory {
         final int num;
-        LT(int num) { this.num = num; }
-        public boolean apply(Field<?> f) { return f.number < num; }
-        public boolean apply(Field<?> f, Object message) { return f.number < num; }
+
+        LT(int num) {
+            this.num = num;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number < num;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number < num;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
-     * A predicate that includes fields if they are within range of the provided 
+     * A predicate that includes fields if they are within range of the provided
      * numbers, min and max.
      */
-    public static final class RANGE implements Predicate, Predicate.Factory
-    {
+    public static final class RANGE implements Predicate, Predicate.Factory {
         final int min, max;
-        RANGE(int min, int max) { this.min = min; this.max = max; }
-        public boolean apply(Field<?> f) { return f.number >= min && f.number <= max; }
-        public boolean apply(Field<?> f, Object message) { return f.number >= min && f.number <= max; }
+
+        RANGE(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number >= min && f.number <= max;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number >= min && f.number <= max;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
      * The opposite of {@link RANGE}.
      */
-    public static final class NOTRANGE implements Predicate, Predicate.Factory
-    {
+    public static final class NOTRANGE implements Predicate, Predicate.Factory {
         final int min, max;
-        NOTRANGE(int min, int max) { this.min = min; this.max = max; }
-        public boolean apply(Field<?> f) { return f.number < min || f.number > max; }
-        public boolean apply(Field<?> f, Object message) { return f.number < min || f.number > max; }
+
+        NOTRANGE(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public boolean apply(Field<?> f) {
+            return f.number < min || f.number > max;
+        }
+
+        public boolean apply(Field<?> f, Object message) {
+            return f.number < min || f.number > max;
+        }
+
         // instantiate this yourself and pass it to the view factory for re-use
-        public Predicate create(String[] args) { return this; }
+        public Predicate create(String[] args) {
+            return this;
+        }
     }
-    
+
     /**
      * Built-in factories that filters based on the field number.
      */
-    public enum Factories implements Predicate.Factory
-    {
-        EQ
-        {
-            public Predicate create(String[] args)
-            {
+    public enum Factories implements Predicate.Factory {
+        EQ {
+            public Predicate create(String[] args) {
                 return new Predicate.EQ(Integer.parseInt(args[0]));
             }
         },
-        NOTEQ
-        {
-            public Predicate create(String[] args)
-            {
+        NOTEQ {
+            public Predicate create(String[] args) {
                 return new Predicate.NOTEQ(Integer.parseInt(args[0]));
             }
         },
-        GT
-        {
-            public Predicate create(String[] args)
-            {
+        GT {
+            public Predicate create(String[] args) {
                 return new Predicate.GT(Integer.parseInt(args[0]));
             }
         },
-        LT
-        {
-            public Predicate create(String[] args)
-            {
+        LT {
+            public Predicate create(String[] args) {
                 return new Predicate.LT(Integer.parseInt(args[0]));
             }
         },
-        RANGE
-        {
-            public Predicate create(String[] args)
-            {
-                return new Predicate.RANGE(Integer.parseInt(args[0]), 
+        RANGE {
+            public Predicate create(String[] args) {
+                return new Predicate.RANGE(Integer.parseInt(args[0]),
                         Integer.parseInt(args[1]));
             }
         },
-        NOTRANGE
-        {
-            public Predicate create(String[] args)
-            {
-                return new Predicate.NOTRANGE(Integer.parseInt(args[0]), 
+        NOTRANGE {
+            public Predicate create(String[] args) {
+                return new Predicate.NOTRANGE(Integer.parseInt(args[0]),
                         Integer.parseInt(args[1]));
             }
-        }
-        ;
+        };
     }
 }

@@ -25,17 +25,14 @@ import java.util.Vector;
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    protected Vector parseListFrom(InputStream in, Schema schema) throws IOException
-    {
+    protected Vector parseListFrom(InputStream in, Schema schema) throws IOException {
         return ProtostuffIOUtil.parseListFrom(in, schema);
     }
 
     protected void writeListTo(OutputStream out, Vector messages, Schema schema)
-            throws IOException
-    {
+            throws IOException {
         ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
     }
 
