@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.codehaus.jackson.JsonGenerator;
 
@@ -438,6 +439,14 @@ public final class JsonOutput implements Output, StatefulOutput
         lastNumber = fieldNumber;
         lastRepeated = repeated;
         this.schema = lastSchema;
+    }
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

@@ -14,10 +14,10 @@
 
 package com.dyuproject.protostuff.parser;
 
+import junit.framework.TestCase;
+
 import java.io.File;
 import java.util.Collection;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for annotations on messages, enums, fields, services, rpc methods, extensions

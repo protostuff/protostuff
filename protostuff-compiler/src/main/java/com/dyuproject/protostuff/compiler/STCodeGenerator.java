@@ -51,11 +51,14 @@ public abstract class STCodeGenerator implements ProtoCompiler
     static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = 
             new ConcurrentHashMap<String, Formatter>();
     
+    public static int errorCount = 0;
+
     public static final StringTemplateErrorListener ERROR_LISTENER = 
             new StringTemplateErrorListener()
     {
         public void error(String msg, Throwable e)
         {
+            errorCount += 1;
             System.err.println("error: " + msg);
         }
         public void warning(String msg)

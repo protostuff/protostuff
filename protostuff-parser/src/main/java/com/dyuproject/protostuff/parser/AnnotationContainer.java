@@ -64,6 +64,10 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
         return annotations.get(name);
     }
 
+    public boolean hasAnnotation(String name) {
+        return annotations.containsKey(name);
+    }
+
     public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource)
     {
         if(source.isEmpty())

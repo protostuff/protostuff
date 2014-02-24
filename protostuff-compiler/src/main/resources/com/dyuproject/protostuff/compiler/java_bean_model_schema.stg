@@ -52,7 +52,7 @@ get_val(field, options, accessor, this, nocast) ::= <<
 <endif>
 >>
 resolve_annotated_native_type(field, boxed, bytesUnboxed) ::= <<
-<if(field.annotationMap.Bytes)>
+<if(field.extraOptions.ByteBuffer)>ByteBuffer<elseif(field.annotationMap.Bytes)>
 <if(bytesUnboxed)>byte[]<else><if(!boxed)>byte[]<else>Byte[]<endif><endif><elseif(field.annotationMap.Short)>
 <if(!boxed)>short<else>Short<endif><elseif(field.annotationMap.Byte)>
 <if(!boxed)>byte<else>Byte<endif><elseif(field.annotationMap.Char)>
@@ -195,7 +195,9 @@ break;
                 value=(field.javaType + ".valueOf(input.readEnum())"))>;
 break;
 <else>
-<if(field.annotationMap.Bytes)>
+<if(field.extraOptions.ByteBuffer)>
+<name>.<set_val(field=field, options=options, accessor=accessor, value=("input.readByteBuffer()"))>;
+<elseif(field.annotationMap.Bytes)>
 <name>.<set_val(field=field, options=options, accessor=accessor, value=("input.readByteArray()"))>;
 <else>
 <name>.<set_val(field=field, options=options, accessor=accessor, value=("input.read" + field.class.simpleName + "()"))>;
@@ -260,7 +262,9 @@ if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=
                     value=("new ArrayList<" + resolve_annotated_native_type(field=field, boxed=1, bytesUnboxed=1) + "\\>()"))>;
 
 <endif>
-<if(field.annotationMap.Bytes)>
+<if(field.extraOptions.ByteBuffer)>
+<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(input.readByteBuffer());
+<elseif(field.annotationMap.Bytes)>
 <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(input.readByteArray());
 <else>
 <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>.add(<pre_cast_val(field=field)>input.read<field.class.simpleName>()<post_set_cast_val(field=field)>);
@@ -403,7 +407,9 @@ if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=
 if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)> != null) {
     for (<resolve_annotated_native_type(field=field, boxed=1, bytesUnboxed=1)> <rf_ws_collection_entry(field=field, options=options)> : <get_val(field=field, options=options, accessor=accessor, this=name, nocast=1)>) {
         if (<rf_ws_collection_entry(field=field, options=options)> != null)
-            <if(field.annotationMap.Bytes)>
+            <if(field.extraOptions.ByteBuffer)>
+            output.writeBytes(<field_id_const(field=field, options=options)>, <rf_ws_collection_entry(field=field, options=options)>, true);
+            <elseif(field.annotationMap.Bytes)>
             output.writeByteArray(<field_id_const(field=field, options=options)>, <rf_ws_collection_entry(field=field, options=options)>, true);
             <else>
             output.write<field.class.simpleName>(<field_id_const(field=field, options=options)>, <pre_get_cast_val(field=field)><rf_ws_collection_entry(field=field, options=options)><post_get_cast_val(field=field)>, true);

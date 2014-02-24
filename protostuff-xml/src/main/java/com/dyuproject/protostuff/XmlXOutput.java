@@ -16,6 +16,7 @@ package com.dyuproject.protostuff;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Optimized xml output.  
@@ -270,5 +271,14 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
         // restore state
         this.schema = lastSchema;
     }
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
+    }
+
 
 }

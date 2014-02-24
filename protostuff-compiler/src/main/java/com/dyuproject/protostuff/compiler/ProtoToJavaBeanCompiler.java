@@ -36,7 +36,11 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
     
     public ProtoToJavaBeanCompiler()
     {
-        super("java_bean");
+        this("java_bean");
+    }
+
+    public ProtoToJavaBeanCompiler(String id) {
+        super(id);
     }
     
     public void compile(ProtoModule module, Proto proto) throws IOException
@@ -46,21 +50,12 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
                 "java_bean" : "java_bean_separate_schema";
         StringTemplateGroup group = getSTG(template);
         
-        for(EnumGroup eg : proto.getEnumGroups())
-        {
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, eg.getName()+".java");
-            AutoIndentWriter out = new AutoIndentWriter(writer);
+        writeEnums(module, proto, javaPackageName, group);
             
-            StringTemplate enumBlock = group.getInstanceOf("enum_block");
-            enumBlock.setAttribute("eg", eg);
-            enumBlock.setAttribute("module", module);
-            enumBlock.setAttribute("options", module.getOptions());
-
-            enumBlock.write(out);
-            writer.close();
-        }
+        writeMessages(module, proto, javaPackageName, group);
+    }
         
+    protected void writeMessages(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
         for(Message m : proto.getMessages())
         {
             // true if its a service message w/c isn't supported atm
@@ -71,7 +66,7 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
             }
             
             Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, m.getName()+".java");
+                    javaPackageName, m.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
             
             StringTemplate messageBlock = group.getInstanceOf("message_block");
@@ -80,6 +75,23 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
             messageBlock.setAttribute("options", module.getOptions());
 
             messageBlock.write(out);
+            writer.close();
+        }
+    }
+
+    protected void writeEnums(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
+        for(EnumGroup eg : proto.getEnumGroups())
+        {
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, eg.getName() + ".java");
+            AutoIndentWriter out = new AutoIndentWriter(writer);
+
+            StringTemplate enumBlock = group.getInstanceOf("enum_block");
+            enumBlock.setAttribute("eg", eg);
+            enumBlock.setAttribute("module", module);
+            enumBlock.setAttribute("options", module.getOptions());
+
+            enumBlock.write(out);
             writer.close();
         }
     }

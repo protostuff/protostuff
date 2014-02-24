@@ -53,6 +53,7 @@ import static com.dyuproject.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1013,5 +1014,11 @@ public final class CodedInput implements Input {
   public int getLastTag() {
     return lastTag;
   }
+
+    /** Reads a byte array/ByteBuffer value. */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
+
   //END EXTRA
 }

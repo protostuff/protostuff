@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * An Output lets an application write primitive data types and objects to 
@@ -73,7 +74,7 @@ public interface Output
     
     /** Writes a ByteString(wraps byte array) field. */
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException;
-    
+
     /** Writes a byte array field. */
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException;
     
@@ -84,6 +85,7 @@ public interface Output
     /** Writes an object(using its schema) field. */
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
     throws IOException;
-    
+
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException;
 
 }

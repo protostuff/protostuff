@@ -15,6 +15,7 @@
 package com.dyuproject.protostuff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -214,4 +215,8 @@ public final class XmlOutput implements Output, StatefulOutput
         this.schema = lastSchema;
     }
 
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
+    }
 }

@@ -20,6 +20,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -300,4 +301,13 @@ public final class XmlInput implements Input
         else
             output.writeByteArray(fieldNumber, readByteArray(), repeated);
     }
+
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
+
+
 }

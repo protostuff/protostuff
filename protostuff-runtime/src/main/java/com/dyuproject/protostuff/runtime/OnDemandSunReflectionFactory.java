@@ -35,7 +35,7 @@ final class OnDemandSunReflectionFactory
     static <T> Constructor<T> getConstructor(Class<T> clazz, 
             Constructor<Object> constructor)
     {
-        return sun.reflect.ReflectionFactory.getReflectionFactory()
+        return (Constructor<T>) sun.reflect.ReflectionFactory.getReflectionFactory()
                 .newConstructorForSerialization(clazz, constructor);
     }
 

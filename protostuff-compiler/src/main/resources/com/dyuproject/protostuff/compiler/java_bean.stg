@@ -111,6 +111,7 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     
     <message.fields:field_declaration(field=it, options=options, modifier="private"); separator="\n">
     <message:message_constructor(message=it, options=options)>
+    <message:message_to_string(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
     <message:message_impl_serializable(message=it, options=options)>
     <message:message_impl_message(message=it, options=options)>
@@ -138,7 +139,9 @@ import java.util.List;
 <endif>
 
 
-<if(message.bytesFieldPresent)>
+<if(message.byteBufferFieldPresent)>
+import java.nio.ByteBuffer;
+<elseif(message.bytesFieldPresent)>
 import com.dyuproject.protostuff.ByteString;
 <else>
 <if(message.bytesOrStringDefaultValuePresent)>
@@ -164,11 +167,9 @@ import com.dyuproject.protostuff.UninitializedMessageException;
 
 message_impl_declaration(message, options) ::= <<
 <if(options.(message.name + ".implements_declaration"))>
-<options.(message.name + ".implements_declaration")>, 
+<options.(message.name + ".implements_declaration")>,
 <else>
-implements 
-<endif>
-Externalizable, Message\<<message.name>\>, Schema\<<message.name>\>
+implements <endif>Externalizable, Message\<<message.name>\>, Schema\<<message.name>\>
 >>
 
 message_default_instance(message, options) ::= <<
@@ -221,7 +222,11 @@ field_default_value(field, options) ::= <<
 
 field_declaration(field, options, modifier) ::= <<
 <if(field.repeated)>
+<if(field.extraOptions.ByteBuffer)>
+<modifier; format=" ">List\<ByteBuffer\> <var(val=field.name, fmt="CC", options=options)>;
+<else>
 <modifier; format=" ">List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>;
+<endif>
 <else>
 <modifier; format=" "><field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)><field:field_assign_defaults(field=it, options=options)>;
 <endif>
@@ -230,16 +235,18 @@ field_declaration(field, options, modifier) ::= <<
 field_singular_type(field, options) ::= <<
 <if(field.required)>
 <map_primitive_wrapper.(field.javaType)>
-<else>
-<if(field.numberField)>
-<if(options.primitive_numbers_if_optional)>
-<field.javaType>
-<else>
-<map_primitive_wrapper.(field.javaType)>
-<endif>
-<else>
-<map_primitive_wrapper.(field.javaType)>
-<endif>
+ <else>
+ <if(field.numberField)>
+  <if(options.primitive_numbers_if_optional)>
+   <field.javaType>
+  <else>
+   <map_primitive_wrapper.(field.javaType)>
+  <endif>
+ <else>
+  <if(field.extraOptions.ByteBuffer)>ByteBuffer<else>
+  <map_primitive_wrapper.(field.javaType)>
+  <endif>
+ <endif>
 <endif>
 >>
 
@@ -255,7 +262,7 @@ message_constructor(message, options) ::= <<
 
 public <message.name>()
 {
-    
+
 }
 <if(message.requiredFieldPresentOnCurrent)>
 
@@ -297,11 +304,15 @@ public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="
     return <var(val=field.name, fmt="CC", options=options)>;
 }
 
+<if(!options.no_setters)>
+
 public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
     <field:builder_pattern_return(field=it, options=options)>
 }
+
+<endif>
 <if(options.generate_helper_methods)>
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
@@ -339,11 +350,15 @@ public <field:field_singular_type(field=it, options=options)> get<field.name; fo
     <endif>
 }
 
+<if(!options.no_setters)>
+
 public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
     <field:builder_pattern_return(field=it, options=options)>
 }
+
+<endif>
 
 <endif>
 >>
@@ -437,10 +452,32 @@ field_is_initialized(field, options, name) ::= <<
 <endif>
 >>
 
+message_to_string(message, options) ::= <<
+@Override
+public String toString() {
+    return "<message.name>{" +
+    <first(message.fields):message_fields_to_string_first(field=it, options=options)>
+    <rest(message.fields):message_fields_to_string(field=it, options=options); separator="\n">
+            '}';
+}
+>>
+
+message_fields_to_string_first(field, options) ::= <<
+            "<var(val=field.name, fmt="CC", options=options)>=" + <var(val=field.name, fmt="CC", options=options)> +
+>>
+
+message_fields_to_string(field, options) ::= <<
+            ", <var(val=field.name, fmt="CC", options=options)>=" + <var(val=field.name, fmt="CC", options=options)> +
+>>
+
 message_field_merge(message, options, name) ::= <<
 
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
+<if(message.repeatedFieldPresent)>
+    try {
+
+<endif>
     for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
     {
         switch(number)
@@ -452,8 +489,23 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
                 input.handleUnknownField(number, this);
         }   
     }
+<if(message.repeatedFieldPresent)>
+    } finally {
+    <message.fields:unmodifiable_lists(field=it, options=options, name=name); separator="\n">
+    }
+
+<endif>
 }
 
+>>
+
+unmodifiable_lists(field, options, name) ::= <<
+<if (field.repeated)>
+if (<name>.<var(val=field.name, fmt="CC", options=options)> != null)
+    <name>.<var(val=field.name, fmt="CC", options=options)> = java.util.Collections.unmodifiableList(<name>.<var(val=field.name, fmt="CC", options=options)>);
+else
+    <name>.<var(val=field.name, fmt="CC", options=options)> = java.util.Collections.emptyList();
+<endif>
 >>
 
 field_merge_switch(field, options, name) ::= <<
@@ -469,6 +521,9 @@ singular_field_merge_switch(field, options, name) ::= <<
 break;
 <elseif(field.enumField)>
 <name>.<var(val=field.name, fmt="CC", options=options)> = <field.javaType>.valueOf(input.readEnum());
+break;
+<elseif(field.extraOptions.ByteBuffer)>
+<name>.<var(val=field.name, fmt="CC", options=options)> = input.readByteBuffer();
 break;
 <else>
 <name>.<var(val=field.name, fmt="CC", options=options)> = input.read<field.class.simpleName>();
@@ -490,7 +545,12 @@ break;
 <else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> == null)
     <name>.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+<if(field.extraOptions.ByteBuffer)>
+<name>.<var(val=field.name, fmt="CC", options=options)>.add(input.readByteBuffer());
+
+<else>
 <name>.<var(val=field.name, fmt="CC", options=options)>.add(input.read<field.class.simpleName>());
+<endif>
 break;
 <endif>
 >>

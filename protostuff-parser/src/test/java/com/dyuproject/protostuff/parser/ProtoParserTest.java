@@ -177,15 +177,15 @@ public class ProtoParserTest extends TestCase
         EnumGroup testEnumWithDupValue = proto.getEnumGroup("TestEnumWithDupValue");
         assertNotNull(testEnumWithDupValue);
         assertTrue(testEnumWithDupValue.getValues().size() == 5);
-        assertTrue(testEnumWithDupValue.getSortedValues().get(0).name.equals("FOO1"));
+        assertEquals("FOO2", testEnumWithDupValue.getSortedValues().get(0).name);
         assertTrue(testEnumWithDupValue.getSortedValues().get(0).number == 1);
-        assertTrue(testEnumWithDupValue.getSortedValues().get(1).name.equals("FOO2"));
+        assertEquals("FOO1", testEnumWithDupValue.getSortedValues().get(1).name);
         assertTrue(testEnumWithDupValue.getSortedValues().get(1).number == 1);
-        assertTrue(testEnumWithDupValue.getSortedValues().get(2).name.equals("BAR1"));
+        assertEquals("BAR2", testEnumWithDupValue.getSortedValues().get(2).name);
         assertTrue(testEnumWithDupValue.getSortedValues().get(2).number == 2);
-        assertTrue(testEnumWithDupValue.getSortedValues().get(3).name.equals("BAR2"));
+        assertEquals("BAR1", testEnumWithDupValue.getSortedValues().get(3).name);
         assertTrue(testEnumWithDupValue.getSortedValues().get(3).number == 2);
-        assertTrue(testEnumWithDupValue.getSortedValues().get(4).name.equals("BAZ"));
+        assertEquals("BAZ", testEnumWithDupValue.getSortedValues().get(4).name);
         assertTrue(testEnumWithDupValue.getSortedValues().get(4).number == 3);
         
         EnumGroup testSparseEnum = proto.getEnumGroup("TestSparseEnum");

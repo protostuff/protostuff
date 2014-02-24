@@ -19,6 +19,7 @@ import static com.dyuproject.protostuff.NumberParser.parseLong;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
@@ -395,4 +396,10 @@ public final class KvpInput implements Input
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
+    }
 }

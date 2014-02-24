@@ -18,6 +18,7 @@ import static com.dyuproject.protostuff.NumberParser.parseInt;
 import static com.dyuproject.protostuff.NumberParser.parseLong;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
@@ -220,6 +221,13 @@ public final class KvpByteArrayInput implements Input
             boolean repeated) throws IOException
     {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException {
+        return ByteBuffer.wrap(readByteArray());
     }
 
 }

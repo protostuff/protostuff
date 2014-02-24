@@ -18,6 +18,7 @@ import static com.dyuproject.protostuff.StringSerializer.stringSize;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * An output for serializing kvp-encoded messages (from a byte array as source).
@@ -279,5 +280,11 @@ public final class KvpOutput extends WriteSession implements Output
         writeInt64(fieldNumber, value, repeated);
     }
 
-
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
+    }
 }
