@@ -20,13 +20,13 @@ import java.io.OutputStream;
 
 /**
  * Test the streaming (computed) output capability of {@link CodedOutput}.
- *
+ * 
  * @author David Yu
  * @created Oct 7, 2010
  */
 public class ProtobufCodedOutputTest extends SerDeserTest
 {
-    
+
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {

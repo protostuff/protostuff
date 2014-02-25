@@ -29,71 +29,78 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via protobuf ser/deser.
- *
+ * 
  * @author David Yu
  * @created Jan 26, 2011
  */
-public class ProtobufRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSchemaTest
+public class ProtobufRuntimeCollectionSchemaTest extends
+        AbstractRuntimeCollectionSchemaTest
 {
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
-            Schema<T> schema) throws IOException
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length,
+            T message, Schema<T> schema) throws IOException
     {
         ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
-    protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema) 
-    throws IOException
+    protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
+            throws IOException
     {
         ProtobufIOUtil.mergeFrom(in, message, schema);
     }
-    
+
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return ProtobufIOUtil.toByteArray(message, schema, buf());
     }
 
-    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
+    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema)
+            throws IOException
     {
         ProtobufIOUtil.writeTo(out, message, schema, buf());
     }
-    
-    protected <T> void roundTrip(T message, Schema<T> schema, 
+
+    protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {
         byte[] protobuf = ProtobufIOUtil.toByteArray(message, schema, buf());
-        
+
         ByteArrayInputStream protobufStream = new ByteArrayInputStream(protobuf);
-        
+
         byte[] protostuff = ProtostuffIOUtil.toByteArray(
-                ProtobufIOUtil.newPipe(protobuf, 0, protobuf.length), pipeSchema, buf());
-        
+                ProtobufIOUtil.newPipe(protobuf, 0, protobuf.length),
+                pipeSchema, buf());
+
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 ProtobufIOUtil.newPipe(protobufStream), pipeSchema, buf());
-        
+
         assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
-        
+        assertEquals(STRING.deser(protostuff),
+                STRING.deser(protostuffFromStream));
+
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
         SerializableObjects.assertEquals(message, parsedMessage);
-        
-        ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
-        
+
+        ByteArrayInputStream protostuffStream = new ByteArrayInputStream(
+                protostuff);
+
         byte[] protobufRoundTrip = ProtobufIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, buf());
-        
+                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length),
+                pipeSchema, buf());
+
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, buf());
-        
+
         assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
-        
+
         String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-        
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobufRoundTripFromStream));
-        
+
+        assertEquals(strProtobufRoundTrip,
+                STRING.deser(protobufRoundTripFromStream));
+
         assertTrue(protobufRoundTrip.length == protobuf.length);
-        
+
         assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
     }
 }

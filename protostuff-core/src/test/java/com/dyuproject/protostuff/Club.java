@@ -25,7 +25,6 @@ public final class Club implements Externalizable, Message<Club>
 
     static final Club DEFAULT_INSTANCE = new Club();
 
-    
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
     String name;
@@ -34,7 +33,7 @@ public final class Club implements Externalizable, Message<Club>
 
     public Club()
     {
-        
+
     }
 
     // getters and setters
@@ -75,7 +74,7 @@ public final class Club implements Externalizable, Message<Club>
 
     public void addStudent(Student student)
     {
-        if(this.student == null)
+        if (this.student == null)
             this.student = new ArrayList<Student>();
         this.student.add(student);
     }
@@ -104,7 +103,7 @@ public final class Club implements Externalizable, Message<Club>
 
     public void addPartnerClub(Club partnerClub)
     {
-        if(this.partnerClub == null)
+        if (this.partnerClub == null)
             this.partnerClub = new ArrayList<Club>();
         this.partnerClub.add(partnerClub);
     }
@@ -159,9 +158,9 @@ public final class Club implements Externalizable, Message<Club>
 
         public void mergeFrom(Input input, Club message) throws IOException
         {
-            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -169,44 +168,42 @@ public final class Club implements Externalizable, Message<Club>
                         message.name = input.readString();
                         break;
                     case 2:
-                        if(message.student == null)
+                        if (message.student == null)
                             message.student = new ArrayList<Student>();
                         message.student.add(input.mergeObject(null, Student.getSchema()));
                         break;
 
                     case 3:
-                        if(message.partnerClub == null)
+                        if (message.partnerClub == null)
                             message.partnerClub = new ArrayList<Club>();
                         message.partnerClub.add(input.mergeObject(null, Club.getSchema()));
                         break;
 
                     default:
                         input.handleUnknownField(number, this);
-                }   
+                }
             }
         }
 
-
         public void writeTo(Output output, Club message) throws IOException
         {
-            if(message.name != null)
+            if (message.name != null)
                 output.writeString(1, message.name, false);
 
-            if(message.student != null)
+            if (message.student != null)
             {
-                for(Student student : message.student)
+                for (Student student : message.student)
                 {
-                    if(student != null)
+                    if (student != null)
                         output.writeObject(2, student, Student.getSchema(), true);
                 }
             }
 
-
-            if(message.partnerClub != null)
+            if (message.partnerClub != null)
             {
-                for(Club partnerClub : message.partnerClub)
+                for (Club partnerClub : message.partnerClub)
                 {
-                    if(partnerClub != null)
+                    if (partnerClub != null)
                         output.writeObject(3, partnerClub, Club.getSchema(), true);
                 }
             }
@@ -215,12 +212,16 @@ public final class Club implements Externalizable, Message<Club>
 
         public String getFieldName(int number)
         {
-            switch(number)
+            switch (number)
             {
-                case 1: return "name";
-                case 2: return "student";
-                case 3: return "partnerClub";
-                default: return null;
+                case 1:
+                    return "name";
+                case 2:
+                    return "student";
+                case 3:
+                    return "partnerClub";
+                default:
+                    return null;
             }
         }
 
@@ -230,12 +231,13 @@ public final class Club implements Externalizable, Message<Club>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String,Integer> fieldMap = new java.util.HashMap<String,Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+
         {
             fieldMap.put("name", 1);
             fieldMap.put("student", 2);
             fieldMap.put("partnerClub", 3);
         }
     };
-    
+
 }

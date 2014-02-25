@@ -19,6 +19,7 @@ import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
 import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
+
 import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.runtime.Bar;
@@ -29,30 +30,30 @@ import com.dyuproject.protostuff.runtime.SerializableObjects;
 
 /**
  * Testing for xml ser/deser against runtime messages.
- *
+ * 
  * @author David Yu
  * @created May 25, 2010
  */
 public class XmlRuntimeSerDeserTest extends TestCase
 {
-    
+
     public void testFoo() throws Exception
     {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
-        
+
         Foo fooCompare = foo;
         Foo dfoo = new Foo();
-        
+
         byte[] data = XmlIOUtil.toByteArray(fooCompare, schema);
         XmlIOUtil.mergeFrom(data, dfoo, schema);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
+
     public void testBar() throws Exception
     {
         Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
-        
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
+
+        for (Bar barCompare : new Bar[] { bar, negativeBar })
         {
             Bar dbar = new Bar();
 
@@ -61,15 +62,15 @@ public class XmlRuntimeSerDeserTest extends TestCase
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
+
     public void testBaz() throws Exception
     {
         Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
-        
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
+
+        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
         {
-            Baz dbaz = new Baz();            
-            
+            Baz dbaz = new Baz();
+
             byte[] data = XmlIOUtil.toByteArray(bazCompare, schema);
             XmlIOUtil.mergeFrom(data, dbaz, schema);
             SerializableObjects.assertEquals(bazCompare, dbaz);

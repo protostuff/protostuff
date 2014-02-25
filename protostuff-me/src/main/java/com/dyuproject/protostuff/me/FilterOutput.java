@@ -17,17 +17,16 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A FilterOutput contains some other {@link Output output}, which it uses as its basic 
- * sink of data.
- *
+ * A FilterOutput contains some other {@link Output output}, which it uses as its basic sink of data.
+ * 
  * @author David Yu
  * @created Nov 11, 2009
  */
 public class FilterOutput implements Output
 {
-    
+
     protected final Output output;
-    
+
     public FilterOutput(Output output)
     {
         this.output = output;
@@ -42,8 +41,8 @@ public class FilterOutput implements Output
     {
         output.writeByteArray(fieldNumber, value, repeated);
     }
-    
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
         output.writeByteRange(utf8String, fieldNumber, value, offset, length, repeated);
@@ -88,9 +87,9 @@ public class FilterOutput implements Output
     {
         output.writeInt64(fieldNumber, value, repeated);
     }
-    
-    public void writeObject(int fieldNumber, Object value, Schema schema, boolean repeated) 
-    throws IOException
+
+    public void writeObject(int fieldNumber, Object value, Schema schema, boolean repeated)
+            throws IOException
     {
         output.writeObject(fieldNumber, value, schema, repeated);
     }

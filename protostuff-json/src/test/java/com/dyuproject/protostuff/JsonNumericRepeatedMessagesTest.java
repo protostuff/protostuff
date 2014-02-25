@@ -20,21 +20,21 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- *  Testcase for ser/deser of multiple messages using json (numeric).
- *
+ * Testcase for ser/deser of multiple messages using json (numeric).
+ * 
  * @author David Yu
  * @created Oct 8, 2010
  */
 public class JsonNumericRepeatedMessagesTest extends RepeatedMessagesTest
 {
-    
+
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return JsonIOUtil.parseListFrom(in, schema, true);
     }
 
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
-    throws IOException
+    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+            throws IOException
     {
         JsonIOUtil.writeListTo(out, messages, schema, true);
     }

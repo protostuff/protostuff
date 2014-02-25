@@ -18,61 +18,60 @@ import java.io.IOException;
 import java.util.Vector;
 
 /**
- * A ByteArrayInput w/c can handle cyclic dependencies when deserializing 
- * objects with graph transformations.
- *
+ * A ByteArrayInput w/c can handle cyclic dependencies when deserializing objects with graph transformations.
+ * 
  * @author David Yu
  * @created Dec 10, 2010
  */
-public final class GraphByteArrayInput extends FilterInput 
-    implements GraphInput, Schema
+public final class GraphByteArrayInput extends FilterInput
+        implements GraphInput, Schema
 {
 
     private final Vector references;
     private int lastRef = -1;
-    
+
     private Schema lastSchema;
     private boolean messageReference = false;
-    
+
     public GraphByteArrayInput(ByteArrayInput input)
     {
         super(input);
-        
+
         // protostuff format only.
-        //assert input.decodeNestedMessageAsGroup;
-        
+        // assert input.decodeNestedMessageAsGroup;
+
         references = new Vector();
     }
 
     public GraphByteArrayInput(ByteArrayInput input, int initialCapacity)
     {
         super(input);
-        
+
         // protostuff format only.
-        //assert input.decodeNestedMessageAsGroup;
-        
+        // assert input.decodeNestedMessageAsGroup;
+
         references = new Vector(initialCapacity);
     }
-    
+
     public void updateLast(Object morphedMessage, Object lastMessage)
     {
-        final int last = references.size()-1;
-        if(lastMessage != null && lastMessage == references.elementAt(last))
+        final int last = references.size() - 1;
+        if (lastMessage != null && lastMessage == references.elementAt(last))
         {
             // update the reference
             references.setElementAt(morphedMessage, last);
         }
     }
-    
+
     public boolean isCurrentMessageReference()
     {
         return messageReference;
     }
-    
+
     public int readFieldNumber(Schema schema) throws IOException
     {
         final int fieldNumber = input.readFieldNumber(schema);
-        if(WireFormat.getTagWireType(((ByteArrayInput) input).getLastTag()) == WireFormat.WIRETYPE_REFERENCE)
+        if (WireFormat.getTagWireType(((ByteArrayInput) input).getLastTag()) == WireFormat.WIRETYPE_REFERENCE)
         {
             // a reference.
             lastRef = input.readUInt32();
@@ -83,31 +82,31 @@ public final class GraphByteArrayInput extends FilterInput
             // always unset.
             messageReference = false;
         }
-        
+
         return fieldNumber;
     }
-    
-//    @SuppressWarnings("unchecked")
+
+    // @SuppressWarnings("unchecked")
     public Object mergeObject(Object value, Schema schema) throws IOException
     {
-        if(messageReference)
+        if (messageReference)
         {
             // a reference.
             return references.elementAt(lastRef);
         }
 
-        lastSchema = (Schema)schema;
-        
-        if(value == null)
+        lastSchema = (Schema) schema;
+
+        if (value == null)
             value = schema.newMessage();
-        
+
         references.addElement(value);
-        
+
         input.mergeObject(value, this);
-        
+
         return value;
     }
-    
+
     public String getFieldName(int number)
     {
         throw new RuntimeException("Unsupported operation");
@@ -146,12 +145,12 @@ public final class GraphByteArrayInput extends FilterInput
     public void mergeFrom(Input input, final Object message) throws IOException
     {
         final Schema schema = lastSchema;
-        
+
         // merge using this input.
         schema.mergeFrom(this, message);
-        if(!schema.isInitialized(message))
+        if (!schema.isInitialized(message))
             throw new UninitializedMessageException(message, schema);
-        
+
         // restore
         lastSchema = schema;
     }

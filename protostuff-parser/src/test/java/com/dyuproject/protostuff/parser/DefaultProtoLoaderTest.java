@@ -20,13 +20,13 @@ import junit.framework.TestCase;
 
 /**
  * Test for the default proto loader.
- *
+ * 
  * @author David Yu
  * @created May 16, 2010
  */
 public class DefaultProtoLoaderTest extends TestCase
 {
-    
+
     public void testPackageBaseDir() throws Exception
     {
         File f = ProtoParserTest.getFile(
@@ -35,7 +35,7 @@ public class DefaultProtoLoaderTest extends TestCase
         Proto p = ProtoUtil.parseProto(f);
         assertEquals("com.dyuproject.protostuff.parser", p.getPackageName());
     }
-    
+
     public void testLoadProtoFromClasspath() throws Exception
     {
         Proto proto = DefaultProtoLoader.loadFromClasspath(
@@ -43,32 +43,32 @@ public class DefaultProtoLoaderTest extends TestCase
         assertNotNull(proto);
         assertEquals("protobuf_unittest_import", proto.getPackageName());
     }
-    
+
     public void testImportFromClasspath() throws Exception
     {
         File f = new File("src/main/etc/test_default_proto_loader.proto");
         assertTrue(f.exists());
         Proto p = ProtoUtil.parseProto(f);
         assertEquals("com.dyuproject.protostuff.parser", p.getPackageName());
-        
+
         Message testMessage = p.getMessage("TestMessage");
         assertNotNull(testMessage);
-        
+
         Field<?> f1 = testMessage.getField("imported_message1");
         Field<?> f2 = testMessage.getField("imported_message2");
-        
+
         assertNotNull(f1);
         assertNotNull(f2);
-        
+
         assertTrue(f1 instanceof MessageField);
         assertTrue(f2 instanceof MessageField);
-        
-        Message importedMessage1 = ((MessageField)f1).getMessage();
-        Message importedMessage2 = ((MessageField)f2).getMessage();
-        
+
+        Message importedMessage1 = ((MessageField) f1).getMessage();
+        Message importedMessage2 = ((MessageField) f2).getMessage();
+
         assertNotNull(importedMessage1);
         assertNotNull(importedMessage2);
-        
+
         assertTrue(importedMessage1 == importedMessage2);
     }
 

@@ -19,72 +19,70 @@ import com.dyuproject.protostuff.ProtostuffException;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
-/***
- * This base class handles all the IO for reading and writing polymorphic fields.
- * When a field's type is polymorphic/dynamic (e.g interface/abstract/object), 
- * the type (id) needs to be written (ahead) before its value/content to be able to 
- * deserialize it correctly.
- * 
+/**
+ * This base class handles all the IO for reading and writing polymorphic fields. When a field's type is
+ * polymorphic/dynamic (e.g interface/abstract/object), the type (id) needs to be written (ahead) before its
+ * value/content to be able to deserialize it correctly.
+ * <p/>
  * The underlying impl will determine how the type (id) should be written.
- * 
+ * <p/>
  * An {@link IdStrategy} is standalone if the {@link #primaryGroup} is not set.
  * 
  * @author Leo Romanoff
  * @author David Yu
- * 
  */
 public abstract class IdStrategy
 {
-    
+
     public final IdStrategy primaryGroup;
     public final int groupId;
-    
+
     protected IdStrategy(IdStrategy primaryGroup, int groupId)
     {
-        if(primaryGroup != null)
+        if (primaryGroup != null)
         {
-            if(groupId <= 0 || 0 != (groupId & (groupId-1)))
+            if (groupId <= 0 || 0 != (groupId & (groupId - 1)))
             {
                 throw new RuntimeException(
                         "The groupId must be a power of two (1,2,4,8,etc).");
             }
         }
-        else if(groupId != 0)
+        else if (groupId != 0)
         {
-            throw new RuntimeException("An IdStrategy without a primaryGroup " +
-            		"(standalone) must have a groupId of zero.");
+            throw new RuntimeException("An IdStrategy without a primaryGroup "
+                    + "(standalone) must have a groupId of zero.");
         }
-        
+
         this.primaryGroup = primaryGroup;
         this.groupId = groupId;
     }
-    
+
     /**
-     * Generates a schema from the given class.  If this strategy is part of a group, 
-     * the existing fields of that group's schema will be re-used.
+     * Generates a schema from the given class. If this strategy is part of a group, the existing fields of that group's
+     * schema will be re-used.
      */
     protected <T> Schema<T> newSchema(Class<T> typeClass)
     {
         // check if this is part of a group
-        if(primaryGroup != null)
+        if (primaryGroup != null)
         {
             // only pojos created by runtime schema support groups
-            final Schema<T> s = primaryGroup.getSchemaWrapper(
-                    typeClass, true).getSchema();
-            if(s instanceof RuntimeSchema)
+            final Schema<T> s = primaryGroup.getSchemaWrapper(typeClass, true)
+                    .getSchema();
+            if (s instanceof RuntimeSchema)
             {
-                final RuntimeSchema<T> rs = (RuntimeSchema<T>)s;
-                
+                final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
+
                 final ArrayList<Field<T>> fields = new ArrayList<MappedSchema.Field<T>>(
                         rs.fields.length);
-                
-                for(Field<T> f : rs.fields)
+
+                for (Field<T> f : rs.fields)
                 {
                     final int groupFilter = f.groupFilter;
-                    if(groupFilter != 0)
+                    if (groupFilter != 0)
                     {
                         final int set; // set for exclusion
-                        if(groupFilter > 0)
+                        if (groupFilter > 0)
                         {
                             // inclusion
                             set = ~groupFilter & 0x7FFFFFFF;
@@ -94,55 +92,54 @@ public abstract class IdStrategy
                             // exclusion
                             set = -groupFilter;
                         }
-                        
-                        if(0 != (groupId & set))
+
+                        if (0 != (groupId & set))
                         {
                             // this field is excluded on the current group id
                             continue;
                         }
                     }
-                    
+
                     fields.add(f);
                 }
-                
+
                 final int size = fields.size();
-                if(size == rs.fields.length)
+                if (size == rs.fields.length)
                 {
                     // nothing is excluded
                     return rs;
                 }
-                
-                if(size == 0)
+
+                if (size == 0)
                 {
-                    throw new RuntimeException("All fields were excluded for " + 
-                            rs.messageFullName() + " on group " + groupId);
+                    throw new RuntimeException("All fields were excluded for "
+                            + rs.messageFullName() + " on group " + groupId);
                 }
-                
-                return new RuntimeSchema<T>(typeClass, fields, 
+
+                return new RuntimeSchema<T>(typeClass, fields,
                         // the last field
-                        fields.get(size-1).number, rs.instantiator);
+                        fields.get(size - 1).number, rs.instantiator);
             }
-            
+
             return s;
         }
 
         return RuntimeSchema.createFrom(typeClass, this);
     }
-    
+
     /**
-     * Thrown when a type is not known by the IdStrategy.
-     * The DefaultIdStrategy will never throw this exception though.
+     * Thrown when a type is not known by the IdStrategy. The DefaultIdStrategy will never throw this exception though.
      */
     public static class UnknownTypeException extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
-        
+
         public UnknownTypeException(String msg)
         {
             super(msg);
         }
     }
-    
+
     /**
      * Responsible for instantiating custom {@link IdStrategy} impls.
      */
@@ -152,251 +149,249 @@ public abstract class IdStrategy
          * Creates a new {@link IdStrategy} instance (impl).
          */
         public IdStrategy create();
-        
+
         /**
-         * Called after the method {@link #create()} has been called.
-         * This is used to prevent classloader issues.
+         * Called after the method {@link #create()} has been called. This is used to prevent classloader issues.
          * RuntimeEnv's {@link RuntimeEnv#ID_STRATEGY} need to be set first.
          */
         public void postCreate();
     }
-    
+
     /**
-     * Returns true if there is a {@link Delegate} explicitly registered for the 
-     * {@code typeClass}.
+     * Returns true if there is a {@link Delegate} explicitly registered for the {@code typeClass}.
      */
     public abstract boolean isDelegateRegistered(Class<?> typeClass);
 
-    
     /**
      * Returns the {@link Delegate delegate}.
      */
-    public abstract <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass);
+    public abstract <T> HasDelegate<T> getDelegateWrapper(
+            Class<? super T> typeClass);
 
     /**
      * Returns the {@link Delegate delegate}.
      */
     public abstract <T> Delegate<T> getDelegate(Class<? super T> typeClass);
-    
-    
+
     /**
      * Returns true if the {@code typeClass} is explicitly registered.
      */
     public abstract boolean isRegistered(Class<?> typeClass);
-    
+
     /**
-     * Returns the {@link HasSchema schema wrapper}.
-     * The caller is responsible that the typeClass is a pojo (e.g not an enum/array/etc).
+     * Returns the {@link HasSchema schema wrapper}. The caller is responsible that the typeClass is a pojo (e.g not an
+     * enum/array/etc).
      */
-    public abstract <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass, 
+    public abstract <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass,
             boolean create);
-    
+
     /**
-     * Returns the {@link EnumIO}.
-     * The callers (internal field factories) are responsible that the class provided 
-     * is an enum class.
+     * Returns the {@link EnumIO}. The callers (internal field factories) are responsible that the class provided is an
+     * enum class.
      */
     protected abstract EnumIO<? extends Enum<?>> getEnumIO(Class<?> enumClass);
-    
+
     /**
-     * Returns the {@link CollectionSchema.MessageFactory}.
-     * The callers (internal field factories) are responsible that the class provided 
-     * implements {@link Collection}.
+     * Returns the {@link CollectionSchema.MessageFactory}. The callers (internal field factories) are responsible that
+     * the class provided implements {@link Collection}.
      */
-    protected abstract CollectionSchema.MessageFactory getCollectionFactory(Class<?> clazz);
-    
+    protected abstract CollectionSchema.MessageFactory getCollectionFactory(
+            Class<?> clazz);
+
     /**
-     * Returns the {@link MapSchema.MessageFactory}.
-     * The callers (internal field factories}) are responsible that the class provided 
-     * implements {@Map}.
+     * Returns the {@link MapSchema.MessageFactory}. The callers (internal field factories}) are responsible that the
+     * class provided implements {@Map
+     * }.
      */
     protected abstract MapSchema.MessageFactory getMapFactory(Class<?> clazz);
-    
+
     // collection
-    
-    protected abstract void writeCollectionIdTo(Output output, int fieldNumber, 
+
+    protected abstract void writeCollectionIdTo(Output output, int fieldNumber,
             Class<?> clazz) throws IOException;
-    
-    protected abstract void transferCollectionId(Input input, Output output, 
+
+    protected abstract void transferCollectionId(Input input, Output output,
             int fieldNumber) throws IOException;
-    
+
     protected abstract CollectionSchema.MessageFactory resolveCollectionFrom(
             Input input) throws IOException;
-    
+
     // map
-    
-    protected abstract void writeMapIdTo(Output output, int fieldNumber, 
+
+    protected abstract void writeMapIdTo(Output output, int fieldNumber,
             Class<?> clazz) throws IOException;
-    
-    protected abstract void transferMapId(Input input, Output output, 
+
+    protected abstract void transferMapId(Input input, Output output,
             int fieldNumber) throws IOException;
-    
-    protected abstract MapSchema.MessageFactory resolveMapFrom(
-            Input input) throws IOException;
-    
-    // enum
-    
-    protected abstract void writeEnumIdTo(Output output, int fieldNumber, 
-            Class<?> clazz) throws IOException;
-    
-    protected abstract void transferEnumId(Input input, Output output, 
-            int fieldNumber) throws IOException;
-    
-    protected abstract EnumIO<?> resolveEnumFrom(Input input) throws IOException;
-    
-    // pojo
-    
-    protected abstract <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber, 
-            Class<T> clazz) throws IOException;
-    
-    protected abstract <T> HasSchema<T> transferPojoId(Input input, Output output, 
-            int fieldNumber) throws IOException;
-    
-    protected abstract <T> HasSchema<T> resolvePojoFrom(Input input, int fieldNumber) 
+
+    protected abstract MapSchema.MessageFactory resolveMapFrom(Input input)
             throws IOException;
-    
-    protected abstract <T> Schema<T> writeMessageIdTo(Output output, int fieldNumber, 
-            Message<T> message) throws IOException;
-    
+
+    // enum
+
+    protected abstract void writeEnumIdTo(Output output, int fieldNumber,
+            Class<?> clazz) throws IOException;
+
+    protected abstract void transferEnumId(Input input, Output output,
+            int fieldNumber) throws IOException;
+
+    protected abstract EnumIO<?> resolveEnumFrom(Input input)
+            throws IOException;
+
+    // pojo
+
+    protected abstract <T> HasSchema<T> writePojoIdTo(Output output,
+            int fieldNumber, Class<T> clazz) throws IOException;
+
+    protected abstract <T> HasSchema<T> transferPojoId(Input input,
+            Output output, int fieldNumber) throws IOException;
+
+    protected abstract <T> HasSchema<T> resolvePojoFrom(Input input,
+            int fieldNumber) throws IOException;
+
+    protected abstract <T> Schema<T> writeMessageIdTo(Output output,
+            int fieldNumber, Message<T> message) throws IOException;
+
     // delegate
-    
+
     /**
      * If this method returns null, the clazz was not registered as a delegate.
      */
-    protected abstract <T> HasDelegate<T> tryWriteDelegateIdTo(Output output, 
+    protected abstract <T> HasDelegate<T> tryWriteDelegateIdTo(Output output,
             int fieldNumber, Class<T> clazz) throws IOException;
-    
-    protected abstract <T> HasDelegate<T> transferDelegateId(Input input, Output output, 
-            int fieldNumber) throws IOException;
-    
-    protected abstract <T> HasDelegate<T> resolveDelegateFrom(Input input) throws IOException;
-    
-    // array
-    
-    protected abstract void writeArrayIdTo(Output output, Class<?> componentType) 
+
+    protected abstract <T> HasDelegate<T> transferDelegateId(Input input,
+            Output output, int fieldNumber) throws IOException;
+
+    protected abstract <T> HasDelegate<T> resolveDelegateFrom(Input input)
             throws IOException;
-    
-    protected abstract void transferArrayId(Input input, Output output, int fieldNumber, 
+
+    // array
+
+    protected abstract void writeArrayIdTo(Output output, Class<?> componentType)
+            throws IOException;
+
+    protected abstract void transferArrayId(Input input, Output output,
+            int fieldNumber, boolean mapped) throws IOException;
+
+    protected abstract Class<?> resolveArrayComponentTypeFrom(Input input,
             boolean mapped) throws IOException;
-    
-    protected abstract Class<?> resolveArrayComponentTypeFrom(Input input, 
-            boolean mapped) throws IOException;
-    
+
     // class
-    
-    protected abstract void writeClassIdTo(Output output, Class<?> componentType, 
+
+    protected abstract void writeClassIdTo(Output output,
+            Class<?> componentType, boolean array) throws IOException;
+
+    protected abstract void transferClassId(Input input, Output output,
+            int fieldNumber, boolean mapped, boolean array) throws IOException;
+
+    protected abstract Class<?> resolveClassFrom(Input input, boolean mapped,
             boolean array) throws IOException;
-    
-    protected abstract void transferClassId(Input input, Output output, int fieldNumber, 
-            boolean mapped, boolean array) throws IOException;
-    
-    protected abstract Class<?> resolveClassFrom(Input input, 
-            boolean mapped, boolean array) throws IOException;
-    
+
     // polymorphic requirements
-    
-    final DerivativeSchema POLYMORPHIC_POJO_ELEMENT_SCHEMA = 
-            new DerivativeSchema(this)
+
+    final DerivativeSchema POLYMORPHIC_POJO_ELEMENT_SCHEMA = new DerivativeSchema(
+            this)
     {
         @SuppressWarnings("unchecked")
-        protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
+        protected void doMergeFrom(Input input, Schema<Object> derivedSchema,
                 Object owner) throws IOException
         {
             final Object value = derivedSchema.newMessage();
 
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
 
             if (input instanceof GraphInput)
             {
                 // update the actual reference.
-                ((GraphInput)input).updateLast(value, owner);
+                ((GraphInput) input).updateLast(value, owner);
             }
 
             derivedSchema.mergeFrom(input, value);
         }
     };
-    
+
     // object polymorphic schema requirements
-    
+
     final ArraySchema ARRAY_ELEMENT_SCHEMA = new ArraySchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
+
     final NumberSchema NUMBER_ELEMENT_SCHEMA = new NumberSchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
+
     final ClassSchema CLASS_ELEMENT_SCHEMA = new ClassSchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
-    final PolymorphicEnumSchema POLYMORPHIC_ENUM_ELEMENT_SCHEMA = 
-            new PolymorphicEnumSchema(this)
+
+    final PolymorphicEnumSchema POLYMORPHIC_ENUM_ELEMENT_SCHEMA = new PolymorphicEnumSchema(
+            this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
-    final PolymorphicThrowableSchema POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA = 
-            new PolymorphicThrowableSchema(this)
+
+    final PolymorphicThrowableSchema POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA = new PolymorphicThrowableSchema(
+            this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
+
     final ObjectSchema OBJECT_ELEMENT_SCHEMA = new ObjectSchema(this)
     {
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
-            if(MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
             else
-                ((Collection<Object>)owner).add(value);
+                ((Collection<Object>) owner).add(value);
         }
     };
-    
+
     // object dynamic schema requirements
-    
+
     final Schema<Object> DYNAMIC_VALUE_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -438,17 +433,17 @@ public abstract class IdStrategy
         @SuppressWarnings("unchecked")
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            if(PMapWrapper.class == owner.getClass())
+            if (PMapWrapper.class == owner.getClass())
             {
                 // called from ENTRY_SCHEMA
-                ((PMapWrapper)owner).setValue(ObjectSchema.readObjectFrom(input, 
-                        this, owner, IdStrategy.this));
+                ((PMapWrapper) owner).setValue(ObjectSchema.readObjectFrom(
+                        input, this, owner, IdStrategy.this));
             }
             else
             {
                 // called from COLLECTION_SCHEMA
-                ((Collection<Object>)owner).add(ObjectSchema.readObjectFrom(input, 
-                        this, owner, IdStrategy.this));
+                ((Collection<Object>) owner).add(ObjectSchema.readObjectFrom(
+                        input, this, owner, IdStrategy.this));
             }
         }
 
@@ -457,18 +452,19 @@ public abstract class IdStrategy
             ObjectSchema.writeObjectTo(output, message, this, IdStrategy.this);
         }
     };
-    
-    final Pipe.Schema<Object> DYNAMIC_VALUE_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(DYNAMIC_VALUE_SCHEMA)
+
+    final Pipe.Schema<Object> DYNAMIC_VALUE_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            DYNAMIC_VALUE_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            ObjectSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+            ObjectSchema.transferObject(this, pipe, input, output,
+                    IdStrategy.this);
         }
     };
-    
-    final Schema<Collection<Object>> COLLECTION_SCHEMA = 
-        new Schema<Collection<Object>>()
+
+    final Schema<Collection<Object>> COLLECTION_SCHEMA = new Schema<Collection<Object>>()
     {
         public String getFieldName(int number)
         {
@@ -505,20 +501,21 @@ public abstract class IdStrategy
             return Collection.class;
         }
 
-        public void mergeFrom(Input input, Collection<Object> message) throws IOException
+        public void mergeFrom(Input input, Collection<Object> message)
+                throws IOException
         {
-            for(int number = input.readFieldNumber(this);;
-                    number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input
+                    .readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        final Object value = input.mergeObject(message, 
+                        final Object value = input.mergeObject(message,
                                 DYNAMIC_VALUE_SCHEMA);
-                        if(input instanceof GraphInput 
-                                && ((GraphInput)input).isCurrentMessageReference())
+                        if (input instanceof GraphInput
+                                && ((GraphInput) input).isCurrentMessageReference())
                         {
                             // a reference from polymorphic+cyclic graph deser
                             message.add(value);
@@ -530,39 +527,42 @@ public abstract class IdStrategy
             }
         }
 
-        public void writeTo(Output output, Collection<Object> message) throws IOException
+        public void writeTo(Output output, Collection<Object> message)
+                throws IOException
         {
-            for(Object value : message)
+            for (Object value : message)
             {
-                if(value != null)
+                if (value != null)
                     output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
             }
         }
     };
-    
-    final Pipe.Schema<Collection<Object>> COLLECTION_PIPE_SCHEMA = 
-        new Pipe.Schema<Collection<Object>>(COLLECTION_SCHEMA)
+
+    final Pipe.Schema<Collection<Object>> COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Collection<Object>>(
+            COLLECTION_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; 
-                    number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input
+                    .readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA, true);
+                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                                true);
                         break;
                     default:
-                        throw new ProtostuffException("The collection was incorrectly " + 
-                                "serialized.");
+                        throw new ProtostuffException(
+                                "The collection was incorrectly " + "serialized.");
                 }
             }
         }
     };
-    
+
     final Schema<Object> ARRAY_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -608,42 +608,43 @@ public abstract class IdStrategy
 
         public void writeTo(Output output, Object message) throws IOException
         {
-            for(int i = 0, len = Array.getLength(message); i < len; i++)
+            for (int i = 0, len = Array.getLength(message); i < len; i++)
             {
                 final Object value = Array.get(message, i);
-                if(value != null)
+                if (value != null)
                 {
                     output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
                 }
             }
         }
     };
-    
-    final Pipe.Schema<Object> ARRAY_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(ARRAY_SCHEMA)
+
+    final Pipe.Schema<Object> ARRAY_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            ARRAY_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; 
-                    number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input
+                    .readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA, true);
+                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                                true);
                         break;
                     default:
-                        throw new ProtostuffException("The array was incorrectly " + 
-                                "serialized.");
+                        throw new ProtostuffException("The array was incorrectly "
+                                + "serialized.");
                 }
             }
         }
     };
-    
-    final Schema<Map<Object,Object>> MAP_SCHEMA = 
-        new Schema<Map<Object,Object>>()
+
+    final Schema<Map<Object, Object>> MAP_SCHEMA = new Schema<Map<Object, Object>>()
     {
         public final String getFieldName(int number)
         {
@@ -652,10 +653,10 @@ public abstract class IdStrategy
 
         public final int getFieldNumber(String name)
         {
-            return name.length() == 1 && name.charAt(0) == 'e' ? 1 : 0; 
+            return name.length() == 1 && name.charAt(0) == 'e' ? 1 : 0;
         }
 
-        public boolean isInitialized(Map<Object,Object> owner)
+        public boolean isInitialized(Map<Object, Object> owner)
         {
             return true;
         }
@@ -670,67 +671,72 @@ public abstract class IdStrategy
             return Map.class.getSimpleName();
         }
 
-        public Map<Object,Object> newMessage()
+        public Map<Object, Object> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
-        public Class<? super Map<Object,Object>> typeClass()
+        public Class<? super Map<Object, Object>> typeClass()
         {
             return Map.class;
         }
 
-        public void mergeFrom(Input input, Map<Object,Object> message) throws IOException
+        public void mergeFrom(Input input, Map<Object, Object> message)
+                throws IOException
         {
             PMapWrapper entry = null;
-            for(int number = input.readFieldNumber(this);; 
-                    number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input
+                    .readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        if(entry == null)
+                        if (entry == null)
                         {
                             // lazy initialize
                             entry = new PMapWrapper(message);
                         }
-                        
-                        if(entry != input.mergeObject(entry, ENTRY_SCHEMA))
+
+                        if (entry != input.mergeObject(entry, ENTRY_SCHEMA))
                         {
                             // an entry will always be unique
                             // it can never be a reference.
                             throw new IllegalStateException(
-                                    "A Map.Entry will always be " +
-                                    "unique, hence it cannot be a reference " +
-                                    "obtained from " + input.getClass().getName());
+                                    "A Map.Entry will always be "
+                                            + "unique, hence it cannot be a reference "
+                                            + "obtained from "
+                                            + input.getClass().getName());
                         }
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly serialized.");
+                        throw new ProtostuffException(
+                                "The map was incorrectly serialized.");
                 }
             }
         }
 
-        public void writeTo(Output output, Map<Object,Object> message) throws IOException
+        public void writeTo(Output output, Map<Object, Object> message)
+                throws IOException
         {
-            for(Map.Entry<Object, Object> entry : message.entrySet())
+            for (Map.Entry<Object, Object> entry : message.entrySet())
             {
                 output.writeObject(1, entry, ENTRY_SCHEMA, true);
             }
         }
     };
-    
-    final Pipe.Schema<Map<Object,Object>> MAP_PIPE_SCHEMA = 
-        new Pipe.Schema<Map<Object,Object>>(MAP_SCHEMA)
+
+    final Pipe.Schema<Map<Object, Object>> MAP_PIPE_SCHEMA = new Pipe.Schema<Map<Object, Object>>(
+            MAP_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; 
-                    number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input
+                    .readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -738,19 +744,18 @@ public abstract class IdStrategy
                         output.writeObject(number, pipe, ENTRY_PIPE_SCHEMA, true);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly " + 
-                                "serialized.");
+                        throw new ProtostuffException("The map was incorrectly "
+                                + "serialized.");
                 }
             }
         }
     };
-    
-    final Schema<Entry<Object,Object>> ENTRY_SCHEMA = 
-        new Schema<Entry<Object,Object>>()
+
+    final Schema<Entry<Object, Object>> ENTRY_SCHEMA = new Schema<Entry<Object, Object>>()
     {
         public final String getFieldName(int number)
         {
-            switch(number)
+            switch (number)
             {
                 case 1:
                     return MapSchema.FIELD_NAME_KEY;
@@ -763,10 +768,10 @@ public abstract class IdStrategy
 
         public final int getFieldNumber(String name)
         {
-            if(name.length() != 1)
+            if (name.length() != 1)
                 return 0;
-            
-            switch(name.charAt(0))
+
+            switch (name.charAt(0))
             {
                 case 'k':
                     return 1;
@@ -777,7 +782,7 @@ public abstract class IdStrategy
             }
         }
 
-        public boolean isInitialized(Entry<Object,Object> message)
+        public boolean isInitialized(Entry<Object, Object> message)
         {
             return true;
         }
@@ -792,39 +797,39 @@ public abstract class IdStrategy
             return Entry.class.getSimpleName();
         }
 
-        public Entry<Object,Object> newMessage()
+        public Entry<Object, Object> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
-        public Class<? super Entry<Object,Object>> typeClass()
+        public Class<? super Entry<Object, Object>> typeClass()
         {
             return Entry.class;
         }
-        
-        public void mergeFrom(Input input, Entry<Object,Object> message) 
-        throws IOException
+
+        public void mergeFrom(Input input, Entry<Object, Object> message)
+                throws IOException
         {
             // Nobody else calls this except MAP_SCHEMA.mergeFrom
-            final PMapWrapper entry = (PMapWrapper)message;
-            
+            final PMapWrapper entry = (PMapWrapper) message;
+
             Object key = null, value = null;
-            for(int number = input.readFieldNumber(this);; 
-                    number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input
+                    .readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         entry.map.put(key, value);
                         return;
                     case 1:
-                        if(key != null)
+                        if (key != null)
                         {
-                            throw new ProtostuffException("The map was incorrectly " + 
-                                    "serialized.");
+                            throw new ProtostuffException(
+                                    "The map was incorrectly " + "serialized.");
                         }
                         key = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
-                        if(entry != key)
+                        if (entry != key)
                         {
                             // a reference.
                             assert key != null;
@@ -837,13 +842,13 @@ public abstract class IdStrategy
                         }
                         break;
                     case 2:
-                        if(value != null)
+                        if (value != null)
                         {
-                            throw new ProtostuffException("The map was incorrectly " + 
-                                    "serialized.");
+                            throw new ProtostuffException(
+                                    "The map was incorrectly " + "serialized.");
                         }
                         value = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
-                        if(entry != value)
+                        if (entry != value)
                         {
                             // a reference.
                             assert value != null;
@@ -856,49 +861,54 @@ public abstract class IdStrategy
                         }
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly " + 
-                                    "serialized.");
+                        throw new ProtostuffException("The map was incorrectly "
+                                + "serialized.");
                 }
             }
         }
-        
-        public void writeTo(Output output, Entry<Object,Object> entry) 
-        throws IOException
+
+        public void writeTo(Output output, Entry<Object, Object> entry)
+                throws IOException
         {
-            if(entry.getKey() != null)
-                output.writeObject(1, entry.getKey(), DYNAMIC_VALUE_SCHEMA, false);
-            
-            if(entry.getValue() != null)
-                output.writeObject(2, entry.getValue(), DYNAMIC_VALUE_SCHEMA, false);
+            if (entry.getKey() != null)
+                output.writeObject(1, entry.getKey(), DYNAMIC_VALUE_SCHEMA,
+                        false);
+
+            if (entry.getValue() != null)
+                output.writeObject(2, entry.getValue(), DYNAMIC_VALUE_SCHEMA,
+                        false);
         }
     };
-    
-    final Pipe.Schema<Entry<Object,Object>> ENTRY_PIPE_SCHEMA = 
-        new Pipe.Schema<Entry<Object,Object>>(ENTRY_SCHEMA)
+
+    final Pipe.Schema<Entry<Object, Object>> ENTRY_PIPE_SCHEMA = new Pipe.Schema<Entry<Object, Object>>(
+            ENTRY_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; 
-                    number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input
+                    .readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA, false);
+                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                                false);
                         break;
                     case 2:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA, false);
+                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                                false);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly " +
-                                        "serialized.");
+                        throw new ProtostuffException("The map was incorrectly "
+                                + "serialized.");
                 }
             }
         }
     };
-    
+
     final Schema<Object> OBJECT_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -939,8 +949,8 @@ public abstract class IdStrategy
 
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            ((Wrapper)owner).value = ObjectSchema.readObjectFrom(input, this, owner, 
-                    IdStrategy.this);
+            ((Wrapper) owner).value = ObjectSchema.readObjectFrom(input, this,
+                    owner, IdStrategy.this);
         }
 
         public void writeTo(Output output, Object message) throws IOException
@@ -948,17 +958,18 @@ public abstract class IdStrategy
             ObjectSchema.writeObjectTo(output, message, this, IdStrategy.this);
         }
     };
-    
-    final Pipe.Schema<Object> OBJECT_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(OBJECT_SCHEMA)
+
+    final Pipe.Schema<Object> OBJECT_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            OBJECT_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            ObjectSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+            ObjectSchema.transferObject(this, pipe, input, output,
+                    IdStrategy.this);
         }
     };
-    
-    
+
     final Schema<Object> CLASS_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -999,8 +1010,8 @@ public abstract class IdStrategy
 
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            ((Wrapper)owner).value = ClassSchema.readObjectFrom(input, this, owner, 
-                    IdStrategy.this);
+            ((Wrapper) owner).value = ClassSchema.readObjectFrom(input, this,
+                    owner, IdStrategy.this);
         }
 
         public void writeTo(Output output, Object message) throws IOException
@@ -1008,16 +1019,18 @@ public abstract class IdStrategy
             ClassSchema.writeObjectTo(output, message, this, IdStrategy.this);
         }
     };
-    
-    final Pipe.Schema<Object> CLASS_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(CLASS_SCHEMA)
+
+    final Pipe.Schema<Object> CLASS_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            CLASS_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            ClassSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+            ClassSchema.transferObject(this, pipe, input, output,
+                    IdStrategy.this);
         }
     };
-    
+
     final Schema<Object> POLYMORPHIC_COLLECTION_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -1058,27 +1071,28 @@ public abstract class IdStrategy
 
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            ((Wrapper)owner).value = PolymorphicCollectionSchema.readObjectFrom(input, 
-                    this, owner, IdStrategy.this);
+            ((Wrapper) owner).value = PolymorphicCollectionSchema
+                    .readObjectFrom(input, this, owner, IdStrategy.this);
         }
 
         public void writeTo(Output output, Object message) throws IOException
         {
-            PolymorphicCollectionSchema.writeObjectTo(output, message, this, 
+            PolymorphicCollectionSchema.writeObjectTo(output, message, this,
                     IdStrategy.this);
         }
     };
-    
-    final Pipe.Schema<Object> POLYMORPHIC_COLLECTION_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(POLYMORPHIC_COLLECTION_SCHEMA)
+
+    final Pipe.Schema<Object> POLYMORPHIC_COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            POLYMORPHIC_COLLECTION_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            PolymorphicCollectionSchema.transferObject(this, pipe, input, output, 
-                    IdStrategy.this);
+            PolymorphicCollectionSchema.transferObject(this, pipe, input,
+                    output, IdStrategy.this);
         }
     };
-    
+
     final Schema<Object> POLYMORPHIC_MAP_SCHEMA = new Schema<Object>()
     {
         public String getFieldName(int number)
@@ -1119,34 +1133,35 @@ public abstract class IdStrategy
 
         public void mergeFrom(Input input, Object owner) throws IOException
         {
-            ((Wrapper)owner).value = PolymorphicMapSchema.readObjectFrom(input, 
-                    this, owner, IdStrategy.this);
+            ((Wrapper) owner).value = PolymorphicMapSchema.readObjectFrom(
+                    input, this, owner, IdStrategy.this);
         }
 
         public void writeTo(Output output, Object message) throws IOException
         {
-            PolymorphicMapSchema.writeObjectTo(output, message, this, 
+            PolymorphicMapSchema.writeObjectTo(output, message, this,
                     IdStrategy.this);
         }
     };
-    
-    final Pipe.Schema<Object> POLYMORPHIC_MAP_PIPE_SCHEMA = 
-        new Pipe.Schema<Object>(POLYMORPHIC_MAP_SCHEMA)
+
+    final Pipe.Schema<Object> POLYMORPHIC_MAP_PIPE_SCHEMA = new Pipe.Schema<Object>(
+            POLYMORPHIC_MAP_SCHEMA)
     {
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        protected void transfer(Pipe pipe, Input input, Output output)
+                throws IOException
         {
-            PolymorphicMapSchema.transferObject(this, pipe, input, output, 
+            PolymorphicMapSchema.transferObject(this, pipe, input, output,
                     IdStrategy.this);
         }
     };
-    
-    private static final class PMapWrapper implements Entry<Object,Object>
+
+    private static final class PMapWrapper implements Entry<Object, Object>
     {
-        
-        final Map<Object,Object> map;
+
+        final Map<Object, Object> map;
         private Object value;
-        
-        PMapWrapper(Map<Object,Object> map)
+
+        PMapWrapper(Map<Object, Object> map)
         {
             this.map = map;
         }
@@ -1167,9 +1182,9 @@ public abstract class IdStrategy
             this.value = value;
             return last;
         }
-        
+
     }
-    
+
     static final class Wrapper
     {
         Object value;

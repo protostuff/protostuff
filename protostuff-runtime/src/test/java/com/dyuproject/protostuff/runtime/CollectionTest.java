@@ -28,59 +28,67 @@ import com.dyuproject.protostuff.Schema;
 
 /**
  * Tests for abstract generic collection types.
- *
+ * 
  * @author David Yu
  * @created Sep 11, 2010
  */
 public class CollectionTest extends TestCase
 {
-    
+
     static
     {
-        // this is necessary to be able to map interfaces/abstract types to their respective 
-        // implementations and to avoid including type metadata during serialization.
+        // this is necessary to be able to map interfaces/abstract types to
+        // their respective
+        // implementations and to avoid including type metadata during
+        // serialization.
         RuntimeSchema.map(ITask.class, Task.class);
         RuntimeSchema.map(AbstractEmployee.class, Employee.class);
     }
-    
+
     public interface ITask
     {
         void setId(int id);
+
         int getId();
-        
+
         String getDescription();
+
         void setDescription(String description);
-        
+
         Collection<String> getTags();
+
         void setTags(Collection<String> tags);
     }
-    
+
     public static abstract class AbstractEmployee
     {
         public abstract void setId(int id);
+
         public abstract int getId();
-        
+
         public abstract Collection<String> getDepartments();
+
         public abstract void setDepartments(Collection<String> departments);
-        
+
         public abstract Collection<ITask> getTasks();
+
         public abstract void setTasks(Collection<ITask> tasks);
-        
+
     }
-    
+
     public static class Task implements ITask
     {
-        
+
         private int id;
         private String description;
         private Collection<String> tags;
         private Date dateCreated;
         private BigInteger bigInteger;
         private BigDecimal bigDecimal;
-        
+
         public Task()
         {
-            
+
         }
 
         /**
@@ -92,7 +100,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param id the id to set
+         * @param id
+         *            the id to set
          */
         public void setId(int id)
         {
@@ -108,7 +117,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param description the description to set
+         * @param description
+         *            the description to set
          */
         public void setDescription(String description)
         {
@@ -124,7 +134,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param tags the tags to set
+         * @param tags
+         *            the tags to set
          */
         public void setTags(Collection<String> tags)
         {
@@ -140,7 +151,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param dateCreated the dateCreated to set
+         * @param dateCreated
+         *            the dateCreated to set
          */
         public void setDateCreated(Date dateCreated)
         {
@@ -156,7 +168,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param bigInteger the bigInteger to set
+         * @param bigInteger
+         *            the bigInteger to set
          */
         public void setBigInteger(BigInteger bigInteger)
         {
@@ -172,7 +185,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param bigDecimal the bigDecimal to set
+         * @param bigDecimal
+         *            the bigDecimal to set
          */
         public void setBigDecimal(BigDecimal bigDecimal)
         {
@@ -184,12 +198,16 @@ public class CollectionTest extends TestCase
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((bigDecimal == null)?0:bigDecimal.hashCode());
-            result = prime * result + ((bigInteger == null)?0:bigInteger.hashCode());
-            result = prime * result + ((dateCreated == null)?0:dateCreated.hashCode());
-            result = prime * result + ((description == null)?0:description.hashCode());
+            result = prime * result
+                    + ((bigDecimal == null) ? 0 : bigDecimal.hashCode());
+            result = prime * result
+                    + ((bigInteger == null) ? 0 : bigInteger.hashCode());
+            result = prime * result
+                    + ((dateCreated == null) ? 0 : dateCreated.hashCode());
+            result = prime * result
+                    + ((description == null) ? 0 : description.hashCode());
             result = prime * result + id;
-            result = prime * result + ((tags == null)?0:tags.hashCode());
+            result = prime * result + ((tags == null) ? 0 : tags.hashCode());
             return result;
         }
 
@@ -202,7 +220,7 @@ public class CollectionTest extends TestCase
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Task other = (Task)obj;
+            Task other = (Task) obj;
             if (bigDecimal == null)
             {
                 if (other.bigDecimal != null)
@@ -246,23 +264,24 @@ public class CollectionTest extends TestCase
         @Override
         public String toString()
         {
-            return "Task [bigDecimal=" + bigDecimal + ", bigInteger=" + bigInteger + ", dateCreated=" + dateCreated + ", description=" + description + ", id="
-                    + id + ", tags=" + tags + "]";
+            return "Task [bigDecimal=" + bigDecimal + ", bigInteger="
+                    + bigInteger + ", dateCreated=" + dateCreated
+                    + ", description=" + description + ", id=" + id + ", tags="
+                    + tags + "]";
         }
-        
+
     }
 
-    
     public static class Employee extends AbstractEmployee
     {
-        
+
         int id;
         Collection<String> departments;
         Collection<ITask> tasks;
-        
+
         public Employee()
         {
-            
+
         }
 
         /**
@@ -274,7 +293,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param id the id to set
+         * @param id
+         *            the id to set
          */
         public void setId(int id)
         {
@@ -290,7 +310,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param departments the departments to set
+         * @param departments
+         *            the departments to set
          */
         public void setDepartments(Collection<String> departments)
         {
@@ -306,7 +327,8 @@ public class CollectionTest extends TestCase
         }
 
         /**
-         * @param tasks the tasks to set
+         * @param tasks
+         *            the tasks to set
          */
         public void setTasks(Collection<ITask> tasks)
         {
@@ -318,7 +340,8 @@ public class CollectionTest extends TestCase
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((departments == null) ? 0 : departments.hashCode());
+            result = prime * result
+                    + ((departments == null) ? 0 : departments.hashCode());
             result = prime * result + id;
             result = prime * result + ((tasks == null) ? 0 : tasks.hashCode());
             return result;
@@ -333,7 +356,7 @@ public class CollectionTest extends TestCase
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Employee other = (Employee)obj;
+            Employee other = (Employee) obj;
             if (departments == null)
             {
                 if (other.departments != null)
@@ -356,19 +379,18 @@ public class CollectionTest extends TestCase
         @Override
         public String toString()
         {
-            return "Employee [departments=" + departments + ", id=" + id + ", tasks=" + tasks + "]";
+            return "Employee [departments=" + departments + ", id=" + id
+                    + ", tasks=" + tasks + "]";
         }
-        
-        
-        
+
     }
-    
+
     static Task filledTask()
     {
         Collection<String> tags = new ArrayList<String>();
         tags.add("Urgent");
         tags.add("Priority");
-        
+
         Task task = new Task();
         task.setId(1);
         task.setDescription("Complete that other task.");
@@ -376,131 +398,136 @@ public class CollectionTest extends TestCase
         task.setDateCreated(new Date(System.currentTimeMillis()));
         task.setBigDecimal(new BigDecimal(564654.234234d));
         task.setBigInteger(BigInteger.valueOf(System.currentTimeMillis()));
-        
+
         return task;
     }
-    
+
     public void testSimpleTask() throws Exception
     {
         Schema<Task> schema = RuntimeSchema.getSchema(Task.class);
-        
+
         Task p = filledTask();
-        
-        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
-        
+
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema,
+                LinkedBuffer.allocate(512));
+
         Task p2 = new Task();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        //System.err.println(p2);
+        // System.err.println(p2);
 
         assertEquals(p, p2);
     }
-    
+
     public void testITask() throws Exception
     {
         // Because we mapped ITask to Task, this is ok.
         Schema<ITask> schema = RuntimeSchema.getSchema(ITask.class);
-        
+
         ITask p = filledTask();
-        
-        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
-        
+
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema,
+                LinkedBuffer.allocate(512));
+
         ITask p2 = new Task();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        //System.err.println(p2);
+        // System.err.println(p2);
 
         assertEquals(p, p2);
     }
-    
+
     static Employee filledEmployee()
     {
         Collection<String> departments = new ArrayList<String>();
         departments.add("Engineering");
         departments.add("IT");
-        
+
         Collection<ITask> tasks = new ArrayList<ITask>();
         tasks.add(filledTask());
-        
+
         Employee p = new Employee();
 
         p.setId(1);
         p.setDepartments(departments);
         p.setTasks(tasks);
-        
+
         return p;
     }
-    
+
     public void testEmployee() throws Exception
     {
         Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
-        
+
         Employee p = filledEmployee();
 
-        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
-        
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema,
+                LinkedBuffer.allocate(512));
+
         Employee p2 = new Employee();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        //System.err.println(p2);
-        
+        // System.err.println(p2);
+
         assertEquals(p, p2);
     }
-    
+
     public void testIEmployee() throws Exception
     {
         // Because we mapped IEmployee to Employee, this is ok.
-        Schema<AbstractEmployee> schema = RuntimeSchema.getSchema(AbstractEmployee.class);
-        
+        Schema<AbstractEmployee> schema = RuntimeSchema
+                .getSchema(AbstractEmployee.class);
+
         Collection<String> departments = new ArrayList<String>();
         departments.add("Engineering");
         departments.add("IT");
-        
+
         Collection<ITask> tasks = new ArrayList<ITask>();
         tasks.add(filledTask());
-        
+
         AbstractEmployee p = new Employee();
 
         p.setId(1);
         p.setDepartments(departments);
         p.setTasks(tasks);
 
-        byte[] data = ProtostuffIOUtil.toByteArray(p, schema, LinkedBuffer.allocate(512));
-        
+        byte[] data = ProtostuffIOUtil.toByteArray(p, schema,
+                LinkedBuffer.allocate(512));
+
         AbstractEmployee p2 = new Employee();
         ProtostuffIOUtil.mergeFrom(data, p2, schema);
-        //System.err.println(p2);
-        
+        // System.err.println(p2);
+
         assertEquals(p, p2);
     }
-    
+
     interface IFoo
     {
-        
+
     }
-    
+
     static abstract class AbstractFoo
     {
-        
+
     }
-    
+
     static class PojoWithMappedAbstractTypes
     {
         ITask task;
         AbstractEmployee employee;
-        
+
         IFoo ifoo;
         AbstractFoo afoo;
     }
-    
+
     public void testPojoWithMappedAbstractTypes()
     {
-        MappedSchema<PojoWithMappedAbstractTypes> schema = 
-                (MappedSchema<PojoWithMappedAbstractTypes>)RuntimeSchema.getSchema(
-                        PojoWithMappedAbstractTypes.class, RuntimeEnv.ID_STRATEGY);
-        
+        MappedSchema<PojoWithMappedAbstractTypes> schema = (MappedSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
+                .getSchema(PojoWithMappedAbstractTypes.class,
+                        RuntimeEnv.ID_STRATEGY);
+
         assertTrue(schema.fields.length == 4);
-        
+
         assertTrue(schema.fields[0] instanceof RuntimeMessageField);
         assertTrue(schema.fields[1] instanceof RuntimeMessageField);
-        
+
         assertTrue(schema.fields[2] instanceof RuntimeObjectField);
         assertTrue(schema.fields[3] instanceof RuntimeDerivativeField);
     }

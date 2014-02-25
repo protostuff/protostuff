@@ -18,19 +18,19 @@ import java.io.IOException;
 
 /**
  * Xml standard tests.
- *
+ * 
  * @author David Yu
  * @created Oct 8, 2010
  */
 public class XmlStandardTest extends StandardTest
 {
 
-    protected <T> void mergeFrom(byte[] data, int offset, int len, T message, 
+    protected <T> void mergeFrom(byte[] data, int offset, int len, T message,
             Schema<T> schema)
             throws IOException
     {
         XmlIOUtil.mergeFrom(data, offset, len, message, schema);
-        
+
     }
 
     protected <T> byte[] toByteArray(T message, Schema<T> schema)

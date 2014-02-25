@@ -21,27 +21,27 @@ import junit.framework.TestCase;
 
 /**
  * Test for parser to accept variables that are reserved words.
- *
+ * 
  * @author David Yu
  * @created Jul 4, 2011
  */
 public class ReservedWordsAsVariablesTest extends TestCase
 {
-    
+
     public void testIt() throws Exception
     {
         File file = ProtoParserTest.getFile(
                 "com/dyuproject/protostuff/parser/test_reserved_words_as_variables.proto");
         assertTrue(file.exists());
-        
+
         Proto proto = new Proto(file);
         ProtoUtil.loadFrom(file, proto);
-        
+
         Message test = proto.getMessage("Test");
         assertNotNull(test);
-        
+
         assertTrue(test.getFields().size() == 33);
-        
+
         assertTrue(test.getField("optional").number == 1);
         assertTrue(test.getField("repeated").number == 2);
         assertTrue(test.getField("required").number == 3);
@@ -75,14 +75,14 @@ public class ReservedWordsAsVariablesTest extends TestCase
         assertTrue(test.getField("default").number == 31);
         assertTrue(test.getField("max").number == 32);
         assertTrue(test.getField("option").number == 33);
-        
+
         // message annotation
         Annotation messageConfig = test.getAnnotation("Config");
         assertNotNull(messageConfig);
         verifyConfig(messageConfig.getParams());
         // message option
         verifyConfig(test.getOptions());
-        
+
         Field<?> f = test.getField("optional");
         assertNotNull(f);
         // field annotation
@@ -91,7 +91,7 @@ public class ReservedWordsAsVariablesTest extends TestCase
         verifyConfig(fConfig.getParams());
         // field option
         verifyConfig(f.getOptions());
-        
+
         EnumGroup e = test.getNestedEnumGroup("E");
         assertNotNull(e);
         // enum annotation
@@ -100,7 +100,7 @@ public class ReservedWordsAsVariablesTest extends TestCase
         verifyConfig(eConfig.getParams());
         // enum option
         verifyConfig(e.getOptions());
-        
+
         EnumGroup.Value v = e.getValue("FOO");
         assertNotNull(v);
         // enum field annotation
@@ -110,8 +110,8 @@ public class ReservedWordsAsVariablesTest extends TestCase
         // enum field option
         verifyConfig(v.getOptions());
     }
-    
-    static void verifyConfig(Map<String,Object> optionOrAnnotationMap)
+
+    static void verifyConfig(Map<String, Object> optionOrAnnotationMap)
     {
         assertEquals(optionOrAnnotationMap.get("optional"), "required");
         assertEquals(optionOrAnnotationMap.get("import"), "package");

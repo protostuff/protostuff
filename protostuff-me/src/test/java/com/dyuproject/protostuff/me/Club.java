@@ -27,14 +27,13 @@ public final class Club implements Message, Schema
 
     static final Club DEFAULT_INSTANCE = new Club();
 
-    
     private String name;
     private Vector student;
     private Vector partnerClub;
 
     public Club()
     {
-        
+
     }
 
     // getters and setters
@@ -65,7 +64,7 @@ public final class Club implements Message, Schema
 
     public Student getStudent(int index)
     {
-        return student == null ? null : (Student)student.elementAt(index);
+        return student == null ? null : (Student) student.elementAt(index);
     }
 
     public int getStudentCount()
@@ -75,7 +74,7 @@ public final class Club implements Message, Schema
 
     public void addStudent(Student student)
     {
-        if(this.student == null)
+        if (this.student == null)
             this.student = new Vector();
         this.student.addElement(student);
     }
@@ -94,7 +93,7 @@ public final class Club implements Message, Schema
 
     public Club getPartnerClub(int index)
     {
-        return partnerClub == null ? null : (Club)partnerClub.elementAt(index);
+        return partnerClub == null ? null : (Club) partnerClub.elementAt(index);
     }
 
     public int getPartnerClubCount()
@@ -104,7 +103,7 @@ public final class Club implements Message, Schema
 
     public void addPartnerClub(Club partnerClub)
     {
-        if(this.partnerClub == null)
+        if (this.partnerClub == null)
             this.partnerClub = new Vector();
         this.partnerClub.addElement(partnerClub);
     }
@@ -118,7 +117,7 @@ public final class Club implements Message, Schema
 
     // schema methods
 
-    public Object /*Club*/ newMessage()
+    public Object /* Club */newMessage()
     {
         return new Club();
     }
@@ -138,17 +137,17 @@ public final class Club implements Message, Schema
         return Club.class.getName();
     }
 
-    public boolean isInitialized(Object /*Club*/ message)
+    public boolean isInitialized(Object /* Club */message)
     {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*Club*/ messageObj) throws IOException
+    public void mergeFrom(Input input, Object /* Club */messageObj) throws IOException
     {
-        Club message = (Club)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        Club message = (Club) messageObj;
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -157,47 +156,45 @@ public final class Club implements Message, Schema
                     break;
 
                 case 2:
-                    if(message.student == null)
+                    if (message.student == null)
                         message.student = new Vector();
                     message.student.addElement(input.mergeObject(null, Student.getSchema()));
                     break;
 
                 case 3:
-                    if(message.partnerClub == null)
+                    if (message.partnerClub == null)
                         message.partnerClub = new Vector();
                     message.partnerClub.addElement(input.mergeObject(null, Club.getSchema()));
                     break;
 
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
 
-    public void writeTo(Output output, Object /*Club*/ messageObj) throws IOException
+    public void writeTo(Output output, Object /* Club */messageObj) throws IOException
     {
-        Club message = (Club)messageObj;
-        if(message.name != null)
+        Club message = (Club) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
 
-
-        if(message.student != null)
+        if (message.student != null)
         {
-            for(int i = 0; i < message.student.size(); i++)
+            for (int i = 0; i < message.student.size(); i++)
             {
-                Student student = (Student)message.student.elementAt(i);
-                if(student != null)
+                Student student = (Student) message.student.elementAt(i);
+                if (student != null)
                     output.writeObject(2, student, Student.getSchema(), true);
             }
         }
 
-
-        if(message.partnerClub != null)
+        if (message.partnerClub != null)
         {
-            for(int i = 0; i < message.partnerClub.size(); i++)
+            for (int i = 0; i < message.partnerClub.size(); i++)
             {
-                Club partnerClub = (Club)message.partnerClub.elementAt(i);
-                if(partnerClub != null)
+                Club partnerClub = (Club) message.partnerClub.elementAt(i);
+                if (partnerClub != null)
                     output.writeObject(3, partnerClub, Club.getSchema(), true);
             }
         }
@@ -206,36 +203,41 @@ public final class Club implements Message, Schema
 
     public String getFieldName(int number)
     {
-        switch(number)
+        switch (number)
         {
-            case 1: return "name";
-            case 2: return "student";
-            case 3: return "partnerClub";
-            default: return null;
+            case 1:
+                return "name";
+            case 2:
+                return "student";
+            case 3:
+                return "partnerClub";
+            default:
+                return null;
         }
     }
 
     public int getFieldNumber(String name)
     {
-        final Integer number = (Integer)__fieldMap.get(name);
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
+
     static
     {
         __fieldMap.put("name", new Integer(1));
         __fieldMap.put("student", new Integer(2));
         __fieldMap.put("partnerClub", new Integer(3));
     }
-    
+
     static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
     {
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;

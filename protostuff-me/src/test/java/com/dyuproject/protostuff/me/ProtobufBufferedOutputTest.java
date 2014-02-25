@@ -20,13 +20,13 @@ import java.io.OutputStream;
 
 /**
  * Test the buffering output capability of {@link ProtobufOutput}.
- *
+ * 
  * @author David Yu
  * @created Oct 7, 2010
  */
 public class ProtobufBufferedOutputTest extends SerDeserTest
 {
-    
+
     protected void mergeDelimitedFrom(InputStream in, Message message, Schema schema)
             throws IOException
     {
@@ -49,6 +49,5 @@ public class ProtobufBufferedOutputTest extends SerDeserTest
     {
         return ProtobufIOUtil.toByteArray(message, schema, buf());
     }
-    
 
 }

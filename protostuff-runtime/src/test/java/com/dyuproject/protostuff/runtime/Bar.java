@@ -24,32 +24,32 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Bar - for testing
- *
+ * 
  * @author David Yu
  * @created Nov 10, 2009
  */
 public final class Bar implements Externalizable
 {
-    
+
     public enum Status
     {
         PENDING(0), STARTED(1), COMPLETED(2);
-        
+
         public final int number;
-        
+
         Status(int number)
         {
             this.number = number;
-        }       
-        
+        }
+
         public int getNumber()
         {
             return number;
         }
-        
+
         public static Status valueOf(int number)
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return PENDING;
@@ -61,7 +61,7 @@ public final class Bar implements Externalizable
             return null;
         }
     }
-    
+
     private int someInt;
     private String someString;
     private Baz someBaz;
@@ -71,22 +71,15 @@ public final class Bar implements Externalizable
     private float someFloat;
     private double someDouble;
     private long someLong;
-    
+
     public Bar()
     {
-        
+
     }
 
-    public Bar(
-            int someInt, 
-            String someString, 
-            Baz baz, 
-            Status someEnum, 
-            ByteString someBytes, 
-            boolean someBoolean, 
-            float someFloat, 
-            double someDouble, 
-            long someLong)
+    public Bar(int someInt, String someString, Baz baz, Status someEnum,
+            ByteString someBytes, boolean someBoolean, float someFloat,
+            double someDouble, long someLong)
     {
         this.someInt = someInt;
         this.someString = someString;
@@ -99,8 +92,6 @@ public final class Bar implements Externalizable
         this.someLong = someLong;
     }
 
-    
-
     /**
      * @return the someInt
      */
@@ -110,7 +101,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someInt the someInt to set
+     * @param someInt
+     *            the someInt to set
      */
     public void setSomeInt(int someInt)
     {
@@ -126,7 +118,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someString the someString to set
+     * @param someString
+     *            the someString to set
      */
     public void setSomeString(String someString)
     {
@@ -142,7 +135,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param baz the someBaz to set
+     * @param baz
+     *            the someBaz to set
      */
     public void setSomeBaz(Baz baz)
     {
@@ -158,7 +152,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someEnum the someEnum to set
+     * @param someEnum
+     *            the someEnum to set
      */
     public void setSomeEnum(Status someEnum)
     {
@@ -174,7 +169,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someBytes the someBytes to set
+     * @param someBytes
+     *            the someBytes to set
      */
     public void setSomeBytes(ByteString someBytes)
     {
@@ -190,7 +186,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someBoolean the someBoolean to set
+     * @param someBoolean
+     *            the someBoolean to set
      */
     public void setSomeBoolean(boolean someBoolean)
     {
@@ -206,7 +203,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someFloat the someFloat to set
+     * @param someFloat
+     *            the someFloat to set
      */
     public void setSomeFloat(float someFloat)
     {
@@ -222,7 +220,8 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someDouble the someDouble to set
+     * @param someDouble
+     *            the someDouble to set
      */
     public void setSomeDouble(double someDouble)
     {
@@ -238,21 +237,24 @@ public final class Bar implements Externalizable
     }
 
     /**
-     * @param someLong the someLong to set
+     * @param someLong
+     *            the someLong to set
      */
     public void setSomeLong(long someLong)
     {
         this.someLong = someLong;
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Bar.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this,
+                RuntimeSchema.getSchema(Bar.class));
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Bar.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this,
+                RuntimeSchema.getSchema(Bar.class));
     }
 
     public int hashCode()
@@ -261,15 +263,18 @@ public final class Bar implements Externalizable
         int result = 1;
         result = prime * result + ((someBaz == null) ? 0 : someBaz.hashCode());
         result = prime * result + (someBoolean ? 1231 : 1237);
-        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
+        result = prime * result
+                + ((someBytes == null) ? 0 : someBytes.hashCode());
         long temp;
         temp = Double.doubleToLongBits(someDouble);
-        result = prime * result + (int)(temp ^ (temp >>> 32));
-        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result
+                + ((someEnum == null) ? 0 : someEnum.hashCode());
         result = prime * result + Float.floatToIntBits(someFloat);
         result = prime * result + someInt;
-        result = prime * result + (int)(someLong ^ (someLong >>> 32));
-        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        result = prime * result + (int) (someLong ^ (someLong >>> 32));
+        result = prime * result
+                + ((someString == null) ? 0 : someString.hashCode());
         return result;
     }
 
@@ -281,7 +286,7 @@ public final class Bar implements Externalizable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Bar other = (Bar)obj;
+        Bar other = (Bar) obj;
         if (someBaz == null)
         {
             if (other.someBaz != null)
@@ -298,7 +303,8 @@ public final class Bar implements Externalizable
         }
         else if (!someBytes.equals(other.someBytes))
             return false;
-        if (Double.doubleToLongBits(someDouble) != Double.doubleToLongBits(other.someDouble))
+        if (Double.doubleToLongBits(someDouble) != Double
+                .doubleToLongBits(other.someDouble))
             return false;
         if (someEnum == null)
         {
@@ -307,7 +313,8 @@ public final class Bar implements Externalizable
         }
         else if (!someEnum.equals(other.someEnum))
             return false;
-        if (Float.floatToIntBits(someFloat) != Float.floatToIntBits(other.someFloat))
+        if (Float.floatToIntBits(someFloat) != Float
+                .floatToIntBits(other.someFloat))
             return false;
         if (someInt != other.someInt)
             return false;

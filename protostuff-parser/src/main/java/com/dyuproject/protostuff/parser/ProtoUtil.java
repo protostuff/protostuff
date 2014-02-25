@@ -26,15 +26,17 @@ import org.antlr.runtime.CommonTokenStream;
 
 /**
  * Utility for loading protos from various input.
- *
+ * 
  * @author David Yu
  * @created Dec 24, 2009
  */
 public final class ProtoUtil
 {
-    
-    private ProtoUtil() {}
-    
+
+    private ProtoUtil()
+    {
+    }
+
     /**
      * Loads the proto from an {@link ANTLRReaderStream}.
      */
@@ -49,7 +51,7 @@ public final class ProtoUtil
         // Begin parsing at rule parse
         parser.parse(target);
     }
-    
+
     /**
      * Loads the proto from an {@link InputStream}.
      */
@@ -57,7 +59,7 @@ public final class ProtoUtil
     {
         loadFrom(new ANTLRInputStream(in), target);
     }
-    
+
     /**
      * Loads the proto from a {@link Reader}.
      */
@@ -65,7 +67,7 @@ public final class ProtoUtil
     {
         loadFrom(new ANTLRReaderStream(reader), target);
     }
-    
+
     public static Proto parseProto(File file)
     {
         Proto proto = new Proto(file);
@@ -79,7 +81,7 @@ public final class ProtoUtil
         }
         return proto;
     }
-    
+
     public static void loadFrom(File file, Proto target) throws Exception
     {
         FileInputStream in = new FileInputStream(file);
@@ -92,7 +94,7 @@ public final class ProtoUtil
             in.close();
         }
     }
-    
+
     public static void loadFrom(URL resource, Proto target) throws Exception
     {
         InputStream in = resource.openStream();
@@ -105,38 +107,38 @@ public final class ProtoUtil
             in.close();
         }
     }
-    
+
     public static StringBuilder toCamelCase(String name)
     {
         StringBuilder buffer = new StringBuilder();
         int toUpper = 0;
         char c;
-        for(int i=0, len=name.length(); i<len;)
+        for (int i = 0, len = name.length(); i < len;)
         {
-            c= name.charAt(i++);
-            if(c=='_')
+            c = name.charAt(i++);
+            if (c == '_')
             {
-                if(i==len)
+                if (i == len)
                     break;
-                if(buffer.length()!=0)
+                if (buffer.length() != 0)
                     toUpper++;
                 continue;
             }
-            else if(toUpper!=0)
+            else if (toUpper != 0)
             {
-                if(c>96 && c<123)
+                if (c > 96 && c < 123)
                 {
-                    buffer.append((char)(c-32));
+                    buffer.append((char) (c - 32));
                     toUpper = 0;
                 }
-                else if(c>64 && c<91)
+                else if (c > 64 && c < 91)
                 {
                     buffer.append(c);
                     toUpper = 0;
                 }
                 else
                 {
-                    while(toUpper>0)
+                    while (toUpper > 0)
                     {
                         buffer.append('_');
                         toUpper--;
@@ -146,60 +148,60 @@ public final class ProtoUtil
             }
             else
             {
-                if(buffer.length()==0 && c>64 && c<91)
-                    buffer.append((char)(c+32));
+                if (buffer.length() == 0 && c > 64 && c < 91)
+                    buffer.append((char) (c + 32));
                 else
                     buffer.append(c);
             }
         }
         return buffer;
     }
-    
+
     public static StringBuilder toPascalCase(String name)
     {
         StringBuilder buffer = toCamelCase(name);
         char c = buffer.charAt(0);
-        if(c>96 && c<123)
-            buffer.setCharAt(0, (char)(c-32));
-        
+        if (c > 96 && c < 123)
+            buffer.setCharAt(0, (char) (c - 32));
+
         return buffer;
     }
-    
+
     public static StringBuilder toUnderscoreCase(String name)
     {
         StringBuilder buffer = new StringBuilder();
-        boolean toLower = false, appendUnderscore=false;
-        for(int i=0, len=name.length(); i<len;)
+        boolean toLower = false, appendUnderscore = false;
+        for (int i = 0, len = name.length(); i < len;)
         {
             char c = name.charAt(i++);
-            if(c=='_')
+            if (c == '_')
             {
-                if(i==len)
+                if (i == len)
                     break;
-                if(buffer.length()!=0)
+                if (buffer.length() != 0)
                     appendUnderscore = true;
-                
+
                 continue;
             }
-            
-            if(appendUnderscore)
+
+            if (appendUnderscore)
                 buffer.append('_');
-            
-            if(c>96 && c<123)
+
+            if (c > 96 && c < 123)
             {
                 buffer.append(c);
                 toLower = true;
             }
-            else if(c>64 && c<91)
+            else if (c > 64 && c < 91)
             {
-                if(toLower)
+                if (toLower)
                 {
                     // avoid duplicate underscore
-                    if(!appendUnderscore)
+                    if (!appendUnderscore)
                         buffer.append('_');
                     toLower = false;
                 }
-                buffer.append((char)(c+32));
+                buffer.append((char) (c + 32));
             }
             else
             {
@@ -210,11 +212,11 @@ public final class ProtoUtil
         }
         return buffer;
     }
-    
+
     public static void main(String[] args)
     {
-        String[] gg = {"foo_bar_baz", "fooBarBaz", "FooBarBaz", "foo_bar_baz", "____Foo____Bar___Baz____"};
-        for(String g : gg)
+        String[] gg = { "foo_bar_baz", "fooBarBaz", "FooBarBaz", "foo_bar_baz", "____Foo____Bar___Baz____" };
+        for (String g : gg)
         {
             System.err.println(toCamelCase(g));
             System.err.println(toPascalCase(g));

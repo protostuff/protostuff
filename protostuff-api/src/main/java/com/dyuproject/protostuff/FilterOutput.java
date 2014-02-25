@@ -18,17 +18,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * A FilterOutput contains some other {@link Output output}, which it uses as its basic 
- * sink of data.
- *
+ * A FilterOutput contains some other {@link Output output}, which it uses as its basic sink of data.
+ * 
  * @author David Yu
  * @created Nov 11, 2009
  */
 public class FilterOutput<F extends Output> implements Output
 {
-    
+
     protected final F output;
-    
+
     public FilterOutput(F output)
     {
         this.output = output;
@@ -43,8 +42,8 @@ public class FilterOutput<F extends Output> implements Output
     {
         output.writeByteArray(fieldNumber, value, repeated);
     }
-    
-    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, 
+
+    public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
         output.writeByteRange(utf8String, fieldNumber, value, offset, length, repeated);
@@ -89,9 +88,9 @@ public class FilterOutput<F extends Output> implements Output
     {
         output.writeInt64(fieldNumber, value, repeated);
     }
-    
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) 
-    throws IOException
+
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated)
+            throws IOException
     {
         output.writeObject(fieldNumber, value, schema, repeated);
     }
@@ -130,10 +129,14 @@ public class FilterOutput<F extends Output> implements Output
     {
         output.writeUInt64(fieldNumber, value, repeated);
     }
-    /** Writes a ByteBuffer field. */
-    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset()+value.position(),
-                        value.remaining(), repeated);
+
+    /**
+     * Writes a ByteBuffer field.
+     */
+    public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
+    {
+        writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
+                value.remaining(), repeated);
     }
 
 }

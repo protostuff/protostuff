@@ -17,21 +17,21 @@ package com.dyuproject.protostuff;
 import javax.xml.stream.XMLStreamException;
 
 /**
- * Thrown when an xml-encoded message being parsed is invalid in some way. 
- *
+ * Thrown when an xml-encoded message being parsed is invalid in some way.
+ * 
  * @author David Yu
  * @created May 24, 2010
  */
 public class XmlInputException extends ProtostuffException
 {
-    
+
     private static final long serialVersionUID = 7334323404937711844L;
 
     public XmlInputException(String message)
     {
         super(message);
     }
-    
+
     public XmlInputException(XMLStreamException cause)
     {
         super(cause);

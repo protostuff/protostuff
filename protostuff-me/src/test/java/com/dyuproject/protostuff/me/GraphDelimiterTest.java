@@ -26,25 +26,25 @@ import java.io.OutputStream;
  */
 public class GraphDelimiterTest extends DelimiterTest
 {
-    
+
     protected int writeDelimitedTo(OutputStream out, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {
         return GraphIOUtil.writeDelimitedTo(out, message, schema, buffer);
     }
-    
+
     protected void mergeDelimitedFrom(InputStream in, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
     }
-    
+
     protected int optWriteDelimitedTo(OutputStream out, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {
         return GraphIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
     }
-    
+
     protected boolean optMergeDelimitedFrom(InputStream in, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {

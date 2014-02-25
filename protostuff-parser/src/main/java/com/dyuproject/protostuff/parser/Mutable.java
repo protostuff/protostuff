@@ -15,22 +15,21 @@
 package com.dyuproject.protostuff.parser;
 
 /**
- * An entity whose values can be overriden with new value.
- * It can also be reset to its initial state.
- *
+ * An entity whose values can be overriden with new value. It can also be reset to its initial state.
+ * 
  * @author David Yu
  * @created May 10, 2010
  */
 public class Mutable<T>
 {
-    
+
     private T current, last;
-    
+
     public Mutable(T value)
     {
-        if(value == null)
+        if (value == null)
             throw new IllegalArgumentException("The arg 'value' cannot be null.");
-        
+
         current = value;
     }
 
@@ -38,33 +37,33 @@ public class Mutable<T>
     {
         // can only override once.
         // needs to be reset before it can be overriden again.
-        if(last == null)
+        if (last == null)
         {
             last = current;
             current = newValue;
         }
 
     }
-    
+
     public void reset()
     {
-        if(last != null)
+        if (last != null)
         {
             current = last;
             last = null;
         }
     }
-    
+
     public T getValue()
     {
         return current;
     }
-    
+
     public T getLast()
     {
         return last;
     }
-    
+
     public boolean isOverridden()
     {
         return last != null;

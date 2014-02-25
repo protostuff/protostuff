@@ -11,10 +11,11 @@ import java.util.List;
 /**
  * Created by ryan on 1/25/14.
  */
-public class LowCopyProtostuffOutputTest extends TestCase {
+public class LowCopyProtostuffOutputTest extends TestCase
+{
 
-
-    public void testCompareVsOther() throws Exception {
+    public void testCompareVsOther() throws Exception
+    {
 
         Baz aBaz = new Baz(1, "hello world", 1238372479L);
         ByteBuffer serForm1 = testObj(aBaz, aBaz);
@@ -37,16 +38,17 @@ public class LowCopyProtostuffOutputTest extends TestCase {
     }
 
     private void deserTest(Message origMsg,
-                           Schema sch,
-                           ByteBuffer buf) throws IOException {
+            Schema sch,
+            ByteBuffer buf) throws IOException
+    {
         ByteBufferInput input = new ByteBufferInput(buf, true);
         Object newM = sch.newMessage();
         sch.mergeFrom(input, newM);
         assertEquals(origMsg, newM);
     }
 
-
-    private ByteBuffer testObj(Message msg, Schema sch) throws java.io.IOException {
+    private ByteBuffer testObj(Message msg, Schema sch) throws java.io.IOException
+    {
         // do protostuff now:
         ByteArrayOutputStream controlStream = new ByteArrayOutputStream();
         LinkedBuffer linkedBuffer = LinkedBuffer.allocate(512); // meh
@@ -61,15 +63,12 @@ public class LowCopyProtostuffOutputTest extends TestCase {
 
         assertEquals(1, testDatas.size());
 
-
         ByteBuffer testData = testDatas.get(0);
 
         byte[] testByteArray = new byte[testData.remaining()];
         testData.get(testByteArray);
 
-        assertTrue(
-                Arrays.equals(controlData, testByteArray)
-        );
+        assertTrue(Arrays.equals(controlData, testByteArray));
         System.out.println("ctrl len = " + controlData.length);
         System.out.println("test len = " + testByteArray.length);
         System.out.println("test size() = " + lcpo.buffer.size());

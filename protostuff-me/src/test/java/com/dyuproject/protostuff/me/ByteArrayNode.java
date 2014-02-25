@@ -14,26 +14,25 @@
 
 package com.dyuproject.protostuff.me;
 
-
 /**
  * A node that wraps a byte array and has a reference to the next node.
- * 
+ * <p/>
  * This is used as a single-direction linked list of byte[] wrappers.
- *
+ * 
  * @author David Yu
  * @created Nov 12, 2009
  */
 final class ByteArrayNode
 {
-    
+
     final byte[] bytes;
     ByteArrayNode next;
-    
+
     ByteArrayNode(byte[] bytes)
     {
         this.bytes = bytes;
     }
-    
+
     ByteArrayNode(byte[] bytes, ByteArrayNode node)
     {
         this.bytes = bytes;

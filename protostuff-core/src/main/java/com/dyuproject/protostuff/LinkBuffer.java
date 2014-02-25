@@ -8,21 +8,23 @@ import java.util.List;
 
 /**
  * A list of ByteBuffers.
- *
+ * <p/>
  * Created by ryan on 1/22/14.
  */
-public class LinkBuffer {
+public class LinkBuffer
+{
 
     public static final int DEFAULT_BUFFER_SIZE = 256;
 
-
     public final int allocSize;
 
-    public LinkBuffer() {
+    public LinkBuffer()
+    {
         this(DEFAULT_BUFFER_SIZE);
     }
 
-    public LinkBuffer(int allocSize) {
+    public LinkBuffer(int allocSize)
+    {
 
         assert allocSize >= 8;
 
@@ -31,13 +33,14 @@ public class LinkBuffer {
         current = ByteBuffer.allocate(allocSize);
     }
 
-
     ByteBuffer current;
     List<ByteBuffer> buffers = new ArrayList<ByteBuffer>();
 
-    public long size() {
+    public long size()
+    {
         long size = 0;
-        for (ByteBuffer b : buffers) {
+        for (ByteBuffer b : buffers)
+        {
             size += b.remaining();
         }
         if (current != null)
@@ -46,23 +49,28 @@ public class LinkBuffer {
         return size;
     }
 
-    public List<ByteBuffer> getBuffers() {
+    public List<ByteBuffer> getBuffers()
+    {
         List<ByteBuffer> copy = new ArrayList<ByteBuffer>(buffers.size());
-        for (ByteBuffer b : buffers) {
+        for (ByteBuffer b : buffers)
+        {
             copy.add(b.duplicate());
         }
         return Collections.unmodifiableList(copy);
     }
 
-    private void nextBuffer() {
+    private void nextBuffer()
+    {
         current.flip();
         buffers.add(current);
         current = ByteBuffer.allocate(allocSize);
     }
 
-    private void spliceBuffer(ByteBuffer buf) {
+    private void spliceBuffer(ByteBuffer buf)
+    {
         // the current buffer is empty case.
-        if (current.position() == 0) {
+        if (current.position() == 0)
+        {
             buffers.add(buf);
             return;
         }
@@ -73,13 +81,16 @@ public class LinkBuffer {
         current = ByteBuffer.allocate(allocSize);
     }
 
-    private void ensureCapacity(int needed) {
-        if (current.remaining() < needed) {
+    private void ensureCapacity(int needed)
+    {
+        if (current.remaining() < needed)
+        {
             nextBuffer();
         }
     }
 
-    public List<ByteBuffer> finish() {
+    public List<ByteBuffer> finish()
+    {
         current.flip();
         buffers.add(current);
         current = null; // mark as finished.
@@ -90,17 +101,17 @@ public class LinkBuffer {
         return getBuffers();
     }
 
-
-
     // lengthy implementation junk now.
-    public LinkBuffer writeByte(final byte value) throws IOException {
+    public LinkBuffer writeByte(final byte value) throws IOException
+    {
         ensureCapacity(1);
 
         current.put(value);
         return this;
     }
 
-    public LinkBuffer writeInt16(final int value) throws IOException {
+    public LinkBuffer writeInt16(final int value) throws IOException
+    {
         // need 2 bytes:
         ensureCapacity(2);
 
@@ -109,95 +120,116 @@ public class LinkBuffer {
         return this;
     }
 
-    public LinkBuffer writeInt16LE(final int value) throws IOException {
+    public LinkBuffer writeInt16LE(final int value) throws IOException
+    {
         ensureCapacity(2);
         IntSerializer.writeInt16LE(value, current);
         return this;
     }
 
-    public LinkBuffer writeInt32(final int value) throws IOException {
+    public LinkBuffer writeInt32(final int value) throws IOException
+    {
         ensureCapacity(4);
         current.putInt(value);
         return this;
     }
 
-    public LinkBuffer writeInt32LE(final int value) throws IOException {
+    public LinkBuffer writeInt32LE(final int value) throws IOException
+    {
         ensureCapacity(4);
         IntSerializer.writeInt32LE(value, current);
         return this;
     }
 
-    public LinkBuffer writeInt64(final long value) throws IOException {
+    public LinkBuffer writeInt64(final long value) throws IOException
+    {
         ensureCapacity(8);
         current.putLong(value);
         return this;
     }
 
-    public LinkBuffer writeInt64LE(final long value) throws IOException {
+    public LinkBuffer writeInt64LE(final long value) throws IOException
+    {
         ensureCapacity(8);
         IntSerializer.writeInt64LE(value, current);
         return this;
     }
 
-    public LinkBuffer writeVarInt32(int value) throws IOException {
+    public LinkBuffer writeVarInt32(int value) throws IOException
+    {
         byte[] buf = new byte[5];
         int locPtr = 0;
-        while (true) {
-            if ((value & ~0x7F) == 0) {
-               buf[locPtr++] = (byte)value;
+        while (true)
+        {
+            if ((value & ~0x7F) == 0)
+            {
+                buf[locPtr++] = (byte) value;
                 // thing;
                 ensureCapacity(locPtr);
                 current.put(buf, 0, locPtr);
 
                 return this;
 
-            } else {
+            }
+            else
+            {
                 buf[locPtr++] = (byte) ((value & 0x7F) | 0x80);
                 value >>>= 7;
             }
         }
     }
 
-    public LinkBuffer writeVarInt32_2(int value) throws IOException {
+    public LinkBuffer writeVarInt32_2(int value) throws IOException
+    {
         int encSize = ProtobufOutput.computeRawVarint32Size(value);
         ensureCapacity(encSize);
 
         byte[] buf = new byte[encSize];
         int locPtr = 0;
 
-        while (true) {
-            if ((value & ~0x7F) == 0) {
-                buf[locPtr++] = (byte)value;
-                //current.put((byte) value);
+        while (true)
+        {
+            if ((value & ~0x7F) == 0)
+            {
+                buf[locPtr++] = (byte) value;
+                // current.put((byte) value);
                 current.put(buf);
                 return this;
-            } else {
+            }
+            else
+            {
                 buf[locPtr++] = (byte) ((value & 0x7F) | 0x80);
                 value >>>= 7;
             }
         }
     }
 
-    public LinkBuffer writeVarInt64(long value) throws IOException {
+    public LinkBuffer writeVarInt64(long value) throws IOException
+    {
         // this implementation appears to be a bit faster.
 
         byte[] buf = new byte[10];
         int locPtr = 0;
 
-        while (true) {
-            if ((value & ~0x7FL) == 0) {
-                buf[locPtr++] = (byte)value;
+        while (true)
+        {
+            if ((value & ~0x7FL) == 0)
+            {
+                buf[locPtr++] = (byte) value;
                 ensureCapacity(locPtr);
                 current.put(buf, 0, locPtr);
                 return this;
-            } else {
+            }
+            else
+            {
                 buf[locPtr++] = (byte) (((int) value & 0x7F) | 0x80);
                 value >>>= 7;
             }
         }
     }
 
-    public LinkBuffer writeVarInt64_2(long value) throws IOException {
+    public LinkBuffer writeVarInt64_2(long value) throws IOException
+    {
         int encSize = ProtobufOutput.computeRawVarint64Size(value);
 
         ensureCapacity(encSize);
@@ -205,50 +237,64 @@ public class LinkBuffer {
         byte[] buf = new byte[encSize];
         int locPtr = 0;
 
-
-        while (true) {
-            if ((value & ~0x7FL) == 0) {
-                buf[locPtr++] = (byte)value;
+        while (true)
+        {
+            if ((value & ~0x7FL) == 0)
+            {
+                buf[locPtr++] = (byte) value;
                 current.put(buf);
                 return this;
-            } else {
+            }
+            else
+            {
                 buf[locPtr++] = (byte) (((int) value & 0x7F) | 0x80);
                 value >>>= 7;
             }
         }
     }
 
-    public LinkBuffer writeDouble(final double value) throws IOException {
+    public LinkBuffer writeDouble(final double value) throws IOException
+    {
         return writeInt64(Double.doubleToRawLongBits(value));
     }
 
-    public LinkBuffer writeFloat(final float value) throws IOException {
+    public LinkBuffer writeFloat(final float value) throws IOException
+    {
         return writeInt32(Float.floatToRawIntBits(value));
     }
 
     public LinkBuffer writeByteArray(final byte[] value,
-                                     final int offset, final int length) throws IOException {
+            final int offset, final int length) throws IOException
+    {
         // maybe splice in.
-        if (current.remaining() >= length) {
+        if (current.remaining() >= length)
+        {
             // copy in:
             current.put(value, offset, length);
-        } else {
-            // too big.  splice in:
+        }
+        else
+        {
+            // too big. splice in:
             ByteBuffer wrapped = ByteBuffer.wrap(value, offset, length);
             spliceBuffer(wrapped);
         }
         return this;
     }
 
-    public LinkBuffer writeByteArray(final byte[] value) throws IOException {
+    public LinkBuffer writeByteArray(final byte[] value) throws IOException
+    {
         return writeByteArray(value, 0, value.length);
     }
 
-    public LinkBuffer writeByteBuffer(ByteBuffer buf) {
+    public LinkBuffer writeByteBuffer(ByteBuffer buf)
+    {
         ByteBuffer cp = buf.slice();
-        if (current.remaining() >= cp.remaining()) {
+        if (current.remaining() >= cp.remaining())
+        {
             current.put(cp);
-        } else {
+        }
+        else
+        {
             // splice it in if too large.
             spliceBuffer(cp);
         }

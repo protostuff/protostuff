@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Testcase for ser/deser of multiple messages using json.
- *
+ * 
  * @author David Yu
  * @created Oct 8, 2010
  */
@@ -33,8 +33,8 @@ public class JsonCoreRepeatedMessagesTest extends RepeatedMessagesTest
         return JsonIOUtil.parseListFrom(in, schema, false);
     }
 
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
-    throws IOException
+    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+            throws IOException
     {
         JsonIOUtil.writeListTo(out, messages, schema, false);
     }

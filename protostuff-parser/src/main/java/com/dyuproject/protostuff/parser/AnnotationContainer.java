@@ -20,19 +20,19 @@ import java.util.Map;
 
 /**
  * Base class for components that contain annotations.
- *
+ * 
  * @author David Yu
  * @created Dec 30, 2010
  */
 public abstract class AnnotationContainer implements HasAnnotations, HasProto
 {
-    
-    final LinkedHashMap<String,Annotation> annotations = 
-        new LinkedHashMap<String,Annotation>();
+
+    final LinkedHashMap<String, Annotation> annotations =
+            new LinkedHashMap<String, Annotation>();
 
     public void add(Annotation annotation)
     {
-        if(annotations.put(annotation.name, annotation) != null)
+        if (annotations.put(annotation.name, annotation) != null)
             throw err("Duplicate annotation: " + annotation.name, null);
     }
 
@@ -40,11 +40,12 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
     {
         return annotations;
     }
-    
+
     /**
      * Short-hand for {@link #getAnnotationMap()}.
-     * 
+     * <p/>
      * You then can use:
+     * 
      * <pre>
      * &lt;if(message.a.("SomeAnnotation"))&gt;
      * </pre>
@@ -52,61 +53,62 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
     public final Map<String, Annotation> getA()
     {
         return annotations;
-    } 
+    }
 
     public Collection<Annotation> getAnnotations()
     {
         return annotations.values();
     }
-    
+
     public Annotation getAnnotation(String name)
     {
         return annotations.get(name);
     }
 
-    public boolean hasAnnotation(String name) {
+    public boolean hasAnnotation(String name)
+    {
         return annotations.containsKey(name);
     }
 
     public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource)
     {
-        if(source.isEmpty())
+        if (source.isEmpty())
             return false;
-        
+
         this.annotations.putAll(source);
-        if(clearSource)
+        if (clearSource)
             source.clear();
-        
+
         return true;
     }
-    
+
     /**
      * Shorthand for annotations.isEmpty().
+     * <p/>
      * 
      * <pre>
      * You can then use:
      * &lt;if(message.emptyA)&gt;
      * </pre>
+     * <p/>
      * 
      * <pre>
-     * Note that this does not work on stringtemplate: 
+     * Note that this does not work on stringtemplate:
      * &lt;if(message.annotationMap.empty)&gt;
      * 
-     * Even though {@link java.util.Map#isEmpty()} exists. 
+     * Even though {@link java.util.Map#isEmpty()} exists.
      * </pre>
-     * 
-     * 
      */
     public final boolean isEmptyA()
     {
         return annotations.isEmpty();
     }
-    
+
     public static IllegalStateException err(String msg, Proto proto)
     {
-        if(proto == null)
+        if (proto == null)
             return new IllegalStateException(msg);
-        
+
         return new IllegalStateException(msg + " [" + proto.getSourcePath() + "]");
     }
 

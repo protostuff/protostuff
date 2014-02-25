@@ -21,20 +21,20 @@ import java.util.List;
 
 /**
  * Testcase for ser/deser of multiple messages using json via {@link JsonXOutput}.
- *
+ * 
  * @author David Yu
  * @created Oct 11, 2010
  */
 public class JsonXRepeatedMessagesTest extends RepeatedMessagesTest
 {
-    
+
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return JsonIOUtil.parseListFrom(in, schema, false);
     }
 
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) 
-    throws IOException
+    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
+            throws IOException
     {
         JsonXIOUtil.writeListTo(out, messages, schema, false, buf());
     }

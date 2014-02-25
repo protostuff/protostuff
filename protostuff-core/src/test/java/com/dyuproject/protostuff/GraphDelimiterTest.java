@@ -26,7 +26,7 @@ import java.io.OutputStream;
  */
 public class GraphDelimiterTest extends DelimiterTest
 {
-    
+
     @Override
     protected <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema,
             LinkedBuffer buffer) throws IOException

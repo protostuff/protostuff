@@ -12,7 +12,6 @@
 //limitations under the License.
 //========================================================================
 
-
 // Protocol Buffers - Google's data interchange format
 // Copyright 2008 Google Inc.  All rights reserved.
 // http://code.google.com/p/protobuf/
@@ -45,97 +44,83 @@
 
 package com.dyuproject.protostuff;
 
-
 /**
- * Thrown when attempting to build a protocol message that is missing required
- * fields.  This is a {@code RuntimeException} because it normally represents
- * a programming error:  it happens when some code which constructs a message
- * fails to set all the fields. 
- *
+ * Thrown when attempting to build a protocol message that is missing required fields. This is a
+ * {@code RuntimeException} because it normally represents a programming error: it happens when some code which
+ * constructs a message fails to set all the fields.
+ * 
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
-public final class UninitializedMessageException extends RuntimeException {
-  private static final long serialVersionUID = -7466929953374883507L;
-  
-  public final Object targetMessage;
-  public final Schema<?> targetSchema;
-  
-  public UninitializedMessageException(Message<?> targetMessage) {
-    this(targetMessage, targetMessage.cachedSchema());
-  }
-  
-  public UninitializedMessageException(Object targetMessage, Schema<?> targetSchema) {
-    this.targetMessage = targetMessage;
-    this.targetSchema = targetSchema;
-  }
-  
-  public UninitializedMessageException(String msg, Message<?> targetMessage) {
-    this(msg, targetMessage, targetMessage.cachedSchema());
-  }
-  
-  public UninitializedMessageException(String msg, Object targetMessage, 
-      Schema<?> targetSchema) {
-    super(msg);
-    this.targetMessage = targetMessage;
-    this.targetSchema = targetSchema;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public <T> T getTargetMessage() {
-    return (T)targetMessage;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public <T> Schema<T> getTargetSchema() {
-    return (Schema<T>)targetSchema;
-  }
-  
-  /*@public UninitializedMessageException(final MessageLite message) {
-    super("Message was missing required fields.  (Lite runtime could not " +
-          "determine which fields were missing).");
-    missingFields = null;
-  }
+public final class UninitializedMessageException extends RuntimeException
+{
+    private static final long serialVersionUID = -7466929953374883507L;
 
-  public UninitializedMessageException(final List<String> missingFields) {
-    super(buildDescription(missingFields));
-    this.missingFields = missingFields;
-  }
+    public final Object targetMessage;
+    public final Schema<?> targetSchema;
 
-  private final List<String> missingFields;
-
-  /**
-   * Get a list of human-readable names of required fields missing from this
-   * message.  Each name is a full path to a field, e.g. "foo.bar[5].baz".
-   * Returns null if the lite runtime was used, since it lacks the ability to
-   * find missing fields.
-   *@
-  public List<String> getMissingFields() {
-    return Collections.unmodifiableList(missingFields);
-  }
-
-  /**
-   * Converts this exception to an {@link InvalidProtocolBufferException}.
-   * When a parsed message is missing required fields, this should be thrown
-   * instead of {@code UninitializedMessageException}.
-   *@
-  public InvalidProtocolBufferException asInvalidProtocolBufferException() {
-    return new InvalidProtocolBufferException(getMessage());
-  }
-
-  /** Construct the description string for this exception. *@
-  private static String buildDescription(final List<String> missingFields) {
-    final StringBuilder description =
-      new StringBuilder("Message missing required fields: ");
-    boolean first = true;
-    for (final String field : missingFields) {
-      if (first) {
-        first = false;
-      } else {
-        description.append(", ");
-      }
-      description.append(field);
+    public UninitializedMessageException(Message<?> targetMessage)
+    {
+        this(targetMessage, targetMessage.cachedSchema());
     }
-    return description.toString();
-  }*/
+
+    public UninitializedMessageException(Object targetMessage, Schema<?> targetSchema)
+    {
+        this.targetMessage = targetMessage;
+        this.targetSchema = targetSchema;
+    }
+
+    public UninitializedMessageException(String msg, Message<?> targetMessage)
+    {
+        this(msg, targetMessage, targetMessage.cachedSchema());
+    }
+
+    public UninitializedMessageException(String msg, Object targetMessage,
+            Schema<?> targetSchema)
+    {
+        super(msg);
+        this.targetMessage = targetMessage;
+        this.targetSchema = targetSchema;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getTargetMessage()
+    {
+        return (T) targetMessage;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Schema<T> getTargetSchema()
+    {
+        return (Schema<T>) targetSchema;
+    }
+
+    /*
+     * @public UninitializedMessageException(final MessageLite message) {
+     * super("Message was missing required fields.  (Lite runtime could not " +
+     * "determine which fields were missing)."); missingFields = null; }
+     * 
+     * public UninitializedMessageException(final List<String> missingFields) { super(buildDescription(missingFields));
+     * this.missingFields = missingFields; }
+     * 
+     * private final List<String> missingFields;
+     * 
+     * /** Get a list of human-readable names of required fields missing from this message. Each name is a full path to
+     * a field, e.g. "foo.bar[5].baz". Returns null if the lite runtime was used, since it lacks the ability to find
+     * missing fields.
+     * 
+     * @ public List<String> getMissingFields() { return Collections.unmodifiableList(missingFields); }
+     * 
+     * /** Converts this exception to an {@link InvalidProtocolBufferException}. When a parsed message is missing
+     * required fields, this should be thrown instead of {@code UninitializedMessageException}.
+     * 
+     * @ public InvalidProtocolBufferException asInvalidProtocolBufferException() { return new
+     * InvalidProtocolBufferException(getMessage()); }
+     * 
+     * /** Construct the description string for this exception. *@ private static String buildDescription(final
+     * List<String> missingFields) { final StringBuilder description = new
+     * StringBuilder("Message missing required fields: "); boolean first = true; for (final String field :
+     * missingFields) { if (first) { first = false; } else { description.append(", "); } description.append(field); }
+     * return description.toString(); }
+     */
 }

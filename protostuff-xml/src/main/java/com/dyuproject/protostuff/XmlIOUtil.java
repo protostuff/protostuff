@@ -37,17 +37,19 @@ import javax.xml.stream.XMLStreamWriter;
 
 /**
  * Utility for the XML serialization/deserialization of messages and objects tied to a schema.
- *
+ * 
  * @author David Yu
  * @created May 24, 2010
  */
 public final class XmlIOUtil
 {
-    
-    private XmlIOUtil() {}
-    
+
+    private XmlIOUtil()
+    {
+    }
+
     public static final String XML_ENCODING = "UTF-8", XML_VERSION = "1.0";
-    
+
     /**
      * Creates an xml pipe from a byte array.
      */
@@ -55,7 +57,7 @@ public final class XmlIOUtil
     {
         return newPipe(data, 0, data.length);
     }
-    
+
     /**
      * Creates an xml pipe from a byte array.
      */
@@ -63,7 +65,7 @@ public final class XmlIOUtil
     {
         return newPipe(new ByteArrayInputStream(data, offset, length));
     }
-    
+
     /**
      * Creates an xml pipe from an {@link InputStream}.
      */
@@ -78,7 +80,7 @@ public final class XmlIOUtil
             throw new XmlInputException(e);
         }
     }
-    
+
     /**
      * Creates an xml pipe from a {@link Reader}.
      */
@@ -93,7 +95,7 @@ public final class XmlIOUtil
             throw new XmlInputException(e);
         }
     }
-    
+
     /**
      * Creates an xml pipe from an {@link XMLStreamReader}.
      */
@@ -104,39 +106,39 @@ public final class XmlIOUtil
         {
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
-                //final String simpleName = pipeSchema.wrappedSchema.messageName();
+                // final String simpleName = pipeSchema.wrappedSchema.messageName();
 
                 try
                 {
-                    if(parser.nextTag() != START_ELEMENT || 
+                    if (parser.nextTag() != START_ELEMENT ||
                             !pipeSchema.wrappedSchema.messageName().equals(parser.getLocalName()))
                     {
-                        throw new XmlInputException("Expected token START_ELEMENT: " + 
+                        throw new XmlInputException("Expected token START_ELEMENT: " +
                                 pipeSchema.wrappedSchema.messageName());
                     }
-                    
-                    if(parser.nextTag() == END_ELEMENT)
+
+                    if (parser.nextTag() == END_ELEMENT)
                     {
-                        //if(!simpleName.equals(parser.getLocalName()))
-                        //    throw new XmlInputException("Expecting token END_ELEMENT: " + 
-                        //            simpleName);
-                        
+                        // if(!simpleName.equals(parser.getLocalName()))
+                        // throw new XmlInputException("Expecting token END_ELEMENT: " +
+                        // simpleName);
+
                         // empty message;
                         return null;
                     }
                 }
-                catch(XMLStreamException e)
+                catch (XMLStreamException e)
                 {
                     throw new XmlInputException(e);
                 }
-                
+
                 return xmlInput;
             }
-            
-            protected void end(Pipe.Schema<?> pipeSchema, Input input, 
+
+            protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
-                if(cleanupOnly)
+                if (cleanupOnly)
                 {
                     try
                     {
@@ -148,12 +150,12 @@ public final class XmlIOUtil
                     }
                     return;
                 }
-                
+
                 assert input == xmlInput;
-                
-                //final String simpleName = pipeSchema.wrappedSchema.messageName();
-                //final String localName = parser.getLocalName();
-                
+
+                // final String simpleName = pipeSchema.wrappedSchema.messageName();
+                // final String localName = parser.getLocalName();
+
                 try
                 {
                     parser.close();
@@ -162,16 +164,15 @@ public final class XmlIOUtil
                 {
                     // end of pipe transfer ... ignore
                 }
-                
-                /*if(!simpleName.equals(localName))
-                {
-                    throw new XmlInputException("Expecting token END_ELEMENT: " + 
-                            simpleName);
-                }*/
+
+                /*
+                 * if(!simpleName.equals(localName)) { throw new XmlInputException("Expecting token END_ELEMENT: " +
+                 * simpleName); }
+                 */
             }
         };
     }
-    
+
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
@@ -179,20 +180,20 @@ public final class XmlIOUtil
     {
         mergeFrom(data, 0, data.length, message, schema, DEFAULT_INPUT_FACTORY);
     }
-    
+
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, int offset, int len, T message, 
+    public static <T> void mergeFrom(byte[] data, int offset, int len, T message,
             Schema<T> schema)
     {
         mergeFrom(data, 0, data.length, message, schema, DEFAULT_INPUT_FACTORY);
     }
-    
+
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, int offset, int len, T message, 
+    public static <T> void mergeFrom(byte[] data, int offset, int len, T message,
             Schema<T> schema, XMLInputFactory inFactory)
     {
         final ByteArrayInputStream in = new ByteArrayInputStream(data, offset, len);
@@ -200,27 +201,25 @@ public final class XmlIOUtil
         {
             mergeFrom(in, message, schema, inFactory);
         }
-        catch(IOException e)
+        catch (IOException e)
         {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
-     * Merges the {@code message} from the {@link InputStream} 
-     * using the given {@code schema}.
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
-    throws IOException
+            throws IOException
     {
         mergeFrom(in, message, schema, DEFAULT_INPUT_FACTORY);
     }
-    
+
     /**
-     * Merges the {@code message} from the {@link InputStream} 
-     * using the given {@code schema}.
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema,
             XMLInputFactory inFactory) throws IOException
     {
         XMLStreamReader parser = null;
@@ -229,13 +228,13 @@ public final class XmlIOUtil
             parser = inFactory.createXMLStreamReader(in, XML_ENCODING);
             mergeFrom(parser, message, schema);
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlInputException(e);
         }
         finally
         {
-            if(parser != null)
+            if (parser != null)
             {
                 try
                 {
@@ -248,20 +247,20 @@ public final class XmlIOUtil
             }
         }
     }
-    
+
     /**
      * Merges the {@code message} from the {@link Reader} using the given {@code schema}.
      */
     public static <T> void mergeFrom(Reader r, T message, Schema<T> schema)
-    throws IOException
+            throws IOException
     {
         mergeFrom(r, message, schema, DEFAULT_INPUT_FACTORY);
     }
-    
+
     /**
      * Merges the {@code message} from the {@link Reader} using the given {@code schema}.
      */
-    public static <T> void mergeFrom(Reader r, T message, Schema<T> schema, 
+    public static <T> void mergeFrom(Reader r, T message, Schema<T> schema,
             XMLInputFactory inFactory) throws IOException
     {
         XMLStreamReader parser = null;
@@ -270,13 +269,13 @@ public final class XmlIOUtil
             parser = inFactory.createXMLStreamReader(r);
             mergeFrom(parser, message, schema);
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlInputException(e);
         }
         finally
         {
-            if(parser != null)
+            if (parser != null)
             {
                 try
                 {
@@ -289,37 +288,36 @@ public final class XmlIOUtil
             }
         }
     }
-    
+
     /**
-     * Merges the {@code message} from the {@link XMLStreamReader} 
-     * using the given {@code schema}.
+     * Merges the {@code message} from the {@link XMLStreamReader} using the given {@code schema}.
      */
     public static <T> void mergeFrom(XMLStreamReader parser, T message, Schema<T> schema)
-    throws IOException, XMLStreamException, XmlInputException
+            throws IOException, XMLStreamException, XmlInputException
     {
-        //final String simpleName = schema.messageName();
-        
-        if(parser.nextTag() != START_ELEMENT || 
+        // final String simpleName = schema.messageName();
+
+        if (parser.nextTag() != START_ELEMENT ||
                 !schema.messageName().equals(parser.getLocalName()))
         {
             throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
         }
-        
-        if(parser.nextTag() == END_ELEMENT)
+
+        if (parser.nextTag() == END_ELEMENT)
         {
-            //if(!simpleName.equals(parser.getLocalName()))
-            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
-            
+            // if(!simpleName.equals(parser.getLocalName()))
+            // throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+
             // empty message;
             return;
         }
-        
+
         schema.mergeFrom(new XmlInput(parser), message);
-        
-        //if(!simpleName.equals(parser.getLocalName()))
-        //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+
+        // if(!simpleName.equals(parser.getLocalName()))
+        // throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
     }
-    
+
     /**
      * Serializes the {@code message} into a byte array.
      */
@@ -327,11 +325,11 @@ public final class XmlIOUtil
     {
         return toByteArray(message, schema, DEFAULT_OUTPUT_FACTORY);
     }
-    
+
     /**
      * Serializes the {@code message} into a byte array.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, 
+    public static <T> byte[] toByteArray(T message, Schema<T> schema,
             XMLOutputFactory outFactory)
     {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -339,179 +337,174 @@ public final class XmlIOUtil
         {
             writeTo(out, message, schema, outFactory);
         }
-        catch(IOException e)
+        catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         return out.toByteArray();
     }
-    
+
     /**
-     * Serializes the {@code message} into an {@link OutputStream} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
      */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema)
-    throws IOException
+            throws IOException
     {
         writeTo(out, message, schema, DEFAULT_OUTPUT_FACTORY);
     }
-    
+
     /**
-     * Serializes the {@code message} into an {@link OutputStream} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
      */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema,
             XMLOutputFactory outFactory) throws IOException
     {
         XMLStreamWriter writer = null;
         try
         {
             writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
-            
+
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
             writer.writeEndDocument();
-            
+
             writer.flush();
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlOutputException(e);
         }
         finally
         {
-            if(writer != null)
+            if (writer != null)
             {
                 try
                 {
                     writer.close();
                 }
-                catch(XMLStreamException e)
+                catch (XMLStreamException e)
                 {
                     // ignore
                 }
             }
         }
     }
-    
+
     /**
-     * Serializes the {@code message} into a {@link Writer} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into a {@link Writer} using the given {@code schema}.
      */
     public static <T> void writeTo(Writer w, T message, Schema<T> schema)
-    throws IOException
+            throws IOException
     {
         writeTo(w, message, schema, DEFAULT_OUTPUT_FACTORY);
     }
-    
+
     /**
-     * Serializes the {@code message} into a {@link Writer} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into a {@link Writer} using the given {@code schema}.
      */
-    public static <T> void writeTo(Writer w, T message, Schema<T> schema, 
+    public static <T> void writeTo(Writer w, T message, Schema<T> schema,
             XMLOutputFactory outFactory) throws IOException
     {
         XMLStreamWriter writer = null;
         try
         {
             writer = outFactory.createXMLStreamWriter(w);
-            
+
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeTo(writer, message, schema);
             writer.writeEndDocument();
-            
+
             writer.flush();
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlOutputException(e);
         }
         finally
         {
-            if(writer != null)
+            if (writer != null)
             {
                 try
                 {
                     writer.close();
                 }
-                catch(XMLStreamException e)
+                catch (XMLStreamException e)
                 {
                     // ignore
                 }
             }
         }
     }
-    
+
     /**
-     * Serializes the {@code message} into an {@link XMLStreamWriter} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into an {@link XMLStreamWriter} using the given {@code schema}.
      */
     public static <T> void writeTo(XMLStreamWriter writer, T message, Schema<T> schema)
-    throws IOException, XMLStreamException, XmlOutputException
+            throws IOException, XMLStreamException, XmlOutputException
     {
         writer.writeStartElement(schema.messageName());
-        
+
         schema.writeTo(new XmlOutput(writer, schema), message);
-        
+
         writer.writeEndElement();
     }
-    
+
     /**
      * Serializes the {@code messages} into the {@link OutputStream} using the given schema.
      */
     public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-    throws IOException
+            throws IOException
     {
         writeListTo(out, messages, schema, DEFAULT_OUTPUT_FACTORY);
     }
-    
+
     /**
      * Serializes the {@code messages} into the {@link OutputStream} using the given schema.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, 
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema,
             XMLOutputFactory outFactory) throws IOException
     {
         XMLStreamWriter writer = null;
         try
         {
             writer = outFactory.createXMLStreamWriter(out, XML_ENCODING);
-            
+
             writer.writeStartDocument(XML_ENCODING, XML_VERSION);
             writeListTo(writer, messages, schema);
             writer.writeEndDocument();
-            
+
             writer.flush();
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlOutputException(e);
         }
         finally
         {
-            if(writer != null)
+            if (writer != null)
             {
                 try
                 {
                     writer.close();
                 }
-                catch(XMLStreamException e)
+                catch (XMLStreamException e)
                 {
                     // ignore
                 }
             }
         }
     }
-    
+
     /**
      * Serializes the {@code messages} into the {@link XMLStreamWriter} using the given schema.
      */
-    public static <T> void writeListTo(XMLStreamWriter writer, List<T> messages, Schema<T> schema) 
-    throws IOException, XMLStreamException
+    public static <T> void writeListTo(XMLStreamWriter writer, List<T> messages, Schema<T> schema)
+            throws IOException, XMLStreamException
     {
         writer.writeStartElement("list");
-        
-        if(messages.isEmpty())
+
+        if (messages.isEmpty())
         {
             writer.writeEndElement();
             return;
@@ -519,29 +512,29 @@ public final class XmlIOUtil
 
         final String simpleName = schema.messageName();
         final XmlOutput output = new XmlOutput(writer, schema);
-        for(T m : messages)
+        for (T m : messages)
         {
             writer.writeStartElement(simpleName);
             schema.writeTo(output, m);
             writer.writeEndElement();
         }
-        
+
         writer.writeEndElement();
     }
-    
+
     /**
      * Parses the {@code messages} from the {@link InputStream} using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) 
-    throws IOException
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema)
+            throws IOException
     {
         return parseListFrom(in, schema, DEFAULT_INPUT_FACTORY);
     }
-    
+
     /**
      * Parses the {@code messages} from the {@link InputStream} using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema,
             XMLInputFactory inFactory) throws IOException
     {
         XMLStreamReader parser = null;
@@ -550,65 +543,65 @@ public final class XmlIOUtil
             parser = inFactory.createXMLStreamReader(in);
             return parseListFrom(parser, schema);
         }
-        catch(XMLStreamException e)
+        catch (XMLStreamException e)
         {
             throw new XmlInputException(e);
         }
         finally
         {
-            if(parser != null)
+            if (parser != null)
             {
                 try
                 {
                     parser.close();
                 }
-                catch(XMLStreamException e)
+                catch (XMLStreamException e)
                 {
                     // ignore
                 }
             }
         }
     }
-    
+
     /**
      * Parses the {@code messages} from the {@link XMLStreamReader} using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(XMLStreamReader parser, Schema<T> schema) 
-    throws IOException, XMLStreamException
+    public static <T> List<T> parseListFrom(XMLStreamReader parser, Schema<T> schema)
+            throws IOException, XMLStreamException
     {
-        if(parser.nextTag() != START_ELEMENT || !"list".equals(parser.getLocalName()))
+        if (parser.nextTag() != START_ELEMENT || !"list".equals(parser.getLocalName()))
             throw new XmlInputException("Expected token START_ELEMENT: list");
-        
-        //final String simpleName = schema.messageName();
+
+        // final String simpleName = schema.messageName();
         final ArrayList<T> list = new ArrayList<T>();
         final XmlInput input = new XmlInput(parser);
-        
-        for(int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())
+
+        for (int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())
         {
-            if(tag != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
+            if (tag != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
                 throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
-            
+
             final T message = schema.newMessage();
-            
-            if(parser.nextTag() == END_ELEMENT)
+
+            if (parser.nextTag() == END_ELEMENT)
             {
-                //if(!simpleName.equals(parser.getLocalName()))
-                //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
-                
+                // if(!simpleName.equals(parser.getLocalName()))
+                // throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+
                 // empty message
                 list.add(message);
                 continue;
             }
 
             schema.mergeFrom(input, message);
-            
-            //if(!simpleName.equals(parser.getLocalName()))
-            //    throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
-            
+
+            // if(!simpleName.equals(parser.getLocalName()))
+            // throw new XmlInputException("Expecting token END_ELEMENT: " + simpleName);
+
             list.add(message);
         }
-        
+
         return list;
     }
-    
+
 }

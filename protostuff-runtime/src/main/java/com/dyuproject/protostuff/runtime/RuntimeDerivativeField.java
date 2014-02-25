@@ -22,21 +22,15 @@ import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
-
 /**
- * A runtime field w/c represents an abstract class, interface or a base type with 
- * many possible subclasses.
+ * A runtime field w/c represents an abstract class, interface or a base type with many possible subclasses.
+ * <p/>
+ * The type metadata is written for the deserializer to know the actual/exact schema to use upon deserialization.
+ * <p/>
+ * Limitations: The number of fields are limited to 126 (127 is the usual limit anyway). The order of the fields being
+ * written must be preserved. It will not work if the message serialized is coming from the browser since the fields
+ * will most likey be out-of-order (unless you have control of the json serialization).
  * 
- * The type metadata is written for the deserializer to know the actual/exact schema to 
- * use upon deserialization.
- * 
- * Limitations:
- * The number of fields are limited to 126 (127 is the usual limit anyway).
- * The order of the fields being written must be preserved.
- * It will not work if the message serialized is coming from the browser 
- * since the fields will most likey be out-of-order 
- * (unless you have control of the json serialization).
- *
  * @author David Yu
  * @created Jan 16, 2011
  */
@@ -47,29 +41,31 @@ abstract class RuntimeDerivativeField<T> extends Field<T>
      * The schema of the polymorphic pojo.
      */
     public final DerivativeSchema schema;
-    
+
     /**
      * The class of the message field.
      */
     public final Class<Object> typeClass;
-    
-    public RuntimeDerivativeField(Class<Object> typeClass, 
-            FieldType type, int number, String name, boolean repeated, Tag tag, 
+
+    public RuntimeDerivativeField(Class<Object> typeClass, FieldType type,
+            int number, String name, boolean repeated, Tag tag,
             IdStrategy strategy)
     {
         super(type, number, name, repeated, tag);
         this.typeClass = typeClass;
-        
+
         schema = new DerivativeSchema(strategy)
         {
-            protected void doMergeFrom(Input input, Schema<Object> derivedSchema, 
-                    Object owner) throws IOException
+            protected void doMergeFrom(Input input,
+                    Schema<Object> derivedSchema, Object owner)
+                    throws IOException
             {
-                RuntimeDerivativeField.this.doMergeFrom(input, derivedSchema, owner);
+                RuntimeDerivativeField.this.doMergeFrom(input, derivedSchema,
+                        owner);
             }
         };
     }
-    
-    protected abstract void doMergeFrom(Input input, Schema<Object> derivedSchema, 
-            Object owner) throws IOException;
+
+    protected abstract void doMergeFrom(Input input,
+            Schema<Object> derivedSchema, Object owner) throws IOException;
 }

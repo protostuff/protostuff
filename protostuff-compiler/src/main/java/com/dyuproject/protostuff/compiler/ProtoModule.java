@@ -21,7 +21,7 @@ import java.util.Properties;
 
 /**
  * Configuration for the proto w/c ontains the compile options and arguments.
- *
+ * 
  * @author David Yu
  * @created Jan 5, 2010
  */
@@ -29,25 +29,24 @@ public class ProtoModule implements Serializable
 {
 
     private static final long serialVersionUID = 6231036933426077777L;
-    
+
     private File source;
     private String output;
     private String encoding;
     private File outputDir;
-    
-    
+
     private Properties options = new Properties();
     Properties config;
-    
+
     private CachingProtoLoader protoLoader;
-    
-    private HashMap<String,Object> attributes = new HashMap<String,Object>();
-    
+
+    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+
     public ProtoModule()
     {
-        
+
     }
-    
+
     public ProtoModule(File source, String output, String encoding, File outputDir)
     {
         super();
@@ -57,8 +56,6 @@ public class ProtoModule implements Serializable
         this.outputDir = outputDir;
     }
 
-
-
     /**
      * @return the source
      */
@@ -67,19 +64,14 @@ public class ProtoModule implements Serializable
         return source;
     }
 
-
-
-
     /**
-     * @param source the source to set
+     * @param source
+     *            the source to set
      */
     public void setSource(File source)
     {
         this.source = source;
     }
-
-
-
 
     /**
      * @return the output
@@ -89,19 +81,14 @@ public class ProtoModule implements Serializable
         return output;
     }
 
-
-
-
     /**
-     * @param output the output to set
+     * @param output
+     *            the output to set
      */
     public void setOutput(String output)
     {
         this.output = output;
     }
-
-
-
 
     /**
      * @return the encoding
@@ -111,19 +98,14 @@ public class ProtoModule implements Serializable
         return encoding;
     }
 
-
-
-
     /**
-     * @param encoding the encoding to set
+     * @param encoding
+     *            the encoding to set
      */
     public void setEncoding(String encoding)
     {
         this.encoding = encoding;
     }
-
-
-
 
     /**
      * @return the outputDir
@@ -133,19 +115,14 @@ public class ProtoModule implements Serializable
         return outputDir;
     }
 
-
-
-
     /**
-     * @param outputDir the outputDir to set
+     * @param outputDir
+     *            the outputDir to set
      */
     public void setOutputDir(File outputDir)
     {
         this.outputDir = outputDir;
     }
-
-
-
 
     /**
      * @return the options
@@ -154,6 +131,7 @@ public class ProtoModule implements Serializable
     {
         return options;
     }
+
     /**
      * @param options
      */
@@ -161,12 +139,12 @@ public class ProtoModule implements Serializable
     {
         this.options.putAll(options);
     }
-    
+
     public String getOption(String key)
     {
         return options.getProperty(key);
     }
-    
+
     public void setOption(String key, String value)
     {
         options.setProperty(key, value);
@@ -181,7 +159,7 @@ public class ProtoModule implements Serializable
     {
         this.protoLoader = protoLoader;
     }
-    
+
     public Properties getConfig()
     {
         return config;
@@ -191,16 +169,16 @@ public class ProtoModule implements Serializable
     {
         attributes.put(key, value);
     }
-    
+
     /**
      * Alias for {@link #getAttributes()}.
      */
-    public HashMap<String,Object> getAttrs()
+    public HashMap<String, Object> getAttrs()
     {
         return attributes;
     }
-    
-    public HashMap<String,Object> getAttributes()
+
+    public HashMap<String, Object> getAttributes()
     {
         return attributes;
     }

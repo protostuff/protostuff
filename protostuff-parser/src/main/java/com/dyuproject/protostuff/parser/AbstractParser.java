@@ -32,8 +32,8 @@ import org.antlr.runtime.TokenStream;
  */
 public abstract class AbstractParser extends Parser
 {
-    
-    static final boolean SUPPRESS_WARNINGS = System.getProperty("parser.suppress_warnings")!=null;
+
+    static final boolean SUPPRESS_WARNINGS = System.getProperty("parser.suppress_warnings") != null;
 
     protected AbstractParser(TokenStream input)
     {
@@ -41,11 +41,10 @@ public abstract class AbstractParser extends Parser
     }
 
     /**
-     * Create a new parser instance, pre-supplying the input token stream and
-     * the shared state.
-     * 
-     * This is only used when a grammar is imported into another grammar, but we
-     * must supply this constructor to satisfy the super class contract.
+     * Create a new parser instance, pre-supplying the input token stream and the shared state.
+     * <p/>
+     * This is only used when a grammar is imported into another grammar, but we must supply this constructor to satisfy
+     * the super class contract.
      * 
      * @param input
      *            The stream of tokesn that will be pulled from the lexer
@@ -54,13 +53,12 @@ public abstract class AbstractParser extends Parser
      */
     protected AbstractParser(TokenStream input, RecognizerSharedState state)
     {
-        super(input,state);
+        super(input, state);
     }
 
     /**
-     * Creates the error/warning message that we need to show users/IDEs when
-     * ANTLR has found a parsing error, has recovered from it and is now telling
-     * us that a parsing exception occurred.
+     * Creates the error/warning message that we need to show users/IDEs when ANTLR has found a parsing error, has
+     * recovered from it and is now telling us that a parsing exception occurred.
      * 
      * @param tokenNames
      *            token names as known by ANTLR (which we ignore)
@@ -74,7 +72,7 @@ public abstract class AbstractParser extends Parser
         //
         super.displayRecognitionError(tokenNames, e);
     }
-    
+
     public static void load(InputStream in, Proto proto) throws Exception
     {
         // Create an input character stream from standard in
@@ -88,22 +86,22 @@ public abstract class AbstractParser extends Parser
         // Begin parsing at rule prog
         parser.parse(proto);
     }
-    
+
     static String getStringFromStringLiteral(String literal)
     {
-        return getString(literal.substring(1, literal.length()-1));
+        return getString(literal.substring(1, literal.length() - 1));
     }
-    
+
     static String getString(String value)
     {
         return TextFormat.unescapeText(value);
     }
-    
+
     static byte[] getBytesFromStringLiteral(String literal)
     {
-        return getBytes(literal.substring(1, literal.length()-1));
+        return getBytes(literal.substring(1, literal.length() - 1));
     }
-    
+
     static byte[] getBytes(String value)
     {
         ByteBuffer buffer = TextFormat.unescapeBytes(value);
@@ -111,27 +109,27 @@ public abstract class AbstractParser extends Parser
         buffer.get(buf);
         return buf;
     }
-    
+
     static byte[] getBytesFromHexString(String value)
     {
         int start = value.startsWith("0x") ? 2 : 0;
-        int len = value.length()-start;
-        if(len%2!=0)
+        int len = value.length() - start;
+        if (len % 2 != 0)
             throw new IllegalArgumentException("malformed hex string: " + value);
-        
-        byte[] out = new byte[len/2];
-        for(int i=0; i<out.length;)
+
+        byte[] out = new byte[len / 2];
+        for (int i = 0; i < out.length;)
         {
             int left = decimalFromHex(value.charAt(start++));
             int right = decimalFromHex(value.charAt(start++));
-            out[i++] = (byte)((right & 0x0F) | (left << 4 & 0xF0));
+            out[i++] = (byte) ((right & 0x0F) | (left << 4 & 0xF0));
         }
         return out;
     }
-    
+
     static int decimalFromHex(char c)
     {
-        switch(c)
+        switch (c)
         {
             case '0':
                 return 0;
@@ -175,15 +173,15 @@ public abstract class AbstractParser extends Parser
                 throw new IllegalArgumentException("Not a hex character: " + c);
         }
     }
-    
+
     static void info(String msg)
     {
         System.out.println(msg);
     }
-    
+
     static void warn(String msg)
     {
-        if(!SUPPRESS_WARNINGS)
+        if (!SUPPRESS_WARNINGS)
             System.err.println(msg);
     }
 }

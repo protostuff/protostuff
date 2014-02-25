@@ -15,20 +15,19 @@
 package com.dyuproject.protostuff;
 
 /**
- * Thrown when a json-encoded protobuf message being parsed is invalid in some way. 
- *
+ * Thrown when a json-encoded protobuf message being parsed is invalid in some way.
+ * 
  * @author David Yu
  * @created May 10, 2010
  */
 public class JsonInputException extends ProtostuffException
 {
-    
+
     private static final long serialVersionUID = 8137903301860116023L;
 
     public JsonInputException(String description)
     {
         super(description);
     }
-
 
 }

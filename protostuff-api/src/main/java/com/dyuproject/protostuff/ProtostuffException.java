@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * The base io exception for all formats (protobuf/json/xml).
- *
+ * 
  * @author David Yu
  * @created May 25, 2010
  */
@@ -26,26 +26,25 @@ public class ProtostuffException extends IOException
 {
 
     private static final long serialVersionUID = 3969366848110070516L;
-    
+
     public ProtostuffException()
     {
         super();
     }
-    
+
     public ProtostuffException(String message)
     {
         super(message);
     }
-    
+
     public ProtostuffException(String message, Throwable cause)
     {
         super(message, cause);
     }
-    
+
     public ProtostuffException(Throwable cause)
     {
         super(cause);
     }
-
 
 }

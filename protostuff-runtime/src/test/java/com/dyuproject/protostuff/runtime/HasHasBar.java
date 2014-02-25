@@ -23,19 +23,19 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
- *
+ * 
  * @author David Yu
  * @created Nov 13, 2009
  */
 public final class HasHasBar implements Externalizable
 {
-    
+
     private String name;
     private HasBar hasBar;
-    
+
     public HasHasBar()
     {
-        
+
     }
 
     public HasHasBar(String name, HasBar hasBar)
@@ -53,7 +53,8 @@ public final class HasHasBar implements Externalizable
     }
 
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name)
     {
@@ -69,7 +70,8 @@ public final class HasHasBar implements Externalizable
     }
 
     /**
-     * @param hasBar the hasBar to set
+     * @param hasBar
+     *            the hasBar to set
      */
     public void setHasBar(HasBar hasBar)
     {
@@ -78,14 +80,14 @@ public final class HasHasBar implements Externalizable
 
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(HasHasBar.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this,
+                RuntimeSchema.getSchema(HasHasBar.class));
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(HasHasBar.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this,
+                RuntimeSchema.getSchema(HasHasBar.class));
     }
-    
-    
 
 }

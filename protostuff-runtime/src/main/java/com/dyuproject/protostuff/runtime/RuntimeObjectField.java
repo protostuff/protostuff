@@ -20,25 +20,25 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field whose field type is {@link Object} (dynamic).
- *
+ * 
  * @author David Yu
  * @created Feb 1, 2011
  */
-abstract class RuntimeObjectField<T> extends Field<T> implements PolymorphicSchema.Handler
+abstract class RuntimeObjectField<T> extends Field<T> implements
+        PolymorphicSchema.Handler
 {
-    
+
     /**
      * The polymorphic schema.
      */
     public final PolymorphicSchema schema;
-    
-    public RuntimeObjectField(Class<?> typeClass, FieldType type, 
-            int number, String name, boolean repeated, 
-            Tag tag, 
+
+    public RuntimeObjectField(Class<?> typeClass, FieldType type, int number,
+            String name, boolean repeated, Tag tag,
             PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
         super(type, number, name, repeated, tag);
-        
+
         schema = factory.newSchema(typeClass, strategy, this);
     }
 

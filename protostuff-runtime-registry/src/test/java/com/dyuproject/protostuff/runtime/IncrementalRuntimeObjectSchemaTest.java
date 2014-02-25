@@ -26,10 +26,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-
 package com.dyuproject.protostuff.runtime;
 
 import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
+
 import junit.framework.TestCase;
 
 import com.dyuproject.protostuff.CollectionSchema;
@@ -52,39 +52,39 @@ import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
 
 /**
  * Test for {@link IncrementalIdStrategy}.
- *
+ * 
  * @author David Yu
  * @created Mar 29, 2012
  */
 public class IncrementalRuntimeObjectSchemaTest extends TestCase
 {
-    
+
     static final boolean runTest;
-    
+
     static
     {
         // check whether test/run from root module
         String strategy = System.getProperty("test_id_strategy");
         runTest = strategy == null || strategy.equals("incremental");
-        
-        if(runTest)
+
+        if (runTest)
         {
-            System.setProperty("protostuff.runtime.id_strategy_factory", 
+            System.setProperty("protostuff.runtime.id_strategy_factory",
                     "com.dyuproject.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
         }
     }
-    
+
     public static class IdStrategyFactory implements IdStrategy.Factory
     {
-        
+
         static int INSTANCE_COUNT = 0;
-        
+
         IncrementalIdStrategy.Registry r = new IncrementalIdStrategy.Registry(
-                20, 11, 
-                20, 11, 
-                20, 11, 
+                20, 11,
+                20, 11,
+                20, 11,
                 80, 11);
-        
+
         public IdStrategyFactory()
         {
             ++INSTANCE_COUNT;
@@ -99,58 +99,57 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
         public void postCreate()
         {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)
-                .registerCollection(CollectionSchema.MessageFactories.HashSet, 2)
-                .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3);
-                
-            
+                    .registerCollection(CollectionSchema.MessageFactories.HashSet, 2)
+                    .registerCollection(CustomArrayList.MESSAGE_FACTORY, 3);
+
             r.registerMap(MapSchema.MessageFactories.HashMap, 1)
-                .registerMap(MapSchema.MessageFactories.LinkedHashMap, 2)
-                .registerMap(CustomHashMap.MESSAGE_FACTORY, 3);
-            
+                    .registerMap(MapSchema.MessageFactories.LinkedHashMap, 2)
+                    .registerMap(CustomHashMap.MESSAGE_FACTORY, 3);
+
             r.registerEnum(Size.class, 1)
-                .registerEnum(GuitarPickup.class, 2);
-            
+                    .registerEnum(GuitarPickup.class, 2);
+
             r.registerPojo(AcousticGuitar.class, 1)
-                .registerPojo(BassGuitar.class, 2)
-                .registerPojo(Pojo.class, 3)
-                .registerPojo(PojoWithArray.class, 4)
-                .registerPojo(PojoWithArray2D.class, 5)
-                .registerPojo(PojoWithCollection.class, 6)
-                .registerPojo(PojoWithMap.class, 7)
-                .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
-                .registerPojo(WrapsBat.class, 9)
-                .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
-            
+                    .registerPojo(BassGuitar.class, 2)
+                    .registerPojo(Pojo.class, 3)
+                    .registerPojo(PojoWithArray.class, 4)
+                    .registerPojo(PojoWithArray2D.class, 5)
+                    .registerPojo(PojoWithCollection.class, 6)
+                    .registerPojo(PojoWithMap.class, 7)
+                    .registerPojo(Bat.SCHEMA, Bat.PIPE_SCHEMA, 8)
+                    .registerPojo(WrapsBat.class, 9)
+                    .registerPojo(PojoWithCustomArrayListAndHashMap.class, 10);
+
             r.registerDelegate(new ShortArrayDelegate(), 1);
             r.registerDelegate(SINGLETON_DELEGATE, 2);
-            
+
             r = null;
         }
-        
+
     }
-    
+
     public void testProtostuff() throws Exception
     {
-        if(runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
+        if (runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
         {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
                     "com.dyuproject.protostuff.runtime.ProtostuffRuntimeObjectSchemaTest"
                     ), false);
-            
+
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);
         }
     }
-    
+
     public void testProtobuf() throws Exception
     {
-        if(runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
+        if (runTest && RuntimeEnv.ID_STRATEGY instanceof IncrementalIdStrategy)
         {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
                     "com.dyuproject.protostuff.runtime.ProtobufRuntimeObjectSchemaTest"
                     ), false);
-            
+
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);
         }
     }

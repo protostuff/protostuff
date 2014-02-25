@@ -19,34 +19,33 @@ import java.util.Map;
 
 /**
  * An entity that containts annotations.
- *
+ * 
  * @author David Yu
  * @created Dec 30, 2010
  */
 public interface HasAnnotations
 {
-    
+
     /**
      * Adds the annoation.
      */
     public void add(Annotation annotation);
-    
+
     /**
-     * Adds all the annotations to this container.
-     * If {@code clearSource} is true, the {@code source} arg is cleared.
+     * Adds all the annotations to this container. If {@code clearSource} is true, the {@code source} arg is cleared.
      */
-    public boolean addAnnotations(Map<String,Annotation> source, boolean clearSource);
-    
+    public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource);
+
     /**
      * Gets the annotation map.
      */
-    public Map<String,Annotation> getAnnotationMap();
-    
+    public Map<String, Annotation> getAnnotationMap();
+
     /**
      * Gets the annotations.
      */
     public Collection<Annotation> getAnnotations();
-    
+
     /**
      * Gets the annotation by key/name.
      */

@@ -16,7 +16,7 @@ package com.dyuproject.protostuff;
 
 /**
  * Tests for reading/writing pojos from/to a buffer (numeric keys).
- *
+ * 
  * @author David Yu
  * @created Dec 4, 2010
  */

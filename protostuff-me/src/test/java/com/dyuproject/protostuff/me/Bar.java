@@ -21,7 +21,6 @@ public final class Bar implements Message, Schema
         public static final int COMPLETED = 3;
     }
 
-
     public static Schema getSchema()
     {
         return DEFAULT_INSTANCE;
@@ -34,7 +33,6 @@ public final class Bar implements Message, Schema
 
     static final Bar DEFAULT_INSTANCE = new Bar();
 
-    
     private int someInt;
     private String someString;
     private Baz someBaz;
@@ -47,7 +45,7 @@ public final class Bar implements Message, Schema
 
     public Bar()
     {
-        
+
     }
 
     // getters and setters
@@ -169,7 +167,7 @@ public final class Bar implements Message, Schema
 
     // schema methods
 
-    public Object /*Bar*/ newMessage()
+    public Object /* Bar */newMessage()
     {
         return new Bar();
     }
@@ -189,17 +187,17 @@ public final class Bar implements Message, Schema
         return Bar.class.getName();
     }
 
-    public boolean isInitialized(Object /*Bar*/ message)
+    public boolean isInitialized(Object /* Bar */message)
     {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*Bar*/ messageObj) throws IOException
+    public void mergeFrom(Input input, Object /* Bar */messageObj) throws IOException
     {
-        Bar message = (Bar)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        Bar message = (Bar) messageObj;
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -211,7 +209,7 @@ public final class Bar implements Message, Schema
                     break;
 
                 case 3:
-                    message.someBaz = (Baz)input.mergeObject(message.someBaz, Baz.getSchema());
+                    message.someBaz = (Baz) input.mergeObject(message.someBaz, Baz.getSchema());
                     break;
 
                 case 4:
@@ -236,67 +234,75 @@ public final class Bar implements Message, Schema
                     break;
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
 
-    public void writeTo(Output output, Object /*Bar*/ messageObj) throws IOException
+    public void writeTo(Output output, Object /* Bar */messageObj) throws IOException
     {
-        Bar message = (Bar)messageObj;
-        if(message.someInt != 0)
+        Bar message = (Bar) messageObj;
+        if (message.someInt != 0)
             output.writeInt32(1, message.someInt, false);
 
-        if(message.someString != null)
+        if (message.someString != null)
             output.writeString(2, message.someString, false);
 
-
-        if(message.someBaz != null)
-             output.writeObject(3, message.someBaz, Baz.getSchema(), false);
-
+        if (message.someBaz != null)
+            output.writeObject(3, message.someBaz, Baz.getSchema(), false);
 
         output.writeEnum(4, message.someEnum, false);
 
-
-        if(message.someBytes != null)
+        if (message.someBytes != null)
             output.writeBytes(5, message.someBytes, false);
 
-        if(message.someBoolean != null)
+        if (message.someBoolean != null)
             output.writeBool(6, message.someBoolean.booleanValue(), false);
 
-        if(message.someFloat != 0)
+        if (message.someFloat != 0)
             output.writeFloat(7, message.someFloat, false);
 
-        if(message.someDouble != 0)
+        if (message.someDouble != 0)
             output.writeDouble(8, message.someDouble, false);
 
-        if(message.someLong != 0)
+        if (message.someLong != 0)
             output.writeInt64(9, message.someLong, false);
     }
 
     public String getFieldName(int number)
     {
-        switch(number)
+        switch (number)
         {
-            case 1: return "someInt";
-            case 2: return "someString";
-            case 3: return "someBaz";
-            case 4: return "someEnum";
-            case 5: return "someBytes";
-            case 6: return "someBoolean";
-            case 7: return "someFloat";
-            case 8: return "someDouble";
-            case 9: return "someLong";
-            default: return null;
+            case 1:
+                return "someInt";
+            case 2:
+                return "someString";
+            case 3:
+                return "someBaz";
+            case 4:
+                return "someEnum";
+            case 5:
+                return "someBytes";
+            case 6:
+                return "someBoolean";
+            case 7:
+                return "someFloat";
+            case 8:
+                return "someDouble";
+            case 9:
+                return "someLong";
+            default:
+                return null;
         }
     }
 
     public int getFieldNumber(String name)
     {
-        final Integer number = (Integer)__fieldMap.get(name);
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
+
     static
     {
         __fieldMap.put("someInt", new Integer(1));
@@ -309,14 +315,14 @@ public final class Bar implements Message, Schema
         __fieldMap.put("someDouble", new Integer(8));
         __fieldMap.put("someLong", new Integer(9));
     }
-    
+
     static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
     {
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -332,7 +338,7 @@ public final class Bar implements Message, Schema
                         break;
 
                     case 4:
-                        output.writeEnum(number, input.readEnum(), false); 
+                        output.writeEnum(number, input.readEnum(), false);
                         break;
 
                     case 5:
@@ -372,11 +378,11 @@ public final class Bar implements Message, Schema
         result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
         long temp;
         temp = Double.doubleToLongBits(someDouble);
-        result = prime * result + (int)(temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + someEnum;
         result = prime * result + Float.floatToIntBits(someFloat);
         result = prime * result + someInt;
-        result = prime * result + (int)(someLong ^ (someLong >>> 32));
+        result = prime * result + (int) (someLong ^ (someLong >>> 32));
         result = prime * result + ((someString == null) ? 0 : someString.hashCode());
         return result;
     }
@@ -390,7 +396,7 @@ public final class Bar implements Message, Schema
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Bar other = (Bar)obj;
+        Bar other = (Bar) obj;
         if (someBaz == null)
         {
             if (other.someBaz != null)
@@ -431,7 +437,5 @@ public final class Bar implements Message, Schema
             return false;
         return true;
     }
-    
-    
 
 }

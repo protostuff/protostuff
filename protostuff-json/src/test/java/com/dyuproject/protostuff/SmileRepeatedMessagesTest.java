@@ -21,13 +21,13 @@ import java.util.List;
 
 /**
  * Testcase for ser/deser of multiple messages using smile.
- *
+ * 
  * @author David Yu
  * @created Feb 11, 2011
  */
 public class SmileRepeatedMessagesTest extends RepeatedMessagesTest
 {
-    
+
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return SmileIOUtil.parseListFrom(in, schema, false);

@@ -19,39 +19,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A schema for standard jdk {@link Collection collections}.
- * Null values are not serialized/written.
+ * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
+ * <p/>
+ * If your application relies on {@link Object#equals(Object)}, it will fail when a serialized collection contains null
+ * values (The deserialized collection will not contained the null value). {@link MapSchema} on the otherhand can
+ * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.
  * 
- * If your application relies on {@link Object#equals(Object)}, it will fail when a 
- * serialized collection contains null values (The deserialized collection will not 
- * contained the null value).  {@link MapSchema} on the otherhand can contain both 
- * null keys and null values and still succeeding on {@link Object#equals(Object)}.
- *
  * @author David Yu
  * @created Jan 26, 2011
  */
 public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 {
-    
+
     public static final String FIELD_NAME_VALUE = "v";
-    
+
     /**
      * Creates new {@code Collection} messages.
      */
     public interface MessageFactory
     {
-        
+
         /**
          * Creates a new {@code Collection} message.
          */
         public <V> Collection<V> newMessage();
-        
+
         /**
          * The type to instantiate.
          */
         public Class<?> typeClass();
     }
-    
+
     public enum MessageFactories implements MessageFactory
     {
         // defaults to ArrayList
@@ -246,73 +244,70 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                 return new java.util.PriorityQueue<V>();
             }
         };
-        
+
         public final Class<?> typeClass;
-        
+
         private MessageFactories(Class<?> typeClass)
         {
             this.typeClass = typeClass;
         }
-        
+
         public Class<?> typeClass()
         {
             return typeClass;
         }
-        
+
         /**
-         * Returns the message factory for the standard jdk {@link Collection} 
-         * implementations.
+         * Returns the message factory for the standard jdk {@link Collection} implementations.
          */
         public static MessageFactories getFactory(Class<? extends Collection<?>> clazz)
         {
-            return clazz.getName().startsWith("java.util") ? 
+            return clazz.getName().startsWith("java.util") ?
                     MessageFactories.valueOf(clazz.getSimpleName()) : null;
         }
-        
+
         /**
-         * Returns the message factory for the standard jdk {@link Collection} 
-         * implementations.
+         * Returns the message factory for the standard jdk {@link Collection} implementations.
          */
         public static MessageFactories getFactory(String name)
         {
             return MessageFactories.valueOf(name);
         }
     }
-    
+
     /**
      * Factory for creating {@link Collection} messages.
      */
     public final MessageFactory messageFactory;
-    
+
     public CollectionSchema()
     {
         this(MessageFactories.ArrayList);
     }
-    
+
     public CollectionSchema(MessageFactory messageFactory)
     {
         this.messageFactory = messageFactory;
     }
-    
+
     /**
      * Adds the value from the input into the {@link Collection}.
      */
     protected abstract void addValueFrom(Input input, Collection<V> collection)
-    throws IOException;
-    
+            throws IOException;
+
     /**
      * Writes the value to the output.
      */
-    protected abstract void writeValueTo(Output output, int fieldNumber, V value, 
+    protected abstract void writeValueTo(Output output, int fieldNumber, V value,
             boolean repeated) throws IOException;
-    
+
     /**
      * Transfers the value from the input to the output.
      */
-    protected abstract void transferValue(Pipe pipe, Input input, Output output, 
+    protected abstract void transferValue(Pipe pipe, Input input, Output output,
             int number, boolean repeated) throws IOException;
-    
-    
+
     public final String getFieldName(int number)
     {
         return number == 1 ? FIELD_NAME_VALUE : null;
@@ -320,7 +315,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 
     public final int getFieldNumber(String name)
     {
-        return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0; 
+        return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
     }
 
     public final boolean isInitialized(Collection<V> map)
@@ -337,12 +332,12 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     {
         return Collection.class.getSimpleName();
     }
-    
+
     public final Class<? super Collection<V>> typeClass()
     {
         return Collection.class;
     }
-    
+
     public final Collection<V> newMessage()
     {
         return messageFactory.newMessage();
@@ -350,10 +345,9 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 
     public void mergeFrom(Input input, Collection<V> message) throws IOException
     {
-        for(int number = input.readFieldNumber(this);; 
-                number = input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -361,7 +355,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                     addValueFrom(input, message);
                     break;
                 default:
-                    throw new ProtostuffException("The collection was incorrectly " + 
+                    throw new ProtostuffException("The collection was incorrectly " +
                             "serialized.");
             }
         }
@@ -369,37 +363,37 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 
     public void writeTo(Output output, Collection<V> message) throws IOException
     {
-        for(V value : message)
+        for (V value : message)
         {
             // null values not serialized.
-            if(value != null)
+            if (value != null)
                 writeValueTo(output, 1, value, true);
         }
     }
-    
-    public final Pipe.Schema<Collection<V>> pipeSchema = 
-        new Pipe.Schema<Collection<V>>(CollectionSchema.this)
-    {
 
-        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
-        {
-            for(int number = input.readFieldNumber(this);; 
-                    number = input.readFieldNumber(this))
+    public final Pipe.Schema<Collection<V>> pipeSchema =
+            new Pipe.Schema<Collection<V>>(CollectionSchema.this)
             {
-                switch(number)
+
+                protected void transfer(Pipe pipe, Input input, Output output) throws IOException
                 {
-                    case 0:
-                        return;
-                    case 1:
-                        transferValue(pipe, input, output, 1, true);
-                        break;
-                    default:
-                        throw new ProtostuffException("The collection was incorrectly " + 
-                                "serialized.");
+                    for (int number = input.readFieldNumber(this);;
+                    number = input.readFieldNumber(this))
+                    {
+                        switch (number)
+                        {
+                            case 0:
+                                return;
+                            case 1:
+                                transferValue(pipe, input, output, 1, true);
+                                break;
+                            default:
+                                throw new ProtostuffException("The collection was incorrectly " +
+                                        "serialized.");
+                        }
+                    }
                 }
-            }
-        }
-        
-    };
+
+            };
 
 }

@@ -17,79 +17,74 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A ProtostuffOutput w/c can handle cyclic dependencies when serializing 
- * objects with graph transformations.
- *
+ * A ProtostuffOutput w/c can handle cyclic dependencies when serializing objects with graph transformations.
+ * 
  * @author David Yu
  * @created Dec 10, 2010
  */
 public final class GraphProtostuffOutput extends FilterOutput
 {
-    
-    private final IdentityMap/*<Object,Integer>*/ references;
+
+    private final IdentityMap/* <Object,Integer> */references;
     private int refCount = 0;
-    
+
     public GraphProtostuffOutput(ProtostuffOutput output)
     {
         super(output);
-        references = new IdentityMap/*<Object,Integer>*/();
+        references = new IdentityMap/* <Object,Integer> */();
     }
-    
+
     public GraphProtostuffOutput(ProtostuffOutput output, int initialCapacity)
     {
         super(output);
-        references = new IdentityMap/*<Object,Integer>*/(initialCapacity);
+        references = new IdentityMap/* <Object,Integer> */(initialCapacity);
     }
 
-    public void writeObject(int fieldNumber, Object value, Schema schema, 
+    public void writeObject(int fieldNumber, Object value, Schema schema,
             boolean repeated) throws IOException
     {
         final ProtostuffOutput output = (ProtostuffOutput) this.output;
-        
-        if(references.shouldIncrement(refCount, value, output, fieldNumber))
+
+        if (references.shouldIncrement(refCount, value, output, fieldNumber))
         {
             refCount++;
-            
+
             output.tail = output.sink.writeVarInt32(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP), 
-                    output, 
+                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_START_GROUP),
+                    output,
                     output.tail);
-            
+
             schema.writeTo(this, value);
-            
+
             output.tail = output.sink.writeVarInt32(
-                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP), 
-                    output, 
+                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_END_GROUP),
+                    output,
                     output.tail);
         }
     }
-    
+
     /**
-     * A trimed-down version of IdentityHashMap w/c caters to the 
-     * specific needs of {@link GraphOutput}.
+     * A trimed-down version of IdentityHashMap w/c caters to the specific needs of {@link GraphOutput}.
      */
     private static final class IdentityMap
     {
 
         /**
-         * The initial capacity used by the no-args constructor. MUST be a power of
-         * two. The value 32 corresponds to the (specified) expected maximum size of
-         * 21, given a load factor of 2/3.
+         * The initial capacity used by the no-args constructor. MUST be a power of two. The value 32 corresponds to the
+         * (specified) expected maximum size of 21, given a load factor of 2/3.
          */
         private static final int DEFAULT_CAPACITY = 32;
 
         /**
-         * The minimum capacity, used if a lower value is implicitly specified by
-         * either of the constructors with arguments. The value 4 corresponds to an
-         * expected maximum size of 2, given a load factor of 2/3. MUST be a power
-         * of two.
+         * The minimum capacity, used if a lower value is implicitly specified by either of the constructors with
+         * arguments. The value 4 corresponds to an expected maximum size of 2, given a load factor of 2/3. MUST be a
+         * power of two.
          */
         private static final int MINIMUM_CAPACITY = 4;
 
         /**
-         * The maximum capacity, used if a higher value is implicitly specified by
-         * either of the constructors with arguments. MUST be a power of two <=
-         * 1<<29.
+         * The maximum capacity, used if a higher value is implicitly specified by either of the constructors with
+         * arguments. MUST be a power of two <= 1<<29.
          */
         private static final int MAXIMUM_CAPACITY = 1 << 29;
 
@@ -116,8 +111,7 @@ public final class GraphProtostuffOutput extends FilterOutput
         private transient int threshold;
 
         /**
-         * Constructs a new, empty identity hash map with a default expected maximum
-         * size (21).
+         * Constructs a new, empty identity hash map with a default expected maximum size (21).
          */
         public IdentityMap()
         {
@@ -125,9 +119,8 @@ public final class GraphProtostuffOutput extends FilterOutput
         }
 
         /**
-         * Constructs a new, empty map with the specified expected maximum size.
-         * Putting more than the expected number of key-value mappings into the map
-         * may cause the internal data structure to grow, which may be somewhat
+         * Constructs a new, empty map with the specified expected maximum size. Putting more than the expected number
+         * of key-value mappings into the map may cause the internal data structure to grow, which may be somewhat
          * time-consuming.
          * 
          * @param expectedMaxSize
@@ -143,12 +136,10 @@ public final class GraphProtostuffOutput extends FilterOutput
         }
 
         /**
-         * Returns the appropriate capacity for the specified expected maximum size.
-         * Returns the smallest power of two between MINIMUM_CAPACITY and
-         * MAXIMUM_CAPACITY, inclusive, that is greater than (3 *
-         * expectedMaxSize)/2, if such a number exists. Otherwise returns
-         * MAXIMUM_CAPACITY. If (3 * expectedMaxSize)/2 is negative, it is assumed
-         * that overflow has occurred, and MAXIMUM_CAPACITY is returned.
+         * Returns the appropriate capacity for the specified expected maximum size. Returns the smallest power of two
+         * between MINIMUM_CAPACITY and MAXIMUM_CAPACITY, inclusive, that is greater than (3 * expectedMaxSize)/2, if
+         * such a number exists. Otherwise returns MAXIMUM_CAPACITY. If (3 * expectedMaxSize)/2 is negative, it is
+         * assumed that overflow has occurred, and MAXIMUM_CAPACITY is returned.
          */
         private int capacity(int expectedMaxSize)
         {
@@ -171,9 +162,8 @@ public final class GraphProtostuffOutput extends FilterOutput
         }
 
         /**
-         * Initializes object to be an empty map with the specified initial
-         * capacity, which is assumed to be a power of two between MINIMUM_CAPACITY
-         * and MAXIMUM_CAPACITY inclusive.
+         * Initializes object to be an empty map with the specified initial capacity, which is assumed to be a power of
+         * two between MINIMUM_CAPACITY and MAXIMUM_CAPACITY inclusive.
          */
         private void init(int initCapacity)
         {
@@ -200,109 +190,77 @@ public final class GraphProtostuffOutput extends FilterOutput
          */
         private static int nextKeyIndex(int i, int len)
         {
-            return (i + 2 < len?i + 2:0);
+            return (i + 2 < len ? i + 2 : 0);
         }
 
         /*
-         * Returns the value to which the specified key is mapped, or {@code null}
-         * if this map contains no mapping for the key.
+         * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for
+         * the key.
          * 
-         * <p>
-         * More formally, if this map contains a mapping from a key {@code k} to a
-         * value {@code v} such that {@code (key == k)}, then this method returns
-         * {@code v}; otherwise it returns {@code null}. (There can be at most one
+         * <p> More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that {@code
+         * (key == k)}, then this method returns {@code v}; otherwise it returns {@code null}. (There can be at most one
          * such mapping.)
          * 
-         * <p>
-         * A return value of {@code null} does not <i>necessarily</i> indicate that
-         * the map contains no mapping for the key; it's also possible that the map
-         * explicitly maps the key to {@code null}. The {@link #containsKey
+         * <p> A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for
+         * the key; it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey
          * containsKey} operation may be used to distinguish these two cases.
          * 
          * @see #put(Object, Object)
-         *
-        public Integer get(Object k)
-        {
-            Object[] tab = table;
-            int len = tab.length;
-            int i = hash(k, len);
-            while (true)
-            {
-                Object item = tab[i];
-                if (item == k)
-                    return (Integer)tab[i + 1];
-                if (item == null)
-                    return null;
-                i = nextKeyIndex(i, len);
-            }
-        }
-
-        /*
-         * Associates the specified value with the specified key in this identity
-         * hash map. If the map previously contained a mapping for the key, the old
-         * value is replaced.
          * 
-         * @param key
-         *            the key with which the specified value is to be associated
-         * @param value
-         *            the value to be associated with the specified key
-         * @return the previous value associated with <tt>key</tt>, or <tt>null</tt>
-         *         if there was no mapping for <tt>key</tt>. (A <tt>null</tt> return
-         *         can also indicate that the map previously associated
-         *         <tt>null</tt> with <tt>key</tt>.)
+         * public Integer get(Object k) { Object[] tab = table; int len = tab.length; int i = hash(k, len); while (true)
+         * { Object item = tab[i]; if (item == k) return (Integer)tab[i + 1]; if (item == null) return null; i =
+         * nextKeyIndex(i, len); } }
+         * 
+         * /* Associates the specified value with the specified key in this identity hash map. If the map previously
+         * contained a mapping for the key, the old value is replaced.
+         * 
+         * @param key the key with which the specified value is to be associated
+         * 
+         * @param value the value to be associated with the specified key
+         * 
+         * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
+         * <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt> with
+         * <tt>key</tt>.)
+         * 
          * @see Object#equals(Object)
+         * 
          * @see #get(Object)
+         * 
          * @see #containsKey(Object)
-         *
-        public Integer put(Object k, Integer value)
-        {
-            Object[] tab = table;
-            int len = tab.length;
-            int i = hash(k, len);
+         * 
+         * public Integer put(Object k, Integer value) { Object[] tab = table; int len = tab.length; int i = hash(k,
+         * len);
+         * 
+         * Object item; while ((item = tab[i]) != null) { if (item == k) { Integer oldValue = (Integer)tab[i + 1]; tab[i
+         * + 1] = value; return oldValue; } i = nextKeyIndex(i, len); }
+         * 
+         * // modCount++; tab[i] = k; tab[i + 1] = value; if (++size >= threshold) resize(len); // len == 2 * current
+         * capacity. return null; }
+         */
 
-            Object item;
-            while ((item = tab[i]) != null)
-            {
-                if (item == k)
-                {
-                    Integer oldValue = (Integer)tab[i + 1];
-                    tab[i + 1] = value;
-                    return oldValue;
-                }
-                i = nextKeyIndex(i, len);
-            }
-
-            // modCount++;
-            tab[i] = k;
-            tab[i + 1] = value;
-            if (++size >= threshold)
-                resize(len); // len == 2 * current capacity.
-            return null;
-        }*/
-        
         /**
          * Returns true if the provided int should increment(unique index id).
          */
-        public boolean shouldIncrement(int value, Object k, WriteSession output, 
+        public boolean shouldIncrement(int value, Object k, WriteSession output,
                 int fieldNumber) throws IOException
         {
             Object[] tab = table;
             int len = tab.length;
             int i = hash(k, len);
-            
+
             Object item;
             while ((item = tab[i]) != null)
             {
                 if (item == k)
                 {
                     output.tail = output.sink.writeVarInt32(
-                            ((Integer)tab[i + 1]).intValue(), 
-                            output, 
+                            ((Integer) tab[i + 1]).intValue(),
+                            output,
                             output.sink.writeVarInt32(
-                                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_REFERENCE), 
-                                    output, 
+                                    WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_REFERENCE),
+                                    output,
                                     output.tail));
-                    
+
                     return false;
                 }
                 i = nextKeyIndex(i, len);
@@ -361,5 +319,5 @@ public final class GraphProtostuffOutput extends FilterOutput
         }
 
     }
-    
+
 }

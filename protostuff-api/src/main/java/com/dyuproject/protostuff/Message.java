@@ -15,15 +15,14 @@
 package com.dyuproject.protostuff;
 
 /**
- * The serializable object where its {@link Schema schema} handles its serialization 
- * and deserialization.
- *
+ * The serializable object where its {@link Schema schema} handles its serialization and deserialization.
+ * 
  * @author David Yu
  * @created Nov 9, 2009
  */
 public interface Message<T>
 {
-    
+
     /**
      * Gets the cached schema of this message.
      */

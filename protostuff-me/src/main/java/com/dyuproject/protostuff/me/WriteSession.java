@@ -17,51 +17,50 @@ package com.dyuproject.protostuff.me;
 import java.io.OutputStream;
 
 /**
- * Designed to be subclassed by implementations of {@link Output} for easier serialization 
- * code for streaming or full buffering.
- * This is used when objects need to be serialzied/written into a {@code LinkedBuffer}.
- *
+ * Designed to be subclassed by implementations of {@link Output} for easier serialization code for streaming or full
+ * buffering. This is used when objects need to be serialzied/written into a {@code LinkedBuffer}.
+ * 
  * @author David Yu
  * @created Sep 20, 2010
  */
 public class WriteSession
 {
-    
+
     /**
      * The main/root/head buffer of this write session.
      */
     public final LinkedBuffer head;
-    
+
     /**
      * The last buffer of this write session (This points to head if growing not needed).
      */
     protected LinkedBuffer tail;
-    
+
     /**
      * The actual number of bytes written to the buffer.
      */
     protected int size = 0;
-    
+
     /**
      * The next buffer size used when growing the buffer.
      */
     public final int nextBufferSize;
-    
+
     /**
      * The sink of this buffer.
      */
     public final OutputStream out;
-    
+
     /**
      * The sink of this write session.
      */
     public final WriteSink sink;
-    
+
     public WriteSession(LinkedBuffer head)
     {
         this(head, LinkedBuffer.DEFAULT_BUFFER_SIZE);
     }
-    
+
     public WriteSession(LinkedBuffer head, int nextBufferSize)
     {
         tail = head;
@@ -70,7 +69,7 @@ public class WriteSession
         this.out = null;
         sink = WriteSink.BUFFERED;
     }
-    
+
     public WriteSession(LinkedBuffer head, OutputStream out)
     {
         tail = head;
@@ -78,13 +77,12 @@ public class WriteSession
         this.nextBufferSize = LinkedBuffer.DEFAULT_BUFFER_SIZE;
         this.out = out;
         sink = WriteSink.STREAMED;
-        
-        //assert out != null;
+
+        // assert out != null;
     }
-    
+
     /**
-     * The buffer will be cleared (tail will point to the head) and the size 
-     * will be reset to zero.
+     * The buffer will be cleared (tail will point to the head) and the size will be reset to zero.
      */
     public WriteSession clear()
     {
@@ -92,7 +90,7 @@ public class WriteSession
         size = 0;
         return this;
     }
-    
+
     /**
      * Returns the amount of bytes written in this session.
      */
@@ -100,7 +98,7 @@ public class WriteSession
     {
         return size;
     }
-    
+
     /**
      * Returns a single byte array containg all the contents written to the buffer(s).
      */
@@ -111,14 +109,13 @@ public class WriteSession
         final byte[] buf = new byte[size];
         do
         {
-            if((len = node.offset - node.start) > 0)
+            if ((len = node.offset - node.start) > 0)
             {
                 System.arraycopy(node.buffer, node.start, buf, offset, len);
                 offset += len;
             }
-        }
-        while((node=node.next) != null);
-        
+        } while ((node = node.next) != null);
+
         return buf;
     }
 

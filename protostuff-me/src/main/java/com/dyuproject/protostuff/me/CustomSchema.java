@@ -17,18 +17,18 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A schema (helper class) that wraps another schema and allows its subclasses to 
- * override certain methods for more customization.
- *
+ * A schema (helper class) that wraps another schema and allows its subclasses to override certain methods for more
+ * customization.
+ * 
  * @author David Yu
  * @created May 28, 2010
  */
-public abstract class CustomSchema/*<T>*/ implements Schema/*<T>*/
+public abstract class CustomSchema/* <T> */implements Schema/* <T> */
 {
-    
-    protected final Schema/*<T>*/ schema;
-    
-    public CustomSchema(Schema/*<T>*/ schema)
+
+    protected final Schema/* <T> */schema;
+
+    public CustomSchema(Schema/* <T> */schema)
     {
         this.schema = schema;
     }
@@ -68,7 +68,7 @@ public abstract class CustomSchema/*<T>*/ implements Schema/*<T>*/
         return schema.newMessage();
     }
 
-    public Class/*<? super T>*/ typeClass()
+    public Class/* <? super T> */typeClass()
     {
         return schema.typeClass();
     }

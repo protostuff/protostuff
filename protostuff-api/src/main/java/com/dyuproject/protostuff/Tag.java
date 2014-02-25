@@ -45,19 +45,15 @@ import java.lang.annotation.Target;
 public @interface Tag
 {
     int value();
-    
+
     /**
-     * Overrides the field name (useful for non-binary formats like json/xml/yaml).
-     * Optional.
+     * Overrides the field name (useful for non-binary formats like json/xml/yaml). Optional.
      */
     String alias() default "";
-    
+
     /**
-     * A value of 0x1F means the first 5 groups (1,2,4,8,16 - bits) will include 
-     * this field.  
-     * A <b>negative</b> value of 0x1F means the first 5 groups will <b>exclude</b> 
-     * this field.
-     * Optional.
+     * A value of 0x1F means the first 5 groups (1,2,4,8,16 - bits) will include this field. A <b>negative</b> value of
+     * 0x1F means the first 5 groups will <b>exclude</b> this field. Optional.
      */
     int groupFilter() default 0;
 }

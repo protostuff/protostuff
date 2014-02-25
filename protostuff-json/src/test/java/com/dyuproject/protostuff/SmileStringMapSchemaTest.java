@@ -19,20 +19,21 @@ import java.util.Map;
 
 /**
  * Json IO tests for the {@link StringMapSchema}.
- *
+ * 
  * @author David Yu
  * @created Feb 11, 2011
  */
 public class SmileStringMapSchemaTest extends StringMapSchemaTest
 {
-    
-    public <T extends Map<String,String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
-    throws IOException
+
+    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message,
+            Schema<T> schema)
+            throws IOException
     {
         SmileIOUtil.mergeFrom(data, offset, length, message, schema, false);
     }
-    
-    public <T extends Map<String,String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
+
+    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
     {
         return SmileIOUtil.toByteArray(message, schema, false);
     }

@@ -28,14 +28,12 @@ import java.util.Map;
  */
 public interface Formatter
 {
-    
+
     /**
      * Returns the formatted string.
      */
     public String format(String str);
-    
-    
-    
+
     /**
      * Built-in formatters.
      */
@@ -51,7 +49,7 @@ public interface Formatter
                 return str.toUpperCase();
             }
         },
-        
+
         /**
          * lowercase.
          */
@@ -62,9 +60,10 @@ public interface Formatter
                 return str.toLowerCase();
             }
         },
-        
+
         /**
          * camel-case.
+         * <p/>
          * 
          * <pre>
          * some_foo/SomeFoo becomes someFoo
@@ -77,9 +76,10 @@ public interface Formatter
                 return toCamelCase(str).toString();
             }
         },
-        
+
         /**
          * camel-case with trailing underscore.
+         * <p/>
          * 
          * <pre>
          * some_foo/SomeFoo/someFoo becomes someFoo_
@@ -92,9 +92,10 @@ public interface Formatter
                 return toCamelCase(str).append('_').toString();
             }
         },
-        
+
         /**
          * underscore-case.
+         * <p/>
          * 
          * <pre>
          * someFoo/SomeFoo becomes some_foo
@@ -107,9 +108,10 @@ public interface Formatter
                 return toUnderscoreCase(str).toString();
             }
         },
-        
+
         /**
          * underscore-case with trailing underscore.
+         * <p/>
          * 
          * <pre>
          * someFoo/SomeFoo/some_foo becomes some_foo_
@@ -122,9 +124,10 @@ public interface Formatter
                 return toUnderscoreCase(str).append('_').toString();
             }
         },
-        
+
         /**
          * "uppercased" underscore-case.
+         * <p/>
          * 
          * <pre>
          * someFoo/SomeFoo/some_foo becomes SOME_FOO
@@ -137,9 +140,10 @@ public interface Formatter
                 return toUnderscoreCase(str).toString().toUpperCase();
             }
         },
-        
+
         /**
          * pascal-case.
+         * <p/>
          * 
          * <pre>
          * some_foo/someFoo becomes SomeFoo
@@ -152,9 +156,10 @@ public interface Formatter
                 return toPascalCase(str).toString();
             }
         },
-        
+
         /**
          * pascal-case with space in between.
+         * <p/>
          * 
          * <pre>
          * someFoo/some_foo/SomeFoo becomes "Some Foo"
@@ -166,37 +171,37 @@ public interface Formatter
             {
                 final StringBuilder buffer = toUnderscoreCase(str);
                 char c = buffer.charAt(0);
-                if(c>96 && c<123)
-                    buffer.setCharAt(0, (char)(c-32));
-                
-                for(int i = 1, len = buffer.length(); i < len; i++)
+                if (c > 96 && c < 123)
+                    buffer.setCharAt(0, (char) (c - 32));
+
+                for (int i = 1, len = buffer.length(); i < len; i++)
                 {
-                    if(' ' == (c = buffer.charAt(i)))
+                    if (' ' == (c = buffer.charAt(i)))
                     {
                         // move to the next
-                        if(++i != len && (c=buffer.charAt(i)) > 96 && c < 123 )
-                            buffer.setCharAt(i, (char)(c-32));
-                        
+                        if (++i != len && (c = buffer.charAt(i)) > 96 && c < 123)
+                            buffer.setCharAt(i, (char) (c - 32));
+
                         continue;
                     }
-                    
-                    if(c == '_' && len != i+1)
+
+                    if (c == '_' && len != i + 1)
                     {
                         buffer.setCharAt(i, ' ');
-                        
-                        c = buffer.charAt(i+1);
-                        if(c>96 && c<123)
-                            buffer.setCharAt(++i, (char)(c-32));
+
+                        c = buffer.charAt(i + 1);
+                        if (c > 96 && c < 123)
+                            buffer.setCharAt(++i, (char) (c - 32));
                     }
                 }
-                
+
                 return buffer.toString();
             }
         },
-        
+
         /**
          * Same as PCS but with the more correct name :/.
-         * 
+         * <p/>
          * The space "S" is really in-between.
          */
         PSC
@@ -205,16 +210,14 @@ public interface Formatter
             {
                 return PCS.format(str);
             }
-        }
-        ;
-        
+        };
+
         /**
-         * Add all the builtin formatters to the map using the enum's name as 
-         * key. 
+         * Add all the builtin formatters to the map using the enum's name as key.
          */
-        public static void addAllTo(Map<String,Formatter> map)
+        public static void addAllTo(Map<String, Formatter> map)
         {
-            for(BUILTIN bf : BUILTIN.values())
+            for (BUILTIN bf : BUILTIN.values())
                 map.put(bf.name(), bf);
         }
     }

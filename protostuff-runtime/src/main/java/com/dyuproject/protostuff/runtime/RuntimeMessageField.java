@@ -21,29 +21,29 @@ import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
- * A runtime message field that lazily loads the schema to support cyclic dependencies. 
- *
+ * A runtime message field that lazily loads the schema to support cyclic dependencies.
+ * 
  * @author David Yu
  * @created Jan 19, 2011
  */
-abstract class RuntimeMessageField<T,P> extends Field<T>
+abstract class RuntimeMessageField<T, P> extends Field<T>
 {
-    
+
     /**
      * The class of the message field.
      */
     public final Class<P> typeClass;
-    
+
     final HasSchema<P> hasSchema;
-    
-    public RuntimeMessageField(Class<P> typeClass, HasSchema<P> hasSchema, 
+
+    public RuntimeMessageField(Class<P> typeClass, HasSchema<P> hasSchema,
             FieldType type, int number, String name, boolean repeated, Tag tag)
     {
         super(type, number, name, repeated, tag);
         this.typeClass = typeClass;
         this.hasSchema = hasSchema;
     }
-    
+
     /**
      * Returns the schema.
      */
@@ -51,7 +51,7 @@ abstract class RuntimeMessageField<T,P> extends Field<T>
     {
         return hasSchema.getSchema();
     }
-    
+
     /**
      * Returns the lazy initialized pipe schema.
      */

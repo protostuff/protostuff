@@ -30,22 +30,23 @@ import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
 
 /**
  * Smile IO utilities for messages.
- *
+ * 
  * @author David Yu
  * @created Feb 10, 2011
  */
 public final class SmileIOUtil
 {
-    
-    private SmileIOUtil() {}
-    
+
+    private SmileIOUtil()
+    {
+    }
+
     /**
      * A custom factory simply to expose certain fields.
-     *
      */
     public static final class Factory extends SmileFactory
     {
-        
+
         /**
          * Needed by jackson's internal utf8 stream parser.
          */
@@ -53,7 +54,7 @@ public final class SmileIOUtil
         {
             return _rootByteSymbols;
         }
-        
+
         /**
          * Returns the parser feature flags.
          */
@@ -61,7 +62,7 @@ public final class SmileIOUtil
         {
             return _parserFeatures;
         }
-        
+
         /**
          * Returns the smile-specific parser feature flags.
          */
@@ -69,7 +70,7 @@ public final class SmileIOUtil
         {
             return _smileParserFeatures;
         }
-        
+
         /**
          * Returns the generator feature flags.
          */
@@ -77,7 +78,7 @@ public final class SmileIOUtil
         {
             return _generatorFeatures;
         }
-        
+
         /**
          * Returns the smile-specific generator feature flags.
          */
@@ -85,20 +86,20 @@ public final class SmileIOUtil
         {
             return _smileGeneratorFeatures;
         }
-        
+
     }
-    
+
     /**
      * The default smile factory for creating smile parsers and generators.
      */
     public static final Factory DEFAULT_SMILE_FACTORY = new Factory();
-    
+
     static
     {
         DEFAULT_SMILE_FACTORY.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
         DEFAULT_SMILE_FACTORY.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
     }
-    
+
     /**
      * Creates a smile pipe from a byte array.
      */
@@ -106,113 +107,109 @@ public final class SmileIOUtil
     {
         return newPipe(data, 0, data.length, numeric);
     }
-    
+
     /**
      * Creates a smile pipe from a byte array.
      */
-    public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) 
-    throws IOException
+    public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric)
+            throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 data, false);
-        final SmileParser parser = newSmileParser(null, data, offset, offset+length, false, 
+        final SmileParser parser = newSmileParser(null, data, offset, offset + length, false,
                 context);
-        
+
         return JsonIOUtil.newPipe(parser, numeric);
-        //return JsonIOUtil.newPipe(DEFAULT_SMILE_FACTORY.createJsonParser(data, offset, length), numeric);
+        // return JsonIOUtil.newPipe(DEFAULT_SMILE_FACTORY.createJsonParser(data, offset, length), numeric);
     }
-    
+
     /**
      * Creates a smile pipe from an {@link InputStream}.
      */
     public static Pipe newPipe(InputStream in, boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0, 
+        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
                 true, context);
-        
+
         return JsonIOUtil.newPipe(parser, numeric);
-        //return JsonIOUtil.newPipe(DEFAULT_SMILE_FACTORY.createJsonParser(in), numeric);
+        // return JsonIOUtil.newPipe(DEFAULT_SMILE_FACTORY.createJsonParser(in), numeric);
     }
-    
+
     /**
-     * Creates a {@link SmileParser} from the inputstream with the supplied 
-     * buf {@code inBuffer} to use.
+     * Creates a {@link SmileParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
-    public static SmileParser newSmileParser(InputStream in, byte[] buf, 
+    public static SmileParser newSmileParser(InputStream in, byte[] buf,
             int offset, int limit) throws IOException
     {
-        return newSmileParser(in, buf, offset, limit, false, 
-                new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), in, 
+        return newSmileParser(in, buf, offset, limit, false,
+                new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), in,
                         false));
     }
-    
+
     /**
-     * Creates a {@link SmileParser} from the inputstream with the supplied 
-     * buf {@code inBuffer} to use.
+     * Creates a {@link SmileParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
-    static SmileParser newSmileParser(InputStream in, byte[] buf, 
-            int offset, int limit, boolean bufferRecyclable, IOContext context) 
+    static SmileParser newSmileParser(InputStream in, byte[] buf,
+            int offset, int limit, boolean bufferRecyclable, IOContext context)
             throws IOException
     {
-        return new SmileParser(context, 
+        return new SmileParser(context,
                 DEFAULT_SMILE_FACTORY.getParserFeatures(),
-                DEFAULT_SMILE_FACTORY.getSmileParserFeatures(), 
-                DEFAULT_SMILE_FACTORY.getCodec(), 
-                DEFAULT_SMILE_FACTORY.getRootByteSymbols().makeChild(true, true), 
-                in, 
+                DEFAULT_SMILE_FACTORY.getSmileParserFeatures(),
+                DEFAULT_SMILE_FACTORY.getCodec(),
+                DEFAULT_SMILE_FACTORY.getRootByteSymbols().makeChild(true, true),
+                in,
                 buf, offset, limit, bufferRecyclable);
     }
-    
+
     /**
-     * Creates a {@link SmileGenerator} for the outputstream with the supplied buf 
-     * {@code outBuffer} to use.
+     * Creates a {@link SmileGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
     public static SmileGenerator newSmileGenerator(OutputStream out, byte[] buf)
     {
         return newSmileGenerator(out, buf, 0, false, new IOContext(
                 DEFAULT_SMILE_FACTORY._getBufferRecycler(), out, false));
     }
-    
+
     /**
-     * Creates a {@link SmileGenerator} for the outputstream with the supplied buf 
-     * {@code outBuffer} to use.
+     * Creates a {@link SmileGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
-    static SmileGenerator newSmileGenerator(OutputStream out, byte[] buf, int offset, 
+    static SmileGenerator newSmileGenerator(OutputStream out, byte[] buf, int offset,
             boolean bufferRecyclable, IOContext context)
     {
-        return new SmileGenerator(context, 
+        return new SmileGenerator(context,
                 DEFAULT_SMILE_FACTORY.getGeneratorFeatures(),
-                DEFAULT_SMILE_FACTORY.getSmileGeneratorFeatures(), 
-                DEFAULT_SMILE_FACTORY.getCodec(), 
+                DEFAULT_SMILE_FACTORY.getSmileGeneratorFeatures(),
+                DEFAULT_SMILE_FACTORY.getCodec(),
                 out,
                 buf,
                 offset,
                 bufferRecyclable);
     }
-    
+
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema, 
+    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema,
             boolean numeric) throws IOException
     {
         mergeFrom(data, 0, data.length, message, schema, numeric);
     }
-    
+
     /**
      * Merges the {@code message} with the byte array using the given {@code schema}.
      */
-    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, 
+    public static <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema, boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 data, false);
-        final SmileParser parser = newSmileParser(null, data, offset, offset+length, false, 
+        final SmileParser parser = newSmileParser(null, data, offset, offset + length, false,
                 context);
-        
-        //final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(data, offset, length);
+
+        // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(data, offset, length);
         try
         {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
@@ -222,20 +219,19 @@ public final class SmileIOUtil
             parser.close();
         }
     }
-    
+
     /**
-     * Merges the {@code message} from the {@link InputStream} using the 
-     * given {@code schema}.
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0, 
+        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
                 true, context);
-        
-        //final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
+
+        // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
         try
         {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
@@ -245,23 +241,21 @@ public final class SmileIOUtil
             parser.close();
         }
     }
-    
+
     /**
-     * Merges the {@code message} from the {@link InputStream} using the 
-     * given {@code schema}.
-     * 
-     * The {@link LinkedBuffer}'s internal byte array will be used when reading the 
-     * message.
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+     * <p/>
+     * The {@link LinkedBuffer}'s internal byte array will be used when reading the message.
      */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, 
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema,
             boolean numeric, LinkedBuffer buffer) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
         final SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context);
-        
-        //final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
-        
+
+        // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
+
         try
         {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
@@ -271,10 +265,9 @@ public final class SmileIOUtil
             parser.close();
         }
     }
-    
+
     /**
-     * Serializes the {@code message} into a byte array 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into a byte array using the given {@code schema}.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
@@ -285,20 +278,18 @@ public final class SmileIOUtil
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         return baos.toByteArray();
     }
-    
+
     /**
-     * Serializes the {@code message} into a byte array 
-     * using the given {@code schema}.
-     * 
-     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
-     * when writing the message.
+     * Serializes the {@code message} into a byte array using the given {@code schema}.
+     * <p/>
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric, 
+    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric,
             LinkedBuffer buffer)
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -308,27 +299,26 @@ public final class SmileIOUtil
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         return baos.toByteArray();
     }
-    
+
     /**
-     * Serializes the {@code message} into an {@link OutputStream} 
-     * using the given {@code schema}.
+     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
      */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
-        
-        final SmileGenerator generator = newSmileGenerator(out, 
+
+        final SmileGenerator generator = newSmileGenerator(out,
                 context.allocWriteEncodingBuffer(), 0, true, context);
-        
-        //final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
-        
+
+        // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
+
         try
         {
             JsonIOUtil.writeTo(generator, message, schema, numeric);
@@ -338,24 +328,22 @@ public final class SmileIOUtil
             generator.close();
         }
     }
-    
+
     /**
-     * Serializes the {@code message} into an {@link OutputStream} 
-     * using the given {@code schema}.
-     * 
-     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
-     * when writing the message.
+     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
+     * <p/>
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, 
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema,
             boolean numeric, LinkedBuffer buffer) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
-        
-        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false, 
+
+        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
                 context);
-        
-        //final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
+
+        // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
         try
         {
             JsonIOUtil.writeTo(generator, message, schema, numeric);
@@ -365,20 +353,20 @@ public final class SmileIOUtil
             generator.close();
         }
     }
-    
+
     /**
      * Serializes the {@code messages} into the stream using the given schema.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, 
+    public static <T> void writeListTo(OutputStream out, List<T> messages,
             Schema<T> schema, boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
-        
-        final SmileGenerator generator = newSmileGenerator(out, 
+
+        final SmileGenerator generator = newSmileGenerator(out,
                 context.allocWriteEncodingBuffer(), 0, true, context);
-        
-        //final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
+
+        // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
         try
         {
             JsonIOUtil.writeListTo(generator, messages, schema, numeric);
@@ -388,23 +376,22 @@ public final class SmileIOUtil
             generator.close();
         }
     }
-    
+
     /**
      * Serializes the {@code messages} into the stream using the given schema.
-     * 
-     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer 
-     * when writing the message.
+     * <p/>
+     * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
-    public static <T> void writeListTo(OutputStream out, List<T> messages, 
+    public static <T> void writeListTo(OutputStream out, List<T> messages,
             Schema<T> schema, boolean numeric, LinkedBuffer buffer) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
-        
-        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false, 
+
+        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
                 context);
-        
-        //final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
+
+        // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
         try
         {
             JsonIOUtil.writeListTo(generator, messages, schema, numeric);
@@ -414,19 +401,19 @@ public final class SmileIOUtil
             generator.close();
         }
     }
-    
+
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
      */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0, 
+        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
                 true, context);
-        
-        //final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
+
+        // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
         try
         {
             return JsonIOUtil.parseListFrom(parser, schema, numeric);
@@ -436,21 +423,20 @@ public final class SmileIOUtil
             parser.close();
         }
     }
-    
+
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
-     * 
-     * The {@link LinkedBuffer}'s internal byte array will be used when reading the 
-     * message.
+     * <p/>
+     * The {@link LinkedBuffer}'s internal byte array will be used when reading the message.
      */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, 
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema,
             boolean numeric, LinkedBuffer buffer) throws IOException
     {
-        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(), 
+        final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
         final SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context);
-        
-        //final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
+
+        // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
         try
         {
             return JsonIOUtil.parseListFrom(parser, schema, numeric);

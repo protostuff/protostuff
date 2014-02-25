@@ -26,29 +26,28 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-
 package com.dyuproject.protostuff;
 
 import java.io.Serializable;
 
 /**
  * Used for testing regular pojos that wraps messages (with schema).
- *
+ * 
  * @author David Yu
  * @created Mar 25, 2012
  */
 public class WrapsClubFounder implements Serializable
 {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     private ClubFounder clubFounder;
-    
+
     public WrapsClubFounder()
     {
-        
+
     }
-    
+
     public WrapsClubFounder(ClubFounder clubFounder)
     {
         this.clubFounder = clubFounder;

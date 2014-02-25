@@ -18,32 +18,31 @@ import java.io.IOException;
 
 /**
  * The base io exception for all formats (protobuf/json/xml).
- *
+ * 
  * @author David Yu
  * @created May 25, 2010
  */
 public class ProtostuffException extends IOException
 {
-    
+
     public ProtostuffException()
     {
         super();
     }
-    
+
     public ProtostuffException(String message)
     {
         super(message);
     }
-    
+
     public ProtostuffException(String message, Throwable cause)
     {
         super(message);
     }
-    
+
     public ProtostuffException(Throwable cause)
     {
         super();
     }
-
 
 }

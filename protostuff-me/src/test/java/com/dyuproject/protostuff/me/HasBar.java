@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 /**
  * Ser/deser test object that wraps a message {@link Bar}.
- *
+ * 
  * @author David Yu
  * @created Nov 12, 2009
  */
@@ -26,16 +26,16 @@ public class HasBar implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private String name;
     private Bar bar;
 
     public HasBar()
     {
-        
+
     }
-    
+
     public HasBar(int id, String name, Bar bar)
     {
         this.id = id;
@@ -52,7 +52,8 @@ public class HasBar implements Serializable
     }
 
     /**
-     * @param id the id to set
+     * @param id
+     *            the id to set
      */
     public void setId(int id)
     {
@@ -68,7 +69,8 @@ public class HasBar implements Serializable
     }
 
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name)
     {
@@ -84,7 +86,8 @@ public class HasBar implements Serializable
     }
 
     /**
-     * @param bar the bar to set
+     * @param bar
+     *            the bar to set
      */
     public void setBar(Bar bar)
     {
@@ -111,7 +114,7 @@ public class HasBar implements Serializable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HasBar other = (HasBar)obj;
+        HasBar other = (HasBar) obj;
         if (bar == null)
         {
             if (other.bar != null)
@@ -130,7 +133,5 @@ public class HasBar implements Serializable
             return false;
         return true;
     }
-    
-    
 
 }

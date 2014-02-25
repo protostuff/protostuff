@@ -16,65 +16,67 @@ package com.dyuproject.protostuff.me;
 
 /**
  * Int32/Int64 serialization
- *
+ * 
  * @author David Yu
  * @created Sep 20, 2010
  */
 public final class IntSerializer
 {
-    
-    private IntSerializer() {}
-    
+
+    private IntSerializer()
+    {
+    }
+
     /**
      * Writes the 32-bit int into the buffer starting with the most significant byte.
      */
     public static void writeInt32(final int value, final byte[] buffer, int offset)
     {
-        buffer[offset++] = (byte)((value >>> 24) & 0xFF);
-        buffer[offset++] = (byte)((value >>> 16) & 0xFF);
-        buffer[offset++] = (byte)((value >>>  8) & 0xFF);
-        buffer[offset] = (byte)((value >>>  0) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 24) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 16) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 8) & 0xFF);
+        buffer[offset] = (byte) ((value >>> 0) & 0xFF);
     }
-    
+
     /**
      * Writes the 32-bit int into the buffer starting with the least significant byte.
      */
     public static void writeInt32LE(final int value, final byte[] buffer, int offset)
     {
-        buffer[offset++] = (byte)((value >>>  0) & 0xFF);
-        buffer[offset++] = (byte)((value >>>  8) & 0xFF);
-        buffer[offset++] = (byte)((value >>> 16) & 0xFF);
-        buffer[offset] = (byte)((value >>> 24) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 0) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 8) & 0xFF);
+        buffer[offset++] = (byte) ((value >>> 16) & 0xFF);
+        buffer[offset] = (byte) ((value >>> 24) & 0xFF);
     }
-    
+
     /**
      * Writes the 64-bit int into the buffer starting with the most significant byte.
      */
     public static void writeInt64(final long value, final byte[] buffer, int offset)
     {
-        buffer[offset++] = (byte)(value >>> 56);
-        buffer[offset++] = (byte)(value >>> 48);
-        buffer[offset++] = (byte)(value >>> 40);
-        buffer[offset++] = (byte)(value >>> 32);
-        buffer[offset++] = (byte)(value >>> 24);
-        buffer[offset++] = (byte)(value >>> 16);
-        buffer[offset++] = (byte)(value >>>  8);
-        buffer[offset] = (byte)(value >>>  0);
+        buffer[offset++] = (byte) (value >>> 56);
+        buffer[offset++] = (byte) (value >>> 48);
+        buffer[offset++] = (byte) (value >>> 40);
+        buffer[offset++] = (byte) (value >>> 32);
+        buffer[offset++] = (byte) (value >>> 24);
+        buffer[offset++] = (byte) (value >>> 16);
+        buffer[offset++] = (byte) (value >>> 8);
+        buffer[offset] = (byte) (value >>> 0);
     }
-    
+
     /**
      * Writes the 64-bit int into the buffer starting with the least significant byte.
      */
     public static void writeInt64LE(final long value, final byte[] buffer, int offset)
     {
-        buffer[offset++] = (byte)(value >>>  0);
-        buffer[offset++] = (byte)(value >>>  8);
-        buffer[offset++] = (byte)(value >>> 16);
-        buffer[offset++] = (byte)(value >>> 24);
-        buffer[offset++] = (byte)(value >>> 32);
-        buffer[offset++] = (byte)(value >>> 40);
-        buffer[offset++] = (byte)(value >>> 48);
-        buffer[offset] = (byte)(value >>> 56);
+        buffer[offset++] = (byte) (value >>> 0);
+        buffer[offset++] = (byte) (value >>> 8);
+        buffer[offset++] = (byte) (value >>> 16);
+        buffer[offset++] = (byte) (value >>> 24);
+        buffer[offset++] = (byte) (value >>> 32);
+        buffer[offset++] = (byte) (value >>> 40);
+        buffer[offset++] = (byte) (value >>> 48);
+        buffer[offset] = (byte) (value >>> 56);
     }
 
 }

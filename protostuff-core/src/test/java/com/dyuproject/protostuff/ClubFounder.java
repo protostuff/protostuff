@@ -23,7 +23,6 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
     static final ClubFounder DEFAULT_INSTANCE = new ClubFounder();
 
-    
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
     String name;
@@ -31,7 +30,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
     public ClubFounder()
     {
-        
+
     }
 
     // getters and setters
@@ -110,9 +109,9 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
         public void mergeFrom(Input input, ClubFounder message) throws IOException
         {
-            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -125,28 +124,30 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
                     default:
                         input.handleUnknownField(number, this);
-                }   
+                }
             }
         }
 
-
         public void writeTo(Output output, ClubFounder message) throws IOException
         {
-            if(message.name != null)
+            if (message.name != null)
                 output.writeString(1, message.name, false);
 
-            if(message.club != null)
-                 output.writeObject(2, message.club, Club.getSchema(), false);
+            if (message.club != null)
+                output.writeObject(2, message.club, Club.getSchema(), false);
 
         }
 
         public String getFieldName(int number)
         {
-            switch(number)
+            switch (number)
             {
-                case 1: return "name";
-                case 2: return "club";
-                default: return null;
+                case 1:
+                    return "name";
+                case 2:
+                    return "club";
+                default:
+                    return null;
             }
         }
 
@@ -156,11 +157,12 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String,Integer> fieldMap = new java.util.HashMap<String,Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+
         {
             fieldMap.put("name", 1);
             fieldMap.put("club", 2);
         }
     };
-    
+
 }

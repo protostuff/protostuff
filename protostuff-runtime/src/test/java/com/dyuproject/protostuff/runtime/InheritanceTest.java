@@ -27,7 +27,7 @@ import com.dyuproject.protostuff.Schema;
 
 /**
  * Test ser/deser for subclasses that inherit from non-abstract base types.
- * 
+ * <p/>
  * Run this standalone to execute the actual tests.
  * 
  * @author David Yu
@@ -35,7 +35,7 @@ import com.dyuproject.protostuff.Schema;
  */
 public class InheritanceTest extends AbstractTest
 {
-    
+
     static
     {
         // must enable to support inheritance on non-abstract base types.
@@ -71,8 +71,9 @@ public class InheritanceTest extends AbstractTest
             {
                 return false;
             }
-            final InputDevice other = (InputDevice)obj;
-            if ((this.name == null)?(other.name != null):!this.name.equals(other.name))
+            final InputDevice other = (InputDevice) obj;
+            if ((this.name == null) ? (other.name != null) : !this.name
+                    .equals(other.name))
             {
                 return false;
             }
@@ -83,7 +84,7 @@ public class InheritanceTest extends AbstractTest
         public int hashCode()
         {
             int hash = 7;
-            hash = 47 * hash + (this.name != null?this.name.hashCode():0);
+            hash = 47 * hash + (this.name != null ? this.name.hashCode() : 0);
             return hash;
         }
 
@@ -118,7 +119,7 @@ public class InheritanceTest extends AbstractTest
             {
                 return false;
             }
-            final Mouse other = (Mouse)obj;
+            final Mouse other = (Mouse) obj;
             if (this.numberOfButtons != other.numberOfButtons)
             {
                 return false;
@@ -165,7 +166,7 @@ public class InheritanceTest extends AbstractTest
             {
                 return false;
             }
-            final KeyBoard other = (KeyBoard)obj;
+            final KeyBoard other = (KeyBoard) obj;
             if (this.numberOfKeys != other.numberOfKeys)
             {
                 return false;
@@ -212,8 +213,10 @@ public class InheritanceTest extends AbstractTest
             {
                 return false;
             }
-            final InputSystem other = (InputSystem)obj;
-            if (this.inputDevices != other.inputDevices && (this.inputDevices == null || !this.inputDevices.equals(other.inputDevices)))
+            final InputSystem other = (InputSystem) obj;
+            if (this.inputDevices != other.inputDevices
+                    && (this.inputDevices == null || !this.inputDevices
+                            .equals(other.inputDevices)))
             {
                 return false;
             }
@@ -224,14 +227,17 @@ public class InheritanceTest extends AbstractTest
         public int hashCode()
         {
             int hash = 3;
-            hash = 67 * hash + (this.inputDevices != null?this.inputDevices.hashCode():0);
+            hash = 67
+                    * hash
+                    + (this.inputDevices != null ? this.inputDevices.hashCode()
+                            : 0);
             return hash;
         }
 
     }
-    
+
     boolean skipTests = false;
-    
+
     public void setUp() throws Exception
     {
         System.setProperty("protostuff.morph_non_final_pojos", "true");
@@ -241,13 +247,14 @@ public class InheritanceTest extends AbstractTest
 
     public void testInheritance() throws IOException
     {
-        if(skipTests)
+        if (skipTests)
         {
-            System.err.println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
+            System.err
+                    .println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
             return;
         }
         System.err.println("executing inheritance test for protostuff ... ");
-        
+
         Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();
@@ -269,16 +276,17 @@ public class InheritanceTest extends AbstractTest
 
         assertEquals(sys, deserSystem);
     }
-    
+
     public void testInheritanceProtobuf() throws IOException
     {
-        if(skipTests)
+        if (skipTests)
         {
-            System.err.println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
+            System.err
+                    .println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
             return;
         }
         System.err.println("executing inheritance test for protobuf ... ");
-        
+
         Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();
