@@ -32,19 +32,19 @@ public class ProtostuffDelimiterTest extends DelimiterTest
     {
         return ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buffer);
     }
-    
+
     protected void mergeDelimitedFrom(InputStream in, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {
         ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
     }
-    
+
     protected int optWriteDelimitedTo(OutputStream out, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {
         return ProtostuffIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
     }
-    
+
     protected boolean optMergeDelimitedFrom(InputStream in, Object message, Schema schema,
             LinkedBuffer buffer) throws IOException
     {

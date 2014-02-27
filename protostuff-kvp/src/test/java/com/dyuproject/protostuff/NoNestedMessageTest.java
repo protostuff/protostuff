@@ -25,32 +25,32 @@ import com.dyuproject.protostuff.Foo.EnumSample;
 
 /**
  * Base test class for simple pojos that have scalar fields (no nested messages/pojos).
- *
+ * 
  * @author David Yu
  * @created Dec 2, 2010
  */
 public abstract class NoNestedMessageTest extends AbstractTest
 {
-    
+
     public static final Foo foo = newFoo(
-            new Integer[]{90210,-90210, 0}, 
-            new String[]{"ab", "cd"}, 
-            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
-            new ByteString[]{ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh")}, 
-            new Boolean[]{true, false}, 
-            new Float[]{1234.4321f, -1234.4321f, 0f}, 
-            new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
-            new Long[]{7060504030201l, -7060504030201l, 0l});
-    
-    public static final Bar bar = new Bar(890, "bar", null, Bar.Status.STARTED, 
+            new Integer[] { 90210, -90210, 0 },
+            new String[] { "ab", "cd" },
+            new EnumSample[] { EnumSample.TYPE0, EnumSample.TYPE2 },
+            new ByteString[] { ByteString.copyFromUtf8("ef"), ByteString.copyFromUtf8("gh") },
+            new Boolean[] { true, false },
+            new Float[] { 1234.4321f, -1234.4321f, 0f },
+            new Double[] { 12345678.87654321d, -12345678.87654321d, 0d },
+            new Long[] { 7060504030201l, -7060504030201l, 0l });
+
+    public static final Bar bar = new Bar(890, "bar", null, Bar.Status.STARTED,
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
-    
-    public static final Bar negativeBar = new Bar(-12, "negativeBar", null, Bar.Status.STARTED, 
+
+    public static final Bar negativeBar = new Bar(-12, "negativeBar", null, Bar.Status.STARTED,
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
 
     static Foo newFoo(
-            Integer[] someInt, 
-            String[] someString, 
+            Integer[] someInt,
+            String[] someString,
             EnumSample[] someEnum,
             ByteString[] someBytes,
             Boolean[] someBoolean,
@@ -58,24 +58,24 @@ public abstract class NoNestedMessageTest extends AbstractTest
             Double[] someDouble,
             Long[] someLong)
     {
-        
+
         return new Foo(
                 Arrays.asList(someInt),
-                Arrays.asList(someString), 
-                null, 
-                Arrays.asList(someEnum), 
-                Arrays.asList(someBytes), 
-                Arrays.asList(someBoolean), 
-                Arrays.asList(someFloat), 
+                Arrays.asList(someString),
+                null,
+                Arrays.asList(someEnum),
+                Arrays.asList(someBytes),
+                Arrays.asList(someBoolean),
+                Arrays.asList(someFloat),
                 Arrays.asList(someDouble),
                 Arrays.asList(someLong));
     }
-    
+
     /**
      * Serializes the {@code message} into a byte array.
      */
     protected abstract <T> byte[] toByteArray(T message, Schema<T> schema);
-    
+
     /**
      * Serializes the {@code message} into a byte array.
      */
@@ -83,13 +83,13 @@ public abstract class NoNestedMessageTest extends AbstractTest
     {
         return toByteArray(message, message.cachedSchema());
     }
-    
+
     /**
      * Deserializes from the byte array and data is merged/saved to the message.
      */
-    protected abstract <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) 
-    throws IOException;
-    
+    protected abstract <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
+            throws IOException;
+
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
@@ -99,43 +99,43 @@ public abstract class NoNestedMessageTest extends AbstractTest
         mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
-    
+
     public void testBar() throws Exception
     {
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        for (Bar barCompare : new Bar[] { bar, negativeBar })
         {
-            Bar dbar = new Bar();            
+            Bar dbar = new Bar();
 
             byte[] output = toByteArray(barCompare);
             mergeFrom(output, 0, output.length, dbar, dbar.cachedSchema());
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
-    
+
     public void testBaz() throws Exception
     {
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
+        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
         {
-            Baz dbaz = new Baz();            
+            Baz dbaz = new Baz();
 
             byte[] output = toByteArray(bazCompare);
             mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema());
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
-    
+
     // empty foo
-    
+
     public void testEmptyFoo() throws Exception
     {
         Foo foo = new Foo();
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     public void testPartialEmptyFooWithString() throws Exception
     {
         Baz baz = new Baz();
@@ -147,13 +147,13 @@ public abstract class NoNestedMessageTest extends AbstractTest
         ArrayList<String> strings = new ArrayList<String>();
         strings.add("someString");
         foo.setSomeString(strings);
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     public void testPartialEmptyFooWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
@@ -165,13 +165,13 @@ public abstract class NoNestedMessageTest extends AbstractTest
         ArrayList<String> strings = new ArrayList<String>();
         strings.add("");
         foo.setSomeString(strings);
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     public void testPartialEmptyFooInner() throws Exception
     {
         Baz baz = new Baz();
@@ -180,13 +180,13 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     public void testPartialEmptyFooInnerWithString() throws Exception
     {
         Baz baz = new Baz();
@@ -196,13 +196,13 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     public void testPartialEmptyFooInnerWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
@@ -212,34 +212,34 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Foo foo = new Foo();
         ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
-        
+
         byte[] output = toByteArray(foo);
-        
+
         Foo parsedFoo = new Foo();
         mergeFrom(output, 0, output.length, parsedFoo, parsedFoo.cachedSchema());
     }
-    
+
     // bar
-    
+
     public void testEmptyBar() throws Exception
     {
         Bar bar = new Bar();
-        
+
         byte[] output = toByteArray(bar);
-        
-        Bar parsedBar= new Bar();
+
+        Bar parsedBar = new Bar();
         mergeFrom(output, 0, output.length, parsedBar, parsedBar.cachedSchema());
     }
-    
+
     public void testBarWithEmptyString() throws Exception
     {
         Bar bar = new Bar();
         bar.setSomeString("someString");
-        
+
         byte[] output = toByteArray(bar);
-        
-        Bar parsedBar= new Bar();
+
+        Bar parsedBar = new Bar();
         mergeFrom(output, 0, output.length, parsedBar, parsedBar.cachedSchema());
     }
-    
+
 }

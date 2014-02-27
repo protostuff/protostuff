@@ -20,35 +20,35 @@ import junit.framework.TestCase;
 
 /**
  * Test proto options.
- *
+ * 
  * @author David Yu
  * @created Aug 11, 2011
  */
 public class OptionTest extends TestCase
 {
-    
+
     public void testIt() throws Exception
     {
         File f = ProtoParserTest.getFile("com/dyuproject/protostuff/parser/test_options.proto");
         assertTrue(f.exists());
-        
+
         Proto proto = new Proto(f);
         ProtoUtil.loadFrom(f, proto);
-        
+
         Message aMessage = proto.getMessage("AMessage");
         assertNotNull(aMessage);
         assertEquals("something",
                 aMessage.getField("anotherMessage").getOption("anOption"));
         assertEquals(Boolean.TRUE, aMessage.getExtraOption("message_set_wire_format"));
-        
+
         Message anotherMessage = proto.getMessage("AnotherMessage");
         assertNotNull(anotherMessage);
         assertEquals("bar", anotherMessage.getExtraOption("foo"));
-        
+
         EnumGroup baz = proto.getEnumGroup("Baz");
         assertNotNull(baz);
         assertEquals(Float.valueOf(1.0f), baz.getExtraOption("random.enum.option"));
-        
+
         EnumGroup.Value a = baz.getValue("A");
         assertEquals(1, a.getOptions().get("some_int"));
         assertEquals(Boolean.TRUE, a.getOptions().get("some_bool"));

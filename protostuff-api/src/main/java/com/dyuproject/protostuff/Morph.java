@@ -26,7 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-
 package com.dyuproject.protostuff;
 
 import java.lang.annotation.ElementType;
@@ -36,7 +35,7 @@ import java.lang.annotation.Target;
 
 /**
  * Used to configure non-final pojos, map interfaces and collection interfaces.
- *
+ * 
  * @author David Yu
  * @created Apr 30, 2012
  */

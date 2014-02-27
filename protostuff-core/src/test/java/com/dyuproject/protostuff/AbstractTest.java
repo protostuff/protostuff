@@ -18,20 +18,20 @@ import junit.framework.TestCase;
 
 /**
  * Helper class for tests.
- *
+ * 
  * @author David Yu
  * @created Oct 8, 2010
  */
 public abstract class AbstractTest extends TestCase
 {
-    
+
     static final int BUF_SIZE = 256;
-    
+
     public static LinkedBuffer buf()
     {
         return LinkedBuffer.allocate(BUF_SIZE);
     }
-    
+
     public static LinkedBuffer buf(int size)
     {
         return LinkedBuffer.allocate(size);

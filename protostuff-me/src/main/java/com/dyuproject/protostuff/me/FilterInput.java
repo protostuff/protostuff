@@ -17,27 +17,26 @@ package com.dyuproject.protostuff.me;
 import java.io.IOException;
 
 /**
- * A FilterInput contains some other {@link Input input}, which it uses as its basic 
- * source of data.
- *
+ * A FilterInput contains some other {@link Input input}, which it uses as its basic source of data.
+ * 
  * @author David Yu
  * @created Nov 11, 2009
  */
-public class FilterInput/*<F extends Input>*/ implements Input
+public class FilterInput/* <F extends Input> */implements Input
 {
-    
+
     protected final Input input;
-    
+
     public FilterInput(Input input)
     {
         this.input = input;
-    }    
+    }
 
     public void handleUnknownField(int fieldNumber, Schema schema) throws IOException
     {
         input.handleUnknownField(fieldNumber, schema);
     }
-    
+
     public int readFieldNumber(Schema schema) throws IOException
     {
         return input.readFieldNumber(schema);

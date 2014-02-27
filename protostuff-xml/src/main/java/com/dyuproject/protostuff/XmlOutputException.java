@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamException;
 
 /**
  * Wrapper for {@link javax.xml.stream.XMLStreamException}.
- *
+ * 
  * @author David Yu
  * @created May 24, 2010
  */
@@ -26,7 +26,7 @@ public class XmlOutputException extends ProtostuffException
 {
 
     private static final long serialVersionUID = 1273385129968087653L;
-    
+
     public XmlOutputException(String message)
     {
         super(message);
@@ -36,5 +36,5 @@ public class XmlOutputException extends ProtostuffException
     {
         super(cause);
     }
-    
+
 }

@@ -28,27 +28,27 @@ import com.dyuproject.protostuff.Schema;
 
 /**
  * Tests for {@link BigDecimal} and {@link BigInteger}.
- *
+ * 
  * @author David Yu
  * @created Sep 9, 2010
  */
 public class MathObjectsTest extends AbstractTest
 {
-    
+
     public static class Payment
     {
-        
+
         int id = 0;
         BigDecimal bd;
         BigInteger bi;
         List<BigDecimal> bdList;
         List<BigInteger> biList;
-        
+
         public Payment()
         {
-            
+
         }
-        
+
         /**
          * @return the id
          */
@@ -56,13 +56,16 @@ public class MathObjectsTest extends AbstractTest
         {
             return id;
         }
+
         /**
-         * @param id the id to set
+         * @param id
+         *            the id to set
          */
         public void setId(int id)
         {
             this.id = id;
         }
+
         /**
          * @return the bd
          */
@@ -70,8 +73,10 @@ public class MathObjectsTest extends AbstractTest
         {
             return bd;
         }
+
         /**
-         * @param bd the bd to set
+         * @param bd
+         *            the bd to set
          */
         public void setBd(BigDecimal bd)
         {
@@ -87,13 +92,14 @@ public class MathObjectsTest extends AbstractTest
         }
 
         /**
-         * @param bi the bi to set
+         * @param bi
+         *            the bi to set
          */
         public void setBi(BigInteger bi)
         {
             this.bi = bi;
         }
-        
+
         /**
          * @return the bdList
          */
@@ -103,7 +109,8 @@ public class MathObjectsTest extends AbstractTest
         }
 
         /**
-         * @param bdList the bdList to set
+         * @param bdList
+         *            the bdList to set
          */
         public void setBdList(List<BigDecimal> bdList)
         {
@@ -119,7 +126,8 @@ public class MathObjectsTest extends AbstractTest
         }
 
         /**
-         * @param biList the biList to set
+         * @param biList
+         *            the biList to set
          */
         public void setBiList(List<BigInteger> biList)
         {
@@ -131,10 +139,12 @@ public class MathObjectsTest extends AbstractTest
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((bd == null)?0:bd.hashCode());
-            result = prime * result + ((bdList == null)?0:bdList.hashCode());
-            result = prime * result + ((bi == null)?0:bi.hashCode());
-            result = prime * result + ((biList == null)?0:biList.hashCode());
+            result = prime * result + ((bd == null) ? 0 : bd.hashCode());
+            result = prime * result
+                    + ((bdList == null) ? 0 : bdList.hashCode());
+            result = prime * result + ((bi == null) ? 0 : bi.hashCode());
+            result = prime * result
+                    + ((biList == null) ? 0 : biList.hashCode());
             result = prime * result + id;
             return result;
         }
@@ -148,7 +158,7 @@ public class MathObjectsTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Payment other = (Payment)obj;
+            Payment other = (Payment) obj;
             if (bd == null)
             {
                 if (other.bd != null)
@@ -182,10 +192,8 @@ public class MathObjectsTest extends AbstractTest
             return true;
         }
 
-        
-        
     }
-    
+
     static Payment filledPayment()
     {
         Payment p = new Payment();
@@ -194,78 +202,76 @@ public class MathObjectsTest extends AbstractTest
         p.setId(1);
         p.setBd(new BigDecimal("123456789.987654321"));
         p.setBi(BigInteger.valueOf(System.currentTimeMillis()));
-        
+
         p.setBdList(bdList);
         p.setBiList(biList);
-        
+
         biList.add(BigInteger.valueOf(123456789));
         biList.add(BigInteger.valueOf(987654321));
-        
+
         bdList.add(new BigDecimal("123456789"));
         bdList.add(new BigDecimal("987654321"));
-        
+
         return p;
     }
-    
+
     public void testProtobuf() throws Exception
     {
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = filledPayment();
 
         byte[] data = ProtobufIOUtil.toByteArray(p, schema, buf());
-        
+
         Payment p2 = new Payment();
         ProtobufIOUtil.mergeFrom(data, p2, schema);
-        /*System.err.println(p2.getId());
-        System.err.println(p2.getBd());
-        System.err.println(p2.getBi());
-        System.err.println(p2.getBdList());
-        System.err.println(p2.getBiList());*/
-        
+        /*
+         * System.err.println(p2.getId()); System.err.println(p2.getBd()); System.err.println(p2.getBi());
+         * System.err.println(p2.getBdList()); System.err.println(p2.getBiList());
+         */
+
         assertEquals(p, p2);
-        
+
         List<Payment> list = new ArrayList<Payment>();
         list.add(p);
         list.add(p2);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ProtobufIOUtil.writeListTo(out, list, schema, buf());
         byte[] listData = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(listData);
         List<Payment> parsedList = ProtobufIOUtil.parseListFrom(in, schema);
-        
+
         assertEquals(list, parsedList);
     }
-    
+
     public void testProtostuff() throws Exception
     {
         Schema<Payment> schema = RuntimeSchema.getSchema(Payment.class);
         Payment p = filledPayment();
 
         byte[] data = ProtostuffIOUtil.toByteArray(p, schema, buf());
-        
+
         Payment p2 = new Payment();
         ProtostuffIOUtil.mergeFrom(data, 0, data.length, p2, schema);
-        /*System.err.println(p2.getId());
-        System.err.println(p2.getBd());
-        System.err.println(p2.getBi());
-        System.err.println(p2.getBdList());
-        System.err.println(p2.getBiList());*/
-        
+        /*
+         * System.err.println(p2.getId()); System.err.println(p2.getBd()); System.err.println(p2.getBi());
+         * System.err.println(p2.getBdList()); System.err.println(p2.getBiList());
+         */
+
         assertEquals(p, p2);
-        
+
         List<Payment> list = new ArrayList<Payment>();
         list.add(p);
         list.add(p2);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ProtostuffIOUtil.writeListTo(out, list, schema, buf());
         byte[] listData = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(listData);
         List<Payment> parsedList = ProtostuffIOUtil.parseListFrom(in, schema);
-        
+
         assertEquals(list, parsedList);
     }
 

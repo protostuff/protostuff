@@ -27,7 +27,7 @@ import com.dyuproject.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to gwt overlays source (java) files.
- *
+ * 
  * @author David Yu
  * @created Jan 13, 2010
  */
@@ -42,16 +42,16 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("emulation_mode")==null ? 
+        String template = module.getOption("emulation_mode") == null ?
                 "gwt_overlay" : "gwt_overlay_emulation_mode";
         StringTemplateGroup group = getSTG(template);
-        
-        for(EnumGroup eg : proto.getEnumGroups())
+
+        for (EnumGroup eg : proto.getEnumGroups())
         {
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, eg.getName()+".java");
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, eg.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate enumBlock = group.getInstanceOf("enum_block");
             enumBlock.setAttribute("eg", eg);
             enumBlock.setAttribute("module", module);
@@ -60,20 +60,20 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             enumBlock.write(out);
             writer.close();
         }
-        
-        for(Message m : proto.getMessages())
+
+        for (Message m : proto.getMessages())
         {
             // true if its a service message w/c isn't supported atm
-            if(m.getFields().isEmpty())
+            if (m.getFields().isEmpty())
             {
                 System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
             }
-            
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, m.getName()+".java");
+
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, m.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("message", m);
             messageBlock.setAttribute("module", module);
@@ -82,7 +82,7 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
             messageBlock.write(out);
             writer.close();
         }
-        
+
     }
 
 }

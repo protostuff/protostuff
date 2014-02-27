@@ -35,16 +35,17 @@ public class CodedInputTest extends AbstractTest
 
         ProtobufOutput.writeRawVarInt32Bytes(out, tag);
         ProtobufOutput.writeRawVarInt32Bytes(out, msgLength);
-        for (int i = 1; i <= msgLength; i++) ProtobufOutput.writeRawVarInt32Bytes(out, i);
+        for (int i = 1; i <= msgLength; i++)
+            ProtobufOutput.writeRawVarInt32Bytes(out, i);
         ProtobufOutput.writeRawVarInt32Bytes(out, anotherTag);
 
         byte[] data = out.toByteArray();
 
         CodedInput ci = new CodedInput(new ByteArrayInputStream(data), new byte[10], false);
-        ci.pushLimit(msgLength + 2);    // +2 for tag and length
+        ci.pushLimit(msgLength + 2); // +2 for tag and length
         assertEquals(tag, ci.readTag());
         ci.skipField(tag);
         assertEquals(0, ci.readTag());
     }
-    
+
 }

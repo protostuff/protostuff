@@ -21,34 +21,30 @@ import java.io.ObjectOutput;
 
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 
-
 /**
  * Baz - for testing
- *
+ * 
  * @author David Yu
  * @created Nov 10, 2009
  */
 public final class Baz implements Externalizable
 {
-    
+
     private int id;
     private String name;
     private long timestamp;
-    
+
     public Baz()
     {
-        
+
     }
-    
-    public Baz(
-            int id, 
-            String name, 
-            long timestamp)
+
+    public Baz(int id, String name, long timestamp)
     {
         this.id = id;
         this.name = name;
         this.timestamp = timestamp;
-    }    
+    }
 
     /**
      * @return the id
@@ -59,7 +55,8 @@ public final class Baz implements Externalizable
     }
 
     /**
-     * @param id the id to set
+     * @param id
+     *            the id to set
      */
     public void setId(int id)
     {
@@ -75,7 +72,8 @@ public final class Baz implements Externalizable
     }
 
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name)
     {
@@ -91,21 +89,24 @@ public final class Baz implements Externalizable
     }
 
     /**
-     * @param timestamp the timestamp to set
+     * @param timestamp
+     *            the timestamp to set
      */
     public void setTimestamp(long timestamp)
     {
         this.timestamp = timestamp;
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Baz.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this,
+                RuntimeSchema.getSchema(Baz.class));
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Baz.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this,
+                RuntimeSchema.getSchema(Baz.class));
     }
 
     public int hashCode()
@@ -114,7 +115,7 @@ public final class Baz implements Externalizable
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (int)(timestamp ^ (timestamp >>> 32));
+        result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
         return result;
     }
 
@@ -126,7 +127,7 @@ public final class Baz implements Externalizable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Baz other = (Baz)obj;
+        Baz other = (Baz) obj;
         if (id != other.id)
             return false;
         if (name == null)
@@ -140,7 +141,5 @@ public final class Baz implements Externalizable
             return false;
         return true;
     }
-    
-    
 
 }

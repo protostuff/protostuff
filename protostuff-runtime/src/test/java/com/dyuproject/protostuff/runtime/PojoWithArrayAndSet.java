@@ -27,39 +27,34 @@ import com.dyuproject.protostuff.runtime.Bar.Status;
 
 /**
  * PojoWithArrayAndSet - for testing
- *
+ * 
  * @author David Yu
  * @created Nov 20, 2009
  */
 public final class PojoWithArrayAndSet implements Serializable
 {
-    
+
     private Set<Status> someEnumAsSet;
     private Status[] someEnumAsArray;
-    
+
     private Set<Bar> someBarAsSet;
     private Bar[] someBarAsArray;
-    
+
     private Set<Float> someFloatAsSet;
     private Float[] someFloatAsArray;
-    
+
     private Double[] someDoubleAsArray;
     private double[] somePrimitiveDoubleAsArray;
-    
-    
+
     public PojoWithArrayAndSet()
     {
-        
+
     }
 
-    public PojoWithArrayAndSet(
-            Set<Status> someEnumAsSet, 
-            Status[] someEnumAsArray, 
-            Set<Bar> someBarAsSet, 
-            Bar[] someBarAsArray, 
-            Set<Float> someFloatAsSet,
-            Float[] someFloatAsArray, 
-            Double[] someDoubleAsArray, 
+    public PojoWithArrayAndSet(Set<Status> someEnumAsSet,
+            Status[] someEnumAsArray, Set<Bar> someBarAsSet,
+            Bar[] someBarAsArray, Set<Float> someFloatAsSet,
+            Float[] someFloatAsArray, Double[] someDoubleAsArray,
             double[] somePrimitiveDoubleAsArray)
     {
         this.someEnumAsSet = someEnumAsSet;
@@ -81,7 +76,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someEnumAsSet the someEnumAsSet to set
+     * @param someEnumAsSet
+     *            the someEnumAsSet to set
      */
     public void setSomeEnumAsSet(Set<Bar.Status> someEnumAsSet)
     {
@@ -97,7 +93,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someEnumAsArray the someEnumAsArray to set
+     * @param someEnumAsArray
+     *            the someEnumAsArray to set
      */
     public void setSomeEnumAsArray(Bar.Status[] someEnumAsArray)
     {
@@ -113,7 +110,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someBarAsSet the someBarAsSet to set
+     * @param someBarAsSet
+     *            the someBarAsSet to set
      */
     public void setSomeBarAsSet(Set<Bar> someBarAsSet)
     {
@@ -129,7 +127,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someBarAsArray the someBarAsArray to set
+     * @param someBarAsArray
+     *            the someBarAsArray to set
      */
     public void setSomeBarAsArray(Bar[] someBarAsArray)
     {
@@ -145,7 +144,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someFloatAsSet the someFloatAsSet to set
+     * @param someFloatAsSet
+     *            the someFloatAsSet to set
      */
     public void setSomeFloatAsSet(Set<Float> someFloatAsSet)
     {
@@ -161,7 +161,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someFloatAsArray the someFloatAsArray to set
+     * @param someFloatAsArray
+     *            the someFloatAsArray to set
      */
     public void setSomeFloatAsArray(Float[] someFloatAsArray)
     {
@@ -177,7 +178,8 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param someDoubleAsArray the someDoubleAsArray to set
+     * @param someDoubleAsArray
+     *            the someDoubleAsArray to set
      */
     public void setSomeDoubleAsArray(Double[] someDoubleAsArray)
     {
@@ -193,9 +195,11 @@ public final class PojoWithArrayAndSet implements Serializable
     }
 
     /**
-     * @param somePrimitiveDoubleAsArray the somePrimitiveDoubleAsArray to set
+     * @param somePrimitiveDoubleAsArray
+     *            the somePrimitiveDoubleAsArray to set
      */
-    public void setSomePrimitiveDoubleAsArray(double[] somePrimitiveDoubleAsArray)
+    public void setSomePrimitiveDoubleAsArray(
+            double[] somePrimitiveDoubleAsArray)
     {
         this.somePrimitiveDoubleAsArray = somePrimitiveDoubleAsArray;
     }
@@ -204,17 +208,18 @@ public final class PojoWithArrayAndSet implements Serializable
     {
         int length = in.readInt();
         byte[] data = new byte[length];
-        for(int offset = 0; length > 0; length -= offset)
+        for (int offset = 0; length > 0; length -= offset)
             offset = in.read(data, offset, length);
-        
+
         in.close();
-        ProtostuffIOUtil.mergeFrom(data, this, RuntimeSchema.getSchema(PojoWithArrayAndSet.class));
+        ProtostuffIOUtil.mergeFrom(data, this,
+                RuntimeSchema.getSchema(PojoWithArrayAndSet.class));
     }
-    
+
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        byte[] data = ProtostuffIOUtil.toByteArray(this, 
-                RuntimeSchema.getSchema(PojoWithArrayAndSet.class), 
+        byte[] data = ProtostuffIOUtil.toByteArray(this,
+                RuntimeSchema.getSchema(PojoWithArrayAndSet.class),
                 LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE));
         out.writeInt(data.length);
         out.write(data);
@@ -226,12 +231,15 @@ public final class PojoWithArrayAndSet implements Serializable
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(someBarAsArray);
-        result = prime * result + ((someBarAsSet == null) ? 0 : someBarAsSet.hashCode());
+        result = prime * result
+                + ((someBarAsSet == null) ? 0 : someBarAsSet.hashCode());
         result = prime * result + Arrays.hashCode(someDoubleAsArray);
         result = prime * result + Arrays.hashCode(someEnumAsArray);
-        result = prime * result + ((someEnumAsSet == null) ? 0 : someEnumAsSet.hashCode());
+        result = prime * result
+                + ((someEnumAsSet == null) ? 0 : someEnumAsSet.hashCode());
         result = prime * result + Arrays.hashCode(someFloatAsArray);
-        result = prime * result + ((someFloatAsSet == null) ? 0 : someFloatAsSet.hashCode());
+        result = prime * result
+                + ((someFloatAsSet == null) ? 0 : someFloatAsSet.hashCode());
         result = prime * result + Arrays.hashCode(somePrimitiveDoubleAsArray);
         return result;
     }
@@ -244,7 +252,7 @@ public final class PojoWithArrayAndSet implements Serializable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PojoWithArrayAndSet other = (PojoWithArrayAndSet)obj;
+        PojoWithArrayAndSet other = (PojoWithArrayAndSet) obj;
         if (!Arrays.equals(someBarAsArray, other.someBarAsArray))
             return false;
         if (someBarAsSet == null)
@@ -274,11 +282,10 @@ public final class PojoWithArrayAndSet implements Serializable
         }
         else if (!someFloatAsSet.equals(other.someFloatAsSet))
             return false;
-        if (!Arrays.equals(somePrimitiveDoubleAsArray, other.somePrimitiveDoubleAsArray))
+        if (!Arrays.equals(somePrimitiveDoubleAsArray,
+                other.somePrimitiveDoubleAsArray))
             return false;
         return true;
     }
-    
-    
 
 }

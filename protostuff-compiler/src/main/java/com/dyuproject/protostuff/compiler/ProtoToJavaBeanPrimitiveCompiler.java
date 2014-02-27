@@ -8,12 +8,15 @@ import java.io.IOException;
 /**
  * Created by ryan on 1/22/14.
  */
-public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler {
-    public ProtoToJavaBeanPrimitiveCompiler() {
+public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
+{
+    public ProtoToJavaBeanPrimitiveCompiler()
+    {
         super("java_bean_primitives");
     }
 
-    public void compile(ProtoModule module, Proto proto) throws IOException {
+    public void compile(ProtoModule module, Proto proto) throws IOException
+    {
         String javaPackageName = proto.getJavaPackageName();
         StringTemplateGroup group = getSTG("java_bean_primitives");
 

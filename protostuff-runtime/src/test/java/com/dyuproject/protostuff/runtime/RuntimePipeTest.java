@@ -21,78 +21,78 @@ import com.dyuproject.protostuff.runtime.MathObjectsTest.Payment;
 
 /**
  * Test case for pipes generated at runtime.
- *
+ * 
  * @author David Yu
  * @created Oct 9, 2010
  */
 public class RuntimePipeTest extends ProtostuffPipeTest
 {
-    
+
     static <T> MappedSchema<T> getSchema(Class<T> typeClass)
     {
-        return (MappedSchema<T>)RuntimeSchema.getSchema(typeClass);
+        return (MappedSchema<T>) RuntimeSchema.getSchema(typeClass);
     }
-    
+
     public void testFoo() throws Exception
     {
         MappedSchema<Foo> schema = getSchema(Foo.class);
-        
+
         Foo foo = SerializableObjects.foo;
-        
+
         roundTrip(foo, schema, schema.getPipeSchema());
     }
-    
+
     public void testBar() throws Exception
     {
         MappedSchema<Bar> schema = getSchema(Bar.class);
-        
+
         Bar bar = SerializableObjects.bar;
-        
+
         roundTrip(bar, schema, schema.getPipeSchema());
     }
-    
+
     public void testBaz() throws Exception
     {
         MappedSchema<Baz> schema = getSchema(Baz.class);
-        
+
         Baz baz = SerializableObjects.baz;
-        
+
         roundTrip(baz, schema, schema.getPipeSchema());
     }
-    
+
     public void testEmployee() throws Exception
     {
         MappedSchema<Employee> schema = getSchema(Employee.class);
-        
+
         Employee emp = CollectionTest.filledEmployee();
-        
+
         roundTrip(emp, schema, schema.getPipeSchema());
     }
-    
+
     public void testTask() throws Exception
     {
         MappedSchema<Task> schema = getSchema(Task.class);
-        
+
         Task task = CollectionTest.filledTask();
-        
+
         roundTrip(task, schema, schema.getPipeSchema());
     }
-    
+
     public void testPayment() throws Exception
     {
         MappedSchema<Payment> schema = getSchema(Payment.class);
-        
+
         Payment payment = MathObjectsTest.filledPayment();
-        
+
         roundTrip(payment, schema, schema.getPipeSchema());
     }
-    
+
     public void testPojoWithArrayAndSet() throws Exception
     {
         MappedSchema<PojoWithArrayAndSet> schema = getSchema(PojoWithArrayAndSet.class);
-        
+
         PojoWithArrayAndSet p = SerDeserTest.filledPojoWithArrayAndSet();
-        
+
         roundTrip(p, schema, schema.getPipeSchema());
     }
 

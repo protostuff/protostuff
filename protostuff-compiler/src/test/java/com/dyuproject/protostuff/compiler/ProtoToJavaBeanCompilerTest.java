@@ -7,9 +7,11 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 /**
  * Created by ryan on 1/22/14.
  */
-public class ProtoToJavaBeanCompilerTest extends TestCase {
+public class ProtoToJavaBeanCompilerTest extends TestCase
+{
 
-    public void testSimpleLoad() {
+    public void testSimpleLoad()
+    {
 
         StringTemplateGroup group = STCodeGenerator.getSTG("java_bean_primitives");
 

@@ -30,25 +30,26 @@ import com.dyuproject.protostuff.runtime.MappedSchema.Field;
  */
 public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
 {
-    
+
     final Field<T>[] fieldsByNumber;
-    
+
     public RuntimePipeSchema(Schema<T> schema, Field<T>[] fieldsByNumber)
     {
         super(schema);
-        
+
         this.fieldsByNumber = fieldsByNumber;
     }
 
-    protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+    protected void transfer(Pipe pipe, Input input, Output output)
+            throws IOException
     {
-        for(int number = input.readFieldNumber(wrappedSchema); number != 0; 
-                number = input.readFieldNumber(wrappedSchema))
+        for (int number = input.readFieldNumber(wrappedSchema); number != 0; number = input
+                .readFieldNumber(wrappedSchema))
         {
-            final Field<T> field = number < fieldsByNumber.length ? 
-                    fieldsByNumber[number] : null;
-            
-            if(field == null)
+            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
+                    : null;
+
+            if (field == null)
                 input.handleUnknownField(number, wrappedSchema);
             else
                 field.transfer(pipe, input, output, field.repeated);

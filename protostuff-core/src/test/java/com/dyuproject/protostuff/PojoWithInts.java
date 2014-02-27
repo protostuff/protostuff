@@ -29,7 +29,6 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     static final PojoWithInts DEFAULT_INSTANCE = new PojoWithInts();
 
-    
     private int someInt32;
     private int someUint32;
     private int someSint32;
@@ -43,7 +42,7 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     public PojoWithInts()
     {
-        
+
     }
 
     // getters and setters
@@ -216,9 +215,9 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     public void mergeFrom(Input input, PojoWithInts message) throws IOException
     {
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -254,41 +253,40 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
                     break;
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
 
-
     public void writeTo(Output output, PojoWithInts message) throws IOException
     {
-        if(message.someInt32 != 0)
+        if (message.someInt32 != 0)
             output.writeInt32(1, message.someInt32, false);
 
-        if(message.someUint32 != 0)
+        if (message.someUint32 != 0)
             output.writeUInt32(2, message.someUint32, false);
 
-        if(message.someSint32 != 0)
+        if (message.someSint32 != 0)
             output.writeSInt32(3, message.someSint32, false);
 
-        if(message.someFixed32 != 0)
+        if (message.someFixed32 != 0)
             output.writeFixed32(4, message.someFixed32, false);
 
-        if(message.someSfixed32 != 0)
+        if (message.someSfixed32 != 0)
             output.writeSFixed32(5, message.someSfixed32, false);
 
-        if(message.someInt64 != 0)
+        if (message.someInt64 != 0)
             output.writeInt64(11, message.someInt64, false);
 
-        if(message.someUint64 != 0)
+        if (message.someUint64 != 0)
             output.writeUInt64(12, message.someUint64, false);
 
-        if(message.someSint64 != 0)
+        if (message.someSint64 != 0)
             output.writeSInt64(13, message.someSint64, false);
 
-        if(message.someFixed64 != 0)
+        if (message.someFixed64 != 0)
             output.writeFixed64(14, message.someFixed64, false);
 
-        if(message.someSfixed64 != 0)
+        if (message.someSfixed64 != 0)
             output.writeSFixed64(15, message.someSfixed64, false);
     }
 
@@ -308,15 +306,15 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
         final int prime = 31;
         int result = 1;
         result = prime * result + someFixed32;
-        result = prime * result + (int)(someFixed64 ^ (someFixed64 >>> 32));
+        result = prime * result + (int) (someFixed64 ^ (someFixed64 >>> 32));
         result = prime * result + someInt32;
-        result = prime * result + (int)(someInt64 ^ (someInt64 >>> 32));
+        result = prime * result + (int) (someInt64 ^ (someInt64 >>> 32));
         result = prime * result + someSfixed32;
-        result = prime * result + (int)(someSfixed64 ^ (someSfixed64 >>> 32));
+        result = prime * result + (int) (someSfixed64 ^ (someSfixed64 >>> 32));
         result = prime * result + someSint32;
-        result = prime * result + (int)(someSint64 ^ (someSint64 >>> 32));
+        result = prime * result + (int) (someSint64 ^ (someSint64 >>> 32));
         result = prime * result + someUint32;
-        result = prime * result + (int)(someUint64 ^ (someUint64 >>> 32));
+        result = prime * result + (int) (someUint64 ^ (someUint64 >>> 32));
         return result;
     }
 
@@ -329,7 +327,7 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PojoWithInts other = (PojoWithInts)obj;
+        PojoWithInts other = (PojoWithInts) obj;
         if (someFixed32 != other.someFixed32)
             return false;
         if (someFixed64 != other.someFixed64)
@@ -356,9 +354,11 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
     @Override
     public String toString()
     {
-        return "PojoWithInts [someFixed32=" + someFixed32 + ", someFixed64=" + someFixed64 + ", someInt32=" + someInt32 + ", someInt64=" + someInt64
-                + ", someSfixed32=" + someSfixed32 + ", someSfixed64=" + someSfixed64 + ", someSint32=" + someSint32 + ", someSint64=" + someSint64
+        return "PojoWithInts [someFixed32=" + someFixed32 + ", someFixed64=" + someFixed64 + ", someInt32=" + someInt32
+                + ", someInt64=" + someInt64
+                + ", someSfixed32=" + someSfixed32 + ", someSfixed64=" + someSfixed64 + ", someSint32=" + someSint32
+                + ", someSint64=" + someSint64
                 + ", someUint32=" + someUint32 + ", someUint64=" + someUint64 + "]";
     }
-    
+
 }

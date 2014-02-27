@@ -28,15 +28,15 @@ import com.dyuproject.protostuff.Schema;
 
 /**
  * Test for polymorphic serialization.
- * 
+ * <p/>
  * See {@link RuntimeDerivativeField} for details.
- *
+ * 
  * @author David Yu
  * @created Jan 15, 2011
  */
 public class PolymorphicSerializationTest extends AbstractTest
 {
-    
+
     public static abstract class Animal
     {
         protected String properName;
@@ -45,7 +45,8 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((properName == null)?0:properName.hashCode());
+            result = prime * result
+                    + ((properName == null) ? 0 : properName.hashCode());
             return result;
         }
 
@@ -57,7 +58,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Animal other = (Animal)obj;
+            Animal other = (Animal) obj;
             if (properName == null)
             {
                 if (other.properName != null)
@@ -68,7 +69,6 @@ public class PolymorphicSerializationTest extends AbstractTest
             return true;
         }
 
-        
     }
 
     public static class Zoo
@@ -80,8 +80,10 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((animals == null)?0:animals.hashCode());
-            result = prime * result + ((largestAnimal == null)?0:largestAnimal.hashCode());
+            result = prime * result
+                    + ((animals == null) ? 0 : animals.hashCode());
+            result = prime * result
+                    + ((largestAnimal == null) ? 0 : largestAnimal.hashCode());
             return result;
         }
 
@@ -93,7 +95,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Zoo other = (Zoo)obj;
+            Zoo other = (Zoo) obj;
             if (animals == null)
             {
                 if (other.animals != null)
@@ -110,7 +112,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             return true;
         }
-        
+
     }
 
     public static abstract class Mammal extends Animal
@@ -121,7 +123,8 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = super.hashCode();
-            result = prime * result + Float.floatToIntBits(normalBodyTemperature);
+            result = prime * result
+                    + Float.floatToIntBits(normalBodyTemperature);
             return result;
         }
 
@@ -133,13 +136,13 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Mammal other = (Mammal)obj;
-            if (Float.floatToIntBits(normalBodyTemperature) != Float.floatToIntBits(other.normalBodyTemperature))
+            Mammal other = (Mammal) obj;
+            if (Float.floatToIntBits(normalBodyTemperature) != Float
+                    .floatToIntBits(other.normalBodyTemperature))
                 return false;
             return true;
         }
-        
-        
+
     }
 
     public static class Bear extends Mammal
@@ -150,7 +153,8 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = super.hashCode();
-            result = prime * result + ((someBearField == null)?0:someBearField.hashCode());
+            result = prime * result
+                    + ((someBearField == null) ? 0 : someBearField.hashCode());
             return result;
         }
 
@@ -162,7 +166,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Bear other = (Bear)obj;
+            Bear other = (Bear) obj;
             if (someBearField == null)
             {
                 if (other.someBearField != null)
@@ -172,8 +176,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             return true;
         }
-        
-        
+
     }
 
     public static class Tiger extends Mammal
@@ -184,7 +187,9 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = super.hashCode();
-            result = prime * result + ((someTigerField == null)?0:someTigerField.hashCode());
+            result = prime
+                    * result
+                    + ((someTigerField == null) ? 0 : someTigerField.hashCode());
             return result;
         }
 
@@ -196,7 +201,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Tiger other = (Tiger)obj;
+            Tiger other = (Tiger) obj;
             if (someTigerField == null)
             {
                 if (other.someTigerField != null)
@@ -206,10 +211,9 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             return true;
         }
-        
-        
+
     }
-    
+
     public static class Elephant extends Mammal
     {
         protected String someElephantField;
@@ -218,7 +222,10 @@ public class PolymorphicSerializationTest extends AbstractTest
         {
             final int prime = 31;
             int result = super.hashCode();
-            result = prime * result + ((someElephantField == null)?0:someElephantField.hashCode());
+            result = prime
+                    * result
+                    + ((someElephantField == null) ? 0 : someElephantField
+                            .hashCode());
             return result;
         }
 
@@ -230,7 +237,7 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            Elephant other = (Elephant)obj;
+            Elephant other = (Elephant) obj;
             if (someElephantField == null)
             {
                 if (other.someElephantField != null)
@@ -240,10 +247,9 @@ public class PolymorphicSerializationTest extends AbstractTest
                 return false;
             return true;
         }
-        
-        
+
     }
-    
+
     public static Bear filledBear()
     {
         Bear bear = new Bear();
@@ -252,7 +258,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         bear.properName = "bear";
         return bear;
     }
-    
+
     public static Tiger filledTiger()
     {
         Tiger tiger = new Tiger();
@@ -261,7 +267,7 @@ public class PolymorphicSerializationTest extends AbstractTest
         tiger.properName = "tiger";
         return tiger;
     }
-    
+
     public static Elephant filledElephant()
     {
         Elephant elephant = new Elephant();
@@ -270,143 +276,143 @@ public class PolymorphicSerializationTest extends AbstractTest
         elephant.properName = "elephant";
         return elephant;
     }
-    
+
     public static Zoo filledZoo()
     {
         Zoo zoo = new Zoo();
-        
+
         Elephant elephant = filledElephant();
-        Bear bear = filledBear(); 
-        Tiger tiger = filledTiger(); 
-        
+        Bear bear = filledBear();
+        Tiger tiger = filledTiger();
+
         zoo.largestAnimal = elephant;
-        
+
         zoo.animals.add(bear);
         zoo.animals.add(tiger);
         zoo.animals.add(elephant);
-        
+
         return zoo;
     }
-    
+
     public void testProtobuf() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
         Zoo p = filledZoo();
 
         byte[] data = ProtobufIOUtil.toByteArray(p, schema, buf());
-        //System.err.println("protobuf: " + data.length);
-        
+        // System.err.println("protobuf: " + data.length);
+
         Zoo p2 = new Zoo();
         ProtobufIOUtil.mergeFrom(data, p2, schema);
-        
+
         assertEquals(p, p2);
-        
+
         List<Zoo> list = new ArrayList<Zoo>();
         list.add(p);
         list.add(p2);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ProtobufIOUtil.writeListTo(out, list, schema, buf());
         byte[] listData = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(listData);
         List<Zoo> parsedList = ProtobufIOUtil.parseListFrom(in, schema);
-        
+
         assertEquals(list, parsedList);
     }
-    
+
     public void testProtostuff() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
         Zoo p = filledZoo();
 
         byte[] data = ProtostuffIOUtil.toByteArray(p, schema, buf());
-        //System.err.println("protostuff: " + data.length);
-        
+        // System.err.println("protostuff: " + data.length);
+
         Zoo p2 = new Zoo();
         ProtostuffIOUtil.mergeFrom(data, 0, data.length, p2, schema);
-        
+
         assertEquals(p, p2);
-        
+
         List<Zoo> list = new ArrayList<Zoo>();
         list.add(p);
         list.add(p2);
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ProtostuffIOUtil.writeListTo(out, list, schema, buf());
         byte[] listData = out.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(listData);
         List<Zoo> parsedList = ProtostuffIOUtil.parseListFrom(in, schema);
-        
+
         assertEquals(list, parsedList);
     }
-    
+
     public void testPipe() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
-        Pipe.Schema<Zoo> pipeSchema = ((MappedSchema<Zoo>)schema).pipeSchema;
+        Pipe.Schema<Zoo> pipeSchema = ((MappedSchema<Zoo>) schema).pipeSchema;
         Zoo p = filledZoo();
-        
+
         ProtostuffPipeTest.roundTrip(p, schema, pipeSchema);
     }
-    
+
     public void testMerge() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
-        
+
         final String properName = "elephant";
-        
+
         Elephant elephant = new Elephant();
         elephant.someElephantField = "elephantField";
         elephant.normalBodyTemperature = 25f;
         elephant.properName = properName;
-        
+
         Zoo zoo = new Zoo();
         zoo.largestAnimal = elephant;
-        
+
         // mergeZoo
-        
+
         Elephant sickElephant = new Elephant();
         sickElephant.normalBodyTemperature = 50f;
         sickElephant.someElephantField = "sickElephantField";
-        
+
         Zoo mergeZoo = new Zoo();
         mergeZoo.largestAnimal = sickElephant;
-        
+
         // ser
         byte[] data = ProtostuffIOUtil.toByteArray(mergeZoo, schema, buf());
         // deser
         ProtostuffIOUtil.mergeFrom(data, zoo, schema);
-        
+
         // test that it was not overwritten.
         assertTrue(zoo.largestAnimal == elephant);
-        
+
         // test that some elephant fields are overwritten
         assertTrue(elephant.normalBodyTemperature == 50f);
         assertEquals(elephant.someElephantField, "sickElephantField");
-        
+
         // test that this property was not touched.
         assertTrue(properName == elephant.properName);
     }
-    
+
     public void testOverwrite() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
-        
+
         Zoo zoo = new Zoo();
         zoo.largestAnimal = filledBear();
-        
+
         // overwriteZoo
-        
+
         Zoo overwriteZoo = new Zoo();
         overwriteZoo.largestAnimal = filledTiger();
-        
+
         // ser
         byte[] data = ProtostuffIOUtil.toByteArray(overwriteZoo, schema, buf());
         // deser
         ProtostuffIOUtil.mergeFrom(data, zoo, schema);
-        
+
         // test that it was overwritten
         assertTrue(zoo.largestAnimal instanceof Tiger);
     }

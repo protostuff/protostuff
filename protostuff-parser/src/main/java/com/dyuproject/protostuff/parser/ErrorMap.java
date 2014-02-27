@@ -26,7 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-
 package com.dyuproject.protostuff.parser;
 
 import java.util.Collection;
@@ -35,20 +34,22 @@ import java.util.Set;
 
 /**
  * A sort of runtime error mechanism for st code generation to fail fast.
- *
+ * 
  * @author David Yu
  * @created Nov 1, 2011
  */
-public final class ErrorMap implements Map<String,Object>
+public final class ErrorMap implements Map<String, Object>
 {
-    
+
     static final ErrorMap INSTANCE = new ErrorMap();
-    
-    private ErrorMap(){}
+
+    private ErrorMap()
+    {
+    }
 
     public void clear()
     {
-        
+
     }
 
     public boolean containsKey(Object arg0)
@@ -61,7 +62,7 @@ public final class ErrorMap implements Map<String,Object>
     {
         return containsKey(arg0);
     }
-    
+
     public boolean containsValue(Object arg0)
     {
         throw new UnsupportedOperationException();
@@ -106,7 +107,5 @@ public final class ErrorMap implements Map<String,Object>
     {
         throw new UnsupportedOperationException();
     }
-    
-    
 
 }

@@ -18,27 +18,26 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * A FilterInput contains some other {@link Input input}, which it uses as its basic 
- * source of data.
- *
+ * A FilterInput contains some other {@link Input input}, which it uses as its basic source of data.
+ * 
  * @author David Yu
  * @created Nov 11, 2009
  */
 public class FilterInput<F extends Input> implements Input
 {
-    
+
     protected final F input;
-    
+
     public FilterInput(F input)
     {
         this.input = input;
-    }    
+    }
 
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         input.handleUnknownField(fieldNumber, schema);
     }
-    
+
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         return input.readFieldNumber(schema);
@@ -140,10 +139,12 @@ public class FilterInput<F extends Input> implements Input
         input.transferByteRangeTo(output, utf8String, fieldNumber, repeated);
     }
 
-    /** Reads a byte array/ByteBuffer value. */
-    public ByteBuffer readByteBuffer() throws IOException {
+    /**
+     * Reads a byte array/ByteBuffer value.
+     */
+    public ByteBuffer readByteBuffer() throws IOException
+    {
         return ByteBuffer.wrap(readByteArray());
     }
-
 
 }

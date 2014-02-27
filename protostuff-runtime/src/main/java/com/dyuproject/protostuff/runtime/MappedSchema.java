@@ -27,123 +27,124 @@ import com.dyuproject.protostuff.Tag;
 import com.dyuproject.protostuff.WireFormat.FieldType;
 
 /**
- * Base class for schemas that maps fields by number and name.
- * For fast initialization, the last field number is provided in the constructor.
- *
+ * Base class for schemas that maps fields by number and name. For fast initialization, the last field number is
+ * provided in the constructor.
+ * 
  * @author David Yu
  * @created Nov 10, 2009
  */
 public abstract class MappedSchema<T> implements Schema<T>
 {
-    
+
     protected final Class<T> typeClass;
     protected final Field<T>[] fields, fieldsByNumber;
-    protected final Map<String,Field<T>> fieldsByName;
+    protected final Map<String, Field<T>> fieldsByName;
     protected final Pipe.Schema<T> pipeSchema;
-    
+
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Field<T>[] fields, int lastFieldNumber)
+    public MappedSchema(Class<T> typeClass, Field<T>[] fields,
+            int lastFieldNumber)
     {
-        if(fields.length==0)
+        if (fields.length == 0)
             throw new IllegalStateException("At least one field is required.");
-        
+
         this.typeClass = typeClass;
         this.fields = fields;
-        fieldsByName = new HashMap<String,Field<T>>();
-        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
-        for(Field<T> f : fields)
+        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
+        for (Field<T> f : fields)
         {
             Field<T> last = this.fieldsByName.put(f.name, f);
-            if(last!=null)
+            if (last != null)
             {
-                throw new IllegalStateException(last + " and " + f + 
-                        " cannot have the same name.");
+                throw new IllegalStateException(last + " and " + f
+                        + " cannot have the same name.");
             }
-            if(fieldsByNumber[f.number]!=null)
+            if (fieldsByNumber[f.number] != null)
             {
-                throw new IllegalStateException(fieldsByNumber[f.number] + " and " + f + 
-                        " cannot have the same number.");
+                throw new IllegalStateException(fieldsByNumber[f.number]
+                        + " and " + f + " cannot have the same number.");
             }
-            
+
             fieldsByNumber[f.number] = f;
-            //f.owner = this;
+            // f.owner = this;
         }
-        
+
         pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields, 
+    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
             int lastFieldNumber)
     {
-        if(fields.isEmpty())
+        if (fields.isEmpty())
             throw new IllegalStateException("At least one field is required.");
-        
+
         this.typeClass = typeClass;
-        fieldsByName = new HashMap<String,Field<T>>();
-        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
-        for(Field<T> f : fields)
+        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
+        for (Field<T> f : fields)
         {
             Field<T> last = this.fieldsByName.put(f.name, f);
-            if(last!=null)
+            if (last != null)
             {
-                throw new IllegalStateException(last + " and " + f + 
-                        " cannot have the same name.");
+                throw new IllegalStateException(last + " and " + f
+                        + " cannot have the same name.");
             }
-            if(fieldsByNumber[f.number]!=null)
+            if (fieldsByNumber[f.number] != null)
             {
-                throw new IllegalStateException(fieldsByNumber[f.number] + " and " + f + 
-                        " cannot have the same number.");
+                throw new IllegalStateException(fieldsByNumber[f.number]
+                        + " and " + f + " cannot have the same number.");
             }
-            
+
             fieldsByNumber[f.number] = f;
-            //f.owner = this;
+            // f.owner = this;
         }
-        
-        this.fields = (Field<T>[])new Field<?>[fields.size()];
-        for(int i = 1, j = 0; i < fieldsByNumber.length; i++)
+
+        this.fields = (Field<T>[]) new Field<?>[fields.size()];
+        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
         {
-            if(fieldsByNumber[i] != null)
+            if (fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-        
+
         pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Map<String,Field<T>> fieldsByName, 
+    public MappedSchema(Class<T> typeClass, Map<String, Field<T>> fieldsByName,
             int lastFieldNumber)
     {
-        if(fieldsByName.isEmpty())
+        if (fieldsByName.isEmpty())
             throw new IllegalStateException("At least one field is required.");
-        
+
         this.typeClass = typeClass;
         this.fieldsByName = fieldsByName;
         Collection<Field<T>> fields = fieldsByName.values();
-        fieldsByNumber = (Field<T>[])new Field<?>[lastFieldNumber + 1];
-        
-        for(Field<T> f : fields)
+        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
+
+        for (Field<T> f : fields)
         {
-            if(fieldsByNumber[f.number]!=null)
+            if (fieldsByNumber[f.number] != null)
             {
-                throw new IllegalStateException(fieldsByNumber[f.number] + " and " + f + 
-                        " cannot have the same number.");
+                throw new IllegalStateException(fieldsByNumber[f.number]
+                        + " and " + f + " cannot have the same number.");
             }
-            
+
             fieldsByNumber[f.number] = f;
-            //f.owner = this;
+            // f.owner = this;
         }
-        
-        this.fields = (Field<T>[])new Field<?>[fields.size()];
-        for(int i = 1, j = 0; i < fieldsByNumber.length; i++)
+
+        this.fields = (Field<T>[]) new Field<?>[fields.size()];
+        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
         {
-            if(fieldsByNumber[i] != null)
+            if (fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-        
+
         pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
     }
-    
+
     /**
      * Returns the message's total number of fields.
      */
@@ -151,58 +152,58 @@ public abstract class MappedSchema<T> implements Schema<T>
     {
         return fields.length;
     }
-    
+
     public Class<T> typeClass()
     {
         return typeClass;
     }
-    
+
     public String messageName()
     {
         return typeClass.getSimpleName();
     }
-    
+
     public String messageFullName()
     {
         return typeClass.getName();
     }
-    
+
     public String getFieldName(int number)
     {
         // only called on writes
-        final Field<T> field = number < fieldsByNumber.length ? 
-                fieldsByNumber[number] : null;
-                
+        final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
+                : null;
+
         return field == null ? null : field.name;
     }
-    
+
     public int getFieldNumber(String name)
     {
         final Field<T> field = fieldsByName.get(name);
         return field == null ? 0 : field.number;
     }
-    
+
     public final void mergeFrom(Input input, T message) throws IOException
     {
-        for (int number = input.readFieldNumber(this); number != 0; 
-                number = input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this); number != 0; number = input
+                .readFieldNumber(this))
         {
-            final Field<T> field = number < fieldsByNumber.length ? 
-                    fieldsByNumber[number] : null;
+            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
+                    : null;
 
-            if(field == null)
+            if (field == null)
                 input.handleUnknownField(number, this);
             else
                 field.mergeFrom(input, message);
         }
     }
-    
+
     public final void writeTo(Output output, T message) throws IOException
     {
-        for(Field<T> f : fields)
+        for (Field<T> f : fields)
             f.writeTo(output, message);
     }
-    
+
     /**
      * Returns the pipe schema linked to this.
      */
@@ -210,10 +211,9 @@ public abstract class MappedSchema<T> implements Schema<T>
     {
         return pipeSchema;
     }
-    
+
     /**
      * Represents a field of a message/pojo.
-     *
      */
     public static abstract class Field<T>
     {
@@ -222,9 +222,10 @@ public abstract class MappedSchema<T> implements Schema<T>
         public final String name;
         public final boolean repeated;
         public final int groupFilter;
-        //public final Tag tag;
-        
-        public Field(FieldType type, int number, String name, boolean repeated, 
+
+        // public final Tag tag;
+
+        public Field(FieldType type, int number, String name, boolean repeated,
                 Tag tag)
         {
             this.type = type;
@@ -232,11 +233,10 @@ public abstract class MappedSchema<T> implements Schema<T>
             this.name = name;
             this.repeated = repeated;
             this.groupFilter = tag == null ? 0 : tag.groupFilter();
-            //this.tag = tag;
+            // this.tag = tag;
         }
-        
-        public Field(FieldType type, int number, String name, 
-                Tag tag)
+
+        public Field(FieldType type, int number, String name, Tag tag)
         {
             this(type, number, name, false, tag);
         }
@@ -244,17 +244,19 @@ public abstract class MappedSchema<T> implements Schema<T>
         /**
          * Writes the value of a field to the {@code output}.
          */
-        protected abstract void writeTo(Output output, T message) throws IOException;
-        
+        protected abstract void writeTo(Output output, T message)
+                throws IOException;
+
         /**
          * Reads the field value into the {@code message}.
          */
-        protected abstract void mergeFrom(Input input, T message) throws IOException;
-        
+        protected abstract void mergeFrom(Input input, T message)
+                throws IOException;
+
         /**
          * Transfer the input field to the output field.
          */
-        protected abstract void transfer(Pipe pipe, Input input, Output output, 
+        protected abstract void transfer(Pipe pipe, Input input, Output output,
                 boolean repeated) throws IOException;
     }
 

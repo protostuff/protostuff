@@ -27,54 +27,55 @@ import com.dyuproject.protostuff.WireFormat.FieldType;
 import com.dyuproject.protostuff.runtime.MappedSchema.Field;
 
 /**
- * A runtime field for a {@link Collection}.
- * Null values are not written.
- *
+ * A runtime field for a {@link Collection}. Null values are not written.
+ * 
  * @author David Yu
  * @created Jan 26, 2011
  */
-abstract class RuntimeCollectionField<T,V> extends Field<T>
+abstract class RuntimeCollectionField<T, V> extends Field<T>
 {
-    
+
     /**
-     * Since we cannot inherit multiple classes, we create this Collection schema simply 
-     * to delegate to the wrapping class' abstract methods.
+     * Since we cannot inherit multiple classes, we create this Collection schema simply to delegate to the wrapping
+     * class' abstract methods.
      */
     protected final CollectionSchema<V> schema;
 
-    public RuntimeCollectionField(FieldType type, int number, String name, Tag tag, 
-            MessageFactory messageFactory)
+    public RuntimeCollectionField(FieldType type, int number, String name,
+            Tag tag, MessageFactory messageFactory)
     {
         super(type, number, name, false, tag);
         schema = new CollectionSchema<V>(messageFactory)
         {
-            protected void addValueFrom(Input input, Collection<V> collection) 
-            throws IOException
+            protected void addValueFrom(Input input, Collection<V> collection)
+                    throws IOException
             {
                 RuntimeCollectionField.this.addValueFrom(input, collection);
             }
-            protected void writeValueTo(Output output, int fieldNumber, V value, 
-                    boolean repeated) throws IOException
+
+            protected void writeValueTo(Output output, int fieldNumber,
+                    V value, boolean repeated) throws IOException
             {
-                RuntimeCollectionField.this.writeValueTo(output, fieldNumber, value, 
-                        repeated);
+                RuntimeCollectionField.this.writeValueTo(output, fieldNumber,
+                        value, repeated);
             }
-            protected void transferValue(Pipe pipe, Input input, Output output, 
+
+            protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                RuntimeCollectionField.this.transferValue(pipe, input, output, number, 
-                        repeated);
+                RuntimeCollectionField.this.transferValue(pipe, input, output,
+                        number, repeated);
             }
         };
     }
-    
-    protected abstract void addValueFrom(Input input, Collection<V> collection) 
+
+    protected abstract void addValueFrom(Input input, Collection<V> collection)
             throws IOException;
-    
-    protected abstract void writeValueTo(Output output, int fieldNumber, V value, 
-            boolean repeated) throws IOException;
-    
-    protected abstract void transferValue(Pipe pipe, Input input, Output output, 
-            int number, boolean repeated) throws IOException;
+
+    protected abstract void writeValueTo(Output output, int fieldNumber,
+            V value, boolean repeated) throws IOException;
+
+    protected abstract void transferValue(Pipe pipe, Input input,
+            Output output, int number, boolean repeated) throws IOException;
 
 }

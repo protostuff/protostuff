@@ -21,7 +21,7 @@ import java.io.OutputStream;
 
 /**
  * Test the streaming output capability of {@link ProtostuffOutput}.
- *
+ * 
  * @author David Yu
  * @created Sep 19, 2010
  */
@@ -53,12 +53,12 @@ public class ProtostuffStreamedOutputTest extends SerDeserTest
         {
             ProtostuffIOUtil.writeTo(out, message, schema, buf());
         }
-        catch(IOException e)
+        catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).");
         }
-        
+
         return out.toByteArray();
     }
 

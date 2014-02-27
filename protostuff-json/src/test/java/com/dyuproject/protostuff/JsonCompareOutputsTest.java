@@ -30,197 +30,197 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Compare the outputs of different json impls.
- *
+ * 
  * @author David Yu
  * @created Jul 2, 2010
  */
 public class JsonCompareOutputsTest extends TestCase
 {
-    
+
     static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
-    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED, 
+    static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED,
             null, true, -130.031f, -1000.0001d, -101010101);
-    
+
     static final Baz baz = new Baz(567, "baz", 202020202);
-    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED, 
+    static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED,
             ByteString.copyFromUtf8("byte_bar"), true, 150.051f, 2000.0002d, 303030303);
 
     // a total of 791 bytes
     public static final Foo foo = SerializableObjects.newFoo(
-            new Integer[]{90210,-90210, 0}, 
-            new String[]{
+            new Integer[] { 90210, -90210, 0 },
+            new String[] {
                     "a\u0008\u0009\u000B\r\n\f\t\b\"\\",
                     "ef",
                     "gh",
                     "12345678901234567890123456789012345678901234567890"
-            }, 
-            new Bar[]{bar, negativeBar},
-            new EnumSample[]{EnumSample.TYPE0, EnumSample.TYPE2}, 
-            new ByteString[]{ByteString.copyFromUtf8("byte1"), ByteString.copyFromUtf8("byte2")}, 
-            new Boolean[]{true, false}, 
-            new Float[]{1234.4321f, -1234.4321f, 0f}, 
-            new Double[]{12345678.87654321d, -12345678.87654321d, 0d}, 
-            new Long[]{7060504030201l, -7060504030201l, 0l});
-    
+            },
+            new Bar[] { bar, negativeBar },
+            new EnumSample[] { EnumSample.TYPE0, EnumSample.TYPE2 },
+            new ByteString[] { ByteString.copyFromUtf8("byte1"), ByteString.copyFromUtf8("byte2") },
+            new Boolean[] { true, false },
+            new Float[] { 1234.4321f, -1234.4321f, 0f },
+            new Double[] { 12345678.87654321d, -12345678.87654321d, 0d },
+            new Long[] { 7060504030201l, -7060504030201l, 0l });
+
     static final int BUF_SIZE = 1024;
-    
+
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
-        
+
         byte[] jo = JSON_OUTPUT.serialize(fooCompare);
         byte[] jbo = JSON_BUFFERED_OUTPUT.serialize(fooCompare);
         byte[] jso = JSON_STREAMED_OUTPUT.serialize(fooCompare);
-        
+
         assertTrue(jo.length == jbo.length);
         assertTrue(jso.length == jo.length);
-        
+
         String joString = STRING.deser(jo);
         String jboString = STRING.deser(jbo);
-        
+
         assertEquals(joString, jboString);
         assertEquals(joString, STRING.deser(jso));
     }
-    
+
     public void testFooNumeric() throws Exception
     {
         Foo fooCompare = foo;
-        
+
         byte[] jo = JSON_OUTPUT_NUMERIC.serialize(fooCompare);
         byte[] jbo = JSON_BUFFERED_OUTPUT_NUMERIC.serialize(fooCompare);
         byte[] jso = JSON_STREAMED_OUTPUT_NUMERIC.serialize(fooCompare);
-        
+
         assertTrue(jo.length == jbo.length);
         assertTrue(jso.length == jo.length);
-        
+
         String joString = STRING.deser(jo);
         String jboString = STRING.deser(jbo);
-        
+
         assertEquals(joString, jboString);
         assertEquals(joString, STRING.deser(jso));
     }
-    
+
     public void testBar() throws Exception
     {
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        for (Bar barCompare : new Bar[] { bar, negativeBar })
         {
             byte[] jo = JSON_OUTPUT.serialize(barCompare);
             byte[] jbo = JSON_BUFFERED_OUTPUT.serialize(barCompare);
             byte[] jso = JSON_STREAMED_OUTPUT.serialize(barCompare);
-            
+
             assertTrue(jo.length == jbo.length);
             assertTrue(jso.length == jo.length);
-            
+
             String joString = STRING.deser(jo);
             String jboString = STRING.deser(jbo);
-            
+
             assertEquals(joString, jboString);
             assertEquals(joString, STRING.deser(jso));
         }
     }
-    
+
     public void testBarNumeric() throws Exception
     {
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        for (Bar barCompare : new Bar[] { bar, negativeBar })
         {
             byte[] jo = JSON_OUTPUT_NUMERIC.serialize(barCompare);
             byte[] jbo = JSON_BUFFERED_OUTPUT_NUMERIC.serialize(barCompare);
             byte[] jso = JSON_STREAMED_OUTPUT_NUMERIC.serialize(barCompare);
-            
+
             assertTrue(jo.length == jbo.length);
             assertTrue(jso.length == jo.length);
-            
+
             String joString = STRING.deser(jo);
             String jboString = STRING.deser(jbo);
-            
+
             assertEquals(joString, jboString);
             assertEquals(joString, STRING.deser(jso));
         }
     }
-    
+
     public void testBaz() throws Exception
     {
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
+        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
         {
             byte[] jo = JSON_OUTPUT.serialize(bazCompare);
             byte[] jbo = JSON_BUFFERED_OUTPUT.serialize(bazCompare);
             byte[] jso = JSON_STREAMED_OUTPUT.serialize(bazCompare);
-            
+
             assertTrue(jo.length == jbo.length);
             assertTrue(jso.length == jo.length);
-            
+
             String joString = STRING.deser(jo);
             String jboString = STRING.deser(jbo);
-            
+
             assertEquals(joString, jboString);
             assertEquals(joString, STRING.deser(jso));
         }
     }
-    
+
     public void testBazNumeric() throws Exception
     {
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
+        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
         {
             byte[] jo = JSON_OUTPUT_NUMERIC.serialize(bazCompare);
             byte[] jbo = JSON_BUFFERED_OUTPUT_NUMERIC.serialize(bazCompare);
             byte[] jso = JSON_STREAMED_OUTPUT_NUMERIC.serialize(bazCompare);
-            
+
             assertTrue(jo.length == jbo.length);
             assertTrue(jso.length == jo.length);
-            
+
             String joString = STRING.deser(jo);
             String jboString = STRING.deser(jbo);
-            
+
             assertEquals(joString, jboString);
             assertEquals(joString, STRING.deser(jso));
         }
     }
-    
+
     public void testBenchmark() throws Exception
     {
-        if(!"false".equals(System.getProperty("benchmark.skip")))
+        if (!"false".equals(System.getProperty("benchmark.skip")))
             return;
 
         String dir = System.getProperty("benchmark.output_dir");
-        
-        PrintStream out = dir==null ? System.out : 
-            new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-json-"+System.currentTimeMillis()+".txt"), true));
-        
+
+        PrintStream out = dir == null ? System.out :
+                new PrintStream(new FileOutputStream(new File(new File(dir),
+                        "protostuff-json-" + System.currentTimeMillis() + ".txt"), true));
+
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
         int loops = Integer.getInteger("benchmark.loops", 2000000);
-        
+
         String title = "protostuff-json serialization benchmark for " + loops + " runs";
         out.println(title);
         out.println();
 
         start(foo, JSON_SERIALIZERS, out, warmups, loops);
-        
-        if(System.out!=out)
+
+        if (System.out != out)
             out.close();
     }
-    
+
     public static void main(String[] args) throws Exception
     {
         String dir = System.getProperty("benchmark.output_dir");
-        
-        PrintStream out = dir==null ? System.out : 
-            new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-json-"+System.currentTimeMillis()+".txt"), true));
-        
+
+        PrintStream out = dir == null ? System.out :
+                new PrintStream(new FileOutputStream(new File(new File(dir),
+                        "protostuff-json-" + System.currentTimeMillis() + ".txt"), true));
+
         int warmups = Integer.getInteger("benchmark.warmups", 100000);
         int loops = Integer.getInteger("benchmark.loops", 1000000);
-        
+
         String title = "protostuff-json serialization benchmark for " + loops + " runs";
         out.println(title);
         out.println();
 
         start(foo, JSON_SERIALIZERS, out, warmups, loops);
-        
-        if(System.out!=out)
+
+        if (System.out != out)
             out.close();
     }
-    
+
     public static final Serializer JSON_OUTPUT = new Serializer()
     {
 
@@ -228,14 +228,14 @@ public class JsonCompareOutputsTest extends TestCase
         {
             return JsonIOUtil.toByteArray(message, message.cachedSchema(), false);
         }
-        
+
         public String getName()
         {
             return "json-output";
         }
-        
+
     };
-    
+
     public static final Serializer JSON_OUTPUT_NUMERIC = new Serializer()
     {
 
@@ -243,24 +243,24 @@ public class JsonCompareOutputsTest extends TestCase
         {
             return JsonIOUtil.toByteArray(message, message.cachedSchema(), true);
         }
-        
+
         public String getName()
         {
             return "json-output-numeric";
         }
-        
+
     };
-    
+
     public static final Serializer JSON_BUFFERED_OUTPUT = new Serializer()
     {
-        
+
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
             {
-                return JsonXIOUtil.toByteArray(message, message.cachedSchema(), 
+                return JsonXIOUtil.toByteArray(message, message.cachedSchema(),
                         false, buffer);
             }
             finally
@@ -268,17 +268,17 @@ public class JsonCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
+
         public String getName()
         {
             return "json-buffered-output";
         }
-        
+
     };
-    
+
     public static final Serializer JSON_STREAMED_OUTPUT = new Serializer()
     {
-        
+
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
         public <T extends Message<T>> byte[] serialize(T message)
@@ -298,15 +298,14 @@ public class JsonCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
+
         public String getName()
         {
             return "json-streamed-output";
         }
-        
+
     };
-    
-    
+
     public static final Serializer JSON_BUFFERED_OUTPUT_NUMERIC = new Serializer()
     {
 
@@ -316,7 +315,7 @@ public class JsonCompareOutputsTest extends TestCase
         {
             try
             {
-                return JsonXIOUtil.toByteArray(message, message.cachedSchema(), 
+                return JsonXIOUtil.toByteArray(message, message.cachedSchema(),
                         true, buffer);
             }
             finally
@@ -324,17 +323,17 @@ public class JsonCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
+
         public String getName()
         {
             return "json-buffered-output-numeric";
         }
-        
+
     };
-    
+
     public static final Serializer JSON_STREAMED_OUTPUT_NUMERIC = new Serializer()
     {
-        
+
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
         public <T extends Message<T>> byte[] serialize(T message)
@@ -354,18 +353,18 @@ public class JsonCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
+
         public String getName()
         {
             return "json-streamed-output-numeric";
         }
-        
+
     };
-    
-    static final Serializer[] JSON_SERIALIZERS = new Serializer[]{
-        JSON_OUTPUT, JSON_OUTPUT_NUMERIC,
-        JSON_BUFFERED_OUTPUT, JSON_BUFFERED_OUTPUT_NUMERIC,
-        JSON_STREAMED_OUTPUT, JSON_STREAMED_OUTPUT_NUMERIC
+
+    static final Serializer[] JSON_SERIALIZERS = new Serializer[] {
+            JSON_OUTPUT, JSON_OUTPUT_NUMERIC,
+            JSON_BUFFERED_OUTPUT, JSON_BUFFERED_OUTPUT_NUMERIC,
+            JSON_STREAMED_OUTPUT, JSON_STREAMED_OUTPUT_NUMERIC
     };
 
 }

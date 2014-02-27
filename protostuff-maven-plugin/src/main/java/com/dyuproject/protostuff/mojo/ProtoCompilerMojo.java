@@ -26,7 +26,7 @@ import com.dyuproject.protostuff.compiler.CompilerMain;
 
 /**
  * Compiles proto files to java/gwt/etc.
- *
+ * 
  * @author David Yu
  * @created Jan 14, 2010
  * @goal compile
@@ -34,10 +34,10 @@ import com.dyuproject.protostuff.compiler.CompilerMain;
  */
 public class ProtoCompilerMojo extends AbstractMojo
 {
-    
+
     /**
      * The current Maven project.
-     *
+     * 
      * @parameter default-value="${project}"
      * @readonly
      * @required
@@ -47,27 +47,26 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     /**
      * When {@code true}, skip the execution.
-     *
+     * 
      * @parameter expression="${protostuff.compiler.skip}" default-value="false"
      * @since 1.0.1
      */
     private boolean skip;
-    
+
     /**
-     * When {@code true}, the protos are cached for re-use.
-     * This matters when a certain proto is also used/imported by other modules.
-     *
+     * When {@code true}, the protos are cached for re-use. This matters when a certain proto is also used/imported by
+     * other modules.
+     * 
      * @parameter expression="${protostuff.compiler.cache_protos}" default-value="false"
      * @since 1.0.5
      */
     private boolean cacheProtos;
 
     /**
-     * Usually most of protostuff mojos will not get executed on parent poms
-     * (i.e. projects with packaging type 'pom').
-     * Setting this parameter to {@code true} will force
-     * the execution of this mojo, even if it would usually get skipped in this case.
-     *
+     * Usually most of protostuff mojos will not get executed on parent poms (i.e. projects with packaging type 'pom').
+     * Setting this parameter to {@code true} will force the execution of this mojo, even if it would usually get
+     * skipped in this case.
+     * 
      * @parameter expression="${protostuff.compiler.force}" default-value="false"
      * @required
      * @since 1.0.1
@@ -76,41 +75,38 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     /**
      * The properties file that contains the modules
-     *
+     * 
      * @parameter
      */
-    protected File modulesFile;    
-    
+    protected File modulesFile;
+
     /**
-     * If not specified, the directory where the file is located will be used as its 
-     * base dir.
-     *
-     * This is only relevent when {@link #modulesFile is provided}. 
-     *
+     * If not specified, the directory where the file is located will be used as its base dir.
+     * <p/>
+     * This is only relevent when {@link #modulesFile is provided}.
+     * 
      * @parameter
      * @since 1.0.8
      */
     protected File sourceBaseDir;
-    
+
     /**
-     * If not specified, the directory where the file is located will be used as its 
-     * base dir.
-     * 
+     * If not specified, the directory where the file is located will be used as its base dir.
+     * <p/>
      * This is only relevent when {@link #modulesFile is provided}.
-     *
+     * 
      * @parameter
      * @since 1.0.8
      */
     protected File outputBaseDir;
-    
+
     /**
      * The modules to generate code from
-     *
+     * 
      * @parameter
      */
     protected ProtoModule[] protoModules;
-    
-    
+
     /**
      * @parameter expression="${project.basedir}"
      * @required
@@ -125,22 +121,22 @@ public class ProtoCompilerMojo extends AbstractMojo
         }
 
         assert baseDir != null && baseDir.exists() && baseDir.isDirectory();
-        
+
         CachingProtoLoader loader = cacheProtos ? new CachingProtoLoader() : null;
-        
-        if(modulesFile==null)
+
+        if (modulesFile == null)
         {
-            if(protoModules==null)
+            if (protoModules == null)
             {
                 throw new MojoExecutionException("Either <modules> or <modulesFile> " +
-                                "should be provided.");
+                        "should be provided.");
             }
             try
             {
-                for(ProtoModule m : protoModules)
+                for (ProtoModule m : protoModules)
                 {
                     m.setCachingProtoLoader(loader);
-                    if(!CompilerMain.isAvailableOutput(m.getOutput()) && 
+                    if (!CompilerMain.isAvailableOutput(m.getOutput()) &&
                             !baseDir.getAbsoluteFile().equals(
                                     new File(".").getAbsoluteFile()))
                     {
@@ -148,13 +144,13 @@ public class ProtoCompilerMojo extends AbstractMojo
                         try
                         {
                             File relativePath = new File(baseDir, m.getOutput());
-                            if(relativePath.exists())
+                            if (relativePath.exists())
                             {
                                 // update the path module.
                                 m.setOutput(relativePath.getCanonicalPath());
                             }
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             // ignore ... <output> might be an absolute path
                         }
@@ -162,23 +158,23 @@ public class ProtoCompilerMojo extends AbstractMojo
                     CompilerMain.compile(m);
 
                     // enabled by default unless overridden
-                    if(m.isAddToCompileSourceRoot())
+                    if (m.isAddToCompileSourceRoot())
                     {
                         // Include generated directory to the list of compilation sources
                         project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
         else
-        {            
+        {
             try
             {
-                if(protoModules!=null)
+                if (protoModules != null)
                 {
                     for (ProtoModule m : protoModules)
                     {
@@ -186,31 +182,30 @@ public class ProtoCompilerMojo extends AbstractMojo
                         CompilerMain.compile(m);
 
                         // enabled by default unless overridden
-                        if(m.isAddToCompileSourceRoot())
+                        if (m.isAddToCompileSourceRoot())
                         {
                             // Include generated directory to the list of compilation sources
                             project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
                         }
                     }
                 }
-                
-                if(!modulesFile.exists())
+
+                if (!modulesFile.exists())
                     throw new MojoExecutionException(modulesFile + " does not exist.");
-                
+
                 File parent = modulesFile.getParentFile();
-                File sourceBaseDir = this.sourceBaseDir, 
-                        outputBaseDir = this.outputBaseDir;
-                
-                if(sourceBaseDir == null)
+                File sourceBaseDir = this.sourceBaseDir, outputBaseDir = this.outputBaseDir;
+
+                if (sourceBaseDir == null)
                     sourceBaseDir = parent;
-                
-                if(outputBaseDir == null)
+
+                if (outputBaseDir == null)
                     outputBaseDir = parent;
-                
-                CompilerMain.compile(CompilerMain.loadModules(modulesFile, 
+
+                CompilerMain.compile(CompilerMain.loadModules(modulesFile,
                         sourceBaseDir, outputBaseDir));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -218,25 +213,28 @@ public class ProtoCompilerMojo extends AbstractMojo
     }
 
     /**
-     * <p>Determine if the mojo execution should get skipped.</p>
+     * <p>
+     * Determine if the mojo execution should get skipped.
+     * </p>
      * This is the case if:
      * <ul>
      * <li>{@link #skip} is <code>true</code></li>
-     * <li>if the mojo gets executed on a project with packaging type 'pom' and
-     * {@link #forceMojoExecution} is <code>false</code></li>
+     * <li>if the mojo gets executed on a project with packaging type 'pom' and {@link #forceMojoExecution} is
+     * <code>false</code></li>
      * </ul>
-     *
+     * 
      * @return <code>true</code> if the mojo execution should be skipped.
      * @since 1.0.1
      */
-    protected boolean skipMojo() {
-        if (skip) 
+    protected boolean skipMojo()
+    {
+        if (skip)
         {
             getLog().info("Skipping protostuff mojo execution");
             return true;
         }
 
-        if (!forceMojoExecution && "pom".equals(this.project.getPackaging())) 
+        if (!forceMojoExecution && "pom".equals(this.project.getPackaging()))
         {
             getLog().info("Skipping protostuff mojo execution for project with packaging type 'pom'");
             return true;

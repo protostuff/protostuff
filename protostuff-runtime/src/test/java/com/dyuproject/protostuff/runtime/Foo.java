@@ -25,33 +25,32 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 
 /**
  * Foo - for testing
- *
+ * 
  * @author David Yu
  * @created Nov 10, 2009
  */
 public final class Foo implements Externalizable
 {
 
-    
     public enum EnumSample
     {
         TYPE0(0), TYPE1(1), TYPE2(2), TYPE3(3), TYPE4(4);
-        
+
         public final int number;
-        
+
         EnumSample(int number)
         {
             this.number = number;
-        }       
-        
+        }
+
         public int getNumber()
         {
             return number;
         }
-        
+
         public static EnumSample valueOf(int number)
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return TYPE0;
@@ -67,7 +66,7 @@ public final class Foo implements Externalizable
             return null;
         }
     }
-    
+
     private List<Integer> someInt;
     private List<String> someString;
     private List<Bar> someBar;
@@ -77,22 +76,16 @@ public final class Foo implements Externalizable
     private List<Float> someFloat;
     private List<Double> someDouble;
     private List<Long> someLong;
-    
+
     public Foo()
     {
 
     }
 
-    public Foo(
-            List<Integer> someInt, 
-            List<String> someString, 
-            List<Bar> someBar, 
-            List<EnumSample> someEnum, 
-            List<ByteString> someBytes,
-            List<Boolean> someBoolean, 
-            List<Float> someFloat, 
-            List<Double> someDouble, 
-            List<Long> someLong)
+    public Foo(List<Integer> someInt, List<String> someString,
+            List<Bar> someBar, List<EnumSample> someEnum,
+            List<ByteString> someBytes, List<Boolean> someBoolean,
+            List<Float> someFloat, List<Double> someDouble, List<Long> someLong)
     {
         this.someInt = someInt;
         this.someString = someString;
@@ -114,7 +107,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someInt the someInt to set
+     * @param someInt
+     *            the someInt to set
      */
     public void setSomeInt(List<Integer> someInt)
     {
@@ -130,7 +124,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someString the someString to set
+     * @param someString
+     *            the someString to set
      */
     public void setSomeString(List<String> someString)
     {
@@ -146,7 +141,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someBar the someBar to set
+     * @param someBar
+     *            the someBar to set
      */
     public void setSomeBar(List<Bar> someBar)
     {
@@ -162,7 +158,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someEnum the someEnum to set
+     * @param someEnum
+     *            the someEnum to set
      */
     public void setSomeEnum(List<EnumSample> someEnum)
     {
@@ -178,7 +175,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someBytes the someBytes to set
+     * @param someBytes
+     *            the someBytes to set
      */
     public void setSomeBytes(List<ByteString> someBytes)
     {
@@ -194,7 +192,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someBoolean the someBoolean to set
+     * @param someBoolean
+     *            the someBoolean to set
      */
     public void setSomeBoolean(List<Boolean> someBoolean)
     {
@@ -210,7 +209,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someFloat the someFloat to set
+     * @param someFloat
+     *            the someFloat to set
      */
     public void setSomeFloat(List<Float> someFloat)
     {
@@ -226,7 +226,8 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someDouble the someDouble to set
+     * @param someDouble
+     *            the someDouble to set
      */
     public void setSomeDouble(List<Double> someDouble)
     {
@@ -242,21 +243,24 @@ public final class Foo implements Externalizable
     }
 
     /**
-     * @param someLong the someLong to set
+     * @param someLong
+     *            the someLong to set
      */
     public void setSomeLong(List<Long> someLong)
     {
         this.someLong = someLong;
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException
     {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, this, RuntimeSchema.getSchema(Foo.class));
+        ProtostuffIOUtil.mergeDelimitedFrom(in, this,
+                RuntimeSchema.getSchema(Foo.class));
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        ProtostuffIOUtil.writeDelimitedTo(out, this, RuntimeSchema.getSchema(Foo.class));
+        ProtostuffIOUtil.writeDelimitedTo(out, this,
+                RuntimeSchema.getSchema(Foo.class));
     }
 
     public int hashCode()
@@ -264,14 +268,21 @@ public final class Foo implements Externalizable
         final int prime = 31;
         int result = 1;
         result = prime * result + ((someBar == null) ? 0 : someBar.hashCode());
-        result = prime * result + ((someBoolean == null) ? 0 : someBoolean.hashCode());
-        result = prime * result + ((someBytes == null) ? 0 : someBytes.hashCode());
-        result = prime * result + ((someDouble == null) ? 0 : someDouble.hashCode());
-        result = prime * result + ((someEnum == null) ? 0 : someEnum.hashCode());
-        result = prime * result + ((someFloat == null) ? 0 : someFloat.hashCode());
+        result = prime * result
+                + ((someBoolean == null) ? 0 : someBoolean.hashCode());
+        result = prime * result
+                + ((someBytes == null) ? 0 : someBytes.hashCode());
+        result = prime * result
+                + ((someDouble == null) ? 0 : someDouble.hashCode());
+        result = prime * result
+                + ((someEnum == null) ? 0 : someEnum.hashCode());
+        result = prime * result
+                + ((someFloat == null) ? 0 : someFloat.hashCode());
         result = prime * result + ((someInt == null) ? 0 : someInt.hashCode());
-        result = prime * result + ((someLong == null) ? 0 : someLong.hashCode());
-        result = prime * result + ((someString == null) ? 0 : someString.hashCode());
+        result = prime * result
+                + ((someLong == null) ? 0 : someLong.hashCode());
+        result = prime * result
+                + ((someString == null) ? 0 : someString.hashCode());
         return result;
     }
 
@@ -283,7 +294,7 @@ public final class Foo implements Externalizable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Foo other = (Foo)obj;
+        Foo other = (Foo) obj;
         if (someBar == null)
         {
             if (other.someBar != null)

@@ -34,109 +34,108 @@ import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
  * Compare the outputs of different yaml impls.
- *
+ * 
  * @author David Yu
  * @created Jul 9, 2010
  */
 public class YamlCompareOutputsTest extends TestCase
 {
-    
+
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
-        
+
         byte[] yo = YAML_BUFFERED_OUTPUT.serialize(fooCompare);
         byte[] yso = YAML_STREAMED_OUTPUT.serialize(fooCompare);
-        
+
         assertTrue(yo.length == yso.length);
-        
+
         String yoString = STRING.deser(yo);
         String ysoString = STRING.deser(yso);
-        
+
         assertEquals(yoString, ysoString);
     }
-    
+
     public void testBar() throws Exception
     {
-        for(Bar barCompare : new Bar[]{bar, negativeBar})
+        for (Bar barCompare : new Bar[] { bar, negativeBar })
         {
             byte[] yo = YAML_BUFFERED_OUTPUT.serialize(barCompare);
             byte[] yso = YAML_STREAMED_OUTPUT.serialize(barCompare);
-            
+
             assertTrue(yo.length == yso.length);
-            
+
             String yoString = STRING.deser(yo);
             String ysoString = STRING.deser(yso);
-            
+
             assertEquals(yoString, ysoString);
         }
     }
-    
+
     public void testBaz() throws Exception
     {
-        for(Baz bazCompare : new Baz[]{baz, negativeBaz})
+        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
         {
             byte[] yo = YAML_BUFFERED_OUTPUT.serialize(bazCompare);
             byte[] yso = YAML_STREAMED_OUTPUT.serialize(bazCompare);
-            
+
             assertTrue(yo.length == yso.length);
-            
+
             String yoString = STRING.deser(yo);
             String ysoString = STRING.deser(yso);
-            
+
             assertEquals(yoString, ysoString);
         }
     }
 
     public void testBenchmark() throws Exception
     {
-        if(!"false".equals(System.getProperty("benchmark.skip")))
+        if (!"false".equals(System.getProperty("benchmark.skip")))
             return;
 
         String dir = System.getProperty("benchmark.output_dir");
-        
-        PrintStream out = dir==null ? System.out : 
-            new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-yaml-"+System.currentTimeMillis()+".txt"), true));
-        
+
+        PrintStream out = dir == null ? System.out :
+                new PrintStream(new FileOutputStream(new File(new File(dir),
+                        "protostuff-yaml-" + System.currentTimeMillis() + ".txt"), true));
+
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
         int loops = Integer.getInteger("benchmark.loops", 2000000);
-        
+
         String title = "protostuff-yaml serialization benchmark for " + loops + " runs";
         out.println(title);
         out.println();
 
         start(foo, SERIALIZERS, out, warmups, loops);
-        
-        if(System.out!=out)
+
+        if (System.out != out)
             out.close();
     }
-    
+
     public static void main(String[] args) throws Exception
     {
         String dir = System.getProperty("benchmark.output_dir");
-        
-        PrintStream out = dir==null ? System.out : 
-            new PrintStream(new FileOutputStream(new File(new File(dir), 
-                    "protostuff-yaml-"+System.currentTimeMillis()+".txt"), true));
-        
+
+        PrintStream out = dir == null ? System.out :
+                new PrintStream(new FileOutputStream(new File(new File(dir),
+                        "protostuff-yaml-" + System.currentTimeMillis() + ".txt"), true));
+
         int warmups = Integer.getInteger("benchmark.warmups", 100000);
         int loops = Integer.getInteger("benchmark.loops", 1000000);
-        
+
         String title = "protostuff-yaml serialization benchmark for " + loops + " runs";
         out.println(title);
         out.println();
 
         start(foo, SERIALIZERS, out, warmups, loops);
-        
-        if(System.out!=out)
+
+        if (System.out != out)
             out.close();
     }
-    
-    
+
     public static final Serializer YAML_BUFFERED_OUTPUT = new Serializer()
     {
-        
+
         final LinkedBuffer buffer = new LinkedBuffer(512);
 
         public <T extends Message<T>> byte[] serialize(T message)
@@ -150,18 +149,17 @@ public class YamlCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
 
         public String getName()
         {
             return "yaml-buffered-output";
         }
-        
+
     };
-    
+
     public static final Serializer YAML_STREAMED_OUTPUT = new Serializer()
     {
-        
+
         final LinkedBuffer buffer = new LinkedBuffer(1024);
 
         public <T extends Message<T>> byte[] serialize(T message)
@@ -181,17 +179,17 @@ public class YamlCompareOutputsTest extends TestCase
                 buffer.clear();
             }
         }
-        
+
         public String getName()
         {
             return "yaml-streamed-output";
         }
-        
+
     };
-    
-    static final Serializer[] SERIALIZERS = new Serializer[]{
-        YAML_BUFFERED_OUTPUT,
-        YAML_STREAMED_OUTPUT, 
+
+    static final Serializer[] SERIALIZERS = new Serializer[] {
+            YAML_BUFFERED_OUTPUT,
+            YAML_STREAMED_OUTPUT,
     };
-    
+
 }

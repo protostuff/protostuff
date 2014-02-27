@@ -24,20 +24,20 @@ import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
  */
 public class HasDelegate<T> implements PolymorphicSchema.Factory
 {
-    
+
     public final Delegate<T> delegate;
-    
+
     public final ArraySchemas.Base genericElementSchema;
-    
+
     @SuppressWarnings("unchecked")
     public HasDelegate(Delegate<T> delegate)
     {
         this.delegate = delegate;
-        
-        genericElementSchema = new ArraySchemas.DelegateArray(null, 
-                (Delegate<Object>)delegate);
+
+        genericElementSchema = new ArraySchemas.DelegateArray(null,
+                (Delegate<Object>) delegate);
     }
-    
+
     /**
      * Returns the delegate.
      */
@@ -45,12 +45,13 @@ public class HasDelegate<T> implements PolymorphicSchema.Factory
     {
         return delegate;
     }
-    
+
     @SuppressWarnings("unchecked")
-    public final PolymorphicSchema newSchema(Class<?> typeClass, 
+    public final PolymorphicSchema newSchema(Class<?> typeClass,
             IdStrategy strategy, Handler handler)
     {
-        return new ArraySchemas.DelegateArray(handler, (Delegate<Object>)delegate);
+        return new ArraySchemas.DelegateArray(handler,
+                (Delegate<Object>) delegate);
     }
 
 }

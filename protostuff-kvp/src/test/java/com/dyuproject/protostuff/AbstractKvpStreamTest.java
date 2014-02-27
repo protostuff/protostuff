@@ -18,24 +18,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
 /**
  * Test for reading/writing from stream.
- *
+ * 
  * @author David Yu
  * @created Dec 4, 2010
  */
 public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
 {
-    
+
     protected final boolean numeric;
-    
+
     public AbstractKvpStreamTest(boolean numeric)
     {
         this.numeric = numeric;
     }
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, 
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
@@ -43,7 +42,7 @@ public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
         {
             schema.mergeFrom(new KvpInput(in, numeric), message);
         }
-        catch(ArrayIndexOutOfBoundsException e)
+        catch (ArrayIndexOutOfBoundsException e)
         {
             throw new ProtostuffException("Truncated message.", e);
         }
@@ -61,11 +60,11 @@ public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         byte[] data = out.toByteArray();
-        //System.err.println(data.length + " | " + getClass().getSimpleName());
+        // System.err.println(data.length + " | " + getClass().getSimpleName());
         return data;
     }
 

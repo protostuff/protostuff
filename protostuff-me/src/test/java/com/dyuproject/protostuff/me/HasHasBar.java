@@ -25,19 +25,19 @@ import java.io.ObjectOutputStream;
 
 /**
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
- *
+ * 
  * @author David Yu
  * @created Nov 13, 2009
  */
 public final class HasHasBar implements Message, Schema, Externalizable
 {
-    
+
     private String name;
     private HasBar hasBar;
-    
+
     public HasHasBar()
     {
-        
+
     }
 
     public HasHasBar(String name, HasBar hasBar)
@@ -55,7 +55,8 @@ public final class HasHasBar implements Message, Schema, Externalizable
     }
 
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name)
     {
@@ -71,7 +72,8 @@ public final class HasHasBar implements Message, Schema, Externalizable
     }
 
     /**
-     * @param hasBar the hasBar to set
+     * @param hasBar
+     *            the hasBar to set
      */
     public void setHasBar(HasBar hasBar)
     {
@@ -95,7 +97,7 @@ public final class HasHasBar implements Message, Schema, Externalizable
 
     public boolean isInitialized(Object messageObj)
     {
-        HasHasBar message = (HasHasBar)messageObj;
+        HasHasBar message = (HasHasBar) messageObj;
         return message.hasBar != null;
     }
 
@@ -103,17 +105,17 @@ public final class HasHasBar implements Message, Schema, Externalizable
     {
         return new HasHasBar();
     }
-    
+
     public Class typeClass()
     {
         return HasHasBar.class;
     }
-    
+
     public String messageName()
     {
         return "HasHasBar";
     }
-    
+
     public String messageFullName()
     {
         return getClass().getName();
@@ -121,10 +123,10 @@ public final class HasHasBar implements Message, Schema, Externalizable
 
     public void mergeFrom(Input input, Object messageObj) throws IOException
     {
-        HasHasBar message = (HasHasBar)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        HasHasBar message = (HasHasBar) messageObj;
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -142,12 +144,12 @@ public final class HasHasBar implements Message, Schema, Externalizable
 
     public void writeTo(Output output, Object messageObj) throws IOException
     {
-        HasHasBar message = (HasHasBar)messageObj;
-        if(message.name!=null)
+        HasHasBar message = (HasHasBar) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
         writeHasBar(output, 2, message.hasBar, false);
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
@@ -157,14 +159,14 @@ public final class HasHasBar implements Message, Schema, Externalizable
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
-    
+
     static HasBar readHasBar(Input input) throws IOException
     {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 input.readByteArray()));
         try
         {
-            return (HasBar)ois.readObject();
+            return (HasBar) ois.readObject();
         }
         catch (Exception e)
         {
@@ -175,9 +177,9 @@ public final class HasHasBar implements Message, Schema, Externalizable
             ois.close();
         }
     }
-    
-    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated) 
-    throws IOException
+
+    static void writeHasBar(Output output, int fieldNumber, HasBar hasBar, boolean repeated)
+            throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -211,7 +213,7 @@ public final class HasHasBar implements Message, Schema, Externalizable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HasHasBar other = (HasHasBar)obj;
+        HasHasBar other = (HasHasBar) obj;
         if (hasBar == null)
         {
             if (other.hasBar != null)
@@ -228,7 +230,5 @@ public final class HasHasBar implements Message, Schema, Externalizable
             return false;
         return true;
     }
-    
-    
 
 }

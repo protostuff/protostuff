@@ -45,8 +45,8 @@
 package com.dyuproject.protostuff.me;
 
 /**
- * Interface for an enum value for use with code-generated enums. 
- *
+ * Interface for an enum value for use with code-generated enums.
+ * 
  * @author David Yu
  * @created Jan 8, 2010
  */

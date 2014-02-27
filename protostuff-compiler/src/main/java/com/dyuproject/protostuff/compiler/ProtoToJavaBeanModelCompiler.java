@@ -27,15 +27,14 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 /**
- * Compiles proto files to protobuf java messages (pojos).
- * Generates a {@code Schema} from the proto files.
+ * Compiles proto files to protobuf java messages (pojos). Generates a {@code Schema} from the proto files.
  * <ul>
  * <li>Schemas are always separated from messages</li>
  * <li>Schemas are able to be inherited</li>
  * <li>Schemas have a lot of Annotation/Options to configure compiler output</li>
  * <li>@Transient support for Messages/Enumerations</li>
  * </ul>
- *
+ * 
  * @author Ivan Prisyazhniy
  * @created Mar 9, 2012
  */
@@ -115,7 +114,8 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
 
             // Generate schema
             {
-                Writer writer = CompilerUtil.newWriter(module, javaPackageName, getRemoteModelSchemaName(schemaTemplateGroup, m) + ".java");
+                Writer writer = CompilerUtil.newWriter(module, javaPackageName,
+                        getRemoteModelSchemaName(schemaTemplateGroup, m) + ".java");
                 AutoIndentWriter out = new AutoIndentWriter(writer);
 
                 StringTemplate messageBlock = schemaTemplateGroup.getInstanceOf("message_block");
@@ -139,7 +139,8 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (module.getOptions().containsKey("no_models"))
+        }
+        else if (module.getOptions().containsKey("no_models"))
         {
             String optGenerateModel = module.getOption("no_models");
             generateModel =
@@ -153,7 +154,8 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (proto.getOptions().containsKey("no_models"))
+        }
+        else if (proto.getOptions().containsKey("no_models"))
         {
             String optGenerateModel = proto.getExtraOption("no_models");
             generateModel =
@@ -167,7 +169,8 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
-        } else if (m.getOptions().containsKey("no_model"))
+        }
+        else if (m.getOptions().containsKey("no_model"))
         {
             String optGenerateModel = m.getExtraOption("no_model");
             generateModel =

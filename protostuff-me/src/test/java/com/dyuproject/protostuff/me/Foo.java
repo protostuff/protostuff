@@ -24,7 +24,6 @@ public final class Foo implements Message, Schema
         public static final int TYPE4 = 4;
     }
 
-
     public static Schema getSchema()
     {
         return DEFAULT_INSTANCE;
@@ -37,7 +36,6 @@ public final class Foo implements Message, Schema
 
     static final Foo DEFAULT_INSTANCE = new Foo();
 
-    
     private Vector someInt;
     private Vector someString;
     private Vector someBar;
@@ -50,7 +48,7 @@ public final class Foo implements Message, Schema
 
     public Foo()
     {
-        
+
     }
 
     // getters and setters
@@ -69,7 +67,7 @@ public final class Foo implements Message, Schema
 
     public Integer getSomeInt(int index)
     {
-        return someInt == null ? null : (Integer)someInt.elementAt(index);
+        return someInt == null ? null : (Integer) someInt.elementAt(index);
     }
 
     public int getSomeIntCount()
@@ -79,7 +77,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeInt(Integer someInt)
     {
-        if(this.someInt == null)
+        if (this.someInt == null)
             this.someInt = new Vector();
         this.someInt.addElement(someInt);
     }
@@ -98,7 +96,7 @@ public final class Foo implements Message, Schema
 
     public String getSomeString(int index)
     {
-        return someString == null ? null : (String)someString.elementAt(index);
+        return someString == null ? null : (String) someString.elementAt(index);
     }
 
     public int getSomeStringCount()
@@ -108,7 +106,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeString(String someString)
     {
-        if(this.someString == null)
+        if (this.someString == null)
             this.someString = new Vector();
         this.someString.addElement(someString);
     }
@@ -127,7 +125,7 @@ public final class Foo implements Message, Schema
 
     public Bar getSomeBar(int index)
     {
-        return someBar == null ? null : (Bar)someBar.elementAt(index);
+        return someBar == null ? null : (Bar) someBar.elementAt(index);
     }
 
     public int getSomeBarCount()
@@ -137,7 +135,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeBar(Bar someBar)
     {
-        if(this.someBar == null)
+        if (this.someBar == null)
             this.someBar = new Vector();
         this.someBar.addElement(someBar);
     }
@@ -156,7 +154,7 @@ public final class Foo implements Message, Schema
 
     public Integer getSomeEnum(int index)
     {
-        return someEnum == null ? null : (Integer)someEnum.elementAt(index);
+        return someEnum == null ? null : (Integer) someEnum.elementAt(index);
     }
 
     public int getSomeEnumCount()
@@ -166,7 +164,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeEnum(Integer someEnum)
     {
-        if(this.someEnum == null)
+        if (this.someEnum == null)
             this.someEnum = new Vector();
         this.someEnum.addElement(someEnum);
     }
@@ -185,7 +183,7 @@ public final class Foo implements Message, Schema
 
     public ByteString getSomeBytes(int index)
     {
-        return someBytes == null ? null : (ByteString)someBytes.elementAt(index);
+        return someBytes == null ? null : (ByteString) someBytes.elementAt(index);
     }
 
     public int getSomeBytesCount()
@@ -195,7 +193,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeBytes(ByteString someBytes)
     {
-        if(this.someBytes == null)
+        if (this.someBytes == null)
             this.someBytes = new Vector();
         this.someBytes.addElement(someBytes);
     }
@@ -214,7 +212,7 @@ public final class Foo implements Message, Schema
 
     public Boolean getSomeBoolean(int index)
     {
-        return someBoolean == null ? null : (Boolean)someBoolean.elementAt(index);
+        return someBoolean == null ? null : (Boolean) someBoolean.elementAt(index);
     }
 
     public int getSomeBooleanCount()
@@ -224,7 +222,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeBoolean(Boolean someBoolean)
     {
-        if(this.someBoolean == null)
+        if (this.someBoolean == null)
             this.someBoolean = new Vector();
         this.someBoolean.addElement(someBoolean);
     }
@@ -243,7 +241,7 @@ public final class Foo implements Message, Schema
 
     public Float getSomeFloat(int index)
     {
-        return someFloat == null ? null : (Float)someFloat.elementAt(index);
+        return someFloat == null ? null : (Float) someFloat.elementAt(index);
     }
 
     public int getSomeFloatCount()
@@ -253,7 +251,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeFloat(Float someFloat)
     {
-        if(this.someFloat == null)
+        if (this.someFloat == null)
             this.someFloat = new Vector();
         this.someFloat.addElement(someFloat);
     }
@@ -272,7 +270,7 @@ public final class Foo implements Message, Schema
 
     public Double getSomeDouble(int index)
     {
-        return someDouble == null ? null : (Double)someDouble.elementAt(index);
+        return someDouble == null ? null : (Double) someDouble.elementAt(index);
     }
 
     public int getSomeDoubleCount()
@@ -282,7 +280,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeDouble(Double someDouble)
     {
-        if(this.someDouble == null)
+        if (this.someDouble == null)
             this.someDouble = new Vector();
         this.someDouble.addElement(someDouble);
     }
@@ -301,7 +299,7 @@ public final class Foo implements Message, Schema
 
     public Long getSomeLong(int index)
     {
-        return someLong == null ? null : (Long)someLong.elementAt(index);
+        return someLong == null ? null : (Long) someLong.elementAt(index);
     }
 
     public int getSomeLongCount()
@@ -311,7 +309,7 @@ public final class Foo implements Message, Schema
 
     public void addSomeLong(Long someLong)
     {
-        if(this.someLong == null)
+        if (this.someLong == null)
             this.someLong = new Vector();
         this.someLong.addElement(someLong);
     }
@@ -325,7 +323,7 @@ public final class Foo implements Message, Schema
 
     // schema methods
 
-    public Object /*Foo*/ newMessage()
+    public Object /* Foo */newMessage()
     {
         return new Foo();
     }
@@ -345,167 +343,164 @@ public final class Foo implements Message, Schema
         return Foo.class.getName();
     }
 
-    public boolean isInitialized(Object /*Foo*/ message)
+    public boolean isInitialized(Object /* Foo */message)
     {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*Foo*/ messageObj) throws IOException
+    public void mergeFrom(Input input, Object /* Foo */messageObj) throws IOException
     {
-        Foo message = (Foo)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        Foo message = (Foo) messageObj;
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
                 case 1:
-                    if(message.someInt == null)
+                    if (message.someInt == null)
                         message.someInt = new Vector();
                     message.someInt.addElement(new Integer(input.readInt32()));
                     break;
                 case 2:
-                    if(message.someString == null)
+                    if (message.someString == null)
                         message.someString = new Vector();
                     message.someString.addElement(input.readString());
                     break;
 
                 case 3:
-                    if(message.someBar == null)
+                    if (message.someBar == null)
                         message.someBar = new Vector();
                     message.someBar.addElement(input.mergeObject(null, Bar.getSchema()));
                     break;
 
                 case 4:
-                    if(message.someEnum == null)
+                    if (message.someEnum == null)
                         message.someEnum = new Vector();
                     message.someEnum.addElement(new Integer(input.readEnum()));
                     break;
 
                 case 5:
-                    if(message.someBytes == null)
+                    if (message.someBytes == null)
                         message.someBytes = new Vector();
                     message.someBytes.addElement(input.readBytes());
                     break;
 
                 case 6:
-                    if(message.someBoolean == null)
+                    if (message.someBoolean == null)
                         message.someBoolean = new Vector();
                     message.someBoolean.addElement(input.readBool() ? Boolean.TRUE : Boolean.FALSE);
                     break;
                 case 7:
-                    if(message.someFloat == null)
+                    if (message.someFloat == null)
                         message.someFloat = new Vector();
                     message.someFloat.addElement(new Float(input.readFloat()));
                     break;
                 case 8:
-                    if(message.someDouble == null)
+                    if (message.someDouble == null)
                         message.someDouble = new Vector();
                     message.someDouble.addElement(new Double(input.readDouble()));
                     break;
                 case 9:
-                    if(message.someLong == null)
+                    if (message.someLong == null)
                         message.someLong = new Vector();
                     message.someLong.addElement(new Long(input.readInt64()));
                     break;
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
 
-    public void writeTo(Output output, Object /*Foo*/ messageObj) throws IOException
+    public void writeTo(Output output, Object /* Foo */messageObj) throws IOException
     {
-        Foo message = (Foo)messageObj;
-        if(message.someInt != null)
+        Foo message = (Foo) messageObj;
+        if (message.someInt != null)
         {
-            for(int i = 0; i < message.someInt.size(); i++)
+            for (int i = 0; i < message.someInt.size(); i++)
             {
-                Integer someInt = (Integer)message.someInt.elementAt(i);
-                if(someInt != null)
+                Integer someInt = (Integer) message.someInt.elementAt(i);
+                if (someInt != null)
                     output.writeInt32(1, someInt.intValue(), true);
             }
         }
 
-        if(message.someString != null)
+        if (message.someString != null)
         {
-            for(int i = 0; i < message.someString.size(); i++)
+            for (int i = 0; i < message.someString.size(); i++)
             {
-                String someString = (String)message.someString.elementAt(i);
-                if(someString != null)
+                String someString = (String) message.someString.elementAt(i);
+                if (someString != null)
                     output.writeString(2, someString, true);
             }
         }
 
-
-        if(message.someBar != null)
+        if (message.someBar != null)
         {
-            for(int i = 0; i < message.someBar.size(); i++)
+            for (int i = 0; i < message.someBar.size(); i++)
             {
-                Bar someBar = (Bar)message.someBar.elementAt(i);
-                if(someBar != null)
+                Bar someBar = (Bar) message.someBar.elementAt(i);
+                if (someBar != null)
                     output.writeObject(3, someBar, Bar.getSchema(), true);
             }
         }
 
-
-        if(message.someEnum != null)
+        if (message.someEnum != null)
         {
-            for(int i = 0; i < message.someEnum.size(); i++)
+            for (int i = 0; i < message.someEnum.size(); i++)
             {
-                Integer someEnum = (Integer)message.someEnum.elementAt(i);
-                if(someEnum != null)
+                Integer someEnum = (Integer) message.someEnum.elementAt(i);
+                if (someEnum != null)
                     output.writeEnum(4, someEnum.intValue(), true);
             }
         }
 
-
-        if(message.someBytes != null)
+        if (message.someBytes != null)
         {
-            for(int i = 0; i < message.someBytes.size(); i++)
+            for (int i = 0; i < message.someBytes.size(); i++)
             {
-                ByteString someBytes = (ByteString)message.someBytes.elementAt(i);
-                if(someBytes != null)
+                ByteString someBytes = (ByteString) message.someBytes.elementAt(i);
+                if (someBytes != null)
                     output.writeBytes(5, someBytes, true);
             }
         }
 
-        if(message.someBoolean != null)
+        if (message.someBoolean != null)
         {
-            for(int i = 0; i < message.someBoolean.size(); i++)
+            for (int i = 0; i < message.someBoolean.size(); i++)
             {
-                Boolean someBoolean = (Boolean)message.someBoolean.elementAt(i);
-                if(someBoolean != null)
+                Boolean someBoolean = (Boolean) message.someBoolean.elementAt(i);
+                if (someBoolean != null)
                     output.writeBool(6, someBoolean.booleanValue(), true);
             }
         }
 
-        if(message.someFloat != null)
+        if (message.someFloat != null)
         {
-            for(int i = 0; i < message.someFloat.size(); i++)
+            for (int i = 0; i < message.someFloat.size(); i++)
             {
-                Float someFloat = (Float)message.someFloat.elementAt(i);
-                if(someFloat != null)
+                Float someFloat = (Float) message.someFloat.elementAt(i);
+                if (someFloat != null)
                     output.writeFloat(7, someFloat.floatValue(), true);
             }
         }
 
-        if(message.someDouble != null)
+        if (message.someDouble != null)
         {
-            for(int i = 0; i < message.someDouble.size(); i++)
+            for (int i = 0; i < message.someDouble.size(); i++)
             {
-                Double someDouble = (Double)message.someDouble.elementAt(i);
-                if(someDouble != null)
+                Double someDouble = (Double) message.someDouble.elementAt(i);
+                if (someDouble != null)
                     output.writeDouble(8, someDouble.doubleValue(), true);
             }
         }
 
-        if(message.someLong != null)
+        if (message.someLong != null)
         {
-            for(int i = 0; i < message.someLong.size(); i++)
+            for (int i = 0; i < message.someLong.size(); i++)
             {
-                Long someLong = (Long)message.someLong.elementAt(i);
-                if(someLong != null)
+                Long someLong = (Long) message.someLong.elementAt(i);
+                if (someLong != null)
                     output.writeInt64(9, someLong.longValue(), true);
             }
         }
@@ -513,28 +508,39 @@ public final class Foo implements Message, Schema
 
     public String getFieldName(int number)
     {
-        switch(number)
+        switch (number)
         {
-            case 1: return "someInt";
-            case 2: return "someString";
-            case 3: return "someBar";
-            case 4: return "someEnum";
-            case 5: return "someBytes";
-            case 6: return "someBoolean";
-            case 7: return "someFloat";
-            case 8: return "someDouble";
-            case 9: return "someLong";
-            default: return null;
+            case 1:
+                return "someInt";
+            case 2:
+                return "someString";
+            case 3:
+                return "someBar";
+            case 4:
+                return "someEnum";
+            case 5:
+                return "someBytes";
+            case 6:
+                return "someBoolean";
+            case 7:
+                return "someFloat";
+            case 8:
+                return "someDouble";
+            case 9:
+                return "someLong";
+            default:
+                return null;
         }
     }
 
     public int getFieldNumber(String name)
     {
-        final Integer number = (Integer)__fieldMap.get(name);
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
+
     static
     {
         __fieldMap.put("someInt", new Integer(1));
@@ -547,14 +553,14 @@ public final class Foo implements Message, Schema
         __fieldMap.put("someDouble", new Integer(8));
         __fieldMap.put("someLong", new Integer(9));
     }
-    
+
     static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
     {
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -570,7 +576,7 @@ public final class Foo implements Message, Schema
                         break;
 
                     case 4:
-                        output.writeEnum(number, input.readEnum(), true); 
+                        output.writeEnum(number, input.readEnum(), true);
                         break;
 
                     case 5:
@@ -626,7 +632,7 @@ public final class Foo implements Message, Schema
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Foo other = (Foo)obj;
+        Foo other = (Foo) obj;
 
         return AbstractTest.isEqual(this.someInt, other.someInt)
                 && AbstractTest.isEqual(this.someString, other.someString)
@@ -638,7 +644,5 @@ public final class Foo implements Message, Schema
                 && AbstractTest.isEqual(this.someDouble, other.someDouble)
                 && AbstractTest.isEqual(this.someLong, other.someLong);
     }
-    
-    
 
 }

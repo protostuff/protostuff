@@ -26,13 +26,12 @@ public final class ClubFounder implements Message, Schema
 
     static final ClubFounder DEFAULT_INSTANCE = new ClubFounder();
 
-    
     private String name;
     private Club club;
 
     public ClubFounder()
     {
-        
+
     }
 
     // getters and setters
@@ -70,7 +69,7 @@ public final class ClubFounder implements Message, Schema
 
     // schema methods
 
-    public Object /*ClubFounder*/ newMessage()
+    public Object /* ClubFounder */newMessage()
     {
         return new ClubFounder();
     }
@@ -90,17 +89,17 @@ public final class ClubFounder implements Message, Schema
         return ClubFounder.class.getName();
     }
 
-    public boolean isInitialized(Object /*ClubFounder*/ message)
+    public boolean isInitialized(Object /* ClubFounder */message)
     {
         return true;
     }
 
-    public void mergeFrom(Input input, Object /*ClubFounder*/ messageObj) throws IOException
+    public void mergeFrom(Input input, Object /* ClubFounder */messageObj) throws IOException
     {
-        ClubFounder message = (ClubFounder)messageObj;
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        ClubFounder message = (ClubFounder) messageObj;
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
@@ -109,57 +108,60 @@ public final class ClubFounder implements Message, Schema
                     break;
 
                 case 2:
-                    message.club = (Club)input.mergeObject(message.club, Club.getSchema());
+                    message.club = (Club) input.mergeObject(message.club, Club.getSchema());
                     break;
 
                 default:
                     input.handleUnknownField(number, this);
-            }   
+            }
         }
     }
-    
-    public void writeTo(Output output, Object /*ClubFounder*/ messageObj) throws IOException
+
+    public void writeTo(Output output, Object /* ClubFounder */messageObj) throws IOException
     {
-        ClubFounder message = (ClubFounder)messageObj;
-        if(message.name != null)
+        ClubFounder message = (ClubFounder) messageObj;
+        if (message.name != null)
             output.writeString(1, message.name, false);
 
-
-        if(message.club != null)
-             output.writeObject(2, message.club, Club.getSchema(), false);
+        if (message.club != null)
+            output.writeObject(2, message.club, Club.getSchema(), false);
 
     }
 
     public String getFieldName(int number)
     {
-        switch(number)
+        switch (number)
         {
-            case 1: return "name";
-            case 2: return "club";
-            default: return null;
+            case 1:
+                return "name";
+            case 2:
+                return "club";
+            default:
+                return null;
         }
     }
 
     public int getFieldNumber(String name)
     {
-        final Integer number = (Integer)__fieldMap.get(name);
+        final Integer number = (Integer) __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
     private static final java.util.Hashtable __fieldMap = new java.util.Hashtable();
+
     static
     {
         __fieldMap.put("name", new Integer(1));
         __fieldMap.put("club", new Integer(2));
     }
-    
+
     static final Pipe.Schema PIPE_SCHEMA = new Pipe.Schema(DEFAULT_INSTANCE)
     {
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;

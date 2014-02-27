@@ -23,49 +23,46 @@ import java.nio.ByteBuffer;
 import com.dyuproject.protostuff.StringSerializer.STRING;
 
 /**
- * An input for deserializing kvp-encoded messages.
- * A kvp encoding is a binary encoding w/c contains a key-value sequence.
- * On the wire, a serialized field (key-value) would look like:
- * [key-len][key][value-len][value]
- * 
+ * An input for deserializing kvp-encoded messages. A kvp encoding is a binary encoding w/c contains a key-value
+ * sequence. On the wire, a serialized field (key-value) would look like: [key-len][key][value-len][value]
+ * <p/>
  * The keys and values are length-delimited (uint16 little endian).
+ * <p/>
+ * Note that this encoding does not support nested messages. This encoding is mostly useful for headers w/c contain
+ * information about the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  * 
- * Note that this encoding does not support nested messages.
- * This encoding is mostly useful for headers w/c contain information about 
- * the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
- *
  * @author David Yu
  * @created Nov 19, 2010
  */
 public final class KvpByteArrayInput implements Input
 {
-    
+
     final byte[] buffer;
     int offset, limit;
-    
+
     final boolean numeric;
-    
+
     public KvpByteArrayInput(byte[] buffer, int offset, int len, boolean numeric)
     {
         this.buffer = buffer;
         this.offset = offset;
         this.limit = offset + len;
-        
+
         this.numeric = numeric;
     }
 
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
-        if(offset == limit)
+        if (offset == limit)
             return 0;
-        
+
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         final int number = numeric ? parseInt(buffer, offset, size, 10, true) :
-            schema.getFieldNumber(STRING.deser(buffer, offset, size));
-        
+                schema.getFieldNumber(STRING.deser(buffer, offset, size));
+
         offset += size;
-        
-        if(number == 0)
+
+        if (number == 0)
         {
             // skip unknown fields.
             handleUnknownField(number, schema);
@@ -89,22 +86,22 @@ public final class KvpByteArrayInput implements Input
     public boolean readBool() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        
-        if(size != 1)
+
+        if (size != 1)
             throw new ProtostuffException("Not a valid kvp boolean");
-        
+
         return buffer[offset++] != 0x30;
     }
 
     public byte[] readByteArray() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        if(size == 0)
+        if (size == 0)
             return ByteString.EMPTY_BYTE_ARRAY;
-        
-        if(offset + size > limit)
+
+        if (offset + size > limit)
             throw new ProtostuffException("Misreported size.");
-        
+
         byte[] data = new byte[size];
         System.arraycopy(buffer, offset, data, 0, size);
         offset += size;
@@ -119,17 +116,17 @@ public final class KvpByteArrayInput implements Input
     public double readDouble() throws IOException
     {
         // TODO efficiency
-        
+
         return Double.parseDouble(readString());
     }
-    
+
     public float readFloat() throws IOException
     {
         // TODO efficiency
-        
+
         return Float.parseFloat(readString());
     }
-    
+
     public int readUInt32() throws IOException
     {
         return readInt32();
@@ -143,12 +140,12 @@ public final class KvpByteArrayInput implements Input
     public int readInt32() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        if(size == 0)
+        if (size == 0)
             return 0;
-        
-        if(offset + size > limit)
+
+        if (offset + size > limit)
             throw new ProtostuffException("Misreported size.");
-        
+
         final int number = parseInt(buffer, offset, size, 10);
         offset += size;
         return number;
@@ -157,12 +154,12 @@ public final class KvpByteArrayInput implements Input
     public long readInt64() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        if(size == 0)
+        if (size == 0)
             return 0;
-        
-        if(offset + size > limit)
+
+        if (offset + size > limit)
             throw new ProtostuffException("Misreported size.");
-        
+
         final long number = parseLong(buffer, offset, size, 10);
         offset += size;
         return number;
@@ -206,18 +203,18 @@ public final class KvpByteArrayInput implements Input
     public String readString() throws IOException
     {
         final int size = buffer[offset++] | (buffer[offset++] << 8);
-        if(size == 0)
+        if (size == 0)
             return ByteString.EMPTY_STRING;
-        
-        if(offset + size > limit)
+
+        if (offset + size > limit)
             throw new ProtostuffException("Misreported size.");
-        
+
         final String str = STRING.deser(buffer, offset, size);
         offset += size;
         return str;
     }
 
-    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber, 
+    public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
         throw new UnsupportedOperationException();
@@ -226,7 +223,8 @@ public final class KvpByteArrayInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
-    public ByteBuffer readByteBuffer() throws IOException {
+    public ByteBuffer readByteBuffer() throws IOException
+    {
         return ByteBuffer.wrap(readByteArray());
     }
 

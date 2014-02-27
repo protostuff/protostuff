@@ -26,14 +26,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-
 package com.dyuproject.protostuff.parser;
 
 import java.util.LinkedHashMap;
 
 /**
  * The reference configured via options and annotations.
- *
+ * 
  * @author David Yu
  * @created Dec 22, 2011
  */
@@ -41,55 +40,55 @@ public class ConfiguredReference
 {
     public static final boolean RESOLVE_ENUM_VALUE_REF = Boolean.getBoolean(
             "protostuff.resolve_enum_value_ref");
-    
+
     // could be same
-    final LinkedHashMap<String,Object> source, destination;
+    final LinkedHashMap<String, Object> source, destination;
     String enclosingNamespace;
-    
-    public ConfiguredReference(LinkedHashMap<String,Object> source, 
-            LinkedHashMap<String,Object> destination, String enclosingNamespace)
+
+    public ConfiguredReference(LinkedHashMap<String, Object> source,
+            LinkedHashMap<String, Object> destination, String enclosingNamespace)
     {
         this.source = source;
         this.destination = destination;
         this.enclosingNamespace = enclosingNamespace;
     }
-    
+
     void resolve(Proto proto)
     {
         resolve(proto, source, destination, enclosingNamespace);
     }
-    
-    static void resolve(Proto proto, LinkedHashMap<String,Object> source, 
-            LinkedHashMap<String,Object> destination, String enclosingNamespace)
+
+    static void resolve(Proto proto, LinkedHashMap<String, Object> source,
+            LinkedHashMap<String, Object> destination, String enclosingNamespace)
     {
-        // we iterate this way (no EntrySet) to avoid concurrent modification exception 
+        // we iterate this way (no EntrySet) to avoid concurrent modification exception
         // if the source and destination are the same.
         String[] keys = source.keySet().toArray(new String[source.size()]);
-        for(String key : keys)
+        for (String key : keys)
         {
             Object val = source.get(key);
-            if(val instanceof String)
+            if (val instanceof String)
             {
-                String refName = (String)val;
-                String ns = enclosingNamespace == null ? proto.getPackageName() : 
-                    enclosingNamespace;
-                
+                String refName = (String) val;
+                String ns = enclosingNamespace == null ? proto.getPackageName() :
+                        enclosingNamespace;
+
                 HasName hn = proto.findReference(refName, ns);
-                
-                if(hn != null)
+
+                if (hn != null)
                     destination.put(key, hn);
-                else if(RESOLVE_ENUM_VALUE_REF)
+                else if (RESOLVE_ENUM_VALUE_REF)
                 {
                     int dot = refName.lastIndexOf('.');
-                    if(dot > 0)
+                    if (dot > 0)
                     {
                         String egName = refName.substring(0, dot);
                         hn = proto.findReference(egName, ns);
-                        if(hn instanceof EnumGroup)
+                        if (hn instanceof EnumGroup)
                         {
-                            EnumGroup eg = (EnumGroup)hn;
+                            EnumGroup eg = (EnumGroup) hn;
                             EnumGroup.Value v = eg.getValue(refName.substring(dot + 1));
-                            if(v != null)
+                            if (v != null)
                                 destination.put(key, v);
                         }
                     }
@@ -97,7 +96,5 @@ public class ConfiguredReference
             }
         }
     }
-    
-    
 
 }

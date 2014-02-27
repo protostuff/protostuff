@@ -18,8 +18,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 
 /**
- * Represents an extend block declared in either the {@link Proto} or nested in
- * a {@link Message}.
+ * Represents an extend block declared in either the {@link Proto} or nested in a {@link Message}.
  * 
  * @author Philippe Laflamme
  */
@@ -30,9 +29,9 @@ public class Extension extends AnnotationContainer implements HasFields
     final String type;
     Proto proto;
     final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
-    final LinkedHashMap<String,Object> standardOptions = new LinkedHashMap<String,Object>();
-    final LinkedHashMap<String,Object> extraOptions = new LinkedHashMap<String,Object>();
-    
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
+
     Message extendedMessage;
 
     public Extension(Proto proto, Message parentMessage, String packageName, String type)
@@ -73,48 +72,48 @@ public class Extension extends AnnotationContainer implements HasFields
 
     public void addField(Field<?> field)
     {
-        if(fields.put(field.name, field) != null)
+        if (fields.put(field.name, field) != null)
             throw err("Duplicate extension field: " + field.name, getProto());
     }
-    
+
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
-    
-    public LinkedHashMap<String,Object> getStandardOptions()
+
+    public LinkedHashMap<String, Object> getStandardOptions()
     {
         return standardOptions;
     }
-    
+
     public Object getStandardOption(String key)
     {
         return standardOptions.get(key);
     }
-    
+
     public void putExtraOption(String key, Object value)
     {
-        if(extraOptions.put(key, value) != null)
+        if (extraOptions.put(key, value) != null)
             throw err("Duplicate extension option: " + key, getProto());
     }
-    
-    public LinkedHashMap<String,Object> getExtraOptions()
+
+    public LinkedHashMap<String, Object> getExtraOptions()
     {
         return extraOptions;
     }
-    
+
     public Object getExtraOption(String key)
     {
         return extraOptions.get(key);
     }
-    
-    public LinkedHashMap<String,Object> getO()
+
+    public LinkedHashMap<String, Object> getO()
     {
         return getOptions();
     }
-    
-    public LinkedHashMap<String,Object> getOptions()
+
+    public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
     }
@@ -126,7 +125,7 @@ public class Extension extends AnnotationContainer implements HasFields
 
     void resolveReferences()
     {
-        extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(), 
+        extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(),
                 getEnclosingNamespace());
         if (extendedMessage == null)
         {
@@ -134,8 +133,8 @@ public class Extension extends AnnotationContainer implements HasFields
                     + " is not defined", getProto());
         }
         extendedMessage.extend(this);
-        
-        if(!standardOptions.isEmpty())
+
+        if (!standardOptions.isEmpty())
             proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getExtendedMessageFullName()));
     }
 
@@ -143,7 +142,7 @@ public class Extension extends AnnotationContainer implements HasFields
     {
         return this.packageName == null ? this.type : this.packageName + "." + this.type;
     }
-    
+
     public String getEnclosingNamespace()
     {
         return isNested() ? getParentMessage().getFullName() : getProto().getPackageName();

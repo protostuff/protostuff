@@ -24,21 +24,22 @@ import java.util.List;
 
 /**
  * Foo - for testing
- *
+ * 
  * @author David Yu
  * @created Nov 10, 2009
  */
 public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 {
-    
+
     static final Foo DEFAULT_INSTANCE = new Foo();
-    
+
     public static Foo getSchema()
     {
         return DEFAULT_INSTANCE;
     }
-    
-    private static final HashMap<String,Integer> __fieldMap = new HashMap<String,Integer>();    
+
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+
     static
     {
         __fieldMap.put("someInt", 1);
@@ -51,26 +52,26 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         __fieldMap.put("someDouble", 8);
         __fieldMap.put("someLong", 9);
     }
-    
+
     public enum EnumSample
     {
         TYPE0(0), TYPE1(1), TYPE2(2), TYPE3(3), TYPE4(4);
-        
+
         public final int number;
-        
+
         EnumSample(int number)
         {
             this.number = number;
-        }       
-        
+        }
+
         public int getNumber()
         {
             return number;
         }
-        
+
         public static EnumSample valueOf(int number)
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return TYPE0;
@@ -86,7 +87,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             return null;
         }
     }
-    
+
     private List<Integer> someInt;
     private List<String> someString;
     private List<Bar> someBar;
@@ -96,21 +97,21 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     private List<Float> someFloat;
     private List<Double> someDouble;
     private List<Long> someLong;
-    
+
     public Foo()
     {
 
     }
 
     public Foo(
-            List<Integer> someInt, 
-            List<String> someString, 
-            List<Bar> someBar, 
-            List<EnumSample> someEnum, 
+            List<Integer> someInt,
+            List<String> someString,
+            List<Bar> someBar,
+            List<EnumSample> someEnum,
             List<ByteString> someBytes,
-            List<Boolean> someBoolean, 
-            List<Float> someFloat, 
-            List<Double> someDouble, 
+            List<Boolean> someBoolean,
+            List<Float> someFloat,
+            List<Double> someDouble,
             List<Long> someLong)
     {
         this.someInt = someInt;
@@ -133,7 +134,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someInt the someInt to set
+     * @param someInt
+     *            the someInt to set
      */
     public void setSomeInt(List<Integer> someInt)
     {
@@ -149,7 +151,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someString the someString to set
+     * @param someString
+     *            the someString to set
      */
     public void setSomeString(List<String> someString)
     {
@@ -165,7 +168,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someBar the someBar to set
+     * @param someBar
+     *            the someBar to set
      */
     public void setSomeBar(List<Bar> someBar)
     {
@@ -181,7 +185,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someEnum the someEnum to set
+     * @param someEnum
+     *            the someEnum to set
      */
     public void setSomeEnum(List<EnumSample> someEnum)
     {
@@ -197,7 +202,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someBytes the someBytes to set
+     * @param someBytes
+     *            the someBytes to set
      */
     public void setSomeBytes(List<ByteString> someBytes)
     {
@@ -213,7 +219,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someBoolean the someBoolean to set
+     * @param someBoolean
+     *            the someBoolean to set
      */
     public void setSomeBoolean(List<Boolean> someBoolean)
     {
@@ -229,7 +236,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someFloat the someFloat to set
+     * @param someFloat
+     *            the someFloat to set
      */
     public void setSomeFloat(List<Float> someFloat)
     {
@@ -245,7 +253,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someDouble the someDouble to set
+     * @param someDouble
+     *            the someDouble to set
      */
     public void setSomeDouble(List<Double> someDouble)
     {
@@ -261,7 +270,8 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     }
 
     /**
-     * @param someLong the someLong to set
+     * @param someLong
+     *            the someLong to set
      */
     public void setSomeLong(List<Long> someLong)
     {
@@ -272,7 +282,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     {
         return this;
     }
-    
+
     public boolean isInitialized(Foo message)
     {
         return true;
@@ -282,17 +292,17 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     {
         return new Foo();
     }
-    
+
     public Class<Foo> typeClass()
     {
         return Foo.class;
     }
-    
+
     public String messageName()
     {
         return getClass().getSimpleName();
     }
-    
+
     public String messageFullName()
     {
         return getClass().getName();
@@ -300,7 +310,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 
     public String getFieldName(int number)
     {
-        switch(number)
+        switch (number)
         {
             case 1:
                 return "someInt";
@@ -328,9 +338,9 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     public int getFieldNumber(String name)
     {
         Integer number = __fieldMap.get(name);
-        return number==null ? 0 : number.intValue();
+        return number == null ? 0 : number.intValue();
     }
-    
+
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
@@ -343,120 +353,120 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
 
     public void writeTo(Output output, Foo message) throws IOException
     {
-        if(message.someInt!=null)
+        if (message.someInt != null)
         {
-            for(int value : message.someInt)
+            for (int value : message.someInt)
                 output.writeInt32(1, value, true);
         }
-        if(message.someString!=null)
+        if (message.someString != null)
         {
-            for(String value : message.someString)
+            for (String value : message.someString)
                 output.writeString(2, value, true);
         }
-        if(message.someBar!=null)
+        if (message.someBar != null)
         {
-            for(Bar value : message.someBar)
+            for (Bar value : message.someBar)
                 output.writeObject(3, value, Bar.getSchema(), true);
         }
-        if(message.someEnum!=null)
+        if (message.someEnum != null)
         {
-            for(EnumSample value : message.someEnum)
+            for (EnumSample value : message.someEnum)
                 output.writeEnum(4, value.number, true);
         }
-        if(message.someBytes!=null)
+        if (message.someBytes != null)
         {
-            for(ByteString value : message.someBytes)
+            for (ByteString value : message.someBytes)
                 output.writeBytes(5, value, true);
         }
-        if(message.someBoolean!=null)
+        if (message.someBoolean != null)
         {
-            for(boolean value : message.someBoolean)
+            for (boolean value : message.someBoolean)
                 output.writeBool(6, value, true);
         }
-        if(message.someFloat!=null)
+        if (message.someFloat != null)
         {
-            for(Float value : message.someFloat)
+            for (Float value : message.someFloat)
                 output.writeFloat(7, value, true);
         }
-        if(message.someDouble!=null)
+        if (message.someDouble != null)
         {
-            for(Double value : message.someDouble)
+            for (Double value : message.someDouble)
                 output.writeDouble(8, value, true);
         }
-        if(message.someLong!=null)
+        if (message.someLong != null)
         {
-            for(Long value : message.someLong)
+            for (Long value : message.someLong)
                 output.writeInt64(9, value, true);
         }
     }
-    
+
     public void mergeFrom(Input input, Foo message) throws IOException
     {
-        for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
-            switch(number)
+            switch (number)
             {
                 case 0:
                     return;
                 case 1:
-                    if(message.someInt==null)
+                    if (message.someInt == null)
                         message.someInt = new ArrayList<Integer>();
                     message.someInt.add(input.readInt32());
                     break;
                 case 2:
-                    if(message.someString==null)
+                    if (message.someString == null)
                         message.someString = new ArrayList<String>();
                     message.someString.add(input.readString());
                     break;
                 case 3:
-                    if(message.someBar==null)
+                    if (message.someBar == null)
                         message.someBar = new ArrayList<Bar>();
                     message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
-                    if(message.someEnum==null)
+                    if (message.someEnum == null)
                         message.someEnum = new ArrayList<EnumSample>();
                     message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
-                    if(message.someBytes==null)
+                    if (message.someBytes == null)
                         message.someBytes = new ArrayList<ByteString>();
                     message.someBytes.add(input.readBytes());
                     break;
                 case 6:
-                    if(message.someBoolean==null)
+                    if (message.someBoolean == null)
                         message.someBoolean = new ArrayList<Boolean>();
                     message.someBoolean.add(input.readBool());
                     break;
                 case 7:
-                    if(message.someFloat==null)
+                    if (message.someFloat == null)
                         message.someFloat = new ArrayList<Float>();
                     message.someFloat.add(input.readFloat());
                     break;
                 case 8:
-                    if(message.someDouble==null)
+                    if (message.someDouble == null)
                         message.someDouble = new ArrayList<Double>();
                     message.someDouble.add(input.readDouble());
                     break;
                 case 9:
-                    if(message.someLong==null)
+                    if (message.someLong == null)
                         message.someLong = new ArrayList<Long>();
                     message.someLong.add(input.readInt64());
                     break;
                 default:
                     input.handleUnknownField(number, this);
             }
-        }        
+        }
     }
-    
+
     static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE)
     {
 
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
-            for(int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
+            for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
@@ -493,7 +503,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             }
         }
     };
-    
+
     public static Pipe.Schema<Foo> getPipeSchema()
     {
         return PIPE_SCHEMA;
@@ -523,7 +533,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Foo other = (Foo)obj;
+        Foo other = (Foo) obj;
         if (someBar == null)
         {
             if (other.someBar != null)
@@ -593,10 +603,10 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     @Override
     public String toString()
     {
-        return "Foo [someBar=" + someBar + ", someBoolean=" + someBoolean + ", someBytes=" + someBytes + ", someDouble=" + someDouble + ", someEnum="
-                + someEnum + ", someFloat=" + someFloat + ", someInt=" + someInt + ", someLong=" + someLong + ", someString=" + someString + "]";
+        return "Foo [someBar=" + someBar + ", someBoolean=" + someBoolean + ", someBytes=" + someBytes
+                + ", someDouble=" + someDouble + ", someEnum="
+                + someEnum + ", someFloat=" + someFloat + ", someInt=" + someInt + ", someLong=" + someLong
+                + ", someString=" + someString + "]";
     }
-    
-    
 
 }

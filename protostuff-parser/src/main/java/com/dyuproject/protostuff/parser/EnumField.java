@@ -14,58 +14,55 @@
 
 package com.dyuproject.protostuff.parser;
 
-
-
-
 /**
  * Represents an enum field defined in a {@link Message}.
- *
+ * 
  * @author David Yu
  * @created Dec 19, 2009
  */
 public class EnumField extends Field<EnumGroup.Value>
 {
-    
-    //java.lang.String javaType;
+
+    // java.lang.String javaType;
     final EnumGroup.Value ev;
     EnumGroup enumGroup;
     boolean defaultValueSet;
-    
+
     public EnumField()
     {
-        this((EnumGroup.Value)null);
+        this((EnumGroup.Value) null);
     }
 
     public EnumField(EnumGroup enumGroup)
     {
-        this((EnumGroup.Value)null);
+        this((EnumGroup.Value) null);
         this.enumGroup = enumGroup;
     }
-    
+
     public EnumField(EnumGroup.Value ev)
     {
         super(true);
         this.ev = ev;
     }
-    
+
     public EnumGroup.Value getEv()
     {
         return ev;
     }
-    
+
     public void putExtraOption(java.lang.String key, Object value)
     {
-        if(extraOptions.put(key, value) != null)
+        if (extraOptions.put(key, value) != null)
         {
             final Proto proto;
             final java.lang.String ofOwner;
-            if(owner != null)
+            if (owner != null)
             {
                 // message field
                 proto = owner.getProto();
                 ofOwner = " of " + owner.getRelativeName();
             }
-            else if(ev != null)
+            else if (ev != null)
             {
                 // enum field/value
                 proto = enumGroup.getProto();
@@ -76,8 +73,8 @@ public class EnumField extends Field<EnumGroup.Value>
                 proto = null;
                 ofOwner = "";
             }
-            
-            throw err("The field " + name + ofOwner + 
+
+            throw err("The field " + name + ofOwner +
                     " contains a duplicate option: " + key, proto);
         }
     }
@@ -86,21 +83,21 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         return defaultValueSet;
     }
-    
+
     public EnumGroup getEnumGroup()
     {
         return enumGroup;
     }
-    
+
     public java.lang.String getJavaType()
     {
-        //if(javaType!=null)
-        //    return javaType;
-        
+        // if(javaType!=null)
+        // return javaType;
+
         StringBuilder buffer = new StringBuilder();
-        if(enumGroup.isNested())
+        if (enumGroup.isNested())
         {
-            if(enumGroup.parentMessage==owner)
+            if (enumGroup.parentMessage == owner)
                 buffer.append(enumGroup.name);
             else
             {
@@ -108,47 +105,47 @@ public class EnumField extends Field<EnumGroup.Value>
                 buffer.append('.').append(enumGroup.name);
             }
         }
-        else if(enumGroup.getProto().getJavaPackageName().equals(owner.getProto().getJavaPackageName()))
+        else if (enumGroup.getProto().getJavaPackageName().equals(owner.getProto().getJavaPackageName()))
             buffer.append(enumGroup.name);
         else
             buffer.append(enumGroup.getProto().getJavaPackageName()).append('.').append(enumGroup.getName());
-        
+
         return buffer.toString();
-        //return (javaType=buffer.toString());
-        
+        // return (javaType=buffer.toString());
+
     }
-    
+
     public java.lang.String getRegularType()
     {
         java.lang.String javaType = getJavaType();
         Proto egProto = enumGroup.getProto();
         java.lang.String javaPackage = egProto.getJavaPackageName();
         java.lang.String protoPackage = egProto.getPackageName();
-        if(javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage))
+        if (javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage))
             return javaType.replace(javaPackage, protoPackage);
-        
+
         return javaType;
     }
-    
+
     public java.lang.String getDefaultValueAsString()
     {
         return getJavaType() + "." + getDefaultValue().getName();
     }
-    
+
     public boolean isSamePackage()
     {
         return getOwner().getProto() == getEnumGroup().getProto();
     }
-    
+
     public java.lang.String getRelativePath()
     {
-        if(isSamePackage())
+        if (isSamePackage())
             return "";
-        
+
         java.lang.String currentPackage = getOwner().getProto().getPackageName();
         java.lang.String targetPackage = getEnumGroup().getProto().getPackageName();
         java.lang.String path = "../";
-        for(int idx=currentPackage.indexOf('.'); idx!=-1; idx=currentPackage.indexOf('.', idx+1))
+        for (int idx = currentPackage.indexOf('.'); idx != -1; idx = currentPackage.indexOf('.', idx + 1))
             path += "../";
 
         return path + targetPackage.replace('.', '/') + "/";

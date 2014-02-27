@@ -20,51 +20,51 @@ import junit.framework.TestCase;
 
 /**
  * Helper class for tests.
- *
+ * 
  * @author David Yu
  * @created Oct 8, 2010
  */
 public abstract class AbstractTest extends TestCase
 {
-    
+
     static final int BUF_SIZE = 256;
-    
+
     public static LinkedBuffer buf()
     {
         return LinkedBuffer.allocate(BUF_SIZE);
     }
-    
+
     public static LinkedBuffer buf(int size)
     {
         return LinkedBuffer.allocate(size);
     }
-    
+
     static int getInteger(String propertyName, int defaultIfNone)
     {
         String prop = System.getProperty(propertyName);
         return prop == null ? defaultIfNone : Integer.parseInt(prop);
     }
-    
+
     public static boolean isEqual(Vector v1, Vector v2)
     {
-        if(v1 == null && v2 == null)
+        if (v1 == null && v2 == null)
             return true;
-        
-        if(v1 == null || v2 == null)
+
+        if (v1 == null || v2 == null)
             return false;
-        
-        if(v1 == v2)
+
+        if (v1 == v2)
             return true;
-        
-        if(v1.size() != v2.size())
+
+        if (v1.size() != v2.size())
             return false;
-        
-        for(int i=0; i<v1.size(); i++)
+
+        for (int i = 0; i < v1.size(); i++)
         {
-            if(!v1.elementAt(i).equals(v2.elementAt(i)))
+            if (!v1.elementAt(i).equals(v2.elementAt(i)))
                 return false;
         }
-        
+
         return true;
     }
 

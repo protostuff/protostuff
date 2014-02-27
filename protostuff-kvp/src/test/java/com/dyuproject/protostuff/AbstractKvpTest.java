@@ -16,32 +16,31 @@ package com.dyuproject.protostuff;
 
 import java.io.IOException;
 
-
 /**
  * Base class for the kvp io tests.
- *
+ * 
  * @author David Yu
  * @created Dec 4, 2010
  */
 public abstract class AbstractKvpTest extends NoNestedMessageTest
 {
-    
+
     protected final boolean numeric;
 
     public AbstractKvpTest(boolean numeric)
     {
         this.numeric = numeric;
     }
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, 
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         try
         {
-            schema.mergeFrom(new KvpByteArrayInput(data, offset, length, numeric), 
+            schema.mergeFrom(new KvpByteArrayInput(data, offset, length, numeric),
                     message);
         }
-        catch(ArrayIndexOutOfBoundsException e)
+        catch (ArrayIndexOutOfBoundsException e)
         {
             throw new ProtostuffException("Truncated message.", e);
         }
@@ -56,12 +55,12 @@ public abstract class AbstractKvpTest extends NoNestedMessageTest
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
         byte[] data = output.toByteArray();
-        //System.err.println(data.length + " | " + getClass().getSimpleName());
+        // System.err.println(data.length + " | " + getClass().getSimpleName());
         return data;
     }
-    
+
 }

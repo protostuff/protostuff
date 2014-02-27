@@ -27,30 +27,30 @@ import com.dyuproject.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to protobuf java messages (pojos).
- *
+ * 
  * @author David Yu
  * @created Jan 4, 2010
  */
 public class ProtoToJavaBeanMeCompiler extends STCodeGenerator
 {
-    
+
     public ProtoToJavaBeanMeCompiler()
     {
         super("java_bean_me");
     }
-    
+
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
         String template = "java_bean_me";
         StringTemplateGroup group = getSTG(template);
-        
-        for(EnumGroup eg : proto.getEnumGroups())
+
+        for (EnumGroup eg : proto.getEnumGroups())
         {
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, eg.getName()+".java");
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, eg.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate enumBlock = group.getInstanceOf("enum_block");
             enumBlock.setAttribute("eg", eg);
             enumBlock.setAttribute("module", module);
@@ -59,20 +59,20 @@ public class ProtoToJavaBeanMeCompiler extends STCodeGenerator
             enumBlock.write(out);
             writer.close();
         }
-        
-        for(Message m : proto.getMessages())
+
+        for (Message m : proto.getMessages())
         {
             // true if its a service message w/c isn't supported atm
-            if(m.getFields().isEmpty())
+            if (m.getFields().isEmpty())
             {
                 System.err.println("ignoring empty message: " + m.getFullName());
                 continue;
             }
-            
-            Writer writer = CompilerUtil.newWriter(module, 
-                    javaPackageName, m.getName()+".java");
+
+            Writer writer = CompilerUtil.newWriter(module,
+                    javaPackageName, m.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
-            
+
             StringTemplate messageBlock = group.getInstanceOf("message_block");
             messageBlock.setAttribute("message", m);
             messageBlock.setAttribute("module", module);

@@ -18,14 +18,14 @@ import java.io.IOException;
 
 /**
  * Smile standard tests.
- *
+ * 
  * @author David Yu
  * @created Feb 11, 2011
  */
 public class SmileStandardTest extends StandardTest
 {
-    
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message, 
+
+    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         SmileIOUtil.mergeFrom(data, 0, data.length, message, schema, false);

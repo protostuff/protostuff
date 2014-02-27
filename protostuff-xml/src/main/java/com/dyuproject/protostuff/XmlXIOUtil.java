@@ -25,11 +25,12 @@ import java.io.OutputStream;
  */
 public final class XmlXIOUtil
 {
-    private XmlXIOUtil() {}
-    
+    private XmlXIOUtil()
+    {
+    }
+
     static final byte[] HEADER = "<?xml version='1.0' encoding='UTF-8'?>".getBytes();
-    
-    
+
     /**
      * Serializes the {@code message} into a byte array using the given schema.
      * 
@@ -37,36 +38,36 @@ public final class XmlXIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
-        if(buffer.start != buffer.offset)
+        if (buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
+
         final XmlXOutput output = new XmlXOutput(buffer, schema);
-        
+
         final String name = schema.messageName();
         try
         {
             // header and start root element
-            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                    output.sink.writeStrAscii(name, output, 
-                            output.sink.writeByte(XmlXOutput.START_TAG, output, 
+            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                    output.sink.writeStrAscii(name, output,
+                            output.sink.writeByte(XmlXOutput.START_TAG, output,
                                     output.sink.writeByteArray(HEADER, output, output.tail))));
-            
+
             schema.writeTo(output, message);
-            
+
             // end root element
-            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                    output.sink.writeStrAscii(name, output, 
+            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                    output.sink.writeStrAscii(name, output,
                             output.sink.writeByteArray(XmlXOutput.START_SLASH_TAG, output, output.tail)));
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " + 
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
                     "(should never happen).", e);
         }
-        
+
         return output.toByteArray();
     }
-    
+
     /**
      * Writes the {@code message} into the {@link LinkedBuffer} using the given schema.
      * 
@@ -74,66 +75,66 @@ public final class XmlXIOUtil
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
-        if(buffer.start != buffer.offset)
+        if (buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
+
         final XmlXOutput output = new XmlXOutput(buffer, schema);
-        
+
         final String name = schema.messageName();
         try
         {
             // header and start root element
-            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                    output.sink.writeStrAscii(name, output, 
-                            output.sink.writeByte(XmlXOutput.START_TAG, output, 
+            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                    output.sink.writeStrAscii(name, output,
+                            output.sink.writeByte(XmlXOutput.START_TAG, output,
                                     output.sink.writeByteArray(HEADER, output, output.tail))));
-            
+
             schema.writeTo(output, message);
-            
+
             // end root element
-            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                    output.sink.writeStrAscii(name, output, 
+            output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                    output.sink.writeStrAscii(name, output,
                             output.sink.writeByteArray(XmlXOutput.START_SLASH_TAG, output, output.tail)));
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " + 
+            throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " +
                     "(should never happen).", e);
         }
-        
+
         return output.getSize();
     }
-    
+
     /**
      * Serializes the {@code message} into an {@link OutputStream} using the given schema.
      * 
      * @return the size of the message
      */
-    public static <T> int writeTo(final OutputStream out, final T message, 
+    public static <T> int writeTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
-        if(buffer.start != buffer.offset)
+        if (buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-        
+
         final XmlXOutput output = new XmlXOutput(buffer, out, schema);
-        
+
         final String name = schema.messageName();
-        
+
         // header and start root element
-        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                output.sink.writeStrAscii(name, output, 
-                        output.sink.writeByte(XmlXOutput.START_TAG, output, 
+        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                output.sink.writeStrAscii(name, output,
+                        output.sink.writeByte(XmlXOutput.START_TAG, output,
                                 output.sink.writeByteArray(HEADER, output, output.tail))));
-        
+
         schema.writeTo(output, message);
-        
+
         // end root element
-        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output, 
-                output.sink.writeStrAscii(name, output, 
+        output.tail = output.sink.writeByte(XmlXOutput.END_TAG, output,
+                output.sink.writeStrAscii(name, output,
                         output.sink.writeByteArray(XmlXOutput.START_SLASH_TAG, output, output.tail)));
-        
+
         LinkedBuffer.writeTo(out, buffer);
-        
+
         return output.size;
     }
 

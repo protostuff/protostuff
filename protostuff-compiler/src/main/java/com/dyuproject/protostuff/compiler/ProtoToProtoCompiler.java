@@ -27,9 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Kind of preprocessor for proto files.
- * Able to extend one messages with fields from other ones.
- *
+ * Kind of preprocessor for proto files. Able to extend one messages with fields from other ones.
+ * 
  * @author Ivan Prisyazhniy, Igor Scherbak
  * @created Mar 9, 2012
  */
@@ -75,7 +74,8 @@ public class ProtoToProtoCompiler extends STCodeGenerator
                     throw new IllegalArgumentException("By parameter of attribute @Extend is not specified");
 
                 if (!(byMessageRef instanceof Message))
-                    throw new IllegalArgumentException("By parameter have a non Message reference in your @Extend annotation");
+                    throw new IllegalArgumentException(
+                            "By parameter have a non Message reference in your @Extend annotation");
 
                 Message base = (Message) byMessageRef;
                 String result = extendBy(group, message, base);
@@ -116,7 +116,8 @@ public class ProtoToProtoCompiler extends STCodeGenerator
     public static String injectAfterAnnotation(Message extend, Message by, String extendProto, String byContent)
     {
         // Insert after annotated message
-        Pattern messageRegexp = Pattern.compile("[\\n\\r]?([ \\t]*)(message\\s+" + extend.getName() + "\\s+\\{)", Pattern.MULTILINE);
+        Pattern messageRegexp = Pattern.compile("[\\n\\r]?([ \\t]*)(message\\s+" + extend.getName() + "\\s+\\{)",
+                Pattern.MULTILINE);
 
         int messageIndex = -1, openBracketIndex = -1;
         Matcher matcher = messageRegexp.matcher(extendProto);
@@ -184,7 +185,8 @@ public class ProtoToProtoCompiler extends STCodeGenerator
 
     public static String insertIndentation(String content, String indent)
     {
-        if (!content.startsWith(LINE_SEPARATOR)) content = indent + content;
+        if (!content.startsWith(LINE_SEPARATOR))
+            content = indent + content;
         return content.replace(LINE_SEPARATOR, LINE_SEPARATOR + indent);
     }
 

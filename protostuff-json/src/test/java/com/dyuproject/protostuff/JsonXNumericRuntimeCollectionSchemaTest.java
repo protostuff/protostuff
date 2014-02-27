@@ -15,9 +15,8 @@
 package com.dyuproject.protostuff;
 
 /**
- * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric) 
- * ser/deser.
- *
+ * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric) ser/deser.
+ * 
  * @author David Yu
  * @created Jan 27, 2011
  */

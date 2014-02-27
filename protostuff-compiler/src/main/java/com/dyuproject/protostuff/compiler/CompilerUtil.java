@@ -26,61 +26,59 @@ import java.util.List;
 
 /**
  * Utilities and helpers for compiling protos.
- *
+ * 
  * @author David Yu
  * @created Jan 5, 2010
  */
 public final class CompilerUtil
 {
 
-    
-    
-    public static Writer newWriter(ProtoModule module, String packageName, String fileName) 
-    throws IOException
+    public static Writer newWriter(ProtoModule module, String packageName, String fileName)
+            throws IOException
     {
         String encoding = module.getEncoding();
-        if(encoding==null || encoding.isEmpty())
+        if (encoding == null || encoding.isEmpty())
             encoding = "UTF-8";
-        
+
         File packageDir = new File(module.getOutputDir(), packageName.replace('.', '/'));
-        if(!packageDir.exists())
+        if (!packageDir.exists())
             packageDir.mkdirs();
-        
+
         File outputFile = new File(packageDir, fileName);
         FileOutputStream out = new FileOutputStream(outputFile);
         return new BufferedWriter(new OutputStreamWriter(out, encoding));
     }
-    
+
     public static List<File> getProtoFiles(File dir)
     {
-        return getFilesByExtension(dir, new String[]{".proto"});
+        return getFilesByExtension(dir, new String[] { ".proto" });
     }
-    
+
     /**
      * Returns a list of file filtered by their file types/extensions; (E.g ".proto")
      */
     public static List<File> getFilesByExtension(File dir, String[] extensions)
     {
-        if(!dir.isDirectory() || extensions==null)
+        if (!dir.isDirectory() || extensions == null)
             return Collections.emptyList();
         List<File> files = new ArrayList<File>();
         addFilesByExtension(files, dir, extensions);
         return files;
     }
-    
+
     static void addFilesByExtension(List<File> list, File dir, String[] extensions)
     {
         File[] files = dir.listFiles();
-        for(int i=0; i<files.length; i++)
+        for (int i = 0; i < files.length; i++)
         {
             File f = files[i];
-            if(f.isDirectory())
+            if (f.isDirectory())
                 addFilesByExtension(list, f, extensions);
             else
             {
-                for(String s : extensions)
+                for (String s : extensions)
                 {
-                    if(f.getName().endsWith(s))
+                    if (f.getName().endsWith(s))
                     {
                         list.add(f);
                         break;
@@ -89,5 +87,5 @@ public final class CompilerUtil
             }
         }
     }
-    
+
 }

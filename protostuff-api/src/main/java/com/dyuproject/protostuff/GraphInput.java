@@ -15,22 +15,21 @@
 package com.dyuproject.protostuff;
 
 /**
- * An input that is stateful and keeps track of the references.
- * This is useful for updating the reference of the last message (polymorphic) 
- * deserialized. 
- *
+ * An input that is stateful and keeps track of the references. This is useful for updating the reference of the last
+ * message (polymorphic) deserialized.
+ * 
  * @author David Yu
  * @created Jan 19, 2011
  */
 public interface GraphInput extends Input
 {
-    
+
     /**
-     * Updates the last reference (the tip/end of the index) kept 
-     * if the {@code lastMessage} was indeed the last message.
+     * Updates the last reference (the tip/end of the index) kept if the {@code lastMessage} was indeed the last
+     * message.
      */
     public void updateLast(Object morphedMessage, Object lastMessage);
-    
+
     /**
      * Returns true if the last message was read as a reference.
      */

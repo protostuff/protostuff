@@ -34,78 +34,80 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
 
 /**
  * Base class for code generators using StringTemplate.
- *
+ * 
  * @author David Yu
  * @created Jan 5, 2010
  */
 public abstract class STCodeGenerator implements ProtoCompiler
 {
-    
+
     public static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
-    
+
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
-    
-    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = 
+
+    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS =
             new ConcurrentHashMap<Class<?>, AttributeRenderer>();
-    
-    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = 
+
+    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS =
             new ConcurrentHashMap<String, Formatter>();
-    
+
     public static int errorCount = 0;
 
-    public static final StringTemplateErrorListener ERROR_LISTENER = 
+    public static final StringTemplateErrorListener ERROR_LISTENER =
             new StringTemplateErrorListener()
-    {
-        public void error(String msg, Throwable e)
-        {
-            errorCount += 1;
-            System.err.println("error: " + msg);
-        }
-        public void warning(String msg)
-        {
-            System.err.println("warning: " + msg);
-        }
-    };
-    
-    public static final CommonGroupLoader GROUP_LOADER = 
-            new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
-    
-    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER = 
-            new AttributeRenderer()
-    {
-        public String toString(Object o)
-        {
-            return (String)o;
-        }
+            {
+                public void error(String msg, Throwable e)
+                {
+                    errorCount += 1;
+                    System.err.println("error: " + msg);
+                }
 
-        public String toString(Object o, String formatName)
-        {
-            String str = (String)o;
-            if(formatName==null)
-                return str;
-            
-            String[] formats = FORMAT_DELIM.split(formatName);
-            
-            return formats.length == 0 ? format(str, formatName) : 
-                chainedFormat(str, formats);
-        }
-    };
-    
+                public void warning(String msg)
+                {
+                    System.err.println("warning: " + msg);
+                }
+            };
+
+    public static final CommonGroupLoader GROUP_LOADER =
+            new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
+
+    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER =
+            new AttributeRenderer()
+            {
+                public String toString(Object o)
+                {
+                    return (String) o;
+                }
+
+                public String toString(Object o, String formatName)
+                {
+                    String str = (String) o;
+                    if (formatName == null)
+                        return str;
+
+                    String[] formats = FORMAT_DELIM.split(formatName);
+
+                    return formats.length == 0 ? format(str, formatName) :
+                            chainedFormat(str, formats);
+                }
+            };
+
     static
     {
         StringTemplateGroup.registerGroupLoader(GROUP_LOADER);
-        
+
         // attribute renderers
-        
+
         setAttributeRenderer(String.class, STRING_ATTRIBUTE_RENDERER);
-        
+
         GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
-        
+
         Formatter.BUILTIN.addAllTo(DEFAULT_FORMATTERS);
     }
-    
+
     /**
      * Formats the string n times.
+     * <p/>
      * 
      * <pre>
      * For example:
@@ -121,40 +123,39 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         // chained formatting
         String formatted = str;
-        for(String f : formats)
+        for (String f : formats)
             formatted = format(formatted, f);
-        
+
         return formatted;
     }
-    
+
     /**
      * Formats the string {@code str} using the format {@code formatName}.
-     * 
-     * If the formatter with the name does not exist, the input string will be 
-     * appended with the formatName.
+     * <p/>
+     * If the formatter with the name does not exist, the input string will be appended with the formatName.
      */
     public static String format(String str, String formatName)
     {
         final Formatter formatter = DEFAULT_FORMATTERS.get(formatName);
-        if(formatter != null)
+        if (formatter != null)
             return formatter.format(str);
-        
+
         // regex replace
         int eq = formatName.indexOf("==");
-        if(eq > 0)
+        if (eq > 0)
         {
             String toReplace = formatName.substring(0, eq);
-            String replacement = formatName.substring(eq+2);
-            
-            if(toReplace.length()==1 && replacement.length()==1)
+            String replacement = formatName.substring(eq + 2);
+
+            if (toReplace.length() == 1 && replacement.length() == 1)
                 return str.replace(toReplace.charAt(0), replacement.charAt(0));
 
             return str.replaceAll(toReplace, replacement);
         }
-        
+
         return str + formatName;
     }
-    
+
     /**
      * Returns true if there was no previous attribute renderer with the same class.
      */
@@ -162,7 +163,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         return null == DEFAULT_RENDERERS.put(typeClass, ar);
     }
-    
+
     /**
      * Returns true if there was no previous formatter with the same name.
      */
@@ -170,7 +171,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         return null == DEFAULT_FORMATTERS.put(name, f);
     }
-     
+
     public static StringTemplateGroup getSTG(String groupName)
     {
         return __loader.loadGroup(groupName);
@@ -180,101 +181,100 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         return getSTG(groupName).getInstanceOf(name);
     }
-    
+
     public static void setGroupLoader(StringTemplateGroupLoader loader)
     {
-        if(loader != null)
+        if (loader != null)
         {
             __loader = loader;
             StringTemplateGroup.registerGroupLoader(loader);
         }
     }
-    
+
     private static StringTemplateGroupLoader __loader = GROUP_LOADER;
-    
+
     protected final String id;
-    
+
     public STCodeGenerator(String id)
     {
         this.id = id;
     }
 
-    
     public String getOutputId()
     {
         return id;
     }
-    
+
     public void compile(ProtoModule module) throws IOException
     {
         String ci = module.getOption("compile_imports");
         boolean compileImports = ci != null && !"false".equalsIgnoreCase(ci);
         boolean recursive = "recursive".equalsIgnoreCase(ci);
-        
+
         File source = module.getSource();
-        if(source.isDirectory())
+        if (source.isDirectory())
         {
-            for(File f : CompilerUtil.getProtoFiles(source))
+            for (File f : CompilerUtil.getProtoFiles(source))
                 compile(module, parseProto(f, module), compileImports, recursive);
         }
         else
             compile(module, parseProto(source, module), compileImports, recursive);
     }
-    
+
     protected static Proto parseProto(File file, ProtoModule module)
     {
         CachingProtoLoader loader = module.getCachingProtoLoader();
-        if(loader == null)
+        if (loader == null)
             return ProtoUtil.parseProto(file);
 
         try
         {
             return loader.loadFrom(file, null);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
     }
-    
-    protected void compile(ProtoModule module, Proto proto, boolean compileImports, 
+
+    protected void compile(ProtoModule module, Proto proto, boolean compileImports,
             boolean recursive) throws IOException
     {
         final List<Proto> overridden = new ArrayList<Proto>();
         try
         {
             collect(module, proto, overridden, recursive);
-            
-            if(!recursive)
+
+            if (!recursive)
             {
                 compile(module, proto);
-                if(compileImports)
+                if (compileImports)
                 {
-                    for(Proto p : proto.getImportedProtos())
+                    for (Proto p : proto.getImportedProtos())
                         compile(module, p);
                 }
             }
         }
         finally
         {
-            for(Proto p : overridden)
+            for (Proto p : overridden)
                 postCompile(module, p);
         }
     }
-    
-    protected void collect(ProtoModule module, Proto proto, 
+
+    protected void collect(ProtoModule module, Proto proto,
             List<Proto> overridden, boolean compile) throws IOException
     {
-        for(Proto p : proto.getImportedProtos())
+        for (Proto p : proto.getImportedProtos())
             collect(module, p, overridden, compile);
-        
-        if(override(module, proto))
+
+        if (override(module, proto))
             overridden.add(proto);
-        
-        if(compile)
+
+        if (compile)
             compile(module, proto);
     }
-    
+
     protected static boolean override(ProtoModule module, Proto proto)
     {
         String pkg = proto.getPackageName();
@@ -282,25 +282,25 @@ public abstract class STCodeGenerator implements ProtoCompiler
         String opkg = module.getOption(pkg);
         String ojpkg = module.getOption(jpkg);
         boolean override = false;
-        if(opkg != null && opkg.length() != 0)
+        if (opkg != null && opkg.length() != 0)
         {
             proto.getMutablePackageName().override(opkg);
             override = true;
         }
-        if(ojpkg != null && ojpkg.length() != 0)
+        if (ojpkg != null && ojpkg.length() != 0)
         {
             proto.getMutableJavaPackageName().override(ojpkg);
             override = true;
         }
         return override;
     }
-    
+
     protected static void postCompile(ProtoModule module, Proto proto)
     {
         proto.getMutableJavaPackageName().reset();
         proto.getMutablePackageName().reset();
     }
-    
+
     protected abstract void compile(ProtoModule module, Proto proto) throws IOException;
 
 }

@@ -49,9 +49,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An InputStream implementations which reads from some other InputStream 
- * but is limited to a particular number of bytes.
- *
+ * An InputStream implementations which reads from some other InputStream but is limited to a particular number of
+ * bytes.
+ * 
  * @author David Yu
  * @created Jan 14, 2010
  */
@@ -63,13 +63,13 @@ public final class LimitedInputStream extends FilterInputStream
     {
         super(in);
     }
-    
+
     public LimitedInputStream(InputStream in, int limit)
     {
         super(in);
         this.limit = limit;
     }
-    
+
     LimitedInputStream limit(int limit)
     {
         this.limit = limit;
