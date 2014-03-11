@@ -1,5 +1,7 @@
 package com.dyuproject.protostuff.compiler;
 
+import com.dyuproject.protostuff.parser.Field;
+import com.dyuproject.protostuff.parser.Message;
 import com.dyuproject.protostuff.parser.Proto;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
@@ -15,6 +17,20 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
         super("java_bean_primitives");
     }
 
+    void setByteBuffer(Message m)
+    {
+        for (Field f : m.getFields())
+        {
+            if (f.isBytesField())
+                f.putExtraOption("ByteBuffer", true);
+        }
+
+        for (Message m2 : m.getNestedMessages())
+        {
+            setByteBuffer(m2);
+        }
+    }
+
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
@@ -22,6 +38,17 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
 
         // this compiler doesnt allow setters
         module.getOptions().setProperty("no_setters", "true");
+
+        // TODO find a way to push this up to the parsing step
+        if (module.getOption("ByteBuffer") != null)
+        {
+            for (Message m : proto.getMessages())
+            {
+                m.setByteBufferFieldPresent(true);
+
+                setByteBuffer(m);
+            }
+        }
 
         writeEnums(module, proto, javaPackageName, group);
         writeMessages(module, proto, javaPackageName, group);

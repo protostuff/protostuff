@@ -398,6 +398,11 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return byteBufferFieldPresent;
     }
 
+    public void setByteBufferFieldPresent(boolean v)
+    {
+        byteBufferFieldPresent = v;
+    }
+
     public boolean isBytesOrStringDefaultValuePresent()
     {
         return bytesOrStringDefaultValuePresent;
