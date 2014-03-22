@@ -19,9 +19,9 @@
     </developer>
   </developers>
   <scm>
-  	<url>https://protostuff.googlecode.com/svn/trunk</url>
-    <connection>scm:svn:https://protostuff.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://protostuff.googlecode.com/svn/trunk</developerConnection>
+    <url>https://github.com/protostuff/protostuff</url>
+    <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
+    <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
   </scm>
   <licenses>
     <license>
