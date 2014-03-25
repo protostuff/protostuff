@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.util.EnumMap;
 import java.util.Iterator;

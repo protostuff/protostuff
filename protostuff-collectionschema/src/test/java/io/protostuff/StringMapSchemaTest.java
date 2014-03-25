@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * An output that keeps the state of the schema being used.

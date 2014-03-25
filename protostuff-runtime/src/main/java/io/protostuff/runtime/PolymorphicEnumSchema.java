@@ -26,19 +26,19 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.GraphInput;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.Schema;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
 
 /**
  * Used when a field is declared as "Enum<?>" (with or with-out generics).

@@ -12,15 +12,15 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Runtime pipe schema.

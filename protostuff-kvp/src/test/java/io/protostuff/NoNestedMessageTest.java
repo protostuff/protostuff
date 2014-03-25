@@ -12,16 +12,16 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.SerializableObjects.baz;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+import static io.protostuff.SerializableObjects.baz;
+import static io.protostuff.SerializableObjects.negativeBaz;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.Foo.EnumSample;
+import io.protostuff.Foo.EnumSample;
 
 /**
  * Base test class for simple pojos that have scalar fields (no nested messages/pojos).

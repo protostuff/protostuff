@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.ProtobufIOUtil;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.ProtobufIOUtil;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 
 /**
  * Test ser/deser for subclasses that inherit from non-abstract base types.

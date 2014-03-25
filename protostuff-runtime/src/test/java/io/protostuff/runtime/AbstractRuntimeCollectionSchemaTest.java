@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -58,10 +58,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * Test for runtime collection fields with {@link CollectionSchema}.

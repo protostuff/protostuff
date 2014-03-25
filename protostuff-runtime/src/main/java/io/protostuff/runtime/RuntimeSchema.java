@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.ID_STRATEGY;
+import static io.protostuff.runtime.RuntimeEnv.ID_STRATEGY;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -26,12 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
-import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
+import io.protostuff.Message;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.Tag;
+import io.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
+import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**
  * A schema that can be generated and cached at runtime for objects that have no schema. This is particularly useful for

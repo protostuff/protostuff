@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -21,9 +21,9 @@ import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import com.dyuproject.protostuff.parser.EnumGroup;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
+import io.protostuff.parser.EnumGroup;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to protobuf java messages (pojos).

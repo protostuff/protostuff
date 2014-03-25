@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 /**
  * Int32/Int64 serialization

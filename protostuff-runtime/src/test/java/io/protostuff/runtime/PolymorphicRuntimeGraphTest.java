@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.GraphTest;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.GraphTest;
+import io.protostuff.Schema;
 
 /**
  * Test ser/deser of polymorphic graph objects (references and cyclic dependencies).

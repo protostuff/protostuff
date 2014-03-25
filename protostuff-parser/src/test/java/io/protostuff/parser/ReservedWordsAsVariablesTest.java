@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class ReservedWordsAsVariablesTest extends TestCase
     public void testIt() throws Exception
     {
         File file = ProtoParserTest.getFile(
-                "com/dyuproject/protostuff/parser/test_reserved_words_as_variables.proto");
+                "io/protostuff/parser/test_reserved_words_as_variables.proto");
         assertTrue(file.exists());
 
         Proto proto = new Proto(file);

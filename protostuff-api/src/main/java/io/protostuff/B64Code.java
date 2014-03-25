@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 //========================================================================
 //Copyright 1999-2005 Mort Bay Consulting Pty. Ltd.

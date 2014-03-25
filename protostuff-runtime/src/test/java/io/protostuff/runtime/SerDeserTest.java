@@ -12,23 +12,23 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.SerializableObjects.bar;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
+import static io.protostuff.runtime.SerializableObjects.bar;
+import static io.protostuff.runtime.SerializableObjects.baz;
+import static io.protostuff.runtime.SerializableObjects.foo;
+import static io.protostuff.runtime.SerializableObjects.negativeBar;
+import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import java.util.LinkedHashSet;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.ComputedSizeOutput;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.Bar.Status;
+import io.protostuff.ComputedSizeOutput;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.Bar.Status;
 
 /**
  * Serialization and deserialization test cases.

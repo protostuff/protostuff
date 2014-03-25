@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeMapTest;
+import io.protostuff.StringSerializer.STRING;
+import io.protostuff.runtime.AbstractRuntimeMapTest;
 
 /**
  * Test xml ser/deser for runtime {@link Map} fields.

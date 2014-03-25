@@ -12,17 +12,17 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag32;
-import static com.dyuproject.protostuff.ProtobufOutput.encodeZigZag64;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
-import static com.dyuproject.protostuff.WireFormat.makeTag;
+import static io.protostuff.ProtobufOutput.encodeZigZag32;
+import static io.protostuff.ProtobufOutput.encodeZigZag64;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED32;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED64;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static io.protostuff.WireFormat.WIRETYPE_START_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_VARINT;
+import static io.protostuff.WireFormat.makeTag;
 
 import java.io.IOException;
 import java.io.OutputStream;

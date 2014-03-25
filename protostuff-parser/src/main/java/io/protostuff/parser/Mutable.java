@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 /**
  * An entity whose values can be overriden with new value. It can also be reset to its initial state.

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 /**
  * Represents an enum field defined in a {@link Message}.

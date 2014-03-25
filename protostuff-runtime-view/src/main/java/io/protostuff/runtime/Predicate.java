@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A filter for the fields that need to be included.

@@ -12,17 +12,17 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
-import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Schema;
+import io.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**
  * A view schema can choose which fields to include during ser/deser.

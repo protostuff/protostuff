@@ -12,16 +12,16 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.SerializableObjects.foo;
+import static io.protostuff.SerializableObjects.foo;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import com.dyuproject.protostuff.CompareOutputsTest.Serializer;
+import io.protostuff.CompareOutputsTest.Serializer;
 
 /**
  * Benchmark to compare the deserialization speed of 2 types. CodedInput and ByteArrayInput.

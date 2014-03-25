@@ -42,7 +42,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 /**
  * Thrown when attempting to build a protocol message that is missing required fields. This is a

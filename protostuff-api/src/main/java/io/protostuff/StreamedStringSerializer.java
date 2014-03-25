@@ -1,18 +1,18 @@
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.FIVE_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.StringSerializer.FOUR_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.StringSerializer.FOUR_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.StringSerializer.INT_MIN_VALUE;
-import static com.dyuproject.protostuff.StringSerializer.LONG_MIN_VALUE;
-import static com.dyuproject.protostuff.StringSerializer.ONE_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.StringSerializer.THREE_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.StringSerializer.THREE_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.StringSerializer.TWO_BYTE_EXCLUSIVE;
-import static com.dyuproject.protostuff.StringSerializer.TWO_BYTE_LOWER_LIMIT;
-import static com.dyuproject.protostuff.StringSerializer.putBytesFromInt;
-import static com.dyuproject.protostuff.StringSerializer.putBytesFromLong;
-import static com.dyuproject.protostuff.StringSerializer.writeFixed2ByteInt;
+import static io.protostuff.StringSerializer.FIVE_BYTE_LOWER_LIMIT;
+import static io.protostuff.StringSerializer.FOUR_BYTE_EXCLUSIVE;
+import static io.protostuff.StringSerializer.FOUR_BYTE_LOWER_LIMIT;
+import static io.protostuff.StringSerializer.INT_MIN_VALUE;
+import static io.protostuff.StringSerializer.LONG_MIN_VALUE;
+import static io.protostuff.StringSerializer.ONE_BYTE_EXCLUSIVE;
+import static io.protostuff.StringSerializer.THREE_BYTE_EXCLUSIVE;
+import static io.protostuff.StringSerializer.THREE_BYTE_LOWER_LIMIT;
+import static io.protostuff.StringSerializer.TWO_BYTE_EXCLUSIVE;
+import static io.protostuff.StringSerializer.TWO_BYTE_LOWER_LIMIT;
+import static io.protostuff.StringSerializer.putBytesFromInt;
+import static io.protostuff.StringSerializer.putBytesFromLong;
+import static io.protostuff.StringSerializer.writeFixed2ByteInt;
 
 import java.io.IOException;
 

@@ -26,29 +26,29 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
+import static io.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.AcousticGuitar;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.BassGuitar;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Bat;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.CustomArrayList;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.CustomHashMap;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.GuitarPickup;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Pojo;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray2D;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCollection;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCustomArrayListAndHashMap;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithMap;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Size;
-import com.dyuproject.protostuff.runtime.AbstractRuntimeObjectSchemaTest.WrapsBat;
-import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
+import io.protostuff.CollectionSchema;
+import io.protostuff.MapSchema;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.AcousticGuitar;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.BassGuitar;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Bat;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.CustomArrayList;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.CustomHashMap;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.GuitarPickup;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Pojo;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithArray2D;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCollection;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithCustomArrayListAndHashMap;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.PojoWithMap;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.Size;
+import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.WrapsBat;
+import io.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
 
 /**
  * Test for {@link IncrementalIdStrategy}.
@@ -70,7 +70,7 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
         if (runTest)
         {
             System.setProperty("protostuff.runtime.id_strategy_factory",
-                    "com.dyuproject.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
+                    "io.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
         }
     }
 
@@ -134,7 +134,7 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
         {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
-                    "com.dyuproject.protostuff.runtime.ProtostuffRuntimeObjectSchemaTest"
+                    "io.protostuff.runtime.ProtostuffRuntimeObjectSchemaTest"
                     ), false);
 
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);
@@ -147,7 +147,7 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
         {
             junit.textui.TestRunner tr = new junit.textui.TestRunner();
             tr.doRun(tr.getTest(
-                    "com.dyuproject.protostuff.runtime.ProtobufRuntimeObjectSchemaTest"
+                    "io.protostuff.runtime.ProtobufRuntimeObjectSchemaTest"
                     ), false);
 
             assertTrue(IdStrategyFactory.INSTANCE_COUNT != 0);

@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -40,9 +40,9 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.GraphIOUtil;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.GraphIOUtil;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.Schema;
 
 /**
  * Test cyclic ser/deser on fields where the type is dynamic.

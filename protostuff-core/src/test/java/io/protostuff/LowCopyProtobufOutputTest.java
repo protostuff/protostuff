@@ -1,4 +1,4 @@
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import junit.framework.TestCase;
 

@@ -12,21 +12,21 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.runtime.SerializableObjects.bar;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.baz;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.foo;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBar;
-import static com.dyuproject.protostuff.runtime.SerializableObjects.negativeBaz;
+import static io.protostuff.runtime.SerializableObjects.bar;
+import static io.protostuff.runtime.SerializableObjects.baz;
+import static io.protostuff.runtime.SerializableObjects.foo;
+import static io.protostuff.runtime.SerializableObjects.negativeBar;
+import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.runtime.Bar;
-import com.dyuproject.protostuff.runtime.Baz;
-import com.dyuproject.protostuff.runtime.Foo;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
-import com.dyuproject.protostuff.runtime.SerializableObjects;
+import io.protostuff.runtime.Bar;
+import io.protostuff.runtime.Baz;
+import io.protostuff.runtime.Foo;
+import io.protostuff.runtime.RuntimeSchema;
+import io.protostuff.runtime.SerializableObjects;
 
 /**
  * Testing for json ser/deser against runtime messages.

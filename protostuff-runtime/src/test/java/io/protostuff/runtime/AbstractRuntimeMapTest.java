@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,9 +36,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * Test ser/deser for runtime {@link Map} fields.

@@ -12,14 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import com.dyuproject.protostuff.ProtostuffIOUtil;
+import io.protostuff.ProtostuffIOUtil;
 
 /**
  * Baz - for testing

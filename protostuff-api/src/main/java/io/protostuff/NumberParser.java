@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * An IO utility for dealing with raw ascii bytes.

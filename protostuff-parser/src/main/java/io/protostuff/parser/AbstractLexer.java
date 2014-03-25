@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Lexer;

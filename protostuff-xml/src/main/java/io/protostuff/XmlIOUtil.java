@@ -12,10 +12,10 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.XmlIOFactoryUtil.DEFAULT_INPUT_FACTORY;
-import static com.dyuproject.protostuff.XmlIOFactoryUtil.DEFAULT_OUTPUT_FACTORY;
+import static io.protostuff.XmlIOFactoryUtil.DEFAULT_INPUT_FACTORY;
+import static io.protostuff.XmlIOFactoryUtil.DEFAULT_OUTPUT_FACTORY;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 

@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 
-import com.dyuproject.protostuff.parser.Service.RpcMethod;
+import io.protostuff.parser.Service.RpcMethod;
 
 import junit.framework.TestCase;
 

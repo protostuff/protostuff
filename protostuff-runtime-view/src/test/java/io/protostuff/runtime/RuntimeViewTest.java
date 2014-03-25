@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 
 /**
  * Tests for {@link RuntimeView}.

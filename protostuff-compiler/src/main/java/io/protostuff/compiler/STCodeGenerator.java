@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,9 +28,9 @@ import org.antlr.stringtemplate.StringTemplateErrorListener;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.StringTemplateGroupLoader;
 
-import com.dyuproject.protostuff.parser.Formatter;
-import com.dyuproject.protostuff.parser.Proto;
-import com.dyuproject.protostuff.parser.ProtoUtil;
+import io.protostuff.parser.Formatter;
+import io.protostuff.parser.Proto;
+import io.protostuff.parser.ProtoUtil;
 
 /**
  * Base class for code generators using StringTemplate.
@@ -41,7 +41,7 @@ import com.dyuproject.protostuff.parser.ProtoUtil;
 public abstract class STCodeGenerator implements ProtoCompiler
 {
 
-    public static final String TEMPLATE_BASE = "com/dyuproject/protostuff/compiler";
+    public static final String TEMPLATE_BASE = "io/protostuff/compiler";
 
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
 

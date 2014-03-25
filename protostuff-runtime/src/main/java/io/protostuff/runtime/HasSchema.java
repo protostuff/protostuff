@@ -26,11 +26,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Wraps a schema.

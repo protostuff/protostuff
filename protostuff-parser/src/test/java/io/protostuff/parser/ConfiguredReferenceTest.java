@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 
@@ -43,7 +43,7 @@ public class ConfiguredReferenceTest extends TestCase
 
     public void testIt() throws Exception
     {
-        File f = ProtoParserTest.getFile("com/dyuproject/protostuff/parser/test_option_annotation_reference.proto");
+        File f = ProtoParserTest.getFile("io/protostuff/parser/test_option_annotation_reference.proto");
         assertTrue(f.exists());
 
         Proto proto = new Proto(f);

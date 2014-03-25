@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import com.dyuproject.protostuff.WireFormat.FieldType;
+import io.protostuff.WireFormat.FieldType;
 
 /**
  * CodedOutput test for the size of the bytes written.

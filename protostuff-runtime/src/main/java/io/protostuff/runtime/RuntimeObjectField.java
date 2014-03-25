@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.WireFormat.FieldType;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.Tag;
+import io.protostuff.WireFormat.FieldType;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field whose field type is {@link Object} (dynamic).

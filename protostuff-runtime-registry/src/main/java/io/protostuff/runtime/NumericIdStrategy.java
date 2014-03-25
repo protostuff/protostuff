@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -41,13 +41,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.ByteString;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * Base class for numeric id strategies.

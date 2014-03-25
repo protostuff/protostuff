@@ -56,7 +56,7 @@ enum_block(eg, module, options, nested) ::= <<
 <eg:enum_header(eg=it, module=module, options=options)>
 <endif>
 
-public enum <eg.name> implements com.dyuproject.protostuff.EnumLite\<<eg.name>\>
+public enum <eg.name> implements io.protostuff.EnumLite\<<eg.name>\>
 {
     <eg.values:{v|<v.name>(<v.number>)}; separator=",\n">;
     
@@ -142,24 +142,24 @@ import java.util.List;
 <if(message.byteBufferFieldPresent)>
 import java.nio.ByteBuffer;
 <elseif(message.bytesFieldPresent)>
-import com.dyuproject.protostuff.ByteString;
+import io.protostuff.ByteString;
 <else>
 <if(message.bytesOrStringDefaultValuePresent)>
-import com.dyuproject.protostuff.ByteString;
+import io.protostuff.ByteString;
 <endif>
 <endif>
 
-import com.dyuproject.protostuff.GraphIOUtil;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
+import io.protostuff.GraphIOUtil;
+import io.protostuff.Input;
+import io.protostuff.Message;
+import io.protostuff.Output;
 <if(options.generate_pipe_schema)>
-import com.dyuproject.protostuff.Pipe;
+import io.protostuff.Pipe;
 <endif>
 
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.Schema;
 <if(message.requiredFieldPresent)>
-import com.dyuproject.protostuff.UninitializedMessageException;
+import io.protostuff.UninitializedMessageException;
 <endif>
 
 

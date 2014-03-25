@@ -12,14 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.util.Arrays;
 
 import junit.framework.Assert;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.runtime.Foo.EnumSample;
+import io.protostuff.ByteString;
+import io.protostuff.runtime.Foo.EnumSample;
 
 /**
  * The objects to be tested.

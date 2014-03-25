@@ -1,4 +1,4 @@
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.UnsupportedEncodingException;
 

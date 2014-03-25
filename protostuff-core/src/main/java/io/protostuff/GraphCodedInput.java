@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_REFERENCE;
+import static io.protostuff.WireFormat.WIRETYPE_REFERENCE;
 
 import java.io.IOException;
 import java.util.ArrayList;

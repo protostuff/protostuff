@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * Tests for reading/writing pojos from/to a buffer (numeric keys).

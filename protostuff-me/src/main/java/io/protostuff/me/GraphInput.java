@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 /**
  * An input that is stateful and keeps track of the references. This is useful for updating the reference of the last

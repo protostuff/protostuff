@@ -12,19 +12,19 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.WireFormat.FieldType;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.Tag;
+import io.protostuff.WireFormat.FieldType;
 
 /**
  * Base class for schemas that maps fields by number and name. For fast initialization, the last field number is

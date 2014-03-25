@@ -12,19 +12,19 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.me.ByteString;
-import com.dyuproject.protostuff.me.LinkedBuffer;
-import com.dyuproject.protostuff.me.Output;
-import com.dyuproject.protostuff.me.Schema;
-import com.dyuproject.protostuff.me.StringSerializer;
-import com.dyuproject.protostuff.me.WireFormat;
-import com.dyuproject.protostuff.me.WriteSession;
+import io.protostuff.me.ByteString;
+import io.protostuff.me.LinkedBuffer;
+import io.protostuff.me.Output;
+import io.protostuff.me.Schema;
+import io.protostuff.me.StringSerializer;
+import io.protostuff.me.WireFormat;
+import io.protostuff.me.WriteSession;
 
 /**
  * Protobuf serialization where the messages must be fully buffered on memory before it can be written to the socket (

@@ -1,13 +1,13 @@
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -15,14 +15,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Message;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.Schema;
 
 /**
  * The FQCN(fully qualified class name) will serve as the id (string). Does not need any registration in the user-code

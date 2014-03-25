@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -40,13 +40,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Message;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * The ids are generated (incremental) on the fly and you can optionally register classes by reserving the first x ids
@@ -61,7 +61,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 {
     /**
      * To use {@link IncrementalIdStrategy} without registering anything, set the system property:
-     * "-Dprotostuff.runtime.id_strategy_factory=com.dyuproject.protostuff.runtime.IncrementalIdStrategy$Factory"
+     * "-Dprotostuff.runtime.id_strategy_factory=io.protostuff.runtime.IncrementalIdStrategy$Factory"
      * <p/>
      * Note that the pojos will be limited to 63 and the enums to 15.
      * <p/>
@@ -962,7 +962,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             return schema;
         }
 
-        public com.dyuproject.protostuff.Pipe.Schema<T> getPipeSchema()
+        public io.protostuff.Pipe.Schema<T> getPipeSchema()
         {
             return pipeSchema;
         }

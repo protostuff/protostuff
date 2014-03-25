@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import java.io.File;
 import java.net.URL;
@@ -34,8 +34,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.parser.DefaultProtoLoader;
-import com.dyuproject.protostuff.parser.Proto;
+import io.protostuff.parser.DefaultProtoLoader;
+import io.protostuff.parser.Proto;
 
 /**
  * A proto loader that caches the protos for re-use.

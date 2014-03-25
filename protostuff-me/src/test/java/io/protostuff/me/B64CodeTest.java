@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import static com.dyuproject.protostuff.me.StringSerializer.STRING;
+import static io.protostuff.me.StringSerializer.STRING;
 
 /**
  * Tests for base 64 encoding.

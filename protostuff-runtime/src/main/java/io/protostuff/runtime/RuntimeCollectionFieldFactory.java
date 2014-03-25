@@ -12,24 +12,24 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import com.dyuproject.protostuff.CollectionSchema.MessageFactory;
-import com.dyuproject.protostuff.GraphInput;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Morph;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.WireFormat.FieldType;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.CollectionSchema.MessageFactory;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Message;
+import io.protostuff.Morph;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.Tag;
+import io.protostuff.WireFormat.FieldType;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Static utility for creating runtime {@link Collection} fields.

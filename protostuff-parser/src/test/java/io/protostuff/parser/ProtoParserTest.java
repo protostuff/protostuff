@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.parser.Field.Modifier;
+import io.protostuff.parser.Field.Modifier;
 
 /**
  * Various tests for the proto parser.

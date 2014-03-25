@@ -12,14 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.CompareOutputsTest.bar;
-import static com.dyuproject.protostuff.CompareOutputsTest.baz;
-import static com.dyuproject.protostuff.CompareOutputsTest.foo;
-import static com.dyuproject.protostuff.CompareOutputsTest.negativeBar;
-import static com.dyuproject.protostuff.CompareOutputsTest.negativeBaz;
-import static com.dyuproject.protostuff.CompareOutputsTest.start;
+import static io.protostuff.CompareOutputsTest.bar;
+import static io.protostuff.CompareOutputsTest.baz;
+import static io.protostuff.CompareOutputsTest.foo;
+import static io.protostuff.CompareOutputsTest.negativeBar;
+import static io.protostuff.CompareOutputsTest.negativeBaz;
+import static io.protostuff.CompareOutputsTest.start;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,8 +29,8 @@ import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.CompareOutputsTest.Serializer;
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.CompareOutputsTest.Serializer;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Compare the outputs of different yaml impls.

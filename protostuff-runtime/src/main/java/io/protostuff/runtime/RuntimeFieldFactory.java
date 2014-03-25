@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
+import static io.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
+import static io.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
+import static io.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -30,10 +30,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Morph;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.ByteString;
+import io.protostuff.Message;
+import io.protostuff.Morph;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A factory to create runtime {@link MappedSchema.Field fields} based on reflection.

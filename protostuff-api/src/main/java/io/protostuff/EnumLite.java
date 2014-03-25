@@ -42,7 +42,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * Interface for an enum value for use with code-generated enums.

@@ -12,16 +12,16 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.NumberParser.parseInt;
-import static com.dyuproject.protostuff.NumberParser.parseLong;
+import static io.protostuff.NumberParser.parseInt;
+import static io.protostuff.NumberParser.parseLong;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * An input for deserializing kvp-encoded messages. A kvp encoding is a binary encoding w/c contains a key-value

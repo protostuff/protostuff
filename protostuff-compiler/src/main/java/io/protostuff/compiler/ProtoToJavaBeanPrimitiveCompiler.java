@@ -1,8 +1,8 @@
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
-import com.dyuproject.protostuff.parser.Field;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
+import io.protostuff.parser.Field;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.IOException;

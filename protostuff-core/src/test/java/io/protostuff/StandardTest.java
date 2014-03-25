@@ -12,13 +12,13 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.SerializableObjects.bar;
-import static com.dyuproject.protostuff.SerializableObjects.baz;
-import static com.dyuproject.protostuff.SerializableObjects.foo;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+import static io.protostuff.SerializableObjects.bar;
+import static io.protostuff.SerializableObjects.baz;
+import static io.protostuff.SerializableObjects.foo;
+import static io.protostuff.SerializableObjects.negativeBar;
+import static io.protostuff.SerializableObjects.negativeBaz;
 
 import java.io.IOException;
 import java.util.ArrayList;

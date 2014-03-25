@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -64,7 +64,7 @@ public final class RuntimeEnv
      * </pre>
      * <p/>
      * You can optionally enable only for a particular field by annotation it with
-     * {@link com.dyuproject.protostuff.Morph}.
+     * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
 
@@ -84,7 +84,7 @@ public final class RuntimeEnv
      * </pre>
      * <p/>
      * You can optionally enable only for a particular field by annotation it with
-     * {@link com.dyuproject.protostuff.Morph}.
+     * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
 

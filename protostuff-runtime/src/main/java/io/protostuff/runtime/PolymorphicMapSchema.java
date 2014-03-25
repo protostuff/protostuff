@@ -26,12 +26,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_ENUM_MAP;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_MAP;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_ENUM_MAP;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_MAP;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM_MAP;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_MAP;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM_MAP;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_MAP;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -41,15 +41,15 @@ import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.GraphInput;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.StatefulOutput;
-import com.dyuproject.protostuff.runtime.IdStrategy.Wrapper;
-import com.dyuproject.protostuff.runtime.RuntimeEnv.Instantiator;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.Schema;
+import io.protostuff.StatefulOutput;
+import io.protostuff.runtime.IdStrategy.Wrapper;
+import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**
  * Used when the type is an interface (Map/SortedMap).

@@ -12,24 +12,24 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializerTest.BUILT_IN_SERIALIZER;
-import static com.dyuproject.protostuff.StringSerializerTest.alphabet;
-import static com.dyuproject.protostuff.StringSerializerTest.alphabet_to_upper;
-import static com.dyuproject.protostuff.StringSerializerTest.ascii_targets;
-import static com.dyuproject.protostuff.StringSerializerTest.double_targets;
-import static com.dyuproject.protostuff.StringSerializerTest.float_targets;
-import static com.dyuproject.protostuff.StringSerializerTest.foo;
-import static com.dyuproject.protostuff.StringSerializerTest.int_targets;
-import static com.dyuproject.protostuff.StringSerializerTest.long_targets;
-import static com.dyuproject.protostuff.StringSerializerTest.numeric;
-import static com.dyuproject.protostuff.StringSerializerTest.readRawVarint32;
-import static com.dyuproject.protostuff.StringSerializerTest.str_len_130;
-import static com.dyuproject.protostuff.StringSerializerTest.targets;
-import static com.dyuproject.protostuff.StringSerializerTest.three_byte_utf8;
-import static com.dyuproject.protostuff.StringSerializerTest.two_byte_utf8;
-import static com.dyuproject.protostuff.StringSerializerTest.whitespace;
+import static io.protostuff.StringSerializerTest.BUILT_IN_SERIALIZER;
+import static io.protostuff.StringSerializerTest.alphabet;
+import static io.protostuff.StringSerializerTest.alphabet_to_upper;
+import static io.protostuff.StringSerializerTest.ascii_targets;
+import static io.protostuff.StringSerializerTest.double_targets;
+import static io.protostuff.StringSerializerTest.float_targets;
+import static io.protostuff.StringSerializerTest.foo;
+import static io.protostuff.StringSerializerTest.int_targets;
+import static io.protostuff.StringSerializerTest.long_targets;
+import static io.protostuff.StringSerializerTest.numeric;
+import static io.protostuff.StringSerializerTest.readRawVarint32;
+import static io.protostuff.StringSerializerTest.str_len_130;
+import static io.protostuff.StringSerializerTest.targets;
+import static io.protostuff.StringSerializerTest.three_byte_utf8;
+import static io.protostuff.StringSerializerTest.two_byte_utf8;
+import static io.protostuff.StringSerializerTest.whitespace;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -37,7 +37,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for streaming UTF-8 Encoding

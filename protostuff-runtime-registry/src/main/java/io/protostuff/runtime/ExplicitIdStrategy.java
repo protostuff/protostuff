@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -37,13 +37,13 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Message;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * Requires every messsage/pojo/enum/collection/map to be registered with unique ids.
@@ -872,7 +872,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             return schema;
         }
 
-        public com.dyuproject.protostuff.Pipe.Schema<T> getPipeSchema()
+        public io.protostuff.Pipe.Schema<T> getPipeSchema()
         {
             return pipeSchema;
         }

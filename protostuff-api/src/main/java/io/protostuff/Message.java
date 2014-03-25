@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * The serializable object where its {@link Schema schema} handles its serialization and deserialization.

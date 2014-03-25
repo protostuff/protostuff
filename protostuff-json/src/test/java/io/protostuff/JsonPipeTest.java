@@ -12,13 +12,13 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Test case for json pipes.

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,11 +26,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.GraphIOUtil;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.GraphIOUtil;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 
 /**
  * Test ser/deser of pojos with {@link EnumSet} and {@link EnumMap} fields.

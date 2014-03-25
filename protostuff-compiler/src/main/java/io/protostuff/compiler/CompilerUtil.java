@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import java.io.BufferedWriter;
 import java.io.File;

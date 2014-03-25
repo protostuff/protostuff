@@ -42,9 +42,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.STRING;
+import static io.protostuff.StringSerializer.STRING;
 
 import java.io.DataOutput;
 import java.io.IOException;

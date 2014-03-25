@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 
@@ -30,10 +30,10 @@ public class DefaultProtoLoaderTest extends TestCase
     public void testPackageBaseDir() throws Exception
     {
         File f = ProtoParserTest.getFile(
-                "com/dyuproject/protostuff/parser/test_default_proto_loader.proto");
+                "io/protostuff/parser/test_default_proto_loader.proto");
         assertTrue(f.exists());
         Proto p = ProtoUtil.parseProto(f);
-        assertEquals("com.dyuproject.protostuff.parser", p.getPackageName());
+        assertEquals("io.protostuff.parser", p.getPackageName());
     }
 
     public void testLoadProtoFromClasspath() throws Exception
@@ -49,7 +49,7 @@ public class DefaultProtoLoaderTest extends TestCase
         File f = new File("src/main/etc/test_default_proto_loader.proto");
         assertTrue(f.exists());
         Proto p = ProtoUtil.parseProto(f);
-        assertEquals("com.dyuproject.protostuff.parser", p.getPackageName());
+        assertEquals("io.protostuff.parser", p.getPackageName());
 
         Message testMessage = p.getMessage("TestMessage");
         assertNotNull(testMessage);

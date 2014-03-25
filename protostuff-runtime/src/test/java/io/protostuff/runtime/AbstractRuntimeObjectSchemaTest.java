@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
+import static io.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,17 +35,17 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
-import com.dyuproject.protostuff.runtime.SampleDelegates.Singleton;
+import io.protostuff.AbstractTest;
+import io.protostuff.ByteString;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Message;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+import io.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
+import io.protostuff.runtime.SampleDelegates.Singleton;
 
 /**
  * Ser/deser tests for {@link ObjectSchema}.
@@ -70,7 +70,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         try
         {
             registryTestModuleExists = null != Class.forName(
-                    "com.dyuproject.protostuff.runtime.TestDummy", false,
+                    "io.protostuff.runtime.TestDummy", false,
                     Thread.currentThread().getContextClassLoader());
         }
         catch (ClassNotFoundException e)
@@ -85,13 +85,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             {
                 System.setProperty(
                         "protostuff.runtime.id_strategy_factory",
-                        "com.dyuproject.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
+                        "io.protostuff.runtime.IncrementalRuntimeObjectSchemaTest$IdStrategyFactory");
             }
             else if ("explicit".equals(strategy))
             {
                 System.setProperty(
                         "protostuff.runtime.id_strategy_factory",
-                        "com.dyuproject.protostuff.runtime.ExplicitRuntimeObjectSchemaTest$IdStrategyFactory");
+                        "io.protostuff.runtime.ExplicitRuntimeObjectSchemaTest$IdStrategyFactory");
             }
         }
     }

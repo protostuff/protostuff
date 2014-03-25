@@ -26,44 +26,44 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BIGDECIMAL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BIGINTEGER;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.BYTE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.DOUBLE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.FLOAT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.INT32;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.INT64;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.SHORT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BIGDECIMAL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BIGINTEGER;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_BYTE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_DOUBLE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_FLOAT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_INT32;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_INT64;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_POJO;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.STR_SHORT;
+import static io.protostuff.runtime.RuntimeFieldFactory.BIGDECIMAL;
+import static io.protostuff.runtime.RuntimeFieldFactory.BIGINTEGER;
+import static io.protostuff.runtime.RuntimeFieldFactory.BYTE;
+import static io.protostuff.runtime.RuntimeFieldFactory.DOUBLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.FLOAT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
+import static io.protostuff.runtime.RuntimeFieldFactory.INT32;
+import static io.protostuff.runtime.RuntimeFieldFactory.INT64;
+import static io.protostuff.runtime.RuntimeFieldFactory.SHORT;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_BIGDECIMAL;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_BIGINTEGER;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_BYTE;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_DOUBLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_FLOAT;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_INT32;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_INT64;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_POJO;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_SHORT;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.GraphInput;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.StatefulOutput;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.Schema;
+import io.protostuff.StatefulOutput;
 
 /**
  * Used when the type is {@link java.lang.Number}.

@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.computeUTF8Size;
+import static io.protostuff.StringSerializer.computeUTF8Size;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

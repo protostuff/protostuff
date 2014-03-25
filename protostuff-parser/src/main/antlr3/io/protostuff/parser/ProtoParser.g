@@ -46,7 +46,7 @@ options {
 // What package should the generated source exist in?
 //
 @header {
-    package com.dyuproject.protostuff.parser;
+    package io.protostuff.parser;
 }
 
 parse [Proto proto]

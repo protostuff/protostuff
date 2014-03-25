@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import static org.codehaus.jackson.JsonToken.END_ARRAY;
 import static org.codehaus.jackson.JsonToken.END_OBJECT;

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.Message;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.AbstractTest;
+import io.protostuff.ByteString;
+import io.protostuff.Message;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Test that the runtime schema would have the same output as hand-coded/code-generated schema.
@@ -51,15 +51,15 @@ public class CompatTest extends AbstractTest
 
     static void compareBar()
     {
-        com.dyuproject.protostuff.Bar bar1 = com.dyuproject.protostuff.SerializableObjects.bar;
-        Schema<com.dyuproject.protostuff.Bar> schema1 = com.dyuproject.protostuff.Bar
+        io.protostuff.Bar bar1 = io.protostuff.SerializableObjects.bar;
+        Schema<io.protostuff.Bar> schema1 = io.protostuff.Bar
                 .getSchema();
 
         Bar bar2 = SerializableObjects.bar;
         Schema<Bar> schema2 = RuntimeSchema.getSchema(Bar.class);
 
-        Schema<com.dyuproject.protostuff.Bar> schema3 = RuntimeSchema
-                .getSchema(com.dyuproject.protostuff.Bar.class);
+        Schema<io.protostuff.Bar> schema3 = RuntimeSchema
+                .getSchema(io.protostuff.Bar.class);
 
         byte[] byte1 = ProtostuffIOUtil.toByteArray(bar1, schema1, buf());
         byte[] byte2 = ProtostuffIOUtil.toByteArray(bar2, schema2, buf());
@@ -75,15 +75,15 @@ public class CompatTest extends AbstractTest
 
     static void compareFoo()
     {
-        com.dyuproject.protostuff.Foo foo1 = com.dyuproject.protostuff.SerializableObjects.foo;
-        Schema<com.dyuproject.protostuff.Foo> schema1 = com.dyuproject.protostuff.Foo
+        io.protostuff.Foo foo1 = io.protostuff.SerializableObjects.foo;
+        Schema<io.protostuff.Foo> schema1 = io.protostuff.Foo
                 .getSchema();
 
         Foo foo2 = SerializableObjects.foo;
         Schema<Foo> schema2 = RuntimeSchema.getSchema(Foo.class);
 
-        Schema<com.dyuproject.protostuff.Foo> schema3 = RuntimeSchema
-                .getSchema(com.dyuproject.protostuff.Foo.class);
+        Schema<io.protostuff.Foo> schema3 = RuntimeSchema
+                .getSchema(io.protostuff.Foo.class);
 
         byte[] byte1 = ProtostuffIOUtil.toByteArray(foo1, schema1, buf());
         byte[] byte2 = ProtostuffIOUtil.toByteArray(foo2, schema2, buf());
@@ -128,34 +128,34 @@ public class CompatTest extends AbstractTest
                 .isAssignableFrom(mappedSchema.fieldsByName.get("rbaz")
                         .getClass()));
 
-        RuntimeMessageField<Mixed, com.dyuproject.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, com.dyuproject.protostuff.Foo>) mappedSchema.fieldsByName
+        RuntimeMessageField<Mixed, io.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, io.protostuff.Foo>) mappedSchema.fieldsByName
                 .get("rfoo");
 
-        RuntimeMessageField<Mixed, com.dyuproject.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, com.dyuproject.protostuff.Bar>) mappedSchema.fieldsByName
+        RuntimeMessageField<Mixed, io.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, io.protostuff.Bar>) mappedSchema.fieldsByName
                 .get("rbar");
 
-        RuntimeMessageField<Mixed, com.dyuproject.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, com.dyuproject.protostuff.Baz>) mappedSchema.fieldsByName
+        RuntimeMessageField<Mixed, io.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, io.protostuff.Baz>) mappedSchema.fieldsByName
                 .get("rbaz");
 
         assertTrue(rfoo
                 .getSchema()
                 .getClass()
                 .isAssignableFrom(
-                        getCachedSchema(com.dyuproject.protostuff.Foo.class)
+                        getCachedSchema(io.protostuff.Foo.class)
                                 .getClass()));
 
         assertTrue(rbar
                 .getSchema()
                 .getClass()
                 .isAssignableFrom(
-                        getCachedSchema(com.dyuproject.protostuff.Bar.class)
+                        getCachedSchema(io.protostuff.Bar.class)
                                 .getClass()));
 
         assertTrue(rbaz
                 .getSchema()
                 .getClass()
                 .isAssignableFrom(
-                        getCachedSchema(com.dyuproject.protostuff.Baz.class)
+                        getCachedSchema(io.protostuff.Baz.class)
                                 .getClass()));
     }
 
@@ -167,13 +167,13 @@ public class CompatTest extends AbstractTest
         Bar br;
         Baz bz;
 
-        com.dyuproject.protostuff.Foo foo;
-        com.dyuproject.protostuff.Bar bar;
-        com.dyuproject.protostuff.Baz baz;
+        io.protostuff.Foo foo;
+        io.protostuff.Bar bar;
+        io.protostuff.Baz baz;
 
-        List<com.dyuproject.protostuff.Foo> rfoo;
-        Set<com.dyuproject.protostuff.Bar> rbar;
-        Collection<com.dyuproject.protostuff.Baz> rbaz;
+        List<io.protostuff.Foo> rfoo;
+        Set<io.protostuff.Bar> rbar;
+        Collection<io.protostuff.Baz> rbaz;
     }
 
     static byte[] ba(String text)

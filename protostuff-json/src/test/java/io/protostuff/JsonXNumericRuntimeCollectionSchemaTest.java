@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric) ser/deser.

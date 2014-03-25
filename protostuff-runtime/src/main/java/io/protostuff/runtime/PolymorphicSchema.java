@@ -26,10 +26,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
 
 /**
  * Used when the type is either polymorphic or too complex. Unlike DerivativeSchema, this is designed to have no concept

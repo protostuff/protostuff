@@ -42,12 +42,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_BITS;
-import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_MASK;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
+import static io.protostuff.WireFormat.TAG_TYPE_BITS;
+import static io.protostuff.WireFormat.TAG_TYPE_MASK;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -56,7 +56,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Reads and decodes protocol message fields.

@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.AbstractTest;
+import io.protostuff.AbstractTest;
 
 /**
  * Test for runtime schemas to skip deprecated field and still allow backward-forward compatibility.

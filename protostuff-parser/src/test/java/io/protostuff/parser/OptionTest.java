@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import java.io.File;
 
@@ -29,7 +29,7 @@ public class OptionTest extends TestCase
 
     public void testIt() throws Exception
     {
-        File f = ProtoParserTest.getFile("com/dyuproject/protostuff/parser/test_options.proto");
+        File f = ProtoParserTest.getFile("io/protostuff/parser/test_options.proto");
         assertTrue(f.exists());
 
         Proto proto = new Proto(f);

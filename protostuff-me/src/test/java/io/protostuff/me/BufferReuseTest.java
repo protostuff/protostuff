@@ -12,13 +12,13 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.dyuproject.protostuff.me.Foo.EnumSample;
+import io.protostuff.me.Foo.EnumSample;
 
 /**
  * Test for re-using a thread-local buffer across many serializations.

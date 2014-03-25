@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.runtime.Bar.Status;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.runtime.Bar.Status;
 
 /**
  * PojoWithArrayAndSet - for testing

@@ -12,21 +12,21 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTES;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_BYTE_ARRAY;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
-import static com.dyuproject.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTES;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE_ARRAY;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -35,14 +35,14 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 
-import com.dyuproject.protostuff.ByteString;
-import com.dyuproject.protostuff.GraphInput;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtostuffException;
-import com.dyuproject.protostuff.MapSchema.MapWrapper;
-import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
+import io.protostuff.ByteString;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.MapSchema.MapWrapper;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Built-in array schemas.

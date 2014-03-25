@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.io.Serializable;
 

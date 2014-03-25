@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 /**
  * Checked by AbstractRuntimeObjectSchemaTest from protostuff-runtime during tests.

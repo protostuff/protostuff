@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.mojo;
+package io.protostuff.mojo;
 
 /**
  * Specifically for the maven-plugin. This allows you to not specify
- * implementation="com.dyuproject.protostuff.protocompiler.ProtoModule" on your
+ * implementation="io.protostuff.protocompiler.ProtoModule" on your
  * 
  * <pre>
  * <protoModule></protoModule>
@@ -27,7 +27,7 @@ package com.dyuproject.protostuff.mojo;
  * @author David Yu
  * @created Jan 14, 2010
  */
-public class ProtoModule extends com.dyuproject.protostuff.compiler.ProtoModule
+public class ProtoModule extends io.protostuff.compiler.ProtoModule
 {
 
     private static final long serialVersionUID = -1491907620177689686L;

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.mojo;
+package io.protostuff.mojo;
 
 import java.io.File;
 
@@ -21,8 +21,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
-import com.dyuproject.protostuff.compiler.CachingProtoLoader;
-import com.dyuproject.protostuff.compiler.CompilerMain;
+import io.protostuff.compiler.CachingProtoLoader;
+import io.protostuff.compiler.CompilerMain;
 
 /**
  * Compiles proto files to java/gwt/etc.

@@ -12,20 +12,20 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import com.dyuproject.protostuff.runtime.MappedSchema;
-import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
-import com.dyuproject.protostuff.runtime.PolymorphicSerializationTest.Zoo;
+import io.protostuff.runtime.MappedSchema;
+import io.protostuff.runtime.PolymorphicSerializationTest;
+import io.protostuff.runtime.RuntimeSchema;
+import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 
-import com.dyuproject.protostuff.runtime.Bar;
-import com.dyuproject.protostuff.runtime.Baz;
-import com.dyuproject.protostuff.runtime.Foo;
-import com.dyuproject.protostuff.runtime.SerializableObjects;
+import io.protostuff.runtime.Bar;
+import io.protostuff.runtime.Baz;
+import io.protostuff.runtime.Foo;
+import io.protostuff.runtime.SerializableObjects;
 
-import static com.dyuproject.protostuff.JsonPipeTest.protobufRoundTrip;
-import static com.dyuproject.protostuff.JsonPipeTest.protostuffRoundTrip;
+import static io.protostuff.JsonPipeTest.protobufRoundTrip;
+import static io.protostuff.JsonPipeTest.protostuffRoundTrip;
 
 /**
  * Test case for json runtime pipes.

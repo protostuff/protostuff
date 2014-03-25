@@ -15,7 +15,7 @@
 /**
  *
  */
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.lang.reflect.Constructor;
 

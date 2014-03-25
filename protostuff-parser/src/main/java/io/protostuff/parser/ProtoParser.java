@@ -1,6 +1,6 @@
-// $ANTLR 3.2 Sep 23, 2009 14:05:07 com/dyuproject/protostuff/parser/ProtoParser.g 2014-01-20 11:24:40
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 io/protostuff/parser/ProtoParser.g 2014-01-20 11:24:40
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import org.antlr.runtime.*;
 
@@ -121,7 +121,7 @@ public class ProtoParser extends AbstractParser
 
     public String getGrammarFileName()
     {
-        return "com/dyuproject/protostuff/parser/ProtoParser.g";
+        return "io/protostuff/parser/ProtoParser.g";
     }
 
     public static class parse_return extends ParserRuleReturnScope
@@ -137,7 +137,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "parse"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:52:1: parse[Proto proto] : ( statement[proto] )+ EOF ;
+    // io/protostuff/parser/ProtoParser.g:52:1: parse[Proto proto] : ( statement[proto] )+ EOF ;
     public final ProtoParser.parse_return parse(Proto proto) throws RecognitionException
     {
         ProtoParser.parse_return retval = new ProtoParser.parse_return();
@@ -152,12 +152,12 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:53:5: ( ( statement[proto] )+ EOF )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:53:9: ( statement[proto] )+ EOF
+            // io/protostuff/parser/ProtoParser.g:53:5: ( ( statement[proto] )+ EOF )
+            // io/protostuff/parser/ProtoParser.g:53:9: ( statement[proto] )+ EOF
             {
                 root_0 = (Object) adaptor.nil();
 
-                // com/dyuproject/protostuff/parser/ProtoParser.g:53:9: ( statement[proto] )+
+                // io/protostuff/parser/ProtoParser.g:53:9: ( statement[proto] )+
                 int cnt1 = 0;
                 loop1: do
                 {
@@ -183,7 +183,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt1)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:53:10: statement[proto]
+                        // io/protostuff/parser/ProtoParser.g:53:10: statement[proto]
                         {
                             pushFollow(FOLLOW_statement_in_parse178);
                             statement1 = statement(proto);
@@ -264,7 +264,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "statement"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:61:1: statement[Proto proto] : ( header_syntax[proto] |
+    // io/protostuff/parser/ProtoParser.g:61:1: statement[Proto proto] : ( header_syntax[proto] |
     // header_package[proto] | header_import[proto] | message_block[proto, null] | enum_block[proto, null] |
     // extend_block[proto, null] | service_block[proto, null] | annotation_entry[proto] | option_entry[proto, proto] );
     public final ProtoParser.statement_return statement(Proto proto) throws RecognitionException
@@ -294,7 +294,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:62:5: ( header_syntax[proto] | header_package[proto] |
+            // io/protostuff/parser/ProtoParser.g:62:5: ( header_syntax[proto] | header_package[proto] |
             // header_import[proto] | message_block[proto, null] | enum_block[proto, null] | extend_block[proto, null] |
             // service_block[proto, null] | annotation_entry[proto] | option_entry[proto, proto] )
             int alt2 = 9;
@@ -360,7 +360,7 @@ public class ProtoParser extends AbstractParser
             switch (alt2)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:62:9: header_syntax[proto]
+                // io/protostuff/parser/ProtoParser.g:62:9: header_syntax[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -376,7 +376,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:63:9: header_package[proto]
+                // io/protostuff/parser/ProtoParser.g:63:9: header_package[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -392,7 +392,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:64:9: header_import[proto]
+                // io/protostuff/parser/ProtoParser.g:64:9: header_import[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -408,7 +408,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 4:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:65:9: message_block[proto, null]
+                // io/protostuff/parser/ProtoParser.g:65:9: message_block[proto, null]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -424,7 +424,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 5:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:66:9: enum_block[proto, null]
+                // io/protostuff/parser/ProtoParser.g:66:9: enum_block[proto, null]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -440,7 +440,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 6:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:67:9: extend_block[proto, null]
+                // io/protostuff/parser/ProtoParser.g:67:9: extend_block[proto, null]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -456,7 +456,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 7:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:68:9: service_block[proto, null]
+                // io/protostuff/parser/ProtoParser.g:68:9: service_block[proto, null]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -472,7 +472,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 8:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:69:9: annotation_entry[proto]
+                // io/protostuff/parser/ProtoParser.g:69:9: annotation_entry[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -488,7 +488,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 9:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:70:9: option_entry[proto, proto]
+                // io/protostuff/parser/ProtoParser.g:70:9: option_entry[proto, proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -542,7 +542,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "var_reserved"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:74:1: var_reserved : ( TO | PKG | SYNTAX | IMPORT | OPTION |
+    // io/protostuff/parser/ProtoParser.g:74:1: var_reserved : ( TO | PKG | SYNTAX | IMPORT | OPTION |
     // MESSAGE | SERVICE | ENUM | REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | RETURNS | INT32 |
     // INT64 | UINT32 | UINT64 | SINT32 | SINT64 | FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE | BOOL |
     // STRING | BYTES | DEFAULT | MAX | VOID );
@@ -559,11 +559,11 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:75:5: ( TO | PKG | SYNTAX | IMPORT | OPTION | MESSAGE |
+            // io/protostuff/parser/ProtoParser.g:75:5: ( TO | PKG | SYNTAX | IMPORT | OPTION | MESSAGE |
             // SERVICE | ENUM | REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | RETURNS | INT32 |
             // INT64 | UINT32 | UINT64 | SINT32 | SINT64 | FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE |
             // BOOL | STRING | BYTES | DEFAULT | MAX | VOID )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:
+            // io/protostuff/parser/ProtoParser.g:
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -626,7 +626,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "var"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:82:1: var : ( ID | var_reserved );
+    // io/protostuff/parser/ProtoParser.g:82:1: var : ( ID | var_reserved );
     public final ProtoParser.var_return var() throws RecognitionException
     {
         ProtoParser.var_return retval = new ProtoParser.var_return();
@@ -641,7 +641,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:83:5: ( ID | var_reserved )
+            // io/protostuff/parser/ProtoParser.g:83:5: ( ID | var_reserved )
             int alt3 = 2;
             switch (input.LA(1))
             {
@@ -703,7 +703,7 @@ public class ProtoParser extends AbstractParser
             switch (alt3)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:83:9: ID
+                // io/protostuff/parser/ProtoParser.g:83:9: ID
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -719,7 +719,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:83:14: var_reserved
+                // io/protostuff/parser/ProtoParser.g:83:14: var_reserved
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -773,7 +773,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "var_full"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:86:1: var_full : ( FULL_ID | var );
+    // io/protostuff/parser/ProtoParser.g:86:1: var_full : ( FULL_ID | var );
     public final ProtoParser.var_full_return var_full() throws RecognitionException
     {
         ProtoParser.var_full_return retval = new ProtoParser.var_full_return();
@@ -788,7 +788,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:87:5: ( FULL_ID | var )
+            // io/protostuff/parser/ProtoParser.g:87:5: ( FULL_ID | var )
             int alt4 = 2;
             switch (input.LA(1))
             {
@@ -851,7 +851,7 @@ public class ProtoParser extends AbstractParser
             switch (alt4)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:87:9: FULL_ID
+                // io/protostuff/parser/ProtoParser.g:87:9: FULL_ID
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -867,7 +867,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:87:19: var
+                // io/protostuff/parser/ProtoParser.g:87:19: var
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -921,7 +921,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "annotation_entry"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:90:1: annotation_entry[Proto proto] : AT var ( LEFTPAREN
+    // io/protostuff/parser/ProtoParser.g:90:1: annotation_entry[Proto proto] : AT var ( LEFTPAREN
     // annotation_keyval[proto, annotation] ( COMMA annotation_keyval[proto, annotation] )* RIGHTPAREN )? ;
     public final ProtoParser.annotation_entry_return annotation_entry(Proto proto) throws RecognitionException
     {
@@ -949,9 +949,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:94:5: ( AT var ( LEFTPAREN annotation_keyval[proto,
+            // io/protostuff/parser/ProtoParser.g:94:5: ( AT var ( LEFTPAREN annotation_keyval[proto,
             // annotation] ( COMMA annotation_keyval[proto, annotation] )* RIGHTPAREN )? )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:94:9: AT var ( LEFTPAREN annotation_keyval[proto,
+            // io/protostuff/parser/ProtoParser.g:94:9: AT var ( LEFTPAREN annotation_keyval[proto,
             // annotation] ( COMMA annotation_keyval[proto, annotation] )* RIGHTPAREN )?
             {
                 root_0 = (Object) adaptor.nil();
@@ -976,7 +976,7 @@ public class ProtoParser extends AbstractParser
                 {
                     annotation = new Annotation((var18 != null ? input.toString(var18.start, var18.stop) : null));
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:95:9: ( LEFTPAREN annotation_keyval[proto, annotation]
+                // io/protostuff/parser/ProtoParser.g:95:9: ( LEFTPAREN annotation_keyval[proto, annotation]
                 // ( COMMA annotation_keyval[proto, annotation] )* RIGHTPAREN )?
                 int alt6 = 2;
                 switch (input.LA(1))
@@ -991,7 +991,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt6)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:95:10: LEFTPAREN annotation_keyval[proto,
+                    // io/protostuff/parser/ProtoParser.g:95:10: LEFTPAREN annotation_keyval[proto,
                     // annotation] ( COMMA annotation_keyval[proto, annotation] )* RIGHTPAREN
                     {
                         LEFTPAREN19 = (Token) match(input, LEFTPAREN, FOLLOW_LEFTPAREN_in_annotation_entry577);
@@ -1010,7 +1010,7 @@ public class ProtoParser extends AbstractParser
                             return retval;
                         if (state.backtracking == 0)
                             adaptor.addChild(root_0, annotation_keyval20.getTree());
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:96:46: ( COMMA annotation_keyval[proto,
+                        // io/protostuff/parser/ProtoParser.g:96:46: ( COMMA annotation_keyval[proto,
                         // annotation] )*
                         loop5: do
                         {
@@ -1028,7 +1028,7 @@ public class ProtoParser extends AbstractParser
                             switch (alt5)
                             {
                                 case 1:
-                                // com/dyuproject/protostuff/parser/ProtoParser.g:96:47: COMMA annotation_keyval[proto,
+                                // io/protostuff/parser/ProtoParser.g:96:47: COMMA annotation_keyval[proto,
                                 // annotation]
                                 {
                                     COMMA21 = (Token) match(input, COMMA, FOLLOW_COMMA_in_annotation_entry592);
@@ -1116,7 +1116,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "annotation_keyval"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:102:1: annotation_keyval[Proto proto, Annotation annotation] : k=
+    // io/protostuff/parser/ProtoParser.g:102:1: annotation_keyval[Proto proto, Annotation annotation] : k=
     // var_full ASSIGN (vr= var_reserved | ID | fid= FULL_ID | NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE |
     // STRING_LITERAL ) ;
     public final ProtoParser.annotation_keyval_return annotation_keyval(Proto proto, Annotation annotation)
@@ -1152,9 +1152,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:103:5: (k= var_full ASSIGN (vr= var_reserved | ID | fid=
+            // io/protostuff/parser/ProtoParser.g:103:5: (k= var_full ASSIGN (vr= var_reserved | ID | fid=
             // FULL_ID | NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE | STRING_LITERAL ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:103:9: k= var_full ASSIGN (vr= var_reserved | ID | fid=
+            // io/protostuff/parser/ProtoParser.g:103:9: k= var_full ASSIGN (vr= var_reserved | ID | fid=
             // FULL_ID | NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE | STRING_LITERAL )
             {
                 root_0 = (Object) adaptor.nil();
@@ -1175,7 +1175,7 @@ public class ProtoParser extends AbstractParser
                     ASSIGN24_tree = (Object) adaptor.create(ASSIGN24);
                     adaptor.addChild(root_0, ASSIGN24_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:103:27: (vr= var_reserved | ID | fid= FULL_ID |
+                // io/protostuff/parser/ProtoParser.g:103:27: (vr= var_reserved | ID | fid= FULL_ID |
                 // NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE | STRING_LITERAL )
                 int alt7 = 9;
                 switch (input.LA(1))
@@ -1273,7 +1273,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt7)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:104:17: vr= var_reserved
+                    // io/protostuff/parser/ProtoParser.g:104:17: vr= var_reserved
                     {
                         pushFollow(FOLLOW_var_reserved_in_annotation_keyval659);
                         vr = var_reserved();
@@ -1292,7 +1292,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:105:17: ID
+                    // io/protostuff/parser/ProtoParser.g:105:17: ID
                     {
                         ID25 = (Token) match(input, ID, FOLLOW_ID_in_annotation_keyval679);
                         if (state.failed)
@@ -1311,7 +1311,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 3:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:106:17: fid= FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:106:17: fid= FULL_ID
                     {
                         fid = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_annotation_keyval701);
                         if (state.failed)
@@ -1330,7 +1330,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 4:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:107:17: NUMFLOAT
+                    // io/protostuff/parser/ProtoParser.g:107:17: NUMFLOAT
                     {
                         NUMFLOAT26 = (Token) match(input, NUMFLOAT, FOLLOW_NUMFLOAT_in_annotation_keyval721);
                         if (state.failed)
@@ -1349,7 +1349,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 5:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:108:17: NUMINT
+                    // io/protostuff/parser/ProtoParser.g:108:17: NUMINT
                     {
                         NUMINT27 = (Token) match(input, NUMINT, FOLLOW_NUMINT_in_annotation_keyval741);
                         if (state.failed)
@@ -1368,7 +1368,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 6:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:109:17: NUMDOUBLE
+                    // io/protostuff/parser/ProtoParser.g:109:17: NUMDOUBLE
                     {
                         NUMDOUBLE28 = (Token) match(input, NUMDOUBLE, FOLLOW_NUMDOUBLE_in_annotation_keyval761);
                         if (state.failed)
@@ -1387,7 +1387,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 7:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:110:17: TRUE
+                    // io/protostuff/parser/ProtoParser.g:110:17: TRUE
                     {
                         TRUE29 = (Token) match(input, TRUE, FOLLOW_TRUE_in_annotation_keyval781);
                         if (state.failed)
@@ -1405,7 +1405,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 8:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:111:17: FALSE
+                    // io/protostuff/parser/ProtoParser.g:111:17: FALSE
                     {
                         FALSE30 = (Token) match(input, FALSE, FOLLOW_FALSE_in_annotation_keyval801);
                         if (state.failed)
@@ -1423,7 +1423,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 9:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:112:17: STRING_LITERAL
+                    // io/protostuff/parser/ProtoParser.g:112:17: STRING_LITERAL
                     {
                         STRING_LITERAL31 = (Token) match(input, STRING_LITERAL,
                                 FOLLOW_STRING_LITERAL_in_annotation_keyval821);
@@ -1485,7 +1485,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "header_syntax"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:116:1: header_syntax[Proto proto] : SYNTAX ASSIGN STRING_LITERAL
+    // io/protostuff/parser/ProtoParser.g:116:1: header_syntax[Proto proto] : SYNTAX ASSIGN STRING_LITERAL
     // SEMICOLON ;
     public final ProtoParser.header_syntax_return header_syntax(Proto proto) throws RecognitionException
     {
@@ -1506,8 +1506,8 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:117:5: ( SYNTAX ASSIGN STRING_LITERAL SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:117:9: SYNTAX ASSIGN STRING_LITERAL SEMICOLON
+            // io/protostuff/parser/ProtoParser.g:117:5: ( SYNTAX ASSIGN STRING_LITERAL SEMICOLON )
+            // io/protostuff/parser/ProtoParser.g:117:9: SYNTAX ASSIGN STRING_LITERAL SEMICOLON
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -1594,7 +1594,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "header_package"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:128:1: header_package[Proto proto] : PKG ( FULL_ID | var )
+    // io/protostuff/parser/ProtoParser.g:128:1: header_package[Proto proto] : PKG ( FULL_ID | var )
     // SEMICOLON ;
     public final ProtoParser.header_package_return header_package(Proto proto) throws RecognitionException
     {
@@ -1616,8 +1616,8 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:132:5: ( PKG ( FULL_ID | var ) SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:132:9: PKG ( FULL_ID | var ) SEMICOLON
+            // io/protostuff/parser/ProtoParser.g:132:5: ( PKG ( FULL_ID | var ) SEMICOLON )
+            // io/protostuff/parser/ProtoParser.g:132:9: PKG ( FULL_ID | var ) SEMICOLON
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -1629,7 +1629,7 @@ public class ProtoParser extends AbstractParser
                     PKG36_tree = (Object) adaptor.create(PKG36);
                     adaptor.addChild(root_0, PKG36_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:132:13: ( FULL_ID | var )
+                // io/protostuff/parser/ProtoParser.g:132:13: ( FULL_ID | var )
                 int alt8 = 2;
                 switch (input.LA(1))
                 {
@@ -1692,7 +1692,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt8)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:132:14: FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:132:14: FULL_ID
                     {
                         FULL_ID37 = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_header_package892);
                         if (state.failed)
@@ -1710,7 +1710,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:132:51: var
+                    // io/protostuff/parser/ProtoParser.g:132:51: var
                     {
                         pushFollow(FOLLOW_var_in_header_package898);
                         var38 = var();
@@ -1785,7 +1785,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "header_import"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:143:1: header_import[Proto proto] : IMPORT STRING_LITERAL
+    // io/protostuff/parser/ProtoParser.g:143:1: header_import[Proto proto] : IMPORT STRING_LITERAL
     // SEMICOLON ;
     public final ProtoParser.header_import_return header_import(Proto proto) throws RecognitionException
     {
@@ -1804,8 +1804,8 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:144:5: ( IMPORT STRING_LITERAL SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:144:9: IMPORT STRING_LITERAL SEMICOLON
+            // io/protostuff/parser/ProtoParser.g:144:5: ( IMPORT STRING_LITERAL SEMICOLON )
+            // io/protostuff/parser/ProtoParser.g:144:9: IMPORT STRING_LITERAL SEMICOLON
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -1878,7 +1878,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "option_entry"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:152:1: option_entry[Proto proto, HasOptions ho] : OPTION (
+    // io/protostuff/parser/ProtoParser.g:152:1: option_entry[Proto proto, HasOptions ho] : OPTION (
     // LEFTPAREN )? k= var_full ( RIGHTPAREN )? ASSIGN (vr= var_reserved | id= ID | fid= FULL_ID | NUMFLOAT | NUMINT |
     // NUMDOUBLE | TRUE | FALSE | STRING_LITERAL ) SEMICOLON ;
     public final ProtoParser.option_entry_return option_entry(Proto proto, HasOptions ho) throws RecognitionException
@@ -1921,10 +1921,10 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:153:5: ( OPTION ( LEFTPAREN )? k= var_full ( RIGHTPAREN )?
+            // io/protostuff/parser/ProtoParser.g:153:5: ( OPTION ( LEFTPAREN )? k= var_full ( RIGHTPAREN )?
             // ASSIGN (vr= var_reserved | id= ID | fid= FULL_ID | NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE |
             // STRING_LITERAL ) SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:153:9: OPTION ( LEFTPAREN )? k= var_full ( RIGHTPAREN )?
+            // io/protostuff/parser/ProtoParser.g:153:9: OPTION ( LEFTPAREN )? k= var_full ( RIGHTPAREN )?
             // ASSIGN (vr= var_reserved | id= ID | fid= FULL_ID | NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE |
             // STRING_LITERAL ) SEMICOLON
             {
@@ -1938,7 +1938,7 @@ public class ProtoParser extends AbstractParser
                     OPTION43_tree = (Object) adaptor.create(OPTION43);
                     adaptor.addChild(root_0, OPTION43_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:153:16: ( LEFTPAREN )?
+                // io/protostuff/parser/ProtoParser.g:153:16: ( LEFTPAREN )?
                 int alt9 = 2;
                 switch (input.LA(1))
                 {
@@ -1952,7 +1952,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt9)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:153:16: LEFTPAREN
+                    // io/protostuff/parser/ProtoParser.g:153:16: LEFTPAREN
                     {
                         LEFTPAREN44 = (Token) match(input, LEFTPAREN, FOLLOW_LEFTPAREN_in_option_entry961);
                         if (state.failed)
@@ -1976,7 +1976,7 @@ public class ProtoParser extends AbstractParser
                     return retval;
                 if (state.backtracking == 0)
                     adaptor.addChild(root_0, k.getTree());
-                // com/dyuproject/protostuff/parser/ProtoParser.g:153:38: ( RIGHTPAREN )?
+                // io/protostuff/parser/ProtoParser.g:153:38: ( RIGHTPAREN )?
                 int alt10 = 2;
                 switch (input.LA(1))
                 {
@@ -1990,7 +1990,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt10)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:153:38: RIGHTPAREN
+                    // io/protostuff/parser/ProtoParser.g:153:38: RIGHTPAREN
                     {
                         RIGHTPAREN45 = (Token) match(input, RIGHTPAREN, FOLLOW_RIGHTPAREN_in_option_entry968);
                         if (state.failed)
@@ -2014,7 +2014,7 @@ public class ProtoParser extends AbstractParser
                     ASSIGN46_tree = (Object) adaptor.create(ASSIGN46);
                     adaptor.addChild(root_0, ASSIGN46_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:153:57: (vr= var_reserved | id= ID | fid= FULL_ID |
+                // io/protostuff/parser/ProtoParser.g:153:57: (vr= var_reserved | id= ID | fid= FULL_ID |
                 // NUMFLOAT | NUMINT | NUMDOUBLE | TRUE | FALSE | STRING_LITERAL )
                 int alt11 = 9;
                 switch (input.LA(1))
@@ -2112,7 +2112,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt11)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:154:17: vr= var_reserved
+                    // io/protostuff/parser/ProtoParser.g:154:17: vr= var_reserved
                     {
                         pushFollow(FOLLOW_var_reserved_in_option_entry993);
                         vr = var_reserved();
@@ -2131,7 +2131,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:155:17: id= ID
+                    // io/protostuff/parser/ProtoParser.g:155:17: id= ID
                     {
                         id = (Token) match(input, ID, FOLLOW_ID_in_option_entry1015);
                         if (state.failed)
@@ -2150,7 +2150,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 3:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:156:17: fid= FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:156:17: fid= FULL_ID
                     {
                         fid = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_option_entry1037);
                         if (state.failed)
@@ -2169,7 +2169,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 4:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:157:17: NUMFLOAT
+                    // io/protostuff/parser/ProtoParser.g:157:17: NUMFLOAT
                     {
                         NUMFLOAT47 = (Token) match(input, NUMFLOAT, FOLLOW_NUMFLOAT_in_option_entry1057);
                         if (state.failed)
@@ -2188,7 +2188,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 5:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:158:17: NUMINT
+                    // io/protostuff/parser/ProtoParser.g:158:17: NUMINT
                     {
                         NUMINT48 = (Token) match(input, NUMINT, FOLLOW_NUMINT_in_option_entry1077);
                         if (state.failed)
@@ -2207,7 +2207,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 6:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:159:17: NUMDOUBLE
+                    // io/protostuff/parser/ProtoParser.g:159:17: NUMDOUBLE
                     {
                         NUMDOUBLE49 = (Token) match(input, NUMDOUBLE, FOLLOW_NUMDOUBLE_in_option_entry1097);
                         if (state.failed)
@@ -2226,7 +2226,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 7:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:160:17: TRUE
+                    // io/protostuff/parser/ProtoParser.g:160:17: TRUE
                     {
                         TRUE50 = (Token) match(input, TRUE, FOLLOW_TRUE_in_option_entry1117);
                         if (state.failed)
@@ -2244,7 +2244,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 8:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:161:17: FALSE
+                    // io/protostuff/parser/ProtoParser.g:161:17: FALSE
                     {
                         FALSE51 = (Token) match(input, FALSE, FOLLOW_FALSE_in_option_entry1137);
                         if (state.failed)
@@ -2262,7 +2262,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 9:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:162:17: STRING_LITERAL
+                    // io/protostuff/parser/ProtoParser.g:162:17: STRING_LITERAL
                     {
                         STRING_LITERAL52 = (Token) match(input, STRING_LITERAL,
                                 FOLLOW_STRING_LITERAL_in_option_entry1157);
@@ -2335,7 +2335,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "message_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:169:1: message_block[Proto proto, Message parent] : MESSAGE ID
+    // io/protostuff/parser/ProtoParser.g:169:1: message_block[Proto proto, Message parent] : MESSAGE ID
     // LEFTCURLY ( message_body[proto, message] )* RIGHTCURLY ;
     public final ProtoParser.message_block_return message_block(Proto proto, Message parent)
             throws RecognitionException
@@ -2360,9 +2360,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:173:5: ( MESSAGE ID LEFTCURLY ( message_body[proto,
+            // io/protostuff/parser/ProtoParser.g:173:5: ( MESSAGE ID LEFTCURLY ( message_body[proto,
             // message] )* RIGHTCURLY )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:173:9: MESSAGE ID LEFTCURLY ( message_body[proto, message]
+            // io/protostuff/parser/ProtoParser.g:173:9: MESSAGE ID LEFTCURLY ( message_body[proto, message]
             // )* RIGHTCURLY
             {
                 root_0 = (Object) adaptor.nil();
@@ -2398,7 +2398,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY56_tree = (Object) adaptor.create(LEFTCURLY56);
                     adaptor.addChild(root_0, LEFTCURLY56_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:177:19: ( message_body[proto, message] )*
+                // io/protostuff/parser/ProtoParser.g:177:19: ( message_body[proto, message] )*
                 loop12: do
                 {
                     int alt12 = 2;
@@ -2424,7 +2424,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt12)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:177:20: message_body[proto, message]
+                        // io/protostuff/parser/ProtoParser.g:177:20: message_body[proto, message]
                         {
                             pushFollow(FOLLOW_message_body_in_message_block1222);
                             message_body57 = message_body(proto, message);
@@ -2498,7 +2498,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "message_body"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:183:1: message_body[Proto proto, Message message] : (
+    // io/protostuff/parser/ProtoParser.g:183:1: message_body[Proto proto, Message message] : (
     // message_block[proto, message] | message_field[proto, message] | enum_block[proto, message] | service_block[proto,
     // message] | extend_block[proto, message] | extensions_range[proto, message] | annotation_entry[proto] |
     // option_entry[proto, message] );
@@ -2527,7 +2527,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:184:5: ( message_block[proto, message] |
+            // io/protostuff/parser/ProtoParser.g:184:5: ( message_block[proto, message] |
             // message_field[proto, message] | enum_block[proto, message] | service_block[proto, message] |
             // extend_block[proto, message] | extensions_range[proto, message] | annotation_entry[proto] |
             // option_entry[proto, message] )
@@ -2591,7 +2591,7 @@ public class ProtoParser extends AbstractParser
             switch (alt13)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:184:9: message_block[proto, message]
+                // io/protostuff/parser/ProtoParser.g:184:9: message_block[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2607,7 +2607,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:185:9: message_field[proto, message]
+                // io/protostuff/parser/ProtoParser.g:185:9: message_field[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2623,7 +2623,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:186:9: enum_block[proto, message]
+                // io/protostuff/parser/ProtoParser.g:186:9: enum_block[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2639,7 +2639,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 4:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:187:9: service_block[proto, message]
+                // io/protostuff/parser/ProtoParser.g:187:9: service_block[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2655,7 +2655,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 5:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:188:9: extend_block[proto, message]
+                // io/protostuff/parser/ProtoParser.g:188:9: extend_block[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2671,7 +2671,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 6:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:189:9: extensions_range[proto, message]
+                // io/protostuff/parser/ProtoParser.g:189:9: extensions_range[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2687,7 +2687,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 7:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:190:9: annotation_entry[proto]
+                // io/protostuff/parser/ProtoParser.g:190:9: annotation_entry[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2703,7 +2703,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 8:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:191:9: option_entry[proto, message]
+                // io/protostuff/parser/ProtoParser.g:191:9: option_entry[proto, message]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -2757,7 +2757,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "extensions_range"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:194:1: extensions_range[Proto proto, Message message] : EXTENSIONS
+    // io/protostuff/parser/ProtoParser.g:194:1: extensions_range[Proto proto, Message message] : EXTENSIONS
     // f= NUMINT ( TO (l= NUMINT | MAX ) )? SEMICOLON ;
     public final ProtoParser.extensions_range_return extensions_range(Proto proto, Message message)
             throws RecognitionException
@@ -2786,9 +2786,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:199:5: ( EXTENSIONS f= NUMINT ( TO (l= NUMINT | MAX ) )?
+            // io/protostuff/parser/ProtoParser.g:199:5: ( EXTENSIONS f= NUMINT ( TO (l= NUMINT | MAX ) )?
             // SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:199:9: EXTENSIONS f= NUMINT ( TO (l= NUMINT | MAX ) )?
+            // io/protostuff/parser/ProtoParser.g:199:9: EXTENSIONS f= NUMINT ( TO (l= NUMINT | MAX ) )?
             // SEMICOLON
             {
                 root_0 = (Object) adaptor.nil();
@@ -2814,7 +2814,7 @@ public class ProtoParser extends AbstractParser
                     first = Integer.parseInt((f != null ? f.getText() : null));
                     last = first;
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:200:9: ( TO (l= NUMINT | MAX ) )?
+                // io/protostuff/parser/ProtoParser.g:200:9: ( TO (l= NUMINT | MAX ) )?
                 int alt15 = 2;
                 switch (input.LA(1))
                 {
@@ -2828,7 +2828,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt15)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:200:11: TO (l= NUMINT | MAX )
+                    // io/protostuff/parser/ProtoParser.g:200:11: TO (l= NUMINT | MAX )
                     {
                         TO68 = (Token) match(input, TO, FOLLOW_TO_in_extensions_range1376);
                         if (state.failed)
@@ -2838,7 +2838,7 @@ public class ProtoParser extends AbstractParser
                             TO68_tree = (Object) adaptor.create(TO68);
                             adaptor.addChild(root_0, TO68_tree);
                         }
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:200:14: (l= NUMINT | MAX )
+                        // io/protostuff/parser/ProtoParser.g:200:14: (l= NUMINT | MAX )
                         int alt14 = 2;
                         switch (input.LA(1))
                         {
@@ -2867,7 +2867,7 @@ public class ProtoParser extends AbstractParser
                         switch (alt14)
                         {
                             case 1:
-                            // com/dyuproject/protostuff/parser/ProtoParser.g:200:16: l= NUMINT
+                            // io/protostuff/parser/ProtoParser.g:200:16: l= NUMINT
                             {
                                 l = (Token) match(input, NUMINT, FOLLOW_NUMINT_in_extensions_range1382);
                                 if (state.failed)
@@ -2885,7 +2885,7 @@ public class ProtoParser extends AbstractParser
                             }
                                 break;
                             case 2:
-                            // com/dyuproject/protostuff/parser/ProtoParser.g:200:65: MAX
+                            // io/protostuff/parser/ProtoParser.g:200:65: MAX
                             {
                                 MAX69 = (Token) match(input, MAX, FOLLOW_MAX_in_extensions_range1388);
                                 if (state.failed)
@@ -2959,7 +2959,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "message_field"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:206:1: message_field[Proto proto, HasFields message] : ( OPTIONAL
+    // io/protostuff/parser/ProtoParser.g:206:1: message_field[Proto proto, HasFields message] : ( OPTIONAL
     // | REQUIRED | REPEATED ) field_type[proto, message, fieldHolder] var ASSIGN NUMINT ( field_options[proto, message,
     // fieldHolder.field] )? ( SEMICOLON | ignore_block ) ;
     public final ProtoParser.message_field_return message_field(Proto proto, HasFields message)
@@ -2996,16 +2996,16 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:211:5: ( ( OPTIONAL | REQUIRED | REPEATED )
+            // io/protostuff/parser/ProtoParser.g:211:5: ( ( OPTIONAL | REQUIRED | REPEATED )
             // field_type[proto, message, fieldHolder] var ASSIGN NUMINT ( field_options[proto, message,
             // fieldHolder.field] )? ( SEMICOLON | ignore_block ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:211:9: ( OPTIONAL | REQUIRED | REPEATED )
+            // io/protostuff/parser/ProtoParser.g:211:9: ( OPTIONAL | REQUIRED | REPEATED )
             // field_type[proto, message, fieldHolder] var ASSIGN NUMINT ( field_options[proto, message,
             // fieldHolder.field] )? ( SEMICOLON | ignore_block )
             {
                 root_0 = (Object) adaptor.nil();
 
-                // com/dyuproject/protostuff/parser/ProtoParser.g:211:9: ( OPTIONAL | REQUIRED | REPEATED )
+                // io/protostuff/parser/ProtoParser.g:211:9: ( OPTIONAL | REQUIRED | REPEATED )
                 int alt16 = 3;
                 switch (input.LA(1))
                 {
@@ -3039,7 +3039,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt16)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:211:10: OPTIONAL
+                    // io/protostuff/parser/ProtoParser.g:211:10: OPTIONAL
                     {
                         OPTIONAL71 = (Token) match(input, OPTIONAL, FOLLOW_OPTIONAL_in_message_field1439);
                         if (state.failed)
@@ -3057,7 +3057,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:212:13: REQUIRED
+                    // io/protostuff/parser/ProtoParser.g:212:13: REQUIRED
                     {
                         REQUIRED72 = (Token) match(input, REQUIRED, FOLLOW_REQUIRED_in_message_field1456);
                         if (state.failed)
@@ -3075,7 +3075,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 3:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:213:13: REPEATED
+                    // io/protostuff/parser/ProtoParser.g:213:13: REPEATED
                     {
                         REPEATED73 = (Token) match(input, REPEATED, FOLLOW_REPEATED_in_message_field1473);
                         if (state.failed)
@@ -3144,7 +3144,7 @@ public class ProtoParser extends AbstractParser
                     }
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:224:9: ( field_options[proto, message,
+                // io/protostuff/parser/ProtoParser.g:224:9: ( field_options[proto, message,
                 // fieldHolder.field] )?
                 int alt17 = 2;
                 switch (input.LA(1))
@@ -3159,7 +3159,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt17)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:224:10: field_options[proto, message,
+                    // io/protostuff/parser/ProtoParser.g:224:10: field_options[proto, message,
                     // fieldHolder.field]
                     {
                         pushFollow(FOLLOW_field_options_in_message_field1518);
@@ -3186,7 +3186,7 @@ public class ProtoParser extends AbstractParser
                     }
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:230:9: ( SEMICOLON | ignore_block )
+                // io/protostuff/parser/ProtoParser.g:230:9: ( SEMICOLON | ignore_block )
                 int alt18 = 2;
                 switch (input.LA(1))
                 {
@@ -3215,7 +3215,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt18)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:230:10: SEMICOLON
+                    // io/protostuff/parser/ProtoParser.g:230:10: SEMICOLON
                     {
                         SEMICOLON79 = (Token) match(input, SEMICOLON, FOLLOW_SEMICOLON_in_message_field1534);
                         if (state.failed)
@@ -3224,7 +3224,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:230:23: ignore_block
+                    // io/protostuff/parser/ProtoParser.g:230:23: ignore_block
                     {
                         pushFollow(FOLLOW_ignore_block_in_message_field1539);
                         ignore_block80 = ignore_block();
@@ -3279,7 +3279,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "field_type"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:233:1: field_type[Proto proto, HasFields message, FieldHolder
+    // io/protostuff/parser/ProtoParser.g:233:1: field_type[Proto proto, HasFields message, FieldHolder
     // fieldHolder] : ( INT32 | UINT32 | SINT32 | FIXED32 | SFIXED32 | INT64 | UINT64 | SINT64 | FIXED64 | SFIXED64 |
     // FLOAT | DOUBLE | BOOL | STRING | BYTES | GROUP | FULL_ID | ID );
     public final ProtoParser.field_type_return field_type(Proto proto, HasFields message, FieldHolder fieldHolder)
@@ -3330,7 +3330,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:234:5: ( INT32 | UINT32 | SINT32 | FIXED32 | SFIXED32 |
+            // io/protostuff/parser/ProtoParser.g:234:5: ( INT32 | UINT32 | SINT32 | FIXED32 | SFIXED32 |
             // INT64 | UINT64 | SINT64 | FIXED64 | SFIXED64 | FLOAT | DOUBLE | BOOL | STRING | BYTES | GROUP | FULL_ID |
             // ID )
             int alt19 = 18;
@@ -3441,7 +3441,7 @@ public class ProtoParser extends AbstractParser
             switch (alt19)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:234:9: INT32
+                // io/protostuff/parser/ProtoParser.g:234:9: INT32
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3461,7 +3461,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:235:9: UINT32
+                // io/protostuff/parser/ProtoParser.g:235:9: UINT32
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3481,7 +3481,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:236:9: SINT32
+                // io/protostuff/parser/ProtoParser.g:236:9: SINT32
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3501,7 +3501,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 4:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:237:9: FIXED32
+                // io/protostuff/parser/ProtoParser.g:237:9: FIXED32
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3521,7 +3521,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 5:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:238:9: SFIXED32
+                // io/protostuff/parser/ProtoParser.g:238:9: SFIXED32
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3541,7 +3541,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 6:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:239:9: INT64
+                // io/protostuff/parser/ProtoParser.g:239:9: INT64
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3561,7 +3561,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 7:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:240:9: UINT64
+                // io/protostuff/parser/ProtoParser.g:240:9: UINT64
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3581,7 +3581,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 8:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:241:9: SINT64
+                // io/protostuff/parser/ProtoParser.g:241:9: SINT64
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3601,7 +3601,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 9:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:242:9: FIXED64
+                // io/protostuff/parser/ProtoParser.g:242:9: FIXED64
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3621,7 +3621,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 10:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:243:9: SFIXED64
+                // io/protostuff/parser/ProtoParser.g:243:9: SFIXED64
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3641,7 +3641,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 11:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:244:9: FLOAT
+                // io/protostuff/parser/ProtoParser.g:244:9: FLOAT
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3661,7 +3661,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 12:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:245:9: DOUBLE
+                // io/protostuff/parser/ProtoParser.g:245:9: DOUBLE
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3681,7 +3681,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 13:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:246:9: BOOL
+                // io/protostuff/parser/ProtoParser.g:246:9: BOOL
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3701,7 +3701,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 14:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:247:9: STRING
+                // io/protostuff/parser/ProtoParser.g:247:9: STRING
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3721,7 +3721,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 15:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:248:9: BYTES
+                // io/protostuff/parser/ProtoParser.g:248:9: BYTES
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3741,7 +3741,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 16:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:249:9: GROUP
+                // io/protostuff/parser/ProtoParser.g:249:9: GROUP
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3764,7 +3764,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 17:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:253:9: FULL_ID
+                // io/protostuff/parser/ProtoParser.g:253:9: FULL_ID
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3790,7 +3790,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 18:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:260:9: ID
+                // io/protostuff/parser/ProtoParser.g:260:9: ID
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -3851,7 +3851,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "field_options"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:266:1: field_options[Proto proto, HasFields message, Field field]
+    // io/protostuff/parser/ProtoParser.g:266:1: field_options[Proto proto, HasFields message, Field field]
     // : LEFTSQUARE field_options_keyval[proto, message, field, true] ( COMMA field_options_keyval[proto, message,
     // field, true] )* RIGHTSQUARE ;
     public final ProtoParser.field_options_return field_options(Proto proto, HasFields message, Field field)
@@ -3875,9 +3875,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:267:5: ( LEFTSQUARE field_options_keyval[proto, message,
+            // io/protostuff/parser/ProtoParser.g:267:5: ( LEFTSQUARE field_options_keyval[proto, message,
             // field, true] ( COMMA field_options_keyval[proto, message, field, true] )* RIGHTSQUARE )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:267:9: LEFTSQUARE field_options_keyval[proto, message,
+            // io/protostuff/parser/ProtoParser.g:267:9: LEFTSQUARE field_options_keyval[proto, message,
             // field, true] ( COMMA field_options_keyval[proto, message, field, true] )* RIGHTSQUARE
             {
                 root_0 = (Object) adaptor.nil();
@@ -3898,7 +3898,7 @@ public class ProtoParser extends AbstractParser
                     return retval;
                 if (state.backtracking == 0)
                     adaptor.addChild(root_0, field_options_keyval100.getTree());
-                // com/dyuproject/protostuff/parser/ProtoParser.g:268:9: ( COMMA field_options_keyval[proto, message,
+                // io/protostuff/parser/ProtoParser.g:268:9: ( COMMA field_options_keyval[proto, message,
                 // field, true] )*
                 loop20: do
                 {
@@ -3916,7 +3916,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt20)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:268:10: COMMA field_options_keyval[proto,
+                        // io/protostuff/parser/ProtoParser.g:268:10: COMMA field_options_keyval[proto,
                         // message, field, true]
                         {
                             COMMA101 = (Token) match(input, COMMA, FOLLOW_COMMA_in_field_options1811);
@@ -3992,7 +3992,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "field_options_keyval"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:271:1: field_options_keyval[Proto proto, HasFields message, Field
+    // io/protostuff/parser/ProtoParser.g:271:1: field_options_keyval[Proto proto, HasFields message, Field
     // field, boolean checkDefault] : key= var_full ASSIGN (vr= var_reserved | STRING_LITERAL | NUMFLOAT | NUMINT |
     // NUMDOUBLE | HEX | OCTAL | TRUE | FALSE | val= ID | FULL_ID | EXP | signed_constant[proto, message, field,
     // $key.text, checkDefault] ) ;
@@ -4037,10 +4037,10 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:272:5: (key= var_full ASSIGN (vr= var_reserved |
+            // io/protostuff/parser/ProtoParser.g:272:5: (key= var_full ASSIGN (vr= var_reserved |
             // STRING_LITERAL | NUMFLOAT | NUMINT | NUMDOUBLE | HEX | OCTAL | TRUE | FALSE | val= ID | FULL_ID | EXP |
             // signed_constant[proto, message, field, $key.text, checkDefault] ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:272:9: key= var_full ASSIGN (vr= var_reserved |
+            // io/protostuff/parser/ProtoParser.g:272:9: key= var_full ASSIGN (vr= var_reserved |
             // STRING_LITERAL | NUMFLOAT | NUMINT | NUMDOUBLE | HEX | OCTAL | TRUE | FALSE | val= ID | FULL_ID | EXP |
             // signed_constant[proto, message, field, $key.text, checkDefault] )
             {
@@ -4062,7 +4062,7 @@ public class ProtoParser extends AbstractParser
                     ASSIGN104_tree = (Object) adaptor.create(ASSIGN104);
                     adaptor.addChild(root_0, ASSIGN104_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:272:29: (vr= var_reserved | STRING_LITERAL | NUMFLOAT
+                // io/protostuff/parser/ProtoParser.g:272:29: (vr= var_reserved | STRING_LITERAL | NUMFLOAT
                 // | NUMINT | NUMDOUBLE | HEX | OCTAL | TRUE | FALSE | val= ID | FULL_ID | EXP | signed_constant[proto,
                 // message, field, $key.text, checkDefault] )
                 int alt21 = 13;
@@ -4181,7 +4181,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt21)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:272:30: vr= var_reserved
+                    // io/protostuff/parser/ProtoParser.g:272:30: vr= var_reserved
                     {
                         pushFollow(FOLLOW_var_reserved_in_field_options_keyval1852);
                         vr = var_reserved();
@@ -4202,7 +4202,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:275:9: STRING_LITERAL
+                    // io/protostuff/parser/ProtoParser.g:275:9: STRING_LITERAL
                     {
                         STRING_LITERAL105 = (Token) match(input, STRING_LITERAL,
                                 FOLLOW_STRING_LITERAL_in_field_options_keyval1865);
@@ -4244,7 +4244,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 3:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:290:9: NUMFLOAT
+                    // io/protostuff/parser/ProtoParser.g:290:9: NUMFLOAT
                     {
                         NUMFLOAT106 = (Token) match(input, NUMFLOAT, FOLLOW_NUMFLOAT_in_field_options_keyval1877);
                         if (state.failed)
@@ -4282,7 +4282,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 4:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:305:9: NUMINT
+                    // io/protostuff/parser/ProtoParser.g:305:9: NUMINT
                     {
                         NUMINT107 = (Token) match(input, NUMINT, FOLLOW_NUMINT_in_field_options_keyval1890);
                         if (state.failed)
@@ -4332,7 +4332,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 5:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:328:9: NUMDOUBLE
+                    // io/protostuff/parser/ProtoParser.g:328:9: NUMDOUBLE
                     {
                         NUMDOUBLE108 = (Token) match(input, NUMDOUBLE, FOLLOW_NUMDOUBLE_in_field_options_keyval1902);
                         if (state.failed)
@@ -4370,7 +4370,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 6:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:343:9: HEX
+                    // io/protostuff/parser/ProtoParser.g:343:9: HEX
                     {
                         HEX109 = (Token) match(input, HEX, FOLLOW_HEX_in_field_options_keyval1914);
                         if (state.failed)
@@ -4429,7 +4429,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 7:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:372:9: OCTAL
+                    // io/protostuff/parser/ProtoParser.g:372:9: OCTAL
                     {
                         OCTAL110 = (Token) match(input, OCTAL, FOLLOW_OCTAL_in_field_options_keyval1926);
                         if (state.failed)
@@ -4482,7 +4482,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 8:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:397:9: TRUE
+                    // io/protostuff/parser/ProtoParser.g:397:9: TRUE
                     {
                         TRUE111 = (Token) match(input, TRUE, FOLLOW_TRUE_in_field_options_keyval1938);
                         if (state.failed)
@@ -4517,7 +4517,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 9:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:410:9: FALSE
+                    // io/protostuff/parser/ProtoParser.g:410:9: FALSE
                     {
                         FALSE112 = (Token) match(input, FALSE, FOLLOW_FALSE_in_field_options_keyval1954);
                         if (state.failed)
@@ -4552,7 +4552,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 10:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:423:9: val= ID
+                    // io/protostuff/parser/ProtoParser.g:423:9: val= ID
                     {
                         val = (Token) match(input, ID, FOLLOW_ID_in_field_options_keyval1968);
                         if (state.failed)
@@ -4631,7 +4631,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 11:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:470:9: FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:470:9: FULL_ID
                     {
                         FULL_ID113 = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_field_options_keyval1980);
                         if (state.failed)
@@ -4652,7 +4652,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 12:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:473:9: EXP
+                    // io/protostuff/parser/ProtoParser.g:473:9: EXP
                     {
                         EXP114 = (Token) match(input, EXP, FOLLOW_EXP_in_field_options_keyval1992);
                         if (state.failed)
@@ -4688,7 +4688,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 13:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:488:9: signed_constant[proto, message, field,
+                    // io/protostuff/parser/ProtoParser.g:488:9: signed_constant[proto, message, field,
                     // $key.text, checkDefault]
                     {
                         pushFollow(FOLLOW_signed_constant_in_field_options_keyval2004);
@@ -4754,7 +4754,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "signed_constant"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:494:1: signed_constant[Proto proto, HasFields message, Field
+    // io/protostuff/parser/ProtoParser.g:494:1: signed_constant[Proto proto, HasFields message, Field
     // field, String key, boolean checkDefault] : MINUS ID ;
     public final ProtoParser.signed_constant_return signed_constant(Proto proto, HasFields message, Field field,
             String key, boolean checkDefault) throws RecognitionException
@@ -4772,8 +4772,8 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:495:5: ( MINUS ID )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:495:9: MINUS ID
+            // io/protostuff/parser/ProtoParser.g:495:5: ( MINUS ID )
+            // io/protostuff/parser/ProtoParser.g:495:9: MINUS ID
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -4870,7 +4870,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "enum_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:523:1: enum_block[Proto proto, Message message] : ENUM ID
+    // io/protostuff/parser/ProtoParser.g:523:1: enum_block[Proto proto, Message message] : ENUM ID
     // LEFTCURLY ( enum_body[proto, message, enumGroup] )* RIGHTCURLY ( ( SEMICOLON )? ) ;
     public final ProtoParser.enum_block_return enum_block(Proto proto, Message message) throws RecognitionException
     {
@@ -4896,9 +4896,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:527:5: ( ENUM ID LEFTCURLY ( enum_body[proto, message,
+            // io/protostuff/parser/ProtoParser.g:527:5: ( ENUM ID LEFTCURLY ( enum_body[proto, message,
             // enumGroup] )* RIGHTCURLY ( ( SEMICOLON )? ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:527:9: ENUM ID LEFTCURLY ( enum_body[proto, message,
+            // io/protostuff/parser/ProtoParser.g:527:9: ENUM ID LEFTCURLY ( enum_body[proto, message,
             // enumGroup] )* RIGHTCURLY ( ( SEMICOLON )? )
             {
                 root_0 = (Object) adaptor.nil();
@@ -4934,7 +4934,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY120_tree = (Object) adaptor.create(LEFTCURLY120);
                     adaptor.addChild(root_0, LEFTCURLY120_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:531:19: ( enum_body[proto, message, enumGroup] )*
+                // io/protostuff/parser/ProtoParser.g:531:19: ( enum_body[proto, message, enumGroup] )*
                 loop22: do
                 {
                     int alt22 = 2;
@@ -4953,7 +4953,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt22)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:531:20: enum_body[proto, message, enumGroup]
+                        // io/protostuff/parser/ProtoParser.g:531:20: enum_body[proto, message, enumGroup]
                         {
                             pushFollow(FOLLOW_enum_body_in_enum_block2094);
                             enum_body121 = enum_body(proto, message, enumGroup);
@@ -4987,10 +4987,10 @@ public class ProtoParser extends AbstractParser
                         throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:534:11: ( ( SEMICOLON )? )
-                // com/dyuproject/protostuff/parser/ProtoParser.g:534:12: ( SEMICOLON )?
+                // io/protostuff/parser/ProtoParser.g:534:11: ( ( SEMICOLON )? )
+                // io/protostuff/parser/ProtoParser.g:534:12: ( SEMICOLON )?
                 {
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:534:12: ( SEMICOLON )?
+                    // io/protostuff/parser/ProtoParser.g:534:12: ( SEMICOLON )?
                     int alt23 = 2;
                     switch (input.LA(1))
                     {
@@ -5004,7 +5004,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt23)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:534:12: SEMICOLON
+                        // io/protostuff/parser/ProtoParser.g:534:12: SEMICOLON
                         {
                             SEMICOLON123 = (Token) match(input, SEMICOLON, FOLLOW_SEMICOLON_in_enum_block2104);
                             if (state.failed)
@@ -5061,7 +5061,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "enum_body"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:537:1: enum_body[Proto proto, Message message, EnumGroup
+    // io/protostuff/parser/ProtoParser.g:537:1: enum_body[Proto proto, Message message, EnumGroup
     // enumGroup] : ( enum_field[proto, message, enumGroup] | annotation_entry[proto] | option_entry[proto, enumGroup]
     // );
     public final ProtoParser.enum_body_return enum_body(Proto proto, Message message, EnumGroup enumGroup)
@@ -5080,7 +5080,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:538:5: ( enum_field[proto, message, enumGroup] |
+            // io/protostuff/parser/ProtoParser.g:538:5: ( enum_field[proto, message, enumGroup] |
             // annotation_entry[proto] | option_entry[proto, enumGroup] )
             int alt24 = 3;
             switch (input.LA(1))
@@ -5115,7 +5115,7 @@ public class ProtoParser extends AbstractParser
             switch (alt24)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:538:9: enum_field[proto, message, enumGroup]
+                // io/protostuff/parser/ProtoParser.g:538:9: enum_field[proto, message, enumGroup]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5131,7 +5131,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:539:9: annotation_entry[proto]
+                // io/protostuff/parser/ProtoParser.g:539:9: annotation_entry[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5147,7 +5147,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:540:9: option_entry[proto, enumGroup]
+                // io/protostuff/parser/ProtoParser.g:540:9: option_entry[proto, enumGroup]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5201,7 +5201,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "enum_field"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:543:1: enum_field[Proto proto, Message message, EnumGroup
+    // io/protostuff/parser/ProtoParser.g:543:1: enum_field[Proto proto, Message message, EnumGroup
     // enumGroup] : ID ASSIGN NUMINT ( enum_options[proto, enumGroup, v] )? SEMICOLON ;
     public final ProtoParser.enum_field_return enum_field(Proto proto, Message message, EnumGroup enumGroup)
             throws RecognitionException
@@ -5226,9 +5226,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:547:5: ( ID ASSIGN NUMINT ( enum_options[proto, enumGroup,
+            // io/protostuff/parser/ProtoParser.g:547:5: ( ID ASSIGN NUMINT ( enum_options[proto, enumGroup,
             // v] )? SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:547:9: ID ASSIGN NUMINT ( enum_options[proto, enumGroup,
+            // io/protostuff/parser/ProtoParser.g:547:9: ID ASSIGN NUMINT ( enum_options[proto, enumGroup,
             // v] )? SEMICOLON
             {
                 root_0 = (Object) adaptor.nil();
@@ -5265,7 +5265,7 @@ public class ProtoParser extends AbstractParser
                     proto.addAnnotationsTo(v);
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:550:11: ( enum_options[proto, enumGroup, v] )?
+                // io/protostuff/parser/ProtoParser.g:550:11: ( enum_options[proto, enumGroup, v] )?
                 int alt25 = 2;
                 switch (input.LA(1))
                 {
@@ -5279,7 +5279,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt25)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:550:12: enum_options[proto, enumGroup, v]
+                    // io/protostuff/parser/ProtoParser.g:550:12: enum_options[proto, enumGroup, v]
                     {
                         pushFollow(FOLLOW_enum_options_in_enum_field2190);
                         enum_options130 = enum_options(proto, enumGroup, v);
@@ -5338,7 +5338,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "enum_options"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:553:1: enum_options[Proto proto, EnumGroup enumGroup,
+    // io/protostuff/parser/ProtoParser.g:553:1: enum_options[Proto proto, EnumGroup enumGroup,
     // EnumGroup.Value v] : LEFTSQUARE field_options_keyval[proto, null, v.field, false] ( COMMA
     // field_options_keyval[proto, null, v.field, false] )* RIGHTSQUARE ;
     public final ProtoParser.enum_options_return enum_options(Proto proto, EnumGroup enumGroup, EnumGroup.Value v)
@@ -5362,9 +5362,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:554:5: ( LEFTSQUARE field_options_keyval[proto, null,
+            // io/protostuff/parser/ProtoParser.g:554:5: ( LEFTSQUARE field_options_keyval[proto, null,
             // v.field, false] ( COMMA field_options_keyval[proto, null, v.field, false] )* RIGHTSQUARE )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:554:9: LEFTSQUARE field_options_keyval[proto, null,
+            // io/protostuff/parser/ProtoParser.g:554:9: LEFTSQUARE field_options_keyval[proto, null,
             // v.field, false] ( COMMA field_options_keyval[proto, null, v.field, false] )* RIGHTSQUARE
             {
                 root_0 = (Object) adaptor.nil();
@@ -5385,7 +5385,7 @@ public class ProtoParser extends AbstractParser
                     return retval;
                 if (state.backtracking == 0)
                     adaptor.addChild(root_0, field_options_keyval133.getTree());
-                // com/dyuproject/protostuff/parser/ProtoParser.g:555:9: ( COMMA field_options_keyval[proto, null,
+                // io/protostuff/parser/ProtoParser.g:555:9: ( COMMA field_options_keyval[proto, null,
                 // v.field, false] )*
                 loop26: do
                 {
@@ -5403,7 +5403,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt26)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:555:10: COMMA field_options_keyval[proto,
+                        // io/protostuff/parser/ProtoParser.g:555:10: COMMA field_options_keyval[proto,
                         // null, v.field, false]
                         {
                             COMMA134 = (Token) match(input, COMMA, FOLLOW_COMMA_in_enum_options2233);
@@ -5479,7 +5479,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "service_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:558:1: service_block[Proto proto, Message message] : SERVICE ID
+    // io/protostuff/parser/ProtoParser.g:558:1: service_block[Proto proto, Message message] : SERVICE ID
     // LEFTCURLY ( service_body[proto, service] )+ RIGHTCURLY ( ( SEMICOLON )? ) ;
     public final ProtoParser.service_block_return service_block(Proto proto, Message message)
             throws RecognitionException
@@ -5506,9 +5506,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:562:5: ( SERVICE ID LEFTCURLY ( service_body[proto,
+            // io/protostuff/parser/ProtoParser.g:562:5: ( SERVICE ID LEFTCURLY ( service_body[proto,
             // service] )+ RIGHTCURLY ( ( SEMICOLON )? ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:562:9: SERVICE ID LEFTCURLY ( service_body[proto, service]
+            // io/protostuff/parser/ProtoParser.g:562:9: SERVICE ID LEFTCURLY ( service_body[proto, service]
             // )+ RIGHTCURLY ( ( SEMICOLON )? )
             {
                 root_0 = (Object) adaptor.nil();
@@ -5544,7 +5544,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY139_tree = (Object) adaptor.create(LEFTCURLY139);
                     adaptor.addChild(root_0, LEFTCURLY139_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:566:9: ( service_body[proto, service] )+
+                // io/protostuff/parser/ProtoParser.g:566:9: ( service_body[proto, service] )+
                 int cnt27 = 0;
                 loop27: do
                 {
@@ -5564,7 +5564,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt27)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:566:10: service_body[proto, service]
+                        // io/protostuff/parser/ProtoParser.g:566:10: service_body[proto, service]
                         {
                             pushFollow(FOLLOW_service_body_in_service_block2287);
                             service_body140 = service_body(proto, service);
@@ -5601,10 +5601,10 @@ public class ProtoParser extends AbstractParser
                     RIGHTCURLY141_tree = (Object) adaptor.create(RIGHTCURLY141);
                     adaptor.addChild(root_0, RIGHTCURLY141_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:566:52: ( ( SEMICOLON )? )
-                // com/dyuproject/protostuff/parser/ProtoParser.g:566:53: ( SEMICOLON )?
+                // io/protostuff/parser/ProtoParser.g:566:52: ( ( SEMICOLON )? )
+                // io/protostuff/parser/ProtoParser.g:566:53: ( SEMICOLON )?
                 {
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:566:53: ( SEMICOLON )?
+                    // io/protostuff/parser/ProtoParser.g:566:53: ( SEMICOLON )?
                     int alt28 = 2;
                     switch (input.LA(1))
                     {
@@ -5618,7 +5618,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt28)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:566:53: SEMICOLON
+                        // io/protostuff/parser/ProtoParser.g:566:53: SEMICOLON
                         {
                             SEMICOLON142 = (Token) match(input, SEMICOLON, FOLLOW_SEMICOLON_in_service_block2295);
                             if (state.failed)
@@ -5686,7 +5686,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "service_body"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:575:1: service_body[Proto proto, Service service] : (
+    // io/protostuff/parser/ProtoParser.g:575:1: service_body[Proto proto, Service service] : (
     // rpc_block[proto, service] | annotation_entry[proto] | option_entry[proto, service] );
     public final ProtoParser.service_body_return service_body(Proto proto, Service service) throws RecognitionException
     {
@@ -5703,7 +5703,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:576:5: ( rpc_block[proto, service] |
+            // io/protostuff/parser/ProtoParser.g:576:5: ( rpc_block[proto, service] |
             // annotation_entry[proto] | option_entry[proto, service] )
             int alt29 = 3;
             switch (input.LA(1))
@@ -5738,7 +5738,7 @@ public class ProtoParser extends AbstractParser
             switch (alt29)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:576:9: rpc_block[proto, service]
+                // io/protostuff/parser/ProtoParser.g:576:9: rpc_block[proto, service]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5754,7 +5754,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:577:9: annotation_entry[proto]
+                // io/protostuff/parser/ProtoParser.g:577:9: annotation_entry[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5770,7 +5770,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:578:9: option_entry[proto, service]
+                // io/protostuff/parser/ProtoParser.g:578:9: option_entry[proto, service]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -5824,7 +5824,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "rpc_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:581:1: rpc_block[Proto proto, Service service] : RPC n= ID
+    // io/protostuff/parser/ProtoParser.g:581:1: rpc_block[Proto proto, Service service] : RPC n= ID
     // LEFTPAREN (ap= FULL_ID | a= ( VOID | ID ) ) RIGHTPAREN RETURNS LEFTPAREN (rp= FULL_ID | r= ( VOID | ID ) )
     // RIGHTPAREN ( rpc_body_block[proto, rm] )? SEMICOLON ;
     public final ProtoParser.rpc_block_return rpc_block(Proto proto, Service service) throws RecognitionException
@@ -5866,10 +5866,10 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:586:5: ( RPC n= ID LEFTPAREN (ap= FULL_ID | a= ( VOID | ID
+            // io/protostuff/parser/ProtoParser.g:586:5: ( RPC n= ID LEFTPAREN (ap= FULL_ID | a= ( VOID | ID
             // ) ) RIGHTPAREN RETURNS LEFTPAREN (rp= FULL_ID | r= ( VOID | ID ) ) RIGHTPAREN ( rpc_body_block[proto, rm]
             // )? SEMICOLON )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:586:9: RPC n= ID LEFTPAREN (ap= FULL_ID | a= ( VOID | ID )
+            // io/protostuff/parser/ProtoParser.g:586:9: RPC n= ID LEFTPAREN (ap= FULL_ID | a= ( VOID | ID )
             // ) RIGHTPAREN RETURNS LEFTPAREN (rp= FULL_ID | r= ( VOID | ID ) ) RIGHTPAREN ( rpc_body_block[proto, rm]
             // )? SEMICOLON
             {
@@ -5899,7 +5899,7 @@ public class ProtoParser extends AbstractParser
                     LEFTPAREN147_tree = (Object) adaptor.create(LEFTPAREN147);
                     adaptor.addChild(root_0, LEFTPAREN147_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:586:28: (ap= FULL_ID | a= ( VOID | ID ) )
+                // io/protostuff/parser/ProtoParser.g:586:28: (ap= FULL_ID | a= ( VOID | ID ) )
                 int alt30 = 2;
                 switch (input.LA(1))
                 {
@@ -5929,7 +5929,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt30)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:586:29: ap= FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:586:29: ap= FULL_ID
                     {
                         ap = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_rpc_block2389);
                         if (state.failed)
@@ -5952,7 +5952,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:591:13: a= ( VOID | ID )
+                    // io/protostuff/parser/ProtoParser.g:591:13: a= ( VOID | ID )
                     {
                         a = (Token) input.LT(1);
                         if ((input.LA(1) >= VOID && input.LA(1) <= ID))
@@ -6008,7 +6008,7 @@ public class ProtoParser extends AbstractParser
                     LEFTPAREN150_tree = (Object) adaptor.create(LEFTPAREN150);
                     adaptor.addChild(root_0, LEFTPAREN150_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:592:27: (rp= FULL_ID | r= ( VOID | ID ) )
+                // io/protostuff/parser/ProtoParser.g:592:27: (rp= FULL_ID | r= ( VOID | ID ) )
                 int alt31 = 2;
                 switch (input.LA(1))
                 {
@@ -6038,7 +6038,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt31)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:592:28: rp= FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:592:28: rp= FULL_ID
                     {
                         rp = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_rpc_block2424);
                         if (state.failed)
@@ -6061,7 +6061,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:597:13: r= ( VOID | ID )
+                    // io/protostuff/parser/ProtoParser.g:597:13: r= ( VOID | ID )
                     {
                         r = (Token) input.LT(1);
                         if ((input.LA(1) >= VOID && input.LA(1) <= ID))
@@ -6109,7 +6109,7 @@ public class ProtoParser extends AbstractParser
                     proto.addAnnotationsTo(rm);
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:600:11: ( rpc_body_block[proto, rm] )?
+                // io/protostuff/parser/ProtoParser.g:600:11: ( rpc_body_block[proto, rm] )?
                 int alt32 = 2;
                 switch (input.LA(1))
                 {
@@ -6123,7 +6123,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt32)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:600:11: rpc_body_block[proto, rm]
+                    // io/protostuff/parser/ProtoParser.g:600:11: rpc_body_block[proto, rm]
                     {
                         pushFollow(FOLLOW_rpc_body_block_in_rpc_block2445);
                         rpc_body_block152 = rpc_body_block(proto, rm);
@@ -6182,7 +6182,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "rpc_body_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:603:1: rpc_body_block[Proto proto, Service.RpcMethod rm] :
+    // io/protostuff/parser/ProtoParser.g:603:1: rpc_body_block[Proto proto, Service.RpcMethod rm] :
     // LEFTCURLY ( option_entry[proto, rm] )* RIGHTCURLY ;
     public final ProtoParser.rpc_body_block_return rpc_body_block(Proto proto, Service.RpcMethod rm)
             throws RecognitionException
@@ -6201,9 +6201,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:604:5: ( LEFTCURLY ( option_entry[proto, rm] )* RIGHTCURLY
+            // io/protostuff/parser/ProtoParser.g:604:5: ( LEFTCURLY ( option_entry[proto, rm] )* RIGHTCURLY
             // )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:604:9: LEFTCURLY ( option_entry[proto, rm] )* RIGHTCURLY
+            // io/protostuff/parser/ProtoParser.g:604:9: LEFTCURLY ( option_entry[proto, rm] )* RIGHTCURLY
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -6215,7 +6215,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY154_tree = (Object) adaptor.create(LEFTCURLY154);
                     adaptor.addChild(root_0, LEFTCURLY154_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:604:19: ( option_entry[proto, rm] )*
+                // io/protostuff/parser/ProtoParser.g:604:19: ( option_entry[proto, rm] )*
                 loop33: do
                 {
                     int alt33 = 2;
@@ -6232,7 +6232,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt33)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:604:19: option_entry[proto, rm]
+                        // io/protostuff/parser/ProtoParser.g:604:19: option_entry[proto, rm]
                         {
                             pushFollow(FOLLOW_option_entry_in_rpc_body_block2477);
                             option_entry155 = option_entry(proto, rm);
@@ -6306,7 +6306,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "extend_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:610:1: extend_block[Proto proto, Message parent] : EXTEND (
+    // io/protostuff/parser/ProtoParser.g:610:1: extend_block[Proto proto, Message parent] : EXTEND (
     // FULL_ID | ID ) LEFTCURLY ( extend_body[proto, extension] )* RIGHTCURLY ( ( SEMICOLON )? ) ;
     public final ProtoParser.extend_block_return extend_block(Proto proto, Message parent) throws RecognitionException
     {
@@ -6334,9 +6334,9 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:614:5: ( EXTEND ( FULL_ID | ID ) LEFTCURLY (
+            // io/protostuff/parser/ProtoParser.g:614:5: ( EXTEND ( FULL_ID | ID ) LEFTCURLY (
             // extend_body[proto, extension] )* RIGHTCURLY ( ( SEMICOLON )? ) )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:614:9: EXTEND ( FULL_ID | ID ) LEFTCURLY (
+            // io/protostuff/parser/ProtoParser.g:614:9: EXTEND ( FULL_ID | ID ) LEFTCURLY (
             // extend_body[proto, extension] )* RIGHTCURLY ( ( SEMICOLON )? )
             {
                 root_0 = (Object) adaptor.nil();
@@ -6349,7 +6349,7 @@ public class ProtoParser extends AbstractParser
                     EXTEND157_tree = (Object) adaptor.create(EXTEND157);
                     adaptor.addChild(root_0, EXTEND157_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:614:16: ( FULL_ID | ID )
+                // io/protostuff/parser/ProtoParser.g:614:16: ( FULL_ID | ID )
                 int alt34 = 2;
                 switch (input.LA(1))
                 {
@@ -6378,7 +6378,7 @@ public class ProtoParser extends AbstractParser
                 switch (alt34)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:615:9: FULL_ID
+                    // io/protostuff/parser/ProtoParser.g:615:9: FULL_ID
                     {
                         FULL_ID158 = (Token) match(input, FULL_ID, FOLLOW_FULL_ID_in_extend_block2525);
                         if (state.failed)
@@ -6402,7 +6402,7 @@ public class ProtoParser extends AbstractParser
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:621:13: ID
+                    // io/protostuff/parser/ProtoParser.g:621:13: ID
                     {
                         ID159 = (Token) match(input, ID, FOLLOW_ID_in_extend_block2531);
                         if (state.failed)
@@ -6441,7 +6441,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY160_tree = (Object) adaptor.create(LEFTCURLY160);
                     adaptor.addChild(root_0, LEFTCURLY160_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:629:19: ( extend_body[proto, extension] )*
+                // io/protostuff/parser/ProtoParser.g:629:19: ( extend_body[proto, extension] )*
                 loop35: do
                 {
                     int alt35 = 2;
@@ -6461,7 +6461,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt35)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:629:20: extend_body[proto, extension]
+                        // io/protostuff/parser/ProtoParser.g:629:20: extend_body[proto, extension]
                         {
                             pushFollow(FOLLOW_extend_body_in_extend_block2550);
                             extend_body161 = extend_body(proto, extension);
@@ -6495,10 +6495,10 @@ public class ProtoParser extends AbstractParser
                         throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
 
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:633:11: ( ( SEMICOLON )? )
-                // com/dyuproject/protostuff/parser/ProtoParser.g:633:12: ( SEMICOLON )?
+                // io/protostuff/parser/ProtoParser.g:633:11: ( ( SEMICOLON )? )
+                // io/protostuff/parser/ProtoParser.g:633:12: ( SEMICOLON )?
                 {
-                    // com/dyuproject/protostuff/parser/ProtoParser.g:633:12: ( SEMICOLON )?
+                    // io/protostuff/parser/ProtoParser.g:633:12: ( SEMICOLON )?
                     int alt36 = 2;
                     switch (input.LA(1))
                     {
@@ -6512,7 +6512,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt36)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:633:12: SEMICOLON
+                        // io/protostuff/parser/ProtoParser.g:633:12: SEMICOLON
                         {
                             SEMICOLON163 = (Token) match(input, SEMICOLON, FOLLOW_SEMICOLON_in_extend_block2560);
                             if (state.failed)
@@ -6569,7 +6569,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "extend_body"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:636:1: extend_body[Proto proto, Extension extension] : (
+    // io/protostuff/parser/ProtoParser.g:636:1: extend_body[Proto proto, Extension extension] : (
     // message_field[proto, extension] | annotation_entry[proto] );
     public final ProtoParser.extend_body_return extend_body(Proto proto, Extension extension)
             throws RecognitionException
@@ -6585,7 +6585,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:637:5: ( message_field[proto, extension] |
+            // io/protostuff/parser/ProtoParser.g:637:5: ( message_field[proto, extension] |
             // annotation_entry[proto] )
             int alt37 = 2;
             switch (input.LA(1))
@@ -6617,7 +6617,7 @@ public class ProtoParser extends AbstractParser
             switch (alt37)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:637:9: message_field[proto, extension]
+                // io/protostuff/parser/ProtoParser.g:637:9: message_field[proto, extension]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -6633,7 +6633,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:638:9: annotation_entry[proto]
+                // io/protostuff/parser/ProtoParser.g:638:9: annotation_entry[proto]
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -6687,7 +6687,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "ignore_block"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:641:1: ignore_block : LEFTCURLY ( ignore_block_body )* RIGHTCURLY
+    // io/protostuff/parser/ProtoParser.g:641:1: ignore_block : LEFTCURLY ( ignore_block_body )* RIGHTCURLY
     // ;
     public final ProtoParser.ignore_block_return ignore_block() throws RecognitionException
     {
@@ -6705,8 +6705,8 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:642:5: ( LEFTCURLY ( ignore_block_body )* RIGHTCURLY )
-            // com/dyuproject/protostuff/parser/ProtoParser.g:642:9: LEFTCURLY ( ignore_block_body )* RIGHTCURLY
+            // io/protostuff/parser/ProtoParser.g:642:5: ( LEFTCURLY ( ignore_block_body )* RIGHTCURLY )
+            // io/protostuff/parser/ProtoParser.g:642:9: LEFTCURLY ( ignore_block_body )* RIGHTCURLY
             {
                 root_0 = (Object) adaptor.nil();
 
@@ -6718,7 +6718,7 @@ public class ProtoParser extends AbstractParser
                     LEFTCURLY166_tree = (Object) adaptor.create(LEFTCURLY166);
                     adaptor.addChild(root_0, LEFTCURLY166_tree);
                 }
-                // com/dyuproject/protostuff/parser/ProtoParser.g:642:19: ( ignore_block_body )*
+                // io/protostuff/parser/ProtoParser.g:642:19: ( ignore_block_body )*
                 loop38: do
                 {
                     int alt38 = 2;
@@ -6796,7 +6796,7 @@ public class ProtoParser extends AbstractParser
                     switch (alt38)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoParser.g:642:19: ignore_block_body
+                        // io/protostuff/parser/ProtoParser.g:642:19: ignore_block_body
                         {
                             pushFollow(FOLLOW_ignore_block_body_in_ignore_block2625);
                             ignore_block_body167 = ignore_block_body();
@@ -6863,7 +6863,7 @@ public class ProtoParser extends AbstractParser
     ;
 
     // $ANTLR start "ignore_block_body"
-    // com/dyuproject/protostuff/parser/ProtoParser.g:645:1: ignore_block_body : ( ( LEFTCURLY )=> ignore_block | ~
+    // io/protostuff/parser/ProtoParser.g:645:1: ignore_block_body : ( ( LEFTCURLY )=> ignore_block | ~
     // RIGHTCURLY );
     public final ProtoParser.ignore_block_body_return ignore_block_body() throws RecognitionException
     {
@@ -6879,7 +6879,7 @@ public class ProtoParser extends AbstractParser
 
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoParser.g:646:5: ( ( LEFTCURLY )=> ignore_block | ~ RIGHTCURLY )
+            // io/protostuff/parser/ProtoParser.g:646:5: ( ( LEFTCURLY )=> ignore_block | ~ RIGHTCURLY )
             int alt39 = 2;
             switch (input.LA(1))
             {
@@ -6989,7 +6989,7 @@ public class ProtoParser extends AbstractParser
             switch (alt39)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:646:9: ( LEFTCURLY )=> ignore_block
+                // io/protostuff/parser/ProtoParser.g:646:9: ( LEFTCURLY )=> ignore_block
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -7005,7 +7005,7 @@ public class ProtoParser extends AbstractParser
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoParser.g:647:9: ~ RIGHTCURLY
+                // io/protostuff/parser/ProtoParser.g:647:9: ~ RIGHTCURLY
                 {
                     root_0 = (Object) adaptor.nil();
 
@@ -7061,8 +7061,8 @@ public class ProtoParser extends AbstractParser
     // $ANTLR start synpred1_ProtoParser
     public final void synpred1_ProtoParser_fragment() throws RecognitionException
     {
-        // com/dyuproject/protostuff/parser/ProtoParser.g:646:9: ( LEFTCURLY )
-        // com/dyuproject/protostuff/parser/ProtoParser.g:646:10: LEFTCURLY
+        // io/protostuff/parser/ProtoParser.g:646:9: ( LEFTCURLY )
+        // io/protostuff/parser/ProtoParser.g:646:10: LEFTCURLY
         {
             match(input, LEFTCURLY, FOLLOW_LEFTCURLY_in_synpred1_ProtoParser2652);
             if (state.failed)

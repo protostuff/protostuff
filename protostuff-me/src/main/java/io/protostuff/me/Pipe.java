@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.IOException;
 
@@ -59,12 +59,12 @@ public abstract class Pipe
     /**
      * Schema for transferring data from a source ({@link Input}) to a different sink ({@link Output}).
      */
-    public static abstract class Schema implements com.dyuproject.protostuff.me.Schema
+    public static abstract class Schema implements io.protostuff.me.Schema
     {
 
-        public final com.dyuproject.protostuff.me.Schema wrappedSchema;
+        public final io.protostuff.me.Schema wrappedSchema;
 
-        public Schema(com.dyuproject.protostuff.me.Schema wrappedSchema)
+        public Schema(io.protostuff.me.Schema wrappedSchema)
         {
             this.wrappedSchema = wrappedSchema;
         }

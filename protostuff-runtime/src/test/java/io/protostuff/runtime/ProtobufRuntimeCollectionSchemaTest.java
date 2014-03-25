@@ -12,20 +12,20 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.ProtobufIOUtil;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.SerializableObjects;
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Pipe;
+import io.protostuff.ProtobufIOUtil;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.SerializableObjects;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via protobuf ser/deser.

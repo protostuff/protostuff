@@ -12,15 +12,15 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.WireFormat.FieldType;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.Input;
+import io.protostuff.Schema;
+import io.protostuff.Tag;
+import io.protostuff.WireFormat.FieldType;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field w/c represents an abstract class, interface or a base type with many possible subclasses.

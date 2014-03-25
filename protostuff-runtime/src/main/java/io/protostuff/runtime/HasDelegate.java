@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Wraps a delegate.

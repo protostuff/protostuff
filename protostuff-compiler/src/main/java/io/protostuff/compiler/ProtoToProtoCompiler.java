@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
-import com.dyuproject.protostuff.parser.Annotation;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
+import io.protostuff.parser.Annotation;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;

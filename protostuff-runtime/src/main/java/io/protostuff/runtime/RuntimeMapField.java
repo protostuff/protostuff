@@ -12,20 +12,20 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.util.Map;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.MapSchema.MapWrapper;
-import com.dyuproject.protostuff.MapSchema.MessageFactory;
-import com.dyuproject.protostuff.Tag;
-import com.dyuproject.protostuff.WireFormat.FieldType;
-import com.dyuproject.protostuff.runtime.MappedSchema.Field;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.MapSchema.MapWrapper;
+import io.protostuff.MapSchema.MessageFactory;
+import io.protostuff.Tag;
+import io.protostuff.WireFormat.FieldType;
+import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field for a {@link Map}. Allows null keys and values.

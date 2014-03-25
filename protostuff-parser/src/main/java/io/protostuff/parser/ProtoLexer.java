@@ -1,6 +1,6 @@
-// $ANTLR 3.2 Sep 23, 2009 14:05:07 com/dyuproject/protostuff/parser/ProtoLexer.g 2014-01-20 11:24:40
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 io/protostuff/parser/ProtoLexer.g 2014-01-20 11:24:40
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
 import org.antlr.runtime.*;
 
@@ -96,7 +96,7 @@ public class ProtoLexer extends AbstractLexer
 
     public String getGrammarFileName()
     {
-        return "com/dyuproject/protostuff/parser/ProtoLexer.g";
+        return "io/protostuff/parser/ProtoLexer.g";
     }
 
     // $ANTLR start "ASSIGN"
@@ -106,8 +106,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:35:5: ( '=' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:35:9: '='
+            // io/protostuff/parser/ProtoLexer.g:35:5: ( '=' )
+            // io/protostuff/parser/ProtoLexer.g:35:9: '='
             {
                 match('=');
 
@@ -130,8 +130,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:39:5: ( '@' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:39:9: '@'
+            // io/protostuff/parser/ProtoLexer.g:39:5: ( '@' )
+            // io/protostuff/parser/ProtoLexer.g:39:9: '@'
             {
                 match('@');
 
@@ -154,8 +154,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = LEFTCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:43:5: ( '{' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:43:9: '{'
+            // io/protostuff/parser/ProtoLexer.g:43:5: ( '{' )
+            // io/protostuff/parser/ProtoLexer.g:43:9: '{'
             {
                 match('{');
 
@@ -178,8 +178,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = RIGHTCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:47:5: ( '}' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:47:9: '}'
+            // io/protostuff/parser/ProtoLexer.g:47:5: ( '}' )
+            // io/protostuff/parser/ProtoLexer.g:47:9: '}'
             {
                 match('}');
 
@@ -202,8 +202,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = LEFTPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:51:5: ( '(' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:51:9: '('
+            // io/protostuff/parser/ProtoLexer.g:51:5: ( '(' )
+            // io/protostuff/parser/ProtoLexer.g:51:9: '('
             {
                 match('(');
 
@@ -226,8 +226,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = RIGHTPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:55:5: ( ')' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:55:9: ')'
+            // io/protostuff/parser/ProtoLexer.g:55:5: ( ')' )
+            // io/protostuff/parser/ProtoLexer.g:55:9: ')'
             {
                 match(')');
 
@@ -250,8 +250,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = LEFTSQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:59:5: ( '[' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:59:9: '['
+            // io/protostuff/parser/ProtoLexer.g:59:5: ( '[' )
+            // io/protostuff/parser/ProtoLexer.g:59:9: '['
             {
                 match('[');
 
@@ -274,8 +274,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = RIGHTSQUARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:63:5: ( ']' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:63:9: ']'
+            // io/protostuff/parser/ProtoLexer.g:63:5: ( ']' )
+            // io/protostuff/parser/ProtoLexer.g:63:9: ']'
             {
                 match(']');
 
@@ -298,8 +298,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:67:5: ( ';' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:67:9: ';'
+            // io/protostuff/parser/ProtoLexer.g:67:5: ( ';' )
+            // io/protostuff/parser/ProtoLexer.g:67:9: ';'
             {
                 match(';');
 
@@ -322,8 +322,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:71:5: ( ',' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:71:9: ','
+            // io/protostuff/parser/ProtoLexer.g:71:5: ( ',' )
+            // io/protostuff/parser/ProtoLexer.g:71:9: ','
             {
                 match(',');
 
@@ -346,8 +346,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:75:5: ( '+' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:75:9: '+'
+            // io/protostuff/parser/ProtoLexer.g:75:5: ( '+' )
+            // io/protostuff/parser/ProtoLexer.g:75:9: '+'
             {
                 match('+');
 
@@ -370,8 +370,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:79:5: ( '-' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:79:9: '-'
+            // io/protostuff/parser/ProtoLexer.g:79:5: ( '-' )
+            // io/protostuff/parser/ProtoLexer.g:79:9: '-'
             {
                 match('-');
 
@@ -394,8 +394,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = TO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:83:5: ( 'to' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:83:9: 'to'
+            // io/protostuff/parser/ProtoLexer.g:83:5: ( 'to' )
+            // io/protostuff/parser/ProtoLexer.g:83:9: 'to'
             {
                 match("to");
 
@@ -418,8 +418,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = TRUE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:87:5: ( 'true' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:87:9: 'true'
+            // io/protostuff/parser/ProtoLexer.g:87:5: ( 'true' )
+            // io/protostuff/parser/ProtoLexer.g:87:9: 'true'
             {
                 match("true");
 
@@ -442,8 +442,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = FALSE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:91:5: ( 'false' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:91:9: 'false'
+            // io/protostuff/parser/ProtoLexer.g:91:5: ( 'false' )
+            // io/protostuff/parser/ProtoLexer.g:91:9: 'false'
             {
                 match("false");
 
@@ -466,8 +466,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = PKG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:95:5: ( 'package' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:95:9: 'package'
+            // io/protostuff/parser/ProtoLexer.g:95:5: ( 'package' )
+            // io/protostuff/parser/ProtoLexer.g:95:9: 'package'
             {
                 match("package");
 
@@ -490,8 +490,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SYNTAX;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:99:5: ( 'syntax' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:99:9: 'syntax'
+            // io/protostuff/parser/ProtoLexer.g:99:5: ( 'syntax' )
+            // io/protostuff/parser/ProtoLexer.g:99:9: 'syntax'
             {
                 match("syntax");
 
@@ -514,8 +514,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = IMPORT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:103:5: ( 'import' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:103:9: 'import'
+            // io/protostuff/parser/ProtoLexer.g:103:5: ( 'import' )
+            // io/protostuff/parser/ProtoLexer.g:103:9: 'import'
             {
                 match("import");
 
@@ -538,8 +538,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = OPTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:107:5: ( 'option' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:107:9: 'option'
+            // io/protostuff/parser/ProtoLexer.g:107:5: ( 'option' )
+            // io/protostuff/parser/ProtoLexer.g:107:9: 'option'
             {
                 match("option");
 
@@ -562,8 +562,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = MESSAGE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:111:5: ( 'message' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:111:9: 'message'
+            // io/protostuff/parser/ProtoLexer.g:111:5: ( 'message' )
+            // io/protostuff/parser/ProtoLexer.g:111:9: 'message'
             {
                 match("message");
 
@@ -586,8 +586,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SERVICE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:115:5: ( 'service' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:115:9: 'service'
+            // io/protostuff/parser/ProtoLexer.g:115:5: ( 'service' )
+            // io/protostuff/parser/ProtoLexer.g:115:9: 'service'
             {
                 match("service");
 
@@ -610,8 +610,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = ENUM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:119:5: ( 'enum' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:119:9: 'enum'
+            // io/protostuff/parser/ProtoLexer.g:119:5: ( 'enum' )
+            // io/protostuff/parser/ProtoLexer.g:119:9: 'enum'
             {
                 match("enum");
 
@@ -634,8 +634,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = REQUIRED;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:123:5: ( 'required' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:123:9: 'required'
+            // io/protostuff/parser/ProtoLexer.g:123:5: ( 'required' )
+            // io/protostuff/parser/ProtoLexer.g:123:9: 'required'
             {
                 match("required");
 
@@ -658,8 +658,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = OPTIONAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:127:5: ( 'optional' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:127:9: 'optional'
+            // io/protostuff/parser/ProtoLexer.g:127:5: ( 'optional' )
+            // io/protostuff/parser/ProtoLexer.g:127:9: 'optional'
             {
                 match("optional");
 
@@ -682,8 +682,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = REPEATED;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:131:5: ( 'repeated' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:131:9: 'repeated'
+            // io/protostuff/parser/ProtoLexer.g:131:5: ( 'repeated' )
+            // io/protostuff/parser/ProtoLexer.g:131:9: 'repeated'
             {
                 match("repeated");
 
@@ -706,8 +706,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = EXTENSIONS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:135:5: ( 'extensions' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:135:9: 'extensions'
+            // io/protostuff/parser/ProtoLexer.g:135:5: ( 'extensions' )
+            // io/protostuff/parser/ProtoLexer.g:135:9: 'extensions'
             {
                 match("extensions");
 
@@ -730,8 +730,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = EXTEND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:139:5: ( 'extend' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:139:9: 'extend'
+            // io/protostuff/parser/ProtoLexer.g:139:5: ( 'extend' )
+            // io/protostuff/parser/ProtoLexer.g:139:9: 'extend'
             {
                 match("extend");
 
@@ -754,8 +754,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = GROUP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:143:5: ( 'group' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:143:9: 'group'
+            // io/protostuff/parser/ProtoLexer.g:143:5: ( 'group' )
+            // io/protostuff/parser/ProtoLexer.g:143:9: 'group'
             {
                 match("group");
 
@@ -778,8 +778,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = RPC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:147:5: ( 'rpc' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:147:9: 'rpc'
+            // io/protostuff/parser/ProtoLexer.g:147:5: ( 'rpc' )
+            // io/protostuff/parser/ProtoLexer.g:147:9: 'rpc'
             {
                 match("rpc");
 
@@ -802,8 +802,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = RETURNS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:151:5: ( 'returns' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:151:9: 'returns'
+            // io/protostuff/parser/ProtoLexer.g:151:5: ( 'returns' )
+            // io/protostuff/parser/ProtoLexer.g:151:9: 'returns'
             {
                 match("returns");
 
@@ -826,8 +826,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = INT32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:155:5: ( 'int32' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:155:9: 'int32'
+            // io/protostuff/parser/ProtoLexer.g:155:5: ( 'int32' )
+            // io/protostuff/parser/ProtoLexer.g:155:9: 'int32'
             {
                 match("int32");
 
@@ -850,8 +850,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = INT64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:159:5: ( 'int64' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:159:9: 'int64'
+            // io/protostuff/parser/ProtoLexer.g:159:5: ( 'int64' )
+            // io/protostuff/parser/ProtoLexer.g:159:9: 'int64'
             {
                 match("int64");
 
@@ -874,8 +874,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = UINT32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:163:5: ( 'uint32' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:163:9: 'uint32'
+            // io/protostuff/parser/ProtoLexer.g:163:5: ( 'uint32' )
+            // io/protostuff/parser/ProtoLexer.g:163:9: 'uint32'
             {
                 match("uint32");
 
@@ -898,8 +898,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = UINT64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:167:5: ( 'uint64' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:167:9: 'uint64'
+            // io/protostuff/parser/ProtoLexer.g:167:5: ( 'uint64' )
+            // io/protostuff/parser/ProtoLexer.g:167:9: 'uint64'
             {
                 match("uint64");
 
@@ -922,8 +922,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SINT32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:171:5: ( 'sint32' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:171:9: 'sint32'
+            // io/protostuff/parser/ProtoLexer.g:171:5: ( 'sint32' )
+            // io/protostuff/parser/ProtoLexer.g:171:9: 'sint32'
             {
                 match("sint32");
 
@@ -946,8 +946,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SINT64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:175:5: ( 'sint64' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:175:9: 'sint64'
+            // io/protostuff/parser/ProtoLexer.g:175:5: ( 'sint64' )
+            // io/protostuff/parser/ProtoLexer.g:175:9: 'sint64'
             {
                 match("sint64");
 
@@ -970,8 +970,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = FIXED32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:179:5: ( 'fixed32' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:179:9: 'fixed32'
+            // io/protostuff/parser/ProtoLexer.g:179:5: ( 'fixed32' )
+            // io/protostuff/parser/ProtoLexer.g:179:9: 'fixed32'
             {
                 match("fixed32");
 
@@ -994,8 +994,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = FIXED64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:183:5: ( 'fixed64' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:183:9: 'fixed64'
+            // io/protostuff/parser/ProtoLexer.g:183:5: ( 'fixed64' )
+            // io/protostuff/parser/ProtoLexer.g:183:9: 'fixed64'
             {
                 match("fixed64");
 
@@ -1018,8 +1018,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SFIXED32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:187:5: ( 'sfixed32' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:187:9: 'sfixed32'
+            // io/protostuff/parser/ProtoLexer.g:187:5: ( 'sfixed32' )
+            // io/protostuff/parser/ProtoLexer.g:187:9: 'sfixed32'
             {
                 match("sfixed32");
 
@@ -1042,8 +1042,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = SFIXED64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:191:5: ( 'sfixed64' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:191:9: 'sfixed64'
+            // io/protostuff/parser/ProtoLexer.g:191:5: ( 'sfixed64' )
+            // io/protostuff/parser/ProtoLexer.g:191:9: 'sfixed64'
             {
                 match("sfixed64");
 
@@ -1066,8 +1066,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = FLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:195:5: ( 'float' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:195:9: 'float'
+            // io/protostuff/parser/ProtoLexer.g:195:5: ( 'float' )
+            // io/protostuff/parser/ProtoLexer.g:195:9: 'float'
             {
                 match("float");
 
@@ -1090,8 +1090,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = DOUBLE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:199:5: ( 'double' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:199:9: 'double'
+            // io/protostuff/parser/ProtoLexer.g:199:5: ( 'double' )
+            // io/protostuff/parser/ProtoLexer.g:199:9: 'double'
             {
                 match("double");
 
@@ -1114,8 +1114,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = BOOL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:203:5: ( 'bool' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:203:9: 'bool'
+            // io/protostuff/parser/ProtoLexer.g:203:5: ( 'bool' )
+            // io/protostuff/parser/ProtoLexer.g:203:9: 'bool'
             {
                 match("bool");
 
@@ -1138,8 +1138,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:207:5: ( 'string' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:207:9: 'string'
+            // io/protostuff/parser/ProtoLexer.g:207:5: ( 'string' )
+            // io/protostuff/parser/ProtoLexer.g:207:9: 'string'
             {
                 match("string");
 
@@ -1162,8 +1162,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = BYTES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:211:5: ( 'bytes' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:211:9: 'bytes'
+            // io/protostuff/parser/ProtoLexer.g:211:5: ( 'bytes' )
+            // io/protostuff/parser/ProtoLexer.g:211:9: 'bytes'
             {
                 match("bytes");
 
@@ -1186,8 +1186,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = DEFAULT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:215:5: ( 'default' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:215:9: 'default'
+            // io/protostuff/parser/ProtoLexer.g:215:5: ( 'default' )
+            // io/protostuff/parser/ProtoLexer.g:215:9: 'default'
             {
                 match("default");
 
@@ -1210,8 +1210,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = MAX;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:219:5: ( 'max' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:219:9: 'max'
+            // io/protostuff/parser/ProtoLexer.g:219:5: ( 'max' )
+            // io/protostuff/parser/ProtoLexer.g:219:9: 'max'
             {
                 match("max");
 
@@ -1234,8 +1234,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = VOID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:223:5: ( 'void' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:223:9: 'void'
+            // io/protostuff/parser/ProtoLexer.g:223:5: ( 'void' )
+            // io/protostuff/parser/ProtoLexer.g:223:9: 'void'
             {
                 match("void");
 
@@ -1258,11 +1258,11 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = FULL_ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:227:5: ( ID ( '.' ID )+ )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:227:7: ID ( '.' ID )+
+            // io/protostuff/parser/ProtoLexer.g:227:5: ( ID ( '.' ID )+ )
+            // io/protostuff/parser/ProtoLexer.g:227:7: ID ( '.' ID )+
             {
                 mID();
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:227:10: ( '.' ID )+
+                // io/protostuff/parser/ProtoLexer.g:227:10: ( '.' ID )+
                 int cnt1 = 0;
                 loop1: do
                 {
@@ -1280,7 +1280,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt1)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:227:11: '.' ID
+                        // io/protostuff/parser/ProtoLexer.g:227:11: '.' ID
                         {
                             match('.');
                             mID();
@@ -1317,9 +1317,9 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:231:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' |
+            // io/protostuff/parser/ProtoLexer.g:231:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' |
             // 'A' .. 'Z' | '0' .. '9' | '_' )* )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:231:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A'
+            // io/protostuff/parser/ProtoLexer.g:231:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A'
             // .. 'Z' | '0' .. '9' | '_' )*
             {
                 if ((input.LA(1) >= 'A' && input.LA(1) <= 'Z') || input.LA(1) == '_'
@@ -1335,7 +1335,7 @@ public class ProtoLexer extends AbstractLexer
                     throw mse;
                 }
 
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:231:33: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+                // io/protostuff/parser/ProtoLexer.g:231:33: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
                 loop2: do
                 {
                     int alt2 = 2;
@@ -1414,7 +1414,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt2)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:
+                        // io/protostuff/parser/ProtoLexer.g:
                         {
                             if ((input.LA(1) >= '0' && input.LA(1) <= '9')
                                     || (input.LA(1) >= 'A' && input.LA(1) <= 'Z') || input.LA(1) == '_'
@@ -1457,8 +1457,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = EXP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:235:5: ( NUMINT ( 'e' | 'E' ) NUMINT )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:235:9: NUMINT ( 'e' | 'E' ) NUMINT
+            // io/protostuff/parser/ProtoLexer.g:235:5: ( NUMINT ( 'e' | 'E' ) NUMINT )
+            // io/protostuff/parser/ProtoLexer.g:235:9: NUMINT ( 'e' | 'E' ) NUMINT
             {
                 mNUMINT();
                 if (input.LA(1) == 'E' || input.LA(1) == 'e')
@@ -1494,23 +1494,23 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = NUMDOUBLE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:239:5: ( ( NUMFLOAT | NUMINT ) 'e' ( '0' .. '9' )+ )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:239:9: ( NUMFLOAT | NUMINT ) 'e' ( '0' .. '9' )+
+            // io/protostuff/parser/ProtoLexer.g:239:5: ( ( NUMFLOAT | NUMINT ) 'e' ( '0' .. '9' )+ )
+            // io/protostuff/parser/ProtoLexer.g:239:9: ( NUMFLOAT | NUMINT ) 'e' ( '0' .. '9' )+
             {
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:239:9: ( NUMFLOAT | NUMINT )
+                // io/protostuff/parser/ProtoLexer.g:239:9: ( NUMFLOAT | NUMINT )
                 int alt3 = 2;
                 alt3 = dfa3.predict(input);
                 switch (alt3)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:239:10: NUMFLOAT
+                    // io/protostuff/parser/ProtoLexer.g:239:10: NUMFLOAT
                     {
                         mNUMFLOAT();
 
                     }
                         break;
                     case 2:
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:239:19: NUMINT
+                    // io/protostuff/parser/ProtoLexer.g:239:19: NUMINT
                     {
                         mNUMINT();
 
@@ -1520,7 +1520,7 @@ public class ProtoLexer extends AbstractLexer
                 }
 
                 match('e');
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:240:13: ( '0' .. '9' )+
+                // io/protostuff/parser/ProtoLexer.g:240:13: ( '0' .. '9' )+
                 int cnt4 = 0;
                 loop4: do
                 {
@@ -1547,7 +1547,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt4)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:240:13: '0' .. '9'
+                        // io/protostuff/parser/ProtoLexer.g:240:13: '0' .. '9'
                         {
                             matchRange('0', '9');
 
@@ -1583,12 +1583,12 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = NUMFLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:244:5: ( NUMINT '.' ( '0' .. '9' )+ ( 'f' )? )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:244:9: NUMINT '.' ( '0' .. '9' )+ ( 'f' )?
+            // io/protostuff/parser/ProtoLexer.g:244:5: ( NUMINT '.' ( '0' .. '9' )+ ( 'f' )? )
+            // io/protostuff/parser/ProtoLexer.g:244:9: NUMINT '.' ( '0' .. '9' )+ ( 'f' )?
             {
                 mNUMINT();
                 match('.');
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:244:20: ( '0' .. '9' )+
+                // io/protostuff/parser/ProtoLexer.g:244:20: ( '0' .. '9' )+
                 int cnt5 = 0;
                 loop5: do
                 {
@@ -1615,7 +1615,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt5)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:244:20: '0' .. '9'
+                        // io/protostuff/parser/ProtoLexer.g:244:20: '0' .. '9'
                         {
                             matchRange('0', '9');
 
@@ -1632,7 +1632,7 @@ public class ProtoLexer extends AbstractLexer
                     cnt5++;
                 } while (true);
 
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:244:30: ( 'f' )?
+                // io/protostuff/parser/ProtoLexer.g:244:30: ( 'f' )?
                 int alt6 = 2;
                 switch (input.LA(1))
                 {
@@ -1646,7 +1646,7 @@ public class ProtoLexer extends AbstractLexer
                 switch (alt6)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:244:30: 'f'
+                    // io/protostuff/parser/ProtoLexer.g:244:30: 'f'
                     {
                         match('f');
 
@@ -1674,7 +1674,7 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = NUMINT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:248:5: ( '0' | ( MINUS )? '1' .. '9' ( '0' .. '9' )* )
+            // io/protostuff/parser/ProtoLexer.g:248:5: ( '0' | ( MINUS )? '1' .. '9' ( '0' .. '9' )* )
             int alt9 = 2;
             switch (input.LA(1))
             {
@@ -1707,16 +1707,16 @@ public class ProtoLexer extends AbstractLexer
             switch (alt9)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:248:9: '0'
+                // io/protostuff/parser/ProtoLexer.g:248:9: '0'
                 {
                     match('0');
 
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:248:15: ( MINUS )? '1' .. '9' ( '0' .. '9' )*
+                // io/protostuff/parser/ProtoLexer.g:248:15: ( MINUS )? '1' .. '9' ( '0' .. '9' )*
                 {
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:248:15: ( MINUS )?
+                    // io/protostuff/parser/ProtoLexer.g:248:15: ( MINUS )?
                     int alt7 = 2;
                     switch (input.LA(1))
                     {
@@ -1730,7 +1730,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt7)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:248:15: MINUS
+                        // io/protostuff/parser/ProtoLexer.g:248:15: MINUS
                         {
                             mMINUS();
 
@@ -1740,7 +1740,7 @@ public class ProtoLexer extends AbstractLexer
                     }
 
                     matchRange('1', '9');
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:248:31: ( '0' .. '9' )*
+                    // io/protostuff/parser/ProtoLexer.g:248:31: ( '0' .. '9' )*
                     loop8: do
                     {
                         int alt8 = 2;
@@ -1766,7 +1766,7 @@ public class ProtoLexer extends AbstractLexer
                         switch (alt8)
                         {
                             case 1:
-                            // com/dyuproject/protostuff/parser/ProtoLexer.g:248:31: '0' .. '9'
+                            // io/protostuff/parser/ProtoLexer.g:248:31: '0' .. '9'
                             {
                                 matchRange('0', '9');
 
@@ -1799,10 +1799,10 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = HEX;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:252:5: ( ( MINUS )? '0' ( 'x' | 'X' ) ( HEX_DIGIT )+ )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:252:9: ( MINUS )? '0' ( 'x' | 'X' ) ( HEX_DIGIT )+
+            // io/protostuff/parser/ProtoLexer.g:252:5: ( ( MINUS )? '0' ( 'x' | 'X' ) ( HEX_DIGIT )+ )
+            // io/protostuff/parser/ProtoLexer.g:252:9: ( MINUS )? '0' ( 'x' | 'X' ) ( HEX_DIGIT )+
             {
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:252:9: ( MINUS )?
+                // io/protostuff/parser/ProtoLexer.g:252:9: ( MINUS )?
                 int alt10 = 2;
                 switch (input.LA(1))
                 {
@@ -1816,7 +1816,7 @@ public class ProtoLexer extends AbstractLexer
                 switch (alt10)
                 {
                     case 1:
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:252:9: MINUS
+                    // io/protostuff/parser/ProtoLexer.g:252:9: MINUS
                     {
                         mMINUS();
 
@@ -1838,7 +1838,7 @@ public class ProtoLexer extends AbstractLexer
                     throw mse;
                 }
 
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:252:30: ( HEX_DIGIT )+
+                // io/protostuff/parser/ProtoLexer.g:252:30: ( HEX_DIGIT )+
                 int cnt11 = 0;
                 loop11: do
                 {
@@ -1877,7 +1877,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt11)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:252:30: HEX_DIGIT
+                        // io/protostuff/parser/ProtoLexer.g:252:30: HEX_DIGIT
                         {
                             mHEX_DIGIT();
 
@@ -1913,11 +1913,11 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = OCTAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:256:5: ( '0' ( '0' .. '7' )+ )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:256:9: '0' ( '0' .. '7' )+
+            // io/protostuff/parser/ProtoLexer.g:256:5: ( '0' ( '0' .. '7' )+ )
+            // io/protostuff/parser/ProtoLexer.g:256:9: '0' ( '0' .. '7' )+
             {
                 match('0');
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:256:13: ( '0' .. '7' )+
+                // io/protostuff/parser/ProtoLexer.g:256:13: ( '0' .. '7' )+
                 int cnt12 = 0;
                 loop12: do
                 {
@@ -1942,7 +1942,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt12)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:256:14: '0' .. '7'
+                        // io/protostuff/parser/ProtoLexer.g:256:14: '0' .. '7'
                         {
                             matchRange('0', '7');
 
@@ -1978,7 +1978,7 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:260:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' |
+            // io/protostuff/parser/ProtoLexer.g:260:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' |
             // '/*' ( options {greedy=false; } : . )* '*/' )
             int alt16 = 2;
             switch (input.LA(1))
@@ -2016,11 +2016,11 @@ public class ProtoLexer extends AbstractLexer
             switch (alt16)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:260:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+                // io/protostuff/parser/ProtoLexer.g:260:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
                 {
                     match("//");
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:260:14: (~ ( '\\n' | '\\r' ) )*
+                    // io/protostuff/parser/ProtoLexer.g:260:14: (~ ( '\\n' | '\\r' ) )*
                     loop13: do
                     {
                         int alt13 = 2;
@@ -2034,7 +2034,7 @@ public class ProtoLexer extends AbstractLexer
                         switch (alt13)
                         {
                             case 1:
-                            // com/dyuproject/protostuff/parser/ProtoLexer.g:260:14: ~ ( '\\n' | '\\r' )
+                            // io/protostuff/parser/ProtoLexer.g:260:14: ~ ( '\\n' | '\\r' )
                             {
                                 if ((input.LA(1) >= '\u0000' && input.LA(1) <= '\t')
                                         || (input.LA(1) >= '\u000B' && input.LA(1) <= '\f')
@@ -2058,7 +2058,7 @@ public class ProtoLexer extends AbstractLexer
                         }
                     } while (true);
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:260:28: ( '\\r' )?
+                    // io/protostuff/parser/ProtoLexer.g:260:28: ( '\\r' )?
                     int alt14 = 2;
                     switch (input.LA(1))
                     {
@@ -2072,7 +2072,7 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt14)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:260:28: '\\r'
+                        // io/protostuff/parser/ProtoLexer.g:260:28: '\\r'
                         {
                             match('\r');
 
@@ -2087,11 +2087,11 @@ public class ProtoLexer extends AbstractLexer
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:261:9: '/*' ( options {greedy=false; } : . )* '*/'
+                // io/protostuff/parser/ProtoLexer.g:261:9: '/*' ( options {greedy=false; } : . )* '*/'
                 {
                     match("/*");
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:261:14: ( options {greedy=false; } : . )*
+                    // io/protostuff/parser/ProtoLexer.g:261:14: ( options {greedy=false; } : . )*
                     loop15: do
                     {
                         int alt15 = 2;
@@ -2119,7 +2119,7 @@ public class ProtoLexer extends AbstractLexer
                         switch (alt15)
                         {
                             case 1:
-                            // com/dyuproject/protostuff/parser/ProtoLexer.g:261:42: .
+                            // io/protostuff/parser/ProtoLexer.g:261:42: .
                             {
                                 matchAny();
 
@@ -2156,8 +2156,8 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:264:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:264:9: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // io/protostuff/parser/ProtoLexer.g:264:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // io/protostuff/parser/ProtoLexer.g:264:9: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
                 if ((input.LA(1) >= '\t' && input.LA(1) <= '\n') || input.LA(1) == '\r' || input.LA(1) == ' ')
                 {
@@ -2192,11 +2192,11 @@ public class ProtoLexer extends AbstractLexer
         {
             int _type = STRING_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:272:5: ( '\"' ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:272:9: '\"' ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )* '\"'
+            // io/protostuff/parser/ProtoLexer.g:272:5: ( '\"' ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // io/protostuff/parser/ProtoLexer.g:272:9: '\"' ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )* '\"'
             {
                 match('\"');
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:272:13: ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )*
+                // io/protostuff/parser/ProtoLexer.g:272:13: ( ESC_SEQ | ~ ( '\\\\' | '\"' ) )*
                 loop17: do
                 {
                     int alt17 = 3;
@@ -2214,14 +2214,14 @@ public class ProtoLexer extends AbstractLexer
                     switch (alt17)
                     {
                         case 1:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:272:15: ESC_SEQ
+                        // io/protostuff/parser/ProtoLexer.g:272:15: ESC_SEQ
                         {
                             mESC_SEQ();
 
                         }
                             break;
                         case 2:
-                        // com/dyuproject/protostuff/parser/ProtoLexer.g:272:25: ~ ( '\\\\' | '\"' )
+                        // io/protostuff/parser/ProtoLexer.g:272:25: ~ ( '\\\\' | '\"' )
                         {
                             if ((input.LA(1) >= '\u0000' && input.LA(1) <= '!')
                                     || (input.LA(1) >= '#' && input.LA(1) <= '[')
@@ -2264,8 +2264,8 @@ public class ProtoLexer extends AbstractLexer
     {
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:276:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:276:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // io/protostuff/parser/ProtoLexer.g:276:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // io/protostuff/parser/ProtoLexer.g:276:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
                 if ((input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(1) >= 'A' && input.LA(1) <= 'F')
                         || (input.LA(1) >= 'a' && input.LA(1) <= 'f'))
@@ -2295,7 +2295,7 @@ public class ProtoLexer extends AbstractLexer
     {
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:280:5: ( '\\\\' ( 'a' | 'v' | 'b' | 't' | 'n' | 'f' | 'r' |
+            // io/protostuff/parser/ProtoLexer.g:280:5: ( '\\\\' ( 'a' | 'v' | 'b' | 't' | 'n' | 'f' | 'r' |
             // '\\\"' | '\\'' | '\\\\' ) | '\\\\' ( 'x' | 'X' ) HEX_DIGIT HEX_DIGIT | UNICODE_ESC | OCTAL_ESC )
             int alt18 = 4;
             switch (input.LA(1))
@@ -2360,7 +2360,7 @@ public class ProtoLexer extends AbstractLexer
             switch (alt18)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:280:9: '\\\\' ( 'a' | 'v' | 'b' | 't' | 'n' | 'f' | 'r'
+                // io/protostuff/parser/ProtoLexer.g:280:9: '\\\\' ( 'a' | 'v' | 'b' | 't' | 'n' | 'f' | 'r'
                 // | '\\\"' | '\\'' | '\\\\' )
                 {
                     match('\\');
@@ -2381,7 +2381,7 @@ public class ProtoLexer extends AbstractLexer
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:281:9: '\\\\' ( 'x' | 'X' ) HEX_DIGIT HEX_DIGIT
+                // io/protostuff/parser/ProtoLexer.g:281:9: '\\\\' ( 'x' | 'X' ) HEX_DIGIT HEX_DIGIT
                 {
                     match('\\');
                     if (input.LA(1) == 'X' || input.LA(1) == 'x')
@@ -2402,14 +2402,14 @@ public class ProtoLexer extends AbstractLexer
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:282:9: UNICODE_ESC
+                // io/protostuff/parser/ProtoLexer.g:282:9: UNICODE_ESC
                 {
                     mUNICODE_ESC();
 
                 }
                     break;
                 case 4:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:283:9: OCTAL_ESC
+                // io/protostuff/parser/ProtoLexer.g:283:9: OCTAL_ESC
                 {
                     mOCTAL_ESC();
 
@@ -2430,7 +2430,7 @@ public class ProtoLexer extends AbstractLexer
     {
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:287:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7'
+            // io/protostuff/parser/ProtoLexer.g:287:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7'
             // ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt19 = 3;
             switch (input.LA(1))
@@ -2525,26 +2525,26 @@ public class ProtoLexer extends AbstractLexer
             switch (alt19)
             {
                 case 1:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:287:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' ..
+                // io/protostuff/parser/ProtoLexer.g:287:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' ..
                 // '7' )
                 {
                     match('\\');
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:14: ( '0' .. '3' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:15: '0' .. '3'
+                    // io/protostuff/parser/ProtoLexer.g:287:14: ( '0' .. '3' )
+                    // io/protostuff/parser/ProtoLexer.g:287:15: '0' .. '3'
                     {
                         matchRange('0', '3');
 
                     }
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:25: ( '0' .. '7' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:26: '0' .. '7'
+                    // io/protostuff/parser/ProtoLexer.g:287:25: ( '0' .. '7' )
+                    // io/protostuff/parser/ProtoLexer.g:287:26: '0' .. '7'
                     {
                         matchRange('0', '7');
 
                     }
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:36: ( '0' .. '7' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:287:37: '0' .. '7'
+                    // io/protostuff/parser/ProtoLexer.g:287:36: ( '0' .. '7' )
+                    // io/protostuff/parser/ProtoLexer.g:287:37: '0' .. '7'
                     {
                         matchRange('0', '7');
 
@@ -2553,18 +2553,18 @@ public class ProtoLexer extends AbstractLexer
                 }
                     break;
                 case 2:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:288:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                // io/protostuff/parser/ProtoLexer.g:288:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                 {
                     match('\\');
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:288:14: ( '0' .. '7' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:288:15: '0' .. '7'
+                    // io/protostuff/parser/ProtoLexer.g:288:14: ( '0' .. '7' )
+                    // io/protostuff/parser/ProtoLexer.g:288:15: '0' .. '7'
                     {
                         matchRange('0', '7');
 
                     }
 
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:288:25: ( '0' .. '7' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:288:26: '0' .. '7'
+                    // io/protostuff/parser/ProtoLexer.g:288:25: ( '0' .. '7' )
+                    // io/protostuff/parser/ProtoLexer.g:288:26: '0' .. '7'
                     {
                         matchRange('0', '7');
 
@@ -2573,11 +2573,11 @@ public class ProtoLexer extends AbstractLexer
                 }
                     break;
                 case 3:
-                // com/dyuproject/protostuff/parser/ProtoLexer.g:289:9: '\\\\' ( '0' .. '7' )
+                // io/protostuff/parser/ProtoLexer.g:289:9: '\\\\' ( '0' .. '7' )
                 {
                     match('\\');
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:289:14: ( '0' .. '7' )
-                    // com/dyuproject/protostuff/parser/ProtoLexer.g:289:15: '0' .. '7'
+                    // io/protostuff/parser/ProtoLexer.g:289:14: ( '0' .. '7' )
+                    // io/protostuff/parser/ProtoLexer.g:289:15: '0' .. '7'
                     {
                         matchRange('0', '7');
 
@@ -2600,9 +2600,9 @@ public class ProtoLexer extends AbstractLexer
     {
         try
         {
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:293:5: ( '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+            // io/protostuff/parser/ProtoLexer.g:293:5: ( '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
             // )
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:293:9: '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+            // io/protostuff/parser/ProtoLexer.g:293:9: '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
             {
                 match('\\');
                 match('u');
@@ -2623,7 +2623,7 @@ public class ProtoLexer extends AbstractLexer
 
     public void mTokens() throws RecognitionException
     {
-        // com/dyuproject/protostuff/parser/ProtoLexer.g:1:8: ( ASSIGN | AT | LEFTCURLY | RIGHTCURLY | LEFTPAREN |
+        // io/protostuff/parser/ProtoLexer.g:1:8: ( ASSIGN | AT | LEFTCURLY | RIGHTCURLY | LEFTPAREN |
         // RIGHTPAREN | LEFTSQUARE | RIGHTSQUARE | SEMICOLON | COMMA | PLUS | MINUS | TO | TRUE | FALSE | PKG | SYNTAX |
         // IMPORT | OPTION | MESSAGE | SERVICE | ENUM | REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP |
         // RPC | RETURNS | INT32 | INT64 | UINT32 | UINT64 | SINT32 | SINT64 | FIXED32 | FIXED64 | SFIXED32 | SFIXED64 |
@@ -2634,413 +2634,413 @@ public class ProtoLexer extends AbstractLexer
         switch (alt20)
         {
             case 1:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:10: ASSIGN
+            // io/protostuff/parser/ProtoLexer.g:1:10: ASSIGN
             {
                 mASSIGN();
 
             }
                 break;
             case 2:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:17: AT
+            // io/protostuff/parser/ProtoLexer.g:1:17: AT
             {
                 mAT();
 
             }
                 break;
             case 3:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:20: LEFTCURLY
+            // io/protostuff/parser/ProtoLexer.g:1:20: LEFTCURLY
             {
                 mLEFTCURLY();
 
             }
                 break;
             case 4:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:30: RIGHTCURLY
+            // io/protostuff/parser/ProtoLexer.g:1:30: RIGHTCURLY
             {
                 mRIGHTCURLY();
 
             }
                 break;
             case 5:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:41: LEFTPAREN
+            // io/protostuff/parser/ProtoLexer.g:1:41: LEFTPAREN
             {
                 mLEFTPAREN();
 
             }
                 break;
             case 6:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:51: RIGHTPAREN
+            // io/protostuff/parser/ProtoLexer.g:1:51: RIGHTPAREN
             {
                 mRIGHTPAREN();
 
             }
                 break;
             case 7:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:62: LEFTSQUARE
+            // io/protostuff/parser/ProtoLexer.g:1:62: LEFTSQUARE
             {
                 mLEFTSQUARE();
 
             }
                 break;
             case 8:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:73: RIGHTSQUARE
+            // io/protostuff/parser/ProtoLexer.g:1:73: RIGHTSQUARE
             {
                 mRIGHTSQUARE();
 
             }
                 break;
             case 9:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:85: SEMICOLON
+            // io/protostuff/parser/ProtoLexer.g:1:85: SEMICOLON
             {
                 mSEMICOLON();
 
             }
                 break;
             case 10:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:95: COMMA
+            // io/protostuff/parser/ProtoLexer.g:1:95: COMMA
             {
                 mCOMMA();
 
             }
                 break;
             case 11:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:101: PLUS
+            // io/protostuff/parser/ProtoLexer.g:1:101: PLUS
             {
                 mPLUS();
 
             }
                 break;
             case 12:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:106: MINUS
+            // io/protostuff/parser/ProtoLexer.g:1:106: MINUS
             {
                 mMINUS();
 
             }
                 break;
             case 13:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:112: TO
+            // io/protostuff/parser/ProtoLexer.g:1:112: TO
             {
                 mTO();
 
             }
                 break;
             case 14:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:115: TRUE
+            // io/protostuff/parser/ProtoLexer.g:1:115: TRUE
             {
                 mTRUE();
 
             }
                 break;
             case 15:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:120: FALSE
+            // io/protostuff/parser/ProtoLexer.g:1:120: FALSE
             {
                 mFALSE();
 
             }
                 break;
             case 16:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:126: PKG
+            // io/protostuff/parser/ProtoLexer.g:1:126: PKG
             {
                 mPKG();
 
             }
                 break;
             case 17:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:130: SYNTAX
+            // io/protostuff/parser/ProtoLexer.g:1:130: SYNTAX
             {
                 mSYNTAX();
 
             }
                 break;
             case 18:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:137: IMPORT
+            // io/protostuff/parser/ProtoLexer.g:1:137: IMPORT
             {
                 mIMPORT();
 
             }
                 break;
             case 19:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:144: OPTION
+            // io/protostuff/parser/ProtoLexer.g:1:144: OPTION
             {
                 mOPTION();
 
             }
                 break;
             case 20:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:151: MESSAGE
+            // io/protostuff/parser/ProtoLexer.g:1:151: MESSAGE
             {
                 mMESSAGE();
 
             }
                 break;
             case 21:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:159: SERVICE
+            // io/protostuff/parser/ProtoLexer.g:1:159: SERVICE
             {
                 mSERVICE();
 
             }
                 break;
             case 22:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:167: ENUM
+            // io/protostuff/parser/ProtoLexer.g:1:167: ENUM
             {
                 mENUM();
 
             }
                 break;
             case 23:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:172: REQUIRED
+            // io/protostuff/parser/ProtoLexer.g:1:172: REQUIRED
             {
                 mREQUIRED();
 
             }
                 break;
             case 24:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:181: OPTIONAL
+            // io/protostuff/parser/ProtoLexer.g:1:181: OPTIONAL
             {
                 mOPTIONAL();
 
             }
                 break;
             case 25:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:190: REPEATED
+            // io/protostuff/parser/ProtoLexer.g:1:190: REPEATED
             {
                 mREPEATED();
 
             }
                 break;
             case 26:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:199: EXTENSIONS
+            // io/protostuff/parser/ProtoLexer.g:1:199: EXTENSIONS
             {
                 mEXTENSIONS();
 
             }
                 break;
             case 27:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:210: EXTEND
+            // io/protostuff/parser/ProtoLexer.g:1:210: EXTEND
             {
                 mEXTEND();
 
             }
                 break;
             case 28:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:217: GROUP
+            // io/protostuff/parser/ProtoLexer.g:1:217: GROUP
             {
                 mGROUP();
 
             }
                 break;
             case 29:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:223: RPC
+            // io/protostuff/parser/ProtoLexer.g:1:223: RPC
             {
                 mRPC();
 
             }
                 break;
             case 30:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:227: RETURNS
+            // io/protostuff/parser/ProtoLexer.g:1:227: RETURNS
             {
                 mRETURNS();
 
             }
                 break;
             case 31:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:235: INT32
+            // io/protostuff/parser/ProtoLexer.g:1:235: INT32
             {
                 mINT32();
 
             }
                 break;
             case 32:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:241: INT64
+            // io/protostuff/parser/ProtoLexer.g:1:241: INT64
             {
                 mINT64();
 
             }
                 break;
             case 33:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:247: UINT32
+            // io/protostuff/parser/ProtoLexer.g:1:247: UINT32
             {
                 mUINT32();
 
             }
                 break;
             case 34:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:254: UINT64
+            // io/protostuff/parser/ProtoLexer.g:1:254: UINT64
             {
                 mUINT64();
 
             }
                 break;
             case 35:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:261: SINT32
+            // io/protostuff/parser/ProtoLexer.g:1:261: SINT32
             {
                 mSINT32();
 
             }
                 break;
             case 36:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:268: SINT64
+            // io/protostuff/parser/ProtoLexer.g:1:268: SINT64
             {
                 mSINT64();
 
             }
                 break;
             case 37:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:275: FIXED32
+            // io/protostuff/parser/ProtoLexer.g:1:275: FIXED32
             {
                 mFIXED32();
 
             }
                 break;
             case 38:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:283: FIXED64
+            // io/protostuff/parser/ProtoLexer.g:1:283: FIXED64
             {
                 mFIXED64();
 
             }
                 break;
             case 39:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:291: SFIXED32
+            // io/protostuff/parser/ProtoLexer.g:1:291: SFIXED32
             {
                 mSFIXED32();
 
             }
                 break;
             case 40:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:300: SFIXED64
+            // io/protostuff/parser/ProtoLexer.g:1:300: SFIXED64
             {
                 mSFIXED64();
 
             }
                 break;
             case 41:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:309: FLOAT
+            // io/protostuff/parser/ProtoLexer.g:1:309: FLOAT
             {
                 mFLOAT();
 
             }
                 break;
             case 42:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:315: DOUBLE
+            // io/protostuff/parser/ProtoLexer.g:1:315: DOUBLE
             {
                 mDOUBLE();
 
             }
                 break;
             case 43:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:322: BOOL
+            // io/protostuff/parser/ProtoLexer.g:1:322: BOOL
             {
                 mBOOL();
 
             }
                 break;
             case 44:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:327: STRING
+            // io/protostuff/parser/ProtoLexer.g:1:327: STRING
             {
                 mSTRING();
 
             }
                 break;
             case 45:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:334: BYTES
+            // io/protostuff/parser/ProtoLexer.g:1:334: BYTES
             {
                 mBYTES();
 
             }
                 break;
             case 46:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:340: DEFAULT
+            // io/protostuff/parser/ProtoLexer.g:1:340: DEFAULT
             {
                 mDEFAULT();
 
             }
                 break;
             case 47:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:348: MAX
+            // io/protostuff/parser/ProtoLexer.g:1:348: MAX
             {
                 mMAX();
 
             }
                 break;
             case 48:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:352: VOID
+            // io/protostuff/parser/ProtoLexer.g:1:352: VOID
             {
                 mVOID();
 
             }
                 break;
             case 49:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:357: FULL_ID
+            // io/protostuff/parser/ProtoLexer.g:1:357: FULL_ID
             {
                 mFULL_ID();
 
             }
                 break;
             case 50:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:365: ID
+            // io/protostuff/parser/ProtoLexer.g:1:365: ID
             {
                 mID();
 
             }
                 break;
             case 51:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:368: EXP
+            // io/protostuff/parser/ProtoLexer.g:1:368: EXP
             {
                 mEXP();
 
             }
                 break;
             case 52:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:372: NUMDOUBLE
+            // io/protostuff/parser/ProtoLexer.g:1:372: NUMDOUBLE
             {
                 mNUMDOUBLE();
 
             }
                 break;
             case 53:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:382: NUMFLOAT
+            // io/protostuff/parser/ProtoLexer.g:1:382: NUMFLOAT
             {
                 mNUMFLOAT();
 
             }
                 break;
             case 54:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:391: NUMINT
+            // io/protostuff/parser/ProtoLexer.g:1:391: NUMINT
             {
                 mNUMINT();
 
             }
                 break;
             case 55:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:398: HEX
+            // io/protostuff/parser/ProtoLexer.g:1:398: HEX
             {
                 mHEX();
 
             }
                 break;
             case 56:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:402: OCTAL
+            // io/protostuff/parser/ProtoLexer.g:1:402: OCTAL
             {
                 mOCTAL();
 
             }
                 break;
             case 57:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:408: COMMENT
+            // io/protostuff/parser/ProtoLexer.g:1:408: COMMENT
             {
                 mCOMMENT();
 
             }
                 break;
             case 58:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:416: WS
+            // io/protostuff/parser/ProtoLexer.g:1:416: WS
             {
                 mWS();
 
             }
                 break;
             case 59:
-            // com/dyuproject/protostuff/parser/ProtoLexer.g:1:419: STRING_LITERAL
+            // io/protostuff/parser/ProtoLexer.g:1:419: STRING_LITERAL
             {
                 mSTRING_LITERAL();
 

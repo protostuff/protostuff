@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import junit.framework.Assert;
 
-import com.dyuproject.protostuff.me.Foo.EnumSample;
+import io.protostuff.me.Foo.EnumSample;
 
 /**
  * The objects to be tested.

@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,11 +26,11 @@ import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import com.dyuproject.protostuff.parser.DefaultProtoLoader;
-import com.dyuproject.protostuff.parser.EnumGroup;
-import com.dyuproject.protostuff.parser.Message;
-import com.dyuproject.protostuff.parser.Proto;
-import com.dyuproject.protostuff.parser.ProtoUtil;
+import io.protostuff.parser.DefaultProtoLoader;
+import io.protostuff.parser.EnumGroup;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
+import io.protostuff.parser.ProtoUtil;
 
 /**
  * A plugin proto compiler whose output relies on the 'output' param configured in {@link ProtoModule}. The output param

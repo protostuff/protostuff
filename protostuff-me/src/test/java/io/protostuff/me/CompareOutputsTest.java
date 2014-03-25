@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import com.dyuproject.protostuff.me.Foo.EnumSample;
+import io.protostuff.me.Foo.EnumSample;
 
 /**
  * Benchmark to compare the serialization speed of 3 types. CodedOutput, BufferedOutput and DeferredOutput.

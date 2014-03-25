@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for UTF-8 Encoding

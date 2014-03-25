@@ -26,10 +26,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.Tag;
+import io.protostuff.AbstractTest;
+import io.protostuff.Tag;
 
 /**
  * Test for runtime schemas to handle annotation-based field mapping.

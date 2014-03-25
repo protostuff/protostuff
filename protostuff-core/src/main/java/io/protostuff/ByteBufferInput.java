@@ -12,25 +12,25 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import com.dyuproject.protostuff.StringSerializer.STRING;
+import io.protostuff.StringSerializer.STRING;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_BITS;
-import static com.dyuproject.protostuff.WireFormat.TAG_TYPE_MASK;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_END_GROUP;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_START_GROUP;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
-import static com.dyuproject.protostuff.WireFormat.getTagFieldNumber;
-import static com.dyuproject.protostuff.WireFormat.getTagWireType;
-import static com.dyuproject.protostuff.WireFormat.makeTag;
+import static io.protostuff.WireFormat.TAG_TYPE_BITS;
+import static io.protostuff.WireFormat.TAG_TYPE_MASK;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED32;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED64;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static io.protostuff.WireFormat.WIRETYPE_START_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
+import static io.protostuff.WireFormat.WIRETYPE_VARINT;
+import static io.protostuff.WireFormat.getTagFieldNumber;
+import static io.protostuff.WireFormat.getTagWireType;
+import static io.protostuff.WireFormat.makeTag;
 
 /**
  * Reads and decodes protocol buffer message fields from an internal byte array buffer. This object is re-usable via

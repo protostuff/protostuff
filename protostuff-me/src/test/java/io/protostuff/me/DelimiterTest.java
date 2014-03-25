@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.me;
+package io.protostuff.me;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.me.Foo.EnumSample;
+import io.protostuff.me.Foo.EnumSample;
 
 /**
  * Test writing/reading to/from streams using writeDelimitedTo, mergeDelimitedFrom, optWriteDelimitedTo and

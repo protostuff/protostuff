@@ -12,12 +12,12 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import com.dyuproject.protostuff.ProtostuffPipeTest;
-import com.dyuproject.protostuff.runtime.CollectionTest.Employee;
-import com.dyuproject.protostuff.runtime.CollectionTest.Task;
-import com.dyuproject.protostuff.runtime.MathObjectsTest.Payment;
+import io.protostuff.ProtostuffPipeTest;
+import io.protostuff.runtime.CollectionTest.Employee;
+import io.protostuff.runtime.CollectionTest.Task;
+import io.protostuff.runtime.MathObjectsTest.Payment;
 
 /**
  * Test case for pipes generated at runtime.

@@ -26,12 +26,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //================================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.util.Collection;
 import java.util.Map;
 
-import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Polymorphic types.

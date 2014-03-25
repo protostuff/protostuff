@@ -16,22 +16,22 @@ import java.util.List;
 
 
 <if(message.bytesFieldPresent)>
-import com.dyuproject.protostuff.ByteString;
+import io.protostuff.ByteString;
 <else>
 <if(message.bytesOrStringDefaultValuePresent)>
-import com.dyuproject.protostuff.ByteString;
+import io.protostuff.ByteString;
 <endif>
 <endif>
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
+import io.protostuff.Input;
+import io.protostuff.Output;
 <if(options.generate_pipe_schema)>
-import com.dyuproject.protostuff.Pipe;
+import io.protostuff.Pipe;
 <endif>
 
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.Schema;
 <if(message.requiredFieldPresent)>
-import com.dyuproject.protostuff.UninitializedMessageException;
+import io.protostuff.UninitializedMessageException;
 <endif>
 
 <message.proto.messages:message_header_import(message=it, module=module, options=options)>

@@ -42,7 +42,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
 /**
  * Thrown when a protocol message being parsed is invalid in some way, e.g. it contains a malformed varint or a negative

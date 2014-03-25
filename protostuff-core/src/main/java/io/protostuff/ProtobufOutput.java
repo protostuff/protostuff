@@ -12,14 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.StringSerializer.writeUTF8VarDelimited;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED32;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_FIXED64;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static com.dyuproject.protostuff.WireFormat.WIRETYPE_VARINT;
-import static com.dyuproject.protostuff.WireFormat.makeTag;
+import static io.protostuff.StringSerializer.writeUTF8VarDelimited;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED32;
+import static io.protostuff.WireFormat.WIRETYPE_FIXED64;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static io.protostuff.WireFormat.WIRETYPE_VARINT;
+import static io.protostuff.WireFormat.makeTag;
 
 import java.io.DataOutput;
 import java.io.IOException;

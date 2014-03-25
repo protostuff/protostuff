@@ -60,9 +60,9 @@ public static final class <message.name>
 >>
 
 message_output(message, options) ::= <<
-public static class MessageSchema implements com.dyuproject.protostuff.Schema\<<message:message_fullname(message=it, options=options)>\>
+public static class MessageSchema implements io.protostuff.Schema\<<message:message_fullname(message=it, options=options)>\>
 {
-    public void writeTo(com.dyuproject.protostuff.Output output, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException
+    public void writeTo(io.protostuff.Output output, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException
     {
         <message.fields:field_write_output(field=it, options=options); separator="\n">
     }
@@ -84,15 +84,15 @@ public static class MessageSchema implements com.dyuproject.protostuff.Schema\<<
         return <message:message_fullname(message=it, options=options)>.class.getName();
     }
     //unused
-    public void mergeFrom(com.dyuproject.protostuff.Input input, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException {}
+    public void mergeFrom(io.protostuff.Input input, <message:message_fullname(message=it, options=options)> message) throws java.io.IOException {}
     public <message:message_fullname(message=it, options=options)> newMessage() { return null; }
 }
 >>
 
 builder_input(message, options) ::= <<
-public static class BuilderSchema implements com.dyuproject.protostuff.Schema\<<message:message_fullname(message=it, options=options)>.Builder\>
+public static class BuilderSchema implements io.protostuff.Schema\<<message:message_fullname(message=it, options=options)>.Builder\>
 {
-    public void mergeFrom(com.dyuproject.protostuff.Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException
+    public void mergeFrom(io.protostuff.Input input, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException
     {
         for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
         {
@@ -128,7 +128,7 @@ public static class BuilderSchema implements com.dyuproject.protostuff.Schema\<<
         return <message:message_fullname(message=it, options=options)>.class.getName();
     }
     //unused
-    public void writeTo(com.dyuproject.protostuff.Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException {}
+    public void writeTo(io.protostuff.Output output, <message:message_fullname(message=it, options=options)>.Builder builder) throws java.io.IOException {}
 }
 >>
 

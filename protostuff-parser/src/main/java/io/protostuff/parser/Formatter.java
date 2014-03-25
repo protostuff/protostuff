@@ -12,11 +12,11 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.parser;
+package io.protostuff.parser;
 
-import static com.dyuproject.protostuff.parser.ProtoUtil.toCamelCase;
-import static com.dyuproject.protostuff.parser.ProtoUtil.toPascalCase;
-import static com.dyuproject.protostuff.parser.ProtoUtil.toUnderscoreCase;
+import static io.protostuff.parser.ProtoUtil.toCamelCase;
+import static io.protostuff.parser.ProtoUtil.toPascalCase;
+import static io.protostuff.parser.ProtoUtil.toUnderscoreCase;
 
 import java.util.Map;
 

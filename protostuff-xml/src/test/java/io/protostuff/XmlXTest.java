@@ -12,22 +12,22 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff;
+package io.protostuff;
 
-import static com.dyuproject.protostuff.SerializableObjects.bar;
-import static com.dyuproject.protostuff.SerializableObjects.baz;
-import static com.dyuproject.protostuff.SerializableObjects.foo;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBar;
-import static com.dyuproject.protostuff.SerializableObjects.negativeBaz;
+import static io.protostuff.SerializableObjects.bar;
+import static io.protostuff.SerializableObjects.baz;
+import static io.protostuff.SerializableObjects.foo;
+import static io.protostuff.SerializableObjects.negativeBar;
+import static io.protostuff.SerializableObjects.negativeBaz;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import com.dyuproject.protostuff.Bar;
-import com.dyuproject.protostuff.Baz;
-import com.dyuproject.protostuff.Foo;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.XmlXIOUtil;
+import io.protostuff.Bar;
+import io.protostuff.Baz;
+import io.protostuff.Foo;
+import io.protostuff.Schema;
+import io.protostuff.XmlXIOUtil;
 
 /**
  * Tests for XmlXOutput.
@@ -35,7 +35,7 @@ import com.dyuproject.protostuff.XmlXIOUtil;
  * @author David Yu
  * @created Aug 30, 2012
  */
-public class XmlXTest extends com.dyuproject.protostuff.AbstractTest
+public class XmlXTest extends io.protostuff.AbstractTest
 {
 
     public void testFoo() throws Exception

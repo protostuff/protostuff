@@ -1,4 +1,4 @@
-package com.dyuproject.protostuff.compiler;
+package io.protostuff.compiler;
 
 import junit.framework.TestCase;
 import org.antlr.stringtemplate.StringTemplate;

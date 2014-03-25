@@ -12,9 +12,9 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
-import static com.dyuproject.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
+import static io.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -22,12 +22,12 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 
-import com.dyuproject.protostuff.CollectionSchema;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.MapSchema;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.runtime.PolymorphicSchema.Handler;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Determines how enums are serialized/deserialized. Default is BY_NUMBER. To enable BY_NAME, set the property

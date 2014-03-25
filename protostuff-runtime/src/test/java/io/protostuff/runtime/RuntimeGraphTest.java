@@ -12,15 +12,15 @@
 //limitations under the License.
 //========================================================================
 
-package com.dyuproject.protostuff.runtime;
+package io.protostuff.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dyuproject.protostuff.AbstractTest;
-import com.dyuproject.protostuff.GraphTest;
-import com.dyuproject.protostuff.Schema;
+import io.protostuff.AbstractTest;
+import io.protostuff.GraphTest;
+import io.protostuff.Schema;
 
 /**
  * Test ser/deser of graph objects (references and cyclic dependencies) with runtime schemas.
