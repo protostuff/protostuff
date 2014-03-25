@@ -17,6 +17,12 @@
       <email>david.yu.ftw@gmail.com</email>
       <url>http://davidyu.myopenid.com</url>
     </developer>
+      <developer>
+          <id>posix4e</id>
+          <name>Alex Newman</name>
+          <email>alex@ohmdata.com</email>
+          <url>http://www.ohmdata.com</url>
+      </developer>
   </developers>
   <scm>
     <url>https://github.com/protostuff/protostuff</url>
