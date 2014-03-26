@@ -17,9 +17,9 @@ Background:
 - As we will need multiple .jar files from the project,
   there may be (at least I had) issues with exporting the same
   packagename from multiple jar files.
-  (most of the protostuff-* jars have packages in com.dyuproject.protostuff)
+  (most of the protostuff-* jars have packages in io.protostuff)
 - to avoid this, all class files should reside in a single .jar
-  or OSGI bundle which exports com.dyuproject.protostuff
+  or OSGI bundle which exports io.protostuff
 - to achieve this, we are using the maven assembly plugin.
 - the assembly plugin simply packs all the projects dependencies
   into a single .jar file.

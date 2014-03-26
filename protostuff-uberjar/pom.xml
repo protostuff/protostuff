@@ -1,12 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
-    <groupId>com.dyuproject.protostuff</groupId>
+    <groupId>io.protostuff</groupId>
     <version>1.1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.dyuproject.protostuff</groupId>
   <artifactId>protostuff-uberjar</artifactId>
   <name>protostuff :: uberjar</name>
   <description>serialization api for messages</description>
@@ -45,7 +44,7 @@
                  ,*
               </Import-Package>
               <Export-Package>
-                 com.dyuproject.protostuff,com.dyuproject.protostuff.runtime
+                 io.protostuff,ioio.protostuff.runtime
               </Export-Package>
            </instructions>
         </configuration>
@@ -86,22 +85,22 @@
   
   <dependencies>
     <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
+      <groupId>io.protostuff</groupId>
       <artifactId>protostuff-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
+      <groupId>io.protostuff</groupId>
       <artifactId>protostuff-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
+      <groupId>io.protostuff</groupId>
       <artifactId>protostuff-collectionschema</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
+      <groupId>io.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
