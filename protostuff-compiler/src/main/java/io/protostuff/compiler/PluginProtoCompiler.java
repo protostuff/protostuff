@@ -330,7 +330,7 @@ public class PluginProtoCompiler extends STCodeGenerator
     public void compileProtoBlock(ProtoModule module, Proto proto,
             String packageName, StringTemplate protoBlockTemplate) throws IOException
     {
-        String name = ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(
+        String name = ProtoUtil.toPascalCase(proto.getFile().getName().replace(
                 ".proto", "")).toString();
 
         if (javaOutput)
