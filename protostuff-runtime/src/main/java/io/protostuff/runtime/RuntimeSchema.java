@@ -26,10 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import io.protostuff.Message;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
+import io.protostuff.*;
 import io.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
 import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
@@ -198,6 +195,14 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 if (f.getAnnotation(Deprecated.class) != null)
                 {
                     // this field is deprecated and should be skipped.
+                    // preserve its field number for backward-forward compat
+                    i++;
+                    continue;
+                }
+
+                if (f.getAnnotation(ProtoIgnore.class) != null)
+                {
+                    // this field should be ignored by ProtoStuff.
                     // preserve its field number for backward-forward compat
                     i++;
                     continue;
