@@ -15,16 +15,16 @@
 package io.protostuff.runtime;
 
 import io.protostuff.AbstractTest;
-import io.protostuff.ProtoIgnore;
+import io.protostuff.Exclude;
 import io.protostuff.Tag;
 
 /**
- * Test for runtime schemas to skip fields annotated with @ProtoIgnore and still allow backward-forward compatibility.
+ * Test for runtime schemas to skip fields annotated with @Exclude and still allow backward-forward compatibility.
  * 
  * @author Johannes Elgh
  * @created Jul 30, 2014
  */
-public class ProtoIgnoreFieldTest extends AbstractTest
+public class ExcludeFieldTest extends AbstractTest
 {
 
     public static class Entity
@@ -32,31 +32,31 @@ public class ProtoIgnoreFieldTest extends AbstractTest
 
         int id;
         String name;
-        @ProtoIgnore
+        @Exclude
         String alias;
         long timestamp;
     }
 
-    public static class MuchIgnoredEntity
+    public static class MuchExcludedEntity
     {
-        @ProtoIgnore
+        @Exclude
         int id;
-        @ProtoIgnore
+        @Exclude
         String name;
         String alias;
-        @ProtoIgnore
+        @Exclude
         long timestamp;
     }
 
-    public static class TaggedAndIgnoredEntity
+    public static class TaggedAndExcludedEntity
     {
-        @ProtoIgnore
+        @Exclude
         int id;
         @Tag(4)
         String name;
         @Tag(2)
         String alias;
-        @ProtoIgnore
+        @Exclude
         long timestamp;
     }
 
@@ -79,10 +79,10 @@ public class ProtoIgnoreFieldTest extends AbstractTest
         assertNull(schema.fieldsByName.get("alias"));
     }
 
-    public void testMuchIgnoredEntitiy() throws Exception
+    public void testMuchExcludedEntitiy() throws Exception
     {
-        MappedSchema<MuchIgnoredEntity> schema = (MappedSchema<MuchIgnoredEntity>) RuntimeSchema
-                .getSchema(MuchIgnoredEntity.class);
+        MappedSchema<MuchExcludedEntity> schema = (MappedSchema<MuchExcludedEntity>) RuntimeSchema
+                .getSchema(MuchExcludedEntity.class);
         System.err.println(schema.fields.length);
         assertTrue(schema.fields.length == 1);
 
@@ -99,10 +99,10 @@ public class ProtoIgnoreFieldTest extends AbstractTest
         assertNull(schema.fieldsByName.get("timestamp"));
     }
 
-    public void testTaggedAndIgnoredEntitiy() throws Exception
+    public void testTaggedAndExcludedEntitiy() throws Exception
     {
-        MappedSchema<TaggedAndIgnoredEntity> schema = (MappedSchema<TaggedAndIgnoredEntity>) RuntimeSchema
-                .getSchema(TaggedAndIgnoredEntity.class);
+        MappedSchema<TaggedAndExcludedEntity> schema = (MappedSchema<TaggedAndExcludedEntity>) RuntimeSchema
+                .getSchema(TaggedAndExcludedEntity.class);
         System.err.println(schema.fields.length);
         assertTrue(schema.fields.length == 2);
 
