@@ -79,7 +79,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertNull(schema.fieldsByName.get("alias"));
     }
 
-    public void testMuchExcludedEntitiy() throws Exception
+    public void testMuchExcludedEntity() throws Exception
     {
         MappedSchema<MuchExcludedEntity> schema = (MappedSchema<MuchExcludedEntity>) RuntimeSchema
                 .getSchema(MuchExcludedEntity.class);
@@ -99,7 +99,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertNull(schema.fieldsByName.get("timestamp"));
     }
 
-    public void testTaggedAndExcludedEntitiy() throws Exception
+    public void testTaggedAndExcludedEntity() throws Exception
     {
         MappedSchema<TaggedAndExcludedEntity> schema = (MappedSchema<TaggedAndExcludedEntity>) RuntimeSchema
                 .getSchema(TaggedAndExcludedEntity.class);
