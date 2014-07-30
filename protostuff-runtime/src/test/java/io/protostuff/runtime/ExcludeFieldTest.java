@@ -73,7 +73,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertEquals(schema.fields[1].number, 2);
 
         assertEquals(schema.fields[2].name, "timestamp");
-        assertEquals(schema.fields[2].number, 4);
+        assertEquals(schema.fields[2].number, 3);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
         assertNull(schema.fieldsByName.get("alias"));
@@ -93,7 +93,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertNull(schema.fieldsByName.get("name"));
 
         assertEquals(schema.fields[0].name, "alias");
-        assertEquals(schema.fields[0].number, 3);
+        assertEquals(schema.fields[0].number, 1);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
         assertNull(schema.fieldsByName.get("timestamp"));

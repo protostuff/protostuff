@@ -196,9 +196,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         {
             if (!exclusions.contains(f.getName()))
             {
-                if (f.getAnnotation(Deprecated.class) != null || f.getAnnotation(Exclude.class) != null)
+                if (f.getAnnotation(Deprecated.class) != null)
                 {
-                    // this field is deprecated or excluded and should be skipped.
+                    // this field should be ignored by ProtoStuff.
                     // preserve its field number for backward-forward compat
                     i++;
                     continue;
@@ -295,7 +295,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             }
 
             final int mod = f.getModifiers();
-            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod))
+            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod) && f.getAnnotation(Exclude.class) == null)
             {
                 final Field<T> field = RuntimeFieldFactory.getFieldFactory(
                         f.getType(), strategy).create(++i, entry.getValue(), f,
@@ -329,7 +329,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         for (java.lang.reflect.Field f : typeClass.getDeclaredFields())
         {
             int mod = f.getModifiers();
-            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod))
+            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod) && f.getAnnotation(Exclude.class) == null)
                 fieldMap.put(f.getName(), f);
         }
     }
