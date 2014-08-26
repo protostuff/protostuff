@@ -37,6 +37,11 @@ public final class RuntimeEnv
     public static final boolean ENUMS_BY_NAME;
 
     /**
+     * Returns true if serializing java.util.Date by a variable int64 is activated. Disabled by default.
+     */
+    public static final boolean DATES_BY_VARINT;
+
+    /**
      * Enabled by default. For security purposes, you probably would want to register all known classes and disable this
      * option.
      */
@@ -158,6 +163,9 @@ public final class RuntimeEnv
 
         ENUMS_BY_NAME = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.enums_by_name", "false"));
+
+        DATES_BY_VARINT = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.dates_by_varint", "false"));
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));

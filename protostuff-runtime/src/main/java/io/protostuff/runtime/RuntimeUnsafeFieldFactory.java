@@ -14,6 +14,7 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.runtime.RuntimeEnv.DATES_BY_VARINT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -1276,13 +1277,13 @@ public final class RuntimeUnsafeFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final long offset = us.objectFieldOffset(f);
-            return new Field<T>(FieldType.FIXED64, number, name,
+            return new Field<T>(getFieldType(), number, name,
                     f.getAnnotation(Tag.class))
             {
                 public void mergeFrom(Input input, T message)
                         throws IOException
                 {
-                    us.putObject(message, offset, new Date(input.readFixed64()));
+                    us.putObject(message, offset, new Date(readDate(input)));
                 }
 
                 public void writeTo(Output output, T message)
@@ -1290,13 +1291,13 @@ public final class RuntimeUnsafeFieldFactory
                 {
                     Date value = (Date) us.getObject(message, offset);
                     if (value != null)
-                        output.writeFixed64(number, value.getTime(), false);
+                        writeDate(output, number, value.getTime(), false);
                 }
 
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    output.writeFixed64(number, input.readFixed64(), repeated);
+                    writeDate(output, number, readDate(input), repeated);
                 }
             };
         }
@@ -1304,28 +1305,39 @@ public final class RuntimeUnsafeFieldFactory
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
-            output.writeFixed64(number, input.readFixed64(), repeated);
+            writeDate(output, number, readDate(input), repeated);
         }
 
         public Date readFrom(Input input) throws IOException
         {
-            return new Date(input.readFixed64());
+            return new Date(readDate(input));
         }
 
         public void writeTo(Output output, int number, Date value,
                 boolean repeated) throws IOException
         {
-            output.writeFixed64(number, value.getTime(), repeated);
+            writeDate(output, number, value.getTime(), repeated);
         }
 
         public FieldType getFieldType()
         {
-            return FieldType.FIXED64;
+            return DATES_BY_VARINT ? FieldType.INT64 : FieldType.FIXED64;
         }
 
         public Class<?> typeClass()
         {
             return Date.class;
+        }
+
+        public long readDate(Input input) throws IOException {
+            return DATES_BY_VARINT ? input.readInt64() : input.readFixed64();
+        }
+
+        public void writeDate(Output output, int number, long value, boolean repeated) throws IOException {
+            if (DATES_BY_VARINT)
+                output.writeInt64(number, value, repeated);
+            else
+                output.writeFixed64(number, value, repeated);
         }
     };
 

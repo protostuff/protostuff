@@ -14,6 +14,7 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.runtime.RuntimeEnv.DATES_BY_VARINT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -1692,7 +1693,7 @@ public final class RuntimeReflectionFieldFactory
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            return new Field<T>(FieldType.FIXED64, number, name,
+            return new Field<T>(getFieldType(), number, name,
                     f.getAnnotation(Tag.class))
             {
                 {
@@ -1704,7 +1705,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     try
                     {
-                        f.set(message, new Date(input.readFixed64()));
+                        f.set(message, new Date(readDate(input)));
                     }
                     catch (IllegalArgumentException e)
                     {
@@ -1723,7 +1724,7 @@ public final class RuntimeReflectionFieldFactory
                     {
                         Date value = (Date) f.get(message);
                         if (value != null)
-                            output.writeFixed64(number, value.getTime(), false);
+                            writeDate(output, number, value.getTime(), false);
                     }
                     catch (IllegalArgumentException e)
                     {
@@ -1738,7 +1739,7 @@ public final class RuntimeReflectionFieldFactory
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    output.writeFixed64(number, input.readFixed64(), repeated);
+                    writeDate(output, number, readDate(input), repeated);
                 }
             };
         }
@@ -1746,28 +1747,39 @@ public final class RuntimeReflectionFieldFactory
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
-            output.writeFixed64(number, input.readFixed64(), repeated);
+            writeDate(output, number, readDate(input), repeated);
         }
 
         public Date readFrom(Input input) throws IOException
         {
-            return new Date(input.readFixed64());
+            return new Date(readDate(input));
         }
 
         public void writeTo(Output output, int number, Date value,
                 boolean repeated) throws IOException
         {
-            output.writeFixed64(number, value.getTime(), repeated);
+            writeDate(output, number, value.getTime(), repeated);
         }
 
         public FieldType getFieldType()
         {
-            return FieldType.FIXED64;
+            return DATES_BY_VARINT ? FieldType.INT64 : FieldType.FIXED64;
         }
 
         public Class<?> typeClass()
         {
             return Date.class;
+        }
+
+        public long readDate(Input input) throws IOException {
+            return DATES_BY_VARINT ? input.readInt64() : input.readFixed64();
+        }
+
+        public void writeDate(Output output, int number, long value, boolean repeated) throws IOException {
+            if (DATES_BY_VARINT)
+                output.writeInt64(number, value, repeated);
+            else
+                output.writeFixed64(number, value, repeated);
         }
     };
 
