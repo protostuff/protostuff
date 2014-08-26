@@ -14,6 +14,7 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.runtime.RuntimeEnv.DATES_BY_VARINT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -1525,7 +1526,7 @@ public final class ArraySchemas
                 if (ID_ARRAY_DATA != input.readFieldNumber(this))
                     throw new ProtostuffException("Corrupt input.");
 
-                array[i] = new Date(input.readFixed64());
+                array[i] = new Date(readDate(input));
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1540,7 +1541,18 @@ public final class ArraySchemas
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeFixed64(ID_ARRAY_DATA, array[i].getTime(), true);
+                writeDate(output, ID_ARRAY_DATA, array[i].getTime(), true);
+        }
+
+        public long readDate(Input input) throws IOException {
+            return DATES_BY_VARINT ? input.readInt64() : input.readFixed64();
+        }
+
+        public void writeDate(Output output, int number, long value, boolean repeated) throws IOException {
+            if (DATES_BY_VARINT)
+                output.writeInt64(number, value, repeated);
+            else
+                output.writeFixed64(number, value, repeated);
         }
     }
 
