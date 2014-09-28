@@ -230,6 +230,13 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                 return new java.util.concurrent.ConcurrentLinkedQueue<V>();
             }
         },
+        ConcurrentLinkedDeque(java.util.concurrent.ConcurrentLinkedDeque.class)
+        {
+            public <V> Collection<V> newMessage()
+            {
+                return new java.util.concurrent.ConcurrentLinkedDeque<V>();
+            }
+        },
         PriorityBlockingQueue(java.util.concurrent.PriorityBlockingQueue.class)
         {
             public <V> Collection<V> newMessage()

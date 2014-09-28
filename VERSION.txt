@@ -10,6 +10,7 @@ protostuff-1.1.0-SNAPSHOT
   - thanks to lzh0379
 + Issue 156: Support for newing object instances on Android 4.3+ devices
   - thanks to eedzjee
++ Issue 157: ConcurrentLinkedDeque support
 
 ===================================================================
 
