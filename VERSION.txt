@@ -3,14 +3,14 @@ protostuff-1.1.0-SNAPSHOT
   - protostuff-runtime-1.0.x
   - protostuff-xml-1.0.x
 + Issue 161: Optimize ProtobufOuput for small nested messages (max size of 127)
-+ Issue 153: YamlOutput bug on repeated message fields
-+ Issue 151: optimize xml format
-+ Issue 119: Reflection-based array operations are rather expensive
-+ Issue 141: protostuff ser/der can not keep order of elements in an array which contain null value
-  - thanks to lzh0379
++ Issue 157: ConcurrentLinkedDeque support
 + Issue 156: Support for newing object instances on Android 4.3+ devices
   - thanks to eedzjee
-+ Issue 157: ConcurrentLinkedDeque support
++ Issue 153: YamlOutput bug on repeated message fields
++ Issue 151: optimize xml format
++ Issue 141: protostuff ser/der can not keep order of elements in an array which contain null value
+  - thanks to lzh0379
++ Issue 119: Reflection-based array operations are rather expensive
 
 ===================================================================
 
