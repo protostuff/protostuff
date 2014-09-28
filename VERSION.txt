@@ -6,6 +6,7 @@ protostuff-1.1.0-SNAPSHOT
 + Issue 153: YamlOutput bug on repeated message fields
 + Issue 151: optimize xml format
 + Issue 119: Reflection-based array operations are rather expensive
++ Issue 141: protostuff ser/der can not keep order of elements in an array which contain null value
 
 ===================================================================
 

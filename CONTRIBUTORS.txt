@@ -57,4 +57,5 @@ Patch contributors:
   Ryszard Wiśniewski
     * protostuff-runtime - Issue 140 patch
 
-  
+  lzh0379
+    * protostuff-runtime - Issue 141 patch

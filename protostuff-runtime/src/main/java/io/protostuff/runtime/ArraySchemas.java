@@ -14,6 +14,7 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.runtime.RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -62,9 +63,13 @@ public final class ArraySchemas
      * CID_BIGINTEGER = 20, CID_DATE = 21;
      */
 
-    static final int ID_ARRAY_LEN = 1, ID_ARRAY_DATA = 2;
+    static final int ID_ARRAY_LEN = 1, 
+            ID_ARRAY_DATA = 2, 
+            ID_ARRAY_NULLCOUNT = 3;
 
-    static final String STR_ARRAY_LEN = "a", STR_ARRAY_DATA = "b";
+    static final String STR_ARRAY_LEN = "a", 
+            STR_ARRAY_DATA = "b", 
+            STR_ARRAY_NULLCOUNT = "c";
 
     static boolean isPrimitive(int arrayId)
     {
@@ -206,6 +211,8 @@ public final class ArraySchemas
                 return STR_ARRAY_LEN;
             case ID_ARRAY_DATA:
                 return STR_ARRAY_DATA;
+            case ID_ARRAY_NULLCOUNT:
+                return STR_ARRAY_NULLCOUNT;
             default:
                 return null;
         }
@@ -222,6 +229,8 @@ public final class ArraySchemas
                 return ID_ARRAY_LEN;
             case 'b':
                 return ID_ARRAY_DATA;
+            case 'c':
+                return ID_ARRAY_NULLCOUNT;
             default:
                 return 0;
         }
@@ -238,13 +247,22 @@ public final class ArraySchemas
         // write it back
         output.writeUInt32(ID_ARRAY_LEN, len, false);
 
-        for (int i = 0; i < len; i++)
+        for (int i = 0, nullCount = 0; i < len;)
         {
-            if (ID_ARRAY_DATA != input
-                    .readFieldNumber(pipeSchema.wrappedSchema))
-                throw new ProtostuffException("Corrupt input.");
-
-            delegate.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+            switch (input.readFieldNumber(pipeSchema.wrappedSchema))
+            {
+                case ID_ARRAY_DATA:
+                    i++;
+                    delegate.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+                    break;
+                case ID_ARRAY_NULLCOUNT:
+                    nullCount = input.readUInt32();
+                    i += nullCount;
+                    output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                    break;
+                default:
+                    throw new ProtostuffException("Corrupt input.");
+            }
         }
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
@@ -366,28 +384,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Boolean[] array = new Boolean[len];
+            if (input instanceof GraphInput)
             {
-                Boolean[] array = new Boolean[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readBool();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readBool();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -399,15 +422,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeBool(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Boolean[] array = (Boolean[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Boolean[] array = (Boolean[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeBool(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Boolean v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeBool(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -481,28 +525,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Character[] array = new Character[len];
+            if (input instanceof GraphInput)
             {
-                Character[] array = new Character[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = (char) input.readUInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = (char) input.readUInt32();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -514,15 +563,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Character[] array = (Character[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Character[] array = (Character[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeUInt32(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Character v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeUInt32(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -596,28 +666,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Short[] array = new Short[len];
+            if (input instanceof GraphInput)
             {
-                Short[] array = new Short[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = (short) input.readUInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = (short) input.readUInt32();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -629,15 +704,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Short[] array = (Short[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Short[] array = (Short[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeUInt32(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Short v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeUInt32(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -711,28 +807,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Integer[] array = new Integer[len];
+            if (input instanceof GraphInput)
             {
-                Integer[] array = new Integer[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readInt32();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -744,15 +845,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt32(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Integer[] array = (Integer[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Integer[] array = (Integer[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeInt32(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Integer v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeInt32(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -826,28 +948,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Long[] array = new Long[len];
+            if (input instanceof GraphInput)
             {
-                Long[] array = new Long[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readInt64();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readInt64();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -859,15 +986,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt64(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Long[] array = (Long[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Long[] array = (Long[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeInt64(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Long v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeInt64(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -941,28 +1089,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Float[] array = new Float[len];
+            if (input instanceof GraphInput)
             {
-                Float[] array = new Float[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readFloat();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readFloat();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -974,15 +1127,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeFloat(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Float[] array = (Float[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Float[] array = (Float[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeFloat(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Float v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeFloat(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1056,28 +1230,33 @@ public final class ArraySchemas
 
                 return array;
             }
-            else
+            
+            final Double[] array = new Double[len];
+            if (input instanceof GraphInput)
             {
-                Double[] array = new Double[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readDouble();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
+
+            for (int i = 0; i < len;)
+            {
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readDouble();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
         }
 
         public void writeTo(Output output, Object value) throws IOException
@@ -1089,15 +1268,36 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeDouble(ID_ARRAY_DATA, array[i], true);
+                
+                return;
             }
-            else
-            {
-                Double[] array = (Double[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            
+            final Double[] array = (Double[]) value;
+            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
-                for (int i = 0, len = array.length; i < len; i++)
-                    output.writeDouble(ID_ARRAY_DATA, array[i], true);
+            int nullCount = 0;
+            for (int i = 0, len = array.length; i < len; i++)
+            {
+                Double v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeDouble(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
             }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1150,12 +1350,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = input.readString();
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readString();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1169,8 +1376,29 @@ public final class ArraySchemas
             String[] array = (String[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeString(ID_ARRAY_DATA, array[i], true);
+            {
+                String v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeString(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1224,12 +1452,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = input.readBytes();
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readBytes();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1243,8 +1478,29 @@ public final class ArraySchemas
             ByteString[] array = (ByteString[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeBytes(ID_ARRAY_DATA, array[i], true);
+            {
+                ByteString v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeBytes(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1298,12 +1554,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = input.readByteArray();
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = input.readByteArray();
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1317,8 +1580,29 @@ public final class ArraySchemas
             byte[][] array = (byte[][]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeByteArray(ID_ARRAY_DATA, array[i], true);
+            {
+                byte[] v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeByteArray(ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1372,12 +1656,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = new BigDecimal(input.readString());
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = new BigDecimal(input.readString());
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1391,8 +1682,29 @@ public final class ArraySchemas
             BigDecimal[] array = (BigDecimal[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeString(ID_ARRAY_DATA, array[i].toString(), true);
+            {
+                BigDecimal v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeString(ID_ARRAY_DATA, v.toString(), true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1446,12 +1758,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = new BigInteger(input.readByteArray());
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = new BigInteger(input.readByteArray());
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1465,9 +1784,29 @@ public final class ArraySchemas
             BigInteger[] array = (BigInteger[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeByteArray(ID_ARRAY_DATA, array[i].toByteArray(),
-                        true);
+            {
+                BigInteger v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeByteArray(ID_ARRAY_DATA, v.toByteArray(), true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1520,12 +1859,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                array[i] = new Date(input.readFixed64());
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        array[i++] = new Date(input.readFixed64());
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1539,8 +1885,29 @@ public final class ArraySchemas
             Date[] array = (Date[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
+            int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
-                output.writeFixed64(ID_ARRAY_DATA, array[i].getTime(), true);
+            {
+                Date v = array[i];
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeFixed64(ID_ARRAY_DATA, v.getTime(), true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1583,12 +1950,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                Array.set(array, i, delegate.readFrom(input));
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        Array.set(array, i++, delegate.readFrom(input));
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1603,9 +1977,29 @@ public final class ArraySchemas
 
             output.writeUInt32(ID_ARRAY_LEN, len, false);
 
+            int nullCount = 0;
             for (int i = 0; i < len; i++)
-                delegate.writeTo(output, ID_ARRAY_DATA, Array.get(array, i),
-                        true);
+            {
+                Object v = Array.get(array, i);
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    delegate.writeTo(output, ID_ARRAY_DATA, v, true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1625,13 +2019,22 @@ public final class ArraySchemas
                 // write it back
                 output.writeUInt32(ID_ARRAY_LEN, len, false);
 
-                for (int i = 0; i < len; i++)
+                for (int i = 0, nullCount = 0; i < len;)
                 {
-                    if (ID_ARRAY_DATA != input
-                            .readFieldNumber(pipeSchema.wrappedSchema))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    EnumIO.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+                    switch (input.readFieldNumber(pipeSchema.wrappedSchema))
+                    {
+                        case ID_ARRAY_DATA:
+                            i++;
+                            EnumIO.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+                            break;
+                        case ID_ARRAY_NULLCOUNT:
+                            nullCount = input.readUInt32();
+                            i += nullCount;
+                            output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                            break;
+                        default:
+                            throw new ProtostuffException("Corrupt input.");
+                    }
                 }
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
@@ -1666,12 +2069,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                Array.set(array, i, eio.readFrom(input));
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        Array.set(array, i++, eio.readFrom(input));
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1686,9 +2096,29 @@ public final class ArraySchemas
 
             output.writeUInt32(ID_ARRAY_LEN, len, false);
 
+            int nullCount = 0;
             for (int i = 0; i < len; i++)
-                EnumIO.writeTo(output, ID_ARRAY_DATA, true,
-                        (Enum<?>) Array.get(array, i));
+            {
+                Enum<?> v = (Enum<?>)Array.get(array, i);
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    EnumIO.writeTo(output, ID_ARRAY_DATA, true, v);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 
@@ -1708,14 +2138,23 @@ public final class ArraySchemas
                 // write it back
                 output.writeUInt32(ID_ARRAY_LEN, len, false);
 
-                for (int i = 0; i < len; i++)
+                for (int i = 0, nullCount = 0; i < len;)
                 {
-                    if (ID_ARRAY_DATA != input
-                            .readFieldNumber(pipeSchema.wrappedSchema))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    output.writeObject(ID_ARRAY_DATA, pipe, hs.getPipeSchema(),
-                            true);
+                    switch (input.readFieldNumber(pipeSchema.wrappedSchema))
+                    {
+                        case ID_ARRAY_DATA:
+                            i++;
+                            output.writeObject(ID_ARRAY_DATA, pipe, hs.getPipeSchema(),
+                                    true);
+                            break;
+                        case ID_ARRAY_NULLCOUNT:
+                            nullCount = input.readUInt32();
+                            i += nullCount;
+                            output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                            break;
+                        default:
+                            throw new ProtostuffException("Corrupt input.");
+                    }
                 }
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
@@ -1750,12 +2189,19 @@ public final class ArraySchemas
                 ((GraphInput) input).updateLast(array, owner);
             }
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len;)
             {
-                if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                Array.set(array, i, input.mergeObject(null, hs.getSchema()));
+                switch (input.readFieldNumber(this))
+                {
+                    case ID_ARRAY_DATA:
+                        Array.set(array, i++, input.mergeObject(null, hs.getSchema()));
+                        break;
+                    case ID_ARRAY_NULLCOUNT:
+                        i += input.readUInt32();
+                        break;
+                    default:
+                        throw new ProtostuffException("Corrupt input.");
+                }
             }
 
             if (0 != input.readFieldNumber(this))
@@ -1770,9 +2216,29 @@ public final class ArraySchemas
 
             output.writeUInt32(ID_ARRAY_LEN, len, false);
 
+            int nullCount = 0;
             for (int i = 0; i < len; i++)
-                output.writeObject(ID_ARRAY_DATA, Array.get(array, i),
-                        hs.getSchema(), true);
+            {
+                Object v = Array.get(array, i);
+                if (v != null)
+                {
+                    if (nullCount != 0)
+                    {
+                        output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+                        nullCount = 0;
+                    }
+                    
+                    output.writeObject(ID_ARRAY_DATA, v, hs.getSchema(), true);
+                }
+                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                {
+                    nullCount++;
+                }
+            }
+            
+            // if last element is null
+            if (nullCount != 0)
+                output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
         }
     }
 }
