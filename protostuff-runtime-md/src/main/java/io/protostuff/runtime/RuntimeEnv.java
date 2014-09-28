@@ -245,8 +245,10 @@ public final class RuntimeEnv
             Method m43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
                     "newInstance", Class.class, long.class);
             
-            m43.setAccessible(true);
-            holder[0] = (Number)m43.invoke(null, Object.class);
+            Method mcid43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
+                    "getConstructorId", Class.class);
+            mcid43.setAccessible(true);
+            holder[0] = (Number)mcid43.invoke(null, Object.class);
             
             return m43;
         }
@@ -258,8 +260,10 @@ public final class RuntimeEnv
                 Method m = java.io.ObjectStreamClass.class.getDeclaredMethod(
                         "newInstance", Class.class, int.class);
                 
-                m.setAccessible(true);
-                holder[0] = (Number)m.invoke(null, Object.class);
+                Method mcid = java.io.ObjectStreamClass.class.getDeclaredMethod(
+                        "getConstructorId", Class.class);
+                mcid.setAccessible(true);
+                holder[0] = (Number)mcid.invoke(null, Object.class);
                 
                 return m;
             }
