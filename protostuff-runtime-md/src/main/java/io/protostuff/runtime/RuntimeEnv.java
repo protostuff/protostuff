@@ -41,6 +41,12 @@ public final class RuntimeEnv
      * option.
      */
     public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES;
+    
+    /**
+     * Disabled by default. Writes a sentinel value (uint32) in place of null values.
+     * Works only on the binary formats (protostuff/graph/protobuf).
+     */
+    public static final boolean ALLOW_NULL_ARRAY_ELEMENT;
 
     /**
      * Disabled by default. For pojos that are not declared final, they could still be morphed to their respective
@@ -161,6 +167,9 @@ public final class RuntimeEnv
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));
+
+        ALLOW_NULL_ARRAY_ELEMENT = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.allow_null_array_element", "false"));
 
         MORPH_NON_FINAL_POJOS = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.morph_non_final_pojos", "false"));
