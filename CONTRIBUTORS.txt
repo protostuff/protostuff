@@ -59,3 +59,6 @@ Patch contributors:
 
   lzh0379
     * protostuff-runtime - Issue 141 patch
+  
+  eedzjee
+    * protostuff-runtime-md - Issue 156 patch

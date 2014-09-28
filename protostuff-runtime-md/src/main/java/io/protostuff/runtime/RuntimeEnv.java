@@ -73,7 +73,7 @@ public final class RuntimeEnv
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
      * <p/>
-     * You can optionally enable only for a particular field by annotation it with
+     * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
@@ -93,7 +93,7 @@ public final class RuntimeEnv
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
      * <p/>
-     * You can optionally enable only for a particular field by annotation it with
+     * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
@@ -118,7 +118,7 @@ public final class RuntimeEnv
     static final Method newInstanceFromObjectInputStream,
             newInstanceFromObjectStreamClass;
 
-    static final int objectConstructorId;
+    static final long objectConstructorId;
 
     static final Constructor<Object> OBJECT_CONSTRUCTOR;
 
@@ -230,26 +230,35 @@ public final class RuntimeEnv
     {
         try
         {
+            // android >= 4.3
             return java.io.ObjectStreamClass.class.getDeclaredMethod(
-                    "newInstance", Class.class, int.class);
+                    "newInstance", Class.class, long.class);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return null;
+            try
+            {
+                // android <= 4.2.2
+                return java.io.ObjectStreamClass.class.getDeclaredMethod(
+                        "newInstance", Class.class, int.class);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 
-    private static int getObjectConstructorIdFromObjectStreamClass()
+    private static long getObjectConstructorIdFromObjectStreamClass()
     {
         try
         {
-            Method getConstructorId = java.io.ObjectStreamClass.class
-                    .getDeclaredMethod("getConstructorId", Class.class);
+            Method getConstructorId = java.io.ObjectStreamClass.class.getDeclaredMethod(
+                    "getConstructorId", Class.class);
 
             getConstructorId.setAccessible(true);
 
-            return ((Integer) getConstructorId.invoke(null, Object.class))
-                    .intValue();
+            return ((Number)getConstructorId.invoke(null, Object.class)).longValue();
         }
         catch (Exception e)
         {

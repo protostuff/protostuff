@@ -7,6 +7,9 @@ protostuff-1.1.0-SNAPSHOT
 + Issue 151: optimize xml format
 + Issue 119: Reflection-based array operations are rather expensive
 + Issue 141: protostuff ser/der can not keep order of elements in an array which contain null value
+  - thanks to lzh0379
++ Issue 156: Support for newing object instances on Android 4.3+ devices
+  - thanks to eedzjee
 
 ===================================================================
 
