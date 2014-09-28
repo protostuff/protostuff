@@ -35,17 +35,6 @@ public class DeprecatedFieldTest extends AbstractTest
         long timestamp;
     }
 
-    static Entity filledEntity()
-    {
-        Entity e = new Entity();
-        e.id = 1;
-        e.name = "entity";
-        e.alias = "e";
-        e.timestamp = System.currentTimeMillis();
-
-        return e;
-    }
-
     public void testIt() throws Exception
     {
         MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
