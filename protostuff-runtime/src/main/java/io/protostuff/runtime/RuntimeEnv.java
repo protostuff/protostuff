@@ -69,7 +69,7 @@ public final class RuntimeEnv
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
      * <p/>
-     * You can optionally enable only for a particular field by annotation it with
+     * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
@@ -89,7 +89,7 @@ public final class RuntimeEnv
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
      * <p/>
-     * You can optionally enable only for a particular field by annotation it with
+     * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
