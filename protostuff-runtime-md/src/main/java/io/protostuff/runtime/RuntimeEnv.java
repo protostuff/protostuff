@@ -119,6 +119,7 @@ public final class RuntimeEnv
             newInstanceFromObjectStreamClass;
 
     static final long objectConstructorId;
+    static final boolean android43;
 
     static final Constructor<Object> OBJECT_CONSTRUCTOR;
 
@@ -151,12 +152,22 @@ public final class RuntimeEnv
             newInstanceFromObjectInputStream.setAccessible(true);
             newInstanceFromObjectStreamClass = null;
             objectConstructorId = -1;
+            android43 = false;
         }
         else
         {
-            newInstanceFromObjectStreamClass = getMethodNewInstanceFromObjectStreamClass();
-            objectConstructorId = newInstanceFromObjectStreamClass == null ? -1
-                    : getObjectConstructorIdFromObjectStreamClass();
+            Number[] holder = new Number[1];
+            newInstanceFromObjectStreamClass = getMethodNewInstanceFromObjectStreamClass(holder);
+            if (newInstanceFromObjectStreamClass == null)
+            {
+                objectConstructorId = -1;
+                android43 = false;
+            }
+            else
+            {
+                objectConstructorId = holder[0].longValue();
+                android43 = holder[0] instanceof Long;
+            }
         }
 
         Properties props = OBJECT_CONSTRUCTOR == null ? new Properties()
@@ -226,43 +237,36 @@ public final class RuntimeEnv
         }
     }
 
-    private static Method getMethodNewInstanceFromObjectStreamClass()
+    private static Method getMethodNewInstanceFromObjectStreamClass(Number[] holder)
     {
         try
         {
             // android >= 4.3
-            return java.io.ObjectStreamClass.class.getDeclaredMethod(
+            Method m43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
                     "newInstance", Class.class, long.class);
+            
+            m43.setAccessible(true);
+            holder[0] = (Number)m43.invoke(null, Object.class);
+            
+            return m43;
         }
         catch (Exception ex)
         {
             try
             {
                 // android <= 4.2.2
-                return java.io.ObjectStreamClass.class.getDeclaredMethod(
+                Method m = java.io.ObjectStreamClass.class.getDeclaredMethod(
                         "newInstance", Class.class, int.class);
+                
+                m.setAccessible(true);
+                holder[0] = (Number)m.invoke(null, Object.class);
+                
+                return m;
             }
             catch (Exception e)
             {
                 return null;
             }
-        }
-    }
-
-    private static long getObjectConstructorIdFromObjectStreamClass()
-    {
-        try
-        {
-            Method getConstructorId = java.io.ObjectStreamClass.class.getDeclaredMethod(
-                    "getConstructorId", Class.class);
-
-            getConstructorId.setAccessible(true);
-
-            return ((Number)getConstructorId.invoke(null, Object.class)).longValue();
-        }
-        catch (Exception e)
-        {
-            return -1;
         }
     }
 
@@ -289,11 +293,13 @@ public final class RuntimeEnv
         if (constructor == null)
         {
             // non-sun jre
+            if (android43)
+                return new Android43Instantiator<T>(clazz);
+            
             if (newInstanceFromObjectInputStream == null)
             {
                 if (objectConstructorId == -1)
-                    throw new RuntimeException(
-                            "Could not resolve constructor for " + clazz);
+                    throw new RuntimeException("Could not resolve constructor for " + clazz);
 
                 return new Android3Instantiator<T>(clazz);
             }
@@ -413,6 +419,39 @@ public final class RuntimeEnv
         final Class<T> clazz;
 
         Android3Instantiator(Class<T> clazz)
+        {
+            this.clazz = clazz;
+        }
+
+        @SuppressWarnings("unchecked")
+        public T newInstance()
+        {
+            try
+            {
+                return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
+                        (int)objectConstructorId);
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    
+    static final class Android43Instantiator<T> extends Instantiator<T>
+    {
+
+        final Class<T> clazz;
+
+        Android43Instantiator(Class<T> clazz)
         {
             this.clazz = clazz;
         }
