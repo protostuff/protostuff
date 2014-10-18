@@ -60,7 +60,7 @@ import io.protostuff.StringSerializer.STRING;
 
 /**
  * Reads and decodes protocol message fields.
- * <p/>
+ * <p>
  * This class contains two kinds of methods: methods that read specific protocol message constructs and field types
  * (e.g. {@link #readTag()} and {@link #readInt32()}) and methods that read low-level values (e.g.
  * {@link #readRawVarint32()} and {@link #readRawBytes}). If you are reading encoded protocol messages, you should use
@@ -735,7 +735,7 @@ public final class CodedInput implements Input
      * overflows, {@code CodedInput} limits how large a message may be. The default limit is 64MB. You should set this
      * limit as small as you can without harming your app's functionality. Note that size limits only apply when reading
      * from an {@code InputStream}, not when constructed around a raw byte array.
-     * <p/>
+     * <p>
      * If you want to read several messages from a single CodedInput, you could call {@link #resetSizeCounter()} after
      * each one to avoid hitting the size limit.
      * 

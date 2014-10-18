@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * Computes the size of the data to be written.
- * <p/>
+ * <p>
  * Used internally by {@link CodedOutput}.
  * 
  * @author David Yu

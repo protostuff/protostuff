@@ -49,11 +49,11 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     /**
      * Maps the {@code baseClass} to a specific non-interface/non-abstract {@code typeClass} and registers it (this must
      * be done on application startup).
-     * <p/>
+     * <p>
      * With this approach, there is no overhead of writing the type metadata if a {@code baseClass} field is serialized.
-     * <p/>
+     * <p>
      * Returns true if the baseClass does not exist.
-     * <p/>
+     * <p>
      * NOTE: This is only supported when {@link RuntimeEnv#ID_STRATEGY} is {@link DefaultIdStrategy}.
      * 
      * @throws IllegalArgumentException
@@ -71,7 +71,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     /**
      * Returns true if this there is no existing one or the same schema has already been registered (this must be done
      * on application startup).
-     * <p/>
+     * <p>
      * NOTE: This is only supported when {@link RuntimeEnv#ID_STRATEGY} is {@link DefaultIdStrategy}.
      */
     public static <T> boolean register(Class<T> typeClass, Schema<T> schema)
@@ -86,7 +86,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     /**
      * Returns true if the {@code typeClass} was not lazily created.
-     * <p/>
+     * <p>
      * Method overload for backwards compatibility.
      */
     public static boolean isRegistered(Class<?> typeClass)
@@ -104,7 +104,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     /**
      * Gets the schema that was either registered or lazily initialized at runtime.
-     * <p/>
+     * <p>
      * Method overload for backwards compatibility.
      */
     public static <T> Schema<T> getSchema(Class<T> typeClass)
@@ -123,7 +123,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     /**
      * Returns the schema wrapper.
-     * <p/>
+     * <p>
      * Method overload for backwards compatibility.
      */
     static <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass)
@@ -142,7 +142,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     /**
      * Generates a schema from the given class.
-     * <p/>
+     * <p>
      * Method overload for backwards compatibility.
      */
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass)

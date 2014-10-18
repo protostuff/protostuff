@@ -27,7 +27,7 @@ import io.protostuff.Schema;
 
 /**
  * Test ser/deser for subclasses that inherit from non-abstract base types.
- * <p/>
+ * <p>
  * Run this standalone to execute the actual tests.
  * 
  * @author David Yu

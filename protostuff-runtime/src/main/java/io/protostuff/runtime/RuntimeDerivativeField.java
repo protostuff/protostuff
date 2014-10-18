@@ -24,9 +24,9 @@ import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field w/c represents an abstract class, interface or a base type with many possible subclasses.
- * <p/>
+ * <p>
  * The type metadata is written for the deserializer to know the actual/exact schema to use upon deserialization.
- * <p/>
+ * <p>
  * Limitations: The number of fields are limited to 126 (127 is the usual limit anyway). The order of the fields being
  * written must be preserved. It will not work if the message serialized is coming from the browser since the fields
  * will most likey be out-of-order (unless you have control of the json serialization).

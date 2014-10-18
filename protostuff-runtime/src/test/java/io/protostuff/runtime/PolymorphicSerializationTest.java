@@ -28,7 +28,7 @@ import io.protostuff.Schema;
 
 /**
  * Test for polymorphic serialization.
- * <p/>
+ * <p>
  * See {@link RuntimeDerivativeField} for details.
  * 
  * @author David Yu

@@ -57,9 +57,9 @@ public final class RuntimeEnv
     /**
      * Disabled by default. If true, type metadata will be included on serialization for fields that are collection
      * interfaces. Enabling this is useful if you want to retain the actual collection impl used.
-     * <p/>
+     * <p>
      * If disabled, type metadata will not be included and instead, will be mapped to a default impl.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Collection = ArrayList
@@ -72,7 +72,7 @@ public final class RuntimeEnv
      * Deque = LinkedList
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
-     * <p/>
+     * <p>
      * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
@@ -81,9 +81,9 @@ public final class RuntimeEnv
     /**
      * Disabled by default. If true, type metadata will be included on serialization for fields that are map interfaces.
      * Enabling this is useful if you want to retain the actual map impl used.
-     * <p/>
+     * <p>
      * If disabled, type metadata will not be included and instead, will be mapped to a default impl.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Map = HashMap
@@ -92,7 +92,7 @@ public final class RuntimeEnv
      * ConcurrentMap = ConcurrentHashMap
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
-     * <p/>
+     * <p>
      * You can optionally enable only for a particular field by annotating it with
      * {@link io.protostuff.Morph}.
      */
@@ -102,9 +102,9 @@ public final class RuntimeEnv
      * On repeated fields, the List/Collection itself is not serialized (only its values). If you enable this option,
      * the repeated field will be serialized as a standalone message with a collection schema. Even if the
      * List/Collection is empty, an empty collection message is still written.
-     * <p/>
+     * <p>
      * This is particularly useful if you rely on {@link Object#equals(Object)} on your pojos.
-     * <p/>
+     * <p>
      * Disabled by default for protobuf compatibility.
      */
     public static final boolean COLLECTION_SCHEMA_ON_REPEATED_FIELDS;

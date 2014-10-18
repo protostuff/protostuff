@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 
 /**
  * A schema for a {@link Map}. The key and value can be null (depending on the particular map impl).
- * <p/>
+ * <p>
  * The default {@link Map} message created will be an instance of {@link HashMap}.
  * 
  * @author David Yu
@@ -210,7 +210,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
 
     /**
      * Reads the key from the input.
-     * <p/>
+     * <p>
      * The extra wrapper arg is internally used as an object placeholder during polymorhic deserialization.
      */
     protected abstract K readKeyFrom(Input input, MapWrapper<K, V> wrapper)

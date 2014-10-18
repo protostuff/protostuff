@@ -18,9 +18,9 @@ import java.io.IOException;
 
 /**
  * Transfers data from an {@link Input} to an {@link Output}.
- * <p/>
+ * <p>
  * It is recommended to use pipe only to stream data coming from server-side services (e.g from your datastore/etc).
- * <p/>
+ * <p>
  * Incoming data from the interwebs should not be piped due to validation/security purposes.
  * 
  * @author David Yu
@@ -49,7 +49,7 @@ public abstract class Pipe
 
     /**
      * End input processing.
-     * <p/>
+     * <p>
      * If {@code cleanupOnly} is true, the io processing ended prematurely hence the underlying pipe should
      * cleanup/close all resources that need to be.
      */

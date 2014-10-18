@@ -79,7 +79,7 @@ public final class GraphIOUtil
 
     /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
-     * <p/>
+     * <p>
      * The {@code buffer}'s internal byte array will be used for reading the message.
      */
     public static void mergeFrom(InputStream in, Object message, Schema schema,
@@ -143,7 +143,7 @@ public final class GraphIOUtil
 
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * <p/>
+     * <p>
      * The delimited message size must not be larger than the {@code buffer}'s size/capacity. {@link ProtobufException}
      * "size limit exceeded" is thrown otherwise.
      * 
@@ -352,10 +352,10 @@ public final class GraphIOUtil
     /**
      * Optimal/Optional mergeDelimitedFrom - If the message does not fit the buffer, no merge is done and this method
      * will return false.
-     * <p/>
+     * <p>
      * This is strictly for reading a single message from the stream because the buffer is aggressively filled when
      * reading the delimited size (which could result into reading more bytes than it has to).
-     * <p/>
+     * <p>
      * The remaining bytes will be drained (consumed and discared) when the message is too large.
      */
     public static boolean optMergeDelimitedFrom(InputStream in,
@@ -368,7 +368,7 @@ public final class GraphIOUtil
     /**
      * Optimal/Optional mergeDelimitedFrom - If the message does not fit the buffer, no merge is done and this method
      * will return false.
-     * <p/>
+     * <p>
      * This is strictly for reading a single message from the stream because the buffer is aggressively filled when
      * reading the delimited size (which could result into reading more bytes than it has to).
      */
