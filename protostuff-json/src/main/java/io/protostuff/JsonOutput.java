@@ -17,7 +17,7 @@ package io.protostuff;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
  * An output used for writing data with json format.

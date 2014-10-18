@@ -20,13 +20,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.io.IOContext;
-import org.codehaus.jackson.smile.SmileFactory;
-import org.codehaus.jackson.smile.SmileGenerator;
-import org.codehaus.jackson.smile.SmileParser;
-import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.dataformat.smile.SmileFactory;
+import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
+import com.fasterxml.jackson.dataformat.smile.SmileParser;
+import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 
 /**
  * Smile IO utilities for messages.
