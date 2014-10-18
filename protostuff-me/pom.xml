@@ -42,8 +42,8 @@
               <goal>testCompile</goal>
             </goals>
             <configuration>
-              <source>1.5</source>
-              <target>1.5</target>
+              <source>1.7</source>
+              <target>1.7</target>
             </configuration>
           </execution>
         </executions>
