@@ -42,7 +42,7 @@ public abstract class AbstractParser extends Parser
 
     /**
      * Create a new parser instance, pre-supplying the input token stream and the shared state.
-     * <p/>
+     * <p>
      * This is only used when a grammar is imported into another grammar, but we must supply this constructor to satisfy
      * the super class contract.
      * 

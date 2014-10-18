@@ -23,9 +23,9 @@ import io.protostuff.runtime.MappedSchema.Field;
  * This base class handles all the IO for reading and writing polymorphic fields. When a field's type is
  * polymorphic/dynamic (e.g interface/abstract/object), the type (id) needs to be written (ahead) before its
  * value/content to be able to deserialize it correctly.
- * <p/>
+ * <p>
  * The underlying impl will determine how the type (id) should be written.
- * <p/>
+ * <p>
  * An {@link IdStrategy} is standalone if the {@link #primaryGroup} is not set.
  * 
  * @author Leo Romanoff
@@ -200,8 +200,7 @@ public abstract class IdStrategy
 
     /**
      * Returns the {@link MapSchema.MessageFactory}. The callers (internal field factories}) are responsible that the
-     * class provided implements {@Map
-     * }.
+     * class provided implements {@link Map}.
      */
     protected abstract MapSchema.MessageFactory getMapFactory(Class<?> clazz);
 

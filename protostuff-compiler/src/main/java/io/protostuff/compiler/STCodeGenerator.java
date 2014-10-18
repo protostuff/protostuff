@@ -107,7 +107,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
 
     /**
      * Formats the string n times.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * For example:
@@ -131,7 +131,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
 
     /**
      * Formats the string {@code str} using the format {@code formatName}.
-     * <p/>
+     * <p>
      * If the formatter with the name does not exist, the input string will be appended with the formatName.
      */
     public static String format(String str, String formatName)

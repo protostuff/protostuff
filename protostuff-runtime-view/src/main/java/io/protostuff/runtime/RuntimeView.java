@@ -135,7 +135,7 @@ public final class RuntimeView
 
     /**
      * Built-in view schema factories.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * All factory args are required except:
@@ -143,15 +143,15 @@ public final class RuntimeView
      * {@link Predicate.Factory} pf
      * {@link String}[] args
      * </pre>
-     * <p/>
+     * <p>
      * For application/behavior specific filters, create your own view factory or predicate factory, and then design an
-     * ahead-of-time filter (which is usually done at application startup). </pre>
+     * ahead-of-time filter (which is usually done at application startup).
      */
     public enum Factories implements Factory
     {
         /**
          * Filters the fields to include based on a {@link Predicate}.
-         * <p/>
+         * <p>
          * The {@link Predicate.Factory} arg is required.
          */
         PREDICATE
@@ -217,7 +217,7 @@ public final class RuntimeView
 
         /**
          * Exclude the fields for merging and writing.
-         * <p/>
+         * <p>
          * The args param is required (the field names to exclude) if {@link Predicate.Factory} is not provided.
          */
         EXCLUDE
@@ -288,7 +288,7 @@ public final class RuntimeView
         /**
          * Optimized only for merging. If you need to do writes, use {@link #EXCLUDE} instead. The extra map lookups
          * during writes makes this slower than {@link #EXCLUDE}.
-         * <p/>
+         * <p>
          * The args param is required (the field names to exclude).
          */
         EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY
@@ -354,7 +354,7 @@ public final class RuntimeView
 
         /**
          * Include the fields for merging and writing.
-         * <p/>
+         * <p>
          * The args param is required (the field names to include).
          */
         INCLUDE
@@ -426,7 +426,7 @@ public final class RuntimeView
         /**
          * Optimized only for merging. If you need to do writes, use {@link #INCLUDE} instead. The extra map lookups
          * during writes makes this slower than {@link #INCLUDE}.
-         * <p/>
+         * <p>
          * The args param is required (the field names to include).
          */
         INCLUDE_OPTIMIZED_FOR_MERGE_ONLY

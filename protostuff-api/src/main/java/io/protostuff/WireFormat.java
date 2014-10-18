@@ -48,7 +48,7 @@ package io.protostuff;
  * This class is used internally by the Protocol Buffer library and generated message implementations. It is public only
  * because those generated messages do not reside in the {@code protobuf} package. Others should not use this class
  * directly.
- * <p/>
+ * <p>
  * This class contains constants and helper functions useful for dealing with the Protocol Buffer wire format.
  * 
  * @author kenton@google.com Kenton Varda

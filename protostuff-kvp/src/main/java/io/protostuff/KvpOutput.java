@@ -24,9 +24,9 @@ import java.nio.ByteBuffer;
  * An output for serializing kvp-encoded messages (from a byte array as source). A kvp encoding is a binary encoding w/c
  * contains a key-value sequence. On the wire, a serialized field (key-value) would look like:
  * [key-len][key][value-len][value]
- * <p/>
+ * <p>
  * The keys and values are length-delimited (uint16 little endian).
- * <p/>
+ * <p>
  * Note that this encoding does not support nested messages. This encoding is mostly useful for headers w/c contain
  * information about the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  * 

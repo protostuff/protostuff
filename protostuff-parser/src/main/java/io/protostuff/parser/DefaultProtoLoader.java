@@ -101,7 +101,7 @@ public class DefaultProtoLoader implements Proto.Loader
 
     /**
      * Search from proto_path only. For full protoc compatibility, use this.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Enable via:
@@ -124,7 +124,7 @@ public class DefaultProtoLoader implements Proto.Loader
 
     /**
      * Search from proto_path and classpath (in that order).
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Enable via:
@@ -155,7 +155,7 @@ public class DefaultProtoLoader implements Proto.Loader
 
     /**
      * Search from every possible resource. Also loads from a remote url (if path starts with http://).
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Search order is:

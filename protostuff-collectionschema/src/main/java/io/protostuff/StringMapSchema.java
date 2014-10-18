@@ -28,7 +28,7 @@ public class StringMapSchema<V> extends MapSchema<String, V>
 {
 
     /**
-     * The schema for Map<String,String>
+     * The schema for {@code Map<String,String>}
      */
     public static final StringMapSchema<String> VALUE_STRING = new StringMapSchema<String>(null)
     {

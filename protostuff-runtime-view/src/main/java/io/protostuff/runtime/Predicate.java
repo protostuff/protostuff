@@ -31,7 +31,7 @@ public interface Predicate
 
     /**
      * Returns true if the field is included.
-     * <p/>
+     * <p>
      * The predicate logic can be dynamic based on the contents of the message.
      */
     public boolean apply(Field<?> f, Object message);

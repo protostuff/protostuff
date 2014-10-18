@@ -42,7 +42,7 @@ public class Annotation implements HasName
 
     /**
      * Shorthand for {@link #getParams()}.
-     * <p/>
+     * <p>
      * 
      * <pre>
      * If you have an annotation like &#64;Foo(id = 1), you then can use:
@@ -83,13 +83,13 @@ public class Annotation implements HasName
 
     /**
      * Shorthand for params.isEmpty().
-     * <p/>
+     * <p>
      * 
      * <pre>
      * You can then use:
      * &lt;if(message.a.("Foo").emptyP&gt;
      * </pre>
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Note that this does not work on stringtemplate:

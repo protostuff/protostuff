@@ -232,7 +232,7 @@ final class IOUtil
 
     /**
      * Fills the buffer based from the varint32 read from the input stream.
-     * <p/>
+     * <p>
      * The buffer's read offset is not set if the data (varint32 size + message size) is too large to fit in the buffer.
      * 
      * @return the delimited size read.

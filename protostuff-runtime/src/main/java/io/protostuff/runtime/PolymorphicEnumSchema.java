@@ -41,7 +41,7 @@ import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
 import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
 
 /**
- * Used when a field is declared as "Enum<?>" (with or with-out generics).
+ * Used when a field is declared as {@code Enum<?>} (with or with-out generics).
  * 
  * @author David Yu
  * @created Apr 25, 2012

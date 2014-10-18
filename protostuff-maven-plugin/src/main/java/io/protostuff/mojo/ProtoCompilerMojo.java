@@ -82,7 +82,7 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     /**
      * If not specified, the directory where the file is located will be used as its base dir.
-     * <p/>
+     * <p>
      * This is only relevent when {@link #modulesFile is provided}.
      * 
      * @parameter
@@ -92,7 +92,7 @@ public class ProtoCompilerMojo extends AbstractMojo
 
     /**
      * If not specified, the directory where the file is located will be used as its base dir.
-     * <p/>
+     * <p>
      * This is only relevent when {@link #modulesFile is provided}.
      * 
      * @parameter

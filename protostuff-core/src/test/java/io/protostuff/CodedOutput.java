@@ -53,13 +53,13 @@ import io.protostuff.StringSerializer.STRING;
 
 /**
  * Encodes and writes protocol message fields.
- * <p/>
+ * <p>
  * <p>
  * This class contains two kinds of methods: methods that write specific protocol message constructs and field types
  * (e.g. {@link #writeTag} and {@link #writeInt32}) and methods that write low-level values (e.g.
  * {@link #writeRawVarint32} and {@link #writeRawBytes}). If you are writing encoded protocol messages, you should use
  * the former methods, but if you are writing some other format of your own design, use the latter.
- * <p/>
+ * <p>
  * <p>
  * This class is totally unsynchronized.
  * 
