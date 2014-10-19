@@ -20,7 +20,7 @@ import java.util.Collection;
 
 /**
  * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
- * <p/>
+ * <p>
  * If your application relies on {@link Object#equals(Object)}, it will fail when a serialized collection contains null
  * values (The deserialized collection will not contained the null value). {@link MapSchema} on the otherhand can
  * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.

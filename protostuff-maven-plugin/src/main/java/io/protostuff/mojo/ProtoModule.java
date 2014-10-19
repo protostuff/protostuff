@@ -17,12 +17,7 @@ package io.protostuff.mojo;
 /**
  * Specifically for the maven-plugin. This allows you to not specify
  * implementation="io.protostuff.protocompiler.ProtoModule" on your
- * 
- * <pre>
- * <protoModule></protoModule>
- * </pre>
- * 
- * tags
+ * {@code <protoModule> </protoModule>} tags
  * 
  * @author David Yu
  * @created Jan 14, 2010

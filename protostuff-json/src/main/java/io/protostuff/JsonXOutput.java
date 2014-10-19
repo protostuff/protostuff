@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 /**
  * An optimized json output which is efficient in writing numeric keys and pre-encoded utf8 strings (in byte array
  * form).
- * <p/>
+ * <p>
  * This is the appropriate output sink to use when writing from binary (protostuff,protobuf,etc) pipes.
  * 
  * @author David Yu

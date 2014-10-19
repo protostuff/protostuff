@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * A list of ByteBuffers.
- * <p/>
+ * <p>
  * Created by ryan on 1/22/14.
  */
 public class LinkBuffer

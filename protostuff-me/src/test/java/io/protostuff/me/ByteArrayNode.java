@@ -16,7 +16,7 @@ package io.protostuff.me;
 
 /**
  * A node that wraps a byte array and has a reference to the next node.
- * <p/>
+ * <p>
  * This is used as a single-direction linked list of byte[] wrappers.
  * 
  * @author David Yu

@@ -190,7 +190,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
 
     /**
      * Gets the runtime field factory of the given {@code clazz}.
-     * <p/>
+     * <p>
      * Method overload for backwards compatibility.
      */
     public static RuntimeFieldFactory<?> getFieldFactory(Class<?> clazz)

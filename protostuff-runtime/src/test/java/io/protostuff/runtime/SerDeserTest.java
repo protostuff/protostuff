@@ -118,7 +118,7 @@ public class SerDeserTest extends TestCase
     /**
      * HasHasBar wraps an object without a schema. That object will have to be serialized via the default java
      * serialization and it will be delimited.
-     * <p/>
+     * <p>
      * HasBar wraps a message {@link Bar}.
      */
     public void testJavaSerializable() throws Exception

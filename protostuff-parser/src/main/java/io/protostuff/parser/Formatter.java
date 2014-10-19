@@ -63,7 +63,7 @@ public interface Formatter
 
         /**
          * camel-case.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * some_foo/SomeFoo becomes someFoo
@@ -79,7 +79,7 @@ public interface Formatter
 
         /**
          * camel-case with trailing underscore.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * some_foo/SomeFoo/someFoo becomes someFoo_
@@ -95,7 +95,7 @@ public interface Formatter
 
         /**
          * underscore-case.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * someFoo/SomeFoo becomes some_foo
@@ -111,7 +111,7 @@ public interface Formatter
 
         /**
          * underscore-case with trailing underscore.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * someFoo/SomeFoo/some_foo becomes some_foo_
@@ -127,7 +127,7 @@ public interface Formatter
 
         /**
          * "uppercased" underscore-case.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * someFoo/SomeFoo/some_foo becomes SOME_FOO
@@ -143,7 +143,7 @@ public interface Formatter
 
         /**
          * pascal-case.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * some_foo/someFoo becomes SomeFoo
@@ -159,7 +159,7 @@ public interface Formatter
 
         /**
          * pascal-case with space in between.
-         * <p/>
+         * <p>
          * 
          * <pre>
          * someFoo/some_foo/SomeFoo becomes "Some Foo"
@@ -201,7 +201,7 @@ public interface Formatter
 
         /**
          * Same as PCS but with the more correct name :/.
-         * <p/>
+         * <p>
          * The space "S" is really in-between.
          */
         PSC

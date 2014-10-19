@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * Handles the serialization and deserialization of a message/object tied to this.
- * <p/>
+ * <p>
  * Basically, any object can be serialized via protobuf. As long as its schema is provided, it does not need to
  * implement {@link Message}. This was designed with "unobtrusive" in mind. The goal was to be able to
  * serialize/deserialize any existing object without having to touch its source. This will enable you to customize the

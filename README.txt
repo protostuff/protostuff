@@ -2,7 +2,7 @@ Documentation:
 - http://code.google.com/p/protostuff/
 
 Requirements:
-- java 1.5 or higher
+- java 1.7 or higher
 
 Build Requirements:
 - maven 2.0.9 or higher

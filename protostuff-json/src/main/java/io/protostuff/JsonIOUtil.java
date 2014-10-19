@@ -283,7 +283,7 @@ public final class JsonIOUtil
 
     /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
-     * <p/>
+     * <p>
      * The {@link LinkedBuffer}'s internal byte array will be used when reading the message.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema,
@@ -362,7 +362,7 @@ public final class JsonIOUtil
 
     /**
      * Serializes the {@code message} into a byte array using the given {@code schema}.
-     * <p/>
+     * <p>
      * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric,
@@ -408,7 +408,7 @@ public final class JsonIOUtil
 
     /**
      * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
-     * <p/>
+     * <p>
      * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
     public static <T> void writeTo(OutputStream out, T message, Schema<T> schema,
@@ -488,7 +488,7 @@ public final class JsonIOUtil
 
     /**
      * Serializes the {@code messages} into the stream using the given schema.
-     * <p/>
+     * <p>
      * The {@link LinkedBuffer}'s internal byte array will be used as the primary buffer when writing the message.
      */
     public static <T> void writeListTo(OutputStream out, List<T> messages,
@@ -579,7 +579,7 @@ public final class JsonIOUtil
 
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
-     * <p/>
+     * <p>
      * The {@link LinkedBuffer}'s internal byte array will be used when reading the message.
      */
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema,

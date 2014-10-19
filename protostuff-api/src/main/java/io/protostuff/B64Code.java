@@ -40,7 +40,7 @@ import java.io.OutputStream;
  * data.
  * <p>
  * Note that in a web context the usual case is to not want linebreaks or other white space in the encoded output.
- * <p/>
+ * <p>
  * All methods that begin with 'c' will use char arrays (as output on encode, as input on decode).
  * 
  * @author Brett Sealey (bretts)

@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 
 /**
  * A protobuf output where the writing of bytes is deferred (buffered chunks).
- * <p/>
+ * <p>
  * Once the message serialization is done, data can then be streamed to an {@link OutputStream} or a {@link ByteBuffer}.
  * 
  * @author David Yu

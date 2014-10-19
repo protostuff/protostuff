@@ -393,16 +393,16 @@ public abstract class NumericIdStrategy extends IdStrategy
         /**
          * If you are sure that you are only using a single implementation of your interface/abstract class, then it
          * makes sense to map it directly to its impl class to avoid writing the type.
-         * <p/>
+         * <p>
          * Note that the type is always written when your field is {@link java.lang.Object}.
-         * <p/>
+         * <p>
          * Pojo ids start at 1.
          */
         public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass);
 
         /**
          * Register a {@link Delegate} and assign an id.
-         * <p/>
+         * <p>
          * Delegate ids start at 1.
          */
         public <T> Registry registerDelegate(Delegate<T> delegate, int id);

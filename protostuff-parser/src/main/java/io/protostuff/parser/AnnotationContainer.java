@@ -43,7 +43,7 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
 
     /**
      * Short-hand for {@link #getAnnotationMap()}.
-     * <p/>
+     * <p>
      * You then can use:
      * 
      * <pre>
@@ -84,13 +84,13 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
 
     /**
      * Shorthand for annotations.isEmpty().
-     * <p/>
+     * <p>
      * 
      * <pre>
      * You can then use:
      * &lt;if(message.emptyA)&gt;
      * </pre>
-     * <p/>
+     * <p>
      * 
      * <pre>
      * Note that this does not work on stringtemplate:
