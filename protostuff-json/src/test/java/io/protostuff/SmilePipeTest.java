@@ -16,7 +16,8 @@ package io.protostuff;
 
 import java.io.ByteArrayInputStream;
 
-import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test case for smile pipes.
@@ -40,8 +41,7 @@ public class SmilePipeTest extends AbstractTest
         byte[] smileFromStream = SmileIOUtil.toByteArray(
                 ProtobufIOUtil.newPipe(protobufStream), pipeSchema, false);
 
-        assertTrue(smile.length == smileFromStream.length);
-        assertEquals(STRING.deser(smile), STRING.deser(smileFromStream));
+        assertTrue(Arrays.equals(smile, smileFromStream));
 
         T parsedMessage = schema.newMessage();
         SmileIOUtil.mergeFrom(smile, parsedMessage, schema, false);
@@ -55,15 +55,9 @@ public class SmilePipeTest extends AbstractTest
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
                 SmileIOUtil.newPipe(smileStream, false), pipeSchema, buf());
 
-        assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
 
-        String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobufRoundTripFromStream));
-
-        assertTrue(protobufRoundTrip.length == protobuf.length);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
     }
 
     static <T> void protostuffRoundTrip(T message, Schema<T> schema,
@@ -79,8 +73,7 @@ public class SmilePipeTest extends AbstractTest
         byte[] smileFromStream = SmileIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, false);
 
-        assertTrue(smile.length == smileFromStream.length);
-        assertEquals(STRING.deser(smile), STRING.deser(smileFromStream));
+        assertTrue(Arrays.equals(smile, smileFromStream));
 
         T parsedMessage = schema.newMessage();
         SmileIOUtil.mergeFrom(smile, parsedMessage, schema, false);
@@ -94,15 +87,9 @@ public class SmilePipeTest extends AbstractTest
         byte[] protostuffRoundTripFromStream = ProtostuffIOUtil.toByteArray(
                 SmileIOUtil.newPipe(smileStream, false), pipeSchema, buf());
 
-        assertTrue(protostuffRoundTrip.length == protostuffRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protostuffRoundTrip, protostuffRoundTripFromStream));
 
-        String strProtostuffRoundTrip = STRING.deser(protostuffRoundTrip);
-
-        assertEquals(strProtostuffRoundTrip, STRING.deser(protostuffRoundTripFromStream));
-
-        assertTrue(protostuffRoundTrip.length == protostuff.length);
-
-        assertEquals(strProtostuffRoundTrip, STRING.deser(protostuff));
+        assertTrue(Arrays.equals(protostuffRoundTrip, protostuff));
     }
 
     public void testFoo() throws Exception
