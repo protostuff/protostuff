@@ -325,7 +325,7 @@ public final class CompilerMain
                 else if (output.endsWith(".stg"))
                 {
                     // custom code generator
-                    compiler = new PluginProtoCompiler(module);
+                    compiler = new PluginProtoCompiler(module, output);
                 }
                 else
                     throw new IllegalStateException("unknown output: " + output);
