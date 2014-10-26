@@ -49,7 +49,6 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>stringtemplate</artifactId>
-      <version>${stringtemplate-version}</version>
     </dependency>
   </dependencies>
   
