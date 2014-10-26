@@ -3,25 +3,14 @@
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
     <version>1.1.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>protostuff-compiler</artifactId>
   <name>protostuff :: compiler</name>
   <description>compiler for .proto files (java/gwt/etc output)</description>
-  <packaging>jar</packaging>
-  
+
   <build>
-    <defaultGoal>install</defaultGoal>
     <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
-        </plugin>
         <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -69,7 +58,7 @@
                 </manifest>
                 <manifestEntries>
                   <implementation-version>${project.version}</implementation-version>
-                  <url>${pom.url}</url>
+                  <url>${project.url}</url>
                 </manifestEntries>
               </archive> 
             </configuration>
@@ -99,7 +88,7 @@
                       <manifest>
                         <attribute name="Main-Class" value="io.protostuff.compiler.CompilerMain" />
                         <attribute name="implementation-version" value="${project.version}" />
-                        <attribute name="url" value="${pom.url}" />
+                        <attribute name="url" value="${project.url}" />
                       </manifest>
                       <zipfileset src="target/${project.build.finalName}-jar-with-dependencies.jar" />
                       <keep pattern="io.protostuff.compiler.**" />

@@ -3,31 +3,16 @@
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
     <version>1.1.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>protostuff-me</artifactId>
   <name>protostuff :: me</name>
   <description>protostuff for j2me</description>
-  <packaging>jar</packaging>
-  
+
   <build>
-    <defaultGoal>install</defaultGoal>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
+        <inherited>false</inherited>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -36,8 +21,8 @@
         </configuration>
         <executions>
           <execution>
-            <id>compile-tests</id>
-            <phase>process-test-sources</phase>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
@@ -51,6 +36,7 @@
       <plugin>
         <groupId>com.pyx4me</groupId>
         <artifactId>proguard-maven-plugin</artifactId>
+        <version>2.0.4</version>
           <executions>
             <execution>
               <phase>package</phase>

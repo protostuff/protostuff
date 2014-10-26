@@ -3,32 +3,12 @@
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
     <version>1.1.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>protostuff-runtime</artifactId>
   <name>protostuff :: runtime</name>
   <description>protobuf serialization for pre-existing objects</description>
-  <packaging>jar</packaging>
-  
-  <build>
-    <defaultGoal>install</defaultGoal>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+
   
   <dependencies>
     <dependency>
