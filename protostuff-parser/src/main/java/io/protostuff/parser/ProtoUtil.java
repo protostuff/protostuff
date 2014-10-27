@@ -213,16 +213,4 @@ public final class ProtoUtil
         return buffer;
     }
 
-    public static void main(String[] args)
-    {
-        String[] gg = { "foo_bar_baz", "fooBarBaz", "FooBarBaz", "foo_bar_baz", "____Foo____Bar___Baz____" };
-        for (String g : gg)
-        {
-            System.err.println(toCamelCase(g));
-            System.err.println(toPascalCase(g));
-            System.err.println(toUnderscoreCase(g));
-            System.err.println(toUnderscoreCase(g).toString().toUpperCase());
-        }
-    }
-
 }
