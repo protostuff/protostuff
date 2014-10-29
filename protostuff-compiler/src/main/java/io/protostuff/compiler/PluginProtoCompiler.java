@@ -14,14 +14,24 @@
 
 package io.protostuff.compiler;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
 
 import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import io.protostuff.parser.*;
+import io.protostuff.parser.DefaultProtoLoader;
+import io.protostuff.parser.EnumGroup;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
+import io.protostuff.parser.ProtoUtil;
+import io.protostuff.parser.Service;
 
 /**
  * A plugin proto compiler whose output relies on the 'output' param configured in {@link ProtoModule}. The output param
