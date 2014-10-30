@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * UTF-8 String serialization
- * 
+ *
  * @author David Yu
  * @created Feb 4, 2010
  */
@@ -80,19 +80,19 @@ public final class StringSerializer
 
     static final int TWO_BYTE_LOWER_LIMIT = 1 << 7;
 
-    static final int ONE_BYTE_EXCLUSIVE = TWO_BYTE_LOWER_LIMIT / 3 + 1;
+    static final int ONE_BYTE_EXCLUSIVE = TWO_BYTE_LOWER_LIMIT / 4 + 1;
 
     static final int THREE_BYTE_LOWER_LIMIT = 1 << 14;
 
-    static final int TWO_BYTE_EXCLUSIVE = THREE_BYTE_LOWER_LIMIT / 3 + 1;
+    static final int TWO_BYTE_EXCLUSIVE = THREE_BYTE_LOWER_LIMIT / 4 + 1;
 
     static final int FOUR_BYTE_LOWER_LIMIT = 1 << 21;
 
-    static final int THREE_BYTE_EXCLUSIVE = FOUR_BYTE_LOWER_LIMIT / 3 + 1;
+    static final int THREE_BYTE_EXCLUSIVE = FOUR_BYTE_LOWER_LIMIT / 4 + 1;
 
     static final int FIVE_BYTE_LOWER_LIMIT = 1 << 28;
 
-    static final int FOUR_BYTE_EXCLUSIVE = FIVE_BYTE_LOWER_LIMIT / 3 + 1;
+    static final int FOUR_BYTE_EXCLUSIVE = FIVE_BYTE_LOWER_LIMIT / 4 + 1;
 
     static void putBytesFromInt(int i, final int offset, final int size, final byte[] buf)
     {
