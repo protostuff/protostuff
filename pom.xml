@@ -13,7 +13,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <additionalparam>-Xdoclint:none</additionalparam>
 
     <junit-version>4.11</junit-version>
     <protobuf-version>2.3.0</protobuf-version>
@@ -332,7 +331,6 @@
   <modules>
     <module>protostuff-api</module>
     <module>protostuff-core</module>
-    <module>protostuff-me</module>
     <module>protostuff-collectionschema</module>
     <module>protostuff-runtime</module>
     <module>protostuff-runtime-md</module>
