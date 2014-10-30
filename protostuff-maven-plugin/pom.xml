@@ -13,6 +13,7 @@
 
   <properties>
     <mavenVersion>2.0.9</mavenVersion>
+    <plexus.version>1.5.5</plexus.version>
   </properties>
 
   <prerequisites>
@@ -75,6 +76,20 @@
         </configuration>
 
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>${plexus.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
@@ -98,6 +113,11 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>${mavenVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+      <version>${plexus.version}</version>
     </dependency>
   </dependencies>
 
