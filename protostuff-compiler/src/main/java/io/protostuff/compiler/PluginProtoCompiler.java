@@ -31,6 +31,7 @@ import io.protostuff.parser.EnumGroup;
 import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
 import io.protostuff.parser.ProtoUtil;
+import io.protostuff.parser.Service;
 
 /**
  * A plugin proto compiler whose output relies on the 'output' param configured in {@link ProtoModule}. The output param
@@ -55,41 +56,41 @@ public class PluginProtoCompiler extends STCodeGenerator
     {
 
         /**
-         * Resolve the stg from the module.
+         * Resolve the stg.
          */
-        StringTemplateGroup resolveSTG(ProtoModule module);
+        StringTemplateGroup resolveSTG(String stgLocation);
+
     }
 
     public static final GroupResolver GROUP_RESOLVER = new GroupResolver()
     {
 
-        public StringTemplateGroup resolveSTG(ProtoModule module)
+        public StringTemplateGroup resolveSTG(String stgLocation)
         {
-            String resource = module.getOutput();
             try
             {
-                File file = new File(resource);
+                File file = new File(stgLocation);
                 if (file.exists())
                     return new StringTemplateGroup(new BufferedReader(new FileReader(file)));
 
-                URL url = DefaultProtoLoader.getResource(resource,
+                URL url = DefaultProtoLoader.getResource(stgLocation,
                         PluginProtoCompiler.class);
                 if (url != null)
                 {
                     return new StringTemplateGroup(new BufferedReader(
                             new InputStreamReader(url.openStream(), "UTF-8")));
                 }
-                if (resource.startsWith("http://"))
+                if (stgLocation.startsWith("http://"))
                 {
                     return new StringTemplateGroup(new BufferedReader(
-                            new InputStreamReader(new URL(resource).openStream(), "UTF-8")));
+                            new InputStreamReader(new URL(stgLocation).openStream(), "UTF-8")));
                 }
             }
             catch (IOException e)
             {
                 throw new RuntimeException(e);
             }
-            throw new IllegalStateException("Could not find " + resource);
+            throw new IllegalStateException("Could not find " + stgLocation);
         }
     };
 
@@ -118,19 +119,26 @@ public class PluginProtoCompiler extends STCodeGenerator
     private static GroupResolver __resolver = GROUP_RESOLVER;
 
     public final ProtoModule module;
-    public final StringTemplateGroup group;
-    public final StringTemplate enumBlockTemplate, messageBlockTemplate, protoBlockTemplate;
-    public final boolean javaOutput;
-    public final String fileExtension, outputName, outputPrefix, outputSuffix;
 
-    public PluginProtoCompiler(ProtoModule module)
+    public final StringTemplateGroup group;
+    public final StringTemplate enumBlockTemplate;
+    public final StringTemplate messageBlockTemplate;
+    public final StringTemplate protoBlockTemplate;
+    public final StringTemplate serviceBlockTemplate;
+    public final boolean javaOutput;
+    public final String fileExtension;
+    public final String outputName;
+    public final String outputPrefix;
+    public final String outputSuffix;
+
+    public PluginProtoCompiler(ProtoModule module, String stgLocation)
     {
-        this(module, CHECK_FILENAME_PLACEHOLDER);
+        this(module, stgLocation, CHECK_FILENAME_PLACEHOLDER);
     }
 
-    public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder)
+    public PluginProtoCompiler(ProtoModule module, String stgLocation, boolean checkFilenamePlaceHolder)
     {
-        this(module, checkFilenamePlaceHolder, resolveSTG(module));
+        this(module, checkFilenamePlaceHolder, resolveSTG(stgLocation));
     }
 
     public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder,
@@ -147,11 +155,12 @@ public class PluginProtoCompiler extends STCodeGenerator
             // validate that at least enum_block or message_block is present.
             enumBlockTemplate = getTemplateFrom(group, "enum_block");
             messageBlockTemplate = getTemplateFrom(group, "message_block");
+            serviceBlockTemplate = getTemplateFrom(group, "service_block");
 
-            if (enumBlockTemplate == null && messageBlockTemplate == null)
+            if (enumBlockTemplate == null && messageBlockTemplate == null && serviceBlockTemplate == null)
             {
                 throw new IllegalStateException("At least one of these templates " +
-                        "(proto_block|message_block|enum_block) " +
+                        "(proto_block|service_block|message_block|enum_block) " +
                         "need to be declared in " + module.getOutput());
             }
         }
@@ -159,6 +168,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             enumBlockTemplate = null;
             messageBlockTemplate = null;
+            serviceBlockTemplate = null;
         }
 
         fileExtension = getFileExtension(module.getOutput());
@@ -231,9 +241,9 @@ public class PluginProtoCompiler extends STCodeGenerator
     /**
      * Finds the stg resource.
      */
-    public static StringTemplateGroup resolveSTG(ProtoModule module)
+    public static StringTemplateGroup resolveSTG(String stgLocation)
     {
-        return __resolver.resolveSTG(module);
+        return __resolver.resolveSTG(stgLocation);
     }
 
     public String resolveFileName(String name)
@@ -258,6 +268,15 @@ public class PluginProtoCompiler extends STCodeGenerator
             return;
         }
 
+        if (serviceBlockTemplate != null)
+        {
+            for (Service service : proto.getServices())
+            {
+                compileServiceBlock(module, service, packageName,
+                        resolveFileName(service.getName()), serviceBlockTemplate);
+            }
+        }
+
         if (enumBlockTemplate != null)
         {
             for (EnumGroup eg : proto.getEnumGroups())
@@ -275,6 +294,28 @@ public class PluginProtoCompiler extends STCodeGenerator
                         resolveFileName(message.getName()), messageBlockTemplate);
             }
         }
+    }
+
+    private void compileServiceBlock(ProtoModule module, Service service, String packageName, String fileName,
+            StringTemplate serviceBlockTemplate) throws IOException
+    {
+        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+        compileServiceBlockTo(writer, module, service, serviceBlockTemplate);
+        writer.close();
+    }
+
+    public static void compileServiceBlockTo(Writer writer,
+            ProtoModule module, Service service,
+            StringTemplate serviceBlockTemplate) throws IOException
+    {
+        AutoIndentWriter out = new AutoIndentWriter(writer);
+
+        StringTemplate messageBlock = serviceBlockTemplate.getInstanceOf();
+        messageBlock.setAttribute("service", service);
+        messageBlock.setAttribute("module", module);
+        messageBlock.setAttribute("options", module.getOptions());
+
+        messageBlock.write(out);
     }
 
     public static void compileEnumBlock(ProtoModule module, EnumGroup eg,
