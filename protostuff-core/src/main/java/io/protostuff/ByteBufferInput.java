@@ -47,6 +47,7 @@ public final class ByteBufferInput implements Input
     // private final byte[] buffer;
     private int lastTag = 0;
     // private int offset, limit, lastTag = 0;
+    private int packed_limit = 0;
 
     /**
      * If true, the nested messages are group-encoded
@@ -91,6 +92,14 @@ public final class ByteBufferInput implements Input
     public int currentLimit()
     {
         return buffer.limit();
+    }
+
+    /**
+     * Return true if currently reading packed field
+     */
+    public boolean currentPacked()
+    {
+        return packed_limit != 0 && packed_limit != buffer.position();
     }
 
     /**
@@ -204,7 +213,22 @@ public final class ByteBufferInput implements Input
             return 0;
         }
 
-        final int tag = readRawVarint32();
+        final int tag;
+        // are we reading packed field?
+        if (currentPacked())
+        {
+            if (packed_limit < buffer.position())
+                throw ProtobufException.misreportedSize();
+
+            // Return field number while reading packed field
+            return lastTag >>> TAG_TYPE_BITS;
+        }
+        else
+        {
+            tag = readRawVarint32();
+            packed_limit = 0;
+        }
+
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
         {
@@ -229,11 +253,26 @@ public final class ByteBufferInput implements Input
         return fieldNumber;
     }
 
+    private void maybePacked() throws IOException {
+        // Do we have the start of a packed field?
+        if (packed_limit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)  {
+            final int length = readRawVarint32();
+            if (length < 0)
+                throw ProtobufException.negativeSize();
+
+            if (buffer.position() + length > buffer.limit())
+                throw ProtobufException.misreportedSize();
+
+            this.packed_limit = buffer.position() + length;
+        }
+    }
+
     /**
      * Read a {@code double} field value from the internal buffer.
      */
     public double readDouble() throws IOException
     {
+        maybePacked();
         return Double.longBitsToDouble(readRawLittleEndian64());
     }
 
@@ -242,6 +281,7 @@ public final class ByteBufferInput implements Input
      */
     public float readFloat() throws IOException
     {
+        maybePacked();
         return Float.intBitsToFloat(readRawLittleEndian32());
     }
 
@@ -250,6 +290,7 @@ public final class ByteBufferInput implements Input
      */
     public long readUInt64() throws IOException
     {
+        maybePacked();
         return readRawVarint64();
     }
 
@@ -258,6 +299,7 @@ public final class ByteBufferInput implements Input
      */
     public long readInt64() throws IOException
     {
+        maybePacked();
         return readRawVarint64();
     }
 
@@ -266,6 +308,7 @@ public final class ByteBufferInput implements Input
      */
     public int readInt32() throws IOException
     {
+        maybePacked();
         return readRawVarint32();
     }
 
@@ -274,6 +317,7 @@ public final class ByteBufferInput implements Input
      */
     public long readFixed64() throws IOException
     {
+        maybePacked();
         return readRawLittleEndian64();
     }
 
@@ -282,6 +326,7 @@ public final class ByteBufferInput implements Input
      */
     public int readFixed32() throws IOException
     {
+        maybePacked();
         return readRawLittleEndian32();
     }
 
@@ -290,6 +335,7 @@ public final class ByteBufferInput implements Input
      */
     public boolean readBool() throws IOException
     {
+        maybePacked();
         return buffer.get() != 0;
     }
 
@@ -298,6 +344,7 @@ public final class ByteBufferInput implements Input
      */
     public int readUInt32() throws IOException
     {
+        maybePacked();
         return readRawVarint32();
     }
 
@@ -307,6 +354,7 @@ public final class ByteBufferInput implements Input
      */
     public int readEnum() throws IOException
     {
+        maybePacked();
         return readRawVarint32();
     }
 
@@ -315,6 +363,7 @@ public final class ByteBufferInput implements Input
      */
     public int readSFixed32() throws IOException
     {
+        maybePacked();
         return readRawLittleEndian32();
     }
 
@@ -323,6 +372,7 @@ public final class ByteBufferInput implements Input
      */
     public long readSFixed64() throws IOException
     {
+        maybePacked();
         return readRawLittleEndian64();
     }
 
@@ -331,6 +381,7 @@ public final class ByteBufferInput implements Input
      */
     public int readSInt32() throws IOException
     {
+        maybePacked();
         final int n = readRawVarint32();
         return (n >>> 1) ^ -(n & 1);
     }
@@ -340,6 +391,7 @@ public final class ByteBufferInput implements Input
      */
     public long readSInt64() throws IOException
     {
+        maybePacked();
         final long n = readRawVarint64();
         return (n >>> 1) ^ -(n & 1);
     }
