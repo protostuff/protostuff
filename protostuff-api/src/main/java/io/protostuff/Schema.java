@@ -25,7 +25,6 @@ import java.io.IOException;
  * serialization of objects from 3rd party libraries.
  * 
  * @author David Yu
- * @created Nov 9, 2009
  */
 public interface Schema<T>
 {
@@ -37,6 +36,9 @@ public interface Schema<T>
      * <pre>
      * return String.valueOf(number);
      * </pre>
+     *
+     * @param number the field number
+     * @return the field name for given number or {@code null} if field with given number does not exist
      */
     public String getFieldName(int number);
 
@@ -47,43 +49,65 @@ public interface Schema<T>
      * <pre>
      * return Integer.parseInt(name);
      * </pre>
+     *
+     * @param name the field name
+     * @return the field number for given field name or {@code 0} when field with given name does not exist
      */
     public int getFieldNumber(String name);
 
     /**
      * Returns true if there is no required field or if all the required fields are set.
+     *
+     * @param message the message to be verified
+     * @return true if all required fields are set
      */
     public boolean isInitialized(T message);
 
     /**
      * Creates the message/object tied to this schema.
+     *
+     * @return the newly instantiated object instance
      */
     public T newMessage();
 
     /**
      * Returns the simple name of the message tied to this schema. Allows custom schemas to provide a custom name other
      * than typeClass().getSimpleName();
+     *
+     * @return the simple name of the message
      */
     public String messageName();
 
     /**
      * Returns the full name of the message tied to this schema. Allows custom schemas to provide a custom name other
      * than typeClass().getName();
+     *
+     * @return the full name of the message
      */
     public String messageFullName();
 
     /**
      * Gets the class of the message.
+     *
+     * @return the message type class
      */
     public Class<? super T> typeClass();
 
     /**
      * Deserializes a message/object from the {@link Input input}.
+     *
+     * @param input the input
+     * @param message message to store deserialized data
+     * @throws IOException when I/O operation on {@code input} fails
      */
     public void mergeFrom(Input input, T message) throws IOException;
 
     /**
      * Serializes a message/object to the {@link Output output}.
+     *
+     * @param output the output
+     * @param message the source message
+     * @throws IOException when I/O operation on {@code output} fails
      */
     public void writeTo(Output output, T message) throws IOException;
 

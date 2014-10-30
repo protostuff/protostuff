@@ -16,10 +16,9 @@ package io.protostuff.runtime;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
 import io.protostuff.ByteString;
 import io.protostuff.runtime.Foo.EnumSample;
+import org.junit.Assert;
 
 /**
  * The objects to be tested.
