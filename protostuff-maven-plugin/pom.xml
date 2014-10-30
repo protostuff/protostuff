@@ -11,6 +11,10 @@
   <description>protostuff-maven-plugin</description>
   <packaging>maven-plugin</packaging>
 
+  <properties>
+    <plexus.version>1.5.5</plexus.version>
+  </properties>
+
   <prerequisites>
     <maven>${mavenVersion}</maven>
   </prerequisites>
