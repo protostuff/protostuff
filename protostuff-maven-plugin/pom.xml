@@ -12,7 +12,6 @@
   <packaging>maven-plugin</packaging>
 
   <properties>
-    <mavenVersion>2.0.9</mavenVersion>
     <plexus.version>1.5.5</plexus.version>
   </properties>
 
@@ -23,15 +22,6 @@
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
-        </plugin>
-
         <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -107,12 +97,10 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
