@@ -23,7 +23,7 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -40,7 +40,7 @@
       <artifactId>stringtemplate</artifactId>
     </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>jwd</id>
@@ -60,7 +60,7 @@
                   <implementation-version>${project.version}</implementation-version>
                   <url>${project.url}</url>
                 </manifestEntries>
-              </archive> 
+              </archive>
             </configuration>
             <executions>
               <execution>
@@ -99,11 +99,9 @@
             </executions>
             <dependencies>
               <dependency>
-                <groupId>com.tonicsystems.jarjar</groupId>
-                <artifactId>jarjar</artifactId>
-                <version>1.1</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/../lib/jarjar-1.1.jar</systemPath>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>jarjar-maven-plugin</artifactId>
+                <version>1.9</version>
               </dependency>
             </dependencies>
           </plugin>
@@ -111,5 +109,5 @@
       </build>
     </profile>
   </profiles>
-  
+
 </project>
