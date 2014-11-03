@@ -1113,12 +1113,20 @@ public final class StringSerializer
         {
             try
             {
-                // Try to use readUTF first, as it should be able to properly
-                // handle 3-byte surrogates (and therefore 6-byte surrogate pairs)
-                // in Java 8+. While Protostuff and many other applications,
-                // still use them, the standard 'forbids' their use, and Java
-                // 8 has started to enforce the standard, resulting in 'corrupted'
-                // data in strings when decoding using new String(nonNullValue, "UTF-8");
+                // Try to use the built in deserialization first, since we expect
+                // that the most likely case is a valid UTF-8 encoded byte array.
+                // Additionally, the built in serialization method has one less
+                // char[] copy than readUTF.
+                //
+                // If, however, there are invalid/malformed characters, i.e. 3-byte
+                // surrogates / 3-byte surrogate pairs, we should fall back to the
+                // readUTF method as it should be able to properly handle 3-byte surrogates
+                // (and therefore 6-byte surrogate pairs) in Java 8+.
+                //
+                // While Protostuff and many other applications, still use 3-byte surrogates
+                // / 6-byte surrogate pairs, the standard 'forbids' their use, and Java 8
+                // has started to enforce the standard, resulting in 'corrupted' data in
+                // strings when decoding using new String(nonNullValue, "UTF-8");
                 //
                 // While the readUTF should be able to handle both Standard Unicode
                 // (i.e. new String().getBytes("UTF-8") and the Legacy Unicode
@@ -1129,25 +1137,40 @@ public final class StringSerializer
                 // implementation's behaviour.
                 //
                 // For the Java 8 change, see: https://bugs.openjdk.java.net/browse/JDK-7096080
-                return readUTF(nonNullValue, offset, len);
+
+                String result = new String(nonNullValue, offset, len, "UTF-8");
+
+                if (result.indexOf(0xfffd) != -1)
+                {
+                    try
+                    {
+                        return readUTF(nonNullValue, offset, len);
+                    }
+                    catch (UTFDataFormatException e)
+                    {
+                        // Unexpected, but most systems previously using
+                        // Protostuff don't expect error to occur from
+                        // String deserialization, so we use this just in case.
+                        return result;
+                    }
+                }
+                else
+                {
+                    return result;
+                }
             }
-            catch (UTFDataFormatException e)
+            catch (UnsupportedEncodingException e)
             {
-                try
-                {
-                    // Unexpected, but most systems previously using
-                    // Protostuff don't expect error to occur from
-                    // String deserialization, so we use this just in case.
-                    return new String(nonNullValue, "UTF-8");
-                }
-                catch (UnsupportedEncodingException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
+                throw new RuntimeException(e);
             }
         }
 
-        static String deserNoFallback(byte[] nonNullValue)
+        /**
+         * Deserialize using readUTF only.
+         * @param nonNullValue
+         * @return
+         */
+        static String deserCustomOnly(byte[] nonNullValue)
         {
             try
             {

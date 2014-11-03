@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import io.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for base 64 encoding.
- * 
+ *
  * @author David Yu
  * @created Sep 27, 2010
  */
@@ -90,6 +90,13 @@ public class B64CodeTest extends TestCase
             int decodedLen = B64Code.decodeTo(decoded, 0, b64Encoded, 0, b64Encoded.length);
 
             byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
+
+            String a = STRING.deser(decoded, 0, decodedLen);
+            String b = STRING.deser(decodedFromString);
+
+            boolean x = a.equals(b);
+            int lenA = a.length();
+            int lenB = b.length();
 
             assertEquals(STRING.deser(decoded, 0, decodedLen), STRING.deser(decodedFromString));
 

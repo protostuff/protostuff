@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@ import java.util.Arrays;
 
 /**
  * Tests for UTF-8 Encoding
- * 
+ *
  * @author David Yu
  * @created Jul 6, 2010
  */
@@ -426,11 +426,11 @@ public class StringSerializerTest extends TestCase
         assertTrue(Arrays.equals(fastPathBuffered, nativeSurrogatePairsSerialized));
 
         // Does our own serialization / deserialization work?
-        assertEquals(surrogatePairs, STRING.deserNoFallback(fastPathBuffered));
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(fastPathBuffered));
 
         // Can we decode legacy encodings?
-        assertEquals(surrogatePairs, STRING.deserNoFallback(legacySurrogatePairSerialized));
-
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(legacySurrogatePairSerialized));
+        
         // Does the built in serialization work?
         assertEquals(surrogatePairs, new String(nativeSurrogatePairsSerialized, "UTF-8"));
 
@@ -441,7 +441,7 @@ public class StringSerializerTest extends TestCase
         {
             // Can we deserialize from a protobuf source (specifically java generated)
             // using our first method?
-            assertEquals(surrogatePairs, STRING.deserNoFallback(nativeSurrogatePairsSerialized));
+            assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
         }
         catch (RuntimeException ex)
         {
@@ -458,22 +458,22 @@ public class StringSerializerTest extends TestCase
         // Make sure that we don't overflow or get out of bounds,
         // since pairs require 2 characters.
         String partial = "\uD83C";
-        
+
         LinkedBuffer lb = new LinkedBuffer(256);
         WriteSession session = new WriteSession(lb);
         StringSerializer.writeUTF8(partial, session, lb);
 
         byte[] buffered = session.toByteArray();
-        
+
         // Force the use of 'slow' path
         lb = new LinkedBuffer(1);
         session = new WriteSession(lb);
         StringSerializer.writeUTF8(partial, session, lb);
-        
+
         buffered = session.toByteArray();
-        
+
     }
-    
+
     public void testDataInputStreamDecoding() throws Exception
     {
         // Unfortuneatley, DataInputStream uses Modified UTF-8,
@@ -485,12 +485,12 @@ public class StringSerializerTest extends TestCase
         LinkedBuffer lb = new LinkedBuffer(256);
         WriteSession session = new WriteSession(lb);
         StringSerializer.writeUTF8FixedDelimited(surrogatePairs, session, lb);
-        
+
         byte[] buffered = session.toByteArray();
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(buffered);
         DataInputStream din = new DataInputStream(in);
-        
+
         try
         {
             String dinResult = din.readUTF();
@@ -501,7 +501,7 @@ public class StringSerializerTest extends TestCase
             // Decoding failed of 4-byte format.
         }
     }
-    
+
     public void testReallyLongString() throws Exception
     {
         LinkedBuffer lb = new LinkedBuffer(256);
@@ -528,7 +528,7 @@ public class StringSerializerTest extends TestCase
 
         // We want to make sure it's our implementation
         // that can handle the large string
-        assertEquals(bigString, STRING.deserNoFallback(buffered));
+        assertEquals(bigString, STRING.deserCustomOnly(buffered));
     }
 
     static void checkVarDelimited(String str, int size, int stringLen) throws Exception
@@ -564,7 +564,7 @@ public class StringSerializerTest extends TestCase
 
         assertEquals(b1, b2);
     }
-    
+
     static byte[] getShortStringLengthInBytes(String str) throws Exception
     {
         byte[] array = str.getBytes("UTF-8");

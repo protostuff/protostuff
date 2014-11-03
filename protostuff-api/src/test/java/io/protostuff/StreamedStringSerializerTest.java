@@ -316,10 +316,10 @@ public class StreamedStringSerializerTest extends TestCase
         assertTrue(Arrays.equals(buffered, nativeSurrogatePairsSerialized));
 
         // Does our own serialization / deserialization work?
-        assertEquals(surrogatePairs, STRING.deserNoFallback(buffered));
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(buffered));
 
         // Can we decode legacy encodings?
-        assertEquals(surrogatePairs, STRING.deserNoFallback(legacySurrogatePairSerialized));
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(legacySurrogatePairSerialized));
 
         // Does the built in serialization work?
         assertEquals(surrogatePairs, new String(nativeSurrogatePairsSerialized, "UTF-8"));
@@ -331,7 +331,7 @@ public class StreamedStringSerializerTest extends TestCase
         {
             // Can we deserialize from a protobuf source (specifically java generated)
             // using our first method?
-            assertEquals(surrogatePairs, STRING.deserNoFallback(nativeSurrogatePairsSerialized));
+            assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
         }
         catch (RuntimeException ex)
         {
