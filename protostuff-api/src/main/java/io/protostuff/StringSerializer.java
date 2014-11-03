@@ -1140,6 +1140,9 @@ public final class StringSerializer
 
                 String result = new String(nonNullValue, offset, len, "UTF-8");
 
+                // If it contains the REPLACEMENT character, then there's a strong
+                // possibility of it containing 3-byte surrogates / 6-byte surrogate
+                // pairs, and we should try decoding using readUTF to handle it.
                 if (result.indexOf(0xfffd) != -1)
                 {
                     try
