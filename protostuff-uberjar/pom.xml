@@ -45,7 +45,7 @@
                  ,*
               </Import-Package>
               <Export-Package>
-                 io.protostuff,ioio.protostuff.runtime
+                 io.protostuff,io.protostuff.runtime
               </Export-Package>
            </instructions>
         </configuration>
