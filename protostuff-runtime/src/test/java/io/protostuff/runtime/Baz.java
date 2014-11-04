@@ -25,7 +25,6 @@ import io.protostuff.ProtostuffIOUtil;
  * Baz - for testing
  * 
  * @author David Yu
- * @created Nov 10, 2009
  */
 public final class Baz implements Externalizable
 {

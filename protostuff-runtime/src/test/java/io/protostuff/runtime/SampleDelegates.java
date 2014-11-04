@@ -40,7 +40,6 @@ import io.protostuff.WireFormat.FieldType;
  * Sample delegates for testing.
  * 
  * @author David Yu
- * @created May 2, 2012
  */
 public final class SampleDelegates
 {

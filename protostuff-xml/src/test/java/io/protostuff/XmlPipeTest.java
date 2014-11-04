@@ -22,7 +22,6 @@ import io.protostuff.StringSerializer.STRING;
  * Test case for xml pipes.
  * 
  * @author David Yu
- * @created Oct 8, 2010
  */
 public class XmlPipeTest extends AbstractTest
 {

@@ -34,7 +34,6 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
  * "protostuff.runtime.enums_by_name=true".
  * 
  * @author David Yu
- * @created Oct 20, 2010
  */
 public abstract class EnumIO<E extends Enum<E>> implements
         PolymorphicSchema.Factory

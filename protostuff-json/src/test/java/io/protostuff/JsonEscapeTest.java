@@ -22,7 +22,6 @@ import io.protostuff.StringSerializer.STRING;
  * Json escape test
  * 
  * @author David Yu
- * @created Oct 10, 2010
  */
 public class JsonEscapeTest extends AbstractTest
 {

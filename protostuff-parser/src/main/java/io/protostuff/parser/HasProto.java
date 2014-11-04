@@ -18,7 +18,6 @@ package io.protostuff.parser;
  * Represents a component that should belong to a proto.
  * 
  * @author David Yu
- * @created Dec 9, 2013
  */
 public interface HasProto
 {

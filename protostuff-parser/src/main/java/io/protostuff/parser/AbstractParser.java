@@ -28,7 +28,6 @@ import org.antlr.runtime.TokenStream;
  * Base parser
  * 
  * @author David Yu
- * @created Dec 16, 2009
  */
 public abstract class AbstractParser extends Parser
 {

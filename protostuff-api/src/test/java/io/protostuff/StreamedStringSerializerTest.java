@@ -43,7 +43,6 @@ import io.protostuff.StringSerializer.STRING;
  * Tests for streaming UTF-8 Encoding
  * 
  * @author David Yu
- * @created Sep 18, 2010
  */
 public class StreamedStringSerializerTest extends TestCase
 {

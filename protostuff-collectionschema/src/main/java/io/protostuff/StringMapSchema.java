@@ -22,7 +22,6 @@ import java.util.Map;
  * impl).
  * 
  * @author David Yu
- * @created Jun 25, 2010
  */
 public class StringMapSchema<V> extends MapSchema<String, V>
 {

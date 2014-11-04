@@ -23,7 +23,6 @@ import java.io.InputStream;
  * Common io utils for the supported formats.
  * 
  * @author David Yu
- * @created Nov 12, 2009
  */
 final class IOUtil
 {

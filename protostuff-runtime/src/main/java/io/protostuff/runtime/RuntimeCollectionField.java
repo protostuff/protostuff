@@ -30,7 +30,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * A runtime field for a {@link Collection}. Null values are not written.
  * 
  * @author David Yu
- * @created Jan 26, 2011
  */
 abstract class RuntimeCollectionField<T, V> extends Field<T>
 {

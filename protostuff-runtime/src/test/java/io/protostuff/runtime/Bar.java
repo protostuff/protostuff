@@ -26,7 +26,6 @@ import io.protostuff.ProtostuffIOUtil;
  * Bar - for testing
  * 
  * @author David Yu
- * @created Nov 10, 2009
  */
 public final class Bar implements Externalizable
 {

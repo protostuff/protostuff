@@ -22,7 +22,6 @@ import junit.framework.TestCase;
  * Fail-fast exceptions thrown when detecting duplicate proto components.
  * 
  * @author David Yu
- * @created Jul 21, 2011
  */
 public class DuplicateEntriesTest extends TestCase
 {

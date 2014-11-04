@@ -22,7 +22,6 @@ import java.util.List;
  * Json serialization via {@link JsonXOutput}.
  * 
  * @author David Yu
- * @created Jul 2, 2010
  */
 public final class JsonXIOUtil
 {

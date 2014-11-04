@@ -22,7 +22,6 @@ import java.io.OutputStream;
  * A buffer that wraps a byte array and has a reference to the next buffer for dynamic increase.
  * 
  * @author David Yu
- * @created May 18, 2010
  */
 public final class LinkedBuffer
 {

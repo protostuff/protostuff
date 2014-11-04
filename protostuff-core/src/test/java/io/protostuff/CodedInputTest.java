@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
  * Tests for {@link CodedInput}.
  * 
  * @author Max Lanin
- * @created Dec 22, 2012
  */
 public class CodedInputTest extends AbstractTest
 {

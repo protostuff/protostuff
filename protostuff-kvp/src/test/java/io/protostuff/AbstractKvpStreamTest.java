@@ -22,7 +22,6 @@ import java.io.IOException;
  * Test for reading/writing from stream.
  * 
  * @author David Yu
- * @created Dec 4, 2010
  */
 public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
 {

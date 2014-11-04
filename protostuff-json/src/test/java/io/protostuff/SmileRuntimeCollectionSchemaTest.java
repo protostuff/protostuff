@@ -26,7 +26,6 @@ import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
  * Test runtime collection fields with {@link CollectionSchema} via smile ser/deser.
  * 
  * @author David Yu
- * @created Feb 11, 2011
  */
 public class SmileRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSchemaTest
 {

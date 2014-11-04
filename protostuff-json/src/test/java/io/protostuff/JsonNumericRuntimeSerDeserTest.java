@@ -34,7 +34,6 @@ import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
  * Testing for json ser/deser against runtime messages.
  * 
  * @author David Yu
- * @created Nov 20, 2009
  */
 public class JsonNumericRuntimeSerDeserTest extends TestCase
 {

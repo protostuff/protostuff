@@ -27,7 +27,6 @@ import io.protostuff.ProtostuffIOUtil;
  * Foo - for testing
  * 
  * @author David Yu
- * @created Nov 10, 2009
  */
 public final class Foo implements Externalizable
 {

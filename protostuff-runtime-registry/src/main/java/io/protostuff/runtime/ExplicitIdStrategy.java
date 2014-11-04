@@ -49,7 +49,6 @@ import io.protostuff.Schema;
  * Requires every messsage/pojo/enum/collection/map to be registered with unique ids.
  * 
  * @author David Yu
- * @created Mar 25, 2012
  */
 public final class ExplicitIdStrategy extends NumericIdStrategy
 {

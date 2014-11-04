@@ -38,7 +38,6 @@ import io.protostuff.StringSerializer.STRING;
  * {@link ArrayIndexOutOfBoundsException} when a message is truncated.
  * 
  * @author David Yu
- * @created Jun 22, 2010
  */
 public final class ByteArrayInput implements Input
 {

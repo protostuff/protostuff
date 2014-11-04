@@ -18,7 +18,6 @@ package io.protostuff;
  * Tests for reading/writing pojos from/to a stream (numeric keys).
  * 
  * @author David Yu
- * @created Dec 4, 2010
  */
 public class KvpNumericStreamTest extends AbstractKvpStreamTest
 {

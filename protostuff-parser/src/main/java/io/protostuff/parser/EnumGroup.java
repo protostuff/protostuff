@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
  * Represents an enum declared in either the {@link Proto} or nested in a {@link Message}.
  * 
  * @author David Yu
- * @created Dec 21, 2009
  */
 public class EnumGroup extends AnnotationContainer implements HasName, HasOptions
 {

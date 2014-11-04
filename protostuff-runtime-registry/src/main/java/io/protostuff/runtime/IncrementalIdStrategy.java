@@ -55,7 +55,6 @@ import io.protostuff.Schema;
  * specificy a max id for the 4 types (pojo, enum, collection, map)
  * 
  * @author David Yu
- * @created Mar 27, 2012
  */
 public final class IncrementalIdStrategy extends NumericIdStrategy
 {

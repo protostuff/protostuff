@@ -38,7 +38,6 @@ import junit.framework.TestCase;
  * Test for Map impls that returns non-unique entries across iterator calls.
  * 
  * @author David Yu
- * @created Oct 22, 2011
  */
 public class UniqueMapEntryTest extends TestCase
 {

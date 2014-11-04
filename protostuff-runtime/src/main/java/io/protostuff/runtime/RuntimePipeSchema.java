@@ -26,7 +26,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * Runtime pipe schema.
  * 
  * @author David Yu
- * @created Nov 9, 2012
  */
 public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
 {

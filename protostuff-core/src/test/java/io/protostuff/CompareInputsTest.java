@@ -27,7 +27,6 @@ import io.protostuff.CompareOutputsTest.Serializer;
  * Benchmark to compare the deserialization speed of 2 types. CodedInput and ByteArrayInput.
  * 
  * @author David Yu
- * @created Jun 22, 2010
  */
 public class CompareInputsTest extends AbstractTest
 {

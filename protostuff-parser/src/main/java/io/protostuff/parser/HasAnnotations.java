@@ -21,7 +21,6 @@ import java.util.Map;
  * An entity that containts annotations.
  * 
  * @author David Yu
- * @created Dec 30, 2010
  */
 public interface HasAnnotations
 {

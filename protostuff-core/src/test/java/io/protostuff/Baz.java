@@ -24,7 +24,6 @@ import java.util.HashMap;
  * Baz - for testing
  * 
  * @author David Yu
- * @created Nov 10, 2009
  */
 public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
 {

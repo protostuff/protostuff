@@ -29,7 +29,6 @@ import io.protostuff.Schema;
  * Test ser/deser of polymorphic graph objects (references and cyclic dependencies).
  * 
  * @author David Yu
- * @created Jan 19, 2011
  */
 public class PolymorphicRuntimeGraphTest extends AbstractTest
 {

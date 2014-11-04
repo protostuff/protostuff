@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
  * Used internally by {@link CodedOutput}.
  * 
  * @author David Yu
- * @created Nov 9, 2009
  */
 public final class ComputedSizeOutput implements Output
 {

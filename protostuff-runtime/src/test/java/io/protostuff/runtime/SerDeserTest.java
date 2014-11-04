@@ -34,7 +34,6 @@ import io.protostuff.runtime.Bar.Status;
  * Serialization and deserialization test cases.
  * 
  * @author David Yu
- * @created Nov 18, 2009
  */
 public class SerDeserTest extends TestCase
 {

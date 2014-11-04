@@ -40,7 +40,6 @@ import io.protostuff.WireFormat.FieldType;
  * priority when the fields are being built.
  * 
  * @author David Yu
- * @created Apr 20, 2012
  */
 public interface Delegate<V>
 {

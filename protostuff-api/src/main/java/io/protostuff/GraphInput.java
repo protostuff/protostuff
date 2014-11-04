@@ -19,7 +19,6 @@ package io.protostuff;
  * message (polymorphic) deserialized.
  * 
  * @author David Yu
- * @created Jan 19, 2011
  */
 public interface GraphInput extends Input
 {

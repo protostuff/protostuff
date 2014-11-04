@@ -31,7 +31,6 @@ import io.protostuff.WireFormat.FieldType;
  * provided in the constructor.
  * 
  * @author David Yu
- * @created Nov 10, 2009
  */
 public abstract class MappedSchema<T> implements Schema<T>
 {

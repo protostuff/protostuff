@@ -53,7 +53,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * Field factory via sun.misc.Unsafe.
  * 
  * @author David Yu
- * @created Jul 7, 2011
  */
 public final class RuntimeUnsafeFieldFactory
 {

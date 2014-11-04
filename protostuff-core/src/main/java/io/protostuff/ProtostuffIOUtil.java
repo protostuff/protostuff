@@ -27,7 +27,6 @@ import java.util.List;
  * Protostuff ser/deser util for messages/objects.
  * 
  * @author David Yu
- * @created Sep 20, 2010
  */
 public final class ProtostuffIOUtil
 {

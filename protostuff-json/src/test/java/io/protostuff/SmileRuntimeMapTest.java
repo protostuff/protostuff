@@ -27,7 +27,6 @@ import io.protostuff.runtime.AbstractRuntimeMapTest;
  * Test smile ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Feb 11, 2011
  */
 public class SmileRuntimeMapTest extends AbstractRuntimeMapTest
 {

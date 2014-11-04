@@ -26,7 +26,6 @@ import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest;
  * Test smile ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
- * @created Feb 11, 2011
  */
 public class SmileRuntimeObjectSchemaTest extends AbstractRuntimeObjectSchemaTest
 {

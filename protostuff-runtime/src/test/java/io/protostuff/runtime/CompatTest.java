@@ -34,7 +34,6 @@ import io.protostuff.StringSerializer.STRING;
  * Test that the runtime schema would have the same output as hand-coded/code-generated schema.
  * 
  * @author David Yu
- * @created Oct 20, 2010
  */
 public class CompatTest extends AbstractTest
 {

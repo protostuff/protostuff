@@ -25,7 +25,6 @@ import io.protostuff.StringSerializer.STRING;
  * Test jsonx ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Jan 22, 2011
  */
 public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {

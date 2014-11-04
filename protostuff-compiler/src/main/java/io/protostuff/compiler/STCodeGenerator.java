@@ -36,7 +36,6 @@ import io.protostuff.parser.ProtoUtil;
  * Base class for code generators using StringTemplate.
  * 
  * @author David Yu
- * @created Jan 5, 2010
  */
 public abstract class STCodeGenerator implements ProtoCompiler
 {

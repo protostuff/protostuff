@@ -53,7 +53,6 @@ import java.io.InputStream;
  * bytes.
  * 
  * @author David Yu
- * @created Jan 14, 2010
  */
 public final class LimitedInputStream extends FilterInputStream
 {

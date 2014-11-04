@@ -36,7 +36,6 @@ import io.protostuff.Schema;
  * Test ser/deser of pojos with {@link EnumSet} and {@link EnumMap} fields.
  * 
  * @author David Yu
- * @created Feb 9, 2011
  */
 public class EnumSetAndMapTest extends AbstractTest
 {

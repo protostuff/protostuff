@@ -45,7 +45,6 @@ import io.protostuff.StatefulOutput;
  * Used when the type is assignable from {@link java.lang.Throwable}.
  * 
  * @author David Yu
- * @created May 2, 2012
  */
 public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
 {

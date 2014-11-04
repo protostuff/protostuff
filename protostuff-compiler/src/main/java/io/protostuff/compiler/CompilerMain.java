@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
  * The main execution point of compiling protos.
  * 
  * @author David Yu
- * @created Jan 5, 2010
  */
 public final class CompilerMain
 {

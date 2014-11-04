@@ -50,7 +50,6 @@ import io.protostuff.Schema;
  * Used when a field is declared as {@code Class<?>} (with or with-out generics).
  * 
  * @author David Yu
- * @created Apr 25, 2012
  */
 public abstract class ClassSchema extends PolymorphicSchema
 {

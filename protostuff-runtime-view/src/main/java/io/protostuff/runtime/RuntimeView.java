@@ -28,7 +28,6 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * A view schema can choose which fields to include during ser/deser.
  * 
  * @author David Yu
- * @created Nov 9, 2012
  */
 public final class RuntimeView
 {

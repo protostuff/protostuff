@@ -36,7 +36,6 @@ import junit.framework.TestCase;
  * Test for references configured via options and annotations.
  * 
  * @author David Yu
- * @created Dec 22, 2011
  */
 public class ConfiguredReferenceTest extends TestCase
 {

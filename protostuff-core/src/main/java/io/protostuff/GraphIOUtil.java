@@ -24,7 +24,6 @@ import java.io.OutputStream;
  * IO Utilities for graph objects (references and cyclic dependencies).
  * 
  * @author David Yu
- * @created Jan 19, 2011
  */
 public final class GraphIOUtil
 {

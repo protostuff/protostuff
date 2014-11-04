@@ -30,7 +30,6 @@ import io.protostuff.StringSerializer.STRING;
  * Tests for UTF-8 Encoding
  * 
  * @author David Yu
- * @created Jul 6, 2010
  */
 public class StringSerializerTest extends TestCase
 {

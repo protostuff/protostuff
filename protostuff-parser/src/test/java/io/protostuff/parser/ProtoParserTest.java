@@ -26,7 +26,6 @@ import io.protostuff.parser.Field.Modifier;
  * Various tests for the proto parser.
  * 
  * @author David Yu
- * @created Dec 18, 2009
  */
 public class ProtoParserTest extends TestCase
 {

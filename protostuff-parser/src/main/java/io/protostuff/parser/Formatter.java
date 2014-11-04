@@ -24,7 +24,6 @@ import java.util.Map;
  * Formats a string.
  * 
  * @author David Yu
- * @created Nov 9, 2012
  */
 public interface Formatter
 {

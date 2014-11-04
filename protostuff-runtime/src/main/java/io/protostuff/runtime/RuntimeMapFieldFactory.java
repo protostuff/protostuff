@@ -36,7 +36,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * Static utility for creating runtime {@link java.util.Map} fields.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 final class RuntimeMapFieldFactory
 {

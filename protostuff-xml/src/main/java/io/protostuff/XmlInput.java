@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamReader;
  * An input used for reading data with xml format.
  * 
  * @author David Yu
- * @created May 24, 2010
  */
 public final class XmlInput implements Input
 {

@@ -27,7 +27,6 @@ import io.protostuff.Foo.EnumSample;
  * Base test class for simple pojos that have scalar fields (no nested messages/pojos).
  * 
  * @author David Yu
- * @created Dec 2, 2010
  */
 public abstract class NoNestedMessageTest extends AbstractTest
 {

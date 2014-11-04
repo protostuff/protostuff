@@ -22,7 +22,6 @@ import java.io.OutputStream;
  * Test the buffering output capability of {@link ProtostuffOutput}.
  * 
  * @author David Yu
- * @created Sep 19, 2010
  */
 public class ProtostuffBufferedOutputTest extends SerDeserTest
 {

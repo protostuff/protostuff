@@ -22,7 +22,6 @@ import java.util.Map;
  * Base class for components that contain annotations.
  * 
  * @author David Yu
- * @created Dec 30, 2010
  */
 public abstract class AnnotationContainer implements HasAnnotations, HasProto
 {

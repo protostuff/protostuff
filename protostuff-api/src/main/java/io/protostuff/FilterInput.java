@@ -21,7 +21,6 @@ import java.nio.ByteBuffer;
  * A FilterInput contains some other {@link Input input}, which it uses as its basic source of data.
  * 
  * @author David Yu
- * @created Nov 11, 2009
  */
 public class FilterInput<F extends Input> implements Input
 {
