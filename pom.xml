@@ -21,7 +21,7 @@
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
     <stringtemplate-version>3.2.1</stringtemplate-version>
-    <mavenVersion>2.0.9</mavenVersion>
+    <mavenVersion>3.2.3</mavenVersion>
   </properties>
 
   <developers>
@@ -167,6 +167,9 @@
             <configuration>
               <rules>
                 <DependencyConvergence/>
+                <requireMavenVersion>
+                  <version>${mavenVersion}</version>
+                </requireMavenVersion>
               </rules>
             </configuration>
           </execution>
