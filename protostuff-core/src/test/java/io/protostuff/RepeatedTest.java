@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 
 /**
  */
-public class RepeatedTest extends AbstractTest {
+public class RepeatedTest extends AbstractTest
+{
     public void testPackedRepeatedByteArray() throws IOException
     {
         final LinkedBuffer buffer = getProtobufBuffer();
@@ -27,7 +28,8 @@ public class RepeatedTest extends AbstractTest {
         verify(test);
     }
 
-    private LinkedBuffer getProtobufBuffer() throws IOException {
+    private LinkedBuffer getProtobufBuffer() throws IOException
+    {
         // Generate protobuf with packed repeated fields
         final LinkedBuffer buffer = new LinkedBuffer(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         final ProtobufOutput output = new ProtobufOutput(buffer);
@@ -49,7 +51,8 @@ public class RepeatedTest extends AbstractTest {
         return buffer;
     }
 
-    private void verify(final PojoWithRepeated test) {
+    private void verify(final PojoWithRepeated test)
+    {
         assertEquals(4, test.getSomeInt32Count());
         assertEquals((Integer)3, test.getSomeInt32(0));
         assertEquals((Integer)270, test.getSomeInt32(1));

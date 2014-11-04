@@ -253,9 +253,11 @@ public final class ByteBufferInput implements Input
         return fieldNumber;
     }
 
-    private void maybePacked() throws IOException {
+    private void maybePacked() throws IOException
+    {
         // Do we have the start of a packed field?
-        if (packed_limit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)  {
+        if (packed_limit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
+        {
             final int length = readRawVarint32();
             if (length < 0)
                 throw ProtobufException.negativeSize();
