@@ -87,7 +87,6 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-smile</artifactId>
-      <version>${jackson-version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -1,35 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
     <version>1.1.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
   <artifactId>protostuff-runtime-registry</artifactId>
   <name>protostuff :: runtime-registry</name>
   <description>id registration for runtime types</description>
-  <packaging>jar</packaging>
-  
-  <build>
-    <defaultGoal>install</defaultGoal>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -51,24 +31,11 @@
     </dependency>
     <dependency>
       <groupId>io.protostuff</groupId>
-      <artifactId>protostuff-collectionschema</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
-    <dependency>
-      <groupId>io.protostuff</groupId>
-      <artifactId>protostuff-runtime</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>io.protostuff</groupId>
       <artifactId>protostuff-collectionschema</artifactId>
