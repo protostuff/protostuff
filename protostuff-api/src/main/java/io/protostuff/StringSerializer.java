@@ -80,19 +80,19 @@ public final class StringSerializer
 
     static final int TWO_BYTE_LOWER_LIMIT = 1 << 7;
 
-    static final int ONE_BYTE_EXCLUSIVE = TWO_BYTE_LOWER_LIMIT / 4 + 1;
+    static final int ONE_BYTE_EXCLUSIVE = TWO_BYTE_LOWER_LIMIT / 3 + 1;
 
     static final int THREE_BYTE_LOWER_LIMIT = 1 << 14;
 
-    static final int TWO_BYTE_EXCLUSIVE = THREE_BYTE_LOWER_LIMIT / 4 + 1;
+    static final int TWO_BYTE_EXCLUSIVE = THREE_BYTE_LOWER_LIMIT / 3 + 1;
 
     static final int FOUR_BYTE_LOWER_LIMIT = 1 << 21;
 
-    static final int THREE_BYTE_EXCLUSIVE = FOUR_BYTE_LOWER_LIMIT / 4 + 1;
+    static final int THREE_BYTE_EXCLUSIVE = FOUR_BYTE_LOWER_LIMIT / 3 + 1;
 
     static final int FIVE_BYTE_LOWER_LIMIT = 1 << 28;
 
-    static final int FOUR_BYTE_EXCLUSIVE = FIVE_BYTE_LOWER_LIMIT / 4 + 1;
+    static final int FOUR_BYTE_EXCLUSIVE = FIVE_BYTE_LOWER_LIMIT / 3 + 1;
 
     static void putBytesFromInt(int i, final int offset, final int size, final byte[] buf)
     {
@@ -1100,6 +1100,8 @@ public final class StringSerializer
 
     public static final class STRING
     {
+        static final boolean CESU8_COMPAT = Boolean.getBoolean("io.protostuff.cesu8_compat");
+
         private STRING()
         {
         }
@@ -1111,6 +1113,7 @@ public final class StringSerializer
 
         public static String deser(byte[] nonNullValue, int offset, int len)
         {
+            final String result;
             try
             {
                 // Try to use the built in deserialization first, since we expect
@@ -1138,34 +1141,41 @@ public final class StringSerializer
                 //
                 // For the Java 8 change, see: https://bugs.openjdk.java.net/browse/JDK-7096080
 
-                String result = new String(nonNullValue, offset, len, "UTF-8");
+                result = new String(nonNullValue, offset, len, "UTF-8");
 
-                // If it contains the REPLACEMENT character, then there's a strong
-                // possibility of it containing 3-byte surrogates / 6-byte surrogate
-                // pairs, and we should try decoding using readUTF to handle it.
-                if (result.indexOf(0xfffd) != -1)
+                // Check if we should scan the string to make sure there were no
+                // corrupt characters caused by 3-byte / 6-byte surrogate pairs.
+                //
+                // In general, this *should* only be required for systems reading
+                // data stored using legacy protostuff. Moving forward, the data
+                // should be readable by new String("UTF-8"), so the scan is unnecessary.
+                if (CESU8_COMPAT)
                 {
-                    try
+                    // If it contains the REPLACEMENT character, then there's a strong
+                    // possibility of it containing 3-byte surrogates / 6-byte surrogate
+                    // pairs, and we should try decoding using readUTF to handle it.
+                    if (result.indexOf(0xfffd) != -1)
                     {
-                        return readUTF(nonNullValue, offset, len);
+                        try
+                        {
+                            return readUTF(nonNullValue, offset, len);
+                        }
+                        catch (UTFDataFormatException e)
+                        {
+                            // Unexpected, but most systems previously using
+                            // Protostuff don't expect error to occur from
+                            // String deserialization, so we use this just in case.
+                            return result;
+                        }
                     }
-                    catch (UTFDataFormatException e)
-                    {
-                        // Unexpected, but most systems previously using
-                        // Protostuff don't expect error to occur from
-                        // String deserialization, so we use this just in case.
-                        return result;
-                    }
-                }
-                else
-                {
-                    return result;
                 }
             }
             catch (UnsupportedEncodingException e)
             {
                 throw new RuntimeException(e);
             }
+
+            return result;
         }
 
         /**

@@ -403,7 +403,26 @@ public class StringSerializerTest extends TestCase
         checkFixedDelimited(moreThan2048);
     }
 
-    public void testSurrogatePairs() throws Exception
+    public void testLegacySurrogatePairs() throws Exception
+    {
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8(surrogatePairs, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        // By default, STRING.deser should not use the custom
+        // decoder (specifically, should not check the decoded
+        // string for REPLACE characters). This means that legacy
+        // encoded Strings with surrogate pairs will result in
+        // malformed Strings
+        assertNotSame(surrogatePairs, STRING.deser(legacySurrogatePairSerialized));
+
+        // New Strings, however, should be deserialized fine
+        assertEquals(surrogatePairs, STRING.deser(buffered));
+    }
+
+    public void testSurrogatePairsCustomOnly() throws Exception
     {
         // This test is mainly for Java 8+, where 3-byte surrogates
         // and 6-byte surrogate pairs are not allowed.
@@ -430,7 +449,7 @@ public class StringSerializerTest extends TestCase
 
         // Can we decode legacy encodings?
         assertEquals(surrogatePairs, STRING.deserCustomOnly(legacySurrogatePairSerialized));
-        
+
         // Does the built in serialization work?
         assertEquals(surrogatePairs, new String(nativeSurrogatePairsSerialized, "UTF-8"));
 
