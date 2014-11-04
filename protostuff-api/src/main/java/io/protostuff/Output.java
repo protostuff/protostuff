@@ -198,13 +198,13 @@ public interface Output
     /**
      * Writes a binary or a pre-encoded utf8 string.
      *
-     * @param utf8String
+     * @param utf8String true if field is an UTF-8 encoded string
      * @param fieldNumber the field number
      * @param value the field value
      * @param offset the offset in value array
      * @param length the length of data in the value array
      * @param repeated flag set to true for collection fields
-     * @throws IOException
+     * @throws IOException when I/O operation fails
      */
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException;

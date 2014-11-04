@@ -182,9 +182,9 @@ public interface Input
      * Transfer the byte range to the output. Capable of zero-copy transfer depending on the type of input.
      *
      * @param output the output
-     * @param utf8String
+     * @param utf8String true if field is an UTF-8 encoded string
      * @param fieldNumber the field number
-     * @param repeated flag that is true whe field is a collection
+     * @param repeated true if field is a collection
      * @throws IOException when I/O operation fails
      */
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
