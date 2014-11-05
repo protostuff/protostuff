@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeMapTest;
+import java.util.Arrays;
 
 /**
  * Test smile ser/deser for runtime {@link Map} fields.
@@ -72,8 +72,7 @@ public class SmileRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 SmileIOUtil.newPipe(smileStream, false), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
@@ -87,11 +86,7 @@ public class SmileRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] smileRoundTripFromStream = SmileIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, false);
 
-        assertTrue(smileRoundTrip.length == smileRoundTripFromStream.length);
-
-        String strSmileRoundTrip = STRING.deser(smileRoundTrip);
-
-        assertEquals(strSmileRoundTrip, STRING.deser(smileRoundTripFromStream));
+        assertTrue(Arrays.equals(smileRoundTrip, smileRoundTripFromStream));
 
         assertTrue(smileRoundTrip.length == smile.length);
 

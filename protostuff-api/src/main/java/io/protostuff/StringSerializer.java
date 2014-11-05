@@ -1,10 +1,12 @@
 package io.protostuff;
 
+import java.io.IOException;
+import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
 
 /**
  * UTF-8 String serialization
- * 
+ *
  * @author David Yu
  * @created Feb 4, 2010
  */
@@ -437,6 +439,129 @@ public final class StringSerializer
 
                 buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
             }
+            else if (Character.isHighSurrogate((char) c) && i < len && Character.isLowSurrogate((char) str.charAt(i)))
+            {
+                // We have a surrogate pair, so use the 4-byte encoding.
+                if (offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+
+                    if (lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                }
+
+                int codePoint = Character.toCodePoint((char) c, (char) str.charAt(i));
+
+                buffer[offset++] = (byte) (0xF0 | ((codePoint >> 18) & 0x07));
+
+                if (offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+
+                    if (lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                }
+
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 12) & 0x3F));
+
+                if (offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+
+                    if (lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                }
+
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 6) & 0x3F));
+
+                if (offset == limit)
+                {
+                    // we are done with this LinkedBuffer
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+
+                    if (lb.next == null)
+                    {
+                        // reset
+                        offset = 0;
+                        limit = session.nextBufferSize;
+                        buffer = new byte[limit];
+                        // grow
+                        lb = new LinkedBuffer(buffer, 0, lb);
+                    }
+                    else
+                    {
+                        // use the existing buffer from previous utf8 write.
+                        // this condition happens only on streaming mode
+                        lb = lb.next;
+                        // reset
+                        lb.offset = offset = lb.start;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                }
+
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 0) & 0x3F));
+
+                i++;
+            }
             else
             {
                 if (offset == limit)
@@ -559,6 +684,25 @@ public final class StringSerializer
 
                 buffer[offset++] = (byte) (0xC0 | ((c >> 6) & 0x1F));
                 buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
+            }
+            else if (Character.isHighSurrogate((char) c) && i < len && Character.isLowSurrogate((char) str.charAt(i)))
+            {
+                // We have a surrogate pair, so use the 4-byte encoding.
+                adjustableLimit += 3;
+                if (adjustableLimit > buffer.length)
+                {
+                    session.size += (offset - lb.offset);
+                    lb.offset = offset;
+                    return writeUTF8(str, i - 1, len, buffer, offset, buffer.length, session, lb);
+                }
+
+                int codePoint = Character.toCodePoint((char) c, (char) str.charAt(i));
+                buffer[offset++] = (byte) (0xF0 | ((codePoint >> 18) & 0x07));
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 12) & 0x3F));
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 6) & 0x3F));
+                buffer[offset++] = (byte) (0x80 | ((codePoint >> 0) & 0x3F));
+
+                i++;
             }
             else
             {
@@ -956,29 +1100,98 @@ public final class StringSerializer
 
     public static final class STRING
     {
+        static final boolean CESU8_COMPAT = Boolean.getBoolean("io.protostuff.cesu8_compat");
+
         private STRING()
         {
         }
 
         public static String deser(byte[] nonNullValue)
         {
+            return deser(nonNullValue, 0, nonNullValue.length);
+        }
+
+        public static String deser(byte[] nonNullValue, int offset, int len)
+        {
+            final String result;
             try
             {
-                return new String(nonNullValue, "UTF-8");
+                // Try to use the built in deserialization first, since we expect
+                // that the most likely case is a valid UTF-8 encoded byte array.
+                // Additionally, the built in serialization method has one less
+                // char[] copy than readUTF.
+                //
+                // If, however, there are invalid/malformed characters, i.e. 3-byte
+                // surrogates / 3-byte surrogate pairs, we should fall back to the
+                // readUTF method as it should be able to properly handle 3-byte surrogates
+                // (and therefore 6-byte surrogate pairs) in Java 8+.
+                //
+                // While Protostuff and many other applications, still use 3-byte surrogates
+                // / 6-byte surrogate pairs, the standard 'forbids' their use, and Java 8
+                // has started to enforce the standard, resulting in 'corrupted' data in
+                // strings when decoding using new String(nonNullValue, "UTF-8");
+                //
+                // While the readUTF should be able to handle both Standard Unicode
+                // (i.e. new String().getBytes("UTF-8") and the Legacy Unicode
+                // (with 3-byte surrogates, used in CESU-8 and Modified UTF-8),
+                // we don't want to introduce an unexpected loss of data due to
+                // some unforseen bug. As a result, a fallback mechanism is in
+                // place such that the worst case scenario results in the previous
+                // implementation's behaviour.
+                //
+                // For the Java 8 change, see: https://bugs.openjdk.java.net/browse/JDK-7096080
+
+                result = new String(nonNullValue, offset, len, "UTF-8");
+
+                // Check if we should scan the string to make sure there were no
+                // corrupt characters caused by 3-byte / 6-byte surrogate pairs.
+                //
+                // In general, this *should* only be required for systems reading
+                // data stored using legacy protostuff. Moving forward, the data
+                // should be readable by new String("UTF-8"), so the scan is unnecessary.
+                if (CESU8_COMPAT)
+                {
+                    // If it contains the REPLACEMENT character, then there's a strong
+                    // possibility of it containing 3-byte surrogates / 6-byte surrogate
+                    // pairs, and we should try decoding using readUTF to handle it.
+                    if (result.indexOf(0xfffd) != -1)
+                    {
+                        try
+                        {
+                            return readUTF(nonNullValue, offset, len);
+                        }
+                        catch (UTFDataFormatException e)
+                        {
+                            // Unexpected, but most systems previously using
+                            // Protostuff don't expect error to occur from
+                            // String deserialization, so we use this just in case.
+                            return result;
+                        }
+                    }
+                }
             }
             catch (UnsupportedEncodingException e)
             {
                 throw new RuntimeException(e);
             }
+
+            return result;
         }
 
-        public static String deser(byte[] nonNullValue, int offset, int len)
+        /**
+         * Deserialize using readUTF only.
+         * @param nonNullValue
+         * @return
+         */
+        static String deserCustomOnly(byte[] nonNullValue)
         {
             try
             {
-                return new String(nonNullValue, offset, len, "UTF-8");
+                // Same behaviour as deser(), but does NOT
+                // fall back to old implementation.
+                return readUTF(nonNullValue, 0, nonNullValue.length);
             }
-            catch (UnsupportedEncodingException e)
+            catch (UTFDataFormatException e)
             {
                 throw new RuntimeException(e);
             }
@@ -995,6 +1208,122 @@ public final class StringSerializer
                 throw new RuntimeException(e);
             }
         }
-    }
 
+        /**
+         * Reads the string from a byte[] using that was encoded
+         * a using Modified UTF-8 format. Additionally supports
+         * 4-byte surrogates, de-serializing them as surrogate pairs.
+         *
+         * See: http://en.wikipedia.org/wiki/UTF-8#Description for encoding details.
+         *
+         * @param in
+         * @return
+         * @throws IOException
+         */
+        private static String readUTF(byte[] buffer, int offset, int len) throws UTFDataFormatException
+        {
+            char[] charArray = new char[len];
+
+            int i = 0;
+            int c = 0;
+
+            // Optimizaiton: Assume that the characters are all 7-bits encodable
+            // (which is most likely the standard case).
+            // If they're not, break out and take the 'slow' path.
+            for (; i < len; i++)
+            {
+                int ch = (int) buffer[offset + i] & 0xff;
+
+                // If it's not 7-bit character, break out
+                if (ch > 127)
+                    break;
+
+                charArray[c++] = (char) ch;
+            }
+
+            // 'Slow' path
+            while (i < len) {
+                int ch = (int) buffer[offset + i] & 0xff;
+
+                // Determine how to decode based on 'bits of code point'
+                // See: http://en.wikipedia.org/wiki/UTF-8#Description
+                int upperBits = ch >> 4;
+
+                if (upperBits <= 7)
+                {
+                    // 1-byte: 0xxxxxxx
+                    charArray[c++] = (char) ch;
+                    i++;
+                }
+                else if (upperBits == 0x0C || upperBits == 0x0D)
+                {
+                    // 2-byte: 110xxxxx 10xxxxxx
+                    i += 2;
+
+                    if (i > len)
+                        throw new UTFDataFormatException("Malformed input: Partial character at end");
+
+                    int ch2 = (int) buffer[offset + i - 1];
+
+                    // Make sure the second byte has the form 10xxxxxx
+                    if ((ch2 & 0xC0) != 0x80)
+                        throw new UTFDataFormatException("Malformed input around byte " + i);
+
+                    charArray[c++] = (char) (((ch & 0x1F) << 6) | (ch2 & 0x3F));
+                }
+                else if (upperBits == 0xE)
+                {
+                    // 3-byte: 1110xxxx  10xxxxxx  10xxxxxx
+                    i += 3;
+
+                    if (i > len)
+                        throw new UTFDataFormatException("Malformed input: Partial character at end");
+
+                    int ch2 = (int) buffer[offset + i - 2];
+                    int ch3 = (int) buffer[offset + i - 1];
+
+                    // Check the 10xxxxxx  10xxxxxx of second two bytes
+                    if (((ch2 & 0xC0) != 0x80) || ((ch3 & 0xC0) != 0x80))
+                        throw new UTFDataFormatException("Malformed input around byte " + (i - 1));
+
+                    charArray[c++] = (char) (((ch & 0x0F) << 12) | ((ch2 & 0x3F) << 6) | (ch3 & 0x3F));
+                }
+                else
+                {
+                    // 4-byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+                    upperBits = ch >> 3;
+                    if (upperBits == 0x1E)
+                    {
+                        // Because we're now in the UTF-32 bit range, we must
+                        // break it down into the UTF-16 surrogate pairs for
+                        // Java's String class (which is UTF-16).
+
+                        i += 4;
+                        if (i > len)
+                            throw new UTFDataFormatException("Malformed input: Partial character at end");
+
+                        int ch2 = (int) buffer[offset + i - 3];
+                        int ch3 = (int) buffer[offset + i - 2];
+                        int ch4 = (int) buffer[offset + i - 1];
+
+                        int value =
+                            ((ch  & 0x07) << 18) |
+                            ((ch2 & 0x3F) << 12) |
+                            ((ch3 & 0x3F) << 6) |
+                            ((ch4 & 0x3F));
+
+                        charArray[c++] = Character.highSurrogate(value);
+                        charArray[c++] = Character.lowSurrogate(value);
+                    }
+                    else
+                    {
+                        // Anything above
+                        throw new UTFDataFormatException("Malformed input at byte " + i);
+                    }
+                }
+            }
+
+            return new String(charArray, 0, c);
+        }
+    }
 }

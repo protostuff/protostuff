@@ -65,12 +65,8 @@ public class CompatTest extends AbstractTest
         byte[] byte2 = ProtostuffIOUtil.toByteArray(bar2, schema2, buf());
         byte[] byte3 = ProtostuffIOUtil.toByteArray(bar1, schema3, buf());
 
-        String str1 = STRING.deser(byte1);
-        String str2 = STRING.deser(byte2);
-        String str3 = STRING.deser(byte3);
-
-        assertEquals(str1, str2);
-        assertEquals(str1, str3);
+        assertTrue(Arrays.equals(byte1, byte2));
+        assertTrue(Arrays.equals(byte1, byte3));
     }
 
     static void compareFoo()
@@ -89,12 +85,8 @@ public class CompatTest extends AbstractTest
         byte[] byte2 = ProtostuffIOUtil.toByteArray(foo2, schema2, buf());
         byte[] byte3 = ProtostuffIOUtil.toByteArray(foo1, schema3, buf());
 
-        String str1 = STRING.deser(byte1);
-        String str2 = STRING.deser(byte2);
-        String str3 = STRING.deser(byte3);
-
-        assertEquals(str1, str2);
-        assertEquals(str1, str3);
+        assertTrue(Arrays.equals(byte1, byte2));
+        assertTrue(Arrays.equals(byte1, byte3));
     }
 
     static <T extends Message<T>> Schema<T> getCachedSchema(Class<T> clazz)

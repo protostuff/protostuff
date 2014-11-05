@@ -20,6 +20,8 @@ import java.io.OutputStream;
 import java.util.Map;
 
 import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test jsonx ser/deser for runtime {@link Map} fields.
@@ -58,8 +60,7 @@ public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);

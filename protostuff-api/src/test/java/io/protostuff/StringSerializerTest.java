@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +15,6 @@
 package io.protostuff;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,10 +24,14 @@ import java.io.UnsupportedEncodingException;
 import junit.framework.TestCase;
 
 import io.protostuff.StringSerializer.STRING;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 
 /**
  * Tests for UTF-8 Encoding
- * 
+ *
  * @author David Yu
  * @created Jul 6, 2010
  */
@@ -46,14 +49,22 @@ public class StringSerializerTest extends TestCase
 
     static final String alphabet_to_upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    static final String surrogatePairs = "\uD83C\uDFE0\uD83C\uDF4E\uD83D\uDCA9";
+
+    // Result of surrogatePairs.getBytes("UTF-8"), which is what protobuf uses.
+    static final byte[] nativeSurrogatePairsSerialized = { -16, -97, -113, -96, -16, -97, -115, -114, -16, -97, -110, -87 };
+
+    // Result of writeUTF8 before 3-byte surrogate fix (i.e. no 4-byte encoding)
+    static final byte[] legacySurrogatePairSerialized = {-19, -96, -68, -19, -65, -96, -19, -96, -68, -19, -67, -114, -19, -96, -67, -19, -78, -87 };
+
     // 10 total
     static final String numeric = "0123456789";
 
     // 3 total
     static final String whitespace = "\r\n\t";
 
-    // 59 total
-    static final String foo = alphabet + three_byte_utf8 + numeric + two_byte_utf8 + whitespace;
+    // 71 total
+    static final String foo = alphabet + three_byte_utf8 + numeric + two_byte_utf8 + whitespace + surrogatePairs;
 
     static final String str_len_130 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
@@ -66,6 +77,7 @@ public class StringSerializerTest extends TestCase
             whitespace,
             foo,
             str_len_130,
+            surrogatePairs,
             repeatChar('a', 0x800 - 16),
             repeatChar('a', 0x800 + 16),
             repeatChar('a', 0x8000 - 16),
@@ -328,7 +340,7 @@ public class StringSerializerTest extends TestCase
 
     public void testUTF8VarDelimited() throws Exception
     {
-        checkVarDelimited(foo, 1, 59);
+        checkVarDelimited(foo, 1, 71);
         checkVarDelimited(whitespace, 1, 3);
         checkVarDelimited(numeric, 1, 10);
         checkVarDelimited(alphabet, 1, 26);
@@ -391,6 +403,153 @@ public class StringSerializerTest extends TestCase
         checkFixedDelimited(moreThan2048);
     }
 
+    public void testLegacySurrogatePairs() throws Exception
+    {
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8(surrogatePairs, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        // By default, STRING.deser should not use the custom
+        // decoder (specifically, should not check the decoded
+        // string for REPLACE characters). This means that legacy
+        // encoded Strings with surrogate pairs will result in
+        // malformed Strings
+        assertNotSame(surrogatePairs, STRING.deser(legacySurrogatePairSerialized));
+
+        // New Strings, however, should be deserialized fine
+        assertEquals(surrogatePairs, STRING.deser(buffered));
+    }
+
+    public void testSurrogatePairsCustomOnly() throws Exception
+    {
+        // This test is mainly for Java 8+, where 3-byte surrogates
+        // and 6-byte surrogate pairs are not allowed.
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8(surrogatePairs, session, lb);
+
+        byte[] fastPathBuffered = session.toByteArray();
+
+        lb = new LinkedBuffer(1);
+        session = new WriteSession(lb);
+        StringSerializer.writeUTF8(surrogatePairs, session, lb);
+
+        byte[] slowPathBuffered = session.toByteArray();
+
+        // Output of fast path and slow path should be identical.
+        assertTrue(Arrays.equals(fastPathBuffered, slowPathBuffered));
+
+        // Does our own serialization match native?
+        assertTrue(Arrays.equals(fastPathBuffered, nativeSurrogatePairsSerialized));
+
+        // Does our own serialization / deserialization work?
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(fastPathBuffered));
+
+        // Can we decode legacy encodings?
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(legacySurrogatePairSerialized));
+
+        // Does the built in serialization work?
+        assertEquals(surrogatePairs, new String(nativeSurrogatePairsSerialized, "UTF-8"));
+
+        // Should be encoded using 4-byte code points, instead of 6-byte surrogate pairs.
+        assertFalse(Arrays.equals(fastPathBuffered, legacySurrogatePairSerialized));
+
+        try
+        {
+            // Can we deserialize from a protobuf source (specifically java generated)
+            // using our first method?
+            assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
+        }
+        catch (RuntimeException ex)
+        {
+            // No? Fallback should catch this.
+            assertEquals(surrogatePairs, STRING.deser(nativeSurrogatePairsSerialized));
+
+            // But it means there's a bug in the deserializer
+            fail("Deserializer should not have used built in decoder.");
+        }
+    }
+
+    public void testPartialSurrogatePair() throws Exception
+    {
+        // Make sure that we don't overflow or get out of bounds,
+        // since pairs require 2 characters.
+        String partial = "\uD83C";
+
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8(partial, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        // Force the use of 'slow' path
+        lb = new LinkedBuffer(1);
+        session = new WriteSession(lb);
+        StringSerializer.writeUTF8(partial, session, lb);
+
+        buffered = session.toByteArray();
+
+    }
+
+    public void testDataInputStreamDecoding() throws Exception
+    {
+        // Unfortuneatley, DataInputStream uses Modified UTF-8,
+        // which does not support 4-byte characters, as used in the
+        // 'Standard UTF-8'. This is a sacrifice of generating
+        // standard conformant UTF-8 Strings.
+        //
+        // Note: this only happens for surrogate pairs (e.g. emoji's)
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8FixedDelimited(surrogatePairs, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        ByteArrayInputStream in = new ByteArrayInputStream(buffered);
+        DataInputStream din = new DataInputStream(in);
+
+        try
+        {
+            String dinResult = din.readUTF();
+            fail();
+        }
+        catch (IOException ex)
+        {
+            // Decoding failed of 4-byte format.
+        }
+    }
+
+    public void testReallyLongString() throws Exception
+    {
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+
+        // The motivation of this test is to make sure
+        // that the serializer/deserializer can handle very large Strings.
+        // DataInputStream only supports Strings up to Short.MAX_VALUE,
+        // so we should make sure our implementation can support more than that.
+        //
+        // Ideally, we'd like to test all the way up to Integer.MAX_VALUE, but that
+        // may be unfeasable in many test environments, so we will just do 3 * Short.MAX_VALUE,
+        // which would overflow an unsigned short.
+
+        StringBuilder sb = new StringBuilder(3 * Short.MAX_VALUE);
+        for (int i = 0; i < 3 * Short.MAX_VALUE; i++) {
+            sb.append(i % 10);
+        }
+        String bigString = sb.toString();
+
+        StringSerializer.writeUTF8(bigString, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        // We want to make sure it's our implementation
+        // that can handle the large string
+        assertEquals(bigString, STRING.deserCustomOnly(buffered));
+    }
+
     static void checkVarDelimited(String str, int size, int stringLen) throws Exception
     {
         LinkedBuffer lb = new LinkedBuffer(512);
@@ -410,9 +569,10 @@ public class StringSerializerTest extends TestCase
     static void checkFixedDelimited(String str) throws Exception
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream dout = new DataOutputStream(out);
-        dout.writeUTF(str);
-        dout.close();
+        out.write(getShortStringLengthInBytes(str));
+        OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
+        writer.write(str, 0, str.length());
+        writer.close();
 
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
@@ -424,12 +584,15 @@ public class StringSerializerTest extends TestCase
         assertEquals(b1, b2);
     }
 
+    static byte[] getShortStringLengthInBytes(String str) throws Exception
+    {
+        byte[] array = str.getBytes("UTF-8");
+        return new byte[] { (byte) ((array.length >> 8) & 0xff), (byte) (array.length & 0xff) };
+    }
+
     static void assertEquals(byte[] b1, byte[] b2) throws Exception
     {
-        String s1 = new String(b1, "UTF-8");
-        String s2 = new String(b2, "UTF-8");
-        // System.err.println(s1 + " == " + s2);
-        assertEquals(s1, s2);
+        assertTrue(Arrays.equals(b1, b2));
     }
 
     static void checkAscii(String str) throws Exception

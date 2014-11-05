@@ -21,6 +21,7 @@ import java.io.OutputStream;
 
 import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
+import java.util.Arrays;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via xml ser/deser.
@@ -66,8 +67,7 @@ public class XmlXRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSc
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 XmlIOUtil.newPipe(xmlStream), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);

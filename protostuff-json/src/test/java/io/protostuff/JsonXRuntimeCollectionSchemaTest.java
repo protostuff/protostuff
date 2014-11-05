@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via jsonx ser/deser.
@@ -57,8 +59,7 @@ public class JsonXRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollect
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
