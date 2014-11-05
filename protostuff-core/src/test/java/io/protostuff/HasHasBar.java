@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
  * 
  * @author David Yu
+ * @created Nov 13, 2009
  */
 public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, Externalizable
 {

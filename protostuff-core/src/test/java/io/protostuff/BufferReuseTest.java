@@ -24,6 +24,7 @@ import io.protostuff.Foo.EnumSample;
  * Test for re-using a thread-local buffer across many serializations.
  * 
  * @author David Yu
+ * @created Jan 15, 2011
  */
 public class BufferReuseTest extends StandardTest
 {

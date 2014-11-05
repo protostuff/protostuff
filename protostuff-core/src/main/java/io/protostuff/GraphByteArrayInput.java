@@ -23,6 +23,7 @@ import java.util.ArrayList;
  * A ByteArrayInput w/c can handle cyclic dependencies when deserializing objects with graph transformations.
  * 
  * @author David Yu
+ * @created Dec 10, 2010
  */
 public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         implements GraphInput, Schema<Object>

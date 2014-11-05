@@ -25,6 +25,7 @@ import java.util.Map;
  * Contains the metadata of parsed protos. Basically repesents the .proto file.
  * 
  * @author David Yu
+ * @created Dec 18, 2009
  */
 public class Proto extends AnnotationContainer implements HasOptions
 {

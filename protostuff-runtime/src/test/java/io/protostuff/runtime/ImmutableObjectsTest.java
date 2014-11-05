@@ -28,6 +28,7 @@ import io.protostuff.Schema;
  * Test ser/deser for immutable objects.
  * 
  * @author David Yu
+ * @created Feb 7, 2011
  */
 public class ImmutableObjectsTest extends AbstractTest
 {

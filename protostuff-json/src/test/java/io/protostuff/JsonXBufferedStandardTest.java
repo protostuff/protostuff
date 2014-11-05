@@ -20,6 +20,7 @@ import java.io.IOException;
  * Json standard tests using {@link JsonXOutput} (fully buffered).
  * 
  * @author David Yu
+ * @created Oct 11, 2010
  */
 public class JsonXBufferedStandardTest extends StandardTest
 {

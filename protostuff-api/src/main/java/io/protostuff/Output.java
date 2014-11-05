@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
  * An Output lets an application write primitive data types and objects to a sink of data.
  * 
  * @author David Yu
+ * @created Nov 9, 2009
  */
 public interface Output
 {

@@ -22,6 +22,7 @@ import java.util.Map;
  * Tests for the {@link StringMapSchema}.
  * 
  * @author David Yu
+ * @created Jun 25, 2010
  */
 public abstract class StringMapSchemaTest extends AbstractTest
 {

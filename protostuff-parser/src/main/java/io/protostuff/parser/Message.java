@@ -24,6 +24,7 @@ import java.util.List;
  * Represents the message defined in the {@link Proto}.
  * 
  * @author David Yu
+ * @created Dec 19, 2009
  */
 public class Message extends AnnotationContainer implements HasName, HasFields
 {

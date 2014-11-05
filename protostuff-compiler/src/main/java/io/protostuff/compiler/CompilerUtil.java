@@ -28,6 +28,7 @@ import java.util.List;
  * Utilities and helpers for compiling protos.
  * 
  * @author David Yu
+ * @created Jan 5, 2010
  */
 public final class CompilerUtil
 {

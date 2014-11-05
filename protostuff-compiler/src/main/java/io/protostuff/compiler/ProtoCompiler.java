@@ -20,6 +20,7 @@ import java.io.IOException;
  * Proto compiler.
  * 
  * @author David Yu
+ * @created Jan 4, 2010
  */
 public interface ProtoCompiler
 {

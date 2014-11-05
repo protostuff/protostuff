@@ -25,6 +25,7 @@ import java.util.Map.Entry;
  * The default {@link Map} message created will be an instance of {@link HashMap}.
  * 
  * @author David Yu
+ * @created Jun 26, 2010
  */
 public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
 {

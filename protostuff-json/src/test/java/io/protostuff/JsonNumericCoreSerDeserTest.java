@@ -31,6 +31,7 @@ import junit.framework.TestCase;
  * Testing for json ser/deser against messages.
  * 
  * @author David Yu
+ * @created Nov 20, 2009
  */
 public class JsonNumericCoreSerDeserTest extends TestCase
 {

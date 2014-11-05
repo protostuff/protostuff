@@ -51,6 +51,7 @@ import io.protostuff.runtime.SampleDelegates.Singleton;
  * Ser/deser tests for {@link ObjectSchema}.
  * 
  * @author David Yu
+ * @created Feb 3, 2011
  */
 public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 {

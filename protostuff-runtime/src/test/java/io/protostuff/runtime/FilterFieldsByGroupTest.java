@@ -23,6 +23,7 @@ import io.protostuff.Tag;
  * The fields are filtered dependending on the Tag annotation {@link Tag#groupFilter()}.
  * 
  * @author David Yu
+ * @created Feb 11, 2013
  */
 public class FilterFieldsByGroupTest extends AbstractTest
 {

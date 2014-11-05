@@ -53,6 +53,7 @@ import io.protostuff.Schema;
  * Base class for numeric id strategies.
  * 
  * @author David Yu
+ * @created Mar 28, 2012
  */
 public abstract class NumericIdStrategy extends IdStrategy
 {

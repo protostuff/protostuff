@@ -38,6 +38,7 @@ import io.protostuff.parser.Service;
  * should point to a StringTemplate resource (file, url, or from classpath).
  * 
  * @author David Yu
+ * @created May 25, 2010
  */
 public class PluginProtoCompiler extends STCodeGenerator
 {

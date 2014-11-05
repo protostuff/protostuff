@@ -20,6 +20,7 @@ import junit.framework.TestCase;
  * Tests for {@link Formatter}.
  * 
  * @author David Yu
+ * @created Nov 9, 2012
  */
 public class FomatterTest extends TestCase
 {

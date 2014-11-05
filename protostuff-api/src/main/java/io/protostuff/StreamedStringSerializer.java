@@ -20,6 +20,7 @@ import java.io.IOException;
  * UTF-8 String serialization
  * 
  * @author David Yu
+ * @created Feb 4, 2010
  */
 public final class StreamedStringSerializer
 {

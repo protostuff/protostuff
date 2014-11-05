@@ -63,6 +63,7 @@ import io.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
  * Test for {@link ExplicitIdStrategy}.
  * 
  * @author David Yu
+ * @created Mar 29, 2012
  */
 public class ExplicitRuntimeObjectSchemaTest extends TestCase
 {

@@ -28,6 +28,7 @@ import java.util.Arrays;
  * Test xml ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
+ * @created Jan 22, 2011
  */
 public class XmlRuntimeMapTest extends AbstractRuntimeMapTest
 {

@@ -39,6 +39,7 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * pojos from 3rd party libraries.
  * 
  * @author David Yu
+ * @created Nov 9, 2009
  */
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {

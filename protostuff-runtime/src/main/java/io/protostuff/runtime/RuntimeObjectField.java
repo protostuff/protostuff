@@ -22,6 +22,7 @@ import io.protostuff.runtime.MappedSchema.Field;
  * A runtime field whose field type is {@link Object} (dynamic).
  * 
  * @author David Yu
+ * @created Feb 1, 2011
  */
 abstract class RuntimeObjectField<T> extends Field<T> implements
         PolymorphicSchema.Handler

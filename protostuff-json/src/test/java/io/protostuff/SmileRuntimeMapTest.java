@@ -27,6 +27,7 @@ import java.util.Arrays;
  * Test smile ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
+ * @created Feb 11, 2011
  */
 public class SmileRuntimeMapTest extends AbstractRuntimeMapTest
 {

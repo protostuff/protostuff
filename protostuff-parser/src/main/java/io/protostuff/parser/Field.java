@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
  * Base class for fields defined in a {@link Message}.
  * 
  * @author David Yu
+ * @created Dec 19, 2009
  */
 public abstract class Field<T> extends AnnotationContainer implements Comparable<Field<?>>, HasName, HasOptions
 {

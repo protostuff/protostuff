@@ -30,6 +30,7 @@ import java.io.OutputStream;
  * Protostuff impl for {@link NullArrayElementTest}.
  * 
  * @author David Yu
+ * @created Sep 29, 2014
  */
 public class ProtostuffNullArrayElementTest extends NullArrayElementTest
 {

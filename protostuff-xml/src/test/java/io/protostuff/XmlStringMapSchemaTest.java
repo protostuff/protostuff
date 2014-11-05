@@ -21,6 +21,7 @@ import java.util.Map;
  * Xml IO tests for the {@link StringMapSchema}.
  * 
  * @author David Yu
+ * @created Jun 25, 2010
  */
 public class XmlStringMapSchemaTest extends StringMapSchemaTest
 {

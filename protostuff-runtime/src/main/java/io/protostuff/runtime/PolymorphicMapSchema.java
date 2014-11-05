@@ -55,6 +55,7 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * Used when the type is an interface (Map/SortedMap).
  * 
  * @author David Yu
+ * @created Apr 24, 2012
  */
 public abstract class PolymorphicMapSchema extends PolymorphicSchema
 {

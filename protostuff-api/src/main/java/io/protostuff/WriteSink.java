@@ -20,6 +20,7 @@ import java.io.IOException;
  * The flexible output for outputs that use {@link WriteSession}.
  * 
  * @author David Yu
+ * @created Sep 20, 2010
  */
 public enum WriteSink
 {

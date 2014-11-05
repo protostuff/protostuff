@@ -23,6 +23,7 @@ import org.codehaus.jackson.JsonGenerator;
  * An output used for writing data with json format.
  * 
  * @author David Yu
+ * @created Nov 20, 2009
  */
 public final class JsonOutput implements Output, StatefulOutput
 {

@@ -18,6 +18,7 @@ package io.protostuff.parser;
  * Represents a message field defined in a {@code Proto}.
  * 
  * @author David Yu
+ * @created Dec 19, 2009
  */
 public class MessageField extends Field<Message>
 {

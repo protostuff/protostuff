@@ -28,6 +28,7 @@ import io.protostuff.Foo.EnumSample;
  * optMergeDelimitedFrom.
  * 
  * @author David Yu
+ * @created Aug 29, 2012
  */
 public abstract class DelimiterTest extends AbstractTest
 {

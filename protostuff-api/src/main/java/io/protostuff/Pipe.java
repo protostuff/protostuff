@@ -24,6 +24,7 @@ import java.io.IOException;
  * Incoming data from the interwebs should not be piped due to validation/security purposes.
  * 
  * @author David Yu
+ * @created Oct 6, 2010
  */
 public abstract class Pipe
 {

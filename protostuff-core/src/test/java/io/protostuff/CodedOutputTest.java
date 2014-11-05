@@ -20,6 +20,7 @@ import io.protostuff.WireFormat.FieldType;
  * CodedOutput test for the size of the bytes written.
  * 
  * @author David Yu
+ * @created Nov 11, 2009
  */
 public class CodedOutputTest extends AbstractTest
 {

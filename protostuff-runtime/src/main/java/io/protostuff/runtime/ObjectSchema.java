@@ -121,6 +121,7 @@ import io.protostuff.StatefulOutput;
  * A schema for dynamic types (fields where the type is {@link Object}).
  * 
  * @author David Yu
+ * @created Feb 1, 2011
  */
 public abstract class ObjectSchema extends PolymorphicSchema
 {

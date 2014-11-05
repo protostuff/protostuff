@@ -22,6 +22,7 @@ import org.antlr.runtime.RecognizerSharedState;
  * Base lexer.
  * 
  * @author David Yu
+ * @created Dec 16, 2009
  */
 public abstract class AbstractLexer extends Lexer
 {

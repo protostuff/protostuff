@@ -32,6 +32,7 @@ import io.protostuff.Schema;
  * See {@link RuntimeDerivativeField} for details.
  * 
  * @author David Yu
+ * @created Jan 15, 2011
  */
 public class PolymorphicSerializationTest extends AbstractTest
 {

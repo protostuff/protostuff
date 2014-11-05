@@ -24,6 +24,7 @@ import junit.framework.TestCase;
  * Tests for parsing service/rpc components in the .proto file.
  * 
  * @author David Yu
+ * @created Jun 19, 2010
  */
 public class ProtoServiceTest extends TestCase
 {

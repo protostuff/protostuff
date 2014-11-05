@@ -23,6 +23,7 @@ import java.util.Properties;
  * Configuration for the proto w/c ontains the compile options and arguments.
  * 
  * @author David Yu
+ * @created Jan 5, 2010
  */
 public class ProtoModule implements Serializable
 {

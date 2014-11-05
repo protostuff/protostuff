@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
  * {@link OutputStream}).
  * 
  * @author David Yu
+ * @created May 18, 2010
  */
 public final class ProtobufOutput extends WriteSession implements Output
 {

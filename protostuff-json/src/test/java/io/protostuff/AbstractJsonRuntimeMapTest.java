@@ -28,6 +28,7 @@ import java.util.Arrays;
  * Test json ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
+ * @created Jan 22, 2011
  */
 public abstract class AbstractJsonRuntimeMapTest extends AbstractRuntimeMapTest
 {

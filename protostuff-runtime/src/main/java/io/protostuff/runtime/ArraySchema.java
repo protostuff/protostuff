@@ -49,6 +49,7 @@ import io.protostuff.runtime.ObjectSchema.ArrayWrapper;
  * Used when a field is an array (Object[] or any polymorphic component type).
  * 
  * @author David Yu
+ * @created Apr 25, 2012
  */
 public abstract class ArraySchema extends PolymorphicSchema
 {

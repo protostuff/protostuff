@@ -32,6 +32,7 @@ import io.protostuff.StringSerializer.STRING;
  * Compare the outputs of different json impls.
  * 
  * @author David Yu
+ * @created Jul 2, 2010
  */
 public class JsonCompareOutputsTest extends TestCase
 {

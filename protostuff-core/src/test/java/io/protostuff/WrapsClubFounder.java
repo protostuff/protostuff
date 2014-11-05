@@ -34,6 +34,7 @@ import java.io.Serializable;
  * Used for testing regular pojos that wraps messages (with schema).
  * 
  * @author David Yu
+ * @created Mar 25, 2012
  */
 public class WrapsClubFounder implements Serializable
 {

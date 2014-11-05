@@ -18,6 +18,7 @@ package io.protostuff;
  * Thrown when a json-encoded protobuf message being parsed is invalid in some way.
  * 
  * @author David Yu
+ * @created May 10, 2010
  */
 public class JsonInputException extends ProtostuffException
 {

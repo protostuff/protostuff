@@ -26,6 +26,7 @@ import io.protostuff.StringSerializer.STRING;
  * Tests for base 64 encoding.
  *
  * @author David Yu
+ * @created Sep 27, 2010
  */
 public class B64CodeTest extends TestCase
 {

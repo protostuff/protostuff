@@ -26,6 +26,7 @@ import static junit.framework.Assert.assertTrue;
  * Test runtime collection fields with {@link CollectionSchema} via jsonx ser/deser.
  * 
  * @author David Yu
+ * @created Jan 27, 2011
  */
 public class JsonXRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest
 {

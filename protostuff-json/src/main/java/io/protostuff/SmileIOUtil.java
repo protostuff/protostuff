@@ -32,6 +32,7 @@ import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
  * Smile IO utilities for messages.
  * 
  * @author David Yu
+ * @created Feb 10, 2011
  */
 public final class SmileIOUtil
 {

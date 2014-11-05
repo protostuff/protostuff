@@ -29,6 +29,7 @@ import io.protostuff.runtime.Bar.Status;
  * PojoWithArrayAndSet - for testing
  * 
  * @author David Yu
+ * @created Nov 20, 2009
  */
 public final class PojoWithArrayAndSet implements Serializable
 {

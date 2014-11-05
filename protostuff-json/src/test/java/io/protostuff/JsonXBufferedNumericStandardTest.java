@@ -20,6 +20,7 @@ import java.io.IOException;
  * Json standard tests (numeric) using {@link JsonXOutput}.
  * 
  * @author David Yu
+ * @created Oct 11, 2010
  */
 public class JsonXBufferedNumericStandardTest extends StandardTest
 {

@@ -32,6 +32,7 @@ import java.util.Date;
  * Test for arrays that contain null elements.
  * 
  * @author David Yu
+ * @created Sep 29, 2014
  */
 public abstract class NullArrayElementTest extends AbstractTest
 {

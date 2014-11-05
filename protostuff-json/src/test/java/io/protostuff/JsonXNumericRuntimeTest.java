@@ -34,6 +34,7 @@ import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
  * Test for JsonXOutput on runtime pojos (polymorphic too).
  * 
  * @author David Yu
+ * @created Jan 16, 2011
  */
 public class JsonXNumericRuntimeTest extends AbstractTest
 {

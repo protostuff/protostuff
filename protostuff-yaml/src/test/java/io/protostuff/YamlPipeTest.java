@@ -22,6 +22,7 @@ import io.protostuff.StringSerializer.STRING;
  * Test protostuff/protobuf to yaml pipe.
  * 
  * @author David Yu
+ * @created Oct 9, 2010
  */
 public class YamlPipeTest extends AbstractTest
 {

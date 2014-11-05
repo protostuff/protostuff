@@ -32,6 +32,7 @@ import io.protostuff.StringSerializer.STRING;
  * information about the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  * 
  * @author David Yu
+ * @created Nov 19, 2010
  */
 public final class KvpByteArrayInput implements Input
 {

@@ -18,6 +18,7 @@ package io.protostuff.parser;
  * Represents a component that should have a name.
  * 
  * @author David Yu
+ * @created Jan 8, 2010
  */
 public interface HasName
 {

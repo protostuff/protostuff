@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
  * The reference configured via options and annotations.
  * 
  * @author David Yu
+ * @created Dec 22, 2011
  */
 public class ConfiguredReference
 {

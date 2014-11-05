@@ -22,6 +22,7 @@ import junit.framework.TestCase;
  * Test proto options.
  * 
  * @author David Yu
+ * @created Aug 11, 2011
  */
 public class OptionTest extends TestCase
 {

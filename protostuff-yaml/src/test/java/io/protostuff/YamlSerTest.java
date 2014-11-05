@@ -32,6 +32,7 @@ import io.protostuff.StringSerializer.STRING;
  * Serialization tests for yaml.
  * 
  * @author David Yu
+ * @created Jun 28, 2010
  */
 public class YamlSerTest extends AbstractTest
 {

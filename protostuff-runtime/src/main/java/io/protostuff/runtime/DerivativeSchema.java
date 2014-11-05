@@ -30,6 +30,7 @@ import io.protostuff.StatefulOutput;
  * This schema delegates to another schema derived from the input.
  * 
  * @author David Yu
+ * @created Jan 21, 2011
  */
 public abstract class DerivativeSchema implements Schema<Object>
 {

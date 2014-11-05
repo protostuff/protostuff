@@ -22,6 +22,7 @@ import io.protostuff.Tag;
  * Test for runtime schemas to skip fields annotated with @Exclude and still allow backward-forward compatibility.
  * 
  * @author Johannes Elgh
+ * @created Jul 30, 2014
  */
 public class ExcludeFieldTest extends AbstractTest
 {

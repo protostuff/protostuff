@@ -22,6 +22,7 @@ import junit.framework.TestCase;
  * Test for the default proto loader.
  * 
  * @author David Yu
+ * @created May 16, 2010
  */
 public class DefaultProtoLoaderTest extends TestCase
 {

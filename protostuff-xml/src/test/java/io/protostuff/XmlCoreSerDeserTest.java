@@ -35,6 +35,7 @@ import io.protostuff.StringSerializer.STRING;
  * Testing for xml ser/deser against messages.
  * 
  * @author David Yu
+ * @created May 24, 2010
  */
 public class XmlCoreSerDeserTest extends TestCase
 {

@@ -23,6 +23,7 @@ import java.util.List;
  * Testcase for ser/deser of multiple messages using xml.
  * 
  * @author David Yu
+ * @created Oct 8, 2010
  */
 public class XmlRepeatedMessagesTest extends RepeatedMessagesTest
 {

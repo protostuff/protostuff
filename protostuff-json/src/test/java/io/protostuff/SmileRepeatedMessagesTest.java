@@ -23,6 +23,7 @@ import java.util.List;
  * Testcase for ser/deser of multiple messages using smile.
  * 
  * @author David Yu
+ * @created Feb 11, 2011
  */
 public class SmileRepeatedMessagesTest extends RepeatedMessagesTest
 {

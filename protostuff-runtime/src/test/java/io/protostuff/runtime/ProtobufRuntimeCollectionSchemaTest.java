@@ -31,6 +31,7 @@ import io.protostuff.StringSerializer.STRING;
  * Test runtime collection fields with {@link CollectionSchema} via protobuf ser/deser.
  * 
  * @author David Yu
+ * @created Jan 26, 2011
  */
 public class ProtobufRuntimeCollectionSchemaTest extends
         AbstractRuntimeCollectionSchemaTest

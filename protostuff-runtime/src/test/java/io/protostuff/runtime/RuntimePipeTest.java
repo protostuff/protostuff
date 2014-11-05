@@ -23,6 +23,7 @@ import io.protostuff.runtime.MathObjectsTest.Payment;
  * Test case for pipes generated at runtime.
  * 
  * @author David Yu
+ * @created Oct 9, 2010
  */
 public class RuntimePipeTest extends ProtostuffPipeTest
 {

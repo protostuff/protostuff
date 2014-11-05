@@ -24,6 +24,7 @@ import io.protostuff.runtime.MappedSchema.Field;
  * A runtime message field that lazily loads the schema to support cyclic dependencies.
  * 
  * @author David Yu
+ * @created Jan 19, 2011
  */
 abstract class RuntimeMessageField<T, P> extends Field<T>
 {

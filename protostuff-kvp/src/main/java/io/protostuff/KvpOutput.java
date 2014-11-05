@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
  * information about the content it carries (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol).
  * 
  * @author David Yu
+ * @created Nov 30, 2010
  */
 public final class KvpOutput extends WriteSession implements Output
 {

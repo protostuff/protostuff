@@ -23,6 +23,7 @@ import java.util.Collection;
  * Tests for annotations on messages, enums, fields, services, rpc methods, extensions
  * 
  * @author David Yu
+ * @created Dec 30, 2010
  */
 public class AnnotationTest extends TestCase
 {

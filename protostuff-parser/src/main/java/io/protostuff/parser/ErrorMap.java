@@ -36,6 +36,7 @@ import java.util.Set;
  * A sort of runtime error mechanism for st code generation to fail fast.
  * 
  * @author David Yu
+ * @created Nov 1, 2011
  */
 public final class ErrorMap implements Map<String, Object>
 {

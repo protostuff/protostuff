@@ -38,6 +38,7 @@ import static io.protostuff.WireFormat.makeTag;
  * {@link ArrayIndexOutOfBoundsException} when a message is truncated.
  * 
  * @author David Yu
+ * @created Jun 22, 2010
  */
 public final class ByteBufferInput implements Input
 {

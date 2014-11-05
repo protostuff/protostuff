@@ -21,6 +21,7 @@ import java.io.OutputStream;
  * IO Utils for writing xml via {@link XmlXOutput}.
  * 
  * @author David Yu
+ * @created Aug 30, 2012
  */
 public final class XmlXIOUtil
 {

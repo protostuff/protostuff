@@ -27,6 +27,7 @@ import java.util.Arrays;
  * Test xml ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
+ * @created Feb 4, 2011
  */
 public class XmlRuntimeObjectSchemaTest extends AbstractRuntimeObjectSchemaTest
 {

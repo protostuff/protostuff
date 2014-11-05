@@ -21,6 +21,7 @@ import javax.xml.stream.XMLOutputFactory;
  * Resolves the target {@link XMLInputFactory} and {@link XMLOutputFactory} to use.
  * 
  * @author David Yu
+ * @created May 24, 2010
  */
 public final class XmlIOFactoryUtil
 {

@@ -26,6 +26,7 @@ import java.util.List;
  * Test case for tail-delimited protostuff messages.
  * 
  * @author David Yu
+ * @created Oct 5, 2010
  */
 public class TailDelimiterTest extends AbstractTest
 {

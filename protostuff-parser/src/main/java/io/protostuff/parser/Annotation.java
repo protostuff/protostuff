@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
  * Annotation for messages, enums, services, rpc, fields
  * 
  * @author David Yu
+ * @created Dec 30, 2010
  */
 public class Annotation implements HasName
 {

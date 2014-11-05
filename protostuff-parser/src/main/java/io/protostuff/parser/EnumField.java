@@ -18,6 +18,7 @@ package io.protostuff.parser;
  * Represents an enum field defined in a {@link Message}.
  * 
  * @author David Yu
+ * @created Dec 19, 2009
  */
 public class EnumField extends Field<EnumGroup.Value>
 {

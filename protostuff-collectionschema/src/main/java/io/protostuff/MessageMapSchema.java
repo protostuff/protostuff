@@ -22,6 +22,7 @@ import java.util.Map;
  * particular map impl).
  * 
  * @author David Yu
+ * @created Jun 26, 2010
  */
 public final class MessageMapSchema<K, V> extends MapSchema<K, V>
 {

@@ -21,6 +21,7 @@ import java.io.IOException;
  * customization.
  * 
  * @author David Yu
+ * @created May 28, 2010
  */
 public abstract class CustomSchema<T> implements Schema<T>
 {

@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
  * Int32/Int64 serialization
  * 
  * @author David Yu
+ * @created Sep 20, 2010
  */
 public final class IntSerializer
 {

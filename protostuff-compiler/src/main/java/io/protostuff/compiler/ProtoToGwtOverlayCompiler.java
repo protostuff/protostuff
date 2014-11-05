@@ -29,6 +29,7 @@ import io.protostuff.parser.Proto;
  * Compiles proto files to gwt overlays source (java) files.
  * 
  * @author David Yu
+ * @created Jan 13, 2010
  */
 public class ProtoToGwtOverlayCompiler extends STCodeGenerator
 {

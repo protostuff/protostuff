@@ -39,6 +39,7 @@ import javax.xml.stream.XMLStreamWriter;
  * Utility for the XML serialization/deserialization of messages and objects tied to a schema.
  * 
  * @author David Yu
+ * @created May 24, 2010
  */
 public final class XmlIOUtil
 {

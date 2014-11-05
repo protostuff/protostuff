@@ -21,6 +21,7 @@ import java.util.Collection;
  * A schema for a {@link Collection} with {@code Message} or pojo values. Does not allow null values.
  * 
  * @author David Yu
+ * @created Jan 26, 2011
  */
 public final class MessageCollectionSchema<V> extends CollectionSchema<V>
 {

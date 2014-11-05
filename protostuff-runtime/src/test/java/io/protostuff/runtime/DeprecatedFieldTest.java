@@ -20,6 +20,7 @@ import io.protostuff.AbstractTest;
  * Test for runtime schemas to skip deprecated field and still allow backward-forward compatibility.
  * 
  * @author David Yu
+ * @created Oct 28, 2010
  */
 public class DeprecatedFieldTest extends AbstractTest
 {

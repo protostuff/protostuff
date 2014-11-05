@@ -20,6 +20,7 @@ package io.protostuff.mojo;
  * {@code <protoModule> </protoModule>} tags
  * 
  * @author David Yu
+ * @created Jan 14, 2010
  */
 public class ProtoModule extends io.protostuff.compiler.ProtoModule
 {

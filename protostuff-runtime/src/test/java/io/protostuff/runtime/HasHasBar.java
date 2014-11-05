@@ -25,6 +25,7 @@ import io.protostuff.ProtostuffIOUtil;
  * Ser/deser test object that wraps an object {@link HasBar} without any schema.
  * 
  * @author David Yu
+ * @created Nov 13, 2009
  */
 public final class HasHasBar implements Externalizable
 {

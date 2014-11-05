@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
  * A FilterOutput contains some other {@link Output output}, which it uses as its basic sink of data.
  * 
  * @author David Yu
+ * @created Nov 11, 2009
  */
 public class FilterOutput<F extends Output> implements Output
 {

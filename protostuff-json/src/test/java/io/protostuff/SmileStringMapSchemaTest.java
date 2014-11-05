@@ -21,6 +21,7 @@ import java.util.Map;
  * Json IO tests for the {@link StringMapSchema}.
  * 
  * @author David Yu
+ * @created Feb 11, 2011
  */
 public class SmileStringMapSchemaTest extends StringMapSchemaTest
 {

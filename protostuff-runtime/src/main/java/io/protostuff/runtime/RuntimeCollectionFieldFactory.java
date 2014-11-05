@@ -35,6 +35,7 @@ import io.protostuff.runtime.MappedSchema.Field;
  * Static utility for creating runtime {@link Collection} fields.
  * 
  * @author David Yu
+ * @created Jan 26, 2011
  */
 final class RuntimeCollectionFieldFactory
 {

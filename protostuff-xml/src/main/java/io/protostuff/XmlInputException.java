@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
  * Thrown when an xml-encoded message being parsed is invalid in some way.
  * 
  * @author David Yu
+ * @created May 24, 2010
  */
 public class XmlInputException extends ProtostuffException
 {

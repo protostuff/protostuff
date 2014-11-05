@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
  * Default proto loader for imported protos.
  * 
  * @author David Yu
+ * @created May 16, 2010
  */
 public class DefaultProtoLoader implements Proto.Loader
 {

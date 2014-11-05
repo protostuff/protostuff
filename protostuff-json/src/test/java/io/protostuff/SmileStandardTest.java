@@ -20,6 +20,7 @@ import java.io.IOException;
  * Smile standard tests.
  * 
  * @author David Yu
+ * @created Feb 11, 2011
  */
 public class SmileStandardTest extends StandardTest
 {

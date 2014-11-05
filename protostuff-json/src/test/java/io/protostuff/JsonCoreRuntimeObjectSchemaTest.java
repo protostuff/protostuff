@@ -18,6 +18,7 @@ package io.protostuff;
  * Test json ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
+ * @created Feb 4, 2011
  */
 public class JsonCoreRuntimeObjectSchemaTest extends AbstractJsonRuntimeObjectSchemaTest
 {

@@ -28,6 +28,7 @@ import org.antlr.runtime.CommonTokenStream;
  * Utility for loading protos from various input.
  * 
  * @author David Yu
+ * @created Dec 24, 2009
  */
 public final class ProtoUtil
 {

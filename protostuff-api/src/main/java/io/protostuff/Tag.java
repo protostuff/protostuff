@@ -38,6 +38,7 @@ import java.lang.annotation.Target;
  * 
  * @author Brice Jaglin
  * @author David Yu
+ * @created Mar 30, 2012
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

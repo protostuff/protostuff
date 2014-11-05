@@ -21,6 +21,7 @@ import java.util.Map;
  * Tests for the {@link StringMapSchema} via protobuf.
  * 
  * @author David Yu
+ * @created Oct 7, 2010
  */
 public class StringMapSchemaProtobufTest extends StringMapSchemaTest
 {

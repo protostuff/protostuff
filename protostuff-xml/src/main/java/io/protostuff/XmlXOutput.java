@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
  * validated and xml-escaped on input).
  * 
  * @author David Yu
+ * @created Aug 30, 2012
  */
 public final class XmlXOutput extends WriteSession implements Output, StatefulOutput
 {

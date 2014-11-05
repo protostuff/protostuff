@@ -23,6 +23,7 @@ import java.io.OutputStream;
  * Test the streaming output capability of {@link ProtostuffOutput}.
  * 
  * @author David Yu
+ * @created Sep 19, 2010
  */
 public class ProtostuffStreamedOutputTest extends SerDeserTest
 {

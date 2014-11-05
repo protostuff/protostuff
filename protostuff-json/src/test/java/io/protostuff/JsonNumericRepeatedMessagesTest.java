@@ -23,6 +23,7 @@ import java.util.List;
  * Testcase for ser/deser of multiple messages using json (numeric).
  * 
  * @author David Yu
+ * @created Oct 8, 2010
  */
 public class JsonNumericRepeatedMessagesTest extends RepeatedMessagesTest
 {

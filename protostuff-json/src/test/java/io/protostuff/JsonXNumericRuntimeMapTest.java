@@ -20,6 +20,7 @@ import java.util.Map;
  * Test jsonx (numeric) ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
+ * @created Jan 22, 2011
  */
 public class JsonXNumericRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {

@@ -18,6 +18,7 @@ package io.protostuff;
  * Tests for reading/writing pojos from/to a buffer.
  * 
  * @author David Yu
+ * @created Dec 2, 2010
  */
 public class KvpTest extends AbstractKvpTest
 {

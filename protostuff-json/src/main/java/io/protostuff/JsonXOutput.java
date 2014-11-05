@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
  * This is the appropriate output sink to use when writing from binary (protostuff,protobuf,etc) pipes.
  * 
  * @author David Yu
+ * @created Jul 2, 2010
  */
 public final class JsonXOutput extends WriteSession implements Output, StatefulOutput
 {

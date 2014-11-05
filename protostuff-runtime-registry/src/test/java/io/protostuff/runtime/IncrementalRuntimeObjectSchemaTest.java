@@ -54,6 +54,7 @@ import io.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
  * Test for {@link IncrementalIdStrategy}.
  * 
  * @author David Yu
+ * @created Mar 29, 2012
  */
 public class IncrementalRuntimeObjectSchemaTest extends TestCase
 {

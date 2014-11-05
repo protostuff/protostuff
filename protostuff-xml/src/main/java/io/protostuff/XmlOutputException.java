@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
  * Wrapper for {@link javax.xml.stream.XMLStreamException}.
  * 
  * @author David Yu
+ * @created May 24, 2010
  */
 public class XmlOutputException extends ProtostuffException
 {

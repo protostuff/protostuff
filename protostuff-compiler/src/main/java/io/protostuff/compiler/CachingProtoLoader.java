@@ -41,6 +41,7 @@ import io.protostuff.parser.Proto;
  * A proto loader that caches the protos for re-use.
  * 
  * @author David Yu
+ * @created Dec 4, 2011
  */
 public class CachingProtoLoader extends DefaultProtoLoader
 {

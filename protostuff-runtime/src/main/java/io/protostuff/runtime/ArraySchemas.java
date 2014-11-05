@@ -49,6 +49,7 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
  * Built-in array schemas.
  * 
  * @author David Yu
+ * @created Dec 4, 2012
  */
 public final class ArraySchemas
 {
