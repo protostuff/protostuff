@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
+import java.util.Arrays;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via smile ser/deser.
@@ -65,8 +65,7 @@ public class SmileRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionS
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 SmileIOUtil.newPipe(smileStream, false), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
@@ -80,11 +79,7 @@ public class SmileRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionS
         byte[] smileRoundTripFromStream = SmileIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, false);
 
-        assertTrue(smileRoundTrip.length == smileRoundTripFromStream.length);
-
-        String strSmileRoundTrip = STRING.deser(smileRoundTrip);
-
-        assertEquals(strSmileRoundTrip, STRING.deser(smileRoundTripFromStream));
+        assertTrue(Arrays.equals(smileRoundTrip, smileRoundTripFromStream));
 
         assertTrue(smileRoundTrip.length == smile.length);
 

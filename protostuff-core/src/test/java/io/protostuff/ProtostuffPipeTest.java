@@ -16,7 +16,7 @@ package io.protostuff;
 
 import java.io.ByteArrayInputStream;
 
-import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
 
 /**
  * Test case for protostuff pipes and protobuf pipes.
@@ -40,7 +40,7 @@ public class ProtostuffPipeTest extends AbstractTest
                 ProtobufIOUtil.newPipe(protobufStream), pipeSchema, buf());
 
         assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
@@ -56,13 +56,11 @@ public class ProtostuffPipeTest extends AbstractTest
 
         assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
 
-        String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobufRoundTripFromStream));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
 
         assertTrue(protobufRoundTrip.length == protobuf.length);
 
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
     }
 
     public void testFoo() throws Exception

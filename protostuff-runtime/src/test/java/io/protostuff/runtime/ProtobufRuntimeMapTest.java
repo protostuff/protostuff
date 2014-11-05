@@ -25,7 +25,7 @@ import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
-import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
 
 /**
  * Test protobuf ser/deser for runtime {@link Map} fields.
@@ -72,9 +72,7 @@ public class ProtobufRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 ProtobufIOUtil.newPipe(protobufStream), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff),
-                STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
@@ -90,16 +88,9 @@ public class ProtobufRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, buf());
 
-        assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
 
-        String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-
-        assertEquals(strProtobufRoundTrip,
-                STRING.deser(protobufRoundTripFromStream));
-
-        assertTrue(protobufRoundTrip.length == protobuf.length);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
     }
 
 }

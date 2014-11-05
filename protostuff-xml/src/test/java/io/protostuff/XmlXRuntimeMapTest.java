@@ -22,6 +22,7 @@ import java.util.Map;
 
 import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeMapTest;
+import java.util.Arrays;
 
 /**
  * Test xml ser/deser for runtime {@link Map} fields.
@@ -66,8 +67,7 @@ public class XmlXRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 XmlIOUtil.newPipe(xmlStream), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
