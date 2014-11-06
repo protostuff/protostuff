@@ -45,7 +45,7 @@ public final class ByteArrayInput implements Input
 
     private final byte[] buffer;
     private int offset, limit, lastTag = 0;
-    private int packed_limit = 0;
+    private int packedLimit = 0;
 
     /**
      * If true, the nested messages are group-encoded
@@ -75,7 +75,7 @@ public final class ByteArrayInput implements Input
 
         this.offset = offset;
         this.limit = offset + len;
-        this.packed_limit = 0;
+        this.packedLimit = 0;
         return this;
     }
 
@@ -86,7 +86,7 @@ public final class ByteArrayInput implements Input
     {
         this.offset = offset;
         this.limit = limit;
-        this.packed_limit = 0;
+        this.packedLimit = 0;
         return this;
     }
 
@@ -109,9 +109,9 @@ public final class ByteArrayInput implements Input
     /**
      * Return true if currently reading packed field
      */
-    public boolean currentPacked()
+    public boolean isCurrentFieldPacked()
     {
-      return packed_limit != 0 && packed_limit != offset;
+        return packedLimit != 0 && packedLimit != offset;
     }
 
     /**
@@ -226,9 +226,9 @@ public final class ByteArrayInput implements Input
 
         final int tag;
         // are we reading packed field?
-        if (currentPacked())
+        if (isCurrentFieldPacked())
         {
-            if (packed_limit < offset)
+            if (packedLimit < offset)
                 throw ProtobufException.misreportedSize();
 
             // Return field number while reading packed field
@@ -237,7 +237,7 @@ public final class ByteArrayInput implements Input
         else
         {
             tag = readRawVarint32();
-            packed_limit = 0;
+            packedLimit = 0;
         }
 
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
@@ -264,10 +264,16 @@ public final class ByteArrayInput implements Input
         return fieldNumber;
     }
 
-    private void maybePacked() throws IOException
+    /**
+     * Check if this field have been packed into a length-delimited
+     * field. If so, update internal state to reflect that packed fields
+     * are being read.
+     * @throws IOException
+     */
+    private void checkIfPackedField() throws IOException
     {
         // Do we have the start of a packed field?
-        if (packed_limit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
+        if (packedLimit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
         {
             final int length = readRawVarint32();
             if (length < 0)
@@ -276,7 +282,7 @@ public final class ByteArrayInput implements Input
             if (offset + length > limit)
                 throw ProtobufException.misreportedSize();
 
-            this.packed_limit = this.offset + length;
+            this.packedLimit = this.offset + length;
         }
     }
 
@@ -285,7 +291,7 @@ public final class ByteArrayInput implements Input
      */
     public double readDouble() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return Double.longBitsToDouble(readRawLittleEndian64());
     }
 
@@ -294,7 +300,7 @@ public final class ByteArrayInput implements Input
      */
     public float readFloat() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return Float.intBitsToFloat(readRawLittleEndian32());
     }
 
@@ -303,7 +309,7 @@ public final class ByteArrayInput implements Input
      */
     public long readUInt64() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawVarint64();
     }
 
@@ -312,7 +318,7 @@ public final class ByteArrayInput implements Input
      */
     public long readInt64() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawVarint64();
     }
 
@@ -321,7 +327,7 @@ public final class ByteArrayInput implements Input
      */
     public int readInt32() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawVarint32();
     }
 
@@ -330,7 +336,7 @@ public final class ByteArrayInput implements Input
      */
     public long readFixed64() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
@@ -339,7 +345,7 @@ public final class ByteArrayInput implements Input
      */
     public int readFixed32() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
@@ -348,7 +354,7 @@ public final class ByteArrayInput implements Input
      */
     public boolean readBool() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return buffer[offset++] != 0;
     }
 
@@ -357,7 +363,7 @@ public final class ByteArrayInput implements Input
      */
     public int readUInt32() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawVarint32();
     }
 
@@ -367,7 +373,7 @@ public final class ByteArrayInput implements Input
      */
     public int readEnum() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawVarint32();
     }
 
@@ -376,7 +382,7 @@ public final class ByteArrayInput implements Input
      */
     public int readSFixed32() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
@@ -385,7 +391,7 @@ public final class ByteArrayInput implements Input
      */
     public long readSFixed64() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
@@ -394,7 +400,7 @@ public final class ByteArrayInput implements Input
      */
     public int readSInt32() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         final int n = readRawVarint32();
         return (n >>> 1) ^ -(n & 1);
     }
@@ -404,7 +410,7 @@ public final class ByteArrayInput implements Input
      */
     public long readSInt64() throws IOException
     {
-        maybePacked();
+        checkIfPackedField();
         final long n = readRawVarint64();
         return (n >>> 1) ^ -(n & 1);
     }
