@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
  * Used to configure non-final pojos, map interfaces and collection interfaces.
  * 
  * @author David Yu
- * @created Apr 30, 2012
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

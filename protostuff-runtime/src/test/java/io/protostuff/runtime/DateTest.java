@@ -30,7 +30,6 @@ import io.protostuff.Schema;
  * Test ser/deser of Date object.
  * 
  * @author David Yu
- * @created Nov 1, 2010
  */
 public class DateTest extends AbstractTest
 {

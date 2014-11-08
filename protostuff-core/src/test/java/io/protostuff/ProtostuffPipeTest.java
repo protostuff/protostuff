@@ -22,7 +22,6 @@ import java.util.Arrays;
  * Test case for protostuff pipes and protobuf pipes.
  * 
  * @author David Yu
- * @created Oct 8, 2010
  */
 public class ProtostuffPipeTest extends AbstractTest
 {

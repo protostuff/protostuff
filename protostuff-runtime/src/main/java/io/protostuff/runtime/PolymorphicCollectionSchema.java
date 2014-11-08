@@ -58,7 +58,6 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * Used when the type is an interface (Collection/List/Set/SortedSet).
  * 
  * @author David Yu
- * @created Apr 24, 2012
  */
 public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 {

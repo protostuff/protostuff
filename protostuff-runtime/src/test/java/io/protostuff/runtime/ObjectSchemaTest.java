@@ -48,7 +48,6 @@ import io.protostuff.Schema;
  * Test cyclic ser/deser on fields where the type is dynamic.
  * 
  * @author David Yu
- * @created Oct 20, 2011
  */
 
 public class ObjectSchemaTest extends TestCase

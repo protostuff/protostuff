@@ -22,7 +22,6 @@ import java.io.OutputStream;
  * buffering. This is used when objects need to be serialzied/written into a {@code LinkedBuffer}.
  * 
  * @author David Yu
- * @created Sep 20, 2010
  */
 public class WriteSession
 {

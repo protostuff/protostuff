@@ -31,7 +31,6 @@ import java.util.Arrays;
  * Test protobuf ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 public class ProtobufRuntimeMapTest extends AbstractRuntimeMapTest
 {

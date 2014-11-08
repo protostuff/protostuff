@@ -26,7 +26,6 @@ import java.util.Collection;
  * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.
  * 
  * @author David Yu
- * @created Jan 26, 2011
  */
 public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 {

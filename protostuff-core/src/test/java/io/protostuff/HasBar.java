@@ -20,7 +20,6 @@ import java.io.Serializable;
  * Ser/deser test object that wraps a message {@link Bar}.
  * 
  * @author David Yu
- * @created Nov 12, 2009
  */
 public class HasBar implements Serializable
 {

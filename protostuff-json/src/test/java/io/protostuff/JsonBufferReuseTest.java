@@ -21,7 +21,6 @@ import java.io.IOException;
  * Test for re-using a thread-local buffer across many serializations.
  * 
  * @author David Yu
- * @created Jan 15, 2011
  */
 public class JsonBufferReuseTest extends StandardTest
 {

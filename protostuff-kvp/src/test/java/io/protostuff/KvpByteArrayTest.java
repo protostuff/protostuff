@@ -24,7 +24,6 @@ import java.util.HashMap;
  * A test for deserializing byte array fields that exceed the input's buffer size.
  * 
  * @author David Yu
- * @created Jun 21, 2011
  */
 public class KvpByteArrayTest extends AbstractTest
 {

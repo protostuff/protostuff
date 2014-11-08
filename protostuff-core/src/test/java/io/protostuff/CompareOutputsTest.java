@@ -26,7 +26,6 @@ import io.protostuff.Foo.EnumSample;
  * Benchmark to compare the serialization speed of 3 types. CodedOutput, BufferedOutput and DeferredOutput.
  * 
  * @author David Yu
- * @created Nov 13, 2009
  */
 public class CompareOutputsTest extends AbstractTest
 {

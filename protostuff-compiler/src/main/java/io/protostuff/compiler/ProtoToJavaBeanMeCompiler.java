@@ -29,7 +29,6 @@ import io.protostuff.parser.Proto;
  * Compiles proto files to protobuf java messages (pojos).
  * 
  * @author David Yu
- * @created Jan 4, 2010
  */
 public class ProtoToJavaBeanMeCompiler extends STCodeGenerator
 {

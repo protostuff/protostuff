@@ -31,7 +31,6 @@ import io.protostuff.Schema;
  * Run this standalone to execute the actual tests.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 public class InheritanceTest extends AbstractTest
 {

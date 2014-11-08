@@ -37,7 +37,6 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
  * Polymorphic types.
  * 
  * @author David Yu
- * @created Apr 30, 2012
  */
 public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
 {

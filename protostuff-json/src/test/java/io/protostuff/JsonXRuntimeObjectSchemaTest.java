@@ -26,7 +26,6 @@ import static junit.framework.Assert.assertTrue;
  * Test jsonx ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
- * @created Feb 4, 2011
  */
 public class JsonXRuntimeObjectSchemaTest extends AbstractJsonRuntimeObjectSchemaTest
 {

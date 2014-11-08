@@ -36,7 +36,6 @@ import io.protostuff.Schema;
  * of merging.
  * 
  * @author David Yu
- * @created Apr 30, 2012
  */
 public abstract class PolymorphicSchema implements Schema<Object>
 {

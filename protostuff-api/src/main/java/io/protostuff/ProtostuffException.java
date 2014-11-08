@@ -20,7 +20,6 @@ import java.io.IOException;
  * The base io exception for all formats (protobuf/json/xml).
  * 
  * @author David Yu
- * @created May 25, 2010
  */
 public class ProtostuffException extends IOException
 {

@@ -27,7 +27,6 @@ import static junit.framework.Assert.assertTrue;
  * Test jsonx ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Jan 22, 2011
  */
 public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {

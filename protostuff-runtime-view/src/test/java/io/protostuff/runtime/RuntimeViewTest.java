@@ -22,7 +22,6 @@ import io.protostuff.Schema;
  * Tests for {@link RuntimeView}.
  * 
  * @author David Yu
- * @created Nov 9, 2012
  */
 public class RuntimeViewTest extends AbstractTest
 {

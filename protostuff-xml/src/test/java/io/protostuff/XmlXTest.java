@@ -33,7 +33,6 @@ import io.protostuff.XmlXIOUtil;
  * Tests for XmlXOutput.
  * 
  * @author David Yu
- * @created Aug 30, 2012
  */
 public class XmlXTest extends io.protostuff.AbstractTest
 {

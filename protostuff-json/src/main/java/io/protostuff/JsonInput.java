@@ -34,7 +34,6 @@ import org.codehaus.jackson.JsonToken;
  * An input used for reading data with json format.
  * 
  * @author David Yu
- * @created Nov 20, 2009
  */
 public final class JsonInput implements Input
 {

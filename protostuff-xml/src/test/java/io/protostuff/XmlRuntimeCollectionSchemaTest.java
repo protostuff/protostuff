@@ -27,7 +27,6 @@ import java.util.Arrays;
  * Test runtime collection fields with {@link CollectionSchema} via xml ser/deser.
  * 
  * @author David Yu
- * @created Jan 27, 2011
  */
 public class XmlRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSchemaTest
 {

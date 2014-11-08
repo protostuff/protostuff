@@ -26,7 +26,6 @@ import io.protostuff.Schema;
  * Test w/c fields should be excluded.
  * 
  * @author David Yu
- * @created Jan 20, 2011
  */
 public class FieldExclusionTest extends AbstractTest
 {

@@ -41,7 +41,6 @@ import junit.framework.TestCase;
  * Test generic types.
  * 
  * @author David Yu
- * @created May 3, 2012
  */
 public class GenericTypeTest extends TestCase
 {

@@ -20,7 +20,6 @@ import io.protostuff.StringSerializer.STRING;
  * An IO utility for dealing with raw ascii bytes.
  * 
  * @author David Yu
- * @created Nov 19, 2010
  */
 public final class NumberParser
 {

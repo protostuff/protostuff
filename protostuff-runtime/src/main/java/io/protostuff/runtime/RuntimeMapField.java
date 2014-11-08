@@ -31,7 +31,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * A runtime field for a {@link Map}. Allows null keys and values.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 abstract class RuntimeMapField<T, K, V> extends Field<T>
 {

@@ -26,7 +26,6 @@ import io.protostuff.Schema;
  * Test ser/deser of graph objects (references and cyclic dependencies) with runtime schemas.
  * 
  * @author David Yu
- * @created Jan 19, 2011
  */
 public class RuntimeGraphTest extends AbstractTest
 {

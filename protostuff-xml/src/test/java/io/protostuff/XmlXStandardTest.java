@@ -20,7 +20,6 @@ import java.io.IOException;
  * Xml standard tests.
  * 
  * @author David Yu
- * @created Oct 8, 2010
  */
 public class XmlXStandardTest extends StandardTest
 {

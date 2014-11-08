@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
  * Represents a service defined in the proto (for generating rpc services).
  * 
  * @author David Yu
- * @created Jun 18, 2010
  */
 public class Service extends AnnotationContainer implements HasName, HasOptions
 {

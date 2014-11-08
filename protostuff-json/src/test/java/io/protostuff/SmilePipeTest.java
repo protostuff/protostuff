@@ -23,7 +23,6 @@ import static junit.framework.Assert.assertTrue;
  * Test case for smile pipes.
  * 
  * @author David Yu
- * @created Feb 11, 2011
  */
 public class SmilePipeTest extends AbstractTest
 {

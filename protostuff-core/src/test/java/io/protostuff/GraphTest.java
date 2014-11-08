@@ -23,7 +23,6 @@ import java.util.ArrayList;
  * Test ser/deser of graph objects (references and cyclic dependencies).
  * 
  * @author David Yu
- * @created Dec 10, 2010
  */
 public class GraphTest extends AbstractTest
 {

@@ -36,7 +36,6 @@ import io.protostuff.Tag;
  * 
  * @author Brice Jaglin
  * @author David Yu
- * @created Mar 30, 2012
  */
 public class AnnotatedFieldsTest extends AbstractTest
 {

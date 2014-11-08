@@ -26,7 +26,6 @@ import java.util.Map;
  * A ProtostuffOutput w/c can handle cyclic dependencies when serializing objects with graph transformations.
  * 
  * @author David Yu
- * @created Dec 10, 2010
  */
 public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
 {

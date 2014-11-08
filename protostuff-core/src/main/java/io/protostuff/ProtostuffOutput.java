@@ -32,7 +32,6 @@ import java.nio.ByteBuffer;
  * Dual output for streaming or full buffering.
  * 
  * @author David Yu
- * @created Sep 19, 2010
  */
 public final class ProtostuffOutput extends WriteSession implements Output
 {

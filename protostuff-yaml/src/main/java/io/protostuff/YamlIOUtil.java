@@ -22,7 +22,6 @@ import java.util.List;
  * Utility for the YAML serialization of messages and objects tied to a schema.
  * 
  * @author David Yu
- * @created Jun 28, 2010
  */
 public final class YamlIOUtil
 {

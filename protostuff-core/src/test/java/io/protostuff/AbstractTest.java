@@ -20,7 +20,6 @@ import junit.framework.TestCase;
  * Helper class for tests.
  * 
  * @author David Yu
- * @created Oct 8, 2010
  */
 public abstract class AbstractTest extends TestCase
 {

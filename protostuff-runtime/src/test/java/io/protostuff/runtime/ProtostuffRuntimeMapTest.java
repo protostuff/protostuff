@@ -32,7 +32,6 @@ import static junit.framework.Assert.assertTrue;
  * Test protostuff ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 public class ProtostuffRuntimeMapTest extends AbstractRuntimeMapTest
 {

@@ -20,7 +20,6 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
  * Wraps a delegate.
  * 
  * @author David Yu
- * @created Dec 5, 2012
  */
 public class HasDelegate<T> implements PolymorphicSchema.Factory
 {

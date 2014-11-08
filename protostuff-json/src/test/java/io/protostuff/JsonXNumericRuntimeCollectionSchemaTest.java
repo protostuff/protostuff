@@ -18,7 +18,6 @@ package io.protostuff;
  * Test runtime collection fields with {@link CollectionSchema} via jsonx (numeric) ser/deser.
  * 
  * @author David Yu
- * @created Jan 27, 2011
  */
 public class JsonXNumericRuntimeCollectionSchemaTest extends JsonXRuntimeCollectionSchemaTest
 {

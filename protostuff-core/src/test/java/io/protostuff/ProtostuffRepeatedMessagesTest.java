@@ -23,7 +23,6 @@ import java.util.List;
  * Testcase for ser/deser of multiple messages using protostuff
  * 
  * @author David Yu
- * @created Oct 7, 2010
  */
 public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest
 {

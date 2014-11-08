@@ -22,7 +22,6 @@ import java.nio.ByteBuffer;
  * An output used for writing data with yaml format.
  * 
  * @author David Yu
- * @created Jun 27, 2010
  */
 public final class YamlOutput extends WriteSession implements Output, StatefulOutput
 {

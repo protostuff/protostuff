@@ -26,7 +26,6 @@ import java.util.List;
  * Testcase for ser/deser of multiple messages.
  * 
  * @author David Yu
- * @created Jan 14, 2010
  */
 public abstract class RepeatedMessagesTest extends AbstractTest
 {

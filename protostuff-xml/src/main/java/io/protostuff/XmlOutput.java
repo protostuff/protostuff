@@ -26,7 +26,6 @@ import io.protostuff.StringSerializer.STRING;
  * An output used for writing data with xml format.
  * 
  * @author David Yu
- * @created May 24, 2010
  */
 public final class XmlOutput implements Output, StatefulOutput
 {

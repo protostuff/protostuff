@@ -11,15 +11,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 //========================================================================
-
-package io.protostuff;
-
 //========================================================================
 //Copyright 1999-2005 Mort Bay Consulting Pty. Ltd.
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,11 +24,12 @@ package io.protostuff;
 //See the License for the specific language governing permissions and
 //limitations under the License.
 //========================================================================
+// ------------- Ported from org.mortbay.jetty.security.B64Code ---------/
+
+package io.protostuff;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-/* ------------- Ported from org.mortbay.jetty.security.B64Code ------------- */
 
 /**
  * Fast B64 Encoder/Decoder as described in RFC 1421.
@@ -42,7 +40,7 @@ import java.io.OutputStream;
  * Note that in a web context the usual case is to not want linebreaks or other white space in the encoded output.
  * <p>
  * All methods that begin with 'c' will use char arrays (as output on encode, as input on decode).
- * 
+ *
  * @author Brett Sealey (bretts)
  * @author Greg Wilkins (gregw)
  * @author David Yu (dyu)
@@ -77,6 +75,11 @@ public final class B64Code
 
     /**
      * Fast Base 64 encode as described in RFC 1421.
+     * <p> Does not insert whitespace as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     *
+     * @param input byte array to encode.
+     * @return char array containing the encoded form of the input.
      */
     public static byte[] encode(byte[] input)
     {
@@ -85,6 +88,13 @@ public final class B64Code
 
     /**
      * Fast Base 64 encode as described in RFC 1421.
+     * <p> Does not insert whitespace as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     *
+     * @param input byte array to encode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return char array containing the encoded form of the input.
      */
     public static byte[] encode(byte[] input, int inOffset, int inLen)
     {
@@ -95,6 +105,11 @@ public final class B64Code
 
     /**
      * Fast Base 64 encode as described in RFC 1421.
+     * <p> Does not insert whitespace as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     *
+     * @param input byte array to encode.
+     * @return char array containing the encoded form of the input.
      */
     public static char[] cencode(byte[] input)
     {
@@ -103,6 +118,13 @@ public final class B64Code
 
     /**
      * Fast Base 64 encode as described in RFC 1421.
+     * <p> Does not insert whitespace as described in RFC 1521.
+     * <p> Avoids creating extra copies of the input/output.
+     *
+     * @param input byte array to encode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return char array containing the encoded form of the input.
      */
     public static char[] cencode(byte[] input, int inOffset, int inLen)
     {
@@ -111,15 +133,6 @@ public final class B64Code
         return output;
     }
 
-    // ------------------------------------------------------------------
-
-    /**
-     * Fast Base 64 encode as described in RFC 1421.
-     * <p>
-     * Does not insert whitespace as described in RFC 1521.
-     * <p>
-     * Avoids creating extra copies of the input/output.
-     */
     private static void encode(final byte[] input, int inOffset, final int inLen,
             final byte[] output, int outOffset)
     {
@@ -161,15 +174,6 @@ public final class B64Code
         }
     }
 
-    // ------------------------------------------------------------------
-
-    /**
-     * Fast Base 64 encode as described in RFC 1421.
-     * <p>
-     * Does not insert whitespace as described in RFC 1521.
-     * <p>
-     * Avoids creating extra copies of the input/output.
-     */
     private static void cencode(final byte[] input, int inOffset, final int inLen,
             final char[] output, int outOffset)
     {
@@ -211,21 +215,18 @@ public final class B64Code
         }
     }
 
-    /*
-     * private static int encodeExplicit(final byte[] input, int inOffset, final int inLen, final byte[] output, int
-     * outOffset, int loops) { for (byte b0, b1, b2; loops-->0;) { b0=input[inOffset++]; b1=input[inOffset++];
-     * b2=input[inOffset++]; output[outOffset++]=nibble2code[(b0>>>2)&0x3f];
-     * output[outOffset++]=nibble2code[(b0<<4)&0x3f|(b1>>>4)&0x0f];
-     * output[outOffset++]=nibble2code[(b1<<2)&0x3f|(b2>>>6)&0x03]; output[outOffset++]=nibble2code[b2&077]; }
-     * 
-     * return inOffset; }
-     */
-
     /**
      * Encodes the byte array into the {@link LinkedBuffer} and grows when full.
+     *
+     * @param input byte array to encode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @param session the write session.
+     * @param lb the linked buffer to put result
+     * @return the same linked buffer instance passed as parameter
      */
     public static LinkedBuffer encode(final byte[] input, int inOffset, int inLen,
-            final WriteSession session, final LinkedBuffer lb) throws IOException
+            final WriteSession session, final LinkedBuffer lb)
     {
         int outputSize = ((inLen + 2) / 3) * 4;
         session.size += outputSize;
@@ -298,6 +299,14 @@ public final class B64Code
 
     /**
      * Encodes the byte array into the {@link LinkedBuffer} and flushes to the {@link OutputStream} when buffer is full.
+     *
+     * @param input byte array to encode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @param session the write session.
+     * @param lb the linked buffer to put result
+     * @return the same linked buffer instance passed as parameter
+     * @throws IOException when session can not perform I/O operation on flush
      */
     public static LinkedBuffer sencode(final byte[] input, int inOffset, int inLen,
             final WriteSession session,
@@ -375,6 +384,11 @@ public final class B64Code
 
     /**
      * Fast Base 64 decode as described in RFC 1421.
+     *
+     * @param b byte array to decode
+     * @return byte array containing the decoded form of the input.
+     * @throws IllegalArgumentException
+     *             if the input is not a valid B64 encoding.
      */
     public static byte[] decode(final byte[] b)
     {
@@ -383,13 +397,16 @@ public final class B64Code
 
     /**
      * Fast Base 64 decode as described in RFC 1421.
+     *
+     * @param b char array to decode
+     * @return byte array containing the decoded form of the input.
+     * @throws IllegalArgumentException
+     *             if the input is not a valid B64 encoding.
      */
     public static byte[] cdecode(final char[] b)
     {
         return cdecode(b, 0, b.length);
     }
-
-    /* ------------------------------------------------------------ */
 
     /**
      * Fast Base 64 decode as described in RFC 1421.
@@ -399,7 +416,7 @@ public final class B64Code
      * Avoids creating extra copies of the input/output.
      * <p>
      * Note this code has been flattened for performance.
-     * 
+     *
      * @param input
      *            byte array to decode.
      * @param inOffset
@@ -439,7 +456,7 @@ public final class B64Code
      * Avoids creating extra copies of the input/output.
      * <p>
      * Note this code has been flattened for performance.
-     * 
+     *
      * @param input
      *            char array to decode.
      * @param inOffset
@@ -474,6 +491,13 @@ public final class B64Code
     /**
      * Returns the length of the decoded base64 input (written to the provided {@code output} byte array). The
      * {@code output} byte array must have enough capacity or it will fail.
+     *
+     * @param output byte array for decoded form of input.
+     * @param outOffset the output offset.
+     * @param input byte array to decode.
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return the size of decoded data
      */
     public static int decodeTo(final byte[] output, int outOffset,
             final byte[] input, int inOffset, final int inLen)
@@ -611,6 +635,9 @@ public final class B64Code
 
     /**
      * Returns the base 64 decoded bytes. The provided {@code str} must already be base-64 encoded.
+     *
+     * @param str the input string
+     * @return byte array containing encoded form of the input string
      */
     public static byte[] decode(final String str)
     {
@@ -619,6 +646,11 @@ public final class B64Code
 
     /**
      * Returns the base 64 decoded bytes. The provided {@code str} must already be base-64 encoded.
+     *
+     * @param str the input string
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return byte array containing encoded form of the input string
      */
     public static byte[] decode(final String str, int inOffset, final int inLen)
     {
@@ -644,6 +676,13 @@ public final class B64Code
     /**
      * Returns the length of the decoded base64 input (written to the provided {@code output} byte array). The
      * {@code output} byte array must have enough capacity or it will fail.
+     *
+     * @param output byte array for decoded form of input.
+     * @param outOffset the output offset.
+     * @param str the input string
+     * @param inOffset the offset.
+     * @param inLen the length.
+     * @return the size of decoded data
      */
     public static int decodeTo(final byte[] output, int outOffset,
             final String str, int inOffset, final int inLen)

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
  * Test for deep references in the message's fields
  * 
  * @author David Yu
- * @created Jun 20, 2010
  */
 public class DeepReferenceTest extends TestCase
 {

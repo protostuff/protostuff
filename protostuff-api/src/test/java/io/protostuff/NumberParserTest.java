@@ -22,7 +22,6 @@ import junit.framework.TestCase;
  * Test for parsing numbers from raw ascii buffers.
  * 
  * @author David Yu
- * @created Dec 4, 2010
  */
 public class NumberParserTest extends TestCase
 {

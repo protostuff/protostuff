@@ -67,7 +67,6 @@ import io.protostuff.Schema;
  * Test for runtime collection fields with {@link CollectionSchema}.
  * 
  * @author David Yu
- * @created Jan 26, 2011
  */
 public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 {

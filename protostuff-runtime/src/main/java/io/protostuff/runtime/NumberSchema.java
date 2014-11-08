@@ -69,7 +69,6 @@ import io.protostuff.StatefulOutput;
  * Used when the type is {@link java.lang.Number}.
  * 
  * @author David Yu
- * @created Apr 30, 2012
  */
 public abstract class NumberSchema extends PolymorphicSchema
 {

@@ -44,7 +44,6 @@ import io.protostuff.Schema;
  * Test ser/deser for runtime {@link Map} fields.
  * 
  * @author David Yu
- * @created Jan 21, 2011
  */
 public abstract class AbstractRuntimeMapTest extends AbstractTest
 {

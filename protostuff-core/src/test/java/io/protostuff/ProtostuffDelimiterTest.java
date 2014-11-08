@@ -22,7 +22,6 @@ import java.io.OutputStream;
  * Delimiter tests for the protostuff format.
  * 
  * @author David Yu
- * @created Aug 29, 2012
  */
 public class ProtostuffDelimiterTest extends DelimiterTest
 {

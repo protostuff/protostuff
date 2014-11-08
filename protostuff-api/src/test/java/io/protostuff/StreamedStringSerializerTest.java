@@ -48,7 +48,6 @@ import java.util.Arrays;
  * Tests for streaming UTF-8 Encoding
  * 
  * @author David Yu
- * @created Sep 18, 2010
  */
 public class StreamedStringSerializerTest extends TestCase
 {

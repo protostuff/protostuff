@@ -76,6 +76,10 @@ public final class ByteString
 
     /**
      * Writes the bytes to the {@link OutputStream}.
+     *
+     * @param out the output stream.
+     * @param bs the input byte string
+     * @throws IOException when I/O operation fails
      */
     public static void writeTo(OutputStream out, ByteString bs) throws IOException
     {
@@ -84,6 +88,10 @@ public final class ByteString
 
     /**
      * Writes the bytes to the {@link DataOutput}.
+     *
+     * @param out the data output
+     * @param bs the input byte string
+     * @throws IOException when I/O operation fails
      */
     public static void writeTo(DataOutput out, ByteString bs) throws IOException
     {
@@ -92,6 +100,12 @@ public final class ByteString
 
     /**
      * Writes the bytes to the {@link Output}.
+     *
+     * @param output the output
+     * @param bs the input byte string
+     * @param fieldNumber the field number
+     * @param repeated flag that field is a collection of values
+     * @throws IOException when I/O operation fails
      */
     public static void writeTo(Output output, ByteString bs, int fieldNumber,
             boolean repeated) throws IOException
@@ -114,7 +128,9 @@ public final class ByteString
 
     /**
      * Gets the byte at the given index.
-     * 
+     *
+     * @param index the given index
+     * @return byte at the give index
      * @throws ArrayIndexOutOfBoundsException
      *             {@code index} is &lt; 0 or &gt;= size
      */
@@ -125,6 +141,8 @@ public final class ByteString
 
     /**
      * Gets the number of bytes.
+     *
+     * @return the number of bytes
      */
     public int size()
     {
@@ -133,6 +151,8 @@ public final class ByteString
 
     /**
      * Returns {@code true} if the size is {@code 0}, {@code false} otherwise.
+     *
+     * @return {@code true} if the size is {@code 0}, {@code false} otherwise.
      */
     public boolean isEmpty()
     {
@@ -159,6 +179,11 @@ public final class ByteString
 
     /**
      * Copies the given bytes into a {@code ByteString}.
+     *
+     * @param bytes the array with given bytes
+     * @param offset the offset where given bytes begin
+     * @param size the size of given byte sub-array
+     * @return new {@code ByteString} instance
      */
     public static ByteString copyFrom(final byte[] bytes, final int offset,
             final int size)
@@ -170,6 +195,9 @@ public final class ByteString
 
     /**
      * Copies the given bytes into a {@code ByteString}.
+     *
+     * @param bytes the given bytes
+     * @return new {@code ByteString} instance
      */
     public static ByteString copyFrom(final byte[] bytes)
     {
@@ -179,6 +207,10 @@ public final class ByteString
     /**
      * Encodes {@code text} into a sequence of bytes using the named charset and returns the result as a
      * {@code ByteString}.
+     *
+     * @param text the given text
+     * @param charsetName the named charset
+     * @return new {@code ByteString} instance
      */
     public static ByteString copyFrom(final String text, final String charsetName)
     {
@@ -194,14 +226,13 @@ public final class ByteString
 
     /**
      * Encodes {@code text} into a sequence of UTF-8 bytes and returns the result as a {@code ByteString}.
+     *
+     * @param text the given text
+     * @return new {@code ByteString} instance
      */
     public static ByteString copyFromUtf8(final String text)
     {
         return new ByteString(STRING.ser(text));
-        /*
-         * @try { return new ByteString(text.getBytes("UTF-8")); } catch (UnsupportedEncodingException e) { throw new
-         * RuntimeException("UTF-8 not supported?", e); }
-         */
     }
 
     // =================================================================
@@ -241,6 +272,8 @@ public final class ByteString
 
     /**
      * Copies bytes to a {@code byte[]}.
+     *
+     * @return new byte array instance
      */
     public byte[] toByteArray()
     {
@@ -252,6 +285,8 @@ public final class ByteString
 
     /**
      * Constructs a new read-only {@code java.nio.ByteBuffer} with the same backing byte array.
+     *
+     * @return a new read-only {@link java.nio.ByteBuffer} instance with the same backing byte array
      */
     public ByteBuffer asReadOnlyByteBuffer()
     {
@@ -259,16 +294,10 @@ public final class ByteString
         return byteBuffer.asReadOnlyBuffer();
     }
 
-    /*
-     * @ Constructs a new {@code String} by decoding the bytes using the specified charset.
-     */
-    /*
-     * @public String toString(final String charsetName) throws UnsupportedEncodingException { return new String(bytes,
-     * charsetName); }
-     */
-
     /**
      * Constructs a new {@code String} by decoding the bytes as UTF-8.
+     *
+     * @return new String instance
      */
     public String toStringUtf8()
     {
@@ -290,6 +319,12 @@ public final class ByteString
 
     /**
      * Returns true if the contents of both match.
+     *
+     *
+     * @param bs the input byte string
+     * @param other the other byte string
+     * @param checkHash flag for enabling hash check
+     * @return true if the contents of both match.
      */
     public static boolean equals(ByteString bs, ByteString other, boolean checkHash)
     {
@@ -324,6 +359,9 @@ public final class ByteString
 
     /**
      * Returns true if the contents of the internal array and the provided array match.
+     *
+     * @param data the provided array
+     * @return true if the contents of the internal array and the provided array match.
      */
     public boolean equals(final byte[] data)
     {
@@ -332,6 +370,11 @@ public final class ByteString
 
     /**
      * Returns true if the contents of the internal array and the provided array match.
+     *
+     * @param data the provided array
+     * @param offset the offset where given bytes begin
+     * @param len size of given data
+     * @return true if the contents of the internal array and the provided array match.
      */
     public boolean equals(final byte[] data, int offset, final int len)
     {
@@ -378,84 +421,6 @@ public final class ByteString
         return h;
     }
 
-    // =================================================================
-    // Input stream
-
-    /*
-     * @ Creates an {@code InputStream} which can be used to read the bytes.
-     */
-    /*
-     * @public InputStream newInput() { return new ByteArrayInputStream(bytes); }
-     */
-
-    /*
-     * @ Creates a {@link CodedInputStream} which can be used to read the bytes. Using this is more efficient than
-     * creating a {@link CodedInputStream} wrapping the result of {@link #newInput()}.
-     */
-    /*
-     * @public CodedInputStream newCodedInput() { // We trust CodedInputStream not to modify the bytes, or to give
-     * anyone // else access to them. return CodedInputStream.newInstance(bytes); }
-     */
-
-    // =================================================================
-    // Output stream
-
-    /*
-     * @ Creates a new {@link Output} with the given initial capacity.
-     */
-    /*
-     * @public static Output newOutput(final int initialCapacity) { return new Output(new
-     * ByteArrayOutputStream(initialCapacity)); }
-     */
-
-    /*
-     * @ Creates a new {@link Output}.
-     */
-    /*
-     * @public static Output newOutput() { return newOutput(32); }
-     */
-
-    /*
-     * @ Outputs to a {@code ByteString} instance. Call {@link #toByteString()} to create the {@code ByteString}
-     * instance.
-     */
-    /*
-     * @public static final class Output extends FilterOutputStream { private final ByteArrayOutputStream bout;
-     * 
-     * /** Constructs a new output with the given initial capacity.
-     * 
-     * @ private Output(final ByteArrayOutputStream bout) { super(bout); this.bout = bout; }
-     * 
-     * /** Creates a {@code ByteString} instance from this {@code Output}.
-     * 
-     * @ public ByteString toByteString() { final byte[] byteArray = bout.toByteArray(); return new
-     * ByteString(byteArray); } }
-     * 
-     * /** Constructs a new ByteString builder, which allows you to efficiently construct a {@code ByteString} by
-     * writing to a {@link CodedOutputStream}. Using this is much more efficient than calling {@code newOutput()} and
-     * wrapping that in a {@code CodedOutputStream}.
-     * 
-     * <p>This is package-private because it's a somewhat confusing interface. Users can call {@link
-     * Message#toByteString()} instead of calling this directly.
-     * 
-     * @param size The target byte size of the {@code ByteString}. You must write exactly this many bytes before
-     * building the result.
-     * 
-     * @ static CodedBuilder newCodedBuilder(final int size) { return new CodedBuilder(size); }
-     * 
-     * /** See {@link ByteString#newCodedBuilder(int)}. *@ static final class CodedBuilder { private final
-     * CodedOutputStream output; private final byte[] buffer;
-     * 
-     * private CodedBuilder(final int size) { buffer = new byte[size]; output = CodedOutputStream.newInstance(buffer); }
-     * 
-     * public ByteString build() { output.checkNoSpaceLeft();
-     * 
-     * // We can be confident that the CodedOutputStream will not modify the // underlying bytes anymore because it
-     * already wrote all of them. So, // no need to make a copy. return new ByteString(buffer); }
-     * 
-     * public CodedOutputStream getCodedOutput() { return output; } }
-     */
-
     // moved from Internal.java
 
     /**
@@ -477,6 +442,9 @@ public final class ByteString
      * So we have a string literal which represents a set of bytes which represents another string. This function --
      * stringDefaultValue -- converts from the generated string to the string we actually want. The generated code calls
      * this automatically.
+     *
+     * @param bytes given string
+     * @return transformed string
      */
     public static String stringDefaultValue(String bytes)
     {
@@ -498,6 +466,9 @@ public final class ByteString
      * <p>
      * This is a lot like {@link #stringDefaultValue}, but for bytes fields. In this case we only need the second of the
      * two hacks -- allowing us to embed raw bytes as a string literal with ISO-8859-1 encoding.
+     *
+     * @param bytes the input string
+     * @return new {@code ByteString} instance
      */
     public static ByteString bytesDefaultValue(String bytes)
     {
@@ -509,6 +480,9 @@ public final class ByteString
      * <p>
      * This is a lot like {@link #stringDefaultValue}, but for bytes fields. In this case we only need the second of the
      * two hacks -- allowing us to embed raw bytes as a string literal with ISO-8859-1 encoding.
+     *
+     * @param bytes the input string
+     * @return byte array that represents given string in ISO-8859-1 encoding
      */
     public static byte[] byteArrayDefaultValue(String bytes)
     {

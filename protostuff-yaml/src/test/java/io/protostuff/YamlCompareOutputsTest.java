@@ -36,7 +36,6 @@ import io.protostuff.StringSerializer.STRING;
  * Compare the outputs of different yaml impls.
  * 
  * @author David Yu
- * @created Jul 9, 2010
  */
 public class YamlCompareOutputsTest extends TestCase
 {

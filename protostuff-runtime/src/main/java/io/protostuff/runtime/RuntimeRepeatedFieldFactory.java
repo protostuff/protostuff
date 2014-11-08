@@ -34,7 +34,6 @@ import io.protostuff.runtime.MappedSchema.Field;
  * Static utility for creating runtime repeated (list/collection) fields.
  * 
  * @author David Yu
- * @created Jan 23, 2011
  */
 final class RuntimeRepeatedFieldFactory
 {

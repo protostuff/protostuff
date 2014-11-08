@@ -18,7 +18,6 @@ package io.protostuff;
  * Test runtime collection fields with {@link CollectionSchema} via json ser/deser.
  * 
  * @author David Yu
- * @created Jan 27, 2011
  */
 public class JsonCoreRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest
 {

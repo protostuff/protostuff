@@ -18,7 +18,6 @@ package io.protostuff;
  * An output that keeps the state of the schema being used.
  * 
  * @author David Yu
- * @created Jan 24, 2011
  */
 public interface StatefulOutput extends Output
 {

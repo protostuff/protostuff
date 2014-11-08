@@ -23,7 +23,6 @@ import java.util.Arrays;
  * Tests for various protobuf int flavors.
  * 
  * @author David Yu
- * @created Feb 14, 2011
  */
 public class IntTest extends AbstractTest
 {

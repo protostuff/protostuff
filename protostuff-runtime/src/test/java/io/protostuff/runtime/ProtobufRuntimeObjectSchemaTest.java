@@ -31,7 +31,6 @@ import static junit.framework.Assert.assertTrue;
  * Test protobuf ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
- * @created Feb 3, 2011
  */
 public class ProtobufRuntimeObjectSchemaTest extends
         AbstractRuntimeObjectSchemaTest

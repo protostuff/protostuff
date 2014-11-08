@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
  * Once the message serialization is done, data can then be streamed to an {@link OutputStream} or a {@link ByteBuffer}.
  * 
  * @author David Yu
- * @created Nov 9, 2009
  */
 public final class DeferredOutput implements Output
 {

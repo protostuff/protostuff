@@ -32,7 +32,6 @@ import io.protostuff.runtime.SerializableObjects;
  * Testing for xml ser/deser against runtime messages.
  * 
  * @author David Yu
- * @created May 25, 2010
  */
 public class XmlRuntimeSerDeserTest extends TestCase
 {

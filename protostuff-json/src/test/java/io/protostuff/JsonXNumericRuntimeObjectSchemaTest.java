@@ -18,7 +18,6 @@ package io.protostuff;
  * Test jsonx (numeric) ser/deser for runtime {@link Object} fields.
  * 
  * @author David Yu
- * @created Feb 4, 2011
  */
 public class JsonXNumericRuntimeObjectSchemaTest extends JsonXRuntimeObjectSchemaTest
 {

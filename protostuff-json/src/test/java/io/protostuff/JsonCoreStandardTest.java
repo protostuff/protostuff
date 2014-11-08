@@ -20,7 +20,6 @@ import java.io.IOException;
  * Json standard tests.
  * 
  * @author David Yu
- * @created Oct 8, 2010
  */
 public class JsonCoreStandardTest extends StandardTest
 {
