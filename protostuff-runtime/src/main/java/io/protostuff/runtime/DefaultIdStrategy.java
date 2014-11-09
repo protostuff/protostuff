@@ -675,11 +675,7 @@ public final class DefaultIdStrategy extends IdStrategy
                                         .newInstance();
                                 this.schema = schema = m.cachedSchema();
                             }
-                            catch (InstantiationException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                            catch (IllegalAccessException e)
+                            catch (InstantiationException | IllegalAccessException e)
                             {
                                 throw new RuntimeException(e);
                             }

@@ -92,11 +92,7 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -111,11 +107,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -175,11 +167,7 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -194,11 +182,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -260,11 +244,7 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -279,11 +259,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -345,11 +321,7 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -364,11 +336,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -438,11 +406,7 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -457,11 +421,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }

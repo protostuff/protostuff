@@ -81,11 +81,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __keyTypeFromEnumMap.get(enumMap);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -107,11 +103,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __elementTypeFromEnumSet.get(enumSet);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
