@@ -224,11 +224,13 @@ public class JsonCompareOutputsTest extends TestCase
     public static final Serializer JSON_OUTPUT = new Serializer()
     {
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return JsonIOUtil.toByteArray(message, message.cachedSchema(), false);
         }
 
+        @Override
         public String getName()
         {
             return "json-output";
@@ -239,11 +241,13 @@ public class JsonCompareOutputsTest extends TestCase
     public static final Serializer JSON_OUTPUT_NUMERIC = new Serializer()
     {
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return JsonIOUtil.toByteArray(message, message.cachedSchema(), true);
         }
 
+        @Override
         public String getName()
         {
             return "json-output-numeric";
@@ -256,6 +260,7 @@ public class JsonCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -269,6 +274,7 @@ public class JsonCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "json-buffered-output";
@@ -281,6 +287,7 @@ public class JsonCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -299,6 +306,7 @@ public class JsonCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "json-streamed-output";
@@ -311,6 +319,7 @@ public class JsonCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -324,6 +333,7 @@ public class JsonCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "json-buffered-output-numeric";
@@ -336,6 +346,7 @@ public class JsonCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUF_SIZE);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -354,6 +365,7 @@ public class JsonCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "json-streamed-output-numeric";

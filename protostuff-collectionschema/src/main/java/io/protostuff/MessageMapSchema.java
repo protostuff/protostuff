@@ -58,29 +58,34 @@ public final class MessageMapSchema<K, V> extends MapSchema<K, V>
         this.vPipeSchema = vPipeSchema;
     }
 
+    @Override
     protected K readKeyFrom(Input input, MapWrapper<K, V> wrapper) throws IOException
     {
         return input.mergeObject(null, kSchema);
     }
 
+    @Override
     protected void putValueFrom(Input input, MapWrapper<K, V> wrapper, K key)
             throws IOException
     {
         wrapper.put(key, input.mergeObject(null, vSchema));
     }
 
+    @Override
     protected void writeKeyTo(Output output, int fieldNumber, K value, boolean repeated)
             throws IOException
     {
         output.writeObject(fieldNumber, value, kSchema, repeated);
     }
 
+    @Override
     protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated)
             throws IOException
     {
         output.writeObject(fieldNumber, value, vSchema, repeated);
     }
 
+    @Override
     protected void transferKey(Pipe pipe, Input input, Output output, int number,
             boolean repeated) throws IOException
     {
@@ -93,6 +98,7 @@ public final class MessageMapSchema<K, V> extends MapSchema<K, V>
         output.writeObject(number, pipe, kPipeSchema, repeated);
     }
 
+    @Override
     protected void transferValue(Pipe pipe, Input input, Output output, int number,
             boolean repeated) throws IOException
     {

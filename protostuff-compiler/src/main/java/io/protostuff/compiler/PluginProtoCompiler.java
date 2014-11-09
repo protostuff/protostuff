@@ -65,6 +65,7 @@ public class PluginProtoCompiler extends STCodeGenerator
     public static final GroupResolver GROUP_RESOLVER = new GroupResolver()
     {
 
+        @Override
         public StringTemplateGroup resolveSTG(String stgLocation)
         {
             try
@@ -251,6 +252,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         return outputPrefix + name + outputSuffix + fileExtension;
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         if (!this.module.getOutput().startsWith(module.getOutput()))

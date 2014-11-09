@@ -94,6 +94,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the id
          */
+        @Override
         public int getId()
         {
             return id;
@@ -103,6 +104,7 @@ public class CollectionTest extends TestCase
          * @param id
          *            the id to set
          */
+        @Override
         public void setId(int id)
         {
             this.id = id;
@@ -111,6 +113,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the description
          */
+        @Override
         public String getDescription()
         {
             return description;
@@ -120,6 +123,7 @@ public class CollectionTest extends TestCase
          * @param description
          *            the description to set
          */
+        @Override
         public void setDescription(String description)
         {
             this.description = description;
@@ -128,6 +132,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the tags
          */
+        @Override
         public Collection<String> getTags()
         {
             return tags;
@@ -137,6 +142,7 @@ public class CollectionTest extends TestCase
          * @param tags
          *            the tags to set
          */
+        @Override
         public void setTags(Collection<String> tags)
         {
             this.tags = tags;
@@ -287,6 +293,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the id
          */
+        @Override
         public int getId()
         {
             return id;
@@ -296,6 +303,7 @@ public class CollectionTest extends TestCase
          * @param id
          *            the id to set
          */
+        @Override
         public void setId(int id)
         {
             this.id = id;
@@ -304,6 +312,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the departments
          */
+        @Override
         public Collection<String> getDepartments()
         {
             return departments;
@@ -313,6 +322,7 @@ public class CollectionTest extends TestCase
          * @param departments
          *            the departments to set
          */
+        @Override
         public void setDepartments(Collection<String> departments)
         {
             this.departments = departments;
@@ -321,6 +331,7 @@ public class CollectionTest extends TestCase
         /**
          * @return the tasks
          */
+        @Override
         public Collection<ITask> getTasks()
         {
             return tasks;
@@ -330,6 +341,7 @@ public class CollectionTest extends TestCase
          * @param tasks
          *            the tasks to set
          */
+        @Override
         public void setTasks(Collection<ITask> tasks)
         {
             this.tasks = tasks;

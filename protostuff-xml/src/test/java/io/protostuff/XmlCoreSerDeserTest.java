@@ -407,6 +407,7 @@ public class XmlCoreSerDeserTest extends TestCase
         static final Schema<RequiresName> SCHEMA = new Schema<RequiresName>()
         {
 
+            @Override
             public String getFieldName(int number)
             {
                 switch (number)
@@ -420,6 +421,7 @@ public class XmlCoreSerDeserTest extends TestCase
                 }
             }
 
+            @Override
             public int getFieldNumber(String name)
             {
                 if (name.length() != 1)
@@ -436,11 +438,13 @@ public class XmlCoreSerDeserTest extends TestCase
                 }
             }
 
+            @Override
             public boolean isInitialized(RequiresName message)
             {
                 return message.name != null;
             }
 
+            @Override
             public void mergeFrom(Input input, RequiresName message) throws IOException
             {
                 for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -461,26 +465,31 @@ public class XmlCoreSerDeserTest extends TestCase
                 }
             }
 
+            @Override
             public String messageFullName()
             {
                 return RequiresName.class.getName();
             }
 
+            @Override
             public String messageName()
             {
                 return RequiresName.class.getSimpleName();
             }
 
+            @Override
             public RequiresName newMessage()
             {
                 return new RequiresName();
             }
 
+            @Override
             public Class<? super RequiresName> typeClass()
             {
                 return RequiresName.class;
             }
 
+            @Override
             public void writeTo(Output output, RequiresName message) throws IOException
             {
                 if (message.name != null)
@@ -500,21 +509,25 @@ public class XmlCoreSerDeserTest extends TestCase
         static final Schema<WrapperPojo> SCHEMA = new Schema<WrapperPojo>()
         {
 
+            @Override
             public String getFieldName(int number)
             {
                 return number == 1 ? "w" : null;
             }
 
+            @Override
             public int getFieldNumber(String name)
             {
                 return name.length() == 1 && name.charAt(0) == 'w' ? 1 : 0;
             }
 
+            @Override
             public boolean isInitialized(WrapperPojo message)
             {
                 return true;
             }
 
+            @Override
             public void mergeFrom(Input input, WrapperPojo message) throws IOException
             {
                 for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -532,26 +545,31 @@ public class XmlCoreSerDeserTest extends TestCase
                 }
             }
 
+            @Override
             public String messageFullName()
             {
                 return WrapperPojo.class.getName();
             }
 
+            @Override
             public String messageName()
             {
                 return WrapperPojo.class.getSimpleName();
             }
 
+            @Override
             public WrapperPojo newMessage()
             {
                 return new WrapperPojo();
             }
 
+            @Override
             public Class<? super WrapperPojo> typeClass()
             {
                 return WrapperPojo.class;
             }
 
+            @Override
             public void writeTo(Output output, WrapperPojo message) throws IOException
             {
                 if (message.requiresName != null)

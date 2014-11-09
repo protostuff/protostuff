@@ -55,6 +55,7 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         references = new ArrayList<Object>(initialCapacity);
     }
 
+    @Override
     public void updateLast(Object morphedMessage, Object lastMessage)
     {
         final int last = references.size() - 1;
@@ -65,11 +66,13 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         }
     }
 
+    @Override
     public boolean isCurrentMessageReference()
     {
         return messageReference;
     }
 
+    @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         final int fieldNumber = input.readFieldNumber(schema);
@@ -88,6 +91,7 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         return fieldNumber;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {
@@ -109,41 +113,49 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         return value;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isInitialized(Object owner)
     {
         return true;
     }
 
+    @Override
     public String messageFullName()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String messageName()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Object newMessage()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Class<? super Object> typeClass()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void mergeFrom(Input input, final Object message) throws IOException
     {
         final Schema<Object> schema = lastSchema;
@@ -157,6 +169,7 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         lastSchema = schema;
     }
 
+    @Override
     public void writeTo(Output output, Object message) throws IOException
     {
         // only using mergeFrom.

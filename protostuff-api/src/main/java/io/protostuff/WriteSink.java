@@ -26,6 +26,7 @@ public enum WriteSink
 {
     BUFFERED
     {
+        @Override
         public LinkedBuffer drain(final WriteSession session,
                 final LinkedBuffer lb) throws IOException
         {
@@ -33,6 +34,7 @@ public enum WriteSink
             return new LinkedBuffer(session.nextBufferSize, lb);
         }
 
+        @Override
         public LinkedBuffer writeByteArrayB64(final byte[] value,
                 final int offset, final int valueLen,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
@@ -40,6 +42,7 @@ public enum WriteSink
             return B64Code.encode(value, offset, valueLen, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeByteArray(final byte[] value,
                 final int offset, final int valueLen,
                 final WriteSession session, LinkedBuffer lb) throws IOException
@@ -93,6 +96,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeByte(final byte value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -108,6 +112,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt16(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -125,6 +130,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt16LE(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -142,6 +148,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt32(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -159,6 +166,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt64(final long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -176,6 +184,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt32LE(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -193,6 +202,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt64LE(final long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -210,6 +220,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeVarInt32(int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -233,6 +244,7 @@ public enum WriteSink
             }
         }
 
+        @Override
         public LinkedBuffer writeVarInt64(long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -256,48 +268,56 @@ public enum WriteSink
             }
         }
 
+        @Override
         public LinkedBuffer writeStrFromInt(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeInt(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromLong(final long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeLong(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromFloat(final float value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeFloat(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromDouble(final double value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeDouble(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrAscii(final String value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeAscii(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8(final String value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeUTF8(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8VarDelimited(final String value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
             return StringSerializer.writeUTF8VarDelimited(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8FixedDelimited(final String value,
                 final boolean littleEndian, final WriteSession session, LinkedBuffer lb)
                 throws IOException
@@ -308,6 +328,7 @@ public enum WriteSink
     },
     STREAMED
     {
+        @Override
         public LinkedBuffer drain(final WriteSession session,
                 final LinkedBuffer lb) throws IOException
         {
@@ -316,6 +337,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeByteArrayB64(final byte[] value,
                 final int offset, final int valueLen,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
@@ -323,6 +345,7 @@ public enum WriteSink
             return B64Code.sencode(value, offset, valueLen, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeByteArray(final byte[] value,
                 final int offset, final int valueLen,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
@@ -347,6 +370,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeByte(final byte value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -362,6 +386,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt16(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -379,6 +404,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt16LE(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -396,6 +422,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt32(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -413,6 +440,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt64(final long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -430,6 +458,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt32LE(final int value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -447,6 +476,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeInt64LE(final long value,
                 final WriteSession session, LinkedBuffer lb) throws IOException
         {
@@ -464,6 +494,7 @@ public enum WriteSink
             return lb;
         }
 
+        @Override
         public LinkedBuffer writeVarInt32(int value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
@@ -487,6 +518,7 @@ public enum WriteSink
             }
         }
 
+        @Override
         public LinkedBuffer writeVarInt64(long value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
@@ -510,48 +542,56 @@ public enum WriteSink
             }
         }
 
+        @Override
         public LinkedBuffer writeStrFromInt(final int value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeInt(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromLong(final long value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeLong(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromFloat(final float value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeFloat(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrFromDouble(final double value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeDouble(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrAscii(final String value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeAscii(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8(final String value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeUTF8(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8VarDelimited(final String value,
                 final WriteSession session, final LinkedBuffer lb) throws IOException
         {
             return StreamedStringSerializer.writeUTF8VarDelimited(value, session, lb);
         }
 
+        @Override
         public LinkedBuffer writeStrUTF8FixedDelimited(final String value,
                 final boolean littleEndian, final WriteSession session,
                 final LinkedBuffer lb) throws IOException

@@ -114,11 +114,13 @@ public class ProtoParser extends AbstractParser
         return adaptor;
     }
 
+    @Override
     public String[] getTokenNames()
     {
         return ProtoParser.tokenNames;
     }
 
+    @Override
     public String getGrammarFileName()
     {
         return "io/protostuff/parser/ProtoParser.g";
@@ -128,6 +130,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -255,6 +258,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -533,6 +537,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -617,6 +622,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -764,6 +770,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -912,6 +919,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -1107,6 +1115,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -1476,6 +1485,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -1585,6 +1595,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -1776,6 +1787,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -1869,6 +1881,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -2326,6 +2339,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -2489,6 +2503,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -2748,6 +2763,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -2950,6 +2966,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -3270,6 +3287,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -3842,6 +3860,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -3983,6 +4002,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -4745,6 +4765,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -4861,6 +4882,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5052,6 +5074,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5192,6 +5215,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5329,6 +5353,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5470,6 +5495,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5677,6 +5703,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -5815,6 +5842,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -6173,6 +6201,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -6297,6 +6326,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -6560,6 +6590,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -6678,6 +6709,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;
@@ -6854,6 +6886,7 @@ public class ProtoParser extends AbstractParser
     {
         Object tree;
 
+        @Override
         public Object getTree()
         {
             return tree;

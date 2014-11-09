@@ -144,6 +144,7 @@ public final class KvpInput implements Input
         return data;
     }
 
+    @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -174,6 +175,7 @@ public final class KvpInput implements Input
         return number;
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -202,11 +204,13 @@ public final class KvpInput implements Input
         offset += size;
     }
 
+    @Override
     public <T> T mergeObject(T value, Schema<T> schema) throws IOException
     {
         throw new ProtostuffException("Unsupported.");
     }
 
+    @Override
     public boolean readBool() throws IOException
     {
         if (offset + 3 > limit && !readable(3))
@@ -220,11 +224,13 @@ public final class KvpInput implements Input
         return buffer[offset++] != 0x30;
     }
 
+    @Override
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
     }
 
+    @Override
     public double readDouble() throws IOException
     {
         // TODO efficiency
@@ -232,6 +238,7 @@ public final class KvpInput implements Input
         return Double.parseDouble(readString());
     }
 
+    @Override
     public float readFloat() throws IOException
     {
         // TODO efficiency
@@ -239,16 +246,19 @@ public final class KvpInput implements Input
         return Float.parseFloat(readString());
     }
 
+    @Override
     public int readUInt32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readUInt64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public int readInt32() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -269,6 +279,7 @@ public final class KvpInput implements Input
         return number;
     }
 
+    @Override
     public long readInt64() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -289,41 +300,49 @@ public final class KvpInput implements Input
         return number;
     }
 
+    @Override
     public int readEnum() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public int readFixed32() throws IOException
     {
         return readUInt32();
     }
 
+    @Override
     public long readFixed64() throws IOException
     {
         return readUInt64();
     }
 
+    @Override
     public int readSFixed32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readSFixed64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public int readSInt32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readSInt64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public byte[] readByteArray() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -346,6 +365,7 @@ public final class KvpInput implements Input
         return data;
     }
 
+    @Override
     public String readString() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
@@ -381,6 +401,7 @@ public final class KvpInput implements Input
         return str;
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -390,6 +411,7 @@ public final class KvpInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

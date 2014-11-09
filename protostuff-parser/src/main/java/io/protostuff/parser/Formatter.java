@@ -44,6 +44,7 @@ public interface Formatter
          */
         UPPER
         {
+            @Override
             public String format(String str)
             {
                 return str.toUpperCase();
@@ -55,6 +56,7 @@ public interface Formatter
          */
         LOWER
         {
+            @Override
             public String format(String str)
             {
                 return str.toLowerCase();
@@ -71,6 +73,7 @@ public interface Formatter
          */
         CC
         {
+            @Override
             public String format(String str)
             {
                 return toCamelCase(str).toString();
@@ -87,6 +90,7 @@ public interface Formatter
          */
         CCU
         {
+            @Override
             public String format(String str)
             {
                 return toCamelCase(str).append('_').toString();
@@ -103,6 +107,7 @@ public interface Formatter
          */
         UC
         {
+            @Override
             public String format(String str)
             {
                 return toUnderscoreCase(str).toString();
@@ -119,6 +124,7 @@ public interface Formatter
          */
         UCU
         {
+            @Override
             public String format(String str)
             {
                 return toUnderscoreCase(str).append('_').toString();
@@ -135,6 +141,7 @@ public interface Formatter
          */
         UUC
         {
+            @Override
             public String format(String str)
             {
                 return toUnderscoreCase(str).toString().toUpperCase();
@@ -151,6 +158,7 @@ public interface Formatter
          */
         PC
         {
+            @Override
             public String format(String str)
             {
                 return toPascalCase(str).toString();
@@ -167,6 +175,7 @@ public interface Formatter
          */
         PCS
         {
+            @Override
             public String format(String str)
             {
                 final StringBuilder buffer = toUnderscoreCase(str);
@@ -206,6 +215,7 @@ public interface Formatter
          */
         PSC
         {
+            @Override
             public String format(String str)
             {
                 return PCS.format(str);

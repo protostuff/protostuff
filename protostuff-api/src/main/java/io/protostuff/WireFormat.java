@@ -143,6 +143,7 @@ public final class WireFormat
         BOOL(JavaType.BOOLEAN, WIRETYPE_VARINT),
         STRING(JavaType.STRING, WIRETYPE_LENGTH_DELIMITED)
         {
+            @Override
             public boolean isPackable()
             {
                 return false;
@@ -150,6 +151,7 @@ public final class WireFormat
         },
         GROUP(JavaType.MESSAGE, WIRETYPE_START_GROUP)
         {
+            @Override
             public boolean isPackable()
             {
                 return false;
@@ -157,6 +159,7 @@ public final class WireFormat
         },
         MESSAGE(JavaType.MESSAGE, WIRETYPE_LENGTH_DELIMITED)
         {
+            @Override
             public boolean isPackable()
             {
                 return false;
@@ -164,6 +167,7 @@ public final class WireFormat
         },
         BYTES(JavaType.BYTE_STRING, WIRETYPE_LENGTH_DELIMITED)
         {
+            @Override
             public boolean isPackable()
             {
                 return false;

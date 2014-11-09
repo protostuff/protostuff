@@ -32,21 +32,25 @@ import static junit.framework.Assert.assertTrue;
 public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {
 
+    @Override
     protected boolean isNumeric()
     {
         return false;
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

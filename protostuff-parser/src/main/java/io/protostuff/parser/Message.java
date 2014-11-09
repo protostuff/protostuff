@@ -79,11 +79,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public Proto getProto()
     {
         return proto;
@@ -197,11 +199,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return fields;
     }
 
+    @Override
     public List<Field<?>> getFields()
     {
         return sortedFields;
     }
 
+    @Override
     public Field<?> getField(String name)
     {
         return fields.get(name);
@@ -228,6 +232,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return (T) fields.get(name);
     }
 
+    @Override
     public void addField(Field<?> field)
     {
         if (field.number < 1)
@@ -290,12 +295,14 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -328,6 +335,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
@@ -345,6 +353,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 .toString();
     }
 
+    @Override
     public String getEnclosingNamespace()
     {
         return getFullName();

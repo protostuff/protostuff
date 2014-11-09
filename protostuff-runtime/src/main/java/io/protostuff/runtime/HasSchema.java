@@ -54,6 +54,7 @@ public abstract class HasSchema<T> implements PolymorphicSchema.Factory
     public final ArraySchemas.Base genericElementSchema = new ArraySchemas.PojoArray(
             null, (HasSchema<Object>) this);
 
+    @Override
     @SuppressWarnings("unchecked")
     public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy,
             Handler handler)

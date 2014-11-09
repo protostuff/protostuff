@@ -56,17 +56,20 @@ public interface Predicate
             this.num = num;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number == num;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number == num;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -85,17 +88,20 @@ public interface Predicate
             this.num = num;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number != num;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number != num;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -114,17 +120,20 @@ public interface Predicate
             this.num = num;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number > num;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number > num;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -143,17 +152,20 @@ public interface Predicate
             this.num = num;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number < num;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number < num;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -173,17 +185,20 @@ public interface Predicate
             this.max = max;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number >= min && f.number <= max;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number >= min && f.number <= max;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -203,17 +218,20 @@ public interface Predicate
             this.max = max;
         }
 
+        @Override
         public boolean apply(Field<?> f)
         {
             return f.number < min || f.number > max;
         }
 
+        @Override
         public boolean apply(Field<?> f, Object message)
         {
             return f.number < min || f.number > max;
         }
 
         // instantiate this yourself and pass it to the view factory for re-use
+        @Override
         public Predicate create(String[] args)
         {
             return this;
@@ -227,6 +245,7 @@ public interface Predicate
     {
         EQ
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.EQ(Integer.parseInt(args[0]));
@@ -234,6 +253,7 @@ public interface Predicate
         },
         NOTEQ
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.NOTEQ(Integer.parseInt(args[0]));
@@ -241,6 +261,7 @@ public interface Predicate
         },
         GT
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.GT(Integer.parseInt(args[0]));
@@ -248,6 +269,7 @@ public interface Predicate
         },
         LT
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.LT(Integer.parseInt(args[0]));
@@ -255,6 +277,7 @@ public interface Predicate
         },
         RANGE
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.RANGE(Integer.parseInt(args[0]),
@@ -263,6 +286,7 @@ public interface Predicate
         },
         NOTRANGE
         {
+            @Override
             public Predicate create(String[] args)
             {
                 return new Predicate.NOTRANGE(Integer.parseInt(args[0]),

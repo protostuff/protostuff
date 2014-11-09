@@ -302,6 +302,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             transferObject(this, pipe, input, output, strategy);
@@ -313,36 +314,43 @@ public abstract class ObjectSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Object.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Object.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);
@@ -1269,67 +1277,80 @@ public abstract class ObjectSchema extends PolymorphicSchema
             this.array = array;
         }
 
+        @Override
         public boolean add(Object value)
         {
             Array.set(array, offset++, value);
             return true;
         }
 
+        @Override
         public boolean addAll(Collection<? extends Object> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean contains(Object arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isEmpty()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Iterator<Object> iterator()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean remove(Object arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean removeAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean retainAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public int size()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object[] toArray()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public <T> T[] toArray(T[] arg0)
         {
             throw new UnsupportedOperationException();

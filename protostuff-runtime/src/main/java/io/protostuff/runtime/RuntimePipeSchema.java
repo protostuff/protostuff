@@ -40,6 +40,7 @@ public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
         this.fieldsByNumber = fieldsByNumber;
     }
 
+    @Override
     protected void transfer(Pipe pipe, Input input, Output output)
             throws IOException
     {

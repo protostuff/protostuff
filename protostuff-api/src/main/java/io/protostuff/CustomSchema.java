@@ -33,46 +33,55 @@ public abstract class CustomSchema<T> implements Schema<T>
         this.schema = schema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return schema.getFieldName(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return schema.getFieldNumber(name);
     }
 
+    @Override
     public boolean isInitialized(T message)
     {
         return schema.isInitialized(message);
     }
 
+    @Override
     public void mergeFrom(Input input, T message) throws IOException
     {
         schema.mergeFrom(input, message);
     }
 
+    @Override
     public String messageFullName()
     {
         return schema.messageFullName();
     }
 
+    @Override
     public String messageName()
     {
         return schema.messageName();
     }
 
+    @Override
     public T newMessage()
     {
         return schema.newMessage();
     }
 
+    @Override
     public Class<? super T> typeClass()
     {
         return schema.typeClass();
     }
 
+    @Override
     public void writeTo(Output output, T message) throws IOException
     {
         schema.writeTo(output, message);

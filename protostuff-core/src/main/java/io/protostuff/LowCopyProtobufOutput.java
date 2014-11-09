@@ -49,6 +49,7 @@ public final class LowCopyProtobufOutput implements Output
     // super.clear();
     // return this;
     // }
+    @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         if (value < 0)
@@ -84,6 +85,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -101,6 +103,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -118,6 +121,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
@@ -135,6 +139,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
@@ -152,6 +157,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -169,6 +175,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -186,6 +193,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -203,6 +211,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
@@ -220,6 +229,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
@@ -237,6 +247,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
@@ -255,6 +266,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
@@ -273,6 +285,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
@@ -290,11 +303,13 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, number, repeated);
     }
 
+    @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         // TODO the original implementation is a lot more complex, is this compatible?
@@ -315,11 +330,13 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
+    @Override
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, bytes, 0, bytes.length, repeated);
@@ -341,6 +358,7 @@ public final class LowCopyProtobufOutput implements Output
          */
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
@@ -360,6 +378,7 @@ public final class LowCopyProtobufOutput implements Output
         // tail)));
     }
 
+    @Override
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
             final boolean repeated) throws IOException
     {
@@ -396,6 +415,7 @@ public final class LowCopyProtobufOutput implements Output
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

@@ -26,6 +26,7 @@ import java.util.Map;
 public class XmlStringMapSchemaTest extends StringMapSchemaTest
 {
 
+    @Override
     public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema)
             throws IOException
@@ -33,6 +34,7 @@ public class XmlStringMapSchemaTest extends StringMapSchemaTest
         XmlIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
     {
         return XmlIOUtil.toByteArray(message, schema);

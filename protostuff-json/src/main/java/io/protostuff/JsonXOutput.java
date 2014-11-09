@@ -114,12 +114,14 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     /**
      * Resets this output for re-use.
      */
+    @Override
     public void reset()
     {
         lastRepeated = false;
         lastNumber = 0;
     }
 
+    @Override
     public JsonXOutput clear()
     {
         super.clear();
@@ -161,6 +163,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         return lastRepeated;
     }
 
+    @Override
     public void updateLast(Schema<?> schema, Schema<?> lastSchema)
     {
         if (lastSchema != null && lastSchema == this.schema)
@@ -284,6 +287,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
                                 tail)));
     }
 
+    @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -312,6 +316,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -346,6 +351,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
@@ -417,11 +423,13 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
+    @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -450,21 +458,25 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -493,6 +505,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -521,6 +534,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -549,26 +563,31 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
@@ -605,16 +624,19 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         lastRepeated = repeated;
     }
 
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
             final boolean repeated) throws IOException
     {
@@ -869,6 +891,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

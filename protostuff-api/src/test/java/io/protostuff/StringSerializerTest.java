@@ -773,6 +773,7 @@ public class StringSerializerTest extends TestCase
     public static final Serializer BUILT_IN_SERIALIZER = new Serializer()
     {
 
+        @Override
         public byte[] serialize(String str)
         {
             try
@@ -785,6 +786,7 @@ public class StringSerializerTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "built-in";
@@ -797,6 +799,7 @@ public class StringSerializerTest extends TestCase
 
         final LinkedBuffer buffer = new LinkedBuffer(512);
 
+        @Override
         public byte[] serialize(String str)
         {
             final LinkedBuffer buffer = this.buffer;
@@ -812,6 +815,7 @@ public class StringSerializerTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "buffered";
@@ -824,6 +828,7 @@ public class StringSerializerTest extends TestCase
 
         final WriteSession session = new WriteSession(new LinkedBuffer(512));
 
+        @Override
         public byte[] serialize(String str)
         {
             final WriteSession session = this.session;
@@ -838,6 +843,7 @@ public class StringSerializerTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "buffered-recycled-session";

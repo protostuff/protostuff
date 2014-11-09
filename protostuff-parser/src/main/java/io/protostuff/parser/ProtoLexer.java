@@ -94,6 +94,7 @@ public class ProtoLexer extends AbstractLexer
 
     }
 
+    @Override
     public String getGrammarFileName()
     {
         return "io/protostuff/parser/ProtoLexer.g";
@@ -2621,6 +2622,7 @@ public class ProtoLexer extends AbstractLexer
 
     // $ANTLR end "UNICODE_ESC"
 
+    @Override
     public void mTokens() throws RecognitionException
     {
         // io/protostuff/parser/ProtoLexer.g:1:8: ( ASSIGN | AT | LEFTCURLY | RIGHTCURLY | LEFTPAREN |
@@ -3109,6 +3111,7 @@ public class ProtoLexer extends AbstractLexer
             this.transition = DFA3_transition;
         }
 
+        @Override
         public String getDescription()
         {
             return "239:9: ( NUMFLOAT | NUMINT )";
@@ -3564,6 +3567,7 @@ public class ProtoLexer extends AbstractLexer
             this.transition = DFA20_transition;
         }
 
+        @Override
         public String getDescription()
         {
             return "1:1: Tokens : ( ASSIGN | AT | LEFTCURLY | RIGHTCURLY | LEFTPAREN | RIGHTPAREN | LEFTSQUARE | RIGHTSQUARE | SEMICOLON | COMMA | PLUS | MINUS | TO | TRUE | FALSE | PKG | SYNTAX | IMPORT | OPTION | MESSAGE | SERVICE | ENUM | REQUIRED | OPTIONAL | REPEATED | EXTENSIONS | EXTEND | GROUP | RPC | RETURNS | INT32 | INT64 | UINT32 | UINT64 | SINT32 | SINT64 | FIXED32 | FIXED64 | SFIXED32 | SFIXED64 | FLOAT | DOUBLE | BOOL | STRING | BYTES | DEFAULT | MAX | VOID | FULL_ID | ID | EXP | NUMDOUBLE | NUMFLOAT | NUMINT | HEX | OCTAL | COMMENT | WS | STRING_LITERAL );";

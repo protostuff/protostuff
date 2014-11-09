@@ -152,12 +152,14 @@ public abstract class EnumIO<E extends Enum<E>> implements
     {
         return new CollectionSchema.MessageFactory()
         {
+            @Override
             @SuppressWarnings("unchecked")
             public <V> Collection<V> newMessage()
             {
                 return (Collection<V>) eio.newEnumSet();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return EnumSet.class;
@@ -170,12 +172,14 @@ public abstract class EnumIO<E extends Enum<E>> implements
     {
         return new MapSchema.MessageFactory()
         {
+            @Override
             @SuppressWarnings("unchecked")
             public <K, V> Map<K, V> newMessage()
             {
                 return (Map<K, V>) eio.newEnumMap();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return EnumMap.class;
@@ -198,6 +202,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         this.enumClass = enumClass;
     }
 
+    @Override
     public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy,
             Handler handler)
     {
@@ -269,6 +274,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
             super(enumClass);
         }
 
+        @Override
         public E readFrom(Input input) throws IOException
         {
             return Enum.valueOf(enumClass, input.readString());
@@ -285,6 +291,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
             super(enumClass);
         }
 
+        @Override
         public E readFrom(Input input) throws IOException
         {
             return enumClass.getEnumConstants()[input.readEnum()];

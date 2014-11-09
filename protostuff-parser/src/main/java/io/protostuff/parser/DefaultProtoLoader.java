@@ -81,6 +81,7 @@ public class DefaultProtoLoader implements Proto.Loader
         this.protoSearchStrategy = protoSearchStrategy;
     }
 
+    @Override
     public Proto load(String path, Proto importer) throws Exception
     {
         switch (protoSearchStrategy)

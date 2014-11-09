@@ -31,6 +31,7 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
         }
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();

@@ -39,6 +39,7 @@ public class ProtoToJavaBeanMeCompiler extends STCodeGenerator
         super("java_bean_me");
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();

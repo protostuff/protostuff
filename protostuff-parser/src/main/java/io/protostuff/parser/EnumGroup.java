@@ -64,6 +64,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         }
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -106,6 +107,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         return parentMessage != null;
     }
 
+    @Override
     public Proto getProto()
     {
         return proto;
@@ -113,12 +115,14 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
 
     /* ================================================== */
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -145,6 +149,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
@@ -272,6 +277,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         public static final Comparator<Value> NO_ALIAS_COMPARATOR =
                 new Comparator<Value>()
                 {
+                    @Override
                     public int compare(Value v1, Value v2)
                     {
                         if (v1.number == v2.number)
@@ -308,6 +314,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         /**
          * @return the name
          */
+        @Override
         public String getName()
         {
             return name;
@@ -321,6 +328,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             return number;
         }
 
+        @Override
         public Proto getProto()
         {
             return enumGroup.getProto();
@@ -372,6 +380,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
             return new StringBuilder().append(name).append(':').append(number).toString();
         }
 
+        @Override
         public int compareTo(Value o)
         {
             // if equal, sort by order of declaration

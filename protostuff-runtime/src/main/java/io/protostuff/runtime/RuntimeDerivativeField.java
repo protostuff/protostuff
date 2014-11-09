@@ -56,6 +56,7 @@ abstract class RuntimeDerivativeField<T> extends Field<T>
 
         schema = new DerivativeSchema(strategy)
         {
+            @Override
             protected void doMergeFrom(Input input,
                     Schema<Object> derivedSchema, Object owner)
                     throws IOException

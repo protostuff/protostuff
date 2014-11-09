@@ -93,27 +93,32 @@ public final class RuntimeView
             this.instantiator = instantiator;
         }
 
+        @Override
         public Class<T> typeClass()
         {
             return typeClass;
         }
 
+        @Override
         public String messageName()
         {
             return typeClass.getSimpleName();
         }
 
+        @Override
         public String messageFullName()
         {
             return typeClass.getName();
         }
 
+        @Override
         public boolean isInitialized(T message)
         {
             // same as runtime schema
             return true;
         }
 
+        @Override
         public T newMessage()
         {
             return instantiator.newInstance();
@@ -156,6 +161,7 @@ public final class RuntimeView
          */
         PREDICATE
         {
+            @Override
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
@@ -172,12 +178,14 @@ public final class RuntimeView
 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
+                    @Override
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
                         return field != null && predicate.apply(field) ? field.number : 0;
                     }
 
+                    @Override
                     public void mergeFrom(Input input, T message) throws IOException
                     {
                         for (int number = input.readFieldNumber(this); number != 0;
@@ -193,6 +201,7 @@ public final class RuntimeView
                         }
                     }
 
+                    @Override
                     public String getFieldName(int number)
                     {
                         // only called during writes
@@ -203,6 +212,7 @@ public final class RuntimeView
                         return field == null ? null : field.name;
                     }
 
+                    @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for (Field<T> f : fields)
@@ -222,6 +232,7 @@ public final class RuntimeView
          */
         EXCLUDE
         {
+            @Override
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     Field<T>[] flds,
@@ -246,12 +257,14 @@ public final class RuntimeView
 
                 return new PostFilteredSchema<T>(typeClass, instantiator, fields)
                 {
+                    @Override
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
                         return field == null ? 0 : field.number;
                     }
 
+                    @Override
                     public void mergeFrom(Input input, T message) throws IOException
                     {
                         for (int number = input.readFieldNumber(this); number != 0;
@@ -267,6 +280,7 @@ public final class RuntimeView
                         }
                     }
 
+                    @Override
                     public String getFieldName(int number)
                     {
                         // only called during writes
@@ -276,6 +290,7 @@ public final class RuntimeView
                         return field == null ? null : field.name;
                     }
 
+                    @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for (Field<T> f : fields)
@@ -293,6 +308,7 @@ public final class RuntimeView
          */
         EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY
         {
+            @Override
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
@@ -307,12 +323,14 @@ public final class RuntimeView
 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
+                    @Override
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
                         return field == null ? 0 : field.number;
                     }
 
+                    @Override
                     public void mergeFrom(Input input, T message) throws IOException
                     {
                         for (int number = input.readFieldNumber(this); number != 0;
@@ -328,6 +346,7 @@ public final class RuntimeView
                         }
                     }
 
+                    @Override
                     public String getFieldName(int number)
                     {
                         // only called during writes
@@ -338,6 +357,7 @@ public final class RuntimeView
                         return field == null ? null : field.name;
                     }
 
+                    @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for (Field<T> f : fields)
@@ -359,6 +379,7 @@ public final class RuntimeView
          */
         INCLUDE
         {
+            @Override
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     Field<T>[] flds,
@@ -384,12 +405,14 @@ public final class RuntimeView
 
                 return new PostFilteredSchema<T>(typeClass, instantiator, fields)
                 {
+                    @Override
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
                         return field == null ? 0 : field.number;
                     }
 
+                    @Override
                     public void mergeFrom(Input input, T message) throws IOException
                     {
                         for (int number = input.readFieldNumber(this); number != 0;
@@ -405,6 +428,7 @@ public final class RuntimeView
                         }
                     }
 
+                    @Override
                     public String getFieldName(int number)
                     {
                         // only called during writes
@@ -414,6 +438,7 @@ public final class RuntimeView
                         return field == null ? null : field.name;
                     }
 
+                    @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for (Field<T> f : fields)
@@ -431,6 +456,7 @@ public final class RuntimeView
          */
         INCLUDE_OPTIMIZED_FOR_MERGE_ONLY
         {
+            @Override
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
@@ -447,12 +473,14 @@ public final class RuntimeView
 
                 return new BaseSchema<T>(typeClass, instantiator)
                 {
+                    @Override
                     public int getFieldNumber(String name)
                     {
                         final Field<T> field = fieldsByName.get(name);
                         return field == null ? 0 : field.number;
                     }
 
+                    @Override
                     public void mergeFrom(Input input, T message) throws IOException
                     {
                         for (int number = input.readFieldNumber(this); number != 0;
@@ -468,6 +496,7 @@ public final class RuntimeView
                         }
                     }
 
+                    @Override
                     public String getFieldName(int number)
                     {
                         // only called during writes
@@ -478,6 +507,7 @@ public final class RuntimeView
                         return field == null ? null : field.name;
                     }
 
+                    @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
                         for (Field<T> f : fields)

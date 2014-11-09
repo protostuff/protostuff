@@ -238,6 +238,7 @@ public class InheritanceTest extends AbstractTest
 
     boolean skipTests = false;
 
+    @Override
     public void setUp() throws Exception
     {
         System.setProperty("protostuff.morph_non_final_pojos", "true");

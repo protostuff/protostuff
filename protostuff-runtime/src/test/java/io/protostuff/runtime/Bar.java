@@ -245,12 +245,14 @@ public final class Bar implements Externalizable
         this.someLong = someLong;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         ProtostuffIOUtil.mergeDelimitedFrom(in, this,
                 RuntimeSchema.getSchema(Bar.class));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         ProtostuffIOUtil.writeDelimitedTo(out, this,
