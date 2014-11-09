@@ -81,11 +81,7 @@ final class RuntimeRepeatedFieldFactory
                     else
                         existing.add(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -100,11 +96,7 @@ final class RuntimeRepeatedFieldFactory
                 {
                     collection = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -160,11 +152,7 @@ final class RuntimeRepeatedFieldFactory
                     else
                         existing.add(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -179,11 +167,7 @@ final class RuntimeRepeatedFieldFactory
                 {
                     collection = (Collection<Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -238,11 +222,7 @@ final class RuntimeRepeatedFieldFactory
                     else
                         existing.add(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -257,11 +237,7 @@ final class RuntimeRepeatedFieldFactory
                 {
                     collection = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -321,11 +297,7 @@ final class RuntimeRepeatedFieldFactory
                         else
                             existing.add(value);
                     }
-                    catch (IllegalArgumentException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                    catch (IllegalAccessException e)
+                    catch (IllegalArgumentException | IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -341,11 +313,7 @@ final class RuntimeRepeatedFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -394,11 +362,7 @@ final class RuntimeRepeatedFieldFactory
                     else
                         existing.add(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -442,11 +406,7 @@ final class RuntimeRepeatedFieldFactory
                         else
                             existing.add(value);
                     }
-                    catch (IllegalArgumentException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                    catch (IllegalAccessException e)
+                    catch (IllegalArgumentException | IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -462,11 +422,7 @@ final class RuntimeRepeatedFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -507,11 +463,7 @@ final class RuntimeRepeatedFieldFactory
                     else
                         existing.add(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }

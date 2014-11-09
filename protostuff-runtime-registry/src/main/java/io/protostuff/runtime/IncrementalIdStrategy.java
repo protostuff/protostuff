@@ -1048,11 +1048,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                                 final Message<T> m = (Message<T>) typeClass.newInstance();
                                 this.schema = schema = m.cachedSchema();
                             }
-                            catch (InstantiationException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                            catch (IllegalAccessException e)
+                            catch (InstantiationException | IllegalAccessException e)
                             {
                                 throw new RuntimeException(e);
                             }
