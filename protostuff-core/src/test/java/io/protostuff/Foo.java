@@ -278,36 +278,43 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         this.someLong = someLong;
     }
 
+    @Override
     public Schema<Foo> cachedSchema()
     {
         return this;
     }
 
+    @Override
     public boolean isInitialized(Foo message)
     {
         return true;
     }
 
+    @Override
     public Foo newMessage()
     {
         return new Foo();
     }
 
+    @Override
     public Class<Foo> typeClass()
     {
         return Foo.class;
     }
 
+    @Override
     public String messageName()
     {
         return getClass().getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return getClass().getName();
     }
 
+    @Override
     public String getFieldName(int number)
     {
         switch (number)
@@ -335,22 +342,26 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         }
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
+    @Override
     public void writeTo(Output output, Foo message) throws IOException
     {
         if (message.someInt != null)
@@ -400,6 +411,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         }
     }
 
+    @Override
     public void mergeFrom(Input input, Foo message) throws IOException
     {
         for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -462,6 +474,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE)
     {
 
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))

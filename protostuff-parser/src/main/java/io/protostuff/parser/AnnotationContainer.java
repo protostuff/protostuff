@@ -30,12 +30,14 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
     final LinkedHashMap<String, Annotation> annotations =
             new LinkedHashMap<String, Annotation>();
 
+    @Override
     public void add(Annotation annotation)
     {
         if (annotations.put(annotation.name, annotation) != null)
             throw err("Duplicate annotation: " + annotation.name, null);
     }
 
+    @Override
     public Map<String, Annotation> getAnnotationMap()
     {
         return annotations;
@@ -55,11 +57,13 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
         return annotations;
     }
 
+    @Override
     public Collection<Annotation> getAnnotations()
     {
         return annotations.values();
     }
 
+    @Override
     public Annotation getAnnotation(String name)
     {
         return annotations.get(name);
@@ -70,6 +74,7 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
         return annotations.containsKey(name);
     }
 
+    @Override
     public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource)
     {
         if (source.isEmpty())

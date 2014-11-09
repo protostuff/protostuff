@@ -56,12 +56,14 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static final StringTemplateErrorListener ERROR_LISTENER =
             new StringTemplateErrorListener()
             {
+                @Override
                 public void error(String msg, Throwable e)
                 {
                     errorCount += 1;
                     System.err.println("error: " + msg);
                 }
 
+                @Override
                 public void warning(String msg)
                 {
                     System.err.println("warning: " + msg);
@@ -74,11 +76,13 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER =
             new AttributeRenderer()
             {
+                @Override
                 public String toString(Object o)
                 {
                     return (String) o;
                 }
 
+                @Override
                 public String toString(Object o, String formatName)
                 {
                     String str = (String) o;
@@ -200,11 +204,13 @@ public abstract class STCodeGenerator implements ProtoCompiler
         this.id = id;
     }
 
+    @Override
     public String getOutputId()
     {
         return id;
     }
 
+    @Override
     public void compile(ProtoModule module) throws IOException
     {
         String ci = module.getOption("compile_imports");

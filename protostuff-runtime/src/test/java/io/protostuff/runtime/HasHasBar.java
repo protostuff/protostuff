@@ -78,12 +78,14 @@ public final class HasHasBar implements Externalizable
         this.hasBar = hasBar;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         ProtostuffIOUtil.mergeDelimitedFrom(in, this,
                 RuntimeSchema.getSchema(HasHasBar.class));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         ProtostuffIOUtil.writeDelimitedTo(out, this,

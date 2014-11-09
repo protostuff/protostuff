@@ -65,6 +65,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Character> CHAR = new RuntimeFieldFactory<Character>(
             ID_CHAR)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -131,28 +132,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
 
+        @Override
         public Character readFrom(Input input) throws IOException
         {
             return Character.valueOf((char) input.readUInt32());
         }
 
+        @Override
         public void writeTo(Output output, int number, Character value,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, value.charValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Character.class;
@@ -162,6 +168,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Short> SHORT = new RuntimeFieldFactory<Short>(
             ID_SHORT)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -173,6 +180,7 @@ public final class RuntimeReflectionFieldFactory
                     f.setAccessible(true);
                 }
 
+                @Override
                 public void mergeFrom(Input input, T message)
                         throws IOException
                 {
@@ -194,6 +202,7 @@ public final class RuntimeReflectionFieldFactory
                     }
                 }
 
+                @Override
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
@@ -220,6 +229,7 @@ public final class RuntimeReflectionFieldFactory
                     }
                 }
 
+                @Override
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
@@ -228,28 +238,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
 
+        @Override
         public Short readFrom(Input input) throws IOException
         {
             return Short.valueOf((short) input.readUInt32());
         }
 
+        @Override
         public void writeTo(Output output, int number, Short value,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, value.shortValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Short.class;
@@ -259,6 +274,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Byte> BYTE = new RuntimeFieldFactory<Byte>(
             ID_BYTE)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -325,28 +341,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, input.readUInt32(), repeated);
         }
 
+        @Override
         public Byte readFrom(Input input) throws IOException
         {
             return Byte.valueOf((byte) input.readUInt32());
         }
 
+        @Override
         public void writeTo(Output output, int number, Byte value,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, value.byteValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Byte.class;
@@ -356,6 +377,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Integer> INT32 = new RuntimeFieldFactory<Integer>(
             ID_INT32)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -420,28 +442,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeInt32(number, input.readInt32(), repeated);
         }
 
+        @Override
         public Integer readFrom(Input input) throws IOException
         {
             return Integer.valueOf(input.readInt32());
         }
 
+        @Override
         public void writeTo(Output output, int number, Integer value,
                 boolean repeated) throws IOException
         {
             output.writeInt32(number, value.intValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.INT32;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Integer.class;
@@ -451,6 +478,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Long> INT64 = new RuntimeFieldFactory<Long>(
             ID_INT64)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -515,28 +543,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeInt64(number, input.readInt64(), repeated);
         }
 
+        @Override
         public Long readFrom(Input input) throws IOException
         {
             return Long.valueOf(input.readInt64());
         }
 
+        @Override
         public void writeTo(Output output, int number, Long value,
                 boolean repeated) throws IOException
         {
             output.writeInt64(number, value.longValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.INT64;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Long.class;
@@ -546,6 +579,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Float> FLOAT = new RuntimeFieldFactory<Float>(
             ID_FLOAT)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -611,28 +645,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeFloat(number, input.readFloat(), repeated);
         }
 
+        @Override
         public Float readFrom(Input input) throws IOException
         {
             return new Float(input.readFloat());
         }
 
+        @Override
         public void writeTo(Output output, int number, Float value,
                 boolean repeated) throws IOException
         {
             output.writeFloat(number, value.floatValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.FLOAT;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Float.class;
@@ -642,6 +681,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Double> DOUBLE = new RuntimeFieldFactory<Double>(
             ID_DOUBLE)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -707,28 +747,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeDouble(number, input.readDouble(), repeated);
         }
 
+        @Override
         public Double readFrom(Input input) throws IOException
         {
             return new Double(input.readDouble());
         }
 
+        @Override
         public void writeTo(Output output, int number, Double value,
                 boolean repeated) throws IOException
         {
             output.writeDouble(number, value.doubleValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.DOUBLE;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Double.class;
@@ -738,6 +783,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Boolean> BOOL = new RuntimeFieldFactory<Boolean>(
             ID_BOOL)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -804,28 +850,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeBool(number, input.readBool(), repeated);
         }
 
+        @Override
         public Boolean readFrom(Input input) throws IOException
         {
             return input.readBool() ? Boolean.TRUE : Boolean.FALSE;
         }
 
+        @Override
         public void writeTo(Output output, int number, Boolean value,
                 boolean repeated) throws IOException
         {
             output.writeBool(number, value.booleanValue(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.BOOL;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Boolean.class;
@@ -835,6 +886,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<String> STRING = new RuntimeFieldFactory<String>(
             ID_STRING)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -889,28 +941,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, true, number, repeated);
         }
 
+        @Override
         public String readFrom(Input input) throws IOException
         {
             return input.readString();
         }
 
+        @Override
         public void writeTo(Output output, int number, String value,
                 boolean repeated) throws IOException
         {
             output.writeString(number, value, repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.STRING;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return String.class;
@@ -920,6 +977,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<ByteString> BYTES = new RuntimeFieldFactory<ByteString>(
             ID_BYTES)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -930,6 +988,7 @@ public final class RuntimeReflectionFieldFactory
                     f.setAccessible(true);
                 }
 
+                @Override
                 public void mergeFrom(Input input, T message)
                         throws IOException
                 {
@@ -947,6 +1006,7 @@ public final class RuntimeReflectionFieldFactory
                     }
                 }
 
+                @Override
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
@@ -966,6 +1026,7 @@ public final class RuntimeReflectionFieldFactory
                     }
                 }
 
+                @Override
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
@@ -974,28 +1035,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
 
+        @Override
         public ByteString readFrom(Input input) throws IOException
         {
             return input.readBytes();
         }
 
+        @Override
         public void writeTo(Output output, int number, ByteString value,
                 boolean repeated) throws IOException
         {
             output.writeBytes(number, value, repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return ByteString.class;
@@ -1005,6 +1071,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<byte[]> BYTE_ARRAY = new RuntimeFieldFactory<byte[]>(
             ID_BYTE_ARRAY)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1059,28 +1126,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
 
+        @Override
         public byte[] readFrom(Input input) throws IOException
         {
             return input.readByteArray();
         }
 
+        @Override
         public void writeTo(Output output, int number, byte[] value,
                 boolean repeated) throws IOException
         {
             output.writeByteArray(number, value, repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return byte[].class;
@@ -1090,6 +1162,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Integer> ENUM = new RuntimeFieldFactory<Integer>(
             ID_ENUM)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1148,28 +1221,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Integer readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Integer value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
@@ -1181,6 +1259,7 @@ public final class RuntimeReflectionFieldFactory
     static final RuntimeFieldFactory<Object> POJO = new RuntimeFieldFactory<Object>(
             ID_POJO)
     {
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -1241,28 +1320,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Object value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
@@ -1272,6 +1356,7 @@ public final class RuntimeReflectionFieldFactory
     static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO = new RuntimeFieldFactory<Object>(
             0)
     {
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -1370,28 +1455,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Object value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();
@@ -1401,6 +1491,7 @@ public final class RuntimeReflectionFieldFactory
     static final RuntimeFieldFactory<Object> OBJECT = new RuntimeFieldFactory<Object>(
             ID_OBJECT)
     {
+        @Override
         public <T> Field<T> create(int number, java.lang.String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1487,28 +1578,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Object value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.MESSAGE;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Object.class;
@@ -1518,6 +1614,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL = new RuntimeFieldFactory<BigDecimal>(
             ID_BIGDECIMAL)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1572,28 +1669,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, true, number, repeated);
         }
 
+        @Override
         public BigDecimal readFrom(Input input) throws IOException
         {
             return new BigDecimal(input.readString());
         }
 
+        @Override
         public void writeTo(Output output, int number, BigDecimal value,
                 boolean repeated) throws IOException
         {
             output.writeString(number, value.toString(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.STRING;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return BigDecimal.class;
@@ -1603,6 +1705,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<BigInteger> BIGINTEGER = new RuntimeFieldFactory<BigInteger>(
             ID_BIGINTEGER)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1658,28 +1761,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             input.transferByteRangeTo(output, false, number, repeated);
         }
 
+        @Override
         public BigInteger readFrom(Input input) throws IOException
         {
             return new BigInteger(input.readByteArray());
         }
 
+        @Override
         public void writeTo(Output output, int number, BigInteger value,
                 boolean repeated) throws IOException
         {
             output.writeByteArray(number, value.toByteArray(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return BigInteger.class;
@@ -1689,6 +1797,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Date> DATE = new RuntimeFieldFactory<Date>(
             ID_DATE)
     {
+        @Override
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
@@ -1743,28 +1852,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             output.writeFixed64(number, input.readFixed64(), repeated);
         }
 
+        @Override
         public Date readFrom(Input input) throws IOException
         {
             return new Date(input.readFixed64());
         }
 
+        @Override
         public void writeTo(Output output, int number, Date value,
                 boolean repeated) throws IOException
         {
             output.writeFixed64(number, value.getTime(), repeated);
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.FIXED64;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return Date.class;
@@ -1774,6 +1888,7 @@ public final class RuntimeReflectionFieldFactory
     public static final RuntimeFieldFactory<Object> DELEGATE = new RuntimeFieldFactory<Object>(
             ID_DELEGATE)
     {
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -1788,6 +1903,7 @@ public final class RuntimeReflectionFieldFactory
                     f.setAccessible(true);
                 }
 
+                @Override
                 public void mergeFrom(Input input, T message)
                         throws IOException
                 {
@@ -1807,6 +1923,7 @@ public final class RuntimeReflectionFieldFactory
                     }
                 }
 
+                @Override
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
@@ -1828,6 +1945,7 @@ public final class RuntimeReflectionFieldFactory
                         delegate.writeTo(output, number, value, false);
                 }
 
+                @Override
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
@@ -1836,28 +1954,33 @@ public final class RuntimeReflectionFieldFactory
             };
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Object value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();

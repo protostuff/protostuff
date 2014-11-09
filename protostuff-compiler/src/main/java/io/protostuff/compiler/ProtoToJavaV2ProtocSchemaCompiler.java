@@ -45,6 +45,7 @@ public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator
                 ".proto", "")).toString() : outerClassname;
     }
 
+    @Override
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();

@@ -33,6 +33,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
         return (MappedSchema<T>) RuntimeSchema.getSchema(typeClass);
     }
 
+    @Override
     public void testFoo() throws Exception
     {
         MappedSchema<Foo> schema = getSchema(Foo.class);
@@ -42,6 +43,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
         roundTrip(foo, schema, schema.getPipeSchema());
     }
 
+    @Override
     public void testBar() throws Exception
     {
         MappedSchema<Bar> schema = getSchema(Bar.class);
@@ -51,6 +53,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
         roundTrip(bar, schema, schema.getPipeSchema());
     }
 
+    @Override
     public void testBaz() throws Exception
     {
         MappedSchema<Baz> schema = getSchema(Baz.class);

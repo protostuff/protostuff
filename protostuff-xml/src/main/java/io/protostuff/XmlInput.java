@@ -121,6 +121,7 @@ public final class XmlInput implements Input
         }
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         final String name = parser.getLocalName();
@@ -148,6 +149,7 @@ public final class XmlInput implements Input
         }
     }
 
+    @Override
     public <T> int readFieldNumber(final Schema<T> schema) throws IOException
     {
         if (emptyMessage)
@@ -191,91 +193,109 @@ public final class XmlInput implements Input
         return num;
     }
 
+    @Override
     public int readInt32() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public int readUInt32() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public int readSInt32() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public int readFixed32() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public int readSFixed32() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public long readInt64() throws IOException
     {
         return Long.parseLong(getText());
     }
 
+    @Override
     public long readUInt64() throws IOException
     {
         return Long.parseLong(getText());
     }
 
+    @Override
     public long readSInt64() throws IOException
     {
         return Long.parseLong(getText());
     }
 
+    @Override
     public long readFixed64() throws IOException
     {
         return Long.parseLong(getText());
     }
 
+    @Override
     public long readSFixed64() throws IOException
     {
         return Long.parseLong(getText());
     }
 
+    @Override
     public float readFloat() throws IOException
     {
         return Float.parseFloat(getText());
     }
 
+    @Override
     public double readDouble() throws IOException
     {
         return Double.parseDouble(getText());
     }
 
+    @Override
     public boolean readBool() throws IOException
     {
         return Boolean.parseBoolean(getText());
     }
 
+    @Override
     public int readEnum() throws IOException
     {
         return Integer.parseInt(getText());
     }
 
+    @Override
     public String readString() throws IOException
     {
         return getText();
     }
 
+    @Override
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
     }
 
+    @Override
     public byte[] readByteArray() throws IOException
     {
         return getB64Decoded();
     }
 
+    @Override
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         emptyMessage = nextTag() == END_ELEMENT;
@@ -294,6 +314,7 @@ public final class XmlInput implements Input
         return value;
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -306,6 +327,7 @@ public final class XmlInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

@@ -52,6 +52,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         }
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -94,6 +95,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return parentMessage != null;
     }
 
+    @Override
     public Proto getProto()
     {
         return proto;
@@ -127,6 +129,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return standardOptions;
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
@@ -143,6 +146,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return extraOptions;
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -159,6 +163,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
@@ -208,6 +213,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             }
         }
 
+        @Override
         public String getName()
         {
             return name;
@@ -218,6 +224,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             return index;
         }
 
+        @Override
         public Proto getProto()
         {
             return service.getProto();
@@ -276,6 +283,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             return standardOptions;
         }
 
+        @Override
         public void putStandardOption(String key, Object value)
         {
             putExtraOption(key, value);
@@ -292,6 +300,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             return extraOptions;
         }
 
+        @Override
         public void putExtraOption(String key, Object value)
         {
             if (extraOptions.put(key, value) != null)
@@ -308,6 +317,7 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
             return getOptions();
         }
 
+        @Override
         public LinkedHashMap<String, Object> getOptions()
         {
             return extraOptions;

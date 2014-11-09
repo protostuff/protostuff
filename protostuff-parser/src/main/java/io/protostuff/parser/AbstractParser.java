@@ -65,6 +65,7 @@ public abstract class AbstractParser extends Parser
      * @param e
      *            The exception that was thrown
      */
+    @Override
     public void displayRecognitionError(String[] tokenNames, RecognitionException e)
     {
 

@@ -27,12 +27,14 @@ import java.io.OutputStream;
 public class ProtobufCodedOutputTest extends SerDeserTest
 {
 
+    @Override
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         ProtobufIOUtil.mergeDelimitedFrom(in, message, schema);
     }
 
+    @Override
     protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
             throws IOException
     {
@@ -44,6 +46,7 @@ public class ProtobufCodedOutputTest extends SerDeserTest
         output.flush();
     }
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
             throws IOException
     {
@@ -53,6 +56,7 @@ public class ProtobufCodedOutputTest extends SerDeserTest
         assertTrue(input.isAtEnd());
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return CodedOutput.toByteArray(message, schema, false);

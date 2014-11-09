@@ -46,6 +46,7 @@ public class HasDelegate<T> implements PolymorphicSchema.Factory
         return delegate;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final PolymorphicSchema newSchema(Class<?> typeClass,
             IdStrategy strategy, Handler handler)

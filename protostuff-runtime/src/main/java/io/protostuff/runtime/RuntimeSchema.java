@@ -353,11 +353,13 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     /**
      * Always returns true, everything is optional.
      */
+    @Override
     public boolean isInitialized(T message)
     {
         return true;
     }
 
+    @Override
     public T newMessage()
     {
         return instantiator.newInstance();

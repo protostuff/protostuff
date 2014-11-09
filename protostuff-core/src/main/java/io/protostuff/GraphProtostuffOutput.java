@@ -46,6 +46,7 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
         references = new IdentityMap(initialCapacity);
     }
 
+    @Override
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema,
             boolean repeated) throws IOException
     {

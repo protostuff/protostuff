@@ -169,11 +169,13 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
@@ -181,6 +183,7 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     // message method
 
+    @Override
     public Schema<PojoWithInts> cachedSchema()
     {
         return this;
@@ -188,31 +191,37 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
 
     // schema methods
 
+    @Override
     public PojoWithInts newMessage()
     {
         return new PojoWithInts();
     }
 
+    @Override
     public Class<PojoWithInts> typeClass()
     {
         return PojoWithInts.class;
     }
 
+    @Override
     public String messageName()
     {
         return PojoWithInts.class.getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return PojoWithInts.class.getName();
     }
 
+    @Override
     public boolean isInitialized(PojoWithInts message)
     {
         return true;
     }
 
+    @Override
     public void mergeFrom(Input input, PojoWithInts message) throws IOException
     {
         for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -257,6 +266,7 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
         }
     }
 
+    @Override
     public void writeTo(Output output, PojoWithInts message) throws IOException
     {
         if (message.someInt32 != 0)
@@ -290,11 +300,13 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
             output.writeSFixed64(15, message.someSfixed64, false);
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return Integer.toString(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return Integer.parseInt(name);

@@ -34,6 +34,7 @@ public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
         this.numeric = numeric;
     }
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
@@ -48,6 +49,7 @@ public abstract class AbstractKvpStreamTest extends NoNestedMessageTest
         }
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -153,21 +153,25 @@ public abstract class MappedSchema<T> implements Schema<T>
         return fields.length;
     }
 
+    @Override
     public Class<T> typeClass()
     {
         return typeClass;
     }
 
+    @Override
     public String messageName()
     {
         return typeClass.getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return typeClass.getName();
     }
 
+    @Override
     public String getFieldName(int number)
     {
         // only called on writes
@@ -177,12 +181,14 @@ public abstract class MappedSchema<T> implements Schema<T>
         return field == null ? null : field.name;
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         final Field<T> field = fieldsByName.get(name);
         return field == null ? 0 : field.number;
     }
 
+    @Override
     public final void mergeFrom(Input input, T message) throws IOException
     {
         for (int number = input.readFieldNumber(this); number != 0; number = input
@@ -198,6 +204,7 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
     }
 
+    @Override
     public final void writeTo(Output output, T message) throws IOException
     {
         for (Field<T> f : fields)

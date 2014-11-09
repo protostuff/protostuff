@@ -127,6 +127,7 @@ public final class KvpOutput extends WriteSession implements Output
                         lb));
     }
 
+    @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         tail = sink.writeByte(
@@ -138,6 +139,7 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
         tail = sink.writeByteArray(
@@ -149,6 +151,7 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, int offset, int length,
             boolean repeated) throws IOException
     {
@@ -161,11 +164,13 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
+    @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         // TODO optimize
@@ -179,21 +184,25 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         // TODO optimize
@@ -207,6 +216,7 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
@@ -220,6 +230,7 @@ public final class KvpOutput extends WriteSession implements Output
 
     }
 
+    @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         final int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
@@ -232,31 +243,37 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         tail = sink.writeStrUTF8FixedDelimited(
@@ -268,11 +285,13 @@ public final class KvpOutput extends WriteSession implements Output
                         tail));
     }
 
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
     }
 
+    @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         writeInt64(fieldNumber, value, repeated);
@@ -281,6 +300,7 @@ public final class KvpOutput extends WriteSession implements Output
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

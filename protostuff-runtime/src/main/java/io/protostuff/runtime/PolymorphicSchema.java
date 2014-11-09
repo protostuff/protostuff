@@ -65,17 +65,20 @@ public abstract class PolymorphicSchema implements Schema<Object>
         this.strategy = strategy;
     }
 
+    @Override
     public boolean isInitialized(Object message)
     {
         return true;
     }
 
+    @Override
     public Object newMessage()
     {
         // cannot instantiate because the type is dynamic.
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Class<? super Object> typeClass()
     {
         return Object.class;

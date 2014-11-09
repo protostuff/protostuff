@@ -53,16 +53,19 @@ public final class SampleDelegates
     {
         int reads, writes, transfers;
 
+        @Override
         public Class<?> typeClass()
         {
             return short[].class;
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.BYTES;
         }
 
+        @Override
         public void writeTo(Output output, int number, short[] value,
                 boolean repeated) throws IOException
         {
@@ -79,6 +82,7 @@ public final class SampleDelegates
             output.writeByteArray(number, buffer, repeated);
         }
 
+        @Override
         public short[] readFrom(Input input) throws IOException
         {
             reads++;
@@ -93,6 +97,7 @@ public final class SampleDelegates
             return s;
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
@@ -126,22 +131,26 @@ public final class SampleDelegates
 
     public static final Delegate<Singleton> SINGLETON_DELEGATE = new Delegate<Singleton>()
     {
+        @Override
         public Class<?> typeClass()
         {
             return Singleton.class;
         }
 
+        @Override
         public FieldType getFieldType()
         {
             return FieldType.UINT32;
         }
 
+        @Override
         public void writeTo(Output output, int number, Singleton value,
                 boolean repeated) throws IOException
         {
             output.writeUInt32(number, 0, repeated);
         }
 
+        @Override
         public Singleton readFrom(Input input) throws IOException
         {
             if (0 != input.readUInt32())
@@ -150,6 +159,7 @@ public final class SampleDelegates
             return Singleton.INSTANCE;
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {

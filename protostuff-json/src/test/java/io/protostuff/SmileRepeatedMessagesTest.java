@@ -28,11 +28,13 @@ import java.util.List;
 public class SmileRepeatedMessagesTest extends RepeatedMessagesTest
 {
 
+    @Override
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return SmileIOUtil.parseListFrom(in, schema, false);
     }
 
+    @Override
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
             throws IOException
     {

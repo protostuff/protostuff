@@ -114,6 +114,7 @@ public class ProtoCompilerMojo extends AbstractMojo
      */
     protected File baseDir;
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         if (skipMojo())

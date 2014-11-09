@@ -76,6 +76,7 @@ public class Annotation implements HasName
         return (T) params.get(key);
     }
 
+    @Override
     public String getName()
     {
         return name;

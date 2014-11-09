@@ -37,28 +37,33 @@ public class SmileRuntimeMapTest extends AbstractRuntimeMapTest
         return true;
     }
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         SmileIOUtil.mergeFrom(data, offset, length, message, schema, false);
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         SmileIOUtil.mergeFrom(in, message, schema, false);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return SmileIOUtil.toByteArray(message, schema, false);
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         SmileIOUtil.writeTo(out, message, schema, false);
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

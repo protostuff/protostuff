@@ -141,6 +141,7 @@ public final class JsonIOUtil
         final JsonInput jsonInput = new JsonInput(parser, numeric);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 if (parser.nextToken() != JsonToken.START_OBJECT)
@@ -153,6 +154,7 @@ public final class JsonIOUtil
                 return jsonInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {

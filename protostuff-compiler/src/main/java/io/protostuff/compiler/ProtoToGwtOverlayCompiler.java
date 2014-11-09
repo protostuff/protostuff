@@ -39,6 +39,7 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
         super("gwt_overlay");
     }
 
+    @Override
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();

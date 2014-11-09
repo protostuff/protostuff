@@ -62,6 +62,7 @@ final class RuntimeRepeatedFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -90,6 +91,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -117,6 +119,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
@@ -138,6 +141,7 @@ final class RuntimeRepeatedFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -166,6 +170,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -190,6 +195,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
@@ -213,6 +219,7 @@ final class RuntimeRepeatedFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -241,6 +248,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -269,6 +277,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
@@ -289,6 +298,7 @@ final class RuntimeRepeatedFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -322,6 +332,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -349,12 +360,14 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void doMergeFrom(Input input, Schema<Object> schema,
                     Object message) throws IOException
@@ -406,6 +419,7 @@ final class RuntimeRepeatedFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -439,6 +453,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -466,6 +481,7 @@ final class RuntimeRepeatedFieldFactory
                 }
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
@@ -473,6 +489,7 @@ final class RuntimeRepeatedFieldFactory
                         repeated);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             public void setValue(Object value, Object message)
             {
@@ -505,6 +522,7 @@ final class RuntimeRepeatedFieldFactory
     private static final RuntimeFieldFactory<Collection<?>> REPEATED = new RuntimeFieldFactory<Collection<?>>(
             RuntimeFieldFactory.ID_COLLECTION)
     {
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -588,28 +606,33 @@ final class RuntimeRepeatedFieldFactory
                     messageFactory, genericType, strategy);
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Collection<?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Collection<?> value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();

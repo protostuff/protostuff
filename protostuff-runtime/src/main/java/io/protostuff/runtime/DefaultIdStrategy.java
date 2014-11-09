@@ -126,17 +126,20 @@ public final class DefaultIdStrategy extends IdStrategy
                 || (last instanceof Mapped<?> && ((Mapped<?>) last).typeClass == typeClass);
     }
 
+    @Override
     public boolean isDelegateRegistered(Class<?> typeClass)
     {
         return delegateMapping.containsKey(typeClass.getName());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass)
     {
         return (HasDelegate<T>) delegateMapping.get(typeClass.getName());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
     {
@@ -145,6 +148,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return last == null ? null : last.delegate;
     }
 
+    @Override
     public boolean isRegistered(Class<?> typeClass)
     {
         final HasSchema<?> last = pojoMapping.get(typeClass.getName());
@@ -172,6 +176,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return hs;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass, boolean create)
     {
@@ -209,6 +214,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return eio;
     }
 
+    @Override
     protected EnumIO<? extends Enum<?>> getEnumIO(Class<?> enumClass)
     {
         EnumIO<?> eio = enumMapping.get(enumClass.getName());
@@ -225,6 +231,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return eio;
     }
 
+    @Override
     protected CollectionSchema.MessageFactory getCollectionFactory(
             Class<?> clazz)
     {
@@ -251,6 +258,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return factory;
     }
 
+    @Override
     protected MapSchema.MessageFactory getMapFactory(Class<?> clazz)
     {
         final String className = clazz.getName();
@@ -275,6 +283,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return factory;
     }
 
+    @Override
     protected void writeCollectionIdTo(Output output, int fieldNumber,
             Class<?> clazz) throws IOException
     {
@@ -293,12 +302,14 @@ public final class DefaultIdStrategy extends IdStrategy
         }
     }
 
+    @Override
     protected void transferCollectionId(Input input, Output output,
             int fieldNumber) throws IOException
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
 
+    @Override
     protected CollectionSchema.MessageFactory resolveCollectionFrom(Input input)
             throws IOException
     {
@@ -325,6 +336,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return factory;
     }
 
+    @Override
     protected void writeMapIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -342,12 +354,14 @@ public final class DefaultIdStrategy extends IdStrategy
         }
     }
 
+    @Override
     protected void transferMapId(Input input, Output output, int fieldNumber)
             throws IOException
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
 
+    @Override
     protected MapSchema.MessageFactory resolveMapFrom(Input input)
             throws IOException
     {
@@ -372,23 +386,27 @@ public final class DefaultIdStrategy extends IdStrategy
         return factory;
     }
 
+    @Override
     protected void writeEnumIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
         output.writeString(fieldNumber, clazz.getName(), false);
     }
 
+    @Override
     protected void transferEnumId(Input input, Output output, int fieldNumber)
             throws IOException
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
 
+    @Override
     protected EnumIO<?> resolveEnumFrom(Input input) throws IOException
     {
         return getEnumIO(input.readString(), true);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> tryWriteDelegateIdTo(Output output,
             int fieldNumber, Class<T> clazz) throws IOException
@@ -403,6 +421,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return hd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> transferDelegateId(Input input, Output output,
             int fieldNumber) throws IOException
@@ -420,6 +439,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return hd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> resolveDelegateFrom(Input input)
             throws IOException
@@ -435,6 +455,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return hd;
     }
 
+    @Override
     protected <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber,
             Class<T> clazz) throws IOException
     {
@@ -444,6 +465,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return getSchemaWrapper(clazz, true);
     }
 
+    @Override
     protected <T> HasSchema<T> transferPojoId(Input input, Output output,
             int fieldNumber) throws IOException
     {
@@ -462,6 +484,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return wrapper;
     }
 
+    @Override
     protected <T> HasSchema<T> resolvePojoFrom(Input input, int fieldNumber)
             throws IOException
     {
@@ -476,6 +499,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return wrapper;
     }
 
+    @Override
     protected <T> Schema<T> writeMessageIdTo(Output output, int fieldNumber,
             Message<T> message) throws IOException
     {
@@ -484,6 +508,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return message.cachedSchema();
     }
 
+    @Override
     protected void writeArrayIdTo(Output output, Class<?> componentType)
             throws IOException
     {
@@ -491,12 +516,14 @@ public final class DefaultIdStrategy extends IdStrategy
                 componentType.getName(), false);
     }
 
+    @Override
     protected void transferArrayId(Input input, Output output, int fieldNumber,
             boolean mapped) throws IOException
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
 
+    @Override
     protected Class<?> resolveArrayComponentTypeFrom(Input input, boolean mapped)
             throws IOException
     {
@@ -537,6 +564,7 @@ public final class DefaultIdStrategy extends IdStrategy
         }
     }
 
+    @Override
     protected void writeClassIdTo(Output output, Class<?> componentType,
             boolean array) throws IOException
     {
@@ -546,12 +574,14 @@ public final class DefaultIdStrategy extends IdStrategy
         output.writeString(id, componentType.getName(), false);
     }
 
+    @Override
     protected void transferClassId(Input input, Output output, int fieldNumber,
             boolean mapped, boolean array) throws IOException
     {
         input.transferByteRangeTo(output, true, fieldNumber, false);
     }
 
+    @Override
     protected Class<?> resolveClassFrom(Input input, boolean mapped,
             boolean array) throws IOException
     {
@@ -571,12 +601,14 @@ public final class DefaultIdStrategy extends IdStrategy
             instantiator = RuntimeEnv.newInstantiator(collectionClass);
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public <V> Collection<V> newMessage()
         {
             return (Collection<V>) instantiator.newInstance();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return collectionClass;
@@ -595,12 +627,14 @@ public final class DefaultIdStrategy extends IdStrategy
             instantiator = RuntimeEnv.newInstantiator(mapClass);
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public <K, V> Map<K, V> newMessage()
         {
             return (Map<K, V>) instantiator.newInstance();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return mapClass;
@@ -621,6 +655,7 @@ public final class DefaultIdStrategy extends IdStrategy
             this.strategy = strategy;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
@@ -662,6 +697,7 @@ public final class DefaultIdStrategy extends IdStrategy
             return schema;
         }
 
+        @Override
         public Pipe.Schema<T> getPipeSchema()
         {
             Pipe.Schema<T> pipeSchema = this.pipeSchema;
@@ -696,6 +732,7 @@ public final class DefaultIdStrategy extends IdStrategy
             this.strategy = strategy;
         }
 
+        @Override
         public Schema<T> getSchema()
         {
             HasSchema<T> wrapper = this.wrapper;
@@ -714,6 +751,7 @@ public final class DefaultIdStrategy extends IdStrategy
             return wrapper.getSchema();
         }
 
+        @Override
         public Pipe.Schema<T> getPipeSchema()
         {
             HasSchema<T> wrapper = this.wrapper;
@@ -744,11 +782,13 @@ public final class DefaultIdStrategy extends IdStrategy
             this.schema = schema;
         }
 
+        @Override
         public Schema<T> getSchema()
         {
             return schema;
         }
 
+        @Override
         public Pipe.Schema<T> getPipeSchema()
         {
             Pipe.Schema<T> pipeSchema = this.pipeSchema;

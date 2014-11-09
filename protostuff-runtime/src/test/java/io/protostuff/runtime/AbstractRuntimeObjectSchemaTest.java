@@ -102,11 +102,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         static final CollectionSchema.MessageFactory MESSAGE_FACTORY = new CollectionSchema.MessageFactory()
         {
+            @Override
             public <V> Collection<V> newMessage()
             {
                 return new CustomArrayList<V>();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return CustomArrayList.class;
@@ -120,11 +122,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         static final MapSchema.MessageFactory MESSAGE_FACTORY = new MapSchema.MessageFactory()
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
                 return new CustomHashMap<K, V>();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return CustomHashMap.class;
@@ -164,6 +168,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         SMALL
         {
+            @Override
             public int getType()
             {
                 return 1;
@@ -171,6 +176,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         },
         MEDIUM
         {
+            @Override
             public int getType()
             {
                 return 2;
@@ -178,6 +184,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         },
         LARGE
         {
+            @Override
             public int getType()
             {
                 return 3;
@@ -206,6 +213,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             this.name = name;
         }
 
+        @Override
         public String getName()
         {
             return name;
@@ -1766,41 +1774,49 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         static final Schema<Bat> SCHEMA = new Schema<Bat>()
         {
 
+            @Override
             public String getFieldName(int number)
             {
                 return number == 1 ? "i" : null;
             }
 
+            @Override
             public int getFieldNumber(String name)
             {
                 return name.length() == 1 && name.charAt(0) == 'i' ? 1 : 0;
             }
 
+            @Override
             public boolean isInitialized(Bat message)
             {
                 return true;
             }
 
+            @Override
             public Bat newMessage()
             {
                 return new Bat();
             }
 
+            @Override
             public String messageName()
             {
                 return Bat.class.getSimpleName();
             }
 
+            @Override
             public String messageFullName()
             {
                 return Bat.class.getName();
             }
 
+            @Override
             public Class<? super Bat> typeClass()
             {
                 return Bat.class;
             }
 
+            @Override
             public void mergeFrom(Input input, Bat message) throws IOException
             {
                 for (int number = input.readFieldNumber(this);; number = input
@@ -1819,6 +1835,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
                 }
             }
 
+            @Override
             public void writeTo(Output output, Bat message) throws IOException
             {
                 output.writeUInt32(1, message.id, false);
@@ -1850,6 +1867,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             }
         };
 
+        @Override
         public Schema<Bat> cachedSchema()
         {
             return SCHEMA;

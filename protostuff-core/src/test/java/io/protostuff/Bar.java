@@ -272,36 +272,43 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         this.someLong = someLong;
     }
 
+    @Override
     public Schema<Bar> cachedSchema()
     {
         return this;
     }
 
+    @Override
     public boolean isInitialized(Bar message)
     {
         return true;
     }
 
+    @Override
     public Bar newMessage()
     {
         return new Bar();
     }
 
+    @Override
     public Class<Bar> typeClass()
     {
         return Bar.class;
     }
 
+    @Override
     public String messageName()
     {
         return getClass().getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return getClass().getName();
     }
 
+    @Override
     public String getFieldName(int number)
     {
         switch (number)
@@ -329,22 +336,26 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         }
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
+    @Override
     public void writeTo(Output output, Bar message) throws IOException
     {
         if (message.someInt != 0)
@@ -375,6 +386,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
             output.writeInt64(9, message.someLong, false);
     }
 
+    @Override
     public void mergeFrom(Input input, Bar message) throws IOException
     {
         for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -419,6 +431,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
     static final Pipe.Schema<Bar> PIPE_SCHEMA = new Pipe.Schema<Bar>(DEFAULT_INSTANCE)
     {
 
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))

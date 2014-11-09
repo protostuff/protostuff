@@ -35,29 +35,34 @@ import java.io.OutputStream;
 public class ProtostuffNullArrayElementTest extends NullArrayElementTest
 {
     
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.mergeFrom(in, message, schema);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return ProtostuffIOUtil.toByteArray(message, schema, buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.writeTo(out, message, schema, buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws IOException
     {

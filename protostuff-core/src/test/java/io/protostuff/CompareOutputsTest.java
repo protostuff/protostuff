@@ -259,11 +259,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOBUF_COMPUTED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayComputedProtobuf(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protobuf-computed-output";
@@ -272,11 +274,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOBUF_BUFFERED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayBufferedProtobuf(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protobuf-buffered-output";
@@ -285,11 +289,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOBUF_STREAMED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayStreamedProtobuf(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protobuf-streamed-output";
@@ -298,11 +304,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOSTUFF_COMPUTED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayComputedProtostuff(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protostuff-computed-output";
@@ -311,11 +319,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOSTUFF_BUFFERED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayBufferedProtostuff(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protostuff-buffered-output";
@@ -324,11 +334,13 @@ public class CompareOutputsTest extends AbstractTest
 
     static final Serializer PROTOSTUFF_STREAMED_OUTPUT = new Serializer()
     {
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             return toByteArrayStreamedProtostuff(message, message.cachedSchema());
         }
 
+        @Override
         public String getName()
         {
             return "protostuff-streamed-output";

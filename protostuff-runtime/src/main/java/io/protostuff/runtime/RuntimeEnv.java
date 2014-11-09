@@ -307,6 +307,7 @@ public final class RuntimeEnv
             constructor.setAccessible(true);
         }
 
+        @Override
         public T newInstance()
         {
             try
@@ -342,6 +343,7 @@ public final class RuntimeEnv
             this.clazz = clazz;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public T newInstance()
         {
