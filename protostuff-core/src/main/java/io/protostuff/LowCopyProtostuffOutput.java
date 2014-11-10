@@ -16,7 +16,6 @@ import static io.protostuff.WireFormat.makeTag;
 /**
  * Created by ryan on 1/16/14.
  */
-
 public final class LowCopyProtostuffOutput implements Output
 {
 
@@ -32,24 +31,6 @@ public final class LowCopyProtostuffOutput implements Output
         this.buffer = buffer;
     }
 
-    // public ProtostuffOutput(LinkedBuffer buffer)
-    // {
-    // super(buffer);
-    // }
-    //
-    // public ProtostuffOutput(LinkedBuffer buffer, OutputStream out)
-    // {
-    // super(buffer, out);
-    // }
-
-    /**
-     * Resets this output for re-use.
-     */
-    // public ProtostuffOutput clear()
-    // {
-    // super.clear();
-    // return this;
-    // }
     @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
@@ -57,33 +38,12 @@ public final class LowCopyProtostuffOutput implements Output
         {
             buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
             buffer.writeVarInt64(value);
-
-            // tail = sink.writeVarInt64(
-            // value,
-            // this,
-            // sink.writeVarInt32(
-            // makeTag(fieldNumber, WIRETYPE_VARINT),
-            // this,
-            // tail));
         }
         else
         {
             buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
             buffer.writeVarInt32(value);
-
-            // tail = sink.writeVarInt32(
-            // value,
-            // this,
-            // sink.writeVarInt32(
-            // makeTag(fieldNumber, WIRETYPE_VARINT),
-            // this,
-            // tail));
         }
-
-        /*
-         * if(value < 0) { tail = writeTagAndRawVarInt64( makeTag(fieldNumber, WIRETYPE_VARINT), value, this, tail); }
-         * else { tail = writeTagAndRawVarInt32( makeTag(fieldNumber, WIRETYPE_VARINT), value, this, tail); }
-         */
     }
 
     @Override
@@ -91,17 +51,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt32(value);
-        // tail = sink.writeVarInt32(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt32( makeTag(fieldNumber, WIRETYPE_VARINT), value, this, tail);
-         */
     }
 
     @Override
@@ -109,17 +58,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt32(encodeZigZag32(value));
-        // tail = sink.writeVarInt32(
-        // encodeZigZag32(value),
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt32( makeTag(fieldNumber, WIRETYPE_VARINT), encodeZigZag32(value), this, tail);
-         */
     }
 
     @Override
@@ -127,17 +65,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(value);
-        // tail = sink.writeInt32LE(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED32),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian32( makeTag(fieldNumber, WIRETYPE_FIXED32), value, this, tail);
-         */
     }
 
     @Override
@@ -145,17 +72,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(value);
-        // tail = sink.writeInt32LE(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED32),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian32( makeTag(fieldNumber, WIRETYPE_FIXED32), value, this, tail);
-         */
     }
 
     @Override
@@ -163,17 +79,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(value);
-        // tail = sink.writeVarInt64(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt64( makeTag(fieldNumber, WIRETYPE_VARINT), value, this, tail);
-         */
     }
 
     @Override
@@ -181,17 +86,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(value);
-        // tail = sink.writeVarInt64(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt64( makeTag(fieldNumber, WIRETYPE_VARINT), value, this, tail);
-         */
     }
 
     @Override
@@ -199,17 +93,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeVarInt64(encodeZigZag64(value));
-        // tail = sink.writeVarInt64(
-        // encodeZigZag64(value),
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt64( makeTag(fieldNumber, WIRETYPE_VARINT), encodeZigZag64(value), this, tail);
-         */
     }
 
     @Override
@@ -217,17 +100,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(value);
-        // tail = sink.writeInt64LE(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED64),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian64( makeTag(fieldNumber, WIRETYPE_FIXED64), value, this, tail);
-         */
     }
 
     @Override
@@ -235,17 +107,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(value);
-        // tail = sink.writeInt64LE(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED64),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian64( makeTag(fieldNumber, WIRETYPE_FIXED64), value, this, tail);
-         */
     }
 
     @Override
@@ -253,18 +114,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED32));
         buffer.writeInt32LE(Float.floatToRawIntBits(value));
-        // tail = sink.writeInt32LE(
-        // Float.floatToRawIntBits(value),
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED32),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian32( makeTag(fieldNumber, WIRETYPE_FIXED32), Float.floatToRawIntBits(value),
-         * this, tail);
-         */
     }
 
     @Override
@@ -272,18 +121,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_FIXED64));
         buffer.writeInt64LE(Double.doubleToRawLongBits(value));
-        // tail = sink.writeInt64LE(
-        // Double.doubleToRawLongBits(value),
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_FIXED64),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawLittleEndian64( makeTag(fieldNumber, WIRETYPE_FIXED64),
-         * Double.doubleToRawLongBits(value), this, tail);
-         */
     }
 
     @Override
@@ -291,17 +128,6 @@ public final class LowCopyProtostuffOutput implements Output
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_VARINT));
         buffer.writeByte(value ? (byte) 0x01 : 0x00);
-        // tail = sink.writeByte(
-        // value ? (byte)0x01 : 0x00,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_VARINT),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeTagAndRawVarInt32( makeTag(fieldNumber, WIRETYPE_VARINT), value ? 1 : 0, this, tail);
-         */
     }
 
     @Override
@@ -316,19 +142,6 @@ public final class LowCopyProtostuffOutput implements Output
         // TODO the original implementation is a lot more complex, is this compatible?
         byte[] strbytes = value.getBytes("UTF-8");
         writeByteArray(fieldNumber, strbytes, repeated);
-
-        // tail = sink.writeStrUTF8VarDelimited(
-        // value,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
-        // this,
-        // tail));
-
-        /*
-         * tail = writeUTF8VarDelimited( value, this, writeRawVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
-         * this, tail));
-         */
     }
 
     @Override
@@ -341,22 +154,6 @@ public final class LowCopyProtostuffOutput implements Output
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, bytes, 0, bytes.length, repeated);
-        // buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED));
-        // buffer.writeVarInt32(bytes.length);
-        // tail = sink.writeByteArray(
-        // bytes, 0, bytes.length,
-        // this,
-        // sink.writeVarInt32(
-        // bytes.length,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
-        // this,
-        // tail)));
-
-        /*
-         * tail = writeTagAndByteArray( makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), bytes, this, tail);
-         */
     }
 
     @Override
@@ -366,17 +163,6 @@ public final class LowCopyProtostuffOutput implements Output
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED));
         buffer.writeVarInt32(length);
         buffer.writeByteArray(value, offset, length);
-
-        // tail = sink.writeByteArray(
-        // value, offset, length,
-        // this,
-        // sink.writeVarInt32(
-        // length,
-        // this,
-        // sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED),
-        // this,
-        // tail)));
     }
 
     @Override
@@ -384,23 +170,10 @@ public final class LowCopyProtostuffOutput implements Output
             final boolean repeated) throws IOException
     {
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_START_GROUP));
-        // tail = sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_START_GROUP),
-        // this,
-        // tail);
-
         schema.writeTo(this, value);
-
         buffer.writeVarInt32(makeTag(fieldNumber, WIRETYPE_END_GROUP));
-        // tail = sink.writeVarInt32(
-        // makeTag(fieldNumber, WIRETYPE_END_GROUP),
-        // this,
-        // tail);
     }
 
-    /**
-     * Writes a ByteBuffer field.
-     */
     @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
