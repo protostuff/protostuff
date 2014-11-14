@@ -28,6 +28,16 @@ public class RepeatedTest extends AbstractTest
         verify(test);
     }
 
+    public void testPackedRepeatedCodedInput() throws IOException
+    {
+        final LinkedBuffer buffer = getProtobufBuffer();
+
+        PojoWithRepeated test = new PojoWithRepeated();
+        test.mergeFrom(new CodedInput(buffer.buffer, 0, buffer.offset, false), test);
+
+        verify(test);
+    }
+
     private LinkedBuffer getProtobufBuffer() throws IOException
     {
         // Generate protobuf with packed repeated fields
