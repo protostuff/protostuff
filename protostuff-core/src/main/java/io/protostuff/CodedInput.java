@@ -552,10 +552,6 @@ public final class CodedInput implements Input
         for (; offset < 32; offset += 7)
         {
             final byte b = input.readByte();
-            if (b == -1)
-            {
-                throw ProtobufException.truncatedMessage();
-            }
             result |= (b & 0x7f) << offset;
             if ((b & 0x80) == 0)
             {
@@ -566,10 +562,6 @@ public final class CodedInput implements Input
         for (; offset < 64; offset += 7)
         {
             final byte b = input.readByte();
-            if (b == -1)
-            {
-                throw ProtobufException.truncatedMessage();
-            }
             if ((b & 0x80) == 0)
             {
                 return result;
