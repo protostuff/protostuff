@@ -44,6 +44,12 @@
 
 package io.protostuff;
 
+import static io.protostuff.WireFormat.TAG_TYPE_BITS;
+import static io.protostuff.WireFormat.TAG_TYPE_MASK;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,9 +58,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.protostuff.StringSerializer.STRING;
-
-import static io.protostuff.WireFormat.*;
-import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
 
 /**
  * Reads and decodes protocol message fields.
@@ -1171,7 +1174,7 @@ public final class CodedInput implements Input
     private void checkIfPackedField() throws IOException
     {
         // Do we have the start of a packed field?
-        if (packedLimit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
+        if (packedLimit == 0 && WireFormat.getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
         {
             final int length = readRawVarint32();
             if (length < 0)
