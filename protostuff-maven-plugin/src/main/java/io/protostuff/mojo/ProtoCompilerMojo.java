@@ -28,9 +28,10 @@ import io.protostuff.compiler.CompilerMain;
  * Compiles proto files to java/gwt/etc.
  * 
  * @author David Yu
- * @created Jan 14, 2010
+ *
  * @goal compile
- * @requiresDependencyResolution runtime
+ * @configurator include-project-dependencies
+ * @requiresDependencyResolution compile+runtime
  */
 public class ProtoCompilerMojo extends AbstractMojo
 {
@@ -113,6 +114,7 @@ public class ProtoCompilerMojo extends AbstractMojo
      */
     protected File baseDir;
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         if (skipMojo())

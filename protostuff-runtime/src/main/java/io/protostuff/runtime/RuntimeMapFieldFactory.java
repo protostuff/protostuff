@@ -79,6 +79,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -87,16 +88,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -105,11 +103,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -118,30 +112,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Enum<?>> wrapper) throws IOException
             {
                 return inlineK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 inlineK.writeTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 inlineK.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Enum<?>> wrapper, Object key)
                     throws IOException
@@ -149,12 +148,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, eioV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -175,6 +176,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -183,16 +185,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -201,11 +200,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -214,30 +209,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return inlineK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 inlineK.writeTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 inlineK.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -245,12 +245,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, inlineV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 inlineV.writeTo(output, fieldNumber, val, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -274,6 +276,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -282,16 +285,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -300,11 +300,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -313,30 +309,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return inlineK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 inlineK.writeTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 inlineK.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -344,6 +345,7 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, input.mergeObject(null, schemaV.getSchema()));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -351,6 +353,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -373,6 +376,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -381,16 +385,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -399,11 +400,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -412,30 +409,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return inlineK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 inlineK.writeTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 inlineK.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -459,6 +461,7 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -466,6 +469,7 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -490,6 +494,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -498,16 +503,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -516,11 +518,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -529,30 +527,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return inlineK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 inlineK.writeTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 inlineK.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -575,12 +578,14 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val, valueSchema, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -604,6 +609,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -612,16 +618,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -630,11 +633,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -643,30 +642,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Enum<?> kFrom(Input input,
                     MapWrapper<Enum<?>, Enum<?>> wrapper) throws IOException
             {
                 return eioK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Enum<?>, Enum<?>> wrapper, Enum<?> key)
                     throws IOException
@@ -674,12 +678,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, eioV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -702,6 +708,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -710,16 +717,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -728,11 +732,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -741,30 +741,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Enum<?> kFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper) throws IOException
             {
                 return eioK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper, Enum<?> key)
                     throws IOException
@@ -772,12 +777,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, inlineV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 inlineV.writeTo(output, fieldNumber, val, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -802,6 +809,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -810,16 +818,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -828,11 +833,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -841,30 +842,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Enum<?> kFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper) throws IOException
             {
                 return eioK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper, Enum<?> key)
                     throws IOException
@@ -872,6 +878,7 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, input.mergeObject(null, schemaV.getSchema()));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -879,6 +886,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -903,6 +911,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -911,16 +920,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -929,11 +935,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -942,30 +944,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Enum<?> kFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper) throws IOException
             {
                 return eioK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper, Enum<?> key)
                     throws IOException
@@ -989,6 +996,7 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -996,6 +1004,7 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1021,6 +1030,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1029,16 +1039,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1047,11 +1054,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1060,30 +1063,35 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Enum<?> kFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper) throws IOException
             {
                 return eioK.readFrom(input);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, key);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Enum<?>, Object> wrapper, Enum<?> key)
                     throws IOException
@@ -1106,12 +1114,14 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val, valueSchema, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1136,6 +1146,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1144,16 +1155,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1162,11 +1170,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1175,18 +1179,21 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Enum<?>> wrapper) throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
@@ -1194,6 +1201,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1201,6 +1209,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Enum<?>> wrapper, Object key)
                     throws IOException
@@ -1208,12 +1217,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, eioV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
                 EnumIO.writeTo(output, fieldNumber, repeated, val);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1237,6 +1248,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1245,16 +1257,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1263,11 +1272,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1276,18 +1281,21 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
@@ -1295,6 +1303,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1302,6 +1311,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -1309,12 +1319,14 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, inlineV.readFrom(input));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 inlineV.writeTo(output, fieldNumber, val, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1340,6 +1352,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1348,16 +1361,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1366,11 +1376,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1379,18 +1385,21 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
@@ -1398,6 +1407,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1405,6 +1415,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -1412,6 +1423,7 @@ final class RuntimeMapFieldFactory
                 wrapper.put(key, input.mergeObject(null, schemaV.getSchema()));
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -1419,6 +1431,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1444,6 +1457,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1452,16 +1466,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1470,11 +1481,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1483,18 +1490,21 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1502,6 +1512,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
@@ -1509,6 +1520,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -1532,6 +1544,7 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
@@ -1539,6 +1552,7 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1565,6 +1579,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1573,16 +1588,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1591,11 +1603,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1604,18 +1612,21 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
                 return input.mergeObject(null, schemaK.getSchema());
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1623,6 +1634,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
@@ -1630,6 +1642,7 @@ final class RuntimeMapFieldFactory
                         repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -1652,12 +1665,14 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val, valueSchema, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1681,6 +1696,7 @@ final class RuntimeMapFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -1689,16 +1705,13 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -1707,11 +1720,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1720,12 +1729,14 @@ final class RuntimeMapFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected Object kFrom(Input input,
                     MapWrapper<Object, Object> wrapper) throws IOException
             {
@@ -1741,18 +1752,21 @@ final class RuntimeMapFieldFactory
                 return wrapper.setValue(null);
             }
 
+            @Override
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, keyPipeSchema, repeated);
             }
 
+            @Override
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, key, keySchema, repeated);
             }
 
+            @Override
             protected void vPutFrom(Input input,
                     MapWrapper<Object, Object> wrapper, Object key)
                     throws IOException
@@ -1775,12 +1789,14 @@ final class RuntimeMapFieldFactory
                 }
             }
 
+            @Override
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val, valueSchema, repeated);
             }
 
+            @Override
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -1793,6 +1809,7 @@ final class RuntimeMapFieldFactory
             RuntimeFieldFactory.ID_MAP)
     {
 
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -2059,28 +2076,33 @@ final class RuntimeMapFieldFactory
                     strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Map<?, ?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Map<?, ?> value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();

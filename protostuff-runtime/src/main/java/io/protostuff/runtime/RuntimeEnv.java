@@ -307,25 +307,14 @@ public final class RuntimeEnv
             constructor.setAccessible(true);
         }
 
+        @Override
         public T newInstance()
         {
             try
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException | InstantiationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -342,6 +331,7 @@ public final class RuntimeEnv
             this.clazz = clazz;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public T newInstance()
         {
@@ -350,15 +340,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectInputStream.invoke(null, clazz,
                         Object.class);
             }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }

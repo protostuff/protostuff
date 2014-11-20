@@ -26,6 +26,7 @@ import java.util.Map;
 public class JsonStringMapSchemaTest extends StringMapSchemaTest
 {
 
+    @Override
     public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema)
             throws IOException
@@ -33,6 +34,7 @@ public class JsonStringMapSchemaTest extends StringMapSchemaTest
         JsonIOUtil.mergeFrom(data, offset, length, message, schema, false);
     }
 
+    @Override
     public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException
     {
         return JsonIOUtil.toByteArray(message, schema, false);

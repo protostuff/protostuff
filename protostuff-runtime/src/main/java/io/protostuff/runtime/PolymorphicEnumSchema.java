@@ -84,6 +84,7 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
             this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -96,36 +97,43 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Enum.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Enum.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);

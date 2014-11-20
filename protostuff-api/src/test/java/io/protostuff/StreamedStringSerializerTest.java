@@ -32,12 +32,17 @@ import static io.protostuff.StringSerializerTest.two_byte_utf8;
 import static io.protostuff.StringSerializerTest.whitespace;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import io.protostuff.StringSerializer.STRING;
+import static io.protostuff.StringSerializerTest.getShortStringLengthInBytes;
+import static io.protostuff.StringSerializerTest.legacySurrogatePairSerialized;
+import static io.protostuff.StringSerializerTest.nativeSurrogatePairsSerialized;
+import static io.protostuff.StringSerializerTest.surrogatePairs;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 
 /**
  * Tests for streaming UTF-8 Encoding
@@ -234,7 +239,7 @@ public class StreamedStringSerializerTest extends TestCase
 
     public void testUTF8VarDelimited() throws Exception
     {
-        checkVarDelimited(foo, 1, 59);
+        checkVarDelimited(foo, 1, 71);
         checkVarDelimited(whitespace, 1, 3);
         checkVarDelimited(numeric, 1, 10);
         checkVarDelimited(alphabet, 1, 26);
@@ -297,6 +302,64 @@ public class StreamedStringSerializerTest extends TestCase
         checkFixedDelimited(moreThan2048);
     }
 
+    public void testSurrogatePairs() throws Exception
+    {
+        // This test is mainly for Java 8+, where 3-byte surrogates
+        // and 6-byte surrogate pairs are not allowed.
+        LinkedBuffer lb = new LinkedBuffer(256);
+        WriteSession session = new WriteSession(lb);
+        StreamedStringSerializer.writeUTF8(surrogatePairs, session, lb);
+
+        byte[] buffered = session.toByteArray();
+
+        // Does our own serialization match native?
+        assertTrue(Arrays.equals(buffered, nativeSurrogatePairsSerialized));
+
+        // Does our own serialization / deserialization work?
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(buffered));
+
+        // Can we decode legacy encodings?
+        assertEquals(surrogatePairs, STRING.deserCustomOnly(legacySurrogatePairSerialized));
+
+        // Does the built in serialization work?
+        assertEquals(surrogatePairs, new String(nativeSurrogatePairsSerialized, "UTF-8"));
+
+        // Should be encoded using 4-byte code points, instead of 6-byte surrogate pairs.
+        assertFalse(Arrays.equals(buffered, legacySurrogatePairSerialized));
+
+        try
+        {
+            // Can we deserialize from a protobuf source (specifically java generated)
+            // using our first method?
+            assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
+        }
+        catch (RuntimeException ex)
+        {
+            // No? Fallback should catch this.
+            assertEquals(surrogatePairs, STRING.deser(nativeSurrogatePairsSerialized));
+
+            // But it means there's a bug in the deserializer
+            fail("Deserializer should not have used built in decoder.");
+        }
+    }
+    
+    public void testPartialSurrogatePair() throws Exception
+    {
+        // Make sure that we don't overflow or get out of bounds,
+        // since pairs require 2 characters.
+        String partial = "\uD83C";
+        
+        // 3 bytes can't hold a 4-byte encoding, but we
+        // don't expect it to use the 4-byte encoding path,
+        // since it's not a pair
+        LinkedBuffer lb = new LinkedBuffer(3);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        WriteSession session = new WriteSession(lb, out);
+        StreamedStringSerializer.writeUTF8(partial, session, lb);
+
+        byte[] buffered = session.toByteArray();
+    }
+
     static void checkVarDelimited(String str, int size, int stringLen) throws Exception
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -318,9 +381,10 @@ public class StreamedStringSerializerTest extends TestCase
     static void checkFixedDelimited(String str) throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        DataOutputStream dout = new DataOutputStream(bout);
-        dout.writeUTF(str);
-        dout.close();
+        OutputStreamWriter writer = new OutputStreamWriter(bout, "UTF-8");
+        bout.write(getShortStringLengthInBytes(str));
+        writer.write(str, 0, str.length());
+        writer.close();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         LinkedBuffer lb = new LinkedBuffer(BUF_SIZE);
@@ -391,8 +455,20 @@ public class StreamedStringSerializerTest extends TestCase
         String strBuffered = new String(buffered, "UTF-8");
 
         assertEquals(strBuiltin, strBuffered);
+        assertTrue(Arrays.equals(builtin, buffered));
+        assertEquals(STRING.deser(builtin), STRING.deser(buffered));
         print(strBuiltin);
         print("len: " + builtin.length);
+    }
+
+    static void checkEncodedStringWithVarDelimited(byte[] buffer, String str, int offset, int len) throws Exception
+    {
+        assertEquals(len, readRawVarint32(buffer, offset));
+
+        String deser = STRING.deser(buffer, offset + 2, len);
+
+        assertEquals(str.length(), deser.length());
+        assertEquals(str, deser);
     }
 
     public void testMultipleLargeStringsExceedingBufferSize() throws Exception
@@ -450,7 +526,43 @@ public class StreamedStringSerializerTest extends TestCase
 
         byte[] data2 = session2.toByteArray();
 
-        assertEquals(STRING.deser(data), STRING.deser(data2));
+        // We cannot do a direct STRING.deser, since it's not supposed to handle
+        // multiple fields. Thus, in order to test this, we have to iterate through each
+        // field, and compare the STRING.deser of that. Since we know the length ahead of time,
+        // we can do simple verifications to make life easier.
+
+        // Make sure the output bytes are the same.
+        assertEquals(data.length, data2.length);
+
+        // Make sure the data is identical.
+        for (int i = 0; i < data.length; i++)
+            assertEquals(data[i], data2[i]);
+
+        // Now that we've confirmed they're identical, doing checks on the
+        // validity is the same as doing it on the other.
+        //
+        // We will check that the VarDelimited value was encoded properly,
+        // and that we can use that value to properly deserialize the String.
+
+        int offset = 0;
+
+        checkEncodedStringWithVarDelimited(data, utf8OneByte, offset, 1024);
+        offset += 1024 + 2;
+        checkEncodedStringWithVarDelimited(data, utf8OneByte, offset, 1024);
+        offset += 1024 + 2;
+
+        checkEncodedStringWithVarDelimited(data, utf8TwoBytes, offset, 1024);
+        offset += 1024 + 2;
+        checkEncodedStringWithVarDelimited(data, utf8TwoBytes, offset, 1024);
+        offset += 1024 + 2;
+
+        // These guy's length is actually 1023, because 1024/3 is 341.
+        checkEncodedStringWithVarDelimited(data, utf8ThreeBytes, offset, 1023);
+        offset += 1023 + 2;
+        checkEncodedStringWithVarDelimited(data, utf8ThreeBytes, offset, 1023);
+        offset += 1023 + 2;
+
+        assertEquals(offset, data.length);
     }
 
     static void writeToSession(String str1, String str2, String str3,

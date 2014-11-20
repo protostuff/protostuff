@@ -52,6 +52,7 @@ public class Extension extends AnnotationContainer implements HasFields
         return parentMessage != null;
     }
 
+    @Override
     public Proto getProto()
     {
         Proto p = proto;
@@ -60,22 +61,26 @@ public class Extension extends AnnotationContainer implements HasFields
         return p;
     }
 
+    @Override
     public Collection<Field<?>> getFields()
     {
         return fields.values();
     }
 
+    @Override
     public Field<?> getField(String name)
     {
         return fields.get(name);
     }
 
+    @Override
     public void addField(Field<?> field)
     {
         if (fields.put(field.name, field) != null)
             throw err("Duplicate extension field: " + field.name, getProto());
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
@@ -92,6 +97,7 @@ public class Extension extends AnnotationContainer implements HasFields
         return standardOptions.get(key);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -113,6 +119,7 @@ public class Extension extends AnnotationContainer implements HasFields
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
@@ -143,6 +150,7 @@ public class Extension extends AnnotationContainer implements HasFields
         return this.packageName == null ? this.type : this.packageName + "." + this.type;
     }
 
+    @Override
     public String getEnclosingNamespace()
     {
         return isNested() ? getParentMessage().getFullName() : getProto().getPackageName();

@@ -138,6 +138,7 @@ public class YamlCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = new LinkedBuffer(512);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -150,6 +151,7 @@ public class YamlCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "yaml-buffered-output";
@@ -162,6 +164,7 @@ public class YamlCompareOutputsTest extends TestCase
 
         final LinkedBuffer buffer = new LinkedBuffer(1024);
 
+        @Override
         public <T extends Message<T>> byte[] serialize(T message)
         {
             try
@@ -180,6 +183,7 @@ public class YamlCompareOutputsTest extends TestCase
             }
         }
 
+        @Override
         public String getName()
         {
             return "yaml-streamed-output";

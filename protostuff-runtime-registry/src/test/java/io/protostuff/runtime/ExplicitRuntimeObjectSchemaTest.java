@@ -96,11 +96,13 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
             System.out.println("@EXPLICIT");
         }
 
+        @Override
         public IdStrategy create()
         {
             return r.strategy;
         }
 
+        @Override
         public void postCreate()
         {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)

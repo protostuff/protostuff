@@ -25,7 +25,8 @@ import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
-import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test protostuff ser/deser for runtime {@link Map} fields.
@@ -36,29 +37,34 @@ import io.protostuff.StringSerializer.STRING;
 public class ProtostuffRuntimeMapTest extends AbstractRuntimeMapTest
 {
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.mergeFrom(in, message, schema);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return ProtostuffIOUtil.toByteArray(message, schema, buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.writeTo(out, message, schema, buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {
@@ -73,9 +79,7 @@ public class ProtostuffRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 ProtobufIOUtil.newPipe(protobufStream), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff),
-                STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
@@ -91,16 +95,9 @@ public class ProtostuffRuntimeMapTest extends AbstractRuntimeMapTest
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
                 ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, buf());
 
-        assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
 
-        String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-
-        assertEquals(strProtobufRoundTrip,
-                STRING.deser(protobufRoundTripFromStream));
-
-        assertTrue(protobufRoundTrip.length == protobuf.length);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
     }
 
 }

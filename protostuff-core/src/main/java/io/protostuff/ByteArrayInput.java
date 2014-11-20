@@ -211,11 +211,13 @@ public final class ByteArrayInput implements Input
         }
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         skipField(lastTag);
     }
 
+    @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         if (offset == limit)
@@ -285,6 +287,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code double} field value from the internal buffer.
      */
+    @Override
     public double readDouble() throws IOException
     {
         checkIfPackedField();
@@ -294,6 +297,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code float} field value from the internal buffer.
      */
+    @Override
     public float readFloat() throws IOException
     {
         checkIfPackedField();
@@ -303,6 +307,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code uint64} field value from the internal buffer.
      */
+    @Override
     public long readUInt64() throws IOException
     {
         checkIfPackedField();
@@ -312,6 +317,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code int64} field value from the internal buffer.
      */
+    @Override
     public long readInt64() throws IOException
     {
         checkIfPackedField();
@@ -321,6 +327,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code int32} field value from the internal buffer.
      */
+    @Override
     public int readInt32() throws IOException
     {
         checkIfPackedField();
@@ -330,6 +337,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code fixed64} field value from the internal buffer.
      */
+    @Override
     public long readFixed64() throws IOException
     {
         checkIfPackedField();
@@ -339,6 +347,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code fixed32} field value from the internal buffer.
      */
+    @Override
     public int readFixed32() throws IOException
     {
         checkIfPackedField();
@@ -348,6 +357,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code bool} field value from the internal buffer.
      */
+    @Override
     public boolean readBool() throws IOException
     {
         checkIfPackedField();
@@ -357,6 +367,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read a {@code uint32} field value from the internal buffer.
      */
+    @Override
     public int readUInt32() throws IOException
     {
         checkIfPackedField();
@@ -367,6 +378,7 @@ public final class ByteArrayInput implements Input
      * Read an enum field value from the internal buffer. Caller is responsible for converting the numeric value to an
      * actual enum.
      */
+    @Override
     public int readEnum() throws IOException
     {
         checkIfPackedField();
@@ -376,6 +388,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code sfixed32} field value from the internal buffer.
      */
+    @Override
     public int readSFixed32() throws IOException
     {
         checkIfPackedField();
@@ -385,6 +398,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code sfixed64} field value from the internal buffer.
      */
+    @Override
     public long readSFixed64() throws IOException
     {
         checkIfPackedField();
@@ -394,6 +408,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code sint32} field value from the internal buffer.
      */
+    @Override
     public int readSInt32() throws IOException
     {
         checkIfPackedField();
@@ -404,6 +419,7 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code sint64} field value from the internal buffer.
      */
+    @Override
     public long readSInt64() throws IOException
     {
         checkIfPackedField();
@@ -411,6 +427,7 @@ public final class ByteArrayInput implements Input
         return (n >>> 1) ^ -(n & 1);
     }
 
+    @Override
     public String readString() throws IOException
     {
         final int length = readRawVarint32();
@@ -427,11 +444,13 @@ public final class ByteArrayInput implements Input
         return STRING.deser(buffer, offset, length);
     }
 
+    @Override
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
     }
 
+    @Override
     public byte[] readByteArray() throws IOException
     {
         final int length = readRawVarint32();
@@ -449,6 +468,7 @@ public final class ByteArrayInput implements Input
         return copy;
     }
 
+    @Override
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (decodeNestedMessageAsGroup)
@@ -613,6 +633,7 @@ public final class ByteArrayInput implements Input
                 (((long) b8 & 0xff) << 56);
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -628,6 +649,7 @@ public final class ByteArrayInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

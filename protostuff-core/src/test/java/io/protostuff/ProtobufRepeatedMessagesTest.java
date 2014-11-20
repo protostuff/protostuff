@@ -28,11 +28,13 @@ import java.util.List;
 public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest
 {
 
+    @Override
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return ProtobufIOUtil.parseListFrom(in, schema);
     }
 
+    @Override
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
             throws IOException
     {

@@ -41,6 +41,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         super("proto_extender");
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         StringTemplateGroup group = getSTG("proto_to_proto");

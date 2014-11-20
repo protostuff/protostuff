@@ -90,6 +90,7 @@ public final class DeferredOutput implements Output
         return buffer;
     }
 
+    @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -99,6 +100,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -107,6 +109,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -115,6 +118,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
@@ -123,6 +127,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
@@ -131,6 +136,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -139,6 +145,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -147,6 +154,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -155,6 +163,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
@@ -163,6 +172,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
@@ -171,6 +181,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
@@ -179,6 +190,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
@@ -187,6 +199,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -195,6 +208,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
@@ -203,6 +217,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, current);
     }
 
+    @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         byte[] bytes = STRING.ser(value);
@@ -214,11 +229,13 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
 
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
+    @Override
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -228,6 +245,7 @@ public final class DeferredOutput implements Output
         current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
@@ -236,6 +254,7 @@ public final class DeferredOutput implements Output
         writeByteArray(fieldNumber, bytes, repeated);
     }
 
+    @Override
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema,
             boolean repeated) throws IOException
     {
@@ -302,6 +321,7 @@ public final class DeferredOutput implements Output
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

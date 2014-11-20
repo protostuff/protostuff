@@ -20,6 +20,8 @@ import java.io.OutputStream;
 import java.util.Map;
 
 import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test jsonx ser/deser for runtime {@link Map} fields.
@@ -30,21 +32,25 @@ import io.protostuff.StringSerializer.STRING;
 public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {
 
+    @Override
     protected boolean isNumeric()
     {
         return false;
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {
@@ -58,8 +64,7 @@ public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);

@@ -51,11 +51,13 @@ public final class ProtobufIOUtil
         final ByteArrayInput byteArrayInput = new ByteArrayInput(data, offset, len, false);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return byteArrayInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
@@ -75,11 +77,13 @@ public final class ProtobufIOUtil
         final CodedInput codedInput = new CodedInput(in, false);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return codedInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {

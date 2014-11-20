@@ -91,11 +91,13 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
             System.out.println("@INCREMENTAL");
         }
 
+        @Override
         public IdStrategy create()
         {
             return r.strategy;
         }
 
+        @Override
         public void postCreate()
         {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)

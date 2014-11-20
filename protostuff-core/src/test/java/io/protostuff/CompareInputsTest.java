@@ -117,6 +117,7 @@ public class CompareInputsTest extends AbstractTest
     public static final Deserializer PROTOBUF_CODED_INPUT = new Deserializer()
     {
 
+        @Override
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
         {
             final CodedInput input = new CodedInput(data, 0, data.length, false);
@@ -124,11 +125,13 @@ public class CompareInputsTest extends AbstractTest
             input.checkLastTagWas(0);
         }
 
+        @Override
         public String getName()
         {
             return "protobuf-coded-input";
         }
 
+        @Override
         public Serializer getSerializer()
         {
             return CompareOutputsTest.PROTOBUF_COMPUTED_OUTPUT;
@@ -139,6 +142,7 @@ public class CompareInputsTest extends AbstractTest
     public static final Deserializer PROTOSTUFF_CODED_INPUT = new Deserializer()
     {
 
+        @Override
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
         {
             final CodedInput input = new CodedInput(data, 0, data.length, true);
@@ -146,11 +150,13 @@ public class CompareInputsTest extends AbstractTest
             input.checkLastTagWas(0);
         }
 
+        @Override
         public String getName()
         {
             return "protostuff-coded-input";
         }
 
+        @Override
         public Serializer getSerializer()
         {
             return CompareOutputsTest.PROTOSTUFF_COMPUTED_OUTPUT;
@@ -161,6 +167,7 @@ public class CompareInputsTest extends AbstractTest
     public static final Deserializer PROTOBUF_BYTE_ARRAY_INPUT = new Deserializer()
     {
 
+        @Override
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
         {
             try
@@ -175,11 +182,13 @@ public class CompareInputsTest extends AbstractTest
             }
         }
 
+        @Override
         public String getName()
         {
             return "protobuf-bytearray-input";
         }
 
+        @Override
         public Serializer getSerializer()
         {
             return CompareOutputsTest.PROTOBUF_BUFFERED_OUTPUT;
@@ -190,6 +199,7 @@ public class CompareInputsTest extends AbstractTest
     public static final Deserializer PROTOSTUFF_BYTE_ARRAY_INPUT = new Deserializer()
     {
 
+        @Override
         public <T extends Message<T>> void mergeFrom(byte[] data, T message) throws IOException
         {
             try
@@ -204,11 +214,13 @@ public class CompareInputsTest extends AbstractTest
             }
         }
 
+        @Override
         public String getName()
         {
             return "protostuff-bytearray-input";
         }
 
+        @Override
         public Serializer getSerializer()
         {
             return CompareOutputsTest.PROTOSTUFF_BUFFERED_OUTPUT;

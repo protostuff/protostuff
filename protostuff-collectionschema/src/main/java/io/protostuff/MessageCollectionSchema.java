@@ -47,16 +47,19 @@ public final class MessageCollectionSchema<V> extends CollectionSchema<V>
         this.pipeSchema = pipeSchema;
     }
 
+    @Override
     protected void addValueFrom(Input input, Collection<V> collection) throws IOException
     {
         collection.add(input.mergeObject(null, schema));
     }
 
+    @Override
     protected void writeValueTo(Output output, int fieldNumber, V value, boolean repeated) throws IOException
     {
         output.writeObject(fieldNumber, value, schema, repeated);
     }
 
+    @Override
     protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated)
             throws IOException
     {

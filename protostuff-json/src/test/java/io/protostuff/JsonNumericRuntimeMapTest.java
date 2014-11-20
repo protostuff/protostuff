@@ -25,6 +25,7 @@ import java.util.Map;
 public class JsonNumericRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {
 
+    @Override
     protected boolean isNumeric()
     {
         return true;

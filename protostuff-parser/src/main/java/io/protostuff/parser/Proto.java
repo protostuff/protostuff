@@ -90,6 +90,7 @@ public class Proto extends AnnotationContainer implements HasOptions
         this.importer = importer;
     }
 
+    @Override
     public Proto getProto()
     {
         return this;
@@ -185,17 +186,20 @@ public class Proto extends AnnotationContainer implements HasOptions
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -354,6 +358,7 @@ public class Proto extends AnnotationContainer implements HasOptions
             ConfiguredReference.resolve(this, standardOptions, extraOptions, getPackageName());
     }
 
+    @Override
     public void add(Annotation annotation)
     {
         super.add(annotation);

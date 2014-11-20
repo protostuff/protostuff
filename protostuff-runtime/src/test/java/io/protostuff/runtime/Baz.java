@@ -97,12 +97,14 @@ public final class Baz implements Externalizable
         this.timestamp = timestamp;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         ProtostuffIOUtil.mergeDelimitedFrom(in, this,
                 RuntimeSchema.getSchema(Baz.class));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         ProtostuffIOUtil.writeDelimitedTo(out, this,

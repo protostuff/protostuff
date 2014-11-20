@@ -110,11 +110,13 @@ public final class Club implements Externalizable, Message<Club>
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
@@ -122,6 +124,7 @@ public final class Club implements Externalizable, Message<Club>
 
     // message method
 
+    @Override
     public Schema<Club> cachedSchema()
     {
         return SCHEMA;
@@ -131,31 +134,37 @@ public final class Club implements Externalizable, Message<Club>
     {
         // schema methods
 
+        @Override
         public Club newMessage()
         {
             return new Club();
         }
 
+        @Override
         public Class<Club> typeClass()
         {
             return Club.class;
         }
 
+        @Override
         public String messageName()
         {
             return Club.class.getSimpleName();
         }
 
+        @Override
         public String messageFullName()
         {
             return Club.class.getName();
         }
 
+        @Override
         public boolean isInitialized(Club message)
         {
             return true;
         }
 
+        @Override
         public void mergeFrom(Input input, Club message) throws IOException
         {
             for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -185,6 +194,7 @@ public final class Club implements Externalizable, Message<Club>
             }
         }
 
+        @Override
         public void writeTo(Output output, Club message) throws IOException
         {
             if (message.name != null)
@@ -210,6 +220,7 @@ public final class Club implements Externalizable, Message<Club>
 
         }
 
+        @Override
         public String getFieldName(int number)
         {
             switch (number)
@@ -225,6 +236,7 @@ public final class Club implements Externalizable, Message<Club>
             }
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             final Integer number = fieldMap.get(name);

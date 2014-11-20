@@ -130,6 +130,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Collection ids start at 1.
          */
+        @Override
         public <T extends Collection<?>> Registry registerCollection(
                 CollectionSchema.MessageFactory factory, int id)
         {
@@ -156,6 +157,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Map ids start at 1.
          */
+        @Override
         public <T extends Map<?, ?>> Registry registerMap(
                 MapSchema.MessageFactory factory, int id)
         {
@@ -182,6 +184,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Enum ids start at 1.
          */
+        @Override
         public <T extends Enum<T>> Registry registerEnum(Class<T> clazz, int id)
         {
             if (id < 1)
@@ -209,6 +212,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Enum ids start at 1.
          */
+        @Override
         public Registry registerEnum(EnumIO<?> eio, int id)
         {
             if (id < 1)
@@ -235,6 +239,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry registerPojo(Class<T> clazz, int id)
         {
             if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()))
@@ -265,6 +270,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         /**
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry registerPojo(Schema<T> schema, Pipe.Schema<T> pipeSchema,
                 int id)
         {
@@ -295,6 +301,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
          * <p>
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass)
         {
             if (strategy.pojoMapping.containsKey(baseClass))
@@ -314,6 +321,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
          * <p>
          * Delegate ids start at 1.
          */
+        @Override
         public <T> Registry registerDelegate(Delegate<T> delegate, int id)
         {
             if (id < 1)
@@ -409,11 +417,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         this.delegates = delegates;
     }
 
+    @Override
     public boolean isRegistered(Class<?> typeClass)
     {
         return pojoMapping.containsKey(typeClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass, boolean create)
     {
@@ -424,6 +434,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     protected EnumIO<? extends Enum<?>> getEnumIO(Class<?> enumClass)
     {
         final RegisteredEnumIO reio = enumMapping.get(enumClass);
@@ -433,6 +444,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return reio.eio;
     }
 
+    @Override
     protected CollectionSchema.MessageFactory getCollectionFactory(Class<?> clazz)
     {
         final RegisteredCollectionFactory rf = collectionMapping.get(clazz);
@@ -447,6 +459,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rf;
     }
 
+    @Override
     protected MapSchema.MessageFactory getMapFactory(Class<?> clazz)
     {
         final RegisteredMapFactory rf = mapMapping.get(clazz);
@@ -461,6 +474,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rf;
     }
 
+    @Override
     protected void writeCollectionIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -471,12 +485,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, factory.id, false);
     }
 
+    @Override
     protected void transferCollectionId(Input input, Output output,
             int fieldNumber) throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected CollectionSchema.MessageFactory resolveCollectionFrom(Input input)
             throws IOException
     {
@@ -490,6 +506,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return factory;
     }
 
+    @Override
     protected void writeMapIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -500,12 +517,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, factory.id, false);
     }
 
+    @Override
     protected void transferMapId(Input input, Output output,
             int fieldNumber) throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected MapSchema.MessageFactory resolveMapFrom(Input input)
             throws IOException
     {
@@ -518,6 +537,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return factory;
     }
 
+    @Override
     protected void writeEnumIdTo(Output output, int fieldNumber,
             Class<?> clazz) throws IOException
     {
@@ -528,12 +548,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, reio.id, false);
     }
 
+    @Override
     protected void transferEnumId(Input input, Output output,
             int fieldNumber) throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected EnumIO<?> resolveEnumFrom(Input input) throws IOException
     {
         final int id = input.readUInt32();
@@ -545,11 +567,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return reio.eio;
     }
 
+    @Override
     public boolean isDelegateRegistered(Class<?> typeClass)
     {
         return delegateMapping.containsKey(typeClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
     {
@@ -559,12 +583,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rd == null ? null : rd.delegate;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass)
     {
         return (HasDelegate<T>) delegateMapping.get(typeClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> tryWriteDelegateIdTo(Output output, int fieldNumber,
             Class<T> clazz) throws IOException
@@ -580,6 +606,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> transferDelegateId(Input input, Output output, int fieldNumber)
             throws IOException
@@ -596,6 +623,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> resolveDelegateFrom(Input input) throws IOException
     {
@@ -609,6 +637,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz)
             throws IOException
@@ -622,6 +651,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasSchema<T> transferPojoId(Input input, Output output,
             int fieldNumber) throws IOException
@@ -637,6 +667,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasSchema<T> resolvePojoFrom(Input input, int fieldNumber)
             throws IOException
@@ -650,6 +681,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> Schema<T> writeMessageIdTo(Output output, int fieldNumber,
             Message<T> message) throws IOException
@@ -665,6 +697,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return message.cachedSchema();
     }
 
+    @Override
     protected Class<?> collectionClass(int id)
     {
         final RegisteredCollectionFactory factory = id < collections.size() ?
@@ -678,6 +711,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return factory.typeClass();
     }
 
+    @Override
     protected Class<?> mapClass(int id)
     {
         final RegisteredMapFactory factory = id < maps.size() ?
@@ -691,6 +725,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return factory.typeClass();
     }
 
+    @Override
     protected Class<?> enumClass(int id)
     {
         final RegisteredEnumIO reio = id < enums.size() ? enums.get(id) : null;
@@ -703,12 +738,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return reio.eio.enumClass;
     }
 
+    @Override
     protected Class<?> delegateClass(int id)
     {
         final RegisteredDelegate<?> rd = id < delegates.size() ? delegates.get(id) : null;
         return rd == null ? null : rd.delegate.typeClass();
     }
 
+    @Override
     protected Class<?> pojoClass(int id)
     {
         final BaseHS<?> wrapper = id < pojos.size() ? pojos.get(id) : null;
@@ -721,11 +758,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return wrapper.getSchema().typeClass();
     }
 
+    @Override
     protected RegisteredDelegate<?> getRegisteredDelegate(Class<?> clazz)
     {
         return delegateMapping.get(clazz);
     }
 
+    @Override
     protected int getEnumId(Class<?> clazz)
     {
         final RegisteredEnumIO reio = enumMapping.get(clazz);
@@ -735,6 +774,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         return (reio.id << 5) | CID_ENUM;
     }
 
+    @Override
     protected int getId(Class<?> clazz)
     {
         if (Message.class.isAssignableFrom(clazz))
@@ -794,11 +834,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             this.factory = factory;
         }
 
+        @Override
         public <V> Collection<V> newMessage()
         {
             return factory.newMessage();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return factory.typeClass();
@@ -818,11 +860,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             this.factory = factory;
         }
 
+        @Override
         public <K, V> Map<K, V> newMessage()
         {
             return factory.newMessage();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return factory.typeClass();
@@ -867,11 +911,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             this.pipeSchema = pipeSchema;
         }
 
+        @Override
         public Schema<T> getSchema()
         {
             return schema;
         }
 
+        @Override
         public io.protostuff.Pipe.Schema<T> getPipeSchema()
         {
             return pipeSchema;
@@ -892,6 +938,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             this.strategy = strategy;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
@@ -910,11 +957,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                                 final Message<T> m = (Message<T>) typeClass.newInstance();
                                 this.schema = schema = m.cachedSchema();
                             }
-                            catch (InstantiationException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                            catch (IllegalAccessException e)
+                            catch (InstantiationException | IllegalAccessException e)
                             {
                                 throw new RuntimeException(e);
                             }
@@ -931,6 +974,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             return schema;
         }
 
+        @Override
         public Pipe.Schema<T> getPipeSchema()
         {
             Pipe.Schema<T> pipeSchema = this.pipeSchema;

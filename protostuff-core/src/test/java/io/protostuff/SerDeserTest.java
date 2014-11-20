@@ -63,6 +63,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Foo> fooSchema = new CustomSchema<Foo>(foo.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Foo message) throws IOException
             {
                 // 10 is an unknown field
@@ -83,6 +84,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Bar message) throws IOException
             {
                 // 10 is an unknown field
@@ -109,6 +111,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Bar message) throws IOException
             {
                 output.writeObject(10, baz, Baz.getSchema(), false);

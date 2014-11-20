@@ -508,6 +508,7 @@ public class ObjectSchemaTest extends TestCase
             this.name = name;
         }
 
+        @Override
         public String getName()
         {
             return name;

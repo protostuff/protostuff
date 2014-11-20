@@ -26,12 +26,14 @@ import java.util.Map;
 public class StringMapSchemaProtostuffTest extends StringMapSchemaTest
 {
 
+    @Override
     public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema)
             throws IOException
     {

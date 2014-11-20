@@ -25,6 +25,7 @@ import java.io.IOException;
 public class XmlStandardTest extends StandardTest
 {
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int len, T message,
             Schema<T> schema)
             throws IOException
@@ -33,6 +34,7 @@ public class XmlStandardTest extends StandardTest
 
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return XmlIOUtil.toByteArray(message, schema);

@@ -246,6 +246,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
             this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -258,36 +259,43 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Collection.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Collection.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);
@@ -387,11 +395,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                     k = fSingletonMap_k.get(value);
                     v = fSingletonMap_v.get(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -442,11 +446,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         {
             m = fUnmodifiableMap_m.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -464,11 +464,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             m = fSynchronizedMap_m.get(value);
             mutex = fSynchronizedMap_mutex.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -498,11 +494,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             keyType = fCheckedMap_keyType.get(value);
             valueType = fCheckedMap_valueType.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -650,11 +642,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_v.set(map, v);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -681,11 +669,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_k.set(map, k);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -707,11 +691,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             fSingletonMap_k.set(map, k);
             fSingletonMap_v.set(map, v);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -743,11 +723,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fUnmodifiableSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -777,11 +753,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fSynchronizedSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -827,11 +799,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fCheckedSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }

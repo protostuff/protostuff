@@ -44,6 +44,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
 
     ARRAY
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
@@ -85,6 +86,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
 
             return new ArraySchema(strategy)
             {
+                @Override
                 protected void setValue(Object value, Object owner)
                 {
                     handler.setValue(value, owner);
@@ -94,6 +96,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     NUMBER
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
@@ -113,6 +116,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         {
             return new ClassSchema(strategy)
             {
+                @Override
                 protected void setValue(Object value, Object owner)
                 {
                     handler.setValue(value, owner);
@@ -122,11 +126,13 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     ENUM
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
             return new PolymorphicEnumSchema(strategy)
             {
+                @Override
                 protected void setValue(Object value, Object owner)
                 {
                     handler.setValue(value, owner);
@@ -136,6 +142,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     COLLECTION
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
@@ -150,6 +157,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     MAP
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
@@ -169,6 +177,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         {
             return new PolymorphicThrowableSchema(strategy)
             {
+                @Override
                 protected void setValue(Object value, Object owner)
                 {
                     handler.setValue(value, owner);
@@ -178,11 +187,13 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
     },
     OBJECT
     {
+        @Override
         public PolymorphicSchema newSchema(Class<?> typeClass,
                 IdStrategy strategy, final Handler handler)
         {
             return new ObjectSchema(strategy)
             {
+                @Override
                 protected void setValue(Object value, Object owner)
                 {
                     handler.setValue(value, owner);

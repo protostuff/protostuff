@@ -51,12 +51,14 @@ public final class ProtobufOutput extends WriteSession implements Output
     /**
      * Resets this output for re-use.
      */
+    @Override
     public ProtobufOutput clear()
     {
         super.clear();
         return this;
     }
 
+    @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         if (value < 0)
@@ -77,6 +79,7 @@ public final class ProtobufOutput extends WriteSession implements Output
         }
     }
 
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt32(
@@ -86,6 +89,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt32(
@@ -95,6 +99,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian32(
@@ -104,6 +109,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian32(
@@ -113,6 +119,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt64(
@@ -122,6 +129,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt64(
@@ -131,6 +139,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt64(
@@ -140,6 +149,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian64(
@@ -149,6 +159,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian64(
@@ -158,6 +169,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian32(
@@ -167,6 +179,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawLittleEndian64(
@@ -176,6 +189,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
         tail = writeTagAndRawVarInt32(
@@ -185,11 +199,13 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeEnum(int fieldNumber, int number, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, number, repeated);
     }
 
+    @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         tail = writeUTF8VarDelimited(
@@ -198,11 +214,13 @@ public final class ProtobufOutput extends WriteSession implements Output
                 writeRawVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), this, tail));
     }
 
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);
     }
 
+    @Override
     public void writeByteArray(int fieldNumber, byte[] bytes, boolean repeated) throws IOException
     {
         tail = writeTagAndByteArray(
@@ -212,6 +230,7 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
@@ -222,7 +241,8 @@ public final class ProtobufOutput extends WriteSession implements Output
                 tail);
     }
 
-    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema, 
+    @Override
+    public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
             final boolean repeated) throws IOException
     {
         final LinkedBuffer lastBuffer;
@@ -918,6 +938,7 @@ public final class ProtobufOutput extends WriteSession implements Output
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

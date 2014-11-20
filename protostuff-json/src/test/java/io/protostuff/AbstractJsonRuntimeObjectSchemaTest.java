@@ -21,6 +21,8 @@ import java.io.OutputStream;
 
 import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test json ser/deser for runtime {@link Object} fields.
@@ -33,28 +35,33 @@ public abstract class AbstractJsonRuntimeObjectSchemaTest extends AbstractRuntim
 
     protected abstract boolean isNumeric();
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         JsonIOUtil.mergeFrom(data, offset, length, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         JsonIOUtil.mergeFrom(in, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonIOUtil.toByteArray(message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonIOUtil.writeTo(out, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {
@@ -68,8 +75,7 @@ public abstract class AbstractJsonRuntimeObjectSchemaTest extends AbstractRuntim
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
 
-        assertTrue(protostuff.length == protostuffFromStream.length);
-        assertEquals(STRING.deser(protostuff), STRING.deser(protostuffFromStream));
+        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
         T parsedMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);

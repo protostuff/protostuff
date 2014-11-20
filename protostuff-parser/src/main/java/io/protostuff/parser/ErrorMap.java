@@ -47,62 +47,74 @@ public final class ErrorMap implements Map<String, Object>
     {
     }
 
+    @Override
     public void clear()
     {
 
     }
 
+    @Override
     public boolean containsKey(Object arg0)
     {
         // error mechanism called by stringtemplate
         throw new IllegalStateException(String.valueOf(arg0));
     }
 
+    @Override
     public Object get(Object arg0)
     {
         return containsKey(arg0);
     }
 
+    @Override
     public boolean containsValue(Object arg0)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isEmpty()
     {
         return false;
     }
 
+    @Override
     public Set<String> keySet()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Object put(String arg0, Object arg1)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> arg0)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Object remove(Object arg0)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int size()
     {
         return 1;
     }
 
+    @Override
     public Collection<Object> values()
     {
         throw new UnsupportedOperationException();

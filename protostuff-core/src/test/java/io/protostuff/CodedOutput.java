@@ -450,6 +450,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code double} field, including tag, to the stream.
      */
+    @Override
     public void writeDouble(final int fieldNumber, final double value, boolean repeated)
             throws IOException
     {
@@ -460,6 +461,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code float} field, including tag, to the stream.
      */
+    @Override
     public void writeFloat(final int fieldNumber, final float value, boolean repeated)
             throws IOException
     {
@@ -470,6 +472,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code uint64} field, including tag, to the stream.
      */
+    @Override
     public void writeUInt64(final int fieldNumber, final long value, boolean repeated)
             throws IOException
     {
@@ -480,6 +483,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code int64} field, including tag, to the stream.
      */
+    @Override
     public void writeInt64(final int fieldNumber, final long value, boolean repeated)
             throws IOException
     {
@@ -490,6 +494,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code int32} field, including tag, to the stream.
      */
+    @Override
     public void writeInt32(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -500,6 +505,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code fixed64} field, including tag, to the stream.
      */
+    @Override
     public void writeFixed64(final int fieldNumber, final long value, boolean repeated)
             throws IOException
     {
@@ -510,6 +516,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code fixed32} field, including tag, to the stream.
      */
+    @Override
     public void writeFixed32(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -520,6 +527,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code bool} field, including tag, to the stream.
      */
+    @Override
     public void writeBool(final int fieldNumber, final boolean value, boolean repeated)
             throws IOException
     {
@@ -530,6 +538,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code string} field, including tag, to the stream.
      */
+    @Override
     public void writeString(final int fieldNumber, final String value, boolean repeated)
             throws IOException
     {
@@ -556,6 +565,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code bytes} field, including tag, to the stream.
      */
+    @Override
     public void writeBytes(final int fieldNumber, final ByteString value, boolean repeated)
             throws IOException
     {
@@ -566,6 +576,7 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code uint32} field, including tag, to the stream.
      */
+    @Override
     public void writeUInt32(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -577,6 +588,7 @@ public final class CodedOutput implements Output
      * Write an enum field, including tag, to the stream. Caller is responsible for converting the enum value to its
      * numeric value.
      */
+    @Override
     public void writeEnum(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -587,6 +599,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code sfixed32} field, including tag, to the stream.
      */
+    @Override
     public void writeSFixed32(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -597,6 +610,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code sfixed64} field, including tag, to the stream.
      */
+    @Override
     public void writeSFixed64(final int fieldNumber, final long value, boolean repeated)
             throws IOException
     {
@@ -607,6 +621,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code sint32} field, including tag, to the stream.
      */
+    @Override
     public void writeSInt32(final int fieldNumber, final int value, boolean repeated)
             throws IOException
     {
@@ -617,6 +632,7 @@ public final class CodedOutput implements Output
     /**
      * Write an {@code sint64} field, including tag, to the stream.
      */
+    @Override
     public void writeSInt64(final int fieldNumber, final long value, boolean repeated)
             throws IOException
     {
@@ -1441,6 +1457,7 @@ public final class CodedOutput implements Output
     }
 
     // START EXTRA
+    @Override
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated)
             throws IOException
     {
@@ -1448,6 +1465,7 @@ public final class CodedOutput implements Output
         writeByteArrayNoTag(value);
     }
 
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {
@@ -1456,6 +1474,7 @@ public final class CodedOutput implements Output
         writeRawBytes(value, offset, length);
     }
 
+    @Override
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
             final boolean repeated) throws IOException
     {
@@ -1502,6 +1521,7 @@ public final class CodedOutput implements Output
     /**
      * Writes a ByteBuffer field.
      */
+    @Override
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException
     {
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),

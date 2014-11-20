@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import io.protostuff.StringSerializer.STRING;
+import java.util.Arrays;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test case for json pipes.
@@ -57,15 +59,9 @@ public class JsonPipeTest extends AbstractTest
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, numeric), pipeSchema, buf());
 
-        assertTrue(protobufRoundTrip.length == protobufRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
 
-        String strProtobufRoundTrip = STRING.deser(protobufRoundTrip);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobufRoundTripFromStream));
-
-        assertTrue(protobufRoundTrip.length == protobuf.length);
-
-        assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
+        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
 
         checkCompat(json, jsonFromStream, protobuf, pipeSchema, numeric, false);
     }
@@ -98,15 +94,9 @@ public class JsonPipeTest extends AbstractTest
         byte[] protostuffRoundTripFromStream = ProtostuffIOUtil.toByteArray(
                 JsonIOUtil.newPipe(jsonStream, numeric), pipeSchema, buf());
 
-        assertTrue(protostuffRoundTrip.length == protostuffRoundTripFromStream.length);
+        assertTrue(Arrays.equals(protostuffRoundTrip, protostuffRoundTripFromStream));
 
-        String strProtostuffRoundTrip = STRING.deser(protostuffRoundTrip);
-
-        assertEquals(strProtostuffRoundTrip, STRING.deser(protostuffRoundTripFromStream));
-
-        assertTrue(protostuffRoundTrip.length == protostuff.length);
-
-        assertEquals(strProtostuffRoundTrip, STRING.deser(protostuff));
+        assertTrue(Arrays.equals(protostuffRoundTrip, protostuff));
 
         checkCompat(json, jsonFromStream, protostuff, pipeSchema, numeric, true);
     }
