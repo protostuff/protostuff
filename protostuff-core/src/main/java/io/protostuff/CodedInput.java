@@ -1126,7 +1126,6 @@ public final class CodedInput implements Input
             return 0;
         }
 
-        final int tag;
         // are we reading packed field?
         if (isCurrentFieldPacked())
         {
@@ -1136,12 +1135,9 @@ public final class CodedInput implements Input
             // Return field number while reading packed field
             return lastTag >>> TAG_TYPE_BITS;
         }
-        else
-        {
-            tag = readRawVarint32();
-            packedLimit = 0;
-        }
 
+        packedLimit = 0;
+        final int tag = readRawVarint32();
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
         {
