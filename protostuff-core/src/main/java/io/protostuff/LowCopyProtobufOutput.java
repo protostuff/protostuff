@@ -13,7 +13,12 @@ import static io.protostuff.WireFormat.WIRETYPE_VARINT;
 import static io.protostuff.WireFormat.makeTag;
 
 /**
- * Created by ryan on 1/16/14.
+ * Output that differs from the standard by attempting to avoid extra copies of
+ * large ByteBuffer fields.  When used with ByteBuffer=true compiler option, we can splice in
+ * ByteBuffer objects without copying them.  Most of the magic lives in LinkBuffer, so this
+ * class exists just to serialize to a LinkBuffer.
+ *
+ * @author Ryan Rawson
  */
 public final class LowCopyProtobufOutput implements Output
 {
