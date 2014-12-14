@@ -1,16 +1,16 @@
 package io.protostuff.runtime;
 
-import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtostuffIOUtil;
+import java.io.ByteArrayOutputStream;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import io.protostuff.LinkedBuffer;
 import io.protostuff.Output;
+import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Tag;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * @author Konstantin Shchepanovskyi
@@ -45,7 +45,8 @@ public class RuntimeSchemaEnumTagTest
 
     @Test
     @Ignore("https://github.com/protostuff/protostuff/issues/69")
-    public void testWriteStringEnum() throws Exception {
+    public void testWriteStringEnum() throws Exception
+    {
         // TODO: it is not possible to create this test in simple way until we are using RuntimeEnv singleton
     }
 
@@ -70,36 +71,45 @@ public class RuntimeSchemaEnumTagTest
     {
         private TaggedEnum x;
 
-        public A() {
+        public A()
+        {
         }
 
-        public A(TaggedEnum x) {
+        public A(TaggedEnum x)
+        {
             this.x = x;
         }
 
-        public TaggedEnum getX() {
+        public TaggedEnum getX()
+        {
             return x;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof A)) return false;
+        public boolean equals(Object o)
+        {
+            if (this == o)
+                return true;
+            if (!(o instanceof A))
+                return false;
 
             A a = (A) o;
 
-            if (x != a.x) return false;
+            if (x != a.x)
+                return false;
 
             return true;
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode()
+        {
             return x != null ? x.hashCode() : 0;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "A{" +
                     "x=" + x +
                     '}';

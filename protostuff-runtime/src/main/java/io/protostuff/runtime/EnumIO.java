@@ -24,7 +24,12 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.protostuff.*;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Tag;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
@@ -204,12 +209,13 @@ public abstract class EnumIO<E extends Enum<E>> implements
         int n = fields.length;
         alias = new String[n];
         tag = new int[n];
-        valueByAliasMap = new HashMap<>(n*2);
-        valueByTagMap = new HashMap<>(n*2);
-        for (E instance: enumClass.getEnumConstants())
+        valueByAliasMap = new HashMap<>(n * 2);
+        valueByTagMap = new HashMap<>(n * 2);
+        for (E instance : enumClass.getEnumConstants())
         {
             int ordinal = instance.ordinal();
-            try {
+            try
+            {
                 Field field = enumClass.getField(instance.name());
                 if (field.isAnnotationPresent(Tag.class))
                 {
@@ -218,13 +224,17 @@ public abstract class EnumIO<E extends Enum<E>> implements
                     alias[ordinal] = annotation.alias();
                     valueByTagMap.put(annotation.value(), instance);
                     valueByAliasMap.put(annotation.alias(), instance);
-                } else {
+                }
+                else
+                {
                     tag[ordinal] = ordinal;
                     alias[ordinal] = field.getName();
                     valueByTagMap.put(ordinal, instance);
                     valueByAliasMap.put(field.getName(), instance);
                 }
-            } catch (NoSuchFieldException e) {
+            }
+            catch (NoSuchFieldException e)
+            {
                 throw new IllegalStateException(e);
             }
         }
@@ -247,11 +257,13 @@ public abstract class EnumIO<E extends Enum<E>> implements
         return alias[element.ordinal()];
     }
 
-    public E getByTag(int tag) {
+    public E getByTag(int tag)
+    {
         return valueByTagMap.get(tag);
     }
 
-    public E getByAlias(String alias) {
+    public E getByAlias(String alias)
+    {
         return valueByAliasMap.get(alias);
     }
 
