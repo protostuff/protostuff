@@ -17,22 +17,19 @@ package io.protostuff.runtime;
 import static io.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 
-import io.protostuff.CollectionSchema;
-import io.protostuff.Input;
-import io.protostuff.MapSchema;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
+import io.protostuff.*;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Determines how enums are serialized/deserialized. Default is BY_NUMBER. To enable BY_NAME, set the property
  * "protostuff.runtime.enums_by_name=true".
- * 
+ *
  * @author David Yu
  * @created Oct 20, 2010
  */
@@ -118,19 +115,23 @@ public abstract class EnumIO<E extends Enum<E>> implements
     /**
      * Writes the {@link Enum} to the output.
      */
-    public static void writeTo(Output output, int number, boolean repeated,
+    public void writeTo(Output output, int number, boolean repeated,
             Enum<?> e) throws IOException
     {
         if (ENUMS_BY_NAME)
-            output.writeString(number, e.name(), repeated);
+        {
+            output.writeString(number, getAlias(e), repeated);
+        }
         else
-            output.writeEnum(number, e.ordinal(), repeated);
+        {
+            output.writeEnum(number, getTag(e), repeated);
+        }
     }
 
     /**
      * Transfers the {@link Enum} from the input to the output.
      */
-    public static void transfer(Pipe pipe, Input input, Output output,
+    public void transfer(Pipe pipe, Input input, Output output,
             int number, boolean repeated) throws IOException
     {
         if (ENUMS_BY_NAME)
@@ -189,9 +190,26 @@ public abstract class EnumIO<E extends Enum<E>> implements
     final ArraySchemas.Base genericElementSchema = new ArraySchemas.EnumArray(
             null, this);
 
+    private final String[] alias;
+    private final int[] tag;
+
     public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
+        Field[] fields = enumClass.getFields();
+        int n = fields.length;
+        alias = new String[n];
+        tag = new int[n];
+        for (int ordinal = 0; ordinal < n; ordinal++)
+        {
+            Field field = fields[ordinal];
+            if (field.isAnnotationPresent(Tag.class))
+            {
+                Tag annotation = field.getAnnotation(Tag.class);
+                tag[ordinal] = annotation.value();
+                alias[ordinal] = annotation.alias();
+            }
+        }
     }
 
     @Override
@@ -199,6 +217,16 @@ public abstract class EnumIO<E extends Enum<E>> implements
             Handler handler)
     {
         return new ArraySchemas.EnumArray(handler, this);
+    }
+
+    public int getTag(Enum<?> element)
+    {
+        return tag[element.ordinal()];
+    }
+
+    public String getAlias(Enum<?> element)
+    {
+        return alias[element.ordinal()];
     }
 
     /**

@@ -145,13 +145,15 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         final Class<?> clazz = value.getClass();
         if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());
             strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
         }
         else
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz);
             strategy.writeEnumIdTo(output, ID_ENUM, clazz);
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
         }
     }
 
@@ -191,7 +193,8 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         if (ID_ENUM_VALUE != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");
 
-        EnumIO.transfer(pipe, input, output, 1, false);
+        EnumIO<?> eio = strategy.resolveEnumFrom(input);
+        eio.transfer(pipe, input, output, 1, false);
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");

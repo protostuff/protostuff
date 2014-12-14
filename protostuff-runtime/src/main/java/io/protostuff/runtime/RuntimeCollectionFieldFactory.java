@@ -209,14 +209,14 @@ final class RuntimeCollectionFieldFactory
             protected void writeValueTo(Output output, int fieldNumber,
                     Enum<?> value, boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, value);
+                eio.writeTo(output, fieldNumber, repeated, value);
             }
 
             @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                EnumIO.transfer(pipe, input, output, number, repeated);
+                eio.transfer(pipe, input, output, number, repeated);
             }
         };
     }

@@ -2101,7 +2101,7 @@ public final class ArraySchemas
                     {
                         case ID_ARRAY_DATA:
                             i++;
-                            EnumIO.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+                            eio.transfer(pipe, input, output, ID_ARRAY_DATA, true);
                             break;
                         case ID_ARRAY_NULLCOUNT:
                             nullCount = input.readUInt32();
@@ -2187,7 +2187,7 @@ public final class ArraySchemas
                         nullCount = 0;
                     }
                     
-                    EnumIO.writeTo(output, ID_ARRAY_DATA, true, v);
+                    eio.writeTo(output, ID_ARRAY_DATA, true, v);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
                 {

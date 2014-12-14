@@ -970,14 +970,14 @@ public final class RuntimeUnsafeFieldFactory
                     final Enum<?> existing = (Enum<?>) us.getObject(message,
                             offset);
                     if (existing != null)
-                        EnumIO.writeTo(output, number, repeated, existing);
+                        eio.writeTo(output, number, repeated, existing);
                 }
 
                 @Override
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    EnumIO.transfer(pipe, input, output, number, repeated);
+                    eio.transfer(pipe, input, output, number, repeated);
                 }
             };
         }
