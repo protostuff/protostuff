@@ -50,7 +50,7 @@ public abstract class MappedSchema<T> implements Schema<T>
 
         this.typeClass = typeClass;
         this.fields = fields;
-        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByName = new HashMap<>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
         {
@@ -70,7 +70,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             // f.owner = this;
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     @SuppressWarnings("unchecked")
@@ -78,7 +78,7 @@ public abstract class MappedSchema<T> implements Schema<T>
             int lastFieldNumber)
     {
         this.typeClass = typeClass;
-        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByName = new HashMap<>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
         {
@@ -105,7 +105,7 @@ public abstract class MappedSchema<T> implements Schema<T>
                 this.fields[j++] = fieldsByNumber[i];
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     @SuppressWarnings("unchecked")
@@ -136,7 +136,7 @@ public abstract class MappedSchema<T> implements Schema<T>
                 this.fields[j++] = fieldsByNumber[i];
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     /**

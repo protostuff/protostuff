@@ -38,7 +38,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
 
     static
     {
@@ -422,47 +422,47 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
                     return;
                 case 1:
                     if (message.someInt == null)
-                        message.someInt = new ArrayList<Integer>();
+                        message.someInt = new ArrayList<>();
                     message.someInt.add(input.readInt32());
                     break;
                 case 2:
                     if (message.someString == null)
-                        message.someString = new ArrayList<String>();
+                        message.someString = new ArrayList<>();
                     message.someString.add(input.readString());
                     break;
                 case 3:
                     if (message.someBar == null)
-                        message.someBar = new ArrayList<Bar>();
+                        message.someBar = new ArrayList<>();
                     message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
                     if (message.someEnum == null)
-                        message.someEnum = new ArrayList<EnumSample>();
+                        message.someEnum = new ArrayList<>();
                     message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
                     if (message.someBytes == null)
-                        message.someBytes = new ArrayList<ByteString>();
+                        message.someBytes = new ArrayList<>();
                     message.someBytes.add(input.readBytes());
                     break;
                 case 6:
                     if (message.someBoolean == null)
-                        message.someBoolean = new ArrayList<Boolean>();
+                        message.someBoolean = new ArrayList<>();
                     message.someBoolean.add(input.readBool());
                     break;
                 case 7:
                     if (message.someFloat == null)
-                        message.someFloat = new ArrayList<Float>();
+                        message.someFloat = new ArrayList<>();
                     message.someFloat.add(input.readFloat());
                     break;
                 case 8:
                     if (message.someDouble == null)
-                        message.someDouble = new ArrayList<Double>();
+                        message.someDouble = new ArrayList<>();
                     message.someDouble.add(input.readDouble());
                     break;
                 case 9:
                     if (message.someLong == null)
-                        message.someLong = new ArrayList<Long>();
+                        message.someLong = new ArrayList<>();
                     message.someLong.add(input.readInt64());
                     break;
                 default:

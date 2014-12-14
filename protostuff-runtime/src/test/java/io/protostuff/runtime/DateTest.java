@@ -104,7 +104,7 @@ public class DateTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Entity> list = new ArrayList<Entity>();
+        List<Entity> list = new ArrayList<>();
         list.add(p);
         list.add(p2);
 
@@ -131,7 +131,7 @@ public class DateTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Entity> list = new ArrayList<Entity>();
+        List<Entity> list = new ArrayList<>();
         list.add(p);
         list.add(p2);
 

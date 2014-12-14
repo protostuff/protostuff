@@ -298,20 +298,20 @@ public final class RuntimeEnv
         {
             // non-sun jre
             if (android43)
-                return new Android43Instantiator<T>(clazz);
+                return new Android43Instantiator<>(clazz);
             
             if (newInstanceFromObjectInputStream == null)
             {
                 if (objectConstructorId == -1)
                     throw new RuntimeException("Could not resolve constructor for " + clazz);
 
-                return new Android3Instantiator<T>(clazz);
+                return new Android3Instantiator<>(clazz);
             }
 
-            return new Android2Instantiator<T>(clazz);
+            return new Android2Instantiator<>(clazz);
         }
 
-        return new DefaultInstantiator<T>(constructor);
+        return new DefaultInstantiator<>(constructor);
     }
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz)

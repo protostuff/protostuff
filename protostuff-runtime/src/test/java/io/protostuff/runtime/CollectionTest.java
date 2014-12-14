@@ -399,7 +399,7 @@ public class CollectionTest extends TestCase
 
     static Task filledTask()
     {
-        Collection<String> tags = new ArrayList<String>();
+        Collection<String> tags = new ArrayList<>();
         tags.add("Urgent");
         tags.add("Priority");
 
@@ -449,11 +449,11 @@ public class CollectionTest extends TestCase
 
     static Employee filledEmployee()
     {
-        Collection<String> departments = new ArrayList<String>();
+        Collection<String> departments = new ArrayList<>();
         departments.add("Engineering");
         departments.add("IT");
 
-        Collection<ITask> tasks = new ArrayList<ITask>();
+        Collection<ITask> tasks = new ArrayList<>();
         tasks.add(filledTask());
 
         Employee p = new Employee();
@@ -487,11 +487,11 @@ public class CollectionTest extends TestCase
         Schema<AbstractEmployee> schema = RuntimeSchema
                 .getSchema(AbstractEmployee.class);
 
-        Collection<String> departments = new ArrayList<String>();
+        Collection<String> departments = new ArrayList<>();
         departments.add("Engineering");
         departments.add("IT");
 
-        Collection<ITask> tasks = new ArrayList<ITask>();
+        Collection<ITask> tasks = new ArrayList<>();
         tasks.add(filledTask());
 
         AbstractEmployee p = new Employee();

@@ -70,7 +70,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             STR_SYNCHRONIZED_MAP = "e", STR_SYNCHRONIZED_SORTED_MAP = "f",
             STR_CHECKED_MAP = "g", STR_CHECKED_SORTED_MAP = "h";
 
-    static final IdentityHashMap<Class<?>, Integer> __nonPublicMaps = new IdentityHashMap<Class<?>, Integer>();
+    static final IdentityHashMap<Class<?>, Integer> __nonPublicMaps = new IdentityHashMap<>();
 
     static final Field fSingletonMap_k, fSingletonMap_v,
 

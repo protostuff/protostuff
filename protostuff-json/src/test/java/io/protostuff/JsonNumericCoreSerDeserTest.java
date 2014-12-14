@@ -72,7 +72,7 @@ public class JsonNumericCoreSerDeserTest extends TestCase
 
     public void testListIO() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 

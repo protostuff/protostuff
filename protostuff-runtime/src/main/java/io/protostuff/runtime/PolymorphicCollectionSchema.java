@@ -99,7 +99,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             STR_CHECKED_SORTED_SET = "s", STR_CHECKED_LIST = "t",
             STR_CHECKED_RANDOM_ACCESS_LIST = "u";
 
-    static final IdentityHashMap<Class<?>, Integer> __nonPublicCollections = new IdentityHashMap<Class<?>, Integer>();
+    static final IdentityHashMap<Class<?>, Integer> __nonPublicCollections = new IdentityHashMap<>();
 
     static final Field fSingletonSet_element, fSingletonList_element,
 

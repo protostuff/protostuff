@@ -390,7 +390,7 @@ public final class RuntimeView
                     String[] args)
             {
                 final HashMap<String, Field<T>> fieldsByName =
-                        new HashMap<String, Field<T>>();
+                        new HashMap<>();
 
                 int maxFieldNumber = includeAndAddTo(fieldsByName, typeClass, byName, args);
 
@@ -467,7 +467,7 @@ public final class RuntimeView
                     String[] args)
             {
                 final HashMap<String, Field<T>> fieldsByName =
-                        new HashMap<String, Field<T>>();
+                        new HashMap<>();
 
                 includeAndAddTo(fieldsByName, typeClass, byName, args);
 
@@ -527,7 +527,7 @@ public final class RuntimeView
             Map<String, Field<T>> byName, final Predicate predicate)
     {
         // copy
-        final HashMap<String, Field<T>> map = new HashMap<String, Field<T>>(byName);
+        final HashMap<String, Field<T>> map = new HashMap<>(byName);
 
         for (Field<T> f : byName.values())
         {
@@ -551,7 +551,7 @@ public final class RuntimeView
             throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
 
         // copy
-        final HashMap<String, Field<T>> map = new HashMap<String, Field<T>>(byName);
+        final HashMap<String, Field<T>> map = new HashMap<>(byName);
 
         for (String name : args)
         {
