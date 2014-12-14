@@ -246,81 +246,81 @@ public final class ProtobufOutput extends WriteSession implements Output
             final boolean repeated) throws IOException
     {
         final LinkedBuffer lastBuffer;
-        
+
         // write the tag
         if (fieldNumber < 16 && tail.offset != tail.buffer.length)
         {
             lastBuffer = tail;
             size++;
-            lastBuffer.buffer[lastBuffer.offset++] = 
-                    (byte)makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED);
+            lastBuffer.buffer[lastBuffer.offset++] =
+                    (byte) makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED);
         }
         else
         {
             tail = lastBuffer = writeRawVarInt32(
                     makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), this, tail);
         }
-        
+
         final int lastOffset = tail.offset, lastSize = size;
-        
+
         // optimize for small messages
         if (lastOffset != lastBuffer.buffer.length)
         {
             // we have enough space for the 1-byte delim
             lastBuffer.offset++;
             size++;
-            
+
             schema.writeTo(this, value);
-            
+
             final int msgSize = size - lastSize - 1;
-            
+
             if (msgSize < 128)
             {
                 // fits
-                lastBuffer.buffer[lastOffset] = (byte)msgSize;
+                lastBuffer.buffer[lastOffset] = (byte) msgSize;
                 return;
             }
-            
+
             // split into two buffers
-            
+
             // the second buffer (contains the message contents)
-            final LinkedBuffer view = new LinkedBuffer(lastBuffer.buffer, 
+            final LinkedBuffer view = new LinkedBuffer(lastBuffer.buffer,
                     lastOffset + 1, lastBuffer.offset);
-            
+
             if (lastBuffer == tail)
                 tail = view;
             else
                 view.next = lastBuffer.next;
-            
+
             // the first buffer (contains the tag)
             lastBuffer.offset = lastOffset;
-            
+
             final byte[] delimited = new byte[computeRawVarint32Size(msgSize)];
             writeRawVarInt32(msgSize, delimited, 0);
-            
+
             // add the difference
             size += (delimited.length - 1);
-            
+
             // wrap the byte array (delimited) and insert between the two buffers
             new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = view;
-            
+
             return;
         }
-        
+
         // not enough size for the 1-byte delimiter
         final LinkedBuffer nextBuffer = new LinkedBuffer(nextBufferSize);
         // new buffer for the content
         tail = nextBuffer;
-        
+
         schema.writeTo(this, value);
-        
+
         final int msgSize = size - lastSize;
-        
+
         final byte[] delimited = new byte[computeRawVarint32Size(msgSize)];
         writeRawVarInt32(msgSize, delimited, 0);
-        
+
         size += delimited.length;
-        
+
         // wrap the byte array (delimited) and insert between the two buffers
         new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = nextBuffer;
     }
@@ -596,7 +596,7 @@ public final class ProtobufOutput extends WriteSession implements Output
 
         return lb;
     }
-    
+
     /** Encode and write a varint to the byte array */
     public static void writeRawVarInt32(int value, final byte[] buf, int offset) throws IOException
     {
@@ -604,12 +604,12 @@ public final class ProtobufOutput extends WriteSession implements Output
         {
             if ((value & ~0x7F) == 0)
             {
-                buf[offset] = (byte)value;
+                buf[offset] = (byte) value;
                 return;
             }
             else
             {
-                buf[offset++] = (byte)((value & 0x7F) | 0x80);
+                buf[offset++] = (byte) ((value & 0x7F) | 0x80);
                 value >>>= 7;
             }
         }

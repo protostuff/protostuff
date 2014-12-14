@@ -14,17 +14,17 @@
 
 package io.protostuff.runtime;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import io.protostuff.Pipe;
 import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
 import io.protostuff.StringSerializer.STRING;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Protobuf impl for {@link NullArrayElementTest}.
@@ -34,7 +34,7 @@ import java.io.OutputStream;
  */
 public class ProtobufNullArrayElementTest extends NullArrayElementTest
 {
-    
+
     @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException

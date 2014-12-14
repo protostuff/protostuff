@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.TestCase;
-
 import io.protostuff.parser.Field.Modifier;
 
 /**

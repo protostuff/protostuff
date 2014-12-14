@@ -18,10 +18,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import io.protostuff.runtime.AbstractRuntimeMapTest;
-import java.util.Arrays;
 
 /**
  * Test smile ser/deser for runtime {@link Map} fields.

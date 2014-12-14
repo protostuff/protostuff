@@ -15,7 +15,6 @@
 package io.protostuff;
 
 import java.io.ByteArrayInputStream;
-
 import java.util.Arrays;
 
 /**

@@ -1,9 +1,5 @@
 package io.protostuff;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
 import static io.protostuff.ProtobufOutput.encodeZigZag32;
 import static io.protostuff.ProtobufOutput.encodeZigZag64;
 import static io.protostuff.WireFormat.WIRETYPE_FIXED32;
@@ -12,11 +8,14 @@ import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
 import static io.protostuff.WireFormat.WIRETYPE_VARINT;
 import static io.protostuff.WireFormat.makeTag;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
+
 /**
- * Output that differs from the standard by attempting to avoid extra copies of
- * large ByteBuffer fields.  When used with ByteBuffer=true compiler option, we can splice in
- * ByteBuffer objects without copying them.  Most of the magic lives in LinkBuffer, so this
- * class exists just to serialize to a LinkBuffer.
+ * Output that differs from the standard by attempting to avoid extra copies of large ByteBuffer fields. When used with
+ * ByteBuffer=true compiler option, we can splice in ByteBuffer objects without copying them. Most of the magic lives in
+ * LinkBuffer, so this class exists just to serialize to a LinkBuffer.
  *
  * @author Ryan Rawson
  */

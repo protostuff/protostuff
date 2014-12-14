@@ -21,7 +21,6 @@ import static io.protostuff.runtime.SerializableObjects.negativeBar;
 import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import junit.framework.TestCase;
-
 import io.protostuff.runtime.Bar;
 import io.protostuff.runtime.Baz;
 import io.protostuff.runtime.Foo;

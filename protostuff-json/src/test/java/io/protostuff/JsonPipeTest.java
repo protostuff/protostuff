@@ -17,10 +17,9 @@ package io.protostuff;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test case for json pipes.

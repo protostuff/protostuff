@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import junit.framework.TestCase;
-
 import io.protostuff.CompareOutputsTest.Serializer;
 import io.protostuff.StringSerializer.STRING;
 

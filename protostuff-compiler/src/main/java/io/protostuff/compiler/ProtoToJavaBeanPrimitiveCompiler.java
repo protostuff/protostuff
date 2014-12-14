@@ -1,11 +1,12 @@
 package io.protostuff.compiler;
 
+import java.io.IOException;
+
+import org.antlr.stringtemplate.StringTemplateGroup;
+
 import io.protostuff.parser.Field;
 import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
-import org.antlr.stringtemplate.StringTemplateGroup;
-
-import java.io.IOException;
 
 /**
  * Created by ryan on 1/22/14.

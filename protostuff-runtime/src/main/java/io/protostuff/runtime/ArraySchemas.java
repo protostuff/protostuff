@@ -39,10 +39,10 @@ import java.util.Date;
 import io.protostuff.ByteString;
 import io.protostuff.GraphInput;
 import io.protostuff.Input;
+import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
-import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
@@ -63,12 +63,12 @@ public final class ArraySchemas
      * CID_BIGINTEGER = 20, CID_DATE = 21;
      */
 
-    static final int ID_ARRAY_LEN = 1, 
-            ID_ARRAY_DATA = 2, 
+    static final int ID_ARRAY_LEN = 1,
+            ID_ARRAY_DATA = 2,
             ID_ARRAY_NULLCOUNT = 3;
 
-    static final String STR_ARRAY_LEN = "a", 
-            STR_ARRAY_DATA = "b", 
+    static final String STR_ARRAY_LEN = "a",
+            STR_ARRAY_DATA = "b",
             STR_ARRAY_NULLCOUNT = "c";
 
     static boolean isPrimitive(int arrayId)
@@ -394,7 +394,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Boolean[] array = new Boolean[len];
             if (input instanceof GraphInput)
             {
@@ -433,10 +433,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeBool(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Boolean[] array = (Boolean[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -451,7 +451,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeBool(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -459,7 +459,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -540,7 +540,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Character[] array = new Character[len];
             if (input instanceof GraphInput)
             {
@@ -579,10 +579,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Character[] array = (Character[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -597,7 +597,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -605,7 +605,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -686,7 +686,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Short[] array = new Short[len];
             if (input instanceof GraphInput)
             {
@@ -725,10 +725,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Short[] array = (Short[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -743,7 +743,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -751,7 +751,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -832,7 +832,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Integer[] array = new Integer[len];
             if (input instanceof GraphInput)
             {
@@ -871,10 +871,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Integer[] array = (Integer[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -889,7 +889,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -897,7 +897,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -978,7 +978,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Long[] array = new Long[len];
             if (input instanceof GraphInput)
             {
@@ -1017,10 +1017,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt64(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Long[] array = (Long[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1035,7 +1035,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeInt64(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1043,7 +1043,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1124,7 +1124,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Float[] array = new Float[len];
             if (input instanceof GraphInput)
             {
@@ -1163,10 +1163,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeFloat(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Float[] array = (Float[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1181,7 +1181,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeFloat(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1189,7 +1189,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1270,7 +1270,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Double[] array = new Double[len];
             if (input instanceof GraphInput)
             {
@@ -1309,10 +1309,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeDouble(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Double[] array = (Double[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1327,7 +1327,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeDouble(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1335,7 +1335,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1433,7 +1433,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeString(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1441,7 +1441,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1540,7 +1540,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeBytes(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1548,7 +1548,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1647,7 +1647,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeByteArray(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1655,7 +1655,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1754,7 +1754,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeString(ID_ARRAY_DATA, v.toString(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1762,7 +1762,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1861,7 +1861,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeByteArray(ID_ARRAY_DATA, v.toByteArray(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1869,7 +1869,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1967,7 +1967,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeFixed64(ID_ARRAY_DATA, v.getTime(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1975,7 +1975,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -2063,7 +2063,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     delegate.writeTo(output, ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -2071,7 +2071,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -2178,7 +2178,7 @@ public final class ArraySchemas
             int nullCount = 0;
             for (int i = 0; i < len; i++)
             {
-                Enum<?> v = (Enum<?>)Array.get(array, i);
+                Enum<?> v = (Enum<?>) Array.get(array, i);
                 if (v != null)
                 {
                     if (nullCount != 0)
@@ -2186,7 +2186,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     eio.writeTo(output, ID_ARRAY_DATA, true, v);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -2194,7 +2194,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -2310,7 +2310,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeObject(ID_ARRAY_DATA, v, hs.getSchema(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -2318,7 +2318,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);

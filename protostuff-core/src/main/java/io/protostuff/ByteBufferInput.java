@@ -14,11 +14,6 @@
 
 package io.protostuff;
 
-import io.protostuff.StringSerializer.STRING;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import static io.protostuff.WireFormat.TAG_TYPE_BITS;
 import static io.protostuff.WireFormat.TAG_TYPE_MASK;
 import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
@@ -31,6 +26,11 @@ import static io.protostuff.WireFormat.WIRETYPE_VARINT;
 import static io.protostuff.WireFormat.getTagFieldNumber;
 import static io.protostuff.WireFormat.getTagWireType;
 import static io.protostuff.WireFormat.makeTag;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Reads and decodes protocol buffer message fields from an internal byte array buffer. This object is re-usable via
@@ -252,9 +252,9 @@ public final class ByteBufferInput implements Input
     }
 
     /**
-     * Check if this field have been packed into a length-delimited
-     * field. If so, update internal state to reflect that packed fields
-     * are being read.
+     * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
+     * packed fields are being read.
+     * 
      * @throws IOException
      */
     private void checkIfPackedField() throws IOException

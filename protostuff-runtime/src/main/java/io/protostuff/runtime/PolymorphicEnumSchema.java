@@ -28,6 +28,9 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
+import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
+
 import java.io.IOException;
 
 import io.protostuff.GraphInput;
@@ -36,9 +39,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.Schema;
-
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
 
 /**
  * Used when a field is declared as {@code Enum<?>} (with or with-out generics).

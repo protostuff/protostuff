@@ -21,11 +21,15 @@ import static io.protostuff.StringSerializerTest.ascii_targets;
 import static io.protostuff.StringSerializerTest.double_targets;
 import static io.protostuff.StringSerializerTest.float_targets;
 import static io.protostuff.StringSerializerTest.foo;
+import static io.protostuff.StringSerializerTest.getShortStringLengthInBytes;
 import static io.protostuff.StringSerializerTest.int_targets;
+import static io.protostuff.StringSerializerTest.legacySurrogatePairSerialized;
 import static io.protostuff.StringSerializerTest.long_targets;
+import static io.protostuff.StringSerializerTest.nativeSurrogatePairsSerialized;
 import static io.protostuff.StringSerializerTest.numeric;
 import static io.protostuff.StringSerializerTest.readRawVarint32;
 import static io.protostuff.StringSerializerTest.str_len_130;
+import static io.protostuff.StringSerializerTest.surrogatePairs;
 import static io.protostuff.StringSerializerTest.targets;
 import static io.protostuff.StringSerializerTest.three_byte_utf8;
 import static io.protostuff.StringSerializerTest.two_byte_utf8;
@@ -33,16 +37,11 @@ import static io.protostuff.StringSerializerTest.whitespace;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import junit.framework.TestCase;
-
-import io.protostuff.StringSerializer.STRING;
-import static io.protostuff.StringSerializerTest.getShortStringLengthInBytes;
-import static io.protostuff.StringSerializerTest.legacySurrogatePairSerialized;
-import static io.protostuff.StringSerializerTest.nativeSurrogatePairsSerialized;
-import static io.protostuff.StringSerializerTest.surrogatePairs;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
+
+import junit.framework.TestCase;
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * Tests for streaming UTF-8 Encoding
@@ -342,13 +341,13 @@ public class StreamedStringSerializerTest extends TestCase
             fail("Deserializer should not have used built in decoder.");
         }
     }
-    
+
     public void testPartialSurrogatePair() throws Exception
     {
         // Make sure that we don't overflow or get out of bounds,
         // since pairs require 2 characters.
         String partial = "\uD83C";
-        
+
         // 3 bytes can't hold a 4-byte encoding, but we
         // don't expect it to use the 4-byte encoding path,
         // since it's not a pair

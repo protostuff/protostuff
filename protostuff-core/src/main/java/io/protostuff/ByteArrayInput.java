@@ -263,9 +263,9 @@ public final class ByteArrayInput implements Input
     }
 
     /**
-     * Check if this field have been packed into a length-delimited
-     * field. If so, update internal state to reflect that packed fields
-     * are being read.
+     * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
+     * packed fields are being read.
+     * 
      * @throws IOException
      */
     private void checkIfPackedField() throws IOException

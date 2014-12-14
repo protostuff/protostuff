@@ -14,17 +14,18 @@
 
 package io.protostuff.compiler;
 
-import io.protostuff.parser.EnumGroup;
-import io.protostuff.parser.Message;
-import io.protostuff.parser.Proto;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import io.protostuff.parser.EnumGroup;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to protobuf java messages (pojos). Generates a {@code Schema} from the proto files.

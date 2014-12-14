@@ -17,10 +17,9 @@ package io.protostuff;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via jsonx ser/deser.

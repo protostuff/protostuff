@@ -14,20 +14,19 @@
 
 package io.protostuff;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
-
 import io.protostuff.StringSerializer.STRING;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
 
 /**
  * Tests for UTF-8 Encoding
@@ -52,10 +51,12 @@ public class StringSerializerTest extends TestCase
     static final String surrogatePairs = "\uD83C\uDFE0\uD83C\uDF4E\uD83D\uDCA9";
 
     // Result of surrogatePairs.getBytes("UTF-8"), which is what protobuf uses.
-    static final byte[] nativeSurrogatePairsSerialized = { -16, -97, -113, -96, -16, -97, -115, -114, -16, -97, -110, -87 };
+    static final byte[] nativeSurrogatePairsSerialized = { -16, -97, -113, -96, -16, -97, -115, -114, -16, -97, -110,
+            -87 };
 
     // Result of writeUTF8 before 3-byte surrogate fix (i.e. no 4-byte encoding)
-    static final byte[] legacySurrogatePairSerialized = {-19, -96, -68, -19, -65, -96, -19, -96, -68, -19, -67, -114, -19, -96, -67, -19, -78, -87 };
+    static final byte[] legacySurrogatePairSerialized = { -19, -96, -68, -19, -65, -96, -19, -96, -68, -19, -67, -114,
+            -19, -96, -67, -19, -78, -87 };
 
     // 10 total
     static final String numeric = "0123456789";
@@ -536,7 +537,8 @@ public class StringSerializerTest extends TestCase
         // which would overflow an unsigned short.
 
         StringBuilder sb = new StringBuilder(3 * Short.MAX_VALUE);
-        for (int i = 0; i < 3 * Short.MAX_VALUE; i++) {
+        for (int i = 0; i < 3 * Short.MAX_VALUE; i++)
+        {
             sb.append(i % 10);
         }
         String bigString = sb.toString();

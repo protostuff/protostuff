@@ -23,12 +23,6 @@ import static io.protostuff.SerializableObjects.negativeBaz;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import io.protostuff.Bar;
-import io.protostuff.Baz;
-import io.protostuff.Foo;
-import io.protostuff.Schema;
-import io.protostuff.XmlXIOUtil;
-
 /**
  * Tests for XmlXOutput.
  * 

@@ -14,18 +14,17 @@
 
 package io.protostuff;
 
-import io.protostuff.runtime.MappedSchema;
-import io.protostuff.runtime.PolymorphicSerializationTest;
-import io.protostuff.runtime.RuntimeSchema;
-import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
+import static io.protostuff.JsonPipeTest.protobufRoundTrip;
+import static io.protostuff.JsonPipeTest.protostuffRoundTrip;
 
 import io.protostuff.runtime.Bar;
 import io.protostuff.runtime.Baz;
 import io.protostuff.runtime.Foo;
+import io.protostuff.runtime.MappedSchema;
+import io.protostuff.runtime.PolymorphicSerializationTest;
+import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
+import io.protostuff.runtime.RuntimeSchema;
 import io.protostuff.runtime.SerializableObjects;
-
-import static io.protostuff.JsonPipeTest.protobufRoundTrip;
-import static io.protostuff.JsonPipeTest.protostuffRoundTrip;
 
 /**
  * Test case for json runtime pipes.

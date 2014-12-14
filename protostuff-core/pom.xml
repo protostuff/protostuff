@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -9,7 +10,7 @@
   <name>protostuff :: core</name>
   <description>protobuf serialization for mutable messages</description>
 
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -22,5 +23,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>

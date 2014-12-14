@@ -392,13 +392,13 @@ public abstract class SerDeserTest extends StandardTest
         Foo parsedFoo = (Foo) in.readObject();
         SerializableObjects.assertEquals(parsedFoo, foo);
     }
-    
+
     public static String repeatChar(char c, int size)
     {
         StringBuilder sb = new StringBuilder(size);
         while (size-- > 0)
             sb.append(c);
-        
+
         return sb.toString();
     }
 

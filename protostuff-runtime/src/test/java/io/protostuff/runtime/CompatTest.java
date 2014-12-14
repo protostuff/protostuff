@@ -14,6 +14,10 @@
 
 package io.protostuff.runtime;
 
+import static io.protostuff.AbstractTest.buf;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,26 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.protostuff.AbstractTest;
+import org.junit.Test;
+
 import io.protostuff.ByteString;
 import io.protostuff.Message;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.StringSerializer.STRING;
-import junit.framework.TestCase;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static io.protostuff.AbstractTest.buf;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test that the runtime schema would have the same output as hand-coded/code-generated schema.
  * 
  * @author David Yu
  */
-public class CompatTest {
+public class CompatTest
+{
 
     @Test
     public void testCompat() throws IOException
