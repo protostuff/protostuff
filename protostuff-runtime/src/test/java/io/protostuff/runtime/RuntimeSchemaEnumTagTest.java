@@ -1,5 +1,6 @@
 package io.protostuff.runtime;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -25,6 +26,7 @@ public class RuntimeSchemaEnumTagTest
     }
 
     @Test
+    @Ignore("https://github.com/protostuff/protostuff/issues/69")
     public void testWriteStringEnum() throws Exception {
         // TODO: it is not possible to create this test in simple way until we are using RuntimeEnv singleton
     }
