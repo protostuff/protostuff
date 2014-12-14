@@ -9,7 +9,7 @@ import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
 
 /**
- * Created by ryan on 1/22/14.
+ * @author Ryan Rawson
  */
 public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
 {
