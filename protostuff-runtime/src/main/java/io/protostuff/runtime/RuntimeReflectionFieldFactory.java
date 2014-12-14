@@ -1120,7 +1120,7 @@ public final class RuntimeReflectionFieldFactory
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    eio.transfer(pipe, input, output, number, repeated);
+                    EnumIO.transfer(pipe, input, output, number, repeated);
                 }
             };
         }
@@ -1774,7 +1774,7 @@ public final class RuntimeReflectionFieldFactory
                     final Object value;
                     try
                     {
-                        value = (Object) f.get(message);
+                        value = f.get(message);
                     }
                     catch (IllegalArgumentException | IllegalAccessException e)
                     {

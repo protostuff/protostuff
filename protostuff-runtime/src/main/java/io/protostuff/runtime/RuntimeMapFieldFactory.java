@@ -159,7 +159,7 @@ final class RuntimeMapFieldFactory
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
@@ -667,7 +667,7 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
             @Override
@@ -689,7 +689,7 @@ final class RuntimeMapFieldFactory
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
@@ -766,7 +766,7 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
             @Override
@@ -867,7 +867,7 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
             @Override
@@ -969,7 +969,7 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
             @Override
@@ -1088,7 +1088,7 @@ final class RuntimeMapFieldFactory
             protected void kTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioK.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
 
             @Override
@@ -1228,7 +1228,7 @@ final class RuntimeMapFieldFactory
             protected void vTransfer(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eioV.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }

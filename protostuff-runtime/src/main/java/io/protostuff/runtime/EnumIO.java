@@ -131,7 +131,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
     /**
      * Transfers the {@link Enum} from the input to the output.
      */
-    public void transfer(Pipe pipe, Input input, Output output,
+    public static void transfer(Pipe pipe, Input input, Output output,
             int number, boolean repeated) throws IOException
     {
         if (ENUMS_BY_NAME)
@@ -208,6 +208,9 @@ public abstract class EnumIO<E extends Enum<E>> implements
                 Tag annotation = field.getAnnotation(Tag.class);
                 tag[ordinal] = annotation.value();
                 alias[ordinal] = annotation.alias();
+            } else {
+                tag[ordinal] = ordinal;
+                alias[ordinal] = field.getName();
             }
         }
     }

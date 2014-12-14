@@ -14,108 +14,13 @@
 
 package io.protostuff.runtime;
 
-import static io.protostuff.runtime.RuntimeFieldFactory.BIGDECIMAL;
-import static io.protostuff.runtime.RuntimeFieldFactory.BIGINTEGER;
-import static io.protostuff.runtime.RuntimeFieldFactory.BOOL;
-import static io.protostuff.runtime.RuntimeFieldFactory.BYTE;
-import static io.protostuff.runtime.RuntimeFieldFactory.BYTES;
-import static io.protostuff.runtime.RuntimeFieldFactory.BYTE_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.CHAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.DATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.DOUBLE;
-import static io.protostuff.runtime.RuntimeFieldFactory.FLOAT;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_DELEGATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_ENUM;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_POJO;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ARRAY_SCALAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTES;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CLASS;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_ARRAY_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CLASS_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_COLLECTION;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_DATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_DELEGATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_ENUM_SET;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_OBJECT;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_POJO;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_POLYMORPHIC_COLLECTION;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_POLYMORPHIC_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_THROWABLE;
-import static io.protostuff.runtime.RuntimeFieldFactory.INT32;
-import static io.protostuff.runtime.RuntimeFieldFactory.INT64;
-import static io.protostuff.runtime.RuntimeFieldFactory.SHORT;
-import static io.protostuff.runtime.RuntimeFieldFactory.STRING;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_DELEGATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_ENUM;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_POJO;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ARRAY_SCALAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BIGDECIMAL;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BIGINTEGER;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BOOL;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BYTE;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BYTES;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_BYTE_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_CHAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_CLASS;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_ARRAY;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_ARRAY_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_CLASS_MAPPED;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_COLLECTION;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_DATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_DELEGATE;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_DOUBLE;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_ENUM_SET;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_FLOAT;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_INT32;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_INT64;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_OBJECT;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_POJO;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_POLYMOPRHIC_MAP;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_POLYMORPHIC_COLLECTION;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_SHORT;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_STRING;
-import static io.protostuff.runtime.RuntimeFieldFactory.STR_THROWABLE;
+import static io.protostuff.runtime.RuntimeFieldFactory.*;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.ProtostuffException;
-import io.protostuff.Schema;
-import io.protostuff.StatefulOutput;
+import io.protostuff.*;
 
 /**
  * A schema for dynamic types (fields where the type is {@link Object}).
@@ -1005,7 +910,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
             Input input, Output output, IdStrategy strategy) throws IOException
     {
         final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
-        switch (number) {
+        switch (number)
+        {
             case ID_BOOL:
                 BOOL.transfer(pipe, input, output, number, false);
                 break;
@@ -1076,8 +982,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
                     throw new ProtostuffException("Corrupt input.");
-                EnumIO<?> eio = strategy.resolveEnumFrom(input);
-                eio.transfer(pipe, input, output, 1, false);
+                EnumIO.transfer(pipe, input, output, 1, false);
                 break;
             }
 
@@ -1085,7 +990,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
             {
                 strategy.transferEnumId(input, output, number);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
                 }
@@ -1098,7 +1004,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
             {
                 strategy.transferEnumId(input, output, number);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
                 }
@@ -1111,7 +1018,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
             {
                 strategy.transferCollectionId(input, output, number);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
                 }
@@ -1124,7 +1032,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
             {
                 strategy.transferMapId(input, output, number);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
                 }
@@ -1139,7 +1048,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
                             strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, pipeSchema);
@@ -1156,7 +1066,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
 
-                if (output instanceof StatefulOutput) {
+                if (output instanceof StatefulOutput)
+                {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
                             strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, pipeSchema);

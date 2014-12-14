@@ -977,7 +977,7 @@ public final class RuntimeUnsafeFieldFactory
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    eio.transfer(pipe, input, output, number, repeated);
+                    EnumIO.transfer(pipe, input, output, number, repeated);
                 }
             };
         }
@@ -1519,7 +1519,7 @@ public final class RuntimeUnsafeFieldFactory
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
-                    final Object value = (Object) us.getObject(message, offset);
+                    final Object value = us.getObject(message, offset);
                     if (value != null)
                         delegate.writeTo(output, number, value, false);
                 }

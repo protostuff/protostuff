@@ -183,7 +183,7 @@ final class RuntimeRepeatedFieldFactory
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
-                eio.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }

@@ -216,7 +216,7 @@ final class RuntimeCollectionFieldFactory
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                eio.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated);
             }
         };
     }
