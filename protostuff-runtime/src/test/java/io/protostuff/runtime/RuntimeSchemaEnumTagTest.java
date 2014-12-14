@@ -9,7 +9,7 @@ import io.protostuff.Tag;
 /**
  * @author Konstantin Shchepanovskyi
  */
-public class RuntimeSchemaEnumTest
+public class RuntimeSchemaEnumTagTest
 {
 
     @Test
