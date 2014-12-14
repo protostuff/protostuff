@@ -169,7 +169,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
 
         {
             fieldMap.put("name", 1);

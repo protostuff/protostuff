@@ -248,7 +248,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public <V> EnumMap<E, V> newEnumMap()
     {
-        return new EnumMap<E, V>(enumClass);
+        return new EnumMap<>(enumClass);
     }
 
     /**

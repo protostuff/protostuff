@@ -46,10 +46,10 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
 
     static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS =
-            new ConcurrentHashMap<Class<?>, AttributeRenderer>();
+            new ConcurrentHashMap<>();
 
     static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS =
-            new ConcurrentHashMap<String, Formatter>();
+            new ConcurrentHashMap<>();
 
     public static int errorCount = 0;
 
@@ -246,7 +246,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     protected void compile(ProtoModule module, Proto proto, boolean compileImports,
             boolean recursive) throws IOException
     {
-        final List<Proto> overridden = new ArrayList<Proto>();
+        final List<Proto> overridden = new ArrayList<>();
         try
         {
             collect(module, proto, overridden, recursive);

@@ -73,7 +73,7 @@ public abstract class IdStrategy
             {
                 final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
 
-                final ArrayList<Field<T>> fields = new ArrayList<MappedSchema.Field<T>>(
+                final ArrayList<Field<T>> fields = new ArrayList<>(
                         rs.fields.length);
 
                 for (Field<T> f : rs.fields)
@@ -116,7 +116,7 @@ public abstract class IdStrategy
                             + rs.messageFullName() + " on group " + groupId);
                 }
 
-                return new RuntimeSchema<T>(typeClass, fields,
+                return new RuntimeSchema<>(typeClass, fields,
                         // the last field
                         fields.get(size - 1).number, rs.instantiator);
             }

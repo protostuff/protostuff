@@ -315,7 +315,7 @@ public final class ProtostuffIOUtil
         if (size > 0x7f)
             size = CodedInput.readRawVarint32(in, size);
 
-        final ArrayList<T> list = new ArrayList<T>(size);
+        final ArrayList<T> list = new ArrayList<>(size);
         final CodedInput input = new CodedInput(in, true);
         for (int i = 0; i < size; i++)
         {

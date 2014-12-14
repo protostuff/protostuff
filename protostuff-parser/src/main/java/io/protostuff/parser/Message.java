@@ -33,18 +33,18 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     final Message parentMessage;
     final Proto proto;
 
-    final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<String, Message>();
-    final LinkedHashMap<String, EnumGroup> nestedEnumGroups = new LinkedHashMap<String, EnumGroup>();
-    final LinkedHashMap<String, Service> nestedServices = new LinkedHashMap<String, Service>();
+    final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<>();
+    final LinkedHashMap<String, EnumGroup> nestedEnumGroups = new LinkedHashMap<>();
+    final LinkedHashMap<String, Service> nestedServices = new LinkedHashMap<>();
 
-    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
-    final ArrayList<Extension> nestedExtensions = new ArrayList<Extension>();
-    final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
+    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<>();
+    final ArrayList<Extension> nestedExtensions = new ArrayList<>();
+    final ArrayList<Field<?>> sortedFields = new ArrayList<>();
 
-    final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
-    final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer, Field<?>>();
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
+    final ArrayList<int[]> extensionRanges = new ArrayList<>();
+    final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
     boolean extensible;
 
     // code generator helpers

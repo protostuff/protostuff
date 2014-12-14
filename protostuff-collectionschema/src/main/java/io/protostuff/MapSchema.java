@@ -58,7 +58,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         // defaults to TreeMap
@@ -67,7 +67,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         // defaults to TreeMap
@@ -76,7 +76,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         HashMap(java.util.HashMap.class)
@@ -84,7 +84,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         LinkedHashMap(java.util.LinkedHashMap.class)
@@ -92,7 +92,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.LinkedHashMap<K, V>();
+                return new java.util.LinkedHashMap<>();
             }
         },
         TreeMap(java.util.TreeMap.class)
@@ -100,7 +100,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         WeakHashMap(java.util.WeakHashMap.class)
@@ -108,7 +108,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.WeakHashMap<K, V>();
+                return new java.util.WeakHashMap<>();
             }
         },
         IdentityHashMap(java.util.IdentityHashMap.class)
@@ -116,7 +116,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.IdentityHashMap<K, V>();
+                return new java.util.IdentityHashMap<>();
             }
         },
         Hashtable(java.util.Hashtable.class)
@@ -124,7 +124,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.Hashtable<K, V>();
+                return new java.util.Hashtable<>();
             }
         },
         // defaults to ConcurrentHashMap
@@ -133,7 +133,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         ConcurrentHashMap(java.util.concurrent.ConcurrentHashMap.class)
@@ -141,7 +141,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         // defaults to ConcurrentNavigableMap
@@ -150,7 +150,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         },
         ConcurrentSkipListMap(java.util.concurrent.ConcurrentSkipListMap.class)
@@ -158,7 +158,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         };
 
@@ -318,7 +318,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     if (entry == null)
                     {
                         // lazy initialize
-                        entry = new MapWrapper<K, V>(map);
+                        entry = new MapWrapper<>(map);
                     }
 
                     if (entry != input.mergeObject(entry, entrySchema))

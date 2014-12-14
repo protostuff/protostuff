@@ -142,9 +142,9 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add("someString");
         foo.setSomeString(strings);
 
@@ -160,9 +160,9 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add("");
         foo.setSomeString(strings);
 
@@ -178,7 +178,7 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -194,7 +194,7 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -210,7 +210,7 @@ public abstract class NoNestedMessageTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);

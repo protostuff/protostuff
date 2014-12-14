@@ -62,7 +62,7 @@ public class EnumSetAndMapTest extends AbstractTest
             enumSet.add(Sequence.TWO);
             enumSet.add(Sequence.FOUR);
 
-            ArrayList<EnumSet<Sequence>> list = new ArrayList<EnumSet<Sequence>>();
+            ArrayList<EnumSet<Sequence>> list = new ArrayList<>();
             list.add(EnumSet.of(Sequence.ONE));
 
             collectionWIthEnumSetV = list;
@@ -167,27 +167,27 @@ public class EnumSetAndMapTest extends AbstractTest
         PojoWithEnumMap fill()
         {
             name = getClass().getSimpleName();
-            enumMap = new EnumMap<Sequence, Integer>(Sequence.class);
+            enumMap = new EnumMap<>(Sequence.class);
             enumMap.put(Sequence.ONE, 1);
             enumMap.put(Sequence.TWO, 2);
             enumMap.put(Sequence.THREE, 3);
             enumMap.put(Sequence.FOUR, 4);
             enumMap.put(Sequence.FIVE, 5);
 
-            EnumMap<Sequence, Integer> oddMap = new EnumMap<Sequence, Integer>(
+            EnumMap<Sequence, Integer> oddMap = new EnumMap<>(
                     Sequence.class);
 
             oddMap.put(Sequence.ONE, 1);
             oddMap.put(Sequence.THREE, 3);
             oddMap.put(Sequence.FIVE, 5);
 
-            HashMap<String, EnumMap<Sequence, Integer>> map = new HashMap<String, EnumMap<Sequence, Integer>>();
+            HashMap<String, EnumMap<Sequence, Integer>> map = new HashMap<>();
 
             map.put("baz", oddMap);
 
             mapWithStringKEnumMapV = map;
 
-            EnumMap<Sequence, Integer> evenMap = new EnumMap<Sequence, Integer>(
+            EnumMap<Sequence, Integer> evenMap = new EnumMap<>(
                     Sequence.class);
 
             evenMap.put(Sequence.TWO, 2);
@@ -296,7 +296,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<PojoWithEnumSet> list = new ArrayList<PojoWithEnumSet>();
+        List<PojoWithEnumSet> list = new ArrayList<>();
         list.add(p);
         list.add(p2);
 
@@ -324,7 +324,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<PojoWithEnumMap> list = new ArrayList<PojoWithEnumMap>();
+        List<PojoWithEnumMap> list = new ArrayList<>();
         list.add(p);
         list.add(p2);
 
@@ -355,7 +355,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
     static EnumMap<Sequence, EnumSet<Sequence>> newSequenceEnumMap()
     {
-        EnumMap<Sequence, EnumSet<Sequence>> firstEnumMap = new EnumMap<Sequence, EnumSet<Sequence>>(
+        EnumMap<Sequence, EnumSet<Sequence>> firstEnumMap = new EnumMap<>(
                 Sequence.class);
 
         for (Sequence s : Sequence.values())
@@ -368,7 +368,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
     static LinkedHashMap<Sequence, EnumSet<Sequence>> newSequenceMap()
     {
-        LinkedHashMap<Sequence, EnumSet<Sequence>> firstEnumMap = new LinkedHashMap<Sequence, EnumSet<Sequence>>();
+        LinkedHashMap<Sequence, EnumSet<Sequence>> firstEnumMap = new LinkedHashMap<>();
 
         for (Sequence s : Sequence.values())
             firstEnumMap.put(s, EnumSet.of(s));
@@ -378,7 +378,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
     static LinkedHashSet<Sequence> newSequenceSet()
     {
-        LinkedHashSet<Sequence> set = new LinkedHashSet<Sequence>();
+        LinkedHashSet<Sequence> set = new LinkedHashSet<>();
 
         for (Sequence s : Sequence.values())
             set.add(s);
@@ -388,7 +388,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
     static <K, V> Map<K, V> newMap()
     {
-        return new HashMap<K, V>();
+        return new HashMap<>();
     }
 
     static Bean fill(Bean bean)

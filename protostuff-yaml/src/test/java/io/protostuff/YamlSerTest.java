@@ -106,7 +106,7 @@ public class YamlSerTest extends AbstractTest
     public void testFooList() throws Exception
     {
         Foo fooCompare = foo;
-        ArrayList<Foo> list = new ArrayList<Foo>();
+        ArrayList<Foo> list = new ArrayList<>();
         list.add(fooCompare);
         list.add(fooCompare);
 
@@ -179,7 +179,7 @@ public class YamlSerTest extends AbstractTest
     public void testBarList() throws Exception
     {
         Bar barCompare = bar;
-        ArrayList<Bar> list = new ArrayList<Bar>();
+        ArrayList<Bar> list = new ArrayList<>();
         list.add(bar);
         list.add(negativeBar);
 
@@ -251,7 +251,7 @@ public class YamlSerTest extends AbstractTest
     public void testBazList() throws Exception
     {
         Baz bazCompare = baz;
-        ArrayList<Baz> list = new ArrayList<Baz>();
+        ArrayList<Baz> list = new ArrayList<>();
         list.add(baz);
         list.add(negativeBaz);
 
@@ -299,7 +299,7 @@ public class YamlSerTest extends AbstractTest
     public void testEmptyInnerFoo() throws Exception
     {
         Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         fooCompare.setSomeBar(bars);
 
@@ -321,7 +321,7 @@ public class YamlSerTest extends AbstractTest
         Bar bar = new Bar();
         Baz baz = new Baz();
         bar.setSomeBaz(baz);
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
         Foo foo = new Foo();
         foo.setSomeBar(bars);

@@ -40,7 +40,7 @@ public class ProtoModule implements Serializable
 
     private CachingProtoLoader protoLoader;
 
-    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+    private HashMap<String, Object> attributes = new HashMap<>();
 
     public ProtoModule()
     {

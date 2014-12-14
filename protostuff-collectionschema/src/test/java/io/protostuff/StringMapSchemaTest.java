@@ -42,7 +42,7 @@ public abstract class StringMapSchemaTest extends AbstractTest
 
     protected Map<String, String> newMap()
     {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     public void testEmptyMap() throws Exception

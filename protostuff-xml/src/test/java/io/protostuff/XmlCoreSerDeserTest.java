@@ -119,7 +119,7 @@ public class XmlCoreSerDeserTest extends TestCase
 
     public void testListIO() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -140,7 +140,7 @@ public class XmlCoreSerDeserTest extends TestCase
 
     public void testListIOEmpty() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         XmlIOUtil.writeListTo(out, bars,
@@ -162,7 +162,7 @@ public class XmlCoreSerDeserTest extends TestCase
 
     public void testListIOWithArrays() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(SerializableObjects.foo);
         foos.add(SerializableObjects.foo);
 
@@ -338,7 +338,7 @@ public class XmlCoreSerDeserTest extends TestCase
     public void testEmptyFooInner() throws Exception
     {
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         foo.setSomeBar(bars);
 
@@ -357,7 +357,7 @@ public class XmlCoreSerDeserTest extends TestCase
     public void testEmptyFooDeeper() throws Exception
     {
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);

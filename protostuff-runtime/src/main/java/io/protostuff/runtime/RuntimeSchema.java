@@ -165,7 +165,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass,
             String[] exclusions, IdStrategy strategy)
     {
-        HashSet<String> set = new HashSet<String>();
+        HashSet<String> set = new HashSet<>();
         for (String exclusion : exclusions)
             set.add(exclusion);
 
@@ -187,7 +187,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
 
         final Map<String, java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
-        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(
+        final ArrayList<Field<T>> fields = new ArrayList<>(
                 fieldMap.size());
         int i = 0;
         int maxFieldMapping = 0;
@@ -259,7 +259,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     + typeClass + ".  All fields are either transient/static.");
         }
 
-        return new RuntimeSchema<T>(typeClass, fields, maxFieldMapping,
+        return new RuntimeSchema<>(typeClass, fields, maxFieldMapping,
                 RuntimeEnv.newInstantiator(typeClass));
     }
 
@@ -278,7 +278,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                             + "class nor interface: \"" + typeClass.getName());
         }
 
-        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(
+        final ArrayList<Field<T>> fields = new ArrayList<>(
                 declaredFields.size());
         int i = 0;
         for (Map.Entry<String, String> entry : declaredFields.entrySet())
@@ -308,14 +308,14 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             throw new RuntimeException("Not able to map any fields from "
                     + typeClass + ".  All fields are either transient/static.");
         }
-        return new RuntimeSchema<T>(typeClass, fields, i,
+        return new RuntimeSchema<>(typeClass, fields, i,
                 RuntimeEnv.newInstantiator(typeClass));
     }
 
     static Map<String, java.lang.reflect.Field> findInstanceFields(
             Class<?> typeClass)
     {
-        LinkedHashMap<String, java.lang.reflect.Field> fieldMap = new LinkedHashMap<String, java.lang.reflect.Field>();
+        LinkedHashMap<String, java.lang.reflect.Field> fieldMap = new LinkedHashMap<>();
         fill(fieldMap, typeClass);
         return fieldMap;
     }
@@ -339,7 +339,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields,
             int lastFieldNumber, Constructor<T> constructor)
     {
-        this(typeClass, fields, lastFieldNumber, new DefaultInstantiator<T>(
+        this(typeClass, fields, lastFieldNumber, new DefaultInstantiator<>(
                 constructor));
     }
 
