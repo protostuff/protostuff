@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.protostuff.*;
@@ -193,6 +194,9 @@ public abstract class EnumIO<E extends Enum<E>> implements
     private final String[] alias;
     private final int[] tag;
 
+    private final Map<String, E> valueByAliasMap;
+    private final Map<Integer, E> valueByTagMap;
+
     public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
@@ -200,17 +204,28 @@ public abstract class EnumIO<E extends Enum<E>> implements
         int n = fields.length;
         alias = new String[n];
         tag = new int[n];
-        for (int ordinal = 0; ordinal < n; ordinal++)
+        valueByAliasMap = new HashMap<>(n*2);
+        valueByTagMap = new HashMap<>(n*2);
+        for (E instance: enumClass.getEnumConstants())
         {
-            Field field = fields[ordinal];
-            if (field.isAnnotationPresent(Tag.class))
-            {
-                Tag annotation = field.getAnnotation(Tag.class);
-                tag[ordinal] = annotation.value();
-                alias[ordinal] = annotation.alias();
-            } else {
-                tag[ordinal] = ordinal;
-                alias[ordinal] = field.getName();
+            int ordinal = instance.ordinal();
+            try {
+                Field field = enumClass.getField(instance.name());
+                if (field.isAnnotationPresent(Tag.class))
+                {
+                    Tag annotation = field.getAnnotation(Tag.class);
+                    tag[ordinal] = annotation.value();
+                    alias[ordinal] = annotation.alias();
+                    valueByTagMap.put(annotation.value(), instance);
+                    valueByAliasMap.put(annotation.alias(), instance);
+                } else {
+                    tag[ordinal] = ordinal;
+                    alias[ordinal] = field.getName();
+                    valueByTagMap.put(ordinal, instance);
+                    valueByAliasMap.put(field.getName(), instance);
+                }
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException(e);
             }
         }
     }
@@ -230,6 +245,14 @@ public abstract class EnumIO<E extends Enum<E>> implements
     public String getAlias(Enum<?> element)
     {
         return alias[element.ordinal()];
+    }
+
+    public E getByTag(int tag) {
+        return valueByTagMap.get(tag);
+    }
+
+    public E getByAlias(String alias) {
+        return valueByAliasMap.get(alias);
     }
 
     /**
@@ -300,7 +323,8 @@ public abstract class EnumIO<E extends Enum<E>> implements
         @Override
         public E readFrom(Input input) throws IOException
         {
-            return Enum.valueOf(enumClass, input.readString());
+            String alias = input.readString();
+            return getByAlias(alias);
         }
     }
 
@@ -317,7 +341,8 @@ public abstract class EnumIO<E extends Enum<E>> implements
         @Override
         public E readFrom(Input input) throws IOException
         {
-            return enumClass.getEnumConstants()[input.readEnum()];
+            int tag = input.readEnum();
+            return getByTag(tag);
         }
     }
 
