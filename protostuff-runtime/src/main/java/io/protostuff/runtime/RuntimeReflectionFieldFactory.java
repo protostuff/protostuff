@@ -1114,13 +1114,13 @@ public final class RuntimeReflectionFieldFactory
                     }
 
                     if (existing != null)
-                        EnumIO.writeTo(output, number, repeated, existing);
+                        eio.writeTo(output, number, repeated, existing);
                 }
 
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    EnumIO.transfer(pipe, input, output, number, repeated);
+                    eio.transfer(pipe, input, output, number, repeated);
                 }
             };
         }

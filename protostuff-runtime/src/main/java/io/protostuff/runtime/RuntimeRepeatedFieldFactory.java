@@ -175,7 +175,7 @@ final class RuntimeRepeatedFieldFactory
                 if (collection != null && !collection.isEmpty())
                 {
                     for (Enum<?> en : collection)
-                        EnumIO.writeTo(output, number, true, en);
+                        eio.writeTo(output, number, true, en);
                 }
             }
 
@@ -183,7 +183,7 @@ final class RuntimeRepeatedFieldFactory
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
-                EnumIO.transfer(pipe, input, output, number, repeated);
+                eio.transfer(pipe, input, output, number, repeated);
             }
         };
     }
