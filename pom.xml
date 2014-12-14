@@ -11,7 +11,7 @@
   <description>Java serialization library, proto compiler, code generator, protobuf utilities, gwt overlays, android
     DTOs
   </description>
-  <url>http://code.google.com/p/protostuff/</url>
+  <url>http://protostuff.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <properties>
@@ -39,6 +39,12 @@
       <name>Alex Newman</name>
       <email>alex@ohmdata.com</email>
       <url>http://www.ohmdata.com</url>
+    </developer>
+    <developer>
+      <id>kshchepanovskyi</id>
+      <name>Konstantin Shchepanovskyi</name>
+      <email>schepanovsky@gmail.com</email>
+      <timezone>+2</timezone>
     </developer>
   </developers>
 
