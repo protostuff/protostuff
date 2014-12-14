@@ -77,9 +77,6 @@ public abstract class MappedSchema<T> implements Schema<T>
     public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
             int lastFieldNumber)
     {
-        if (fields.isEmpty())
-            throw new IllegalStateException("At least one field is required.");
-
         this.typeClass = typeClass;
         fieldsByName = new HashMap<String, Field<T>>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
@@ -115,9 +112,6 @@ public abstract class MappedSchema<T> implements Schema<T>
     public MappedSchema(Class<T> typeClass, Map<String, Field<T>> fieldsByName,
             int lastFieldNumber)
     {
-        if (fieldsByName.isEmpty())
-            throw new IllegalStateException("At least one field is required.");
-
         this.typeClass = typeClass;
         this.fieldsByName = fieldsByName;
         Collection<Field<T>> fields = fieldsByName.values();

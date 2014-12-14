@@ -1,0 +1,10 @@
+package it;
+option java_package = "io.protostuff.compiler.it"
+
+message EmptyMessage {
+  // Protostuff Compiler should generate valid code for messages without fields
+}
+
+message MessageWithEmptyMessage {
+  optional EmptyMessage a = 1;
+}
