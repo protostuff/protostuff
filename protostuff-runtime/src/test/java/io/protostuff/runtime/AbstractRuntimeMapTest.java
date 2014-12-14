@@ -74,12 +74,12 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
 
     static <K, V> Map<K, V> newMap()
     {
-        return new HashMap<K, V>();
+        return new HashMap<>();
     }
 
     static <V> List<V> newList()
     {
-        return new ArrayList<V>();
+        return new ArrayList<>();
     }
 
     public enum Gender
@@ -116,32 +116,32 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             p.stringList.add("foo");
             p.stringList.add(name);
 
-            p.hashMap = new HashMap<Long, Integer>();
+            p.hashMap = new HashMap<>();
             p.hashMap.put(System.currentTimeMillis(), 1);
             p.hashMap.put(null, null);
 
-            p.linkedHashMap = new LinkedHashMap<Float, Double>();
+            p.linkedHashMap = new LinkedHashMap<>();
             p.linkedHashMap.put(5.5f, 4.4d);
             p.linkedHashMap.put(null, null);
 
-            p.treeMap = new TreeMap<Double, Float>();
+            p.treeMap = new TreeMap<>();
             p.treeMap.put(324.43d, 234.1f);
 
             // p.weakHashMap = new WeakHashMap<Byte,Character>();
             // p.weakHashMap.put(new Byte((byte)0x89), 'f');
             // p.weakHashMap.put(null, null);
 
-            p.identityHashMap = new IdentityHashMap<Sequence, Gender>();
+            p.identityHashMap = new IdentityHashMap<>();
             p.identityHashMap.put(Sequence.ONE, Gender.MALE);
 
-            p.hashTable = new Hashtable<String, String>();
+            p.hashTable = new Hashtable<>();
             p.hashTable.put("foo", "bar");
             p.hashTable.put("", "");
 
-            p.concurrentHashMap = new ConcurrentHashMap<String, String>();
+            p.concurrentHashMap = new ConcurrentHashMap<>();
             p.concurrentHashMap.put("bar", "foo");
 
-            p.concurrentSkipListMap = new ConcurrentSkipListMap<String, String>();
+            p.concurrentSkipListMap = new ConcurrentSkipListMap<>();
             p.concurrentSkipListMap.put("baz", "bar");
 
             return p;

@@ -46,7 +46,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -65,7 +65,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         bars.add(new Bar());
 
@@ -84,7 +84,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyBar2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -104,7 +104,7 @@ public class TailDelimiterTest extends AbstractTest
     {
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -122,7 +122,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(SerializableObjects.foo);
         foos.add(SerializableObjects.foo);
 
@@ -141,7 +141,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyList() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
@@ -158,7 +158,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
         foos.add(new Foo());
 
@@ -177,7 +177,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyFoo2() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -195,10 +195,10 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 
@@ -219,12 +219,12 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testEmptyFooInner2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 

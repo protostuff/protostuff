@@ -180,12 +180,12 @@ public class CompatTest extends AbstractTest
 
     static <T> List<T> newList()
     {
-        return new ArrayList<T>();
+        return new ArrayList<>();
     }
 
     static <K, V> Map<K, V> newMap()
     {
-        return new LinkedHashMap<K, V>();
+        return new LinkedHashMap<>();
     }
 
     public void testByteArrayCompat()

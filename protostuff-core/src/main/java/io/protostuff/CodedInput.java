@@ -1039,7 +1039,7 @@ public final class CodedInput implements Input
 
             // Read all the rest of the bytes we need.
             int sizeLeft = size - (originalBufferSize - originalBufferPos);
-            final List<byte[]> chunks = new ArrayList<byte[]>();
+            final List<byte[]> chunks = new ArrayList<>();
 
             while (sizeLeft > 0)
             {

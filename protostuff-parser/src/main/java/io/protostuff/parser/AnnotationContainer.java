@@ -28,7 +28,7 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
 {
 
     final LinkedHashMap<String, Annotation> annotations =
-            new LinkedHashMap<String, Annotation>();
+            new LinkedHashMap<>();
 
     @Override
     public void add(Annotation annotation)

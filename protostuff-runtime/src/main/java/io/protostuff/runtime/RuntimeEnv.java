@@ -254,10 +254,10 @@ public final class RuntimeEnv
                 throw new RuntimeException("Could not resolve constructor for "
                         + clazz);
 
-            return new Android2Instantiator<T>(clazz);
+            return new Android2Instantiator<>(clazz);
         }
 
-        return new DefaultInstantiator<T>(constructor);
+        return new DefaultInstantiator<>(constructor);
     }
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz)

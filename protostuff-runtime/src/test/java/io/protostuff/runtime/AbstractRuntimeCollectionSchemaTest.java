@@ -139,52 +139,52 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
             bar = new PojoBar().fill();
 
-            collection = new ArrayList<String>();
+            collection = new ArrayList<>();
             collection.add("1");
 
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             list.add("2");
 
-            arrayList = new ArrayList<String>();
+            arrayList = new ArrayList<>();
             arrayList.add("3");
 
-            linkedList = new LinkedList<String>();
+            linkedList = new LinkedList<>();
             linkedList.add("4");
 
-            copyOnWriteArrayList = new CopyOnWriteArrayList<String>();
+            copyOnWriteArrayList = new CopyOnWriteArrayList<>();
             copyOnWriteArrayList.add("5");
 
-            stack = new Stack<String>();
+            stack = new Stack<>();
             stack.add("6");
 
-            vector = new Vector<String>();
+            vector = new Vector<>();
             vector.add("7");
 
-            set = new HashSet<String>();
+            set = new HashSet<>();
             set.add("8");
 
-            hashSet = new HashSet<String>();
+            hashSet = new HashSet<>();
             hashSet.add("9");
 
-            linkedHashSet = new LinkedHashSet<String>();
+            linkedHashSet = new LinkedHashSet<>();
             linkedHashSet.add("10");
 
-            sortedSet = new TreeSet<String>();
+            sortedSet = new TreeSet<>();
             sortedSet.add("11");
 
-            navigableSet = new TreeSet<String>();
+            navigableSet = new TreeSet<>();
             navigableSet.add("12");
 
-            treeSet = new TreeSet<String>();
+            treeSet = new TreeSet<>();
             treeSet.add("13");
 
-            concurrentSkipListSet = new ConcurrentSkipListSet<String>();
+            concurrentSkipListSet = new ConcurrentSkipListSet<>();
             concurrentSkipListSet.add("14");
 
-            copyOnWriteArraySet = new CopyOnWriteArraySet<String>();
+            copyOnWriteArraySet = new CopyOnWriteArraySet<>();
             copyOnWriteArraySet.add("15");
 
-            queue = new LinkedList<String>();
+            queue = new LinkedList<>();
             queue.add("16");
 
             /*
@@ -193,7 +193,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
              * linkedBlockingQueue = new LinkedBlockingQueue<String>(); linkedBlockingQueue.add("18");
              */
 
-            deque = new LinkedList<String>();
+            deque = new LinkedList<>();
             deque.add("19");
 
             /*
@@ -550,43 +550,43 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
         PojoBar fill()
         {
-            map = new LinkedHashMap<String, String>();
+            map = new LinkedHashMap<>();
             map.put("1", "2");
 
-            sortedMap = new TreeMap<String, String>();
+            sortedMap = new TreeMap<>();
             sortedMap.put("3", "4");
 
-            navigableMap = new TreeMap<String, String>();
+            navigableMap = new TreeMap<>();
             navigableMap.put("5", "6");
 
-            hashMap = new HashMap<String, String>();
+            hashMap = new HashMap<>();
             hashMap.put("7", "8");
 
-            linkedHashMap = new LinkedHashMap<String, String>();
+            linkedHashMap = new LinkedHashMap<>();
             linkedHashMap.put("9", "10");
 
-            treeMap = new TreeMap<String, String>();
+            treeMap = new TreeMap<>();
             treeMap.put("11", "12");
 
             // weakHashMap = new WeakHashMap<String,String>();
             // weakHashMap.put("13", "14");
 
-            identityHashMap = new IdentityHashMap<Gender, Gender>();
+            identityHashMap = new IdentityHashMap<>();
             identityHashMap.put(Gender.MALE, Gender.FEMALE);
 
-            hashtable = new Hashtable<String, String>();
+            hashtable = new Hashtable<>();
             hashtable.put("15", "16");
 
-            concurrentMap = new ConcurrentHashMap<String, String>();
+            concurrentMap = new ConcurrentHashMap<>();
             concurrentMap.put("17", "18");
 
-            concurrentHashMap = new ConcurrentHashMap<String, String>();
+            concurrentHashMap = new ConcurrentHashMap<>();
             concurrentHashMap.put("19", "20");
 
-            concurrentNavigableMap = new ConcurrentSkipListMap<String, String>();
+            concurrentNavigableMap = new ConcurrentSkipListMap<>();
             concurrentNavigableMap.put("21", "22");
 
-            concurrentSkipListMap = new ConcurrentSkipListMap<String, String>();
+            concurrentSkipListMap = new ConcurrentSkipListMap<>();
             concurrentSkipListMap.put("23", "24");
 
             return this;

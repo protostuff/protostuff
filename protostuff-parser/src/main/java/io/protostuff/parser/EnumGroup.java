@@ -39,10 +39,10 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     final Message parentMessage;
     final Proto proto;
 
-    final LinkedHashMap<String, Value> values = new LinkedHashMap<String, Value>();
-    final ArrayList<Value> sortedValues = new ArrayList<Value>();
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Value> values = new LinkedHashMap<>();
+    final ArrayList<Value> sortedValues = new ArrayList<>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
 
     private ArrayList<Value> indexedValues;
     private ArrayList<Value> uniqueSortedValues;
@@ -164,7 +164,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     public Value getValue(int index)
     {
         if (indexedValues == null)
-            indexedValues = new ArrayList<Value>(values.values());
+            indexedValues = new ArrayList<>(values.values());
 
         return indexedValues.get(index);
     }
@@ -192,7 +192,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
     public Value getFirstValue()
     {
         if (indexedValues == null)
-            indexedValues = new ArrayList<Value>(values.values());
+            indexedValues = new ArrayList<>(values.values());
 
         return indexedValues.get(0);
     }
@@ -251,7 +251,7 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         if (uniqueSortedValues != null)
             return uniqueSortedValues;
 
-        uniqueSortedValues = new ArrayList<Value>();
+        uniqueSortedValues = new ArrayList<>();
         Value last = null;
         for (Value v : sortedValues)
         {

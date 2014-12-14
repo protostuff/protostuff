@@ -312,7 +312,7 @@ public final class ProtobufIOUtil
      */
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
-        final ArrayList<T> list = new ArrayList<T>();
+        final ArrayList<T> list = new ArrayList<>();
         byte[] buf = null;
         int biggestLen = 0;
         LimitedInputStream lin = null;

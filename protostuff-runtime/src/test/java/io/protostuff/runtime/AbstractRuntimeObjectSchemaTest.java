@@ -105,7 +105,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new CustomArrayList<V>();
+                return new CustomArrayList<>();
             }
 
             @Override
@@ -125,7 +125,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new CustomHashMap<K, V>();
+                return new CustomHashMap<>();
             }
 
             @Override
@@ -859,7 +859,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     static <T> ArrayList<T> newList(T... args)
     {
-        ArrayList<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<>();
 
         for (T v : args)
             list.add(v);
@@ -869,7 +869,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     static <K, V> HashMap<K, V> newMap()
     {
-        return new HashMap<K, V>();
+        return new HashMap<>();
     }
 
     public static class PojoWithArray
@@ -1923,25 +1923,25 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         PojoWithCustomArrayListAndHashMap fill()
         {
 
-            one = new CustomArrayList<Size>();
+            one = new CustomArrayList<>();
             one.add(Size.SMALL);
 
-            two = new CustomArrayList<Size>();
+            two = new CustomArrayList<>();
             two.add(Size.MEDIUM);
             two.add(Size.LARGE);
 
-            CustomArrayList<String> three = new CustomArrayList<String>();
+            CustomArrayList<String> three = new CustomArrayList<>();
             three.add("1");
             three.add("2");
             three.add("3");
 
-            map1 = new CustomHashMap<Size, Integer>();
+            map1 = new CustomHashMap<>();
             map1.put(Size.LARGE, 1);
 
-            map2 = new CustomHashMap<Long, Size>();
+            map2 = new CustomHashMap<>();
             map2.put(100l, Size.MEDIUM);
 
-            CustomHashMap<Size, Date> map3 = new CustomHashMap<Size, Date>();
+            CustomHashMap<Size, Date> map3 = new CustomHashMap<>();
             map3.put(Size.SMALL, new Date(System.currentTimeMillis()));
 
             this.map3 = map3;
@@ -2140,7 +2140,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
                     byte[].class, byte.class, Pojo.class, Instrument.class,
                     AbstractInstrument.class, Size.class, GuitarPickup.class };
 
-            cList = new ArrayList<Class<?>>();
+            cList = new ArrayList<>();
             cList.add(Character.class);
             cList.add(Short.class);
             cList.add(float[].class);
@@ -2155,7 +2155,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             cList.add(Size.class);
             cList.add(GuitarPickup.class);
 
-            cList2 = new ArrayList<Class>();
+            cList2 = new ArrayList<>();
             cList2.add(Character.class);
             cList2.add(Short.class);
             cList2.add(float[].class);
@@ -2170,7 +2170,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             cList2.add(Size.class);
             cList2.add(GuitarPickup.class);
 
-            ArrayList<Class<?>> list = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> list = new ArrayList<>();
             list.add(Character.class);
             list.add(Short.class);
             list.add(float[].class);
@@ -2203,7 +2203,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             cMap.put("Size", Size.class);
             cMap.put("GuitarPickup", GuitarPickup.class);
 
-            HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
+            HashMap<Class<?>, Object> map = new HashMap<>();
             map.put(Date.class, "date");
             map.put(Character.class, Character.class);
             map.put(Short.class, Short.class);
@@ -2237,7 +2237,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             cMap2.put("Size", Size.class);
             cMap2.put("GuitarPickup", GuitarPickup.class);
 
-            HashMap<Class, Object> map2 = new HashMap<Class, Object>();
+            HashMap<Class, Object> map2 = new HashMap<>();
             map2.put(Date.class, "date");
             map2.put(Character.class, Character.class);
             map2.put(Short.class, Short.class);
@@ -2611,11 +2611,11 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         PojoWithObjectCollectionFields fill()
         {
-            LinkedList<String> ll = new LinkedList<String>();
+            LinkedList<String> ll = new LinkedList<>();
             ll.add("zero");
             HashMap<String, Boolean> empty = newMap();
 
-            TreeSet<String> ts = new TreeSet<String>();
+            TreeSet<String> ts = new TreeSet<>();
             ts.add("two");
 
             EnumSet<Size> es = EnumSet.allOf(Size.class);
@@ -3142,10 +3142,10 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         PojoWithObjectMapFields fill()
         {
-            TreeMap<String, String> tm = new TreeMap<String, String>();
+            TreeMap<String, String> tm = new TreeMap<>();
             tm.put("foo", "bar");
 
-            EnumMap<GuitarPickup, Size> em = new EnumMap<GuitarPickup, Size>(
+            EnumMap<GuitarPickup, Size> em = new EnumMap<>(
                     GuitarPickup.class);
             em.put(GuitarPickup.CONTACT, Size.SMALL);
 

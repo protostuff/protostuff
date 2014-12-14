@@ -42,7 +42,7 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>();
+        references = new ArrayList<>();
     }
 
     public GraphByteArrayInput(ByteArrayInput input, int initialCapacity)
@@ -52,7 +52,7 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>(initialCapacity);
+        references = new ArrayList<>(initialCapacity);
     }
 
     @Override

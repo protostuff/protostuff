@@ -58,7 +58,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new ArrayList<V>();
+                return new ArrayList<>();
             }
         },
         // defaults to ArrayList
@@ -67,7 +67,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new ArrayList<V>();
+                return new ArrayList<>();
             }
         },
         ArrayList(java.util.ArrayList.class)
@@ -75,7 +75,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new ArrayList<V>();
+                return new ArrayList<>();
             }
         },
         LinkedList(java.util.LinkedList.class)
@@ -83,7 +83,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.LinkedList<V>();
+                return new java.util.LinkedList<>();
             }
         },
         CopyOnWriteArrayList(java.util.concurrent.CopyOnWriteArrayList.class)
@@ -91,7 +91,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.CopyOnWriteArrayList<V>();
+                return new java.util.concurrent.CopyOnWriteArrayList<>();
             }
         },
         Stack(java.util.Stack.class)
@@ -99,7 +99,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.Stack<V>();
+                return new java.util.Stack<>();
             }
         },
         Vector(java.util.Vector.class)
@@ -107,7 +107,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.Vector<V>();
+                return new java.util.Vector<>();
             }
         },
         // defaults to HashSet
@@ -116,7 +116,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.HashSet<V>();
+                return new java.util.HashSet<>();
             }
         },
         HashSet(java.util.HashSet.class)
@@ -124,7 +124,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.HashSet<V>();
+                return new java.util.HashSet<>();
             }
         },
         LinkedHashSet(java.util.LinkedHashSet.class)
@@ -132,7 +132,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.LinkedHashSet<V>();
+                return new java.util.LinkedHashSet<>();
             }
         },
         // defaults to TreeSet
@@ -141,7 +141,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.TreeSet<V>();
+                return new java.util.TreeSet<>();
             }
         },
         // defaults to TreeSet
@@ -150,7 +150,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.TreeSet<V>();
+                return new java.util.TreeSet<>();
             }
         },
         TreeSet(java.util.TreeSet.class)
@@ -158,7 +158,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.TreeSet<V>();
+                return new java.util.TreeSet<>();
             }
         },
         ConcurrentSkipListSet(java.util.concurrent.ConcurrentSkipListSet.class)
@@ -166,7 +166,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListSet<V>();
+                return new java.util.concurrent.ConcurrentSkipListSet<>();
             }
         },
         CopyOnWriteArraySet(java.util.concurrent.CopyOnWriteArraySet.class)
@@ -174,7 +174,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.CopyOnWriteArraySet<V>();
+                return new java.util.concurrent.CopyOnWriteArraySet<>();
             }
         },
         // defaults to LinkedList
@@ -183,7 +183,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.LinkedList<V>();
+                return new java.util.LinkedList<>();
             }
         },
         // defaults to LinkedBlockingQueue
@@ -192,7 +192,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.LinkedBlockingQueue<V>();
+                return new java.util.concurrent.LinkedBlockingQueue<>();
             }
         },
         LinkedBlockingQueue(java.util.concurrent.LinkedBlockingQueue.class)
@@ -200,7 +200,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.LinkedBlockingQueue<V>();
+                return new java.util.concurrent.LinkedBlockingQueue<>();
             }
         },
         // defaults to LinkedList
@@ -209,7 +209,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.LinkedList<V>();
+                return new java.util.LinkedList<>();
             }
         },
         // defaults to LinkedBlockingDeque
@@ -218,7 +218,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.LinkedBlockingDeque<V>();
+                return new java.util.concurrent.LinkedBlockingDeque<>();
             }
         },
         LinkedBlockingDeque(java.util.concurrent.LinkedBlockingDeque.class)
@@ -226,7 +226,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.LinkedBlockingDeque<V>();
+                return new java.util.concurrent.LinkedBlockingDeque<>();
             }
         },
         ArrayBlockingQueue(java.util.concurrent.ArrayBlockingQueue.class)
@@ -235,7 +235,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             public <V> Collection<V> newMessage()
             {
                 // initialize to same initial value as ArrayList
-                return new java.util.concurrent.ArrayBlockingQueue<V>(10);
+                return new java.util.concurrent.ArrayBlockingQueue<>(10);
             }
         },
         ArrayDeque(java.util.ArrayDeque.class)
@@ -243,7 +243,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.ArrayDeque<V>();
+                return new java.util.ArrayDeque<>();
             }
         },
         ConcurrentLinkedQueue(java.util.concurrent.ConcurrentLinkedQueue.class)
@@ -251,7 +251,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentLinkedQueue<V>();
+                return new java.util.concurrent.ConcurrentLinkedQueue<>();
             }
         },
         ConcurrentLinkedDeque(java.util.concurrent.ConcurrentLinkedDeque.class)
@@ -259,7 +259,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentLinkedDeque<V>();
+                return new java.util.concurrent.ConcurrentLinkedDeque<>();
             }
         },
         PriorityBlockingQueue(java.util.concurrent.PriorityBlockingQueue.class)
@@ -267,7 +267,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.concurrent.PriorityBlockingQueue<V>();
+                return new java.util.concurrent.PriorityBlockingQueue<>();
             }
         },
         PriorityQueue(java.util.PriorityQueue.class)
@@ -275,7 +275,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
             @Override
             public <V> Collection<V> newMessage()
             {
-                return new java.util.PriorityQueue<V>();
+                return new java.util.PriorityQueue<>();
             }
         };
 
