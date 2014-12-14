@@ -253,11 +253,6 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 maxFieldMapping = Math.max(maxFieldMapping, fieldMapping);
             }
         }
-        if (fields.isEmpty())
-        {
-            throw new RuntimeException("Not able to map any fields from "
-                    + typeClass + ".  All fields are either transient/static.");
-        }
 
         return new RuntimeSchema<>(typeClass, fields, maxFieldMapping,
                 RuntimeEnv.newInstantiator(typeClass));
@@ -302,11 +297,6 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                         strategy);
                 fields.add(field);
             }
-        }
-        if (fields.isEmpty())
-        {
-            throw new RuntimeException("Not able to map any fields from "
-                    + typeClass + ".  All fields are either transient/static.");
         }
         return new RuntimeSchema<>(typeClass, fields, i,
                 RuntimeEnv.newInstantiator(typeClass));

@@ -38,6 +38,14 @@ public final class LinkedBuffer
     public static final int DEFAULT_BUFFER_SIZE = 512;
 
     /**
+     * Allocates a new buffer with default size.
+     */
+    public static LinkedBuffer allocate()
+    {
+        return new LinkedBuffer(DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
      * Allocates a new buffer with the specified size.
      */
     public static LinkedBuffer allocate(int size)

@@ -14,31 +14,37 @@
 
 package io.protostuff.runtime;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.protostuff.AbstractTest;
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.protostuff.Schema;
 
 /**
  * Test w/c fields should be excluded.
  * 
  * @author David Yu
- * @created Jan 20, 2011
  */
-public class FieldExclusionTest extends AbstractTest
+public class FieldExclusionTest
 {
 
+    @SuppressWarnings("unused")
     public static class EmptyFieldsPojo
     {
+
         transient int someInt;
         static long someLong;
         @Deprecated
         boolean g;
     }
 
+    @SuppressWarnings("unused")
     public static class ComplexFieldsPojo
     {
 
@@ -97,18 +103,12 @@ public class FieldExclusionTest extends AbstractTest
         byte[][] someByteArray2D;
     }
 
+    @Test
     public void testEmptyFieldsPojo()
     {
-        try
-        {
-            RuntimeSchema.createFrom(EmptyFieldsPojo.class,
-                    RuntimeEnv.ID_STRATEGY);
-            assertTrue(false);
-        }
-        catch (RuntimeException e)
-        {
-            // expected
-        }
+        RuntimeSchema<EmptyFieldsPojo> schema = RuntimeSchema.createFrom(EmptyFieldsPojo.class, RuntimeEnv.ID_STRATEGY);
+        Assert.assertNotNull(schema);
+        Assert.assertEquals(0, schema.getFieldCount());
     }
 
     static void assertAssignable(Object obj, Class<?> clazz)
@@ -116,6 +116,7 @@ public class FieldExclusionTest extends AbstractTest
         assertTrue(clazz.isAssignableFrom(obj.getClass()));
     }
 
+    @Test
     public void testComplexFieldsPojo()
     {
         Schema<ComplexFieldsPojo> schema = RuntimeSchema

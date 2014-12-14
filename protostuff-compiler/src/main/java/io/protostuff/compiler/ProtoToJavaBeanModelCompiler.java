@@ -77,13 +77,6 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             if (m.getAnnotation("Transient") != null)
                 continue;
 
-            // true if its a service message w/c isn't supported atm
-            if (m.getFields().isEmpty())
-            {
-                System.err.println("ignoring empty message: " + m.getFullName());
-                continue;
-            }
-
             // Generate model
             boolean generateModel = shouldGenerateModel(module, proto, m);
             if (generateModel)
