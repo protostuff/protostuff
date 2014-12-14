@@ -21,14 +21,13 @@ import static io.protostuff.runtime.SerializableObjects.negativeBar;
 import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import junit.framework.TestCase;
-
 import io.protostuff.runtime.Bar;
 import io.protostuff.runtime.Baz;
 import io.protostuff.runtime.Foo;
 import io.protostuff.runtime.PolymorphicSerializationTest;
+import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 import io.protostuff.runtime.RuntimeSchema;
 import io.protostuff.runtime.SerializableObjects;
-import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 
 /**
  * Testing for json ser/deser against runtime messages.

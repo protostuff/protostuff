@@ -14,17 +14,22 @@
 
 package io.protostuff.compiler;
 
-import io.protostuff.parser.Annotation;
-import io.protostuff.parser.Message;
-import io.protostuff.parser.Proto;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.*;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import io.protostuff.parser.Annotation;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 
 /**
  * Kind of preprocessor for proto files. Able to extend one messages with fields from other ones.

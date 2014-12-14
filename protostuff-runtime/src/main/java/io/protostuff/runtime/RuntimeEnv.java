@@ -37,10 +37,10 @@ public final class RuntimeEnv
      * option.
      */
     public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES;
-    
+
     /**
-     * Disabled by default. Writes a sentinel value (uint32) in place of null values.
-     * Works only on the binary formats (protostuff/graph/protobuf).
+     * Disabled by default. Writes a sentinel value (uint32) in place of null values. Works only on the binary formats
+     * (protostuff/graph/protobuf).
      */
     public static final boolean ALLOW_NULL_ARRAY_ELEMENT;
 
@@ -69,8 +69,7 @@ public final class RuntimeEnv
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
 
@@ -89,8 +88,7 @@ public final class RuntimeEnv
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
 
@@ -163,7 +161,7 @@ public final class RuntimeEnv
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));
-        
+
         ALLOW_NULL_ARRAY_ELEMENT = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.allow_null_array_element", "false"));
 
@@ -314,7 +312,8 @@ public final class RuntimeEnv
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException | InstantiationException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
+                    | InstantiationException e)
             {
                 throw new RuntimeException(e);
             }

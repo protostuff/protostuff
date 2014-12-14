@@ -1,9 +1,9 @@
 package io.protostuff;
 
-import junit.framework.TestCase;
-
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 public class LinkBufferTest extends TestCase
 {

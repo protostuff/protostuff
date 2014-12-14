@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -10,7 +11,7 @@
   <name>protostuff :: uberjar</name>
   <description>serialization api for messages</description>
   <packaging>jar</packaging>
-  
+
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
@@ -25,7 +26,7 @@
             </goals>
             <configuration>
               <tasks>
-                <copy failonerror="false" file="src/main/etc/MANIFEST.MF" tofile="target/MANIFEST.MF" />
+                <copy failonerror="false" file="src/main/etc/MANIFEST.MF" tofile="target/MANIFEST.MF"/>
               </tasks>
             </configuration>
           </execution>
@@ -37,17 +38,17 @@
         <version>2.5.3</version>
         <extensions>true</extensions>
         <configuration>
-           <manifestLocation>target</manifestLocation>
-           <instructions>
-              <Import-Package>
-                 sun.misc;resolution:=optional
-                 ,sun.reflect;resolution:=optional
-                 ,*
-              </Import-Package>
-              <Export-Package>
-                 io.protostuff,io.protostuff.runtime
-              </Export-Package>
-           </instructions>
+          <manifestLocation>target</manifestLocation>
+          <instructions>
+            <Import-Package>
+              sun.misc;resolution:=optional
+              ,sun.reflect;resolution:=optional
+              ,*
+            </Import-Package>
+            <Export-Package>
+              io.protostuff,io.protostuff.runtime
+            </Export-Package>
+          </instructions>
         </configuration>
         <executions>
           <execution>
@@ -83,7 +84,7 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>io.protostuff</groupId>
@@ -106,5 +107,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>

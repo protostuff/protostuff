@@ -17,7 +17,6 @@ package io.protostuff;
 import java.util.Arrays;
 
 import junit.framework.Assert;
-
 import io.protostuff.Foo.EnumSample;
 
 /**

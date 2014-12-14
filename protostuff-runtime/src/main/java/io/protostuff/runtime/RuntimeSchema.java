@@ -29,8 +29,8 @@ import java.util.Set;
 import io.protostuff.Exclude;
 import io.protostuff.Message;
 import io.protostuff.Pipe;
-import io.protostuff.Tag;
 import io.protostuff.Schema;
+import io.protostuff.Tag;
 import io.protostuff.runtime.RuntimeEnv.DefaultInstantiator;
 import io.protostuff.runtime.RuntimeEnv.Instantiator;
 

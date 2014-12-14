@@ -8,12 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import io.protostuff.GraphIOUtil;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Output;
-import io.protostuff.Schema;
-
 public final class PojoWithInts implements Externalizable, Message<PojoWithInts>, Schema<PojoWithInts>
 {
 

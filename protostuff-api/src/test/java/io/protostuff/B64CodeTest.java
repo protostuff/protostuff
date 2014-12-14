@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
-
 import io.protostuff.StringSerializer.STRING;
 
 /**

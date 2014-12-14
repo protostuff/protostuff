@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import junit.framework.TestCase;
-
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;

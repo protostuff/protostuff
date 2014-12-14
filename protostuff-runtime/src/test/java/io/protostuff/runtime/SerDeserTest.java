@@ -23,7 +23,6 @@ import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 import java.util.LinkedHashSet;
 
 import junit.framework.TestCase;
-
 import io.protostuff.ComputedSizeOutput;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;

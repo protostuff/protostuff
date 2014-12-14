@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.util.Collection;
 
 import io.protostuff.CollectionSchema;
+import io.protostuff.CollectionSchema.MessageFactory;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
-import io.protostuff.CollectionSchema.MessageFactory;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 import io.protostuff.runtime.MappedSchema.Field;

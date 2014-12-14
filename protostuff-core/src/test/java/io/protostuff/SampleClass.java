@@ -25,14 +25,13 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
 
     static final SampleClass DEFAULT_INSTANCE = new SampleClass();
 
-    
     // non-private fields
     // see http://developer.android.com/guide/practices/design/performance.html#package_inner
     List<String> testString;
 
     public SampleClass()
     {
-        
+
     }
 
     // getters and setters
@@ -99,31 +98,30 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
 
         public void mergeFrom(Input input, SampleClass message) throws IOException
         {
-            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return;
                     case 1:
-                        if(message.testString == null)
+                        if (message.testString == null)
                             message.testString = new ArrayList<>();
                         message.testString.add(input.readString());
                         break;
                     default:
                         input.handleUnknownField(number, this);
-                }   
+                }
             }
         }
 
-
         public void writeTo(Output output, SampleClass message) throws IOException
         {
-            if(message.testString != null)
+            if (message.testString != null)
             {
-                for(String testString : message.testString)
+                for (String testString : message.testString)
                 {
-                    if(testString != null)
+                    if (testString != null)
                         output.writeString(1, testString, true);
                 }
             }
@@ -131,10 +129,12 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
 
         public String getFieldName(int number)
         {
-            switch(number)
+            switch (number)
             {
-                case 1: return "testString";
-                default: return null;
+                case 1:
+                    return "testString";
+                default:
+                    return null;
             }
         }
 
@@ -144,10 +144,10 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String,Integer> fieldMap = new java.util.HashMap<>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
         {
             fieldMap.put("testString", 1);
         }
     };
-    
+
 }

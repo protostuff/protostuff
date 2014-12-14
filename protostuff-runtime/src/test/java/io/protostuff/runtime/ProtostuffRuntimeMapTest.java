@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import io.protostuff.Pipe;
@@ -25,8 +26,6 @@ import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test protostuff ser/deser for runtime {@link Map} fields.

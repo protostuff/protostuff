@@ -15,9 +15,7 @@
 package io.protostuff;
 
 import java.io.ByteArrayInputStream;
-
 import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test case for smile pipes.

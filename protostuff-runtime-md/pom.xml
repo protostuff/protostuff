@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -10,7 +11,7 @@
   <name>protostuff :: runtime-md</name>
   <description>protostuff runtime for mobile devices (actually JREs with no sun.reflect.* packages)</description>
   <packaging>jar</packaging>
-  
+
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
@@ -25,20 +26,20 @@
             </goals>
             <configuration>
               <tasks>
-                <copy todir="${project.build.directory}/extra-sources">  
-                  <fileset dir="../protostuff-runtime/src/main/java">  
-                    <exclude name="**/RuntimeUnsafeFieldFactory.java" />
-                    <exclude name="**/OnDemandSunReflectionFactory.java" />
-                    <exclude name="**/RuntimeFieldFactory.java" />
-                    <exclude name="**/RuntimeEnv.java" />
-                  </fileset>  
+                <copy todir="${project.build.directory}/extra-sources">
+                  <fileset dir="../protostuff-runtime/src/main/java">
+                    <exclude name="**/RuntimeUnsafeFieldFactory.java"/>
+                    <exclude name="**/OnDemandSunReflectionFactory.java"/>
+                    <exclude name="**/RuntimeFieldFactory.java"/>
+                    <exclude name="**/RuntimeEnv.java"/>
+                  </fileset>
                 </copy>
-                <copy todir="${project.build.directory}/extra-test-sources">  
-                  <fileset dir="../protostuff-runtime/src/test/java">  
-                    <exclude name="**/ImmutableObjectsTest.java" />
-                    <exclude name="**/EnumSetAndMapTest.java" />
-                    <exclude name="**/*RuntimeObjectSchemaTest.java" />
-                  </fileset>  
+                <copy todir="${project.build.directory}/extra-test-sources">
+                  <fileset dir="../protostuff-runtime/src/test/java">
+                    <exclude name="**/ImmutableObjectsTest.java"/>
+                    <exclude name="**/EnumSetAndMapTest.java"/>
+                    <exclude name="**/*RuntimeObjectSchemaTest.java"/>
+                  </fileset>
                 </copy>
               </tasks>
             </configuration>
@@ -78,7 +79,7 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -114,5 +115,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>

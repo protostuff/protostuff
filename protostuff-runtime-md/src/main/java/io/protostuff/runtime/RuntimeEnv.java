@@ -20,7 +20,6 @@ package io.protostuff.runtime;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Properties;
 
 /**
@@ -41,10 +40,10 @@ public final class RuntimeEnv
      * option.
      */
     public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES;
-    
+
     /**
-     * Disabled by default. Writes a sentinel value (uint32) in place of null values.
-     * Works only on the binary formats (protostuff/graph/protobuf).
+     * Disabled by default. Writes a sentinel value (uint32) in place of null values. Works only on the binary formats
+     * (protostuff/graph/protobuf).
      */
     public static final boolean ALLOW_NULL_ARRAY_ELEMENT;
 
@@ -73,8 +72,7 @@ public final class RuntimeEnv
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
 
@@ -93,8 +91,7 @@ public final class RuntimeEnv
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
 
@@ -244,12 +241,12 @@ public final class RuntimeEnv
             // android >= 4.3
             Method m43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
                     "newInstance", Class.class, long.class);
-            
+
             Method mcid43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
                     "getConstructorId", Class.class);
             mcid43.setAccessible(true);
-            holder[0] = (Number)mcid43.invoke(null, Object.class);
-            
+            holder[0] = (Number) mcid43.invoke(null, Object.class);
+
             return m43;
         }
         catch (Exception ex)
@@ -259,12 +256,12 @@ public final class RuntimeEnv
                 // android <= 4.2.2
                 Method m = java.io.ObjectStreamClass.class.getDeclaredMethod(
                         "newInstance", Class.class, int.class);
-                
+
                 Method mcid = java.io.ObjectStreamClass.class.getDeclaredMethod(
                         "getConstructorId", Class.class);
                 mcid.setAccessible(true);
-                holder[0] = (Number)mcid.invoke(null, Object.class);
-                
+                holder[0] = (Number) mcid.invoke(null, Object.class);
+
                 return m;
             }
             catch (Exception e)
@@ -299,7 +296,7 @@ public final class RuntimeEnv
             // non-sun jre
             if (android43)
                 return new Android43Instantiator<>(clazz);
-            
+
             if (newInstanceFromObjectInputStream == null)
             {
                 if (objectConstructorId == -1)
@@ -366,7 +363,8 @@ public final class RuntimeEnv
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException | InstantiationException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
+                    | InstantiationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -416,7 +414,7 @@ public final class RuntimeEnv
             try
             {
                 return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
-                        (int)objectConstructorId);
+                        (int) objectConstructorId);
             }
             catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
             {
@@ -424,7 +422,7 @@ public final class RuntimeEnv
             }
         }
     }
-    
+
     static final class Android43Instantiator<T> extends Instantiator<T>
     {
 

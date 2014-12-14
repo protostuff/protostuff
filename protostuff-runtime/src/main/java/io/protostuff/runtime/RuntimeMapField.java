@@ -19,10 +19,10 @@ import java.util.Map;
 
 import io.protostuff.Input;
 import io.protostuff.MapSchema;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
 import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.MapSchema.MessageFactory;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 import io.protostuff.runtime.MappedSchema.Field;

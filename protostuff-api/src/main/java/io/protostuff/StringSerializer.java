@@ -1180,6 +1180,7 @@ public final class StringSerializer
 
         /**
          * Deserialize using readUTF only.
+         * 
          * @param nonNullValue
          * @return
          */
@@ -1210,8 +1211,7 @@ public final class StringSerializer
         }
 
         /**
-         * Reads the string from a byte[] using that was encoded
-         * a using Modified UTF-8 format. Additionally supports
+         * Reads the string from a byte[] using that was encoded a using Modified UTF-8 format. Additionally supports
          * 4-byte surrogates, de-serializing them as surrogate pairs.
          *
          * See: http://en.wikipedia.org/wiki/UTF-8#Description for encoding details.
@@ -1242,7 +1242,8 @@ public final class StringSerializer
             }
 
             // 'Slow' path
-            while (i < len) {
+            while (i < len)
+            {
                 int ch = (int) buffer[offset + i] & 0xff;
 
                 // Determine how to decode based on 'bits of code point'
@@ -1273,7 +1274,7 @@ public final class StringSerializer
                 }
                 else if (upperBits == 0xE)
                 {
-                    // 3-byte: 1110xxxx  10xxxxxx  10xxxxxx
+                    // 3-byte: 1110xxxx 10xxxxxx 10xxxxxx
                     i += 3;
 
                     if (i > len)
@@ -1282,7 +1283,7 @@ public final class StringSerializer
                     int ch2 = (int) buffer[offset + i - 2];
                     int ch3 = (int) buffer[offset + i - 1];
 
-                    // Check the 10xxxxxx  10xxxxxx of second two bytes
+                    // Check the 10xxxxxx 10xxxxxx of second two bytes
                     if (((ch2 & 0xC0) != 0x80) || ((ch3 & 0xC0) != 0x80))
                         throw new UTFDataFormatException("Malformed input around byte " + (i - 1));
 
@@ -1307,10 +1308,10 @@ public final class StringSerializer
                         int ch4 = (int) buffer[offset + i - 1];
 
                         int value =
-                            ((ch  & 0x07) << 18) |
-                            ((ch2 & 0x3F) << 12) |
-                            ((ch3 & 0x3F) << 6) |
-                            ((ch4 & 0x3F));
+                                ((ch & 0x07) << 18) |
+                                        ((ch2 & 0x3F) << 12) |
+                                        ((ch3 & 0x3F) << 6) |
+                                        ((ch4 & 0x3F));
 
                         charArray[c++] = Character.highSurrogate(value);
                         charArray[c++] = Character.lowSurrogate(value);

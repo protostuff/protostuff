@@ -1,6 +1,7 @@
 package io.protostuff.compiler;
 
 import junit.framework.TestCase;
+
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 

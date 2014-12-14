@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -7,7 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>protostuff-kvp</artifactId>
   <name>protostuff :: kvp</name>
-  <description>binary key-value-pair serialization format (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol)</description>
+  <description>binary key-value-pair serialization format (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol)
+  </description>
 
   <dependencies>
     <dependency>
@@ -28,5 +30,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>
