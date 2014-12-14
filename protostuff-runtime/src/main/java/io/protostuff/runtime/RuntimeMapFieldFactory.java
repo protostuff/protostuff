@@ -152,7 +152,7 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, val);
+                eioV.writeTo(output, fieldNumber, repeated, val);
             }
 
             @Override
@@ -660,7 +660,7 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, key);
+                eioK.writeTo(output, fieldNumber, repeated, key);
             }
 
             @Override
@@ -682,7 +682,7 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, val);
+                eioV.writeTo(output, fieldNumber, repeated, val);
             }
 
             @Override
@@ -759,7 +759,7 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, key);
+                eioK.writeTo(output, fieldNumber, repeated, key);
             }
 
             @Override
@@ -860,7 +860,7 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, key);
+                eioK.writeTo(output, fieldNumber, repeated, key);
             }
 
             @Override
@@ -962,7 +962,7 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, key);
+                eioK.writeTo(output, fieldNumber, repeated, key);
             }
 
             @Override
@@ -1081,7 +1081,7 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Enum<?> key,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, key);
+                eioK.writeTo(output, fieldNumber, repeated, key);
             }
 
             @Override
@@ -1221,7 +1221,7 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Enum<?> val,
                     boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, val);
+                eioV.writeTo(output, fieldNumber, repeated, val);
             }
 
             @Override

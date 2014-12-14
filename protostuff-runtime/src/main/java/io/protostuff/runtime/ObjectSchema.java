@@ -749,15 +749,17 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
         if (clazz.isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz);
             strategy.writeEnumIdTo(output, ID_ENUM, clazz);
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
             return;
         }
 
         if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());
             strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
             return;
         }
 
@@ -1070,14 +1072,17 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
                     throw new ProtostuffException("Corrupt input.");
-
                 EnumIO.transfer(pipe, input, output, 1, false);
                 break;
+            }
+
             case ID_ENUM_SET:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1088,7 +1093,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_ENUM_MAP:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1099,7 +1107,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_COLLECTION:
+            {
                 strategy.transferCollectionId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1110,7 +1121,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_MAP:
+            {
                 strategy.transferMapId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1121,8 +1135,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
 
             case ID_POLYMORPHIC_COLLECTION:
+            {
                 if (0 != input.readUInt32())
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
@@ -1137,8 +1153,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA,
                         pipe, input, output);
                 return;
+            }
 
             case ID_POLYMORPHIC_MAP:
+            {
                 if (0 != input.readUInt32())
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
@@ -1153,6 +1171,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA,
                         pipe, input, output);
                 return;
+            }
+
             case ID_DELEGATE:
             {
                 final HasDelegate<Object> hd = strategy.transferDelegateId(input,

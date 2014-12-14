@@ -1114,7 +1114,7 @@ public final class RuntimeReflectionFieldFactory
                     }
 
                     if (existing != null)
-                        EnumIO.writeTo(output, number, repeated, existing);
+                        eio.writeTo(output, number, repeated, existing);
                 }
 
                 public void transfer(Pipe pipe, Input input, Output output,
@@ -1774,7 +1774,7 @@ public final class RuntimeReflectionFieldFactory
                     final Object value;
                     try
                     {
-                        value = (Object) f.get(message);
+                        value = f.get(message);
                     }
                     catch (IllegalArgumentException | IllegalAccessException e)
                     {

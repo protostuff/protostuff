@@ -175,7 +175,7 @@ final class RuntimeRepeatedFieldFactory
                 if (collection != null && !collection.isEmpty())
                 {
                     for (Enum<?> en : collection)
-                        EnumIO.writeTo(output, number, true, en);
+                        eio.writeTo(output, number, true, en);
                 }
             }
 

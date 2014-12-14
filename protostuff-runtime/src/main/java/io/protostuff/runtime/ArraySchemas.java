@@ -2187,7 +2187,7 @@ public final class ArraySchemas
                         nullCount = 0;
                     }
                     
-                    EnumIO.writeTo(output, ID_ARRAY_DATA, true, v);
+                    eio.writeTo(output, ID_ARRAY_DATA, true, v);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
                 {

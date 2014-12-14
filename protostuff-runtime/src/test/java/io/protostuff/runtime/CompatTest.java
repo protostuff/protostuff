@@ -29,16 +29,22 @@ import io.protostuff.Message;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.StringSerializer.STRING;
+import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static io.protostuff.AbstractTest.buf;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test that the runtime schema would have the same output as hand-coded/code-generated schema.
  * 
  * @author David Yu
- * @created Oct 20, 2010
  */
-public class CompatTest extends AbstractTest
-{
+public class CompatTest {
 
+    @Test
     public void testCompat() throws IOException
     {
         compareBar();
@@ -65,8 +71,8 @@ public class CompatTest extends AbstractTest
         byte[] byte2 = ProtostuffIOUtil.toByteArray(bar2, schema2, buf());
         byte[] byte3 = ProtostuffIOUtil.toByteArray(bar1, schema3, buf());
 
-        assertTrue(Arrays.equals(byte1, byte2));
-        assertTrue(Arrays.equals(byte1, byte3));
+        assertArrayEquals(byte1, byte2);
+        assertArrayEquals(byte1, byte3);
     }
 
     static void compareFoo()
@@ -85,8 +91,8 @@ public class CompatTest extends AbstractTest
         byte[] byte2 = ProtostuffIOUtil.toByteArray(foo2, schema2, buf());
         byte[] byte3 = ProtostuffIOUtil.toByteArray(foo1, schema3, buf());
 
-        assertTrue(Arrays.equals(byte1, byte2));
-        assertTrue(Arrays.equals(byte1, byte3));
+        assertArrayEquals(byte1, byte2);
+        assertArrayEquals(byte1, byte3);
     }
 
     static <T extends Message<T>> Schema<T> getCachedSchema(Class<T> clazz)
@@ -98,6 +104,7 @@ public class CompatTest extends AbstractTest
         return schema;
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testMixed() throws Exception
     {
@@ -188,6 +195,7 @@ public class CompatTest extends AbstractTest
         return new LinkedHashMap<>();
     }
 
+    @Test
     public void testByteArrayCompat()
     {
         PojoWithByteArray pwba = new PojoWithByteArray();

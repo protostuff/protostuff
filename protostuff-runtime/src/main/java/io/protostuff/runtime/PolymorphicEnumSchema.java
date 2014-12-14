@@ -145,13 +145,15 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         final Class<?> clazz = value.getClass();
         if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());
             strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
         }
         else
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz);
             strategy.writeEnumIdTo(output, ID_ENUM, clazz);
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
         }
     }
 

@@ -970,7 +970,7 @@ public final class RuntimeUnsafeFieldFactory
                     final Enum<?> existing = (Enum<?>) us.getObject(message,
                             offset);
                     if (existing != null)
-                        EnumIO.writeTo(output, number, repeated, existing);
+                        eio.writeTo(output, number, repeated, existing);
                 }
 
                 @Override
@@ -1519,7 +1519,7 @@ public final class RuntimeUnsafeFieldFactory
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
-                    final Object value = (Object) us.getObject(message, offset);
+                    final Object value = us.getObject(message, offset);
                     if (value != null)
                         delegate.writeTo(output, number, value, false);
                 }
