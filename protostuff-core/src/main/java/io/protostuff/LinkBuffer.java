@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * A list of ByteBuffers.
  * <p>
- * Created by ryan on 1/22/14.
+ * @author Ryan Rawson
  */
 public class LinkBuffer
 {

@@ -9,7 +9,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * Created by ryan on 1/25/14.
+ * @author Ryan Rawson
  */
 public class LowCopyProtostuffOutputTest extends TestCase
 {
