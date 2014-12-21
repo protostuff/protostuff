@@ -180,7 +180,7 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied buf {@code inBuffer} to use.
+     * Creates a {@link UTF8StreamJsonParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
     public static UTF8StreamJsonParser newJsonParser(InputStream in, byte[] buf,
             int offset, int limit) throws IOException
@@ -191,7 +191,7 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied buf {@code inBuffer} to use.
+     * Creates a {@link UTF8StreamJsonParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
     static UTF8StreamJsonParser newJsonParser(InputStream in, byte[] buf,
             int offset, int limit, boolean bufferRecyclable, IOContext context)
@@ -205,7 +205,7 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf {@code outBuffer} to use.
+     * Creates a {@link UTF8JsonGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
     public static UTF8JsonGenerator newJsonGenerator(OutputStream out, byte[] buf)
     {
@@ -214,7 +214,7 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf {@code outBuffer} to use.
+     * Creates a {@link UTF8JsonGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
     static UTF8JsonGenerator newJsonGenerator(OutputStream out, byte[] buf, int offset,
             boolean bufferRecyclable, IOContext context)
