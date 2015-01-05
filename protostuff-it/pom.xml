@@ -88,12 +88,6 @@
               <source>src/test/proto/EmptyMessageIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
-              <!--<encoding>UTF-8</encoding>-->
-              <!--<options>-->
-                <!--<property>-->
-                  <!--<name>separate_schema</name>-->
-                <!--</property>-->
-              <!--</options>-->
             </protoModule>
             <protoModule>
               <source>src/test/proto/RepeatedIT.proto</source>
