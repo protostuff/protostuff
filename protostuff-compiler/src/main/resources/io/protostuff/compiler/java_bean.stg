@@ -474,10 +474,6 @@ message_field_merge(message, options, name) ::= <<
 
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
-<if(message.repeatedFieldPresent)>
-    try {
-
-<endif>
     for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
     {
         switch(number)
@@ -489,23 +485,8 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
                 input.handleUnknownField(number, this);
         }   
     }
-<if(message.repeatedFieldPresent)>
-    } finally {
-    <message.fields:unmodifiable_lists(field=it, options=options, name=name); separator="\n">
-    }
-
-<endif>
 }
 
->>
-
-unmodifiable_lists(field, options, name) ::= <<
-<if (field.repeated)>
-if (<name>.<var(val=field.name, fmt="CC", options=options)> != null)
-    <name>.<var(val=field.name, fmt="CC", options=options)> = java.util.Collections.unmodifiableList(<name>.<var(val=field.name, fmt="CC", options=options)>);
-else
-    <name>.<var(val=field.name, fmt="CC", options=options)> = java.util.Collections.emptyList();
-<endif>
 >>
 
 field_merge_switch(field, options, name) ::= <<
