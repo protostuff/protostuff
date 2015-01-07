@@ -89,6 +89,9 @@ enum_header(eg, module, options) ::= <<
 
 package <eg.proto.javaPackageName>;
 
+import javax.annotation.Generated;
+
+@Generated("io.protostuff.compiler.ProtoToJavaBeanCompiler")
 >>
 
 enum_switch_case(value, options) ::= <<
@@ -129,6 +132,7 @@ message_header(message, module, options) ::= <<
 
 package <message.proto.javaPackageName>;
 
+import javax.annotation.Generated;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -158,11 +162,12 @@ import io.protostuff.Pipe;
 <endif>
 
 import io.protostuff.Schema;
+
 <if(message.requiredFieldPresent)>
 import io.protostuff.UninitializedMessageException;
 <endif>
 
-
+@Generated("io.protostuff.compiler.ProtoToJavaBeanCompiler")
 >>
 
 message_impl_declaration(message, options) ::= <<
