@@ -3,8 +3,11 @@ package io.protostuff.compiler;
 import java.io.IOException;
 import java.util.Arrays;
 
+import io.protostuff.compiler.it.UnmodifiableInt32List;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 import io.protostuff.Input;
@@ -19,6 +22,9 @@ import io.protostuff.compiler.it.Int32List;
 public class RepeatedIT
 {
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 	/**
 	 * Test that generated #mergeFrom method can be used multiple times
 	 *
@@ -31,6 +37,15 @@ public class RepeatedIT
 		list.mergeFrom(createInput(42), list);
 		list.mergeFrom(createInput(43), list);
 		Assert.assertEquals(Arrays.asList(42, 43), list.getNumbersList());
+	}
+
+	@Test
+	public void testUnmodifiableList() throws Exception
+	{
+		UnmodifiableInt32List list = UnmodifiableInt32List.getSchema().newMessage();
+		list.mergeFrom(createInput(42), list);
+		exception.expect(UnsupportedOperationException.class);
+		list.mergeFrom(createInput(43), list);
 	}
 
 	private Input createInput(int result) throws IOException

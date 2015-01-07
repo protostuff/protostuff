@@ -94,6 +94,16 @@
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
             </protoModule>
+            <protoModule>
+              <source>src/test/proto/UnmodifiableRepeatedIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean</output>
+              <options>
+                <property>
+                  <name>java_unmodifiable_list</name>
+                </property>
+              </options>
+            </protoModule>
           </protoModules>
         </configuration>
         <executions>
