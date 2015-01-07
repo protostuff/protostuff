@@ -474,9 +474,11 @@ message_field_merge(message, options, name) ::= <<
 
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
+<if(options.("java_unmodifiable_list"))>
 <if(message.repeatedFieldPresent)>
     try {
 
+<endif>
 <endif>
     for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
     {
@@ -489,11 +491,13 @@ public void mergeFrom(Input input, <message.name> <name>) throws IOException
                 input.handleUnknownField(number, this);
         }   
     }
+<if(options.("java_unmodifiable_list"))>
 <if(message.repeatedFieldPresent)>
     } finally {
     <message.fields:unmodifiable_lists(field=it, options=options, name=name); separator="\n">
     }
 
+<endif>
 <endif>
 }
 

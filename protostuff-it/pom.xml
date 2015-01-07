@@ -40,12 +40,13 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
-    <testSourceDirectory>
-      ${project.build.directory}/generated-test-sources/test-proto
-    </testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -59,6 +60,25 @@
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-test-sources/test-proto</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-maven-plugin</artifactId>
         <version>${project.version}</version>
@@ -68,10 +88,19 @@
               <source>src/test/proto/EmptyMessageIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
-              <encoding>UTF-8</encoding>
+            </protoModule>
+            <protoModule>
+              <source>src/test/proto/RepeatedIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean</output>
+            </protoModule>
+            <protoModule>
+              <source>src/test/proto/UnmodifiableRepeatedIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean</output>
               <options>
                 <property>
-                  <name>separate_schema</name>
+                  <name>java_unmodifiable_list</name>
                 </property>
               </options>
             </protoModule>
