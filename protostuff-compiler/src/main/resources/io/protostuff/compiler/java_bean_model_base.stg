@@ -5,6 +5,7 @@ message_header(message, module, options) ::= <<
 
 package <message.proto.javaPackageName>;
 
+import javax.annotation.Generated;
 import java.io.IOException;
 <if(message.byteBufferFieldPresent)>
 import java.nio.ByteBuffer;
@@ -36,7 +37,9 @@ import io.protostuff.UninitializedMessageException;
 
 <message.proto.messages:message_header_import(message=it, module=module, options=options)>
 
+@Generated("<module.output>")
 >>
+
 message_header_import(message, module, options) ::= <<
 <if(message.annotationMap.Import)>
 <message.annotationMap.Import.params:message_header_import_import(import=it, module=module, options=options); separator="\n">
