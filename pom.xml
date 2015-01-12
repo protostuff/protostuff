@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.protostuff</groupId>
   <artifactId>protostuff</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>protostuff</name>
   <description>Java serialization library, proto compiler, code generator, protobuf utilities, gwt overlays, android
@@ -51,7 +51,7 @@
     <url>https://github.com/protostuff/protostuff</url>
     <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
     <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
-    <tag>protostuff-1.3.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
