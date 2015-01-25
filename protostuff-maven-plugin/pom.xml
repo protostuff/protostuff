@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -18,36 +19,8 @@
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <delete file="../dist/${project.build.finalName}.jar" />
-              </tasks>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copyjar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <copy failonerror="false" file="target/${project.build.finalName}.jar" tofile="../dist/${project.build.finalName}.jar" />
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
+
+    <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
@@ -55,12 +28,10 @@
             <tagletArtifact>
               <groupId>org.apache.maven.plugin-tools</groupId>
               <artifactId>maven-plugin-tools-javadoc</artifactId>
-              <version>2.4</version>
+              <version>2.5</version>
             </tagletArtifact>
           </tagletArtifacts>
-
         </configuration>
-
       </plugin>
 
       <plugin>
