@@ -88,70 +88,8 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <delete file="../dist/${project.build.finalName}.${project.packaging}" />
-              </tasks>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copyjar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <copy failonerror="false" file="target/${project.build.finalName}.${project.packaging}" tofile="../dist/${project.build.finalName}.${project.packaging}" />
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
-          <tags>
-            <tag>
-              <name>created</name>
-              <placement>t</placement>
-              <head>Date created:</head>
-            </tag>
-          </tags>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-            <phase>site</phase>
-            <configuration>
-              <reportOutputDirectory>${basedir}</reportOutputDirectory>
-              <destDir>javadoc</destDir>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-          </execution>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -255,6 +193,84 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.1</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>aggregate</id>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+              <phase>site</phase>
+              <configuration>
+                <additionalparam>-Xdoclint:none</additionalparam>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
+            <tags>
+              <tag>
+                <name>created</name>
+                <placement>t</placement>
+                <head>Date created:</head>
+              </tag>
+              <tag>
+                <name>goal</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>phase</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>execute</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>requiresDependencyResolution</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>parameter</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>required</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>readonly</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>component</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>configurator</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>requiresDependencyResolution</name>
+                <placement>Xt</placement>
+              </tag>
+            </tags>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
         </plugin>
       </plugins>
     </pluginManagement>
