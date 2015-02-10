@@ -15,6 +15,7 @@
 package io.protostuff.mojo;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -114,6 +115,15 @@ public class ProtoCompilerMojo extends AbstractMojo
      */
     protected File baseDir;
 
+    /**
+     * Plugin properties that are passed to the compiler
+     *
+     * @parameter
+     */
+    protected Properties properties;
+
+    private Properties systemPropertiesBackup;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException
     {
@@ -126,61 +136,40 @@ public class ProtoCompilerMojo extends AbstractMojo
 
         CachingProtoLoader loader = cacheProtos ? new CachingProtoLoader() : null;
 
-        if (modulesFile == null)
+        try
         {
-            if (protoModules == null)
+            setSystemProperties();
+            if (modulesFile == null)
             {
-                throw new MojoExecutionException("Either <modules> or <modulesFile> " +
-                        "should be provided.");
-            }
-            try
-            {
-                for (ProtoModule m : protoModules)
+                if (protoModules == null)
                 {
-                    m.setCachingProtoLoader(loader);
-                    if (!CompilerMain.isAvailableOutput(m.getOutput()) &&
-                            !baseDir.getAbsoluteFile().equals(
-                                    new File(".").getAbsoluteFile()))
-                    {
-                        // custom stg output executed on a child pom
-                        try
-                        {
-                            File relativePath = new File(baseDir, m.getOutput());
-                            if (relativePath.exists())
-                            {
-                                // update the path module.
-                                m.setOutput(relativePath.getCanonicalPath());
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // ignore ... <output> might be an absolute path
-                        }
-                    }
-                    CompilerMain.compile(m);
-
-                    // enabled by default unless overridden
-                    if (m.isAddToCompileSourceRoot())
-                    {
-                        // Include generated directory to the list of compilation sources
-                        project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
-                    }
+                    throw new MojoExecutionException("Either <modules> or <modulesFile> " +
+                            "should be provided.");
                 }
-            }
-            catch (Exception e)
-            {
-                throw new MojoExecutionException(e.getMessage(), e);
-            }
-        }
-        else
-        {
-            try
-            {
-                if (protoModules != null)
+                try
                 {
                     for (ProtoModule m : protoModules)
                     {
                         m.setCachingProtoLoader(loader);
+                        if (!CompilerMain.isAvailableOutput(m.getOutput()) &&
+                                !baseDir.getAbsoluteFile().equals(
+                                        new File(".").getAbsoluteFile()))
+                        {
+                            // custom stg output executed on a child pom
+                            try
+                            {
+                                File relativePath = new File(baseDir, m.getOutput());
+                                if (relativePath.exists())
+                                {
+                                    // update the path module.
+                                    m.setOutput(relativePath.getCanonicalPath());
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                // ignore ... <output> might be an absolute path
+                            }
+                        }
                         CompilerMain.compile(m);
 
                         // enabled by default unless overridden
@@ -191,27 +180,77 @@ public class ProtoCompilerMojo extends AbstractMojo
                         }
                     }
                 }
-
-                if (!modulesFile.exists())
-                    throw new MojoExecutionException(modulesFile + " does not exist.");
-
-                File parent = modulesFile.getParentFile();
-                File sourceBaseDir = this.sourceBaseDir, outputBaseDir = this.outputBaseDir;
-
-                if (sourceBaseDir == null)
-                    sourceBaseDir = parent;
-
-                if (outputBaseDir == null)
-                    outputBaseDir = parent;
-
-                CompilerMain.compile(CompilerMain.loadModules(modulesFile,
-                        sourceBaseDir, outputBaseDir));
+                catch (Exception e)
+                {
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
             }
-            catch (Exception e)
+            else
             {
-                throw new MojoExecutionException(e.getMessage(), e);
+                try
+                {
+                    if (protoModules != null)
+                    {
+                        for (ProtoModule m : protoModules)
+                        {
+                            m.setCachingProtoLoader(loader);
+                            CompilerMain.compile(m);
+
+                            // enabled by default unless overridden
+                            if (m.isAddToCompileSourceRoot())
+                            {
+                                // Include generated directory to the list of compilation sources
+                                project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                            }
+                        }
+                    }
+
+                    if (!modulesFile.exists())
+                        throw new MojoExecutionException(modulesFile + " does not exist.");
+
+                    File parent = modulesFile.getParentFile();
+                    File sourceBaseDir = this.sourceBaseDir, outputBaseDir = this.outputBaseDir;
+
+                    if (sourceBaseDir == null)
+                        sourceBaseDir = parent;
+
+                    if (outputBaseDir == null)
+                        outputBaseDir = parent;
+
+                    CompilerMain.compile(CompilerMain.loadModules(modulesFile,
+                            sourceBaseDir, outputBaseDir));
+                }
+                catch (Exception e)
+                {
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
             }
         }
+        finally
+        {
+            resetSystemProperties();
+        }
+    }
+
+    private void setSystemProperties()
+    {
+        systemPropertiesBackup = System.getProperties();
+        if (properties != null)
+        {
+            for (Object o : properties.keySet())
+            {
+                String key = (String) o;
+                String value = properties.getProperty(key);
+
+                System.setProperty(key, value);
+                getLog().info("Set property: " + key + " = '" + value + "'");
+            }
+        }
+    }
+
+    private void resetSystemProperties()
+    {
+        System.setProperties(systemPropertiesBackup);
     }
 
     /**
@@ -224,7 +263,7 @@ public class ProtoCompilerMojo extends AbstractMojo
      * <li>if the mojo gets executed on a project with packaging type 'pom' and {@link #forceMojoExecution} is
      * <code>false</code></li>
      * </ul>
-     * 
+     *
      * @return <code>true</code> if the mojo execution should be skipped.
      * @since 1.0.1
      */
