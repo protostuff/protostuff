@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  * The main execution point of compiling protos.
  * 
@@ -314,42 +317,60 @@ public final class CompilerMain
     public static void compile(ProtoModule module) throws Exception
     {
         String strOptions = null;
-        for (String output : COMMA.split(module.getOutput()))
+        String originalOutput = module.getOutput();
+        try
         {
-            output = output.trim();
-            ProtoCompiler compiler = __compilers.get(output);
-            if (compiler == null)
+            for (String output : COMMA.split(originalOutput))
             {
-                if (__compilerResolver != null)
-                    compiler = __compilerResolver.resolve(module);
-                else if (output.endsWith(".stg"))
+                output = output.trim();
+                // update output for each iteration
+                // effectively it is different compiler
+                module.setOutput(output);
+                // default generator is "output"
+                module.setGenerator(output);
+                ProtoCompiler compiler = __compilers.get(output);
+                if (compiler == null)
                 {
-                    // custom code generator
-                    compiler = new PluginProtoCompiler(module, output);
+                    if (__compilerResolver != null)
+                        compiler = __compilerResolver.resolve(module);
+                    else if (output.endsWith(".stg"))
+                    {
+                        // custom code generator
+                        String name = FilenameUtils.getName(output);
+                        String generator = StringEscapeUtils.escapeJava(name);
+                        module.setGenerator(generator);
+                        compiler = new PluginProtoCompiler(module, output);
+                    }
+                    else
+                        throw new IllegalStateException("unknown output: " + output);
                 }
-                else
-                    throw new IllegalStateException("unknown output: " + output);
+
+                compiler.compile(module);
+
+                if (!SILENT_MODE)
+                {
+                    StringBuilder buffer = new StringBuilder()
+                            .append("Successfully compiled proto from ")
+                            .append(module.getSource())
+                            .append(" to output: ")
+                            .append(output);
+
+                    // lazy
+                    if (strOptions == null)
+                        strOptions = module.getOptions().toString();
+
+                    if (strOptions.length() > 2)
+                        buffer.append(' ').append(strOptions);
+
+                    System.out.println(buffer.toString());
+                }
             }
-
-            compiler.compile(module);
-
-            if (!SILENT_MODE)
-            {
-                StringBuilder buffer = new StringBuilder()
-                        .append("Successfully compiled proto from ")
-                        .append(module.getSource())
-                        .append(" to output: ")
-                        .append(output);
-
-                // lazy
-                if (strOptions == null)
-                    strOptions = module.getOptions().toString();
-
-                if (strOptions.length() > 2)
-                    buffer.append(' ').append(strOptions);
-
-                System.out.println(buffer.toString());
-            }
+        }
+        finally
+        {
+            // reset original module output and generator
+            module.setOutput(originalOutput);
+            module.setGenerator(null);
         }
     }
 

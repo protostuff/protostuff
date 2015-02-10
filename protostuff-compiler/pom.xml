@@ -39,6 +39,16 @@
       <groupId>org.antlr</groupId>
       <artifactId>stringtemplate</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.2</version>
+    </dependency>
   </dependencies>
 
   <profiles>

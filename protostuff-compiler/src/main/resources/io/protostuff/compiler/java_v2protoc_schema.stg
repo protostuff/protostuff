@@ -18,7 +18,7 @@ package <proto.javaPackageName>;
 
 import javax.annotation.Generated;
 
-@Generated("<module.output>")
+@Generated("<module.generator>")
 >>
 
 derived_outer_name(proto, options) ::= <<

@@ -91,7 +91,7 @@ package <eg.proto.javaPackageName>;
 
 import javax.annotation.Generated;
 
-@Generated("<module.output>")
+@Generated("<module.generator>")
 >>
 
 enum_switch_case(value, options) ::= <<
@@ -167,7 +167,7 @@ import io.protostuff.Schema;
 import io.protostuff.UninitializedMessageException;
 <endif>
 
-@Generated("<module.output>")
+@Generated("<module.generator>")
 >>
 
 message_impl_declaration(message, options) ::= <<
