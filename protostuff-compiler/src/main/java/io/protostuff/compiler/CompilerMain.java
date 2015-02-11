@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 /**
  * The main execution point of compiling protos.
- * 
+ *
  * @author David Yu
  * @created Jan 5, 2010
  */
@@ -37,20 +37,13 @@ public final class CompilerMain
             System.getProperty("protostuff.compiler.silent_mode", "true"));
 
     public static final Pattern COMMA = Pattern.compile(",");
+    // path delimiters
+    public static final char WINDOWS_DELIMITER = '\\';
+    public static final char LINUX_DELIMITER = '/';
 
     static final HashMap<String, ProtoCompiler> __compilers =
             new HashMap<>();
-
-    /**
-     * When there is no matching compiler for the {@link ProtoModule#getOutput()}.
-     */
-    public interface CompilerResolver
-    {
-        ProtoCompiler resolve(ProtoModule module);
-    }
-
     private static CompilerResolver __compilerResolver = null;
-
     static
     {
         addCompiler(new ProtoToJavaBeanCompiler());
@@ -314,43 +307,101 @@ public final class CompilerMain
     public static void compile(ProtoModule module) throws Exception
     {
         String strOptions = null;
-        for (String output : COMMA.split(module.getOutput()))
+        String originalOutput = module.getOutput();
+        try
         {
-            output = output.trim();
-            ProtoCompiler compiler = __compilers.get(output);
-            if (compiler == null)
+            for (String output : COMMA.split(originalOutput))
             {
-                if (__compilerResolver != null)
-                    compiler = __compilerResolver.resolve(module);
-                else if (output.endsWith(".stg"))
+                output = output.trim();
+                // update output for each iteration
+                // effectively it is different compiler
+                module.setOutput(output);
+                // default generator is "output"
+                module.setGenerator(output);
+                ProtoCompiler compiler = __compilers.get(output);
+                if (compiler == null)
                 {
-                    // custom code generator
-                    compiler = new PluginProtoCompiler(module, output);
+                    if (__compilerResolver != null)
+                        compiler = __compilerResolver.resolve(module);
+                    else if (output.endsWith(".stg"))
+                    {
+                        // custom code generator
+                        String generator = createGeneratorName(output);
+                        module.setGenerator(generator);
+                        compiler = new PluginProtoCompiler(module, output);
+                    }
+                    else
+                        throw new IllegalStateException("unknown output: " + output);
                 }
-                else
-                    throw new IllegalStateException("unknown output: " + output);
-            }
 
-            compiler.compile(module);
+                compiler.compile(module);
 
-            if (!SILENT_MODE)
-            {
-                StringBuilder buffer = new StringBuilder()
-                        .append("Successfully compiled proto from ")
-                        .append(module.getSource())
-                        .append(" to output: ")
-                        .append(output);
+                if (!SILENT_MODE)
+                {
+                    StringBuilder buffer = new StringBuilder()
+                            .append("Successfully compiled proto from ")
+                            .append(module.getSource())
+                            .append(" to output: ")
+                            .append(output);
 
-                // lazy
-                if (strOptions == null)
-                    strOptions = module.getOptions().toString();
+                    // lazy
+                    if (strOptions == null)
+                        strOptions = module.getOptions().toString();
 
-                if (strOptions.length() > 2)
-                    buffer.append(' ').append(strOptions);
+                    if (strOptions.length() > 2)
+                        buffer.append(' ').append(strOptions);
 
-                System.out.println(buffer.toString());
+                    System.out.println(buffer.toString());
+                }
             }
         }
+        finally
+        {
+            // reset original module output and generator
+            module.setOutput(originalOutput);
+            module.setGenerator(null);
+        }
+    }
+
+    private static String createGeneratorName(String output)
+    {
+        String fileName = getFileName(output);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fileName.length(); i++)
+        {
+            char c = fileName.charAt(i);
+            if (isAlpha(c) || isNumber(c) || c == '.' || c == '_' || c == '-')
+            {
+                sb.append(c);
+            }
+            else
+            {
+                sb.append('_');
+            }
+        }
+        return sb.toString();
+    }
+
+    private static boolean isNumber(char c)
+    {
+        return (c >= '0' && c <= '9');
+    }
+
+    private static boolean isAlpha(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private static String getFileName(String fullPath)
+    {
+        if (fullPath == null)
+        {
+            return null;
+        }
+        int winDelimiterPos = fullPath.lastIndexOf(WINDOWS_DELIMITER);
+        int linDelimiterPos = fullPath.lastIndexOf(LINUX_DELIMITER);
+        int pos = Math.max(winDelimiterPos, linDelimiterPos);
+        return fullPath.substring(pos + 1, fullPath.length());
     }
 
     public static void compile(List<ProtoModule> modules) throws Exception
@@ -600,6 +651,14 @@ public final class CompilerMain
             compileWithNoArgs();
         else
             compileWithArgs(args, 0, args.length);
+    }
+
+    /**
+     * When there is no matching compiler for the {@link ProtoModule#getOutput()}.
+     */
+    public interface CompilerResolver
+    {
+        ProtoCompiler resolve(ProtoModule module);
     }
 
 }
