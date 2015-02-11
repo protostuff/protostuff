@@ -370,7 +370,7 @@ public final class CompilerMain
         for (int i = 0; i < fileName.length(); i++)
         {
             char c = fileName.charAt(i);
-            if (isAlpha(c) || isNumber(c) || c == '.' || c == '_' || c == '-')
+            if (isAlpha(c) || isNumber(c) || isAllowedCharacter(c))
             {
                 sb.append(c);
             }
@@ -380,6 +380,11 @@ public final class CompilerMain
             }
         }
         return sb.toString();
+    }
+
+    private static boolean isAllowedCharacter(char c)
+    {
+        return c == '.' || c == '_' || c == '-' || c == '$';
     }
 
     private static boolean isNumber(char c)

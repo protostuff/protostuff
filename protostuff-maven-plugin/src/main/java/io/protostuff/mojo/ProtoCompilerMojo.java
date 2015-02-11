@@ -15,12 +15,16 @@
 package io.protostuff.mojo;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+
+import com.google.common.base.Joiner;
 
 import io.protostuff.compiler.CachingProtoLoader;
 import io.protostuff.compiler.CompilerMain;
@@ -151,25 +155,7 @@ public class ProtoCompilerMojo extends AbstractMojo
                     for (ProtoModule m : protoModules)
                     {
                         m.setCachingProtoLoader(loader);
-                        if (!CompilerMain.isAvailableOutput(m.getOutput()) &&
-                                !baseDir.getAbsoluteFile().equals(
-                                        new File(".").getAbsoluteFile()))
-                        {
-                            // custom stg output executed on a child pom
-                            try
-                            {
-                                File relativePath = new File(baseDir, m.getOutput());
-                                if (relativePath.exists())
-                                {
-                                    // update the path module.
-                                    m.setOutput(relativePath.getCanonicalPath());
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                // ignore ... <output> might be an absolute path
-                            }
-                        }
+                        updateRelativeOutputLocation(m);
                         CompilerMain.compile(m);
 
                         // enabled by default unless overridden
@@ -230,6 +216,44 @@ public class ProtoCompilerMojo extends AbstractMojo
         {
             resetSystemProperties();
         }
+    }
+
+    private void updateRelativeOutputLocation(ProtoModule m)
+    {
+        String originalOutput = m.getOutput();
+        String[] outputList = CompilerMain.COMMA.split(originalOutput);
+        List<String> result = new ArrayList<>();
+        for (String output : outputList)
+        {
+            output = output.trim();
+            boolean standardOutput = CompilerMain.isAvailableOutput(output);
+            File basedir = baseDir.getAbsoluteFile();
+            File currentDir = new File(".").getAbsoluteFile();
+            if (!standardOutput)
+            {
+                // custom stg
+                try
+                {
+                    File absolutePath = new File(output);
+                    if (!absolutePath.exists())
+                    {
+                        File relativePath = new File(baseDir, output);
+                        if (relativePath.exists())
+                        {
+                            // set full path to the stg
+                            output = relativePath.getCanonicalPath();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    getLog().debug("Can not determine full path for output=" + output, e);
+                }
+            }
+            result.add(output);
+        }
+        String updatedOutput = Joiner.on(',').join(result);
+        m.setOutput(updatedOutput);
     }
 
     private void setSystemProperties()
