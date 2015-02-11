@@ -37,9 +37,6 @@ public final class CompilerMain
             System.getProperty("protostuff.compiler.silent_mode", "true"));
 
     public static final Pattern COMMA = Pattern.compile(",");
-    // path delimiters
-    public static final char WINDOWS_DELIMITER = '\\';
-    public static final char LINUX_DELIMITER = '/';
 
     static final HashMap<String, ProtoCompiler> __compilers =
             new HashMap<>();
@@ -365,7 +362,7 @@ public final class CompilerMain
 
     private static String createGeneratorName(String output)
     {
-        String fileName = getFileName(output);
+        String fileName = FilenameUtil.getFileName(output);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < fileName.length(); i++)
         {
@@ -395,18 +392,6 @@ public final class CompilerMain
     private static boolean isAlpha(char c)
     {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-    }
-
-    private static String getFileName(String fullPath)
-    {
-        if (fullPath == null)
-        {
-            return null;
-        }
-        int winDelimiterPos = fullPath.lastIndexOf(WINDOWS_DELIMITER);
-        int linDelimiterPos = fullPath.lastIndexOf(LINUX_DELIMITER);
-        int pos = Math.max(winDelimiterPos, linDelimiterPos);
-        return fullPath.substring(pos + 1, fullPath.length());
     }
 
     public static void compile(List<ProtoModule> modules) throws Exception

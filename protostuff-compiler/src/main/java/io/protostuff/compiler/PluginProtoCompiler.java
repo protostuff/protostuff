@@ -210,10 +210,9 @@ public class PluginProtoCompiler extends STCodeGenerator
      */
     static String getOutputName(String resource)
     {
-        final int secondToTheLastDot = resource.lastIndexOf('.', resource.length() - 5), slash = resource.lastIndexOf(
-                '/', secondToTheLastDot);
-
-        return resource.substring(slash + 1, secondToTheLastDot);
+        String filename = FilenameUtil.getFileName(resource);
+        int secondToTheLastDot = filename.lastIndexOf('.', filename.length() - 5);
+        return filename.substring(0, secondToTheLastDot);
     }
 
     /**
