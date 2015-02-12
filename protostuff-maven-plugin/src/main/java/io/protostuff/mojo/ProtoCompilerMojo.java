@@ -14,12 +14,16 @@
 
 package io.protostuff.mojo;
 
+import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
+
 import java.io.File;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import io.protostuff.compiler.CachingProtoLoader;
@@ -29,57 +33,52 @@ import io.protostuff.compiler.CompilerMain;
  * Compiles proto files to java/gwt/etc.
  * 
  * @author David Yu
- *
- * @goal compile
- * @configurator include-project-dependencies
- * @requiresDependencyResolution compile+runtime
  */
+@Mojo(
+        name = "compile",
+        configurator = "include-project-dependencies",
+        requiresDependencyResolution = COMPILE_PLUS_RUNTIME)
 public class ProtoCompilerMojo extends AbstractMojo
 {
 
     /**
      * The current Maven project.
-     * 
-     * @parameter default-value="${project}"
-     * @readonly
-     * @required
-     * @since 1.0.1
      */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * When {@code true}, skip the execution.
-     * 
-     * @parameter expression="${protostuff.compiler.skip}" default-value="false"
+     *
      * @since 1.0.1
      */
+    @Parameter(property = "protostuff.compiler.skip", defaultValue = "false")
     private boolean skip;
 
     /**
      * When {@code true}, the protos are cached for re-use. This matters when a certain proto is also used/imported by
      * other modules.
-     * 
-     * @parameter expression="${protostuff.compiler.cache_protos}" default-value="false"
+     *
      * @since 1.0.5
      */
+    @Parameter(property = "protostuff.compiler.cache_protos", defaultValue = "false")
     private boolean cacheProtos;
 
     /**
      * Usually most of protostuff mojos will not get executed on parent poms (i.e. projects with packaging type 'pom').
      * Setting this parameter to {@code true} will force the execution of this mojo, even if it would usually get
      * skipped in this case.
-     * 
-     * @parameter expression="${protostuff.compiler.force}" default-value="false"
-     * @required
+     *
      * @since 1.0.1
      */
+    @Parameter(property = "protostuff.compiler.force", defaultValue = "false", required = true)
     private boolean forceMojoExecution;
 
     /**
      * The properties file that contains the modules
-     * 
-     * @parameter
+     *
      */
+    @Parameter
     protected File modulesFile;
 
     /**
@@ -87,9 +86,9 @@ public class ProtoCompilerMojo extends AbstractMojo
      * <p>
      * This is only relevent when {@link #modulesFile is provided}.
      * 
-     * @parameter
      * @since 1.0.8
      */
+    @Parameter
     protected File sourceBaseDir;
 
     /**
@@ -97,29 +96,30 @@ public class ProtoCompilerMojo extends AbstractMojo
      * <p>
      * This is only relevent when {@link #modulesFile is provided}.
      * 
-     * @parameter
      * @since 1.0.8
      */
+    @Parameter
     protected File outputBaseDir;
 
     /**
      * The modules to generate code from
      * 
-     * @parameter
      */
+    @Parameter
     protected ProtoModule[] protoModules;
 
     /**
-     * @parameter expression="${project.basedir}"
-     * @required
+     * Maven module base directory
      */
+    @Parameter(property = "project.basedir", required = true)
     protected File baseDir;
 
     /**
      * Plugin properties that are passed to the compiler
      *
-     * @parameter
+     * @since 1.3.1
      */
+    @Parameter
     protected Properties properties;
 
     private Properties systemPropertiesBackup;
