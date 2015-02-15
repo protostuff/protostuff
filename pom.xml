@@ -41,7 +41,7 @@
     </developer>
     <developer>
       <id>kshchepanovskyi</id>
-      <name>Konstantin Shchepanovskyi</name>
+      <name>Kostiantyn Shchepanovskyi</name>
       <email>schepanovsky@gmail.com</email>
       <timezone>+2</timezone>
     </developer>
@@ -419,6 +419,7 @@
     <module>protostuff-maven-plugin</module>
     <module>protostuff-uberjar</module>
     <module>protostuff-it</module>
+    <module>protostuff-bom</module>
   </modules>
 
 </project>
