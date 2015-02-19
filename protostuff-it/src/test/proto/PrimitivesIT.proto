@@ -1,0 +1,8 @@
+package it;
+option java_package = "io.protostuff.compiler.it";
+
+message PrimitiveFields {
+  optional int32 a = 1;
+  optional int64 b = 2;
+}
+
