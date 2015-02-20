@@ -80,4 +80,16 @@ public class EmptyMessageIT
         Assert.assertNotNull(newMessage.getA());
     }
 
+    @Test
+    public void testEquals() throws Exception
+    {
+        Assert.assertEquals(new EmptyMessage(), new EmptyMessage());
+    }
+
+    @Test
+    public void testHashcode() throws Exception
+    {
+        Assert.assertEquals(0, new EmptyMessage().hashCode());
+    }
+
 }

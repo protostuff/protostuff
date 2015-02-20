@@ -104,6 +104,16 @@
                 </property>
               </options>
             </protoModule>
+            <protoModule>
+              <source>src/test/proto/PrimitivesIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean_primitives</output>
+            </protoModule>
+            <protoModule>
+              <source>src/test/proto/JavaBeanModelIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean_model</output>
+            </protoModule>
           </protoModules>
         </configuration>
         <executions>

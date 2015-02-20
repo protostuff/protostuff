@@ -6,6 +6,11 @@ message_header(message, module, options) ::= <<
 package <message.proto.javaPackageName>;
 
 import javax.annotation.Generated;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Objects;
 import java.io.IOException;
 <if(message.byteBufferFieldPresent)>
 import java.nio.ByteBuffer;
@@ -26,6 +31,8 @@ import io.protostuff.ByteString;
 
 import io.protostuff.Input;
 import io.protostuff.Output;
+import io.protostuff.Message;
+import io.protostuff.GraphIOUtil;
 <if(options.generate_pipe_schema)>
 import io.protostuff.Pipe;
 <endif>

@@ -114,8 +114,9 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     
     <message.fields:field_declaration(field=it, options=options, modifier="private"); separator="\n">
     <message:message_constructor(message=it, options=options)>
-    <message:message_to_string(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
+    <message:message_equals_and_hashcode(message=it, options=options)>
+    <message:message_to_string(message=it, options=options)>
     <message:message_impl_serializable(message=it, options=options)>
     <message:message_impl_message(message=it, options=options)>
     <message:message_impl_schema(message=it, options=options)>
@@ -137,6 +138,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Objects;
 <if(message.repeatedFieldPresent)>
 import java.util.ArrayList;
 import java.util.List;
@@ -366,6 +368,43 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 <endif>
 
 <endif>
+>>
+
+message_equals_and_hashcode(message, options) ::= <<
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || this.getClass() != obj.getClass()) {
+        return false;
+    }
+    final <message.name> that = (<message.name>) obj;
+    <if(first(message.fields))>
+    return
+            <message.fields:field_equals(field=it, options=options, message=message); separator=" &&\n">;
+    <else>
+    return true;
+    <endif>
+}
+
+@Override
+public int hashCode() {
+    <if(first(message.fields))>
+    return Objects.hash(<message.fields:field_name(field=it, options=options, message=message); separator=", ">);
+    <else>
+    return 0;
+    <endif>
+}
+
+>>
+
+field_equals(field, options, message) ::= <<
+Objects.equals(this.<var(val=field.name, fmt="CC", options=options)>, that.<var(val=field.name, fmt="CC", options=options)>)
+>>
+
+field_name(field, options, message) ::= <<
+<var(val=field.name, fmt="CC", options=options)>
 >>
 
 builder_pattern_return_type(field, options, type) ::= <<
