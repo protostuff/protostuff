@@ -160,4 +160,9 @@ public class EnumField extends Field<EnumGroup.Value>
     {
         return ev != null ? ev.getProto() : super.getProto();
     }
+
+    @Override
+    public java.lang.String getProtoType() {
+	return "enum";
+    }
 }
