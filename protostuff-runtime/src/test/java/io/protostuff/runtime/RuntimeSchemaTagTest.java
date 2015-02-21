@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openjdk.jol.info.GraphLayout;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
@@ -34,16 +33,6 @@ public class RuntimeSchemaTagTest
         A6 newMessage = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(bytes, newMessage, schema);
         Assert.assertEquals(source, newMessage);
-    }
-
-    @Test
-    public void testSchemaSize() throws Exception
-    {
-        GraphLayout tag1 = GraphLayout.parseInstance(RuntimeSchema.createFrom(A1.class));
-        GraphLayout tag6 = GraphLayout.parseInstance(RuntimeSchema.createFrom(A6.class));
-        // tag value should not affect schema size on the heap
-        // both messages have one field of same type, so their schemas should have same size
-        Assert.assertEquals(tag1.totalSize(), tag6.totalSize());
     }
 
     @Test(expected = IllegalArgumentException.class)
