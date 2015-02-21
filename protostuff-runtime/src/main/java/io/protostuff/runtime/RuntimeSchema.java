@@ -43,6 +43,9 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  */
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {
+    public static final int MIN_TAG_VALUE = 1;
+    public static final int MAX_TAG_VALUE = 536_870_911; // 2^29 - 1
+    public static final String ERROR_TAG_VALUE = "Invalid field number (value must be in range [1, 2^29-1]): ";
 
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
 
@@ -55,7 +58,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
      * Returns true if the baseClass does not exist.
      * <p>
      * NOTE: This is only supported when {@link RuntimeEnv#ID_STRATEGY} is {@link DefaultIdStrategy}.
-     * 
+     *
      * @throws IllegalArgumentException
      *             if the {@code typeClass} is an interface or an abstract class.
      */
@@ -166,8 +169,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             String[] exclusions, IdStrategy strategy)
     {
         HashSet<String> set = new HashSet<>();
-        for (String exclusion : exclusions)
-            set.add(exclusion);
+        Collections.addAll(set, exclusions);
 
         return createFrom(typeClass, set, strategy);
     }
@@ -236,10 +238,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     annotated = true;
                     fieldMapping = tag.value();
 
-                    if (fieldMapping < 1)
+                    if (fieldMapping < MIN_TAG_VALUE || fieldMapping > MAX_TAG_VALUE)
                     {
-                        throw new RuntimeException("Invalid field number: "
-                                + fieldMapping + " on " + typeClass);
+                        throw new IllegalArgumentException(ERROR_TAG_VALUE + fieldMapping + " on " + typeClass);
                     }
 
                     name = tag.alias().isEmpty() ? f.getName() : tag.alias();
@@ -254,7 +255,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             }
         }
 
-        return new RuntimeSchema<>(typeClass, fields, maxFieldMapping,
+        return new RuntimeSchema<>(typeClass, fields,
                 RuntimeEnv.newInstantiator(typeClass));
     }
 
@@ -298,7 +299,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                 fields.add(field);
             }
         }
-        return new RuntimeSchema<>(typeClass, fields, i,
+        return new RuntimeSchema<>(typeClass, fields,
                 RuntimeEnv.newInstantiator(typeClass));
     }
 
@@ -327,16 +328,16 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     public final Instantiator<T> instantiator;
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields,
-            int lastFieldNumber, Constructor<T> constructor)
+            Constructor<T> constructor)
     {
-        this(typeClass, fields, lastFieldNumber, new DefaultInstantiator<>(
+        this(typeClass, fields, new DefaultInstantiator<>(
                 constructor));
     }
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields,
-            int lastFieldNumber, Instantiator<T> instantiator)
+            Instantiator<T> instantiator)
     {
-        super(typeClass, fields, lastFieldNumber);
+        super(typeClass, fields);
         this.instantiator = instantiator;
     }
 

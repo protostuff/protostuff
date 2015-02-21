@@ -118,7 +118,7 @@ public abstract class IdStrategy
 
                 return new RuntimeSchema<>(typeClass, fields,
                         // the last field
-                        fields.get(size - 1).number, rs.instantiator);
+                        rs.instantiator);
             }
 
             return s;

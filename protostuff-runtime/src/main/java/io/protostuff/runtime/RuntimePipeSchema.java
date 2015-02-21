@@ -16,6 +16,7 @@ package io.protostuff.runtime;
 
 import java.io.IOException;
 
+import gnu.trove.map.TIntObjectMap;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
@@ -31,9 +32,9 @@ import io.protostuff.runtime.MappedSchema.Field;
 public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
 {
 
-    final Field<T>[] fieldsByNumber;
+    final TIntObjectMap<Field<T>> fieldsByNumber;
 
-    public RuntimePipeSchema(Schema<T> schema, Field<T>[] fieldsByNumber)
+    public RuntimePipeSchema(Schema<T> schema, TIntObjectMap<Field<T>> fieldsByNumber)
     {
         super(schema);
 
@@ -47,8 +48,7 @@ public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
         for (int number = input.readFieldNumber(wrappedSchema); number != 0; number = input
                 .readFieldNumber(wrappedSchema))
         {
-            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                    : null;
+            final Field<T> field = fieldsByNumber.get(number);
 
             if (field == null)
                 input.handleUnknownField(number, wrappedSchema);

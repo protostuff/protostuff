@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import gnu.trove.map.TIntObjectMap;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Schema;
@@ -64,15 +65,15 @@ public final class RuntimeView
     {
         /**
          * Creates a view schema based from the given metadata.
-         * 
+         *
+         * @param fieldsByNumber
          * @param pf
          *            is optional, depending on the view factory used.
          * @param args
-         *            is optional, depending on the view factory used.
          */
         public <T> Schema<T> create(Class<T> typeClass,
                 Field<T>[] fields,
-                Field<T>[] fieldsByNumber,
+                TIntObjectMap<Field<T>> fieldsByNumber,
                 Map<String, Field<T>> fieldsByName,
                 Instantiator<T> instantiator,
                 Predicate.Factory pf,
@@ -165,7 +166,7 @@ public final class RuntimeView
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
+                    final TIntObjectMap<Field<T>> fieldsByNumber,
                     final Map<String, Field<T>> fieldsByName,
                     Instantiator<T> instantiator,
                     Predicate.Factory pf,
@@ -191,8 +192,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = fieldsByNumber.get(number);
 
                             if (field == null || !predicate.apply(field, message))
                                 input.handleUnknownField(number, this);
@@ -206,8 +206,7 @@ public final class RuntimeView
                     {
                         // only called during writes
                         // the predicate already applied on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
+                        final Field<T> field = fieldsByNumber.get(number);
 
                         return field == null ? null : field.name;
                     }
@@ -236,7 +235,7 @@ public final class RuntimeView
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     Field<T>[] flds,
-                    final Field<T>[] fieldsByNumber,
+                    final TIntObjectMap<Field<T>> fieldsByNumber,
                     Map<String, Field<T>> byName,
                     Instantiator<T> instantiator,
                     Predicate.Factory factory,
@@ -248,9 +247,11 @@ public final class RuntimeView
 
                 @SuppressWarnings("unchecked")
                 Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
-                for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
+
+                int j = 0;
+                for (int number : fieldsByNumber.keys())
                 {
-                    Field<T> field = fieldsByNumber[i];
+                    Field<T> field = fieldsByNumber.get(number);
                     if (field != null && fieldsByName.containsKey(field.name))
                         fields[j++] = field;
                 }
@@ -270,8 +271,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = fieldsByNumber.get(number);
 
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
@@ -284,8 +284,7 @@ public final class RuntimeView
                     public String getFieldName(int number)
                     {
                         // only called during writes
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
+                        final Field<T> field = fieldsByNumber.get(number);
 
                         return field == null ? null : field.name;
                     }
@@ -312,7 +311,7 @@ public final class RuntimeView
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
+                    final TIntObjectMap<Field<T>> fieldsByNumber,
                     Map<String, Field<T>> byName,
                     Instantiator<T> instantiator,
                     Predicate.Factory pf,
@@ -336,8 +335,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = fieldsByNumber.get(number);
 
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
@@ -351,9 +349,7 @@ public final class RuntimeView
                     {
                         // only called during writes
                         // already filtered on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
+                        final Field<T> field = fieldsByNumber.get(number);
                         return field == null ? null : field.name;
                     }
 
@@ -383,7 +379,7 @@ public final class RuntimeView
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     Field<T>[] flds,
-                    final Field<T>[] fieldsByNumber,
+                    final TIntObjectMap<Field<T>> fieldsByNumber,
                     Map<String, Field<T>> byName,
                     Instantiator<T> instantiator,
                     Predicate.Factory factory,
@@ -398,7 +394,7 @@ public final class RuntimeView
                 Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
                 for (int i = 1, j = 0; i <= maxFieldNumber; i++)
                 {
-                    Field<T> field = fieldsByNumber[i];
+                    Field<T> field = fieldsByNumber.get(i);
                     if (field != null && fieldsByName.containsKey(field.name))
                         fields[j++] = field;
                 }
@@ -418,9 +414,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
-
+                            final Field<T> field = fieldsByNumber.get(number);
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
                             else
@@ -432,9 +426,7 @@ public final class RuntimeView
                     public String getFieldName(int number)
                     {
                         // only called during writes
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
+                        final Field<T> field = fieldsByNumber.get(number);
                         return field == null ? null : field.name;
                     }
 
@@ -460,7 +452,7 @@ public final class RuntimeView
             public <T> Schema<T> create(
                     Class<T> typeClass,
                     final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
+                    final TIntObjectMap<Field<T>> fieldsByNumber,
                     Map<String, Field<T>> byName,
                     Instantiator<T> instantiator,
                     Predicate.Factory pf,
@@ -486,8 +478,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = fieldsByNumber.get(number);
 
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
@@ -501,9 +492,7 @@ public final class RuntimeView
                     {
                         // only called during writes
                         // already filtered on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
+                        final Field<T> field = fieldsByNumber.get(number);
                         return field == null ? null : field.name;
                     }
 
