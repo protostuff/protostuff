@@ -14,7 +14,6 @@
 
 package io.protostuff;
 
-import static io.protostuff.StringSerializerTest.BUILT_IN_SERIALIZER;
 import static io.protostuff.StringSerializerTest.alphabet;
 import static io.protostuff.StringSerializerTest.alphabet_to_upper;
 import static io.protostuff.StringSerializerTest.ascii_targets;
@@ -38,6 +37,7 @@ import static io.protostuff.StringSerializerTest.whitespace;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -408,7 +408,7 @@ public class StreamedStringSerializerTest extends TestCase
 
     static void checkAscii(String str) throws Exception
     {
-        byte[] builtin = BUILT_IN_SERIALIZER.serialize(str);
+        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -434,7 +434,7 @@ public class StreamedStringSerializerTest extends TestCase
 
     static void check(String str) throws Exception
     {
-        byte[] builtin = BUILT_IN_SERIALIZER.serialize(str);
+        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
