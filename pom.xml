@@ -25,7 +25,7 @@
     <antlr3-version>3.2</antlr3-version>
     <stringtemplate-version>3.2.1</stringtemplate-version>
     <mavenVersion>3.2.3</mavenVersion>
-    <jmh.version>1.6</jmh.version>
+    <jmh.version>1.6.1</jmh.version>
     <javac.target>1.7</javac.target>
   </properties>
 
@@ -130,7 +130,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.2</version>
+          <version>3.1</version>
           <configuration>
             <compilerVersion>${javac.target}</compilerVersion>
             <source>${javac.target}</source>
