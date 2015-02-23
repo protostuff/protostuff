@@ -1,0 +1,7 @@
+package benchmarks;
+
+option java_package = "io.protostuff.benchmarks";
+
+message A {
+    optional int32 value = 1;
+}
