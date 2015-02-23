@@ -42,6 +42,47 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.protostuff</groupId>
+        <artifactId>protostuff-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <protoModules>
+            <protoModule>
+              <source>src/main/proto/</source>
+              <outputDir>target/generated-sources/proto</outputDir>
+              <output>java_bean</output>
+              <options>
+                <property>
+                  <name>builder_pattern</name>
+                </property>
+                <property>
+                  <name>generate_helper_methods</name>
+                </property>
+                <property>
+                  <name>generate_field_map</name>
+                </property>
+              </options>
+            </protoModule>
+          </protoModules>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.2</version>
         <executions>
