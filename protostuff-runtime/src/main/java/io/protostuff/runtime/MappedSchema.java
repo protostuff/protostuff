@@ -15,10 +15,14 @@
 package io.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
@@ -36,107 +40,59 @@ import io.protostuff.WireFormat.FieldType;
 public abstract class MappedSchema<T> implements Schema<T>
 {
 
+    public static final Comparator<Field<?>> FIELD_BY_NUMBER_COMPARATOR = new Comparator<Field<?>>()
+    {
+        @Override
+        public int compare(Field<?> o1, Field<?> o2)
+        {
+            return Integer.compare(o1.number, o2.number);
+        }
+    };
+
     protected final Class<T> typeClass;
-    protected final Field<T>[] fields, fieldsByNumber;
+
+    // Array of fields ordered by tag number
+    protected final Field<T>[] fields;
+    protected final TIntObjectMap<Field<T>> fieldsByNumber;
     protected final Map<String, Field<T>> fieldsByName;
     protected final Pipe.Schema<T> pipeSchema;
 
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Field<T>[] fields,
-            int lastFieldNumber)
-    {
-        if (fields.length == 0)
-            throw new IllegalStateException("At least one field is required.");
-
-        this.typeClass = typeClass;
-        this.fields = fields;
-        fieldsByName = new HashMap<>();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-        for (Field<T> f : fields)
-        {
-            Field<T> last = this.fieldsByName.put(f.name, f);
-            if (last != null)
-            {
-                throw new IllegalStateException(last + " and " + f
-                        + " cannot have the same name.");
-            }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-            // f.owner = this;
-        }
-
-        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
-    }
-
-    @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
-            int lastFieldNumber)
+    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields)
     {
         this.typeClass = typeClass;
         fieldsByName = new HashMap<>();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
+        fieldsByNumber = new TIntObjectHashMap<>(fields.size(), 0.5f);
+        this.fields = (Field<T>[]) new Field<?>[fields.size()];
+        int i = 0;
         for (Field<T> f : fields)
         {
-            Field<T> last = this.fieldsByName.put(f.name, f);
-            if (last != null)
-            {
-                throw new IllegalStateException(last + " and " + f
-                        + " cannot have the same name.");
-            }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-            // f.owner = this;
+            this.fields[i++] = f;
+            registerFieldByName(f);
+            registerFieldByNumber(f);
         }
-
-        this.fields = (Field<T>[]) new Field<?>[fields.size()];
-        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
-        {
-            if (fieldsByNumber[i] != null)
-                this.fields[j++] = fieldsByNumber[i];
-        }
-
+        Arrays.sort(this.fields, FIELD_BY_NUMBER_COMPARATOR);
         pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
-    @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Map<String, Field<T>> fieldsByName,
-            int lastFieldNumber)
+    private void registerFieldByNumber(Field<T> f)
     {
-        this.typeClass = typeClass;
-        this.fieldsByName = fieldsByName;
-        Collection<Field<T>> fields = fieldsByName.values();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-
-        for (Field<T> f : fields)
+        Field<T> last = fieldsByNumber.put(f.number, f);
+        if (last != null)
         {
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-            // f.owner = this;
+            throw new IllegalStateException(last + " and " + f
+                    + " cannot have the same number");
         }
+    }
 
-        this.fields = (Field<T>[]) new Field<?>[fields.size()];
-        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
+    private void registerFieldByName(Field<T> f)
+    {
+        Field<T> last = fieldsByName.put(f.name, f);
+        if (last != null)
         {
-            if (fieldsByNumber[i] != null)
-                this.fields[j++] = fieldsByNumber[i];
+            throw new IllegalStateException(last + " and " + f
+                    + " cannot have the same name");
         }
-
-        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     /**
@@ -169,9 +125,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     public String getFieldName(int number)
     {
         // only called on writes
-        final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                : null;
-
+        final Field<T> field = fieldsByNumber.get(number);
         return field == null ? null : field.name;
     }
 
@@ -188,8 +142,7 @@ public abstract class MappedSchema<T> implements Schema<T>
         for (int number = input.readFieldNumber(this); number != 0; number = input
                 .readFieldNumber(this))
         {
-            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                    : null;
+            final Field<T> field = fieldsByNumber.get(number);
 
             if (field == null)
                 input.handleUnknownField(number, this);
