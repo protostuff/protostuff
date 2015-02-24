@@ -1,0 +1,13 @@
+group java_bean_with_meta : java_bean;
+
+message_extensions(message, module, options) ::= <<
+public static String getProtoDefinition() {
+    return "message <message.name> {\n"
+            <message.fields:field_proto(field=it, options=options, message=message); separator="\n">
+            + "}\n";
+}
+>>
+
+field_proto(field, options, message) ::= <<
++ "    <field.modifier.name> <field.protoType> <field.name> = <field.number>;\n"
+>>

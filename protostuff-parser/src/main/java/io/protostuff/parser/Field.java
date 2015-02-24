@@ -34,7 +34,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
         public java.lang.String getName()
         {
-            return name();
+            return name().toLowerCase();
         }
     }
 
@@ -262,7 +262,17 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     }
 
     public abstract java.lang.String getJavaType();
-    public abstract java.lang.String getProtoType();
+
+    /**
+     * Returns field type for proto files. Scalar value types:
+     * https://developers.google.com/protocol-buffers/docs/proto#scalar
+     *
+     * @return .proto type
+     */
+    public java.lang.String getProtoType()
+    {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
 
     public java.lang.String getDefaultValueAsString()
     {
@@ -290,11 +300,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "int";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "int32";
-        }
     }
 
     public static class UInt32 extends Number<Integer>
@@ -305,11 +310,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "int";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "uint32";
-        }
     }
 
     public static class SInt32 extends Number<Integer>
@@ -320,11 +320,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "int";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "sint32";
-        }
     }
 
     public static class Fixed32 extends Number<Integer>
@@ -335,11 +330,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "int";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "fixed32";
-        }
     }
 
     public static class SFixed32 extends Number<Integer>
@@ -350,11 +340,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "int";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "sfixed32";
-        }
     }
 
     public static class Int64 extends Number<Long>
@@ -365,11 +350,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "long";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "int64";
-        }
     }
 
     public static class UInt64 extends Number<Long>
@@ -380,11 +360,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "long";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "uint64";
-        }
     }
 
     public static class SInt64 extends Number<Long>
@@ -395,11 +370,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "long";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "sint64";
-        }
     }
 
     public static class Fixed64 extends Number<Long>
@@ -410,11 +380,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "long";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "fixed64";
-        }
     }
 
     public static class SFixed64 extends Number<Long>
@@ -425,11 +390,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "long";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "sfixed64";
-        }
     }
 
     public static class Float extends Number<java.lang.Float>
@@ -440,11 +400,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "float";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "float";
-        }
     }
 
     public static class Double extends Number<java.lang.Double>
@@ -455,11 +410,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "double";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "double";
-        }
     }
 
     public static class Bool extends Field<Boolean>
@@ -475,11 +425,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return "boolean";
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "bool";
-        }
     }
 
     public static class String extends Field<java.lang.String>
@@ -507,11 +452,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return true;
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "string";
-        }
     }
 
     public static class Bytes extends Field<byte[]>
@@ -542,11 +482,6 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return true;
         }
 
-        @Override
-        public java.lang.String getProtoType()
-        {
-            return "bytes";
-        }
     }
 
     public static class Reference extends Field<Object>

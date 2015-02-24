@@ -162,7 +162,8 @@ public class EnumField extends Field<EnumGroup.Value>
     }
 
     @Override
-    public java.lang.String getProtoType() {
-	return "enum";
+    public java.lang.String getProtoType()
+    {
+        return getRegularType();
     }
 }

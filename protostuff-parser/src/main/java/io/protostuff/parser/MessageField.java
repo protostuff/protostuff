@@ -100,6 +100,6 @@ public class MessageField extends Field<Message>
 
 	@Override
 	public java.lang.String getProtoType() {
-		return "message";
+        return getRegularType();
 	}
 }

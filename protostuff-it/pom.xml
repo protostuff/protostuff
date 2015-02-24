@@ -114,6 +114,11 @@
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean_model</output>
             </protoModule>
+            <protoModule>
+              <source>src/test/proto/ProtoTypeIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>src/test/stg/java_bean_with_proto_descriptor.java.stg</output>
+            </protoModule>
           </protoModules>
         </configuration>
         <executions>

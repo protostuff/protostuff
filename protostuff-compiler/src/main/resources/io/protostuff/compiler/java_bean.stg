@@ -124,7 +124,13 @@ public <if(nested)>static <endif>final class <message.name> <options.(message.na
     <if(options.generate_pipe_schema)>
     <message:message_pipe_schema(message=it, options=options)>
     <endif>
+
+    <message:message_extensions(message=it, options=options)>
 }
+
+>>
+
+message_extensions(message, module, options) ::= <<
 
 >>
 
