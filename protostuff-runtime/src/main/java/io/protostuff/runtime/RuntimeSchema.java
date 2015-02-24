@@ -44,6 +44,10 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
 public final class RuntimeSchema<T> extends MappedSchema<T>
 {
 
+    public static final int MIN_TAG_VALUE = 1;
+    public static final int MAX_TAG_VALUE = 536_870_911; // 2^29 - 1
+    public static final String ERROR_TAG_VALUE = "Invalid tag number (value must be in range [1, 2^29-1])";
+
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
 
     /**
@@ -236,10 +240,9 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
                     annotated = true;
                     fieldMapping = tag.value();
 
-                    if (fieldMapping < 1)
+                    if (fieldMapping < MIN_TAG_VALUE || fieldMapping > MAX_TAG_VALUE)
                     {
-                        throw new RuntimeException("Invalid field number: "
-                                + fieldMapping + " on " + typeClass);
+                        throw new IllegalArgumentException(ERROR_TAG_VALUE + ": " + fieldMapping + " on " + typeClass);
                     }
 
                     name = tag.alias().isEmpty() ? f.getName() : tag.alias();
