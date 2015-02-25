@@ -34,7 +34,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
         public java.lang.String getName()
         {
-            return name();
+            return name().toLowerCase();
         }
     }
 
@@ -263,6 +263,17 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
     public abstract java.lang.String getJavaType();
 
+    /**
+     * Returns field type for proto files. Scalar value types:
+     * https://developers.google.com/protocol-buffers/docs/proto#scalar
+     *
+     * @return .proto type
+     */
+    public java.lang.String getProtoType()
+    {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
+
     public java.lang.String getDefaultValueAsString()
     {
         return getDefaultValue().toString();
@@ -288,6 +299,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "int";
         }
+
     }
 
     public static class UInt32 extends Number<Integer>
@@ -297,6 +309,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "int";
         }
+
     }
 
     public static class SInt32 extends Number<Integer>
@@ -306,6 +319,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "int";
         }
+
     }
 
     public static class Fixed32 extends Number<Integer>
@@ -315,6 +329,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "int";
         }
+
     }
 
     public static class SFixed32 extends Number<Integer>
@@ -324,6 +339,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "int";
         }
+
     }
 
     public static class Int64 extends Number<Long>
@@ -333,6 +349,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "long";
         }
+
     }
 
     public static class UInt64 extends Number<Long>
@@ -342,6 +359,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "long";
         }
+
     }
 
     public static class SInt64 extends Number<Long>
@@ -351,6 +369,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "long";
         }
+
     }
 
     public static class Fixed64 extends Number<Long>
@@ -360,6 +379,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "long";
         }
+
     }
 
     public static class SFixed64 extends Number<Long>
@@ -369,6 +389,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "long";
         }
+
     }
 
     public static class Float extends Number<java.lang.Float>
@@ -378,6 +399,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "float";
         }
+
     }
 
     public static class Double extends Number<java.lang.Double>
@@ -387,6 +409,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "double";
         }
+
     }
 
     public static class Bool extends Field<Boolean>
@@ -401,6 +424,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return "boolean";
         }
+
     }
 
     public static class String extends Field<java.lang.String>
@@ -427,6 +451,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return true;
         }
+
     }
 
     public static class Bytes extends Field<byte[]>
@@ -456,6 +481,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         {
             return true;
         }
+
     }
 
     public static class Reference extends Field<Object>
@@ -483,6 +509,12 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
         @Override
         public java.lang.String getJavaType()
+        {
+            return refName;
+        }
+
+        @Override
+        public java.lang.String getProtoType()
         {
             return refName;
         }

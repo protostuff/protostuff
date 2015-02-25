@@ -1,0 +1,14 @@
+package it;
+option java_package = "io.protostuff.compiler.it";
+
+enum E {
+    A = 1;
+    B = 2;
+}
+
+message JavaBeanWithProtoDescriptor {
+  optional int32 a = 1;
+  optional int64 b = 2;
+  optional E e = 3;
+}
+
