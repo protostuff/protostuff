@@ -12,6 +12,29 @@
     Protostuff "Bill of Materials" Dependency
     http://www.protostuff.io/maven-bom/
   </description>
+  <url>http://protostuff.io</url>
+  <inceptionYear>2009</inceptionYear>
+
+  <developers>
+    <developer>
+      <id>dyu</id>
+      <name>David Yu</name>
+      <email>david.yu.ftw@gmail.com</email>
+      <url>http://davidyu.myopenid.com</url>
+    </developer>
+    <developer>
+      <id>posix4e</id>
+      <name>Alex Newman</name>
+      <email>alex@ohmdata.com</email>
+      <url>http://www.ohmdata.com</url>
+    </developer>
+    <developer>
+      <id>kshchepanovskyi</id>
+      <name>Kostiantyn Shchepanovskyi</name>
+      <email>schepanovsky@gmail.com</email>
+      <timezone>+2</timezone>
+    </developer>
+  </developers>
 
   <scm>
     <url>https://github.com/protostuff/protostuff</url>
