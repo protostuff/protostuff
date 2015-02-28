@@ -74,77 +74,77 @@
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-api</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-collectionschema</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-compiler</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-core</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-json</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-kvp</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-maven-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-parser</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-md</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-registry</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-view</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-uberjar</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-xml</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-yaml</artifactId>
-        <version>${project.version}</version>
+        <version>1.3.3-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
