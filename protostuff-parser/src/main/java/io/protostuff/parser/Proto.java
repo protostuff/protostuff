@@ -36,18 +36,18 @@ public class Proto extends AnnotationContainer implements HasOptions
     final Loader loader;
     final Proto importer;
     Mutable<String> packageName, javaPackageName;
-    final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<String, Proto>();
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Message> messages = new LinkedHashMap<String, Message>();
-    final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<String, EnumGroup>();
-    final LinkedHashMap<String, Service> services = new LinkedHashMap<String, Service>();
-    final ArrayList<Extension> extensions = new ArrayList<Extension>();
-    final LinkedHashMap<String, Message> fullyQualifiedMessages = new LinkedHashMap<String, Message>();
-    final LinkedHashMap<String, EnumGroup> fullyQualifiedEnumGroups = new LinkedHashMap<String, EnumGroup>();
+    final LinkedHashMap<String, Proto> importedProtos = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Message> messages = new LinkedHashMap<>();
+    final LinkedHashMap<String, EnumGroup> enumGroups = new LinkedHashMap<>();
+    final LinkedHashMap<String, Service> services = new LinkedHashMap<>();
+    final ArrayList<Extension> extensions = new ArrayList<>();
+    final LinkedHashMap<String, Message> fullyQualifiedMessages = new LinkedHashMap<>();
+    final LinkedHashMap<String, EnumGroup> fullyQualifiedEnumGroups = new LinkedHashMap<>();
 
     // from options and annotations
-    final ArrayList<ConfiguredReference> references = new ArrayList<ConfiguredReference>();
+    final ArrayList<ConfiguredReference> references = new ArrayList<>();
     int refOffset;
 
     private String sourcePath;
@@ -90,6 +90,7 @@ public class Proto extends AnnotationContainer implements HasOptions
         this.importer = importer;
     }
 
+    @Override
     public Proto getProto()
     {
         return this;
@@ -162,7 +163,7 @@ public class Proto extends AnnotationContainer implements HasOptions
     void setPackageName(String packageName)
     {
         if (this.packageName == null)
-            this.packageName = new Mutable<String>(packageName);
+            this.packageName = new Mutable<>(packageName);
     }
 
     public LinkedHashMap<String, Object> getStandardOptions()
@@ -185,17 +186,20 @@ public class Proto extends AnnotationContainer implements HasOptions
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -329,7 +333,7 @@ public class Proto extends AnnotationContainer implements HasOptions
         String javaPkg = (String) extraOptions.get("java_package");
         String javaPackageName = javaPkg == null || javaPkg.length() == 0 ?
                 packageName.getValue() : javaPkg;
-        this.javaPackageName = new Mutable<String>(javaPackageName);
+        this.javaPackageName = new Mutable<>(javaPackageName);
 
         // Cache all fully-qualified message names and enum group names so we
         // can look them up quickly
@@ -354,6 +358,7 @@ public class Proto extends AnnotationContainer implements HasOptions
             ConfiguredReference.resolve(this, standardOptions, extraOptions, getPackageName());
     }
 
+    @Override
     public void add(Annotation annotation)
     {
         super.add(annotation);

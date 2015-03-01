@@ -27,8 +27,8 @@ public class Annotation implements HasName
 
     final String name;
 
-    final LinkedHashMap<String, Object> refs = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Object> refs = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
     public Annotation(String name)
     {
@@ -76,6 +76,7 @@ public class Annotation implements HasName
         return (T) params.get(key);
     }
 
+    @Override
     public String getName()
     {
         return name;

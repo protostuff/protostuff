@@ -1,0 +1,24 @@
+package benchmarks;
+
+option java_package = "io.protostuff.benchmarks";
+
+message A {
+    optional int32 value = 1;
+}
+
+message GeneratedInt1 {
+    optional int32 a0 = 1;
+}
+
+message GeneratedInt10 {
+    optional int32 a0 = 1;
+    optional int32 a1 = 2;
+    optional int32 a2 = 3;
+    optional int32 a3 = 4;
+    optional int32 a4 = 5;
+    optional int32 a5 = 6;
+    optional int32 a6 = 7;
+    optional int32 a7 = 8;
+    optional int32 a8 = 9;
+    optional int32 a9 = 10;
+}

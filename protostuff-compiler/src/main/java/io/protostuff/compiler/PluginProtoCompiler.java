@@ -65,6 +65,7 @@ public class PluginProtoCompiler extends STCodeGenerator
     public static final GroupResolver GROUP_RESOLVER = new GroupResolver()
     {
 
+        @Override
         public StringTemplateGroup resolveSTG(String stgLocation)
         {
             try
@@ -205,14 +206,13 @@ public class PluginProtoCompiler extends STCodeGenerator
     }
 
     /**
-     * Returns "foo" from "path/to/foo.java.stg".
+     * Returns "foo" from "path/to/foo.java.stg"
      */
     static String getOutputName(String resource)
     {
-        final int secondToTheLastDot = resource.lastIndexOf('.', resource.length() - 5), slash = resource.lastIndexOf(
-                '/', secondToTheLastDot);
-
-        return resource.substring(slash + 1, secondToTheLastDot);
+        String filename = FilenameUtil.getFileName(resource);
+        int secondToTheLastDot = filename.lastIndexOf('.', filename.length() - 5);
+        return filename.substring(0, secondToTheLastDot);
     }
 
     /**
@@ -251,6 +251,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         return outputPrefix + name + outputSuffix + fileExtension;
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         if (!this.module.getOutput().startsWith(module.getOutput()))

@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.util.Collection;
 
 import io.protostuff.CollectionSchema;
+import io.protostuff.CollectionSchema.MessageFactory;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
-import io.protostuff.CollectionSchema.MessageFactory;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 import io.protostuff.runtime.MappedSchema.Field;
@@ -47,12 +47,14 @@ abstract class RuntimeCollectionField<T, V> extends Field<T>
         super(type, number, name, false, tag);
         schema = new CollectionSchema<V>(messageFactory)
         {
+            @Override
             protected void addValueFrom(Input input, Collection<V> collection)
                     throws IOException
             {
                 RuntimeCollectionField.this.addValueFrom(input, collection);
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     V value, boolean repeated) throws IOException
             {
@@ -60,6 +62,7 @@ abstract class RuntimeCollectionField<T, V> extends Field<T>
                         value, repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {

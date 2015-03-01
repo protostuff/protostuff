@@ -47,6 +47,7 @@ package io.protostuff;
 import static io.protostuff.WireFormat.TAG_TYPE_BITS;
 import static io.protostuff.WireFormat.TAG_TYPE_MASK;
 import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
 import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
 
 import java.io.DataInput;
@@ -191,70 +192,87 @@ public final class CodedInput implements Input
     /**
      * Read a {@code double} field value from the stream.
      */
+    @Override
     public double readDouble() throws IOException
     {
+        checkIfPackedField();
         return Double.longBitsToDouble(readRawLittleEndian64());
     }
 
     /**
      * Read a {@code float} field value from the stream.
      */
+    @Override
     public float readFloat() throws IOException
     {
+        checkIfPackedField();
         return Float.intBitsToFloat(readRawLittleEndian32());
     }
 
     /**
      * Read a {@code uint64} field value from the stream.
      */
+    @Override
     public long readUInt64() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint64();
     }
 
     /**
      * Read an {@code int64} field value from the stream.
      */
+    @Override
     public long readInt64() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint64();
     }
 
     /**
      * Read an {@code int32} field value from the stream.
      */
+    @Override
     public int readInt32() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
     /**
      * Read a {@code fixed64} field value from the stream.
      */
+    @Override
     public long readFixed64() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
     /**
      * Read a {@code fixed32} field value from the stream.
      */
+    @Override
     public int readFixed32() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
     /**
      * Read a {@code bool} field value from the stream.
      */
+    @Override
     public boolean readBool() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32() != 0;
     }
 
     /**
      * Read a {@code string} field value from the stream.
      */
+    @Override
     public String readString() throws IOException
     {
         final int size = readRawVarint32();
@@ -273,6 +291,7 @@ public final class CodedInput implements Input
         }
     }
 
+    @Override
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (decodeNestedMessageAsGroup)
@@ -340,6 +359,7 @@ public final class CodedInput implements Input
     /**
      * Read a {@code bytes} field value from the stream.
      */
+    @Override
     public ByteString readBytes() throws IOException
     {
         final int size = readRawVarint32();
@@ -367,8 +387,10 @@ public final class CodedInput implements Input
     /**
      * Read a {@code uint32} field value from the stream.
      */
+    @Override
     public int readUInt32() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
@@ -376,40 +398,50 @@ public final class CodedInput implements Input
      * Read an enum field value from the stream. Caller is responsible for converting the numeric value to an actual
      * enum.
      */
+    @Override
     public int readEnum() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
     /**
      * Read an {@code sfixed32} field value from the stream.
      */
+    @Override
     public int readSFixed32() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
     /**
      * Read an {@code sfixed64} field value from the stream.
      */
+    @Override
     public long readSFixed64() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
     /**
      * Read an {@code sint32} field value from the stream.
      */
+    @Override
     public int readSInt32() throws IOException
     {
+        checkIfPackedField();
         return decodeZigZag32(readRawVarint32());
     }
 
     /**
      * Read an {@code sint64} field value from the stream.
      */
+    @Override
     public long readSInt64() throws IOException
     {
+        checkIfPackedField();
         return decodeZigZag64(readRawVarint64());
     }
 
@@ -535,10 +567,6 @@ public final class CodedInput implements Input
         for (; offset < 32; offset += 7)
         {
             final byte b = input.readByte();
-            if (b == -1)
-            {
-                throw ProtobufException.truncatedMessage();
-            }
             result |= (b & 0x7f) << offset;
             if ((b & 0x80) == 0)
             {
@@ -549,10 +577,6 @@ public final class CodedInput implements Input
         for (; offset < 64; offset += 7)
         {
             final byte b = input.readByte();
-            if (b == -1)
-            {
-                throw ProtobufException.truncatedMessage();
-            }
             if ((b & 0x80) == 0)
             {
                 return result;
@@ -655,6 +679,7 @@ public final class CodedInput implements Input
     private int bufferPos;
     private final InputStream input;
     private int lastTag;
+    private int packedLimit = 0;
 
     /**
      * The total number of bytes read before the current buffer. The total bytes read up to the current position can be
@@ -833,6 +858,14 @@ public final class CodedInput implements Input
     }
 
     /**
+     * Return true if currently reading packed field
+     */
+    public boolean isCurrentFieldPacked()
+    {
+        return packedLimit != 0 && packedLimit != getTotalBytesRead();
+    }
+
+    /**
      * Returns true if the stream has reached the end of the input. This is the case if either the end of the underlying
      * input source has been reached or if the stream has reached a limit created using {@link #pushLimit(int)}.
      */
@@ -1006,7 +1039,7 @@ public final class CodedInput implements Input
 
             // Read all the rest of the bytes we need.
             int sizeLeft = size - (originalBufferSize - originalBufferPos);
-            final List<byte[]> chunks = new ArrayList<byte[]>();
+            final List<byte[]> chunks = new ArrayList<>();
 
             while (sizeLeft > 0)
             {
@@ -1094,6 +1127,7 @@ public final class CodedInput implements Input
     }
 
     // START EXTRA
+    @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         if (isAtEnd())
@@ -1102,6 +1136,17 @@ public final class CodedInput implements Input
             return 0;
         }
 
+        // are we reading packed field?
+        if (isCurrentFieldPacked())
+        {
+            if (packedLimit < getTotalBytesRead())
+                throw ProtobufException.misreportedSize();
+
+            // Return field number while reading packed field
+            return lastTag >>> TAG_TYPE_BITS;
+        }
+
+        packedLimit = 0;
         final int tag = readRawVarint32();
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
@@ -1126,6 +1171,26 @@ public final class CodedInput implements Input
         return fieldNumber;
     }
 
+    /**
+     * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
+     * packed fields are being read.
+     * 
+     * @throws IOException
+     */
+    private void checkIfPackedField() throws IOException
+    {
+        // Do we have the start of a packed field?
+        if (packedLimit == 0 && WireFormat.getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
+        {
+            final int length = readRawVarint32();
+            if (length < 0)
+                throw ProtobufException.negativeSize();
+
+            this.packedLimit = getTotalBytesRead() + length;
+        }
+    }
+
+    @Override
     public byte[] readByteArray() throws IOException
     {
         final int size = readRawVarint32();
@@ -1145,11 +1210,13 @@ public final class CodedInput implements Input
         }
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         skipField(lastTag);
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -1178,6 +1245,7 @@ public final class CodedInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

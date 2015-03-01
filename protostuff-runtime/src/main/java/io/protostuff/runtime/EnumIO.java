@@ -17,9 +17,11 @@ package io.protostuff.runtime;
 import static io.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.protostuff.CollectionSchema;
@@ -27,12 +29,13 @@ import io.protostuff.Input;
 import io.protostuff.MapSchema;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
+import io.protostuff.Tag;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Determines how enums are serialized/deserialized. Default is BY_NUMBER. To enable BY_NAME, set the property
  * "protostuff.runtime.enums_by_name=true".
- * 
+ *
  * @author David Yu
  * @created Oct 20, 2010
  */
@@ -81,11 +84,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __keyTypeFromEnumMap.get(enumMap);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -107,11 +106,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __elementTypeFromEnumSet.get(enumSet);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -126,13 +121,17 @@ public abstract class EnumIO<E extends Enum<E>> implements
     /**
      * Writes the {@link Enum} to the output.
      */
-    public static void writeTo(Output output, int number, boolean repeated,
+    public void writeTo(Output output, int number, boolean repeated,
             Enum<?> e) throws IOException
     {
         if (ENUMS_BY_NAME)
-            output.writeString(number, e.name(), repeated);
+        {
+            output.writeString(number, getAlias(e), repeated);
+        }
         else
-            output.writeEnum(number, e.ordinal(), repeated);
+        {
+            output.writeEnum(number, getTag(e), repeated);
+        }
     }
 
     /**
@@ -152,12 +151,14 @@ public abstract class EnumIO<E extends Enum<E>> implements
     {
         return new CollectionSchema.MessageFactory()
         {
+            @Override
             @SuppressWarnings("unchecked")
             public <V> Collection<V> newMessage()
             {
                 return (Collection<V>) eio.newEnumSet();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return EnumSet.class;
@@ -170,12 +171,14 @@ public abstract class EnumIO<E extends Enum<E>> implements
     {
         return new MapSchema.MessageFactory()
         {
+            @Override
             @SuppressWarnings("unchecked")
             public <K, V> Map<K, V> newMessage()
             {
                 return (Map<K, V>) eio.newEnumMap();
             }
 
+            @Override
             public Class<?> typeClass()
             {
                 return EnumMap.class;
@@ -193,15 +196,75 @@ public abstract class EnumIO<E extends Enum<E>> implements
     final ArraySchemas.Base genericElementSchema = new ArraySchemas.EnumArray(
             null, this);
 
+    private final String[] alias;
+    private final int[] tag;
+
+    private final Map<String, E> valueByAliasMap;
+    private final Map<Integer, E> valueByTagMap;
+
     public EnumIO(Class<E> enumClass)
     {
         this.enumClass = enumClass;
+        Field[] fields = enumClass.getFields();
+        int n = fields.length;
+        alias = new String[n];
+        tag = new int[n];
+        valueByAliasMap = new HashMap<>(n * 2);
+        valueByTagMap = new HashMap<>(n * 2);
+        for (E instance : enumClass.getEnumConstants())
+        {
+            int ordinal = instance.ordinal();
+            try
+            {
+                Field field = enumClass.getField(instance.name());
+                if (field.isAnnotationPresent(Tag.class))
+                {
+                    Tag annotation = field.getAnnotation(Tag.class);
+                    tag[ordinal] = annotation.value();
+                    alias[ordinal] = annotation.alias();
+                    valueByTagMap.put(annotation.value(), instance);
+                    valueByAliasMap.put(annotation.alias(), instance);
+                }
+                else
+                {
+                    tag[ordinal] = ordinal;
+                    alias[ordinal] = field.getName();
+                    valueByTagMap.put(ordinal, instance);
+                    valueByAliasMap.put(field.getName(), instance);
+                }
+            }
+            catch (NoSuchFieldException e)
+            {
+                throw new IllegalStateException(e);
+            }
+        }
     }
 
+    @Override
     public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy,
             Handler handler)
     {
         return new ArraySchemas.EnumArray(handler, this);
+    }
+
+    public int getTag(Enum<?> element)
+    {
+        return tag[element.ordinal()];
+    }
+
+    public String getAlias(Enum<?> element)
+    {
+        return alias[element.ordinal()];
+    }
+
+    public E getByTag(int tag)
+    {
+        return valueByTagMap.get(tag);
+    }
+
+    public E getByAlias(String alias)
+    {
+        return valueByAliasMap.get(alias);
     }
 
     /**
@@ -251,7 +314,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public <V> EnumMap<E, V> newEnumMap()
     {
-        return new EnumMap<E, V>(enumClass);
+        return new EnumMap<>(enumClass);
     }
 
     /**
@@ -269,9 +332,11 @@ public abstract class EnumIO<E extends Enum<E>> implements
             super(enumClass);
         }
 
+        @Override
         public E readFrom(Input input) throws IOException
         {
-            return Enum.valueOf(enumClass, input.readString());
+            String alias = input.readString();
+            return getByAlias(alias);
         }
     }
 
@@ -285,9 +350,11 @@ public abstract class EnumIO<E extends Enum<E>> implements
             super(enumClass);
         }
 
+        @Override
         public E readFrom(Input input) throws IOException
         {
-            return enumClass.getEnumConstants()[input.readEnum()];
+            int tag = input.readEnum();
+            return getByTag(tag);
         }
     }
 

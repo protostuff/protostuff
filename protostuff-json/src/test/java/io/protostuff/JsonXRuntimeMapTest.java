@@ -17,11 +17,10 @@ package io.protostuff;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import io.protostuff.StringSerializer.STRING;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test jsonx ser/deser for runtime {@link Map} fields.
@@ -32,21 +31,25 @@ import static junit.framework.Assert.assertTrue;
 public class JsonXRuntimeMapTest extends AbstractJsonRuntimeMapTest
 {
 
+    @Override
     protected boolean isNumeric()
     {
         return false;
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

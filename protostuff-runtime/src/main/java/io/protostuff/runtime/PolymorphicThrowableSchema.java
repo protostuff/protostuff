@@ -81,6 +81,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
             this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -93,36 +94,43 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Throwable.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Throwable.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);
@@ -161,11 +169,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
                 {
                     cause = __cause.get(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -217,11 +221,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
             {
                 cause = __cause.get(pojo);
             }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
+            catch (IllegalArgumentException | IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }
@@ -234,11 +234,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
                 {
                     __cause.set(pojo, cause);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }

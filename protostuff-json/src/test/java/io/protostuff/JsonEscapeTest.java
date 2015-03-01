@@ -36,11 +36,11 @@ public class JsonEscapeTest extends AbstractTest
         bar.setSomeBytes(ByteString.copyFromUtf8(ESCAPE_TARGET));
         bar.setSomeString(ESCAPE_TARGET);
 
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
         bars.add(bar);
 
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add(ESCAPE_TARGET);
         strings.add("");
         strings.add(ESCAPE_TARGET);

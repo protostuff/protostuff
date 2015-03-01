@@ -69,6 +69,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
      */
     public static class Factory implements IdStrategy.Factory
     {
+        @Override
         public IdStrategy create()
         {
             return new IncrementalIdStrategy(
@@ -78,6 +79,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                     64, 1); // pojos
         }
 
+        @Override
         public void postCreate()
         {
 
@@ -123,6 +125,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Collection ids start at 1.
          */
+        @Override
         public <T extends Collection<?>> Registry registerCollection(
                 CollectionSchema.MessageFactory factory, int id)
         {
@@ -151,6 +154,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Map ids start at 1.
          */
+        @Override
         public <T extends Map<?, ?>> Registry registerMap(
                 MapSchema.MessageFactory factory, int id)
         {
@@ -179,6 +183,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Enum ids start at 1.
          */
+        @Override
         public <T extends Enum<T>> Registry registerEnum(Class<T> clazz, int id)
         {
             if (id < 1)
@@ -208,6 +213,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Enum ids start at 1.
          */
+        @Override
         public Registry registerEnum(EnumIO<?> eio, int id)
         {
             if (id < 1)
@@ -236,6 +242,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry registerPojo(Class<T> clazz, int id)
         {
             if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()))
@@ -255,7 +262,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(clazz))
                 throw new IllegalArgumentException("Duplicate registration for: " + clazz);
 
-            BaseHS<T> wrapper = new Lazy<T>(clazz, strategy);
+            BaseHS<T> wrapper = new Lazy<>(clazz, strategy);
             wrapper.id = id;
             strategy.pojos.set(id, wrapper);
 
@@ -267,6 +274,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         /**
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry registerPojo(Schema<T> schema, Pipe.Schema<T> pipeSchema,
                 int id)
         {
@@ -281,7 +289,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
                 throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
 
-            Registered<T> wrapper = new Registered<T>(id, schema, pipeSchema);
+            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(schema.typeClass(), wrapper);
@@ -297,6 +305,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
          * <p>
          * Pojo ids start at 1.
          */
+        @Override
         public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass)
         {
             if (strategy.pojoMapping.containsKey(baseClass))
@@ -316,6 +325,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
          * <p>
          * Delegate ids start at 1.
          */
+        @Override
         public <T> Registry registerDelegate(Delegate<T> delegate, int id)
         {
             if (id < 1)
@@ -329,7 +339,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         " (" + delegate.typeClass() + ")");
             }
 
-            RegisteredDelegate<T> rd = new RegisteredDelegate<T>(id, delegate);
+            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate);
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
@@ -393,31 +403,32 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
         this.collectionIdStart = collectionIdStart;
         collectionId = new AtomicInteger(collectionIdStart);
-        collectionMapping = new ConcurrentHashMap<Class<?>, RuntimeCollectionFactory>(
+        collectionMapping = new ConcurrentHashMap<>(
                 collectionIdMax);
         collections = newList(collectionIdMax + 1);
 
         this.mapIdStart = mapIdStart;
         mapId = new AtomicInteger(mapIdStart);
-        mapMapping = new ConcurrentHashMap<Class<?>, RuntimeMapFactory>(mapIdMax);
+        mapMapping = new ConcurrentHashMap<>(mapIdMax);
         maps = newList(mapIdMax + 1);
 
         this.enumIdStart = enumIdStart;
         enumId = new AtomicInteger(enumIdStart);
-        enumMapping = new ConcurrentHashMap<Class<?>, RuntimeEnumIO>(enumIdMax);
+        enumMapping = new ConcurrentHashMap<>(enumIdMax);
         enums = newList(enumIdMax + 1);
 
         this.pojoIdStart = pojoIdStart;
         pojoId = new AtomicInteger(pojoIdStart);
-        pojoMapping = new ConcurrentHashMap<Class<?>, BaseHS<?>>(pojoIdMax);
+        pojoMapping = new ConcurrentHashMap<>(pojoIdMax);
         pojos = newList(pojoIdMax + 1);
 
         // delegates require explicit registration
-        delegateMapping = new IdentityHashMap<Class<?>, RegisteredDelegate<?>>(
+        delegateMapping = new IdentityHashMap<>(
                 10);// delegateIdMax);
         delegates = newList(11);// delegateIdMax + 1);
     }
 
+    @Override
     public boolean isRegistered(Class<?> typeClass)
     {
         return pojoMapping.get(typeClass) instanceof Registered;
@@ -429,7 +440,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         BaseHS<T> hs = (BaseHS<T>) pojoMapping.get(typeClass);
         if (hs == null && create)
         {
-            hs = new Lazy<T>(typeClass, this);
+            hs = new Lazy<>(typeClass, this);
             final BaseHS<T> last = (BaseHS<T>) pojoMapping.putIfAbsent(
                     typeClass, hs);
             if (last != null)
@@ -447,6 +458,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return hs;
     }
 
+    @Override
     public <T> HasSchema<T> getSchemaWrapper(Class<T> typeClass, boolean create)
     {
         return getBaseHS(typeClass, create);
@@ -476,6 +488,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return reio;
     }
 
+    @Override
     protected EnumIO<? extends Enum<?>> getEnumIO(Class<?> enumClass)
     {
         return getRuntimeEnumIO(enumClass).eio;
@@ -515,6 +528,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rfactory;
     }
 
+    @Override
     protected CollectionSchema.MessageFactory getCollectionFactory(Class<?> clazz)
     {
         return getRuntimeCollectionFactory(clazz);
@@ -554,11 +568,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rfactory;
     }
 
+    @Override
     protected MapSchema.MessageFactory getMapFactory(Class<?> clazz)
     {
         return getRuntimeMapFactory(clazz);
     }
 
+    @Override
     protected void writeCollectionIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -572,12 +588,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, id, false);
     }
 
+    @Override
     protected void transferCollectionId(Input input, Output output, int fieldNumber)
             throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected CollectionSchema.MessageFactory resolveCollectionFrom(Input input)
             throws IOException
     {
@@ -591,6 +609,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return factory;
     }
 
+    @Override
     protected void writeMapIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -604,12 +623,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, id, false);
     }
 
+    @Override
     protected void transferMapId(Input input, Output output, int fieldNumber)
             throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected MapSchema.MessageFactory resolveMapFrom(Input input)
             throws IOException
     {
@@ -622,6 +643,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return factory;
     }
 
+    @Override
     protected void writeEnumIdTo(Output output, int fieldNumber, Class<?> clazz)
             throws IOException
     {
@@ -635,12 +657,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         output.writeUInt32(fieldNumber, id, false);
     }
 
+    @Override
     protected void transferEnumId(Input input, Output output, int fieldNumber)
             throws IOException
     {
         output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected EnumIO<?> resolveEnumFrom(Input input) throws IOException
     {
         final int id = input.readUInt32();
@@ -652,11 +676,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return reio.eio;
     }
 
+    @Override
     public boolean isDelegateRegistered(Class<?> typeClass)
     {
         return delegateMapping.containsKey(typeClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> Delegate<T> getDelegate(Class<? super T> typeClass)
     {
@@ -666,12 +692,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rd == null ? null : rd.delegate;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> HasDelegate<T> getDelegateWrapper(Class<? super T> typeClass)
     {
         return (HasDelegate<T>) delegateMapping.get(typeClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> tryWriteDelegateIdTo(Output output, int fieldNumber,
             Class<T> clazz) throws IOException
@@ -687,6 +715,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> transferDelegateId(Input input, Output output, int fieldNumber)
             throws IOException
@@ -703,6 +732,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasDelegate<T> resolveDelegateFrom(Input input) throws IOException
     {
@@ -716,6 +746,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rd;
     }
 
+    @Override
     protected <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz)
             throws IOException
     {
@@ -731,6 +762,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasSchema<T> transferPojoId(Input input, Output output, int fieldNumber)
             throws IOException
@@ -746,6 +778,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> HasSchema<T> resolvePojoFrom(Input input, int fieldNumber) throws IOException
     {
@@ -758,6 +791,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return wrapper;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> Schema<T> writeMessageIdTo(Output output, int fieldNumber,
             Message<T> message) throws IOException
@@ -775,6 +809,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return message.cachedSchema();
     }
 
+    @Override
     protected Class<?> collectionClass(int id)
     {
         final RuntimeCollectionFactory factory = id < collections.size() ?
@@ -785,6 +820,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return factory.typeClass();
     }
 
+    @Override
     protected Class<?> mapClass(int id)
     {
         final RuntimeMapFactory factory = id < maps.size() ? maps.get(id) : null;
@@ -794,6 +830,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return factory.typeClass();
     }
 
+    @Override
     protected Class<?> enumClass(int id)
     {
         final RuntimeEnumIO reio = id < enums.size() ? enums.get(id) : null;
@@ -803,12 +840,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return reio.eio.enumClass;
     }
 
+    @Override
     protected Class<?> delegateClass(int id)
     {
         final RegisteredDelegate<?> rd = id < delegates.size() ? delegates.get(id) : null;
         return rd == null ? null : rd.delegate.typeClass();
     }
 
+    @Override
     protected Class<?> pojoClass(int id)
     {
         final BaseHS<?> wrapper = id < pojos.size() ? pojos.get(id) : null;
@@ -818,11 +857,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return wrapper.getSchema().typeClass();
     }
 
+    @Override
     protected RegisteredDelegate<?> getRegisteredDelegate(Class<?> clazz)
     {
         return delegateMapping.get(clazz);
     }
 
+    @Override
     protected int getEnumId(Class<?> clazz)
     {
         final RuntimeEnumIO reio = getRuntimeEnumIO(clazz);
@@ -835,6 +876,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return (id << 5) | CID_ENUM;
     }
 
+    @Override
     protected int getId(Class<?> clazz)
     {
         int id;
@@ -894,6 +936,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         Class<?> collectionClass;
         RuntimeEnv.Instantiator<?> instantiator;
 
+        @Override
         @SuppressWarnings("unchecked")
         public <V> Collection<V> newMessage()
         {
@@ -903,6 +946,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             return factory.newMessage();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return factory == null ? collectionClass : factory.typeClass();
@@ -917,6 +961,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         Class<?> mapClass;
         RuntimeEnv.Instantiator<?> instantiator;
 
+        @Override
         @SuppressWarnings("unchecked")
         public <K, V> Map<K, V> newMessage()
         {
@@ -926,6 +971,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             return factory.newMessage();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return factory == null ? mapClass : factory.typeClass();
@@ -957,11 +1003,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             this.pipeSchema = pipeSchema;
         }
 
+        @Override
         public Schema<T> getSchema()
         {
             return schema;
         }
 
+        @Override
         public io.protostuff.Pipe.Schema<T> getPipeSchema()
         {
             return pipeSchema;
@@ -981,6 +1029,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             this.strategy = strategy;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
@@ -999,11 +1048,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                                 final Message<T> m = (Message<T>) typeClass.newInstance();
                                 this.schema = schema = m.cachedSchema();
                             }
-                            catch (InstantiationException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                            catch (IllegalAccessException e)
+                            catch (InstantiationException | IllegalAccessException e)
                             {
                                 throw new RuntimeException(e);
                             }
@@ -1020,6 +1065,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             return schema;
         }
 
+        @Override
         public Pipe.Schema<T> getPipeSchema()
         {
             Pipe.Schema<T> pipeSchema = this.pipeSchema;

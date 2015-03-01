@@ -83,6 +83,7 @@ final class RuntimeCollectionFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -91,16 +92,13 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -109,11 +107,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -122,24 +116,28 @@ final class RuntimeCollectionFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected void addValueFrom(Input input,
                     Collection<Object> collection) throws IOException
             {
                 collection.add(inline.readFrom(input));
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
                 inline.writeTo(output, fieldNumber, value, repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -160,6 +158,7 @@ final class RuntimeCollectionFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -168,16 +167,13 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -186,11 +182,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -199,24 +191,28 @@ final class RuntimeCollectionFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected void addValueFrom(Input input,
                     Collection<Enum<?>> collection) throws IOException
             {
                 collection.add(eio.readFrom(input));
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     Enum<?> value, boolean repeated) throws IOException
             {
-                EnumIO.writeTo(output, fieldNumber, repeated, value);
+                eio.writeTo(output, fieldNumber, repeated, value);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -239,6 +235,7 @@ final class RuntimeCollectionFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -247,16 +244,13 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -265,11 +259,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -278,18 +268,21 @@ final class RuntimeCollectionFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected void addValueFrom(Input input,
                     Collection<Object> collection) throws IOException
             {
                 collection.add(input.mergeObject(null, schemaV.getSchema()));
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
@@ -297,6 +290,7 @@ final class RuntimeCollectionFieldFactory
                         repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -318,6 +312,7 @@ final class RuntimeCollectionFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -326,16 +321,13 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -344,11 +336,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -357,12 +345,14 @@ final class RuntimeCollectionFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected void addValueFrom(Input input,
                     Collection<Object> collection) throws IOException
             {
@@ -376,6 +366,7 @@ final class RuntimeCollectionFieldFactory
                 }
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
@@ -383,6 +374,7 @@ final class RuntimeCollectionFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -405,6 +397,7 @@ final class RuntimeCollectionFieldFactory
                 f.setAccessible(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
@@ -413,16 +406,13 @@ final class RuntimeCollectionFieldFactory
                     f.set(message, input.mergeObject(
                             (Collection<Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
@@ -431,11 +421,7 @@ final class RuntimeCollectionFieldFactory
                 {
                     existing = (Collection<Object>) f.get(message);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -444,12 +430,14 @@ final class RuntimeCollectionFieldFactory
                     output.writeObject(number, existing, schema, false);
             }
 
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, schema.pipeSchema, repeated);
             }
 
+            @Override
             protected void addValueFrom(Input input,
                     Collection<Object> collection) throws IOException
             {
@@ -462,12 +450,14 @@ final class RuntimeCollectionFieldFactory
                 }
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, value, valueSchema, repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
@@ -479,6 +469,7 @@ final class RuntimeCollectionFieldFactory
     private static final RuntimeFieldFactory<Collection<?>> COLLECTION = new RuntimeFieldFactory<Collection<?>>(
             RuntimeFieldFactory.ID_COLLECTION)
     {
+        @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
@@ -571,28 +562,33 @@ final class RuntimeCollectionFieldFactory
                     messageFactory, genericType, strategy);
         }
 
+        @Override
         public void transfer(Pipe pipe, Input input, Output output, int number,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Collection<?> readFrom(Input input) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, int number, Collection<?> value,
                 boolean repeated) throws IOException
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public FieldType getFieldType()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> typeClass()
         {
             throw new UnsupportedOperationException();

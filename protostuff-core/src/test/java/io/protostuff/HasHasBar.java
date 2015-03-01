@@ -80,46 +80,55 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
         this.hasBar = hasBar;
     }
 
+    @Override
     public Schema<HasHasBar> cachedSchema()
     {
         return this;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return String.valueOf(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return Integer.parseInt(name);
     }
 
+    @Override
     public boolean isInitialized(HasHasBar message)
     {
         return message.hasBar != null;
     }
 
+    @Override
     public HasHasBar newMessage()
     {
         return new HasHasBar();
     }
 
+    @Override
     public Class<HasHasBar> typeClass()
     {
         return HasHasBar.class;
     }
 
+    @Override
     public String messageName()
     {
         return getClass().getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return getClass().getName();
     }
 
+    @Override
     public void mergeFrom(Input input, HasHasBar message) throws IOException
     {
         for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -140,6 +149,7 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
         }
     }
 
+    @Override
     public void writeTo(Output output, HasHasBar message) throws IOException
     {
         if (message.name != null)
@@ -147,11 +157,13 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
         writeHasBar(output, 2, message.hasBar, false);
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);

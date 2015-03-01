@@ -32,18 +32,21 @@ public class BufferReuseTest extends StandardTest
     private static final ThreadLocal<LinkedBuffer> localBuffer =
             new ThreadLocal<LinkedBuffer>()
             {
+                @Override
                 protected LinkedBuffer initialValue()
                 {
                     return buf();
                 }
             };
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException
     {
         ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
         ProtostuffIOUtil.mergeFrom(in, message, schema, localBuffer.get());
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         final LinkedBuffer buffer = localBuffer.get();

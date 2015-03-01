@@ -2,12 +2,13 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.3.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>protostuff-kvp</artifactId>
   <name>protostuff :: kvp</name>
-  <description>binary key-value-pair serialization format (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol)</description>
+  <description>binary key-value-pair serialization format (see http://projects.unbit.it/uwsgi/wiki/uwsgiProtocol)
+  </description>
 
   <dependencies>
     <dependency>
@@ -28,5 +29,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>

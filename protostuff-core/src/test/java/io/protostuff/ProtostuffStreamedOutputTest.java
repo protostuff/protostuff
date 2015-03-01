@@ -28,24 +28,28 @@ import java.io.OutputStream;
 public class ProtostuffStreamedOutputTest extends SerDeserTest
 {
 
+    @Override
     protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema);
     }
 
+    @Override
     protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buf());
     }
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
             throws IOException
     {
         ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

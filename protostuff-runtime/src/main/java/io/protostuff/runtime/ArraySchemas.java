@@ -39,10 +39,10 @@ import java.util.Date;
 import io.protostuff.ByteString;
 import io.protostuff.GraphInput;
 import io.protostuff.Input;
+import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
-import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
@@ -63,12 +63,12 @@ public final class ArraySchemas
      * CID_BIGINTEGER = 20, CID_DATE = 21;
      */
 
-    static final int ID_ARRAY_LEN = 1, 
-            ID_ARRAY_DATA = 2, 
+    static final int ID_ARRAY_LEN = 1,
+            ID_ARRAY_DATA = 2,
             ID_ARRAY_NULLCOUNT = 3;
 
-    static final String STR_ARRAY_LEN = "a", 
-            STR_ARRAY_DATA = "b", 
+    static final String STR_ARRAY_LEN = "a",
+            STR_ARRAY_DATA = "b",
             STR_ARRAY_NULLCOUNT = "c";
 
     static boolean isPrimitive(int arrayId)
@@ -280,31 +280,37 @@ public final class ArraySchemas
             this.handler = handler;
         }
 
+        @Override
         public String getFieldName(int number)
         {
             return name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return number(name);
         }
 
+        @Override
         public String messageFullName()
         {
             return Array.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Array.class.getSimpleName();
         }
 
+        @Override
         protected void setValue(Object value, Object owner)
         {
             handler.setValue(value, owner);
         }
 
+        @Override
         public void mergeFrom(Input input, Object owner) throws IOException
         {
             setValue(readFrom(input, owner), owner);
@@ -321,6 +327,7 @@ public final class ArraySchemas
         public static final BoolArray ELEMENT_SCHEMA = new BoolArray(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -334,6 +341,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -350,11 +358,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -384,7 +394,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Boolean[] array = new Boolean[len];
             if (input instanceof GraphInput)
             {
@@ -413,6 +423,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -422,10 +433,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeBool(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Boolean[] array = (Boolean[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -440,7 +451,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeBool(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -448,7 +459,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -462,6 +473,7 @@ public final class ArraySchemas
         public static final CharArray ELEMENT_SCHEMA = new CharArray(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -475,6 +487,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -491,11 +504,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -525,7 +540,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Character[] array = new Character[len];
             if (input instanceof GraphInput)
             {
@@ -554,6 +569,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -563,10 +579,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Character[] array = (Character[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -581,7 +597,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -589,7 +605,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -603,6 +619,7 @@ public final class ArraySchemas
         public static final ShortArray ELEMENT_SCHEMA = new ShortArray(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -616,6 +633,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -632,11 +650,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -666,7 +686,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Short[] array = new Short[len];
             if (input instanceof GraphInput)
             {
@@ -695,6 +715,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -704,10 +725,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Short[] array = (Short[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -722,7 +743,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -730,7 +751,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -744,6 +765,7 @@ public final class ArraySchemas
         public static final Int32Array ELEMENT_SCHEMA = new Int32Array(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -757,6 +779,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -773,11 +796,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -807,7 +832,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Integer[] array = new Integer[len];
             if (input instanceof GraphInput)
             {
@@ -836,6 +861,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -845,10 +871,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt32(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Integer[] array = (Integer[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -863,7 +889,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeInt32(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -871,7 +897,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -885,6 +911,7 @@ public final class ArraySchemas
         public static final Int64Array ELEMENT_SCHEMA = new Int64Array(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -898,6 +925,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -914,11 +942,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -948,7 +978,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Long[] array = new Long[len];
             if (input instanceof GraphInput)
             {
@@ -977,6 +1007,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -986,10 +1017,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt64(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Long[] array = (Long[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1004,7 +1035,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeInt64(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1012,7 +1043,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1026,6 +1057,7 @@ public final class ArraySchemas
         public static final FloatArray ELEMENT_SCHEMA = new FloatArray(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1039,6 +1071,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1055,11 +1088,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1089,7 +1124,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Float[] array = new Float[len];
             if (input instanceof GraphInput)
             {
@@ -1118,6 +1153,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -1127,10 +1163,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeFloat(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Float[] array = (Float[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1145,7 +1181,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeFloat(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1153,7 +1189,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1167,6 +1203,7 @@ public final class ArraySchemas
         public static final DoubleArray ELEMENT_SCHEMA = new DoubleArray(null,
                 false)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1180,6 +1217,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1196,11 +1234,13 @@ public final class ArraySchemas
             this.primitive = primitive;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1230,7 +1270,7 @@ public final class ArraySchemas
 
                 return array;
             }
-            
+
             final Double[] array = new Double[len];
             if (input instanceof GraphInput)
             {
@@ -1259,6 +1299,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             if (primitive)
@@ -1268,10 +1309,10 @@ public final class ArraySchemas
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeDouble(ID_ARRAY_DATA, array[i], true);
-                
+
                 return;
             }
-            
+
             final Double[] array = (Double[]) value;
             output.writeUInt32(ID_ARRAY_LEN, array.length, false);
 
@@ -1286,7 +1327,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeDouble(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1294,7 +1335,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1305,6 +1346,7 @@ public final class ArraySchemas
     {
         public static final StringArray ELEMENT_SCHEMA = new StringArray(null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1318,6 +1360,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1331,11 +1374,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1371,6 +1416,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             String[] array = (String[]) value;
@@ -1387,7 +1433,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeString(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1395,7 +1441,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1407,6 +1453,7 @@ public final class ArraySchemas
         public static final ByteStringArray ELEMENT_SCHEMA = new ByteStringArray(
                 null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1420,6 +1467,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1433,11 +1481,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1473,6 +1523,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             ByteString[] array = (ByteString[]) value;
@@ -1489,7 +1540,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeBytes(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1497,7 +1548,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1509,6 +1560,7 @@ public final class ArraySchemas
         public static final ByteArrayArray ELEMENT_SCHEMA = new ByteArrayArray(
                 null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1522,6 +1574,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1535,11 +1588,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1575,6 +1630,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             byte[][] array = (byte[][]) value;
@@ -1591,7 +1647,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeByteArray(ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1599,7 +1655,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1611,6 +1667,7 @@ public final class ArraySchemas
         public static final BigDecimalArray ELEMENT_SCHEMA = new BigDecimalArray(
                 null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1624,6 +1681,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1637,11 +1695,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1677,6 +1737,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             BigDecimal[] array = (BigDecimal[]) value;
@@ -1693,7 +1754,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeString(ID_ARRAY_DATA, v.toString(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1701,7 +1762,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1713,6 +1774,7 @@ public final class ArraySchemas
         public static final BigIntegerArray ELEMENT_SCHEMA = new BigIntegerArray(
                 null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1726,6 +1788,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1739,11 +1802,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1779,6 +1844,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             BigInteger[] array = (BigInteger[]) value;
@@ -1795,7 +1861,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeByteArray(ID_ARRAY_DATA, v.toByteArray(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1803,7 +1869,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1814,6 +1880,7 @@ public final class ArraySchemas
     {
         public static final DateArray ELEMENT_SCHEMA = new DateArray(null)
         {
+            @Override
             @SuppressWarnings("unchecked")
             protected void setValue(Object value, Object owner)
             {
@@ -1827,6 +1894,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1840,11 +1908,13 @@ public final class ArraySchemas
             super(handler);
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1880,6 +1950,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object value) throws IOException
         {
             Date[] array = (Date[]) value;
@@ -1896,7 +1967,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeFixed64(ID_ARRAY_DATA, v.getTime(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1904,7 +1975,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -1916,6 +1987,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -1931,11 +2003,13 @@ public final class ArraySchemas
             this.delegate = delegate;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -1971,6 +2045,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object array) throws IOException
         {
             final int len = Array.getLength(array);
@@ -1988,7 +2063,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     delegate.writeTo(output, ID_ARRAY_DATA, v, true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -1996,7 +2071,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -2008,6 +2083,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -2050,11 +2126,13 @@ public final class ArraySchemas
             this.eio = eio;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -2090,6 +2168,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object array) throws IOException
         {
             final int len = Array.getLength(array);
@@ -2099,7 +2178,7 @@ public final class ArraySchemas
             int nullCount = 0;
             for (int i = 0; i < len; i++)
             {
-                Enum<?> v = (Enum<?>)Array.get(array, i);
+                Enum<?> v = (Enum<?>) Array.get(array, i);
                 if (v != null)
                 {
                     if (nullCount != 0)
@@ -2107,15 +2186,15 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
-                    EnumIO.writeTo(output, ID_ARRAY_DATA, true, v);
+
+                    eio.writeTo(output, ID_ARRAY_DATA, true, v);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
                 {
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
@@ -2127,6 +2206,7 @@ public final class ArraySchemas
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
+            @Override
             protected void transfer(Pipe pipe, Input input, Output output)
                     throws IOException
             {
@@ -2170,11 +2250,13 @@ public final class ArraySchemas
             this.hs = hs;
         }
 
+        @Override
         public Pipe.Schema<Object> getPipeSchema()
         {
             return pipeSchema;
         }
 
+        @Override
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
@@ -2210,6 +2292,7 @@ public final class ArraySchemas
             return array;
         }
 
+        @Override
         public void writeTo(Output output, Object array) throws IOException
         {
             final int len = Array.getLength(array);
@@ -2227,7 +2310,7 @@ public final class ArraySchemas
                         output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                         nullCount = 0;
                     }
-                    
+
                     output.writeObject(ID_ARRAY_DATA, v, hs.getSchema(), true);
                 }
                 else if (ALLOW_NULL_ARRAY_ELEMENT)
@@ -2235,7 +2318,7 @@ public final class ArraySchemas
                     nullCount++;
                 }
             }
-            
+
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);

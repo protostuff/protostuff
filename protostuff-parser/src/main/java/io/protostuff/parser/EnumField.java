@@ -50,6 +50,7 @@ public class EnumField extends Field<EnumGroup.Value>
         return ev;
     }
 
+    @Override
     public void putExtraOption(java.lang.String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -79,6 +80,7 @@ public class EnumField extends Field<EnumGroup.Value>
         }
     }
 
+    @Override
     public boolean isDefaultValueSet()
     {
         return defaultValueSet;
@@ -89,6 +91,7 @@ public class EnumField extends Field<EnumGroup.Value>
         return enumGroup;
     }
 
+    @Override
     public java.lang.String getJavaType()
     {
         // if(javaType!=null)
@@ -127,6 +130,7 @@ public class EnumField extends Field<EnumGroup.Value>
         return javaType;
     }
 
+    @Override
     public java.lang.String getDefaultValueAsString()
     {
         return getJavaType() + "." + getDefaultValue().getName();
@@ -151,8 +155,15 @@ public class EnumField extends Field<EnumGroup.Value>
         return path + targetPackage.replace('.', '/') + "/";
     }
 
+    @Override
     public Proto getProto()
     {
         return ev != null ? ev.getProto() : super.getProto();
+    }
+
+    @Override
+    public java.lang.String getProtoType()
+    {
+        return getRegularType();
     }
 }

@@ -34,7 +34,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
         public java.lang.String getName()
         {
-            return name();
+            return name().toLowerCase();
         }
     }
 
@@ -45,10 +45,10 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     T defaultValue;
     Message owner;
     final LinkedHashMap<java.lang.String, Object> standardOptions =
-            new LinkedHashMap<java.lang.String, Object>();
+            new LinkedHashMap<>();
 
     final LinkedHashMap<java.lang.String, Object> extraOptions =
-            new LinkedHashMap<java.lang.String, Object>();
+            new LinkedHashMap<>();
 
     public Field()
     {
@@ -60,6 +60,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         this.packable = packable;
     }
 
+    @Override
     public Proto getProto()
     {
         return owner == null ? null : owner.getProto();
@@ -83,6 +84,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     /**
      * Returns this options
      */
+    @Override
     public LinkedHashMap<java.lang.String, Object> getOptions()
     {
         return extraOptions;
@@ -102,12 +104,14 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
         return extraOptions.containsKey(key);
     }
 
+    @Override
     public void putStandardOption(java.lang.String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(java.lang.String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -133,6 +137,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     /**
      * @return the name
      */
+    @Override
     public java.lang.String getName()
     {
         return name;
@@ -244,6 +249,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
                 .toString();
     }
 
+    @Override
     public int compareTo(Field<?> f)
     {
         if (f.number == number)
@@ -256,6 +262,17 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     }
 
     public abstract java.lang.String getJavaType();
+
+    /**
+     * Returns field type for proto files. Scalar value types:
+     * https://developers.google.com/protocol-buffers/docs/proto#scalar
+     *
+     * @return .proto type
+     */
+    public java.lang.String getProtoType()
+    {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
 
     public java.lang.String getDefaultValueAsString()
     {
@@ -277,98 +294,122 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
     public static class Int32 extends Number<Integer>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "int";
         }
+
     }
 
     public static class UInt32 extends Number<Integer>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "int";
         }
+
     }
 
     public static class SInt32 extends Number<Integer>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "int";
         }
+
     }
 
     public static class Fixed32 extends Number<Integer>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "int";
         }
+
     }
 
     public static class SFixed32 extends Number<Integer>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "int";
         }
+
     }
 
     public static class Int64 extends Number<Long>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "long";
         }
+
     }
 
     public static class UInt64 extends Number<Long>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "long";
         }
+
     }
 
     public static class SInt64 extends Number<Long>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "long";
         }
+
     }
 
     public static class Fixed64 extends Number<Long>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "long";
         }
+
     }
 
     public static class SFixed64 extends Number<Long>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "long";
         }
+
     }
 
     public static class Float extends Number<java.lang.Float>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "float";
         }
+
     }
 
     public static class Double extends Number<java.lang.Double>
     {
+        @Override
         public java.lang.String getJavaType()
         {
             return "double";
         }
+
     }
 
     public static class Bool extends Field<Boolean>
@@ -378,10 +419,12 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             super(true);
         }
 
+        @Override
         public java.lang.String getJavaType()
         {
             return "boolean";
         }
+
     }
 
     public static class String extends Field<java.lang.String>
@@ -391,20 +434,24 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             super(false);
         }
 
+        @Override
         public java.lang.String getJavaType()
         {
             return "String";
         }
 
+        @Override
         public java.lang.String getDefaultValueAsString()
         {
             return TextFormat.escapeText(getDefaultValue());
         }
 
+        @Override
         public boolean isDelimited()
         {
             return true;
         }
+
     }
 
     public static class Bytes extends Field<byte[]>
@@ -414,6 +461,7 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             super(false);
         }
 
+        @Override
         public java.lang.String getJavaType()
         {
             if (hasOption("ByteBuffer"))
@@ -422,15 +470,18 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
                 return "ByteString";
         }
 
+        @Override
         public java.lang.String getDefaultValueAsString()
         {
             return TextFormat.escapeBytes(ByteBuffer.wrap(getDefaultValue())).toString();
         }
 
+        @Override
         public boolean isDelimited()
         {
             return true;
         }
+
     }
 
     public static class Reference extends Field<Object>
@@ -456,7 +507,14 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
             return packageName;
         }
 
+        @Override
         public java.lang.String getJavaType()
+        {
+            return refName;
+        }
+
+        @Override
+        public java.lang.String getProtoType()
         {
             return refName;
         }

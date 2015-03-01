@@ -45,6 +45,7 @@ public final class ByteArrayInput implements Input
 
     private final byte[] buffer;
     private int offset, limit, lastTag = 0;
+    private int packedLimit = 0;
 
     /**
      * If true, the nested messages are group-encoded
@@ -74,6 +75,7 @@ public final class ByteArrayInput implements Input
 
         this.offset = offset;
         this.limit = offset + len;
+        this.packedLimit = 0;
         return this;
     }
 
@@ -84,7 +86,7 @@ public final class ByteArrayInput implements Input
     {
         this.offset = offset;
         this.limit = limit;
-
+        this.packedLimit = 0;
         return this;
     }
 
@@ -102,6 +104,14 @@ public final class ByteArrayInput implements Input
     public int currentLimit()
     {
         return limit;
+    }
+
+    /**
+     * Return true if currently reading packed field
+     */
+    public boolean isCurrentFieldPacked()
+    {
+        return packedLimit != 0 && packedLimit != offset;
     }
 
     /**
@@ -201,11 +211,13 @@ public final class ByteArrayInput implements Input
         }
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         skipField(lastTag);
     }
 
+    @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
         if (offset == limit)
@@ -214,6 +226,17 @@ public final class ByteArrayInput implements Input
             return 0;
         }
 
+        // are we reading packed field?
+        if (isCurrentFieldPacked())
+        {
+            if (packedLimit < offset)
+                throw ProtobufException.misreportedSize();
+
+            // Return field number while reading packed field
+            return lastTag >>> TAG_TYPE_BITS;
+        }
+
+        packedLimit = 0;
         final int tag = readRawVarint32();
         final int fieldNumber = tag >>> TAG_TYPE_BITS;
         if (fieldNumber == 0)
@@ -240,74 +263,114 @@ public final class ByteArrayInput implements Input
     }
 
     /**
+     * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
+     * packed fields are being read.
+     * 
+     * @throws IOException
+     */
+    private void checkIfPackedField() throws IOException
+    {
+        // Do we have the start of a packed field?
+        if (packedLimit == 0 && getTagWireType(lastTag) == WIRETYPE_LENGTH_DELIMITED)
+        {
+            final int length = readRawVarint32();
+            if (length < 0)
+                throw ProtobufException.negativeSize();
+
+            if (offset + length > limit)
+                throw ProtobufException.misreportedSize();
+
+            this.packedLimit = this.offset + length;
+        }
+    }
+
+    /**
      * Read a {@code double} field value from the internal buffer.
      */
+    @Override
     public double readDouble() throws IOException
     {
+        checkIfPackedField();
         return Double.longBitsToDouble(readRawLittleEndian64());
     }
 
     /**
      * Read a {@code float} field value from the internal buffer.
      */
+    @Override
     public float readFloat() throws IOException
     {
+        checkIfPackedField();
         return Float.intBitsToFloat(readRawLittleEndian32());
     }
 
     /**
      * Read a {@code uint64} field value from the internal buffer.
      */
+    @Override
     public long readUInt64() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint64();
     }
 
     /**
      * Read an {@code int64} field value from the internal buffer.
      */
+    @Override
     public long readInt64() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint64();
     }
 
     /**
      * Read an {@code int32} field value from the internal buffer.
      */
+    @Override
     public int readInt32() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
     /**
      * Read a {@code fixed64} field value from the internal buffer.
      */
+    @Override
     public long readFixed64() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
     /**
      * Read a {@code fixed32} field value from the internal buffer.
      */
+    @Override
     public int readFixed32() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
     /**
      * Read a {@code bool} field value from the internal buffer.
      */
+    @Override
     public boolean readBool() throws IOException
     {
+        checkIfPackedField();
         return buffer[offset++] != 0;
     }
 
     /**
      * Read a {@code uint32} field value from the internal buffer.
      */
+    @Override
     public int readUInt32() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
@@ -315,32 +378,40 @@ public final class ByteArrayInput implements Input
      * Read an enum field value from the internal buffer. Caller is responsible for converting the numeric value to an
      * actual enum.
      */
+    @Override
     public int readEnum() throws IOException
     {
+        checkIfPackedField();
         return readRawVarint32();
     }
 
     /**
      * Read an {@code sfixed32} field value from the internal buffer.
      */
+    @Override
     public int readSFixed32() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian32();
     }
 
     /**
      * Read an {@code sfixed64} field value from the internal buffer.
      */
+    @Override
     public long readSFixed64() throws IOException
     {
+        checkIfPackedField();
         return readRawLittleEndian64();
     }
 
     /**
      * Read an {@code sint32} field value from the internal buffer.
      */
+    @Override
     public int readSInt32() throws IOException
     {
+        checkIfPackedField();
         final int n = readRawVarint32();
         return (n >>> 1) ^ -(n & 1);
     }
@@ -348,12 +419,15 @@ public final class ByteArrayInput implements Input
     /**
      * Read an {@code sint64} field value from the internal buffer.
      */
+    @Override
     public long readSInt64() throws IOException
     {
+        checkIfPackedField();
         final long n = readRawVarint64();
         return (n >>> 1) ^ -(n & 1);
     }
 
+    @Override
     public String readString() throws IOException
     {
         final int length = readRawVarint32();
@@ -370,11 +444,13 @@ public final class ByteArrayInput implements Input
         return STRING.deser(buffer, offset, length);
     }
 
+    @Override
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
     }
 
+    @Override
     public byte[] readByteArray() throws IOException
     {
         final int length = readRawVarint32();
@@ -392,6 +468,7 @@ public final class ByteArrayInput implements Input
         return copy;
     }
 
+    @Override
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (decodeNestedMessageAsGroup)
@@ -556,6 +633,7 @@ public final class ByteArrayInput implements Input
                 (((long) b8 & 0xff) << 56);
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -571,6 +649,7 @@ public final class ByteArrayInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

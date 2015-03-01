@@ -99,7 +99,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             STR_CHECKED_SORTED_SET = "s", STR_CHECKED_LIST = "t",
             STR_CHECKED_RANDOM_ACCESS_LIST = "u";
 
-    static final IdentityHashMap<Class<?>, Integer> __nonPublicCollections = new IdentityHashMap<Class<?>, Integer>();
+    static final IdentityHashMap<Class<?>, Integer> __nonPublicCollections = new IdentityHashMap<>();
 
     static final Field fSingletonSet_element, fSingletonList_element,
 
@@ -415,6 +415,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
             this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -427,36 +428,43 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Collection.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Collection.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);
@@ -588,11 +596,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     element = fSingletonSet_element.get(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -623,11 +627,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     m = fSetFromMap_m.get(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -647,11 +647,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     element = fCopiesList_element.get(value);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -735,11 +731,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
         {
             c = fUnmodifiableCollection_c.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -757,11 +749,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             c = fSynchronizedCollection_c.get(value);
             mutex = fSynchronizedCollection_mutex.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -790,11 +778,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             c = fCheckedCollection_c.get(value);
             type = fCheckedCollection_type.get(value);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -870,11 +854,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     fSingletonSet_element.set(collection, element);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -914,11 +894,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     fSingletonList_element.set(collection, element);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -947,11 +923,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     fSetFromMap_m.set(collection, m);
                     fSetFromMap_s.set(collection, ((Map<?, ?>) m).keySet());
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -985,11 +957,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     {
                         fCopiesList_n.setInt(collection, n);
                     }
-                    catch (IllegalArgumentException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                    catch (IllegalAccessException e)
+                    catch (IllegalArgumentException | IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1010,11 +978,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     fCopiesList_n.setInt(collection, n);
                     fCopiesList_element.set(collection, element);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalAccessException e)
+                catch (IllegalArgumentException | IllegalAccessException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1164,11 +1128,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             if (list)
                 fUnmodifiableList_list.set(collection, c);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -1203,11 +1163,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             if (list)
                 fSynchronizedList_list.set(collection, c);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -1248,11 +1204,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             if (list)
                 fCheckedList_list.set(collection, c);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }

@@ -50,7 +50,7 @@ public abstract class MappedSchema<T> implements Schema<T>
 
         this.typeClass = typeClass;
         this.fields = fields;
-        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByName = new HashMap<>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
         {
@@ -70,18 +70,15 @@ public abstract class MappedSchema<T> implements Schema<T>
             // f.owner = this;
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
             int lastFieldNumber)
     {
-        if (fields.isEmpty())
-            throw new IllegalStateException("At least one field is required.");
-
         this.typeClass = typeClass;
-        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByName = new HashMap<>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
         {
@@ -108,16 +105,13 @@ public abstract class MappedSchema<T> implements Schema<T>
                 this.fields[j++] = fieldsByNumber[i];
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Map<String, Field<T>> fieldsByName,
             int lastFieldNumber)
     {
-        if (fieldsByName.isEmpty())
-            throw new IllegalStateException("At least one field is required.");
-
         this.typeClass = typeClass;
         this.fieldsByName = fieldsByName;
         Collection<Field<T>> fields = fieldsByName.values();
@@ -142,7 +136,7 @@ public abstract class MappedSchema<T> implements Schema<T>
                 this.fields[j++] = fieldsByNumber[i];
         }
 
-        pipeSchema = new RuntimePipeSchema<T>(this, fieldsByNumber);
+        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
     /**
@@ -153,21 +147,25 @@ public abstract class MappedSchema<T> implements Schema<T>
         return fields.length;
     }
 
+    @Override
     public Class<T> typeClass()
     {
         return typeClass;
     }
 
+    @Override
     public String messageName()
     {
         return typeClass.getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return typeClass.getName();
     }
 
+    @Override
     public String getFieldName(int number)
     {
         // only called on writes
@@ -177,12 +175,14 @@ public abstract class MappedSchema<T> implements Schema<T>
         return field == null ? null : field.name;
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         final Field<T> field = fieldsByName.get(name);
         return field == null ? 0 : field.number;
     }
 
+    @Override
     public final void mergeFrom(Input input, T message) throws IOException
     {
         for (int number = input.readFieldNumber(this); number != 0; number = input
@@ -198,6 +198,7 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
     }
 
+    @Override
     public final void writeTo(Output output, T message) throws IOException
     {
         for (Field<T> f : fields)

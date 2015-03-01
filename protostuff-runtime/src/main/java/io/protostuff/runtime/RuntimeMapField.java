@@ -19,10 +19,10 @@ import java.util.Map;
 
 import io.protostuff.Input;
 import io.protostuff.MapSchema;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
 import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.MapSchema.MessageFactory;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 import io.protostuff.runtime.MappedSchema.Field;
@@ -48,36 +48,42 @@ abstract class RuntimeMapField<T, K, V> extends Field<T>
         super(type, number, name, false, tag);
         schema = new MapSchema<K, V>(messageFactory)
         {
+            @Override
             protected K readKeyFrom(Input input, MapWrapper<K, V> wrapper)
                     throws IOException
             {
                 return kFrom(input, wrapper);
             }
 
+            @Override
             protected void putValueFrom(Input input, MapWrapper<K, V> wrapper,
                     K key) throws IOException
             {
                 vPutFrom(input, wrapper, key);
             }
 
+            @Override
             protected void writeKeyTo(Output output, int fieldNumber, K key,
                     boolean repeated) throws IOException
             {
                 kTo(output, fieldNumber, key, repeated);
             }
 
+            @Override
             protected void writeValueTo(Output output, int fieldNumber, V val,
                     boolean repeated) throws IOException
             {
                 vTo(output, fieldNumber, val, repeated);
             }
 
+            @Override
             protected void transferKey(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
                 kTransfer(pipe, input, output, number, repeated);
             }
 
+            @Override
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {

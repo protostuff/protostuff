@@ -17,10 +17,9 @@ package io.protostuff;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via jsonx ser/deser.
@@ -31,21 +30,25 @@ import static junit.framework.Assert.assertTrue;
 public class JsonXRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest
 {
 
+    @Override
     protected boolean isNumeric()
     {
         return false;
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

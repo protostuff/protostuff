@@ -42,6 +42,7 @@ public class MessageField extends Field<Message>
         return message;
     }
 
+    @Override
     public java.lang.String getJavaType()
     {
         // if(javaType!=null)
@@ -66,11 +67,13 @@ public class MessageField extends Field<Message>
         return javaType;
     }
 
+    @Override
     public java.lang.String getDefaultValueAsString()
     {
         return "null";
     }
 
+    @Override
     public boolean isDelimited()
     {
         return true;
@@ -95,4 +98,8 @@ public class MessageField extends Field<Message>
         return path + targetPackage.replace('.', '/') + "/";
     }
 
+	@Override
+	public java.lang.String getProtoType() {
+        return getRegularType();
+	}
 }

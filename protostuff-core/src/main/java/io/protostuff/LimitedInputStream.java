@@ -76,11 +76,13 @@ public final class LimitedInputStream extends FilterInputStream
         return this;
     }
 
+    @Override
     public int available() throws IOException
     {
         return Math.min(super.available(), limit);
     }
 
+    @Override
     public int read() throws IOException
     {
         if (limit <= 0)
@@ -95,6 +97,7 @@ public final class LimitedInputStream extends FilterInputStream
         return result;
     }
 
+    @Override
     public int read(final byte[] b, final int off, int len) throws IOException
     {
         if (limit <= 0)
@@ -110,6 +113,7 @@ public final class LimitedInputStream extends FilterInputStream
         return result;
     }
 
+    @Override
     public long skip(final long n) throws IOException
     {
         final long result = super.skip(Math.min(n, limit));

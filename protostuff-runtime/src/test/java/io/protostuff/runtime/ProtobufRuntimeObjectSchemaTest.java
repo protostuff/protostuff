@@ -18,14 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import io.protostuff.Pipe;
 import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
-import java.util.Arrays;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * Test protobuf ser/deser for runtime {@link Object} fields.
@@ -37,29 +36,34 @@ public class ProtobufRuntimeObjectSchemaTest extends
         AbstractRuntimeObjectSchemaTest
 {
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,
             T message, Schema<T> schema) throws IOException
     {
         ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         ProtobufIOUtil.mergeFrom(in, message, schema);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return ProtobufIOUtil.toByteArray(message, schema, buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema)
             throws IOException
     {
         ProtobufIOUtil.writeTo(out, message, schema, buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

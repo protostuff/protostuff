@@ -16,6 +16,8 @@ public <if(nested)>static <endif>class <remote_model_name(message=message, name=
     <message.fields:field_declaration(field=it, options=options); separator="\n">
     <message:message_constructor(message=it, options=options)>
     <message:message_getters_and_setters(message=it, options=options)>
+    <message:message_equals_and_hashcode(message=it, options=options)>
+    <message:message_to_string(message=it, options=options)>
     <message:message_impl_serializable(message=it, options=options)>
     <message:message_impl_message(message=it, options=options)>
 }

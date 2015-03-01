@@ -1,0 +1,7 @@
+package it;
+option java_package = "io.protostuff.compiler.it";
+
+message Int32List {
+  repeated int32 numbers = 1;
+}
+

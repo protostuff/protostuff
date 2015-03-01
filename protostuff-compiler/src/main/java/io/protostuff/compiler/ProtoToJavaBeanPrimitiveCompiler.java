@@ -1,14 +1,15 @@
 package io.protostuff.compiler;
 
+import java.io.IOException;
+
+import org.antlr.stringtemplate.StringTemplateGroup;
+
 import io.protostuff.parser.Field;
 import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
-import org.antlr.stringtemplate.StringTemplateGroup;
-
-import java.io.IOException;
 
 /**
- * Created by ryan on 1/22/14.
+ * @author Ryan Rawson
  */
 public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
 {
@@ -31,6 +32,7 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
         }
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();

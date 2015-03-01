@@ -1,11 +1,12 @@
 package io.protostuff.compiler;
 
 import junit.framework.TestCase;
+
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 /**
- * Created by ryan on 1/22/14.
+ * @author Ryan Rawson
  */
 public class ProtoToJavaBeanCompilerTest extends TestCase
 {

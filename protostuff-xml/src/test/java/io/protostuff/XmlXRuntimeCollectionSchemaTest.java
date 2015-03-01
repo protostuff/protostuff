@@ -18,10 +18,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
-import java.util.Arrays;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via xml ser/deser.
@@ -32,28 +32,33 @@ import java.util.Arrays;
 public class XmlXRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSchemaTest
 {
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         XmlIOUtil.mergeFrom(data, offset, length, message, schema);
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         XmlIOUtil.mergeFrom(in, message, schema);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return XmlXIOUtil.toByteArray(message, schema, buf());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         XmlXIOUtil.writeTo(out, message, schema, buf());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

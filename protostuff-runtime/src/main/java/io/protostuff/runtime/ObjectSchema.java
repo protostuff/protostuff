@@ -302,6 +302,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
     protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             transferObject(this, pipe, input, output, strategy);
@@ -313,36 +314,43 @@ public abstract class ObjectSchema extends PolymorphicSchema
         super(strategy);
     }
 
+    @Override
     public Pipe.Schema<Object> getPipeSchema()
     {
         return pipeSchema;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return name(number);
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return number(name);
     }
 
+    @Override
     public String messageFullName()
     {
         return Object.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Object.class.getSimpleName();
     }
 
+    @Override
     public void mergeFrom(Input input, Object owner) throws IOException
     {
         setValue(readObjectFrom(input, this, owner, strategy), owner);
     }
 
+    @Override
     public void writeTo(Output output, Object value) throws IOException
     {
         writeObjectTo(output, value, this, strategy);
@@ -741,15 +749,17 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
         if (clazz.isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz);
             strategy.writeEnumIdTo(output, ID_ENUM, clazz);
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
             return;
         }
 
         if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())
         {
+            EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());
             strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
-            EnumIO.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
             return;
         }
 
@@ -1062,14 +1072,17 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
                     throw new ProtostuffException("Corrupt input.");
-
                 EnumIO.transfer(pipe, input, output, 1, false);
                 break;
+            }
+
             case ID_ENUM_SET:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1080,7 +1093,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_ENUM_MAP:
+            {
                 strategy.transferEnumId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1091,7 +1107,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_COLLECTION:
+            {
                 strategy.transferCollectionId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1102,7 +1121,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
+
             case ID_MAP:
+            {
                 strategy.transferMapId(input, output, number);
 
                 if (output instanceof StatefulOutput)
@@ -1113,8 +1135,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
                 Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
                 return;
+            }
 
             case ID_POLYMORPHIC_COLLECTION:
+            {
                 if (0 != input.readUInt32())
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
@@ -1129,8 +1153,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA,
                         pipe, input, output);
                 return;
+            }
 
             case ID_POLYMORPHIC_MAP:
+            {
                 if (0 != input.readUInt32())
                     throw new ProtostuffException("Corrupt input.");
                 output.writeUInt32(number, 0, false);
@@ -1145,6 +1171,8 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA,
                         pipe, input, output);
                 return;
+            }
+
             case ID_DELEGATE:
             {
                 final HasDelegate<Object> hd = strategy.transferDelegateId(input,
@@ -1269,67 +1297,80 @@ public abstract class ObjectSchema extends PolymorphicSchema
             this.array = array;
         }
 
+        @Override
         public boolean add(Object value)
         {
             Array.set(array, offset++, value);
             return true;
         }
 
+        @Override
         public boolean addAll(Collection<? extends Object> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean contains(Object arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isEmpty()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Iterator<Object> iterator()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean remove(Object arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean removeAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean retainAll(Collection<?> arg0)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public int size()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object[] toArray()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public <T> T[] toArray(T[] arg0)
         {
             throw new UnsupportedOperationException();

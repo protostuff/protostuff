@@ -37,10 +37,10 @@ public final class RuntimeEnv
      * option.
      */
     public static final boolean AUTO_LOAD_POLYMORPHIC_CLASSES;
-    
+
     /**
-     * Disabled by default. Writes a sentinel value (uint32) in place of null values.
-     * Works only on the binary formats (protostuff/graph/protobuf).
+     * Disabled by default. Writes a sentinel value (uint32) in place of null values. Works only on the binary formats
+     * (protostuff/graph/protobuf).
      */
     public static final boolean ALLOW_NULL_ARRAY_ELEMENT;
 
@@ -69,8 +69,7 @@ public final class RuntimeEnv
      * BlockingDequeue = LinkedBlockingDeque
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_COLLECTION_INTERFACES;
 
@@ -89,8 +88,7 @@ public final class RuntimeEnv
      * ConcurrentNavigableMap = ConcurrentSkipListMap
      * </pre>
      * <p>
-     * You can optionally enable only for a particular field by annotating it with
-     * {@link io.protostuff.Morph}.
+     * You can optionally enable only for a particular field by annotating it with {@link io.protostuff.Morph}.
      */
     public static final boolean MORPH_MAP_INTERFACES;
 
@@ -163,7 +161,7 @@ public final class RuntimeEnv
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));
-        
+
         ALLOW_NULL_ARRAY_ELEMENT = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.allow_null_array_element", "false"));
 
@@ -254,10 +252,10 @@ public final class RuntimeEnv
                 throw new RuntimeException("Could not resolve constructor for "
                         + clazz);
 
-            return new Android2Instantiator<T>(clazz);
+            return new Android2Instantiator<>(clazz);
         }
 
-        return new DefaultInstantiator<T>(constructor);
+        return new DefaultInstantiator<>(constructor);
     }
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz)
@@ -307,25 +305,15 @@ public final class RuntimeEnv
             constructor.setAccessible(true);
         }
 
+        @Override
         public T newInstance()
         {
             try
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
+                    | InstantiationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -342,6 +330,7 @@ public final class RuntimeEnv
             this.clazz = clazz;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public T newInstance()
         {
@@ -350,15 +339,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectInputStream.invoke(null, clazz,
                         Object.class);
             }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e)
+            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }

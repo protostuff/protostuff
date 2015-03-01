@@ -61,11 +61,13 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
@@ -73,6 +75,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
     // message method
 
+    @Override
     public Schema<ClubFounder> cachedSchema()
     {
         return SCHEMA;
@@ -82,31 +85,37 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
     {
         // schema methods
 
+        @Override
         public ClubFounder newMessage()
         {
             return new ClubFounder();
         }
 
+        @Override
         public Class<ClubFounder> typeClass()
         {
             return ClubFounder.class;
         }
 
+        @Override
         public String messageName()
         {
             return ClubFounder.class.getSimpleName();
         }
 
+        @Override
         public String messageFullName()
         {
             return ClubFounder.class.getName();
         }
 
+        @Override
         public boolean isInitialized(ClubFounder message)
         {
             return true;
         }
 
+        @Override
         public void mergeFrom(Input input, ClubFounder message) throws IOException
         {
             for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -128,6 +137,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
             }
         }
 
+        @Override
         public void writeTo(Output output, ClubFounder message) throws IOException
         {
             if (message.name != null)
@@ -138,6 +148,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
 
         }
 
+        @Override
         public String getFieldName(int number)
         {
             switch (number)
@@ -151,13 +162,14 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
             }
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             final Integer number = fieldMap.get(name);
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
 
         {
             fieldMap.put("name", 1);

@@ -88,6 +88,7 @@ public abstract class NumericIdStrategy extends IdStrategy
         super(primaryGroup, groupId);
     }
 
+    @Override
     protected void writeArrayIdTo(Output output, Class<?> componentType)
             throws IOException
     {
@@ -140,6 +141,7 @@ public abstract class NumericIdStrategy extends IdStrategy
         }
     }
 
+    @Override
     protected void transferArrayId(Input input, Output output, int fieldNumber,
             boolean mapped) throws IOException
     {
@@ -149,6 +151,7 @@ public abstract class NumericIdStrategy extends IdStrategy
             output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected Class<?> resolveArrayComponentTypeFrom(Input input, boolean mapped)
             throws IOException
     {
@@ -156,6 +159,7 @@ public abstract class NumericIdStrategy extends IdStrategy
                 resolveClass(input.readUInt32());
     }
 
+    @Override
     protected void writeClassIdTo(Output output, Class<?> componentType, boolean array)
             throws IOException
     {
@@ -212,6 +216,7 @@ public abstract class NumericIdStrategy extends IdStrategy
         }
     }
 
+    @Override
     protected void transferClassId(Input input, Output output, int fieldNumber,
             boolean mapped, boolean array) throws IOException
     {
@@ -221,6 +226,7 @@ public abstract class NumericIdStrategy extends IdStrategy
             output.writeUInt32(fieldNumber, input.readUInt32(), false);
     }
 
+    @Override
     protected Class<?> resolveClassFrom(Input input, boolean mapped,
             boolean array) throws IOException
     {
@@ -328,7 +334,7 @@ public abstract class NumericIdStrategy extends IdStrategy
     protected static <T> ArrayList<T> newList(int size)
     {
         List<T> l = Collections.nCopies(size, null);
-        return new ArrayList<T>(l);
+        return new ArrayList<>(l);
     }
 
     protected static <T> void grow(ArrayList<T> list, int size)

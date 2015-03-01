@@ -33,18 +33,18 @@ public class Message extends AnnotationContainer implements HasName, HasFields
     final Message parentMessage;
     final Proto proto;
 
-    final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<String, Message>();
-    final LinkedHashMap<String, EnumGroup> nestedEnumGroups = new LinkedHashMap<String, EnumGroup>();
-    final LinkedHashMap<String, Service> nestedServices = new LinkedHashMap<String, Service>();
+    final LinkedHashMap<String, Message> nestedMessages = new LinkedHashMap<>();
+    final LinkedHashMap<String, EnumGroup> nestedEnumGroups = new LinkedHashMap<>();
+    final LinkedHashMap<String, Service> nestedServices = new LinkedHashMap<>();
 
-    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
-    final ArrayList<Extension> nestedExtensions = new ArrayList<Extension>();
-    final ArrayList<Field<?>> sortedFields = new ArrayList<Field<?>>();
+    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<>();
+    final ArrayList<Extension> nestedExtensions = new ArrayList<>();
+    final ArrayList<Field<?>> sortedFields = new ArrayList<>();
 
-    final ArrayList<int[]> extensionRanges = new ArrayList<int[]>();
-    final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<Integer, Field<?>>();
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
+    final ArrayList<int[]> extensionRanges = new ArrayList<>();
+    final LinkedHashMap<Integer, Field<?>> extensions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
     boolean extensible;
 
     // code generator helpers
@@ -79,11 +79,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public Proto getProto()
     {
         return proto;
@@ -197,11 +199,13 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return fields;
     }
 
+    @Override
     public List<Field<?>> getFields()
     {
         return sortedFields;
     }
 
+    @Override
     public Field<?> getField(String name)
     {
         return fields.get(name);
@@ -228,6 +232,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return (T) fields.get(name);
     }
 
+    @Override
     public void addField(Field<?> field)
     {
         if (field.number < 1)
@@ -290,12 +295,14 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         }
     }
 
+    @Override
     public void putStandardOption(String key, Object value)
     {
         putExtraOption(key, value);
         standardOptions.put(key, value);
     }
 
+    @Override
     public void putExtraOption(String key, Object value)
     {
         if (extraOptions.put(key, value) != null)
@@ -328,6 +335,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         return getOptions();
     }
 
+    @Override
     public LinkedHashMap<String, Object> getOptions()
     {
         return extraOptions;
@@ -345,6 +353,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 .toString();
     }
 
+    @Override
     public String getEnclosingNamespace()
     {
         return getFullName();

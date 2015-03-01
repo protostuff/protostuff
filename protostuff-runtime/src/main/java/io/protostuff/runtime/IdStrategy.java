@@ -73,7 +73,7 @@ public abstract class IdStrategy
             {
                 final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
 
-                final ArrayList<Field<T>> fields = new ArrayList<MappedSchema.Field<T>>(
+                final ArrayList<Field<T>> fields = new ArrayList<>(
                         rs.fields.length);
 
                 for (Field<T> f : rs.fields)
@@ -116,7 +116,7 @@ public abstract class IdStrategy
                             + rs.messageFullName() + " on group " + groupId);
                 }
 
-                return new RuntimeSchema<T>(typeClass, fields,
+                return new RuntimeSchema<>(typeClass, fields,
                         // the last field
                         fields.get(size - 1).number, rs.instantiator);
             }
@@ -292,6 +292,7 @@ public abstract class IdStrategy
     final DerivativeSchema POLYMORPHIC_POJO_ELEMENT_SCHEMA = new DerivativeSchema(
             this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void doMergeFrom(Input input, Schema<Object> derivedSchema,
                 Object owner) throws IOException
@@ -317,6 +318,7 @@ public abstract class IdStrategy
 
     final ArraySchema ARRAY_ELEMENT_SCHEMA = new ArraySchema(this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -329,6 +331,7 @@ public abstract class IdStrategy
 
     final NumberSchema NUMBER_ELEMENT_SCHEMA = new NumberSchema(this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -341,6 +344,7 @@ public abstract class IdStrategy
 
     final ClassSchema CLASS_ELEMENT_SCHEMA = new ClassSchema(this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -354,6 +358,7 @@ public abstract class IdStrategy
     final PolymorphicEnumSchema POLYMORPHIC_ENUM_ELEMENT_SCHEMA = new PolymorphicEnumSchema(
             this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -367,6 +372,7 @@ public abstract class IdStrategy
     final PolymorphicThrowableSchema POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA = new PolymorphicThrowableSchema(
             this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -379,6 +385,7 @@ public abstract class IdStrategy
 
     final ObjectSchema OBJECT_ELEMENT_SCHEMA = new ObjectSchema(this)
     {
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
         {
@@ -393,42 +400,50 @@ public abstract class IdStrategy
 
     final Schema<Object> DYNAMIC_VALUE_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return ObjectSchema.name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return ObjectSchema.number(name);
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Object.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Object.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             // cannot instantiate because the type is dynamic.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public void mergeFrom(Input input, Object owner) throws IOException
         {
@@ -446,6 +461,7 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             ObjectSchema.writeObjectTo(output, message, this, IdStrategy.this);
@@ -455,6 +471,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> DYNAMIC_VALUE_PIPE_SCHEMA = new Pipe.Schema<Object>(
             DYNAMIC_VALUE_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -465,41 +482,49 @@ public abstract class IdStrategy
 
     final Schema<Collection<Object>> COLLECTION_SCHEMA = new Schema<Collection<Object>>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return number == 1 ? CollectionSchema.FIELD_NAME_VALUE : null;
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
         }
 
+        @Override
         public boolean isInitialized(Collection<Object> owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Collection.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Collection.class.getSimpleName();
         }
 
+        @Override
         public Collection<Object> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Collection<Object>> typeClass()
         {
             return Collection.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Collection<Object> message)
                 throws IOException
         {
@@ -526,6 +551,7 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public void writeTo(Output output, Collection<Object> message)
                 throws IOException
         {
@@ -540,6 +566,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Collection<Object>> COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Collection<Object>>(
             COLLECTION_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -564,47 +591,56 @@ public abstract class IdStrategy
 
     final Schema<Object> ARRAY_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return number == 1 ? CollectionSchema.FIELD_NAME_VALUE : null;
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Array.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Array.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Object message) throws IOException
         {
             // using COLLECTION_SCHEMA instead.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             for (int i = 0, len = Array.getLength(message); i < len; i++)
@@ -621,6 +657,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> ARRAY_PIPE_SCHEMA = new Pipe.Schema<Object>(
             ARRAY_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -645,41 +682,49 @@ public abstract class IdStrategy
 
     final Schema<Map<Object, Object>> MAP_SCHEMA = new Schema<Map<Object, Object>>()
     {
+        @Override
         public final String getFieldName(int number)
         {
             return number == 1 ? MapSchema.FIELD_NAME_ENTRY : null;
         }
 
+        @Override
         public final int getFieldNumber(String name)
         {
             return name.length() == 1 && name.charAt(0) == 'e' ? 1 : 0;
         }
 
+        @Override
         public boolean isInitialized(Map<Object, Object> owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Map.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Map.class.getSimpleName();
         }
 
+        @Override
         public Map<Object, Object> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Map<Object, Object>> typeClass()
         {
             return Map.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Map<Object, Object> message)
                 throws IOException
         {
@@ -716,6 +761,7 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public void writeTo(Output output, Map<Object, Object> message)
                 throws IOException
         {
@@ -729,6 +775,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Map<Object, Object>> MAP_PIPE_SCHEMA = new Pipe.Schema<Map<Object, Object>>(
             MAP_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -752,6 +799,7 @@ public abstract class IdStrategy
 
     final Schema<Entry<Object, Object>> ENTRY_SCHEMA = new Schema<Entry<Object, Object>>()
     {
+        @Override
         public final String getFieldName(int number)
         {
             switch (number)
@@ -765,6 +813,7 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public final int getFieldNumber(String name)
         {
             if (name.length() != 1)
@@ -781,31 +830,37 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public boolean isInitialized(Entry<Object, Object> message)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Entry.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Entry.class.getSimpleName();
         }
 
+        @Override
         public Entry<Object, Object> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Entry<Object, Object>> typeClass()
         {
             return Entry.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Entry<Object, Object> message)
                 throws IOException
         {
@@ -866,6 +921,7 @@ public abstract class IdStrategy
             }
         }
 
+        @Override
         public void writeTo(Output output, Entry<Object, Object> entry)
                 throws IOException
         {
@@ -882,6 +938,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Entry<Object, Object>> ENTRY_PIPE_SCHEMA = new Pipe.Schema<Entry<Object, Object>>(
             ENTRY_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -910,48 +967,57 @@ public abstract class IdStrategy
 
     final Schema<Object> OBJECT_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return ObjectSchema.name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return ObjectSchema.number(name);
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Object.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Object.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             // cannot instantiate because the type is dynamic.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Object owner) throws IOException
         {
             ((Wrapper) owner).value = ObjectSchema.readObjectFrom(input, this,
                     owner, IdStrategy.this);
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             ObjectSchema.writeObjectTo(output, message, this, IdStrategy.this);
@@ -961,6 +1027,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> OBJECT_PIPE_SCHEMA = new Pipe.Schema<Object>(
             OBJECT_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -971,48 +1038,57 @@ public abstract class IdStrategy
 
     final Schema<Object> CLASS_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return ClassSchema.name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return ClassSchema.number(name);
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Class.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Class.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             // cannot instantiate because the type is dynamic.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Object owner) throws IOException
         {
             ((Wrapper) owner).value = ClassSchema.readObjectFrom(input, this,
                     owner, IdStrategy.this);
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             ClassSchema.writeObjectTo(output, message, this, IdStrategy.this);
@@ -1022,6 +1098,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> CLASS_PIPE_SCHEMA = new Pipe.Schema<Object>(
             CLASS_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -1032,48 +1109,57 @@ public abstract class IdStrategy
 
     final Schema<Object> POLYMORPHIC_COLLECTION_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return PolymorphicCollectionSchema.name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return PolymorphicCollectionSchema.number(name);
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Collection.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Collection.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             // cannot instantiate because the type is dynamic.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Object owner) throws IOException
         {
             ((Wrapper) owner).value = PolymorphicCollectionSchema
                     .readObjectFrom(input, this, owner, IdStrategy.this);
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             PolymorphicCollectionSchema.writeObjectTo(output, message, this,
@@ -1084,6 +1170,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> POLYMORPHIC_COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Object>(
             POLYMORPHIC_COLLECTION_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -1094,48 +1181,57 @@ public abstract class IdStrategy
 
     final Schema<Object> POLYMORPHIC_MAP_SCHEMA = new Schema<Object>()
     {
+        @Override
         public String getFieldName(int number)
         {
             return PolymorphicMapSchema.name(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return PolymorphicMapSchema.number(name);
         }
 
+        @Override
         public boolean isInitialized(Object owner)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Map.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Map.class.getSimpleName();
         }
 
+        @Override
         public Object newMessage()
         {
             // cannot instantiate because the type is dynamic.
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Object> typeClass()
         {
             return Object.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Object owner) throws IOException
         {
             ((Wrapper) owner).value = PolymorphicMapSchema.readObjectFrom(
                     input, this, owner, IdStrategy.this);
         }
 
+        @Override
         public void writeTo(Output output, Object message) throws IOException
         {
             PolymorphicMapSchema.writeObjectTo(output, message, this,
@@ -1146,6 +1242,7 @@ public abstract class IdStrategy
     final Pipe.Schema<Object> POLYMORPHIC_MAP_PIPE_SCHEMA = new Pipe.Schema<Object>(
             POLYMORPHIC_MAP_SCHEMA)
     {
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {
@@ -1165,16 +1262,19 @@ public abstract class IdStrategy
             this.map = map;
         }
 
+        @Override
         public Object getKey()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object getValue()
         {
             return value;
         }
 
+        @Override
         public Object setValue(Object value)
         {
             final Object last = this.value;

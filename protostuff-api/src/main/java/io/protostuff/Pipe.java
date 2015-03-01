@@ -69,11 +69,13 @@ public abstract class Pipe
             this.wrappedSchema = wrappedSchema;
         }
 
+        @Override
         public String getFieldName(int number)
         {
             return wrappedSchema.getFieldName(number);
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             return wrappedSchema.getFieldNumber(name);
@@ -82,31 +84,37 @@ public abstract class Pipe
         /**
          * Always returns true since we're just transferring data.
          */
+        @Override
         public boolean isInitialized(Pipe message)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return wrappedSchema.messageFullName();
         }
 
+        @Override
         public String messageName()
         {
             return wrappedSchema.messageName();
         }
 
+        @Override
         public Pipe newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<Pipe> typeClass()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public final void writeTo(final Output output, final Pipe pipe) throws IOException
         {
             if (pipe.output == null)
@@ -146,6 +154,7 @@ public abstract class Pipe
             pipe.input.mergeObject(pipe, this);
         }
 
+        @Override
         public final void mergeFrom(final Input input, final Pipe pipe) throws IOException
         {
             transfer(pipe, input, pipe.output);

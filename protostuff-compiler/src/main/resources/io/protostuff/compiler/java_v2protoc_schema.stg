@@ -16,6 +16,9 @@ proto_header(proto, module, options) ::= <<
 
 package <proto.javaPackageName>;
 
+import javax.annotation.Generated;
+
+@Generated("<module.generator>")
 >>
 
 derived_outer_name(proto, options) ::= <<

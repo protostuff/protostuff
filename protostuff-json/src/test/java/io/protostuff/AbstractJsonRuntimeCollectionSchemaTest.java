@@ -18,10 +18,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
 import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
-import java.util.Arrays;
 
 /**
  * Test runtime collection fields with {@link CollectionSchema} via json ser/deser.
@@ -34,28 +34,33 @@ public abstract class AbstractJsonRuntimeCollectionSchemaTest extends AbstractRu
 
     protected abstract boolean isNumeric();
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         JsonIOUtil.mergeFrom(data, offset, length, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         JsonIOUtil.mergeFrom(in, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return JsonIOUtil.toByteArray(message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
         JsonIOUtil.writeTo(out, message, schema, isNumeric());
     }
 
+    @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {

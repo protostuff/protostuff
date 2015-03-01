@@ -1,27 +1,30 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.protostuff</groupId>
   <artifactId>protostuff</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.3.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>protostuff</name>
-  <description>Java serialization library, proto compiler, code generator, protobuf utilities, gwt overlays, android DTOs</description>
-  <url>http://code.google.com/p/protostuff/</url>
+  <description>
+    Java serialization library, proto compiler, code generator
+  </description>
+  <url>http://protostuff.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <junit-version>4.11</junit-version>
-    <protobuf-version>2.3.0</protobuf-version>
-    <jackson-version>1.9.13</jackson-version>
+    <jackson-version>2.4.4</jackson-version>
     <woodstox-version>4.1.3</woodstox-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.2</antlr3-version>
     <stringtemplate-version>3.2.1</stringtemplate-version>
     <mavenVersion>3.2.3</mavenVersion>
+    <jmh.version>1.6.1</jmh.version>
+    <javac.target>1.7</javac.target>
   </properties>
 
   <developers>
@@ -31,18 +34,27 @@
       <email>david.yu.ftw@gmail.com</email>
       <url>http://davidyu.myopenid.com</url>
     </developer>
-      <developer>
-          <id>posix4e</id>
-          <name>Alex Newman</name>
-          <email>alex@ohmdata.com</email>
-          <url>http://www.ohmdata.com</url>
-      </developer>
+    <developer>
+      <id>posix4e</id>
+      <name>Alex Newman</name>
+      <email>alex@ohmdata.com</email>
+      <url>http://www.ohmdata.com</url>
+    </developer>
+    <developer>
+      <id>kshchepanovskyi</id>
+      <name>Kostiantyn Shchepanovskyi</name>
+      <email>schepanovsky@gmail.com</email>
+      <timezone>+2</timezone>
+    </developer>
   </developers>
+
   <scm>
     <url>https://github.com/protostuff/protostuff</url>
     <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
     <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
+    <tag>protostuff-1.3.2</tag>
   </scm>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -62,6 +74,12 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <version>2.9</version>
         <configuration>
@@ -71,80 +89,14 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <delete file="../dist/${project.build.finalName}.${project.packaging}" />
-              </tasks>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copyjar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <copy failonerror="false" file="target/${project.build.finalName}.${project.packaging}" tofile="../dist/${project.build.finalName}.${project.packaging}" />
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.1</version>
-        <configuration>
-          <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-            <phase>site</phase>
-            <configuration>
-              <reportOutputDirectory>${basedir}</reportOutputDirectory> 
-              <destDir>javadoc</destDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>              
-        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <providerImplementations>
-            <svn>javasvn</svn>
-          </providerImplementations>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-            <artifactId>maven-scm-provider-svnjava</artifactId>
-            <version>2.0.4</version>
-          </dependency>
-        </dependencies>
+        <version>2.5.1</version>
       </plugin>
 
       <plugin>
@@ -159,7 +111,7 @@
             </goals>
             <configuration>
               <rules>
-                <DependencyConvergence/>
+                <DependencyConvergence />
                 <requireMavenVersion>
                   <version>${mavenVersion}</version>
                 </requireMavenVersion>
@@ -176,10 +128,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.2</version>
+          <version>3.1</version>
           <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
+            <compilerVersion>${javac.target}</compilerVersion>
+            <source>${javac.target}</source>
+            <target>${javac.target}</target>
           </configuration>
         </plugin>
         <plugin>
@@ -194,6 +147,11 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -225,48 +183,140 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.18</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.1</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>aggregate</id>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+              <phase>site</phase>
+              <configuration>
+                <additionalparam>-Xdoclint:none</additionalparam>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
+            <tags>
+              <tag>
+                <name>created</name>
+                <placement>t</placement>
+                <head>Date created:</head>
+              </tag>
+              <tag>
+                <name>goal</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>phase</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>execute</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>requiresDependencyResolution</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>parameter</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>required</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>readonly</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>component</name>
+                <placement>Xf</placement>
+              </tag>
+              <tag>
+                <name>configurator</name>
+                <placement>Xt</placement>
+              </tag>
+              <tag>
+                <name>requiresDependencyResolution</name>
+                <placement>Xt</placement>
+              </tag>
+            </tags>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
 
   <distributionManagement>
     <repository>
-		<id>sonatype-nexus-staging</id>
-		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-	</repository>
-	<snapshotRepository>
-		<id>sonatype-nexus-snapshots</id>
-		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-	</snapshotRepository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
+
   <profiles>
-  	<profile>
-  		<id>release</id>
-  		<activation>
-      		<property>
-        		<name>performRelease</name>
-        		<value>true</value>
-      		</property>
-    	</activation>
-  		<build>
-        <plugins>          
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
-          	<groupId>org.apache.maven.plugins</groupId>
-          	<artifactId>maven-gpg-plugin</artifactId>
-          	<version>1.1</version>
-          	<executions>
-            	<execution>
-              		<id>sign-artifacts</id>
-              		<phase>verify</phase>
-              		<goals>
-                		<goal>sign</goal>
-              		</goals>
-            	</execution>
-          	</executions>
-        	</plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
-  	</profile>
+    </profile>
   </profiles>
 
   <dependencyManagement>
@@ -277,18 +327,23 @@
         <version>${junit-version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java</artifactId>
-        <version>${protobuf-version}</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.10.8</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
         <version>${jackson-version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-smile</artifactId>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-smile</artifactId>
         <version>${jackson-version}</version>
       </dependency>
       <dependency>
@@ -322,6 +377,16 @@
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>3.4</version>
+      </dependency>
+      <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>1.5.1</version>
@@ -330,6 +395,16 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-classworlds</artifactId>
         <version>2.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmh.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmh.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -350,6 +425,9 @@
     <module>protostuff-compiler</module>
     <module>protostuff-maven-plugin</module>
     <module>protostuff-uberjar</module>
+    <module>protostuff-it</module>
+    <module>protostuff-bom</module>
+    <module>protostuff-benchmarks</module>
   </modules>
 
 </project>

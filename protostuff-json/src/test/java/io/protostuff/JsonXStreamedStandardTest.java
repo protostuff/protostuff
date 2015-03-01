@@ -26,12 +26,14 @@ import java.io.IOException;
 public class JsonXStreamedStandardTest extends StandardTest
 {
 
+    @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
         JsonIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
     }
 
+    @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

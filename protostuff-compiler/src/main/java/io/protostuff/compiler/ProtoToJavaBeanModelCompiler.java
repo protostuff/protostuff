@@ -14,17 +14,18 @@
 
 package io.protostuff.compiler;
 
-import io.protostuff.parser.EnumGroup;
-import io.protostuff.parser.Message;
-import io.protostuff.parser.Proto;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import org.antlr.stringtemplate.AutoIndentWriter;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import io.protostuff.parser.EnumGroup;
+import io.protostuff.parser.Message;
+import io.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to protobuf java messages (pojos). Generates a {@code Schema} from the proto files.
@@ -45,6 +46,7 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         super("java_bean_model");
     }
 
+    @Override
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
@@ -75,13 +77,6 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         {
             if (m.getAnnotation("Transient") != null)
                 continue;
-
-            // true if its a service message w/c isn't supported atm
-            if (m.getFields().isEmpty())
-            {
-                System.err.println("ignoring empty message: " + m.getFullName());
-                continue;
-            }
 
             // Generate model
             boolean generateModel = shouldGenerateModel(module, proto, m);

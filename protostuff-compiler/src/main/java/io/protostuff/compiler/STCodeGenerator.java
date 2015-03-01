@@ -46,22 +46,24 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
 
     static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS =
-            new ConcurrentHashMap<Class<?>, AttributeRenderer>();
+            new ConcurrentHashMap<>();
 
     static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS =
-            new ConcurrentHashMap<String, Formatter>();
+            new ConcurrentHashMap<>();
 
     public static int errorCount = 0;
 
     public static final StringTemplateErrorListener ERROR_LISTENER =
             new StringTemplateErrorListener()
             {
+                @Override
                 public void error(String msg, Throwable e)
                 {
                     errorCount += 1;
                     System.err.println("error: " + msg);
                 }
 
+                @Override
                 public void warning(String msg)
                 {
                     System.err.println("warning: " + msg);
@@ -74,11 +76,13 @@ public abstract class STCodeGenerator implements ProtoCompiler
     public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER =
             new AttributeRenderer()
             {
+                @Override
                 public String toString(Object o)
                 {
                     return (String) o;
                 }
 
+                @Override
                 public String toString(Object o, String formatName)
                 {
                     String str = (String) o;
@@ -200,11 +204,13 @@ public abstract class STCodeGenerator implements ProtoCompiler
         this.id = id;
     }
 
+    @Override
     public String getOutputId()
     {
         return id;
     }
 
+    @Override
     public void compile(ProtoModule module) throws IOException
     {
         String ci = module.getOption("compile_imports");
@@ -240,7 +246,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     protected void compile(ProtoModule module, Proto proto, boolean compileImports,
             boolean recursive) throws IOException
     {
-        final List<Proto> overridden = new ArrayList<Proto>();
+        final List<Proto> overridden = new ArrayList<>();
         try
         {
             collect(module, proto, overridden, recursive);

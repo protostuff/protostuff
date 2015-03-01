@@ -238,6 +238,7 @@ public class InheritanceTest extends AbstractTest
 
     boolean skipTests = false;
 
+    @Override
     public void setUp() throws Exception
     {
         System.setProperty("protostuff.morph_non_final_pojos", "true");
@@ -263,7 +264,7 @@ public class InheritanceTest extends AbstractTest
         kb.setNumberOfKeys(10);
         ms.setName("Test1");
         ms.setNumberOfButtons(2);
-        List<InputDevice> devices = new ArrayList<InputDevice>();
+        List<InputDevice> devices = new ArrayList<>();
         devices.add(ms);
         devices.add(kb);
         sys.setInputDevices(devices);
@@ -295,7 +296,7 @@ public class InheritanceTest extends AbstractTest
         kb.setNumberOfKeys(10);
         ms.setName("Test1");
         ms.setNumberOfButtons(2);
-        List<InputDevice> devices = new ArrayList<InputDevice>();
+        List<InputDevice> devices = new ArrayList<>();
         devices.add(ms);
         devices.add(kb);
         sys.setInputDevices(devices);

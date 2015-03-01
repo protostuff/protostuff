@@ -52,11 +52,13 @@ public final class ProtostuffIOUtil
         final ByteArrayInput byteArrayInput = new ByteArrayInput(data, offset, len, true);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return byteArrayInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
@@ -76,11 +78,13 @@ public final class ProtostuffIOUtil
         final CodedInput codedInput = new CodedInput(in, true);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 return codedInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
@@ -311,7 +315,7 @@ public final class ProtostuffIOUtil
         if (size > 0x7f)
             size = CodedInput.readRawVarint32(in, size);
 
-        final ArrayList<T> list = new ArrayList<T>(size);
+        final ArrayList<T> list = new ArrayList<>(size);
         final CodedInput input = new CodedInput(in, true);
         for (int i = 0; i < size; i++)
         {

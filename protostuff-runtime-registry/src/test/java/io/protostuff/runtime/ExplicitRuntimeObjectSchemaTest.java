@@ -31,7 +31,6 @@ package io.protostuff.runtime;
 import static io.protostuff.runtime.SampleDelegates.SINGLETON_DELEGATE;
 
 import junit.framework.TestCase;
-
 import io.protostuff.CollectionSchema;
 import io.protostuff.MapSchema;
 import io.protostuff.runtime.AbstractRuntimeObjectSchemaTest.AcousticGuitar;
@@ -96,11 +95,13 @@ public class ExplicitRuntimeObjectSchemaTest extends TestCase
             System.out.println("@EXPLICIT");
         }
 
+        @Override
         public IdStrategy create()
         {
             return r.strategy;
         }
 
+        @Override
         public void postCreate()
         {
             r.registerCollection(CollectionSchema.MessageFactories.ArrayList, 1)

@@ -63,6 +63,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Foo> fooSchema = new CustomSchema<Foo>(foo.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Foo message) throws IOException
             {
                 // 10 is an unknown field
@@ -83,6 +84,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Bar message) throws IOException
             {
                 // 10 is an unknown field
@@ -109,6 +111,7 @@ public abstract class SerDeserTest extends StandardTest
     {
         final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
         {
+            @Override
             public void writeTo(Output output, Bar message) throws IOException
             {
                 output.writeObject(10, baz, Baz.getSchema(), false);
@@ -171,7 +174,7 @@ public abstract class SerDeserTest extends StandardTest
     public void testEmptyInnerFooDelimited() throws Exception
     {
         Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         fooCompare.setSomeBar(bars);
 
@@ -355,7 +358,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFoo2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bars.add(bar);
         Foo foo = new Foo();
@@ -373,7 +376,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);
@@ -389,13 +392,13 @@ public abstract class SerDeserTest extends StandardTest
         Foo parsedFoo = (Foo) in.readObject();
         SerializableObjects.assertEquals(parsedFoo, foo);
     }
-    
+
     public static String repeatChar(char c, int size)
     {
         StringBuilder sb = new StringBuilder(size);
         while (size-- > 0)
             sb.append(c);
-        
+
         return sb.toString();
     }
 

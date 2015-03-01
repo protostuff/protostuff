@@ -74,17 +74,19 @@ public final class Student implements Externalizable, Message<Student>
     public void addClub(Club club)
     {
         if (this.club == null)
-            this.club = new ArrayList<Club>();
+            this.club = new ArrayList<>();
         this.club.add(club);
     }
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
@@ -92,6 +94,7 @@ public final class Student implements Externalizable, Message<Student>
 
     // message method
 
+    @Override
     public Schema<Student> cachedSchema()
     {
         return SCHEMA;
@@ -101,31 +104,37 @@ public final class Student implements Externalizable, Message<Student>
     {
         // schema methods
 
+        @Override
         public Student newMessage()
         {
             return new Student();
         }
 
+        @Override
         public Class<Student> typeClass()
         {
             return Student.class;
         }
 
+        @Override
         public String messageName()
         {
             return Student.class.getSimpleName();
         }
 
+        @Override
         public String messageFullName()
         {
             return Student.class.getName();
         }
 
+        @Override
         public boolean isInitialized(Student message)
         {
             return true;
         }
 
+        @Override
         public void mergeFrom(Input input, Student message) throws IOException
         {
             for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -139,7 +148,7 @@ public final class Student implements Externalizable, Message<Student>
                         break;
                     case 2:
                         if (message.club == null)
-                            message.club = new ArrayList<Club>();
+                            message.club = new ArrayList<>();
                         message.club.add(input.mergeObject(null, Club.getSchema()));
                         break;
 
@@ -149,6 +158,7 @@ public final class Student implements Externalizable, Message<Student>
             }
         }
 
+        @Override
         public void writeTo(Output output, Student message) throws IOException
         {
             if (message.name != null)
@@ -165,6 +175,7 @@ public final class Student implements Externalizable, Message<Student>
 
         }
 
+        @Override
         public String getFieldName(int number)
         {
             switch (number)
@@ -178,13 +189,14 @@ public final class Student implements Externalizable, Message<Student>
             }
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             final Integer number = fieldMap.get(name);
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
 
         {
             fieldMap.put("name", 1);

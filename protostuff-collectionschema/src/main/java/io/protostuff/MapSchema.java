@@ -55,97 +55,110 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         // defaults to HashMap
         Map(java.util.HashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         // defaults to TreeMap
         SortedMap(java.util.TreeMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         // defaults to TreeMap
         NavigableMap(java.util.TreeMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         HashMap(java.util.HashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         LinkedHashMap(java.util.LinkedHashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.LinkedHashMap<K, V>();
+                return new java.util.LinkedHashMap<>();
             }
         },
         TreeMap(java.util.TreeMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         WeakHashMap(java.util.WeakHashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.WeakHashMap<K, V>();
+                return new java.util.WeakHashMap<>();
             }
         },
         IdentityHashMap(java.util.IdentityHashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.IdentityHashMap<K, V>();
+                return new java.util.IdentityHashMap<>();
             }
         },
         Hashtable(java.util.Hashtable.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.Hashtable<K, V>();
+                return new java.util.Hashtable<>();
             }
         },
         // defaults to ConcurrentHashMap
         ConcurrentMap(java.util.concurrent.ConcurrentHashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         ConcurrentHashMap(java.util.concurrent.ConcurrentHashMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         // defaults to ConcurrentNavigableMap
         ConcurrentNavigableMap(java.util.concurrent.ConcurrentSkipListMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         },
         ConcurrentSkipListMap(java.util.concurrent.ConcurrentSkipListMap.class)
         {
+            @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         };
 
@@ -156,6 +169,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             this.typeClass = typeClass;
         }
 
+        @Override
         public Class<?> typeClass()
         {
             return typeClass;
@@ -246,41 +260,49 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     protected abstract void transferValue(Pipe pipe, Input input, Output output,
             int number, boolean repeated) throws IOException;
 
+    @Override
     public final String getFieldName(int number)
     {
         return number == 1 ? FIELD_NAME_ENTRY : null;
     }
 
+    @Override
     public final int getFieldNumber(String name)
     {
         return name.length() == 1 && name.charAt(0) == 'e' ? 1 : 0;
     }
 
+    @Override
     public final boolean isInitialized(Map<K, V> map)
     {
         return true;
     }
 
+    @Override
     public final String messageFullName()
     {
         return Map.class.getName();
     }
 
+    @Override
     public final String messageName()
     {
         return Map.class.getSimpleName();
     }
 
+    @Override
     public final Class<? super Map<K, V>> typeClass()
     {
         return Map.class;
     }
 
+    @Override
     public final Map<K, V> newMessage()
     {
         return messageFactory.newMessage();
     }
 
+    @Override
     public final void mergeFrom(Input input, Map<K, V> map) throws IOException
     {
         MapWrapper<K, V> entry = null;
@@ -296,7 +318,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     if (entry == null)
                     {
                         // lazy initialize
-                        entry = new MapWrapper<K, V>(map);
+                        entry = new MapWrapper<>(map);
                     }
 
                     if (entry != input.mergeObject(entry, entrySchema))
@@ -314,6 +336,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         }
     }
 
+    @Override
     public final void writeTo(Output output, Map<K, V> map) throws IOException
     {
         for (Entry<K, V> entry : map.entrySet())
@@ -329,6 +352,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     public final Pipe.Schema<Map<K, V>> pipeSchema =
             new Pipe.Schema<Map<K, V>>(MapSchema.this)
             {
+                @Override
                 protected void transfer(Pipe pipe, Input input, Output output) throws IOException
                 {
                     for (int number = input.readFieldNumber(MapSchema.this);;
@@ -353,6 +377,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     private final Schema<Entry<K, V>> entrySchema = new Schema<Entry<K, V>>()
     {
 
+        @Override
         public final String getFieldName(int number)
         {
             switch (number)
@@ -366,6 +391,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             }
         }
 
+        @Override
         public final int getFieldNumber(String name)
         {
             if (name.length() != 1)
@@ -382,31 +408,37 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             }
         }
 
+        @Override
         public boolean isInitialized(Entry<K, V> message)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return Entry.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return Entry.class.getSimpleName();
         }
 
+        @Override
         public Entry<K, V> newMessage()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<? super Entry<K, V>> typeClass()
         {
             return Entry.class;
         }
 
+        @Override
         public void mergeFrom(Input input, Entry<K, V> message) throws IOException
         {
             // Nobody else calls this except MapSchema.mergeFrom
@@ -457,6 +489,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             }
         }
 
+        @Override
         public void writeTo(Output output, Entry<K, V> message) throws IOException
         {
             if (message.getKey() != null)
@@ -472,6 +505,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             new Pipe.Schema<Entry<K, V>>(entrySchema)
             {
 
+                @Override
                 protected void transfer(Pipe pipe, Input input, Output output) throws IOException
                 {
                     for (int number = input.readFieldNumber(entrySchema);;
@@ -520,6 +554,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         /**
          * The key is provided as the last arg of {@link MapSchema#putValueFrom(Input, MapWrapper, Object)}.
          */
+        @Override
         public K getKey()
         {
             return null;
@@ -528,6 +563,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         /**
          * Gets the last value set.
          */
+        @Override
         public V getValue()
         {
             return value;
@@ -537,6 +573,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
          * Sets the new value and returns the old one. This method is useful for storage when deserializing cyclic
          * object graphs.
          */
+        @Override
         public V setValue(V value)
         {
             final V last = this.value;

@@ -42,37 +42,44 @@ public abstract class DerivativeSchema implements Schema<Object>
         this.strategy = strategy;
     }
 
+    @Override
     public String getFieldName(int number)
     {
         return number == ID_POJO ? STR_POJO : null;
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         return name.length() == 1 && name.charAt(0) == '_' ? ID_POJO : 0;
     }
 
+    @Override
     public boolean isInitialized(Object owner)
     {
         return true;
     }
 
+    @Override
     public String messageFullName()
     {
         return Object.class.getName();
     }
 
+    @Override
     public String messageName()
     {
         return Object.class.getSimpleName();
     }
 
+    @Override
     public Object newMessage()
     {
         // cannot instantiate because the type is dynamic.
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Class<? super Object> typeClass()
     {
         return Object.class;
@@ -82,6 +89,7 @@ public abstract class DerivativeSchema implements Schema<Object>
      * Delegates to the schema derived from the input. The {@code owner} owns the message (polymorphic) that is tied to
      * this schema.
      */
+    @Override
     public void mergeFrom(Input input, final Object owner) throws IOException
     {
         final int first = input.readFieldNumber(this);
@@ -95,6 +103,7 @@ public abstract class DerivativeSchema implements Schema<Object>
     /**
      * Delegates to the schema derived from the {@code value}.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void writeTo(final Output output, final Object value)
             throws IOException
@@ -118,6 +127,7 @@ public abstract class DerivativeSchema implements Schema<Object>
     public final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
             DerivativeSchema.this)
     {
+        @Override
         public void transfer(Pipe pipe, Input input, Output output)
                 throws IOException
         {

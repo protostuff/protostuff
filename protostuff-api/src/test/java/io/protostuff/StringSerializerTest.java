@@ -14,20 +14,16 @@
 
 package io.protostuff;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
-
 import io.protostuff.StringSerializer.STRING;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
 
 /**
  * Tests for UTF-8 Encoding
@@ -52,10 +48,12 @@ public class StringSerializerTest extends TestCase
     static final String surrogatePairs = "\uD83C\uDFE0\uD83C\uDF4E\uD83D\uDCA9";
 
     // Result of surrogatePairs.getBytes("UTF-8"), which is what protobuf uses.
-    static final byte[] nativeSurrogatePairsSerialized = { -16, -97, -113, -96, -16, -97, -115, -114, -16, -97, -110, -87 };
+    static final byte[] nativeSurrogatePairsSerialized = { -16, -97, -113, -96, -16, -97, -115, -114, -16, -97, -110,
+            -87 };
 
     // Result of writeUTF8 before 3-byte surrogate fix (i.e. no 4-byte encoding)
-    static final byte[] legacySurrogatePairSerialized = {-19, -96, -68, -19, -65, -96, -19, -96, -68, -19, -67, -114, -19, -96, -67, -19, -78, -87 };
+    static final byte[] legacySurrogatePairSerialized = { -19, -96, -68, -19, -65, -96, -19, -96, -68, -19, -67, -114,
+            -19, -96, -67, -19, -78, -87 };
 
     // 10 total
     static final String numeric = "0123456789";
@@ -536,7 +534,8 @@ public class StringSerializerTest extends TestCase
         // which would overflow an unsigned short.
 
         StringBuilder sb = new StringBuilder(3 * Short.MAX_VALUE);
-        for (int i = 0; i < 3 * Short.MAX_VALUE; i++) {
+        for (int i = 0; i < 3 * Short.MAX_VALUE; i++)
+        {
             sb.append(i % 10);
         }
         String bigString = sb.toString();
@@ -597,7 +596,7 @@ public class StringSerializerTest extends TestCase
 
     static void checkAscii(String str) throws Exception
     {
-        byte[] builtin = BUILT_IN_SERIALIZER.serialize(str);
+        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
@@ -619,7 +618,7 @@ public class StringSerializerTest extends TestCase
 
     static void check(String str) throws Exception
     {
-        byte[] builtin = BUILT_IN_SERIALIZER.serialize(str);
+        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
@@ -644,71 +643,6 @@ public class StringSerializerTest extends TestCase
         // System.err.println(msg);
     }
 
-    public void testBenchmark() throws Exception
-    {
-        if (!"false".equals(System.getProperty("benchmark.skip")))
-            return;
-
-        String dir = System.getProperty("benchmark.output_dir");
-
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
-                        "protostuff-string-bench-" + System.currentTimeMillis() + ".txt"), true));
-
-        int warmups = Integer.getInteger("benchmark.warmups", 800000);
-        int loops = Integer.getInteger("benchmark.loops", 8000000);
-
-        String title = "protostuff-api string serialization benchmark for " + loops + " runs";
-        out.println(title);
-        out.println();
-
-        start(foo, SERIALIZERS, out, warmups, loops);
-
-        if (System.out != out)
-            out.close();
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        String dir = System.getProperty("benchmark.output_dir");
-
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
-                        "protostuff-string-bench-" + System.currentTimeMillis() + ".txt"), true));
-
-        int warmups = Integer.getInteger("benchmark.warmups", 800000);
-        int loops = Integer.getInteger("benchmark.loops", 8000000);
-
-        String title = "protostuff-api string serialization benchmark for " + loops + " runs";
-        out.println(title);
-        out.println();
-
-        start(foo, SERIALIZERS, out, warmups, loops);
-
-        if (System.out != out)
-            out.close();
-    }
-
-    public static void start(String message, Serializer[] serializers,
-            PrintStream out, int warmups, int loops) throws Exception
-    {
-        for (Serializer s : serializers)
-            ser(message, s, out, s.getName(), warmups, loops);
-    }
-
-    static void ser(String message, Serializer serializer, PrintStream out,
-            String name, int warmups, int loops) throws Exception
-    {
-        int len = serializer.serialize(message).length;
-        for (int i = 0; i < warmups; i++)
-            serializer.serialize(message);
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < loops; i++)
-            serializer.serialize(message);
-        long finish = System.currentTimeMillis();
-        long elapsed = finish - start;
-        out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);
-    }
 
     /**
      * Reads a var int 32 from the buffer.
@@ -761,97 +695,6 @@ public class StringSerializerTest extends TestCase
         return result;
     }
 
-    public interface Serializer
-    {
 
-        public byte[] serialize(String str);
-
-        public String getName();
-
-    }
-
-    public static final Serializer BUILT_IN_SERIALIZER = new Serializer()
-    {
-
-        public byte[] serialize(String str)
-        {
-            try
-            {
-                return str.getBytes("UTF-8");
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public String getName()
-        {
-            return "built-in";
-        }
-
-    };
-
-    public static final Serializer BUFFERED_SERIALIZER = new Serializer()
-    {
-
-        final LinkedBuffer buffer = new LinkedBuffer(512);
-
-        public byte[] serialize(String str)
-        {
-            final LinkedBuffer buffer = this.buffer;
-            try
-            {
-                final WriteSession session = new WriteSession(buffer);
-                StringSerializer.writeUTF8(str, session, buffer);
-                return session.toByteArray();
-            }
-            finally
-            {
-                buffer.clear();
-            }
-        }
-
-        public String getName()
-        {
-            return "buffered";
-        }
-
-    };
-
-    public static final Serializer BUFFERED_RECYCLED_SESSION_SERIALIZER = new Serializer()
-    {
-
-        final WriteSession session = new WriteSession(new LinkedBuffer(512));
-
-        public byte[] serialize(String str)
-        {
-            final WriteSession session = this.session;
-            try
-            {
-                StringSerializer.writeUTF8(str, session, session.head);
-                return session.toByteArray();
-            }
-            finally
-            {
-                session.clear();
-            }
-        }
-
-        public String getName()
-        {
-            return "buffered-recycled-session";
-        }
-
-    };
-
-    public static final Serializer[] SERIALIZERS = new Serializer[] {
-            BUILT_IN_SERIALIZER,
-            BUFFERED_SERIALIZER,
-            BUFFERED_RECYCLED_SESSION_SERIALIZER,
-            BUILT_IN_SERIALIZER,
-            BUFFERED_SERIALIZER,
-            BUFFERED_RECYCLED_SESSION_SERIALIZER
-    };
 
 }

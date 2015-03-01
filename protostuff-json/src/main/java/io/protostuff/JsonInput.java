@@ -14,21 +14,21 @@
 
 package io.protostuff;
 
-import static org.codehaus.jackson.JsonToken.END_ARRAY;
-import static org.codehaus.jackson.JsonToken.END_OBJECT;
-import static org.codehaus.jackson.JsonToken.FIELD_NAME;
-import static org.codehaus.jackson.JsonToken.START_ARRAY;
-import static org.codehaus.jackson.JsonToken.START_OBJECT;
-import static org.codehaus.jackson.JsonToken.VALUE_FALSE;
-import static org.codehaus.jackson.JsonToken.VALUE_NULL;
-import static org.codehaus.jackson.JsonToken.VALUE_STRING;
-import static org.codehaus.jackson.JsonToken.VALUE_TRUE;
+import static com.fasterxml.jackson.core.JsonToken.END_ARRAY;
+import static com.fasterxml.jackson.core.JsonToken.END_OBJECT;
+import static com.fasterxml.jackson.core.JsonToken.FIELD_NAME;
+import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
+import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
+import static com.fasterxml.jackson.core.JsonToken.VALUE_FALSE;
+import static com.fasterxml.jackson.core.JsonToken.VALUE_NULL;
+import static com.fasterxml.jackson.core.JsonToken.VALUE_STRING;
+import static com.fasterxml.jackson.core.JsonToken.VALUE_TRUE;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
 /**
  * An input used for reading data with json format.
@@ -99,6 +99,7 @@ public final class JsonInput implements Input
         return this;
     }
 
+    @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         if (parser.getCurrentToken().isScalarValue())
@@ -121,6 +122,7 @@ public final class JsonInput implements Input
                 schema.messageFullName());
     }
 
+    @Override
     public <T> int readFieldNumber(final Schema<T> schema) throws IOException
     {
         if (lastRepeated)
@@ -234,6 +236,7 @@ public final class JsonInput implements Input
         }
     }
 
+    @Override
     public boolean readBool() throws IOException
     {
         final JsonToken jt = parser.getCurrentToken();
@@ -248,6 +251,7 @@ public final class JsonInput implements Input
         throw new JsonInputException("Expected token: true/false but was " + jt);
     }
 
+    @Override
     public byte[] readByteArray() throws IOException
     {
         final byte[] value = parser.getBinaryValue();
@@ -258,11 +262,13 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
     }
 
+    @Override
     public double readDouble() throws IOException
     {
         final double value = parser.getDoubleValue();
@@ -273,21 +279,25 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public int readEnum() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public int readFixed32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readFixed64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public float readFloat() throws IOException
     {
         final float value = parser.getFloatValue();
@@ -298,6 +308,7 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public int readInt32() throws IOException
     {
         final int value = parser.getIntValue();
@@ -308,6 +319,7 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public long readInt64() throws IOException
     {
         final long value = parser.getLongValue();
@@ -318,26 +330,31 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public int readSFixed32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readSFixed64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public int readSInt32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readSInt64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public String readString() throws IOException
     {
         if (parser.getCurrentToken() != VALUE_STRING)
@@ -351,16 +368,19 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public int readUInt32() throws IOException
     {
         return readInt32();
     }
 
+    @Override
     public long readUInt64() throws IOException
     {
         return readInt64();
     }
 
+    @Override
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (parser.getCurrentToken() != START_OBJECT)
@@ -403,6 +423,7 @@ public final class JsonInput implements Input
         return value;
     }
 
+    @Override
     public void transferByteRangeTo(Output output, boolean utf8String, int fieldNumber,
             boolean repeated) throws IOException
     {
@@ -415,6 +436,7 @@ public final class JsonInput implements Input
     /**
      * Reads a byte array/ByteBuffer value.
      */
+    @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());

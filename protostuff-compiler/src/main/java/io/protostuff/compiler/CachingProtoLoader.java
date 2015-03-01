@@ -62,6 +62,7 @@ public class CachingProtoLoader extends DefaultProtoLoader
         return loadedProtos.values();
     }
 
+    @Override
     public Proto loadFrom(File file, Proto importer) throws Exception
     {
         String key = file.getCanonicalPath();
@@ -72,6 +73,7 @@ public class CachingProtoLoader extends DefaultProtoLoader
         return proto;
     }
 
+    @Override
     public Proto loadFrom(URL resource, Proto importer) throws Exception
     {
         String key = resource.toExternalForm();

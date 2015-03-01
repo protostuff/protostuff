@@ -38,7 +38,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
 
     static
     {
@@ -278,36 +278,43 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         this.someLong = someLong;
     }
 
+    @Override
     public Schema<Foo> cachedSchema()
     {
         return this;
     }
 
+    @Override
     public boolean isInitialized(Foo message)
     {
         return true;
     }
 
+    @Override
     public Foo newMessage()
     {
         return new Foo();
     }
 
+    @Override
     public Class<Foo> typeClass()
     {
         return Foo.class;
     }
 
+    @Override
     public String messageName()
     {
         return getClass().getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return getClass().getName();
     }
 
+    @Override
     public String getFieldName(int number)
     {
         switch (number)
@@ -335,22 +342,26 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         }
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
     }
 
+    @Override
     public void writeTo(Output output, Foo message) throws IOException
     {
         if (message.someInt != null)
@@ -400,6 +411,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         }
     }
 
+    @Override
     public void mergeFrom(Input input, Foo message) throws IOException
     {
         for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -410,47 +422,47 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
                     return;
                 case 1:
                     if (message.someInt == null)
-                        message.someInt = new ArrayList<Integer>();
+                        message.someInt = new ArrayList<>();
                     message.someInt.add(input.readInt32());
                     break;
                 case 2:
                     if (message.someString == null)
-                        message.someString = new ArrayList<String>();
+                        message.someString = new ArrayList<>();
                     message.someString.add(input.readString());
                     break;
                 case 3:
                     if (message.someBar == null)
-                        message.someBar = new ArrayList<Bar>();
+                        message.someBar = new ArrayList<>();
                     message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
                     if (message.someEnum == null)
-                        message.someEnum = new ArrayList<EnumSample>();
+                        message.someEnum = new ArrayList<>();
                     message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
                     if (message.someBytes == null)
-                        message.someBytes = new ArrayList<ByteString>();
+                        message.someBytes = new ArrayList<>();
                     message.someBytes.add(input.readBytes());
                     break;
                 case 6:
                     if (message.someBoolean == null)
-                        message.someBoolean = new ArrayList<Boolean>();
+                        message.someBoolean = new ArrayList<>();
                     message.someBoolean.add(input.readBool());
                     break;
                 case 7:
                     if (message.someFloat == null)
-                        message.someFloat = new ArrayList<Float>();
+                        message.someFloat = new ArrayList<>();
                     message.someFloat.add(input.readFloat());
                     break;
                 case 8:
                     if (message.someDouble == null)
-                        message.someDouble = new ArrayList<Double>();
+                        message.someDouble = new ArrayList<>();
                     message.someDouble.add(input.readDouble());
                     break;
                 case 9:
                     if (message.someLong == null)
-                        message.someLong = new ArrayList<Long>();
+                        message.someLong = new ArrayList<>();
                     message.someLong.add(input.readInt64());
                     break;
                 default:
@@ -462,6 +474,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
     static final Pipe.Schema<Foo> PIPE_SCHEMA = new Pipe.Schema<Foo>(DEFAULT_INSTANCE)
     {
 
+        @Override
         protected void transfer(Pipe pipe, Input input, Output output) throws IOException
         {
             for (int number = input.readFieldNumber(wrappedSchema);; number = input.readFieldNumber(wrappedSchema))

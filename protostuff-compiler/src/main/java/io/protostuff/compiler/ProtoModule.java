@@ -28,19 +28,22 @@ import java.util.Properties;
 public class ProtoModule implements Serializable
 {
 
+    public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
+
     private static final long serialVersionUID = 6231036933426077777L;
 
     private File source;
     private String output;
     private String encoding;
     private File outputDir;
+    private String generator;
 
     private Properties options = new Properties();
     Properties config;
 
     private CachingProtoLoader protoLoader;
 
-    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+    private HashMap<String, Object> attributes = new HashMap<>();
 
     public ProtoModule()
     {
@@ -88,6 +91,26 @@ public class ProtoModule implements Serializable
     public void setOutput(String output)
     {
         this.output = output;
+    }
+
+    /**
+     *
+     * @return the current generator name that can be used generated code for identification
+     */
+    public String getGenerator()
+    {
+        return generator == null ? DEFAULT_GENERATOR_NAME : generator;
+    }
+
+    /**
+     * Set current generator name
+     *
+     * @param generator
+     *            the generator name
+     */
+    public void setGenerator(String generator)
+    {
+        this.generator = generator;
     }
 
     /**

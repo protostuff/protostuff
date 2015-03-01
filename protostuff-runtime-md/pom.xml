@@ -2,7 +2,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.3.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
   <name>protostuff :: runtime-md</name>
   <description>protostuff runtime for mobile devices (actually JREs with no sun.reflect.* packages)</description>
   <packaging>jar</packaging>
-  
+
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
@@ -25,20 +25,20 @@
             </goals>
             <configuration>
               <tasks>
-                <copy todir="${project.build.directory}/extra-sources">  
-                  <fileset dir="../protostuff-runtime/src/main/java">  
+                <copy todir="${project.build.directory}/extra-sources">
+                  <fileset dir="../protostuff-runtime/src/main/java">
                     <exclude name="**/RuntimeUnsafeFieldFactory.java" />
                     <exclude name="**/OnDemandSunReflectionFactory.java" />
                     <exclude name="**/RuntimeFieldFactory.java" />
                     <exclude name="**/RuntimeEnv.java" />
-                  </fileset>  
+                  </fileset>
                 </copy>
-                <copy todir="${project.build.directory}/extra-test-sources">  
-                  <fileset dir="../protostuff-runtime/src/test/java">  
+                <copy todir="${project.build.directory}/extra-test-sources">
+                  <fileset dir="../protostuff-runtime/src/test/java">
                     <exclude name="**/ImmutableObjectsTest.java" />
                     <exclude name="**/EnumSetAndMapTest.java" />
                     <exclude name="**/*RuntimeObjectSchemaTest.java" />
-                  </fileset>  
+                  </fileset>
                 </copy>
               </tasks>
             </configuration>
@@ -78,11 +78,16 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -109,5 +114,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
-  
+
 </project>

@@ -23,6 +23,7 @@ package io.protostuff;
 public class JsonCoreRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest
 {
 
+    @Override
     public boolean isNumeric()
     {
         return false;

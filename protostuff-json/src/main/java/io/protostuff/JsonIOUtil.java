@@ -23,15 +23,15 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.impl.Utf8Generator;
-import org.codehaus.jackson.impl.Utf8StreamParser;
-import org.codehaus.jackson.io.IOContext;
-import org.codehaus.jackson.sym.BytesToNameCanonicalizer;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
+import com.fasterxml.jackson.core.json.UTF8StreamJsonParser;
+import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 
 /**
  * Utility for the JSON serialization/deserialization of messages and objects tied to a schema.
@@ -141,6 +141,7 @@ public final class JsonIOUtil
         final JsonInput jsonInput = new JsonInput(parser, numeric);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 if (parser.nextToken() != JsonToken.START_OBJECT)
@@ -153,6 +154,7 @@ public final class JsonIOUtil
                 return jsonInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
@@ -178,9 +180,9 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied buf {@code inBuffer} to use.
+     * Creates a {@link UTF8StreamJsonParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
-    public static Utf8StreamParser newJsonParser(InputStream in, byte[] buf,
+    public static UTF8StreamJsonParser newJsonParser(InputStream in, byte[] buf,
             int offset, int limit) throws IOException
     {
         return newJsonParser(in, buf, offset, limit, false,
@@ -189,13 +191,13 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8StreamParser} from the inputstream with the supplied buf {@code inBuffer} to use.
+     * Creates a {@link UTF8StreamJsonParser} from the inputstream with the supplied buf {@code inBuffer} to use.
      */
-    static Utf8StreamParser newJsonParser(InputStream in, byte[] buf,
+    static UTF8StreamJsonParser newJsonParser(InputStream in, byte[] buf,
             int offset, int limit, boolean bufferRecyclable, IOContext context)
             throws IOException
     {
-        return new Utf8StreamParser(context,
+        return new UTF8StreamJsonParser (context,
                 DEFAULT_JSON_FACTORY.getParserFeatures(), in,
                 DEFAULT_JSON_FACTORY.getCodec(),
                 DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(true, true),
@@ -203,23 +205,23 @@ public final class JsonIOUtil
     }
 
     /**
-     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf {@code outBuffer} to use.
+     * Creates a {@link UTF8JsonGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
-    public static Utf8Generator newJsonGenerator(OutputStream out, byte[] buf)
+    public static UTF8JsonGenerator newJsonGenerator(OutputStream out, byte[] buf)
     {
         return newJsonGenerator(out, buf, 0, false, new IOContext(
                 DEFAULT_JSON_FACTORY._getBufferRecycler(), out, false));
     }
 
     /**
-     * Creates a {@link Utf8Generator} for the outputstream with the supplied buf {@code outBuffer} to use.
+     * Creates a {@link UTF8JsonGenerator} for the outputstream with the supplied buf {@code outBuffer} to use.
      */
-    static Utf8Generator newJsonGenerator(OutputStream out, byte[] buf, int offset,
+    static UTF8JsonGenerator newJsonGenerator(OutputStream out, byte[] buf, int offset,
             boolean bufferRecyclable, IOContext context)
     {
         context.setEncoding(JsonEncoding.UTF8);
 
-        return new Utf8Generator(context,
+        return new UTF8JsonGenerator(context,
                 DEFAULT_JSON_FACTORY.getGeneratorFeatures(),
                 DEFAULT_JSON_FACTORY.getCodec(),
                 out,
@@ -629,7 +631,7 @@ public final class JsonIOUtil
         }
 
         final JsonInput input = new JsonInput(parser, numeric);
-        final List<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<>();
         for (JsonToken t = parser.nextToken(); t != JsonToken.END_ARRAY; t = parser.nextToken())
         {
             if (t != JsonToken.START_OBJECT)

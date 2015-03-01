@@ -16,7 +16,6 @@ package io.protostuff.runtime;
 
 import static io.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
 import static io.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
-//import static io.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -34,6 +33,8 @@ import io.protostuff.ByteString;
 import io.protostuff.Message;
 import io.protostuff.Morph;
 import io.protostuff.runtime.MappedSchema.Field;
+
+//import static io.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
 
 /**
  * A factory to create runtime {@link MappedSchema.Field fields} based on reflection.
@@ -97,7 +98,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
             // annotations
             STR_POJO = "_";
 
-    private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = new HashMap<String, RuntimeFieldFactory<?>>();
+    private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = new HashMap<>();
 
     static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL;
     static final RuntimeFieldFactory<BigInteger> BIGINTEGER;

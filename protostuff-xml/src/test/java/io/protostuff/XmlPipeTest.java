@@ -15,9 +15,9 @@
 package io.protostuff;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 
 import io.protostuff.StringSerializer.STRING;
-import java.util.Arrays;
 
 /**
  * Test case for xml pipes.

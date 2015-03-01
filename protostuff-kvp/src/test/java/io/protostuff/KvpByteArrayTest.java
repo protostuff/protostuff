@@ -70,7 +70,7 @@ public class KvpByteArrayTest extends AbstractTest
     static final Schema<PojoWithBiggerByteArray> SCHEMA = new Schema<PojoWithBiggerByteArray>()
     {
 
-        final HashMap<String, Integer> fieldMap = new HashMap<String, Integer>();
+        final HashMap<String, Integer> fieldMap = new HashMap<>();
 
         {
             fieldMap.put("id", 1);
@@ -78,6 +78,7 @@ public class KvpByteArrayTest extends AbstractTest
             fieldMap.put("ts", 3);
         }
 
+        @Override
         public String getFieldName(int number)
         {
             switch (number)
@@ -93,37 +94,44 @@ public class KvpByteArrayTest extends AbstractTest
             }
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             final Integer f = fieldMap.get(name);
             return f == null ? 0 : f.intValue();
         }
 
+        @Override
         public boolean isInitialized(PojoWithBiggerByteArray message)
         {
             return true;
         }
 
+        @Override
         public String messageFullName()
         {
             return PojoWithBiggerByteArray.class.getName();
         }
 
+        @Override
         public String messageName()
         {
             return PojoWithBiggerByteArray.class.getSimpleName();
         }
 
+        @Override
         public PojoWithBiggerByteArray newMessage()
         {
             return new PojoWithBiggerByteArray();
         }
 
+        @Override
         public Class<? super PojoWithBiggerByteArray> typeClass()
         {
             return PojoWithBiggerByteArray.class;
         }
 
+        @Override
         public void mergeFrom(Input input, PojoWithBiggerByteArray message) throws IOException
         {
             for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -147,6 +155,7 @@ public class KvpByteArrayTest extends AbstractTest
             }
         }
 
+        @Override
         public void writeTo(Output output, PojoWithBiggerByteArray message) throws IOException
         {
             output.writeInt32(1, message.id, false);

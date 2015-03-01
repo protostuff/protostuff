@@ -104,6 +104,7 @@ public final class XmlIOUtil
         final XmlInput xmlInput = new XmlInput(parser);
         return new Pipe()
         {
+            @Override
             protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
             {
                 // final String simpleName = pipeSchema.wrappedSchema.messageName();
@@ -135,6 +136,7 @@ public final class XmlIOUtil
                 return xmlInput;
             }
 
+            @Override
             protected void end(Pipe.Schema<?> pipeSchema, Input input,
                     boolean cleanupOnly) throws IOException
             {
@@ -573,7 +575,7 @@ public final class XmlIOUtil
             throw new XmlInputException("Expected token START_ELEMENT: list");
 
         // final String simpleName = schema.messageName();
-        final ArrayList<T> list = new ArrayList<T>();
+        final ArrayList<T> list = new ArrayList<>();
         final XmlInput input = new XmlInput(parser);
 
         for (int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())

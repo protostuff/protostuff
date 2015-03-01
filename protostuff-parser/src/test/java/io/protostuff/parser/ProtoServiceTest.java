@@ -16,9 +16,8 @@ package io.protostuff.parser;
 
 import java.io.File;
 
-import io.protostuff.parser.Service.RpcMethod;
-
 import junit.framework.TestCase;
+import io.protostuff.parser.Service.RpcMethod;
 
 /**
  * Tests for parsing service/rpc components in the .proto file.

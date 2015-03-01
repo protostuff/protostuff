@@ -28,11 +28,13 @@ import java.util.List;
 public class JsonNumericRepeatedMessagesTest extends RepeatedMessagesTest
 {
 
+    @Override
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
         return JsonIOUtil.parseListFrom(in, schema, true);
     }
 
+    @Override
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
             throws IOException
     {
