@@ -1,5 +1,6 @@
 package io.protostuff.benchmarks;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +46,9 @@ public class RuntimeSchemaBenchmark
     private GeneratedInt1 generatedInt1Instance;
     private GeneratedInt10 generatedInt10Instance;
 
+    private byte[] data_1_int;
+    private byte[] data_10_int;
+
     private LinkedBuffer buffer;
 
     public static void main(String[] args) throws RunnerException
@@ -89,12 +93,31 @@ public class RuntimeSchemaBenchmark
         generatedInt10Instance.setA8(9);
         generatedInt10Instance.setA9(10);
         buffer = LinkedBuffer.allocate();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ProtobufIOUtil.writeTo(outputStream, int1Instance, int1RuntimeSchema, buffer);
+        data_1_int = outputStream.toByteArray();
+        outputStream.reset();
+        buffer.clear();
+
+        ProtobufIOUtil.writeTo(outputStream, int10Instance, int10RuntimeSchema, buffer);
+        data_10_int = outputStream.toByteArray();
+        outputStream.reset();
+        buffer.clear();
     }
 
     @Benchmark
     public void baseline()
     {
         buffer.clear();
+    }
+
+    @Benchmark
+    public Int1 runtime_deserialize_1_int_field() throws Exception
+    {
+        Int1 int1 = new Int1();
+        ProtobufIOUtil.mergeFrom(data_1_int, int1, int1RuntimeSchema);
+        return int1;
     }
 
     @Benchmark
@@ -111,6 +134,14 @@ public class RuntimeSchemaBenchmark
     }
 
     @Benchmark
+    public Int10 runtime_deserialize_10_int_field() throws Exception
+    {
+        Int10 int10 = new Int10();
+        ProtobufIOUtil.mergeFrom(data_10_int, int10, int10RuntimeSchema);
+        return int10;
+    }
+
+    @Benchmark
     public void runtime_serialize_10_int_fields() throws Exception
     {
         try
@@ -124,6 +155,14 @@ public class RuntimeSchemaBenchmark
     }
 
     @Benchmark
+    public GeneratedInt1 generated_deserialize_1_int_field() throws Exception
+    {
+        GeneratedInt1 int1 = new GeneratedInt1();
+        ProtobufIOUtil.mergeFrom(data_1_int, int1, GeneratedInt1.getSchema());
+        return int1;
+    }
+
+    @Benchmark
     public void generated_serialize_1_int_field() throws Exception
     {
         try
@@ -134,6 +173,14 @@ public class RuntimeSchemaBenchmark
         {
             buffer.clear();
         }
+    }
+
+    @Benchmark
+    public GeneratedInt10 generated_deserialize_10_int_field() throws Exception
+    {
+        GeneratedInt10 int10 = new GeneratedInt10();
+        ProtobufIOUtil.mergeFrom(data_10_int, int10, GeneratedInt10.getSchema());
+        return int10;
     }
 
     @Benchmark
