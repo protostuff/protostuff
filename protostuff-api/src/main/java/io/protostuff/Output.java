@@ -28,101 +28,210 @@ public interface Output
 
     /**
      * Writes a variable int field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes an unsigned int field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes a signed int field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes a fixed int(4 bytes) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes a signed+fixed int(4 bytes) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes a variable long field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException;
 
     /**
      * Writes an unsigned long field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException;
 
     /**
      * Writes a signed long field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException;
 
     /**
      * Writes a fixed long(8 bytes) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException;
 
     /**
      * Writes a signed+fixed long(8 bytes) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException;
 
     /**
      * Writes a float field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException;
 
     /**
      * Writes a double field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException;
 
     /**
      * Writes a boolean field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException;
 
     /**
      * Writes a enum(its number) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException;
 
     /**
      * Writes a String field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException;
 
     /**
      * Writes a ByteString(wraps byte array) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException;
 
     /**
      * Writes a byte array field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException;
 
     /**
      * Writes a binary or a pre-encoded utf8 string.
+     *
+     * @param utf8String true if field is an UTF-8 encoded string
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param offset the offset in value array
+     * @param length the length of data in the value array
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
      */
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException;
 
     /**
      * Writes an object(using its schema) field.
+     *
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @param schema the message schema
+     * @param <T> the message type
+     * @throws IOException when I/O operation fails
      */
     public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated)
             throws IOException;
 
+    /**
+     * Writes a ByteBuffer(wraps byte array) field.
+     *
+     * @param fieldNumber the field number
+     * @param value the field value
+     * @param repeated flag set to true for collection fields
+     * @throws IOException when I/O operation fails
+     */
     public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException;
 
 }

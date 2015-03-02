@@ -31,6 +31,10 @@ public final class IntSerializer
 
     /**
      * Writes the 16-bit int into the buffer starting with the most significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt16(final int value, final byte[] buffer, int offset)
     {
@@ -40,6 +44,10 @@ public final class IntSerializer
 
     /**
      * Writes the 16-bit int into the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt16LE(final int value, final byte[] buffer, int offset)
     {
@@ -47,6 +55,12 @@ public final class IntSerializer
         buffer[offset] = (byte) ((value >>> 8) & 0xFF);
     }
 
+    /**
+     * Appends the 16-bit int to the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     */
     public static void writeInt16LE(final int value, ByteBuffer buffer)
     {
         buffer.put((byte) value);
@@ -55,6 +69,10 @@ public final class IntSerializer
 
     /**
      * Writes the 32-bit int into the buffer starting with the most significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt32(final int value, final byte[] buffer, int offset)
     {
@@ -66,6 +84,10 @@ public final class IntSerializer
 
     /**
      * Writes the 32-bit int into the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt32LE(final int value, final byte[] buffer, int offset)
     {
@@ -75,6 +97,12 @@ public final class IntSerializer
         buffer[offset] = (byte) ((value >>> 24) & 0xFF);
     }
 
+    /**
+     * Appends the 32-bit int into the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     */
     public static void writeInt32LE(final int value, ByteBuffer buffer)
     {
         buffer.put((byte) ((value >>> 0) & 0xFF));
@@ -85,6 +113,10 @@ public final class IntSerializer
 
     /**
      * Writes the 64-bit int into the buffer starting with the most significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt64(final long value, final byte[] buffer, int offset)
     {
@@ -100,6 +132,10 @@ public final class IntSerializer
 
     /**
      * Writes the 64-bit int into the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     * @param offset the offset
      */
     public static void writeInt64LE(final long value, final byte[] buffer, int offset)
     {
@@ -113,6 +149,12 @@ public final class IntSerializer
         buffer[offset] = (byte) (value >>> 56);
     }
 
+    /**
+     * Appends the 64-bit int into the buffer starting with the least significant byte.
+     *
+     * @param value the value that must be written to the buffer
+     * @param buffer the buffer instance
+     */
     public static void writeInt64LE(final long value, ByteBuffer buffer)
     {
         buffer.put((byte) (value >>> 0));

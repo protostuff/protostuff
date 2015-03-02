@@ -47,6 +47,9 @@ public final class LinkedBuffer
 
     /**
      * Allocates a new buffer with the specified size.
+     *
+     * @param size the specified size
+     * @return a new buffer instance
      */
     public static LinkedBuffer allocate(int size)
     {
@@ -58,6 +61,10 @@ public final class LinkedBuffer
 
     /**
      * Allocates a new buffer with the specified size and appends it to the previous buffer.
+     *
+     * @param size the specified size
+     * @param previous the previous buffer
+     * @return a new buffer instance
      */
     public static LinkedBuffer allocate(int size, LinkedBuffer previous)
     {
@@ -69,6 +76,11 @@ public final class LinkedBuffer
 
     /**
      * Wraps the byte array buffer as a read-only buffer.
+     *
+     * @param array the byte array
+     * @param offset the offset in the array
+     * @param length the length of data in the arrat
+     * @return new buffer instance
      */
     public static LinkedBuffer wrap(byte[] array, int offset, int length)
     {
