@@ -36,8 +36,9 @@ import io.protostuff.WireFormat.FieldType;
 public abstract class MappedSchema<T> implements Schema<T>
 {
 
-    protected final Class<T> typeClass;
-    protected final Field<T>[] fields, fieldsByNumber;
+    private final Class<T> typeClass;
+    protected final Field<T>[] fields;
+    protected final Field<T>[] fieldsByNumber;
     protected final Map<String, Field<T>> fieldsByName;
     protected final Pipe.Schema<T> pipeSchema;
 
@@ -137,6 +138,11 @@ public abstract class MappedSchema<T> implements Schema<T>
         }
 
         pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
+    }
+
+    public Class<T> getTypeClass()
+    {
+        return typeClass;
     }
 
     /**

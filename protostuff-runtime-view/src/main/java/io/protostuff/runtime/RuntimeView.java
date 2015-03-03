@@ -56,7 +56,7 @@ public final class RuntimeView
             Predicate.Factory pf,
             String... args)
     {
-        return vf.create(ms.typeClass, ms.fields, ms.fieldsByNumber,
+        return vf.create(ms.getTypeClass(), ms.fields, ms.fieldsByNumber,
                 ms.fieldsByName, instantiator, pf, args);
     }
 
