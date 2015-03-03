@@ -1956,7 +1956,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapInlineKEnumV> schema = RuntimeSchema
                 .getSchema(HasMapInlineKEnumV.class);
-        Pipe.Schema<HasMapInlineKEnumV> pipeSchema = ((MappedSchema<HasMapInlineKEnumV>) schema).pipeSchema;
+        Pipe.Schema<HasMapInlineKEnumV> pipeSchema = ((MappedSchema<HasMapInlineKEnumV>) schema).getPipeSchema();
 
         HasMapInlineKEnumV p = new HasMapInlineKEnumV().fill();
 
@@ -1978,7 +1978,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapInlineKInlineV> schema = RuntimeSchema
                 .getSchema(HasMapInlineKInlineV.class);
-        Pipe.Schema<HasMapInlineKInlineV> pipeSchema = ((MappedSchema<HasMapInlineKInlineV>) schema).pipeSchema;
+        Pipe.Schema<HasMapInlineKInlineV> pipeSchema = ((MappedSchema<HasMapInlineKInlineV>) schema).getPipeSchema();
 
         HasMapInlineKInlineV p = new HasMapInlineKInlineV().fill();
 
@@ -2000,7 +2000,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapInlineKPojoV> schema = RuntimeSchema
                 .getSchema(HasMapInlineKPojoV.class);
-        Pipe.Schema<HasMapInlineKPojoV> pipeSchema = ((MappedSchema<HasMapInlineKPojoV>) schema).pipeSchema;
+        Pipe.Schema<HasMapInlineKPojoV> pipeSchema = ((MappedSchema<HasMapInlineKPojoV>) schema).getPipeSchema();
 
         HasMapInlineKPojoV p = new HasMapInlineKPojoV().fill();
 
@@ -2022,7 +2022,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapInlineKPolymorphicV> schema = RuntimeSchema
                 .getSchema(HasMapInlineKPolymorphicV.class);
-        Pipe.Schema<HasMapInlineKPolymorphicV> pipeSchema = ((MappedSchema<HasMapInlineKPolymorphicV>) schema).pipeSchema;
+        Pipe.Schema<HasMapInlineKPolymorphicV> pipeSchema = ((MappedSchema<HasMapInlineKPolymorphicV>) schema)
+                .getPipeSchema();
 
         HasMapInlineKPolymorphicV p = new HasMapInlineKPolymorphicV().fill();
 
@@ -2044,7 +2045,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapEnumKEnumV> schema = RuntimeSchema
                 .getSchema(HasMapEnumKEnumV.class);
-        Pipe.Schema<HasMapEnumKEnumV> pipeSchema = ((MappedSchema<HasMapEnumKEnumV>) schema).pipeSchema;
+        Pipe.Schema<HasMapEnumKEnumV> pipeSchema = ((MappedSchema<HasMapEnumKEnumV>) schema).getPipeSchema();
 
         HasMapEnumKEnumV p = new HasMapEnumKEnumV().fill();
 
@@ -2066,7 +2067,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapEnumKInlineV> schema = RuntimeSchema
                 .getSchema(HasMapEnumKInlineV.class);
-        Pipe.Schema<HasMapEnumKInlineV> pipeSchema = ((MappedSchema<HasMapEnumKInlineV>) schema).pipeSchema;
+        Pipe.Schema<HasMapEnumKInlineV> pipeSchema = ((MappedSchema<HasMapEnumKInlineV>) schema).getPipeSchema();
 
         HasMapEnumKInlineV p = new HasMapEnumKInlineV().fill();
 
@@ -2088,7 +2089,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapEnumKPojoV> schema = RuntimeSchema
                 .getSchema(HasMapEnumKPojoV.class);
-        Pipe.Schema<HasMapEnumKPojoV> pipeSchema = ((MappedSchema<HasMapEnumKPojoV>) schema).pipeSchema;
+        Pipe.Schema<HasMapEnumKPojoV> pipeSchema = ((MappedSchema<HasMapEnumKPojoV>) schema).getPipeSchema();
 
         HasMapEnumKPojoV p = new HasMapEnumKPojoV().fill();
 
@@ -2110,7 +2111,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapEnumKPolymorphicV> schema = RuntimeSchema
                 .getSchema(HasMapEnumKPolymorphicV.class);
-        Pipe.Schema<HasMapEnumKPolymorphicV> pipeSchema = ((MappedSchema<HasMapEnumKPolymorphicV>) schema).pipeSchema;
+        Pipe.Schema<HasMapEnumKPolymorphicV> pipeSchema = ((MappedSchema<HasMapEnumKPolymorphicV>) schema)
+                .getPipeSchema();
 
         HasMapEnumKPolymorphicV p = new HasMapEnumKPolymorphicV().fill();
 
@@ -2132,7 +2134,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapPojoKEnumV> schema = RuntimeSchema
                 .getSchema(HasMapPojoKEnumV.class);
-        Pipe.Schema<HasMapPojoKEnumV> pipeSchema = ((MappedSchema<HasMapPojoKEnumV>) schema).pipeSchema;
+        Pipe.Schema<HasMapPojoKEnumV> pipeSchema = ((MappedSchema<HasMapPojoKEnumV>) schema).getPipeSchema();
 
         HasMapPojoKEnumV p = new HasMapPojoKEnumV().fill();
 
@@ -2154,7 +2156,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapPojoKInlineV> schema = RuntimeSchema
                 .getSchema(HasMapPojoKInlineV.class);
-        Pipe.Schema<HasMapPojoKInlineV> pipeSchema = ((MappedSchema<HasMapPojoKInlineV>) schema).pipeSchema;
+        Pipe.Schema<HasMapPojoKInlineV> pipeSchema = ((MappedSchema<HasMapPojoKInlineV>) schema).getPipeSchema();
 
         HasMapPojoKInlineV p = new HasMapPojoKInlineV().fill();
 
@@ -2176,7 +2178,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapPojoKPojoV> schema = RuntimeSchema
                 .getSchema(HasMapPojoKPojoV.class);
-        Pipe.Schema<HasMapPojoKPojoV> pipeSchema = ((MappedSchema<HasMapPojoKPojoV>) schema).pipeSchema;
+        Pipe.Schema<HasMapPojoKPojoV> pipeSchema = ((MappedSchema<HasMapPojoKPojoV>) schema).getPipeSchema();
 
         HasMapPojoKPojoV p = new HasMapPojoKPojoV().fill();
 
@@ -2198,7 +2200,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
     {
         Schema<HasMapPojoKPolymorphicV> schema = RuntimeSchema
                 .getSchema(HasMapPojoKPolymorphicV.class);
-        Pipe.Schema<HasMapPojoKPolymorphicV> pipeSchema = ((MappedSchema<HasMapPojoKPolymorphicV>) schema).pipeSchema;
+        Pipe.Schema<HasMapPojoKPolymorphicV> pipeSchema = ((MappedSchema<HasMapPojoKPolymorphicV>) schema)
+                .getPipeSchema();
 
         HasMapPojoKPolymorphicV p = new HasMapPojoKPolymorphicV().fill();
 

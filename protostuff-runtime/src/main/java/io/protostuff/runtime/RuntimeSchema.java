@@ -381,7 +381,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
         }
 
         if (MappedSchema.class.isAssignableFrom(schema.getClass()))
-            return ((MappedSchema<T>) schema).pipeSchema;
+            return ((MappedSchema<T>) schema).getPipeSchema();
 
         if (throwIfNone)
             throw new RuntimeException("No pipe schema for: " + clazz);

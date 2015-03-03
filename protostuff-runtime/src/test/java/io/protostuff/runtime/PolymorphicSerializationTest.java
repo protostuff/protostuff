@@ -351,7 +351,7 @@ public class PolymorphicSerializationTest extends AbstractTest
     public void testPipe() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
-        Pipe.Schema<Zoo> pipeSchema = ((MappedSchema<Zoo>) schema).pipeSchema;
+        Pipe.Schema<Zoo> pipeSchema = ((MappedSchema<Zoo>) schema).getPipeSchema();
         Zoo p = filledZoo();
 
         ProtostuffPipeTest.roundTrip(p, schema, pipeSchema);
