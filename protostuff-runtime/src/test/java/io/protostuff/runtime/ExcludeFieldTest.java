@@ -76,7 +76,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertEquals(schema.fields[2].number, 3);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-        assertNull(schema.fieldsByName.get("alias"));
+		assertNull(schema.getFieldByName("alias"));
     }
 
     public void testMuchExcludedEntity() throws Exception
@@ -87,16 +87,16 @@ public class ExcludeFieldTest extends AbstractTest
         assertTrue(schema.fields.length == 1);
 
         assertTrue(schema.getFieldNumber("id") == 0);
-        assertNull(schema.fieldsByName.get("id"));
+		assertNull(schema.getFieldByName("id"));
 
         assertTrue(schema.getFieldNumber("name") == 0);
-        assertNull(schema.fieldsByName.get("name"));
+		assertNull(schema.getFieldByName("name"));
 
         assertEquals(schema.fields[0].name, "alias");
         assertEquals(schema.fields[0].number, 1);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-        assertNull(schema.fieldsByName.get("timestamp"));
+		assertNull(schema.getFieldByName("timestamp"));
     }
 
     public void testTaggedAndExcludedEntity() throws Exception
@@ -107,7 +107,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertTrue(schema.fields.length == 2);
 
         assertTrue(schema.getFieldNumber("id") == 0);
-        assertNull(schema.fieldsByName.get("id"));
+		assertNull(schema.getFieldByName("id"));
 
         assertEquals(schema.fields[0].name, "alias");
         assertEquals(schema.fields[0].number, 2);
@@ -116,7 +116,7 @@ public class ExcludeFieldTest extends AbstractTest
         assertEquals(schema.fields[1].number, 4);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-        assertNull(schema.fieldsByName.get("timestamp"));
+		assertNull(schema.getFieldByName("timestamp"));
     }
 
 }

@@ -124,7 +124,7 @@ public class AnnotatedFieldsTest extends AbstractTest
         assertEquals(schema.fields[1].number, 5);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-        assertNull(schema.fieldsByName.get("alias"));
+		assertNull(schema.getFieldByName("alias"));
     }
 
     public void testEntityPartlyAnnotated1()

@@ -51,7 +51,7 @@ public class DeprecatedFieldTest extends AbstractTest
         assertEquals(schema.fields[2].number, 4);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-        assertNull(schema.fieldsByName.get("alias"));
+		assertNull(schema.getFieldByName("alias"));
     }
 
 }

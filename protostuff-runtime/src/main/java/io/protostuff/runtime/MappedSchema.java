@@ -39,7 +39,7 @@ public abstract class MappedSchema<T> implements Schema<T>
     private final Class<T> typeClass;
     protected final Field<T>[] fields;
     protected final Field<T>[] fieldsByNumber;
-    protected final Map<String, Field<T>> fieldsByName;
+	private final Map<String, Field<T>> fieldsByName;
     private final Pipe.Schema<T> pipeSchema;
 
     @SuppressWarnings("unchecked")
@@ -145,6 +145,14 @@ public abstract class MappedSchema<T> implements Schema<T>
         return typeClass;
     }
 
+	public Field<T> getFieldByNumber(int n) {
+		return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
+	}
+
+	public Field<T> getFieldByName(String fieldName) {
+		return fieldsByName.get(fieldName);
+	}
+
     /**
      * Returns the message's total number of fields.
      */
@@ -219,7 +227,12 @@ public abstract class MappedSchema<T> implements Schema<T>
         return pipeSchema;
     }
 
-    /**
+	public Field<T>[] getFields()
+	{
+		return fields;
+	}
+
+	/**
      * Represents a field of a message/pojo.
      */
     public static abstract class Field<T>
