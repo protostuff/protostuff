@@ -741,7 +741,11 @@ field_switch_case(field, options) ::= <<
 <if(options.alphanumeric)>
 case <field.number>: return "f<field.number>";
 <else>
+<if(options.field_map_original_names)>
+case <field.number>: return "<field.name>";
+<else>
 case <field.number>: return "<field.name; format="CC">";
+<endif>
 <endif>
 >>
 
@@ -749,7 +753,11 @@ field_map(field, options, mapVar) ::= <<
 <if(options.alphanumeric)>
 <mapVar>.put("f<field.number>", new Integer(<field.number>));
 <else>
+<if(options.field_map_original_names)>
+<mapVar>.put("<field.name>", new Integer(<field.number>));
+<else>
 <mapVar>.put("<field.name; format="CC">", new Integer(<field.number>));
+<endif>
 <endif>
 >>
 

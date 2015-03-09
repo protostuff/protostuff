@@ -479,7 +479,12 @@ field_map_alias(field, options) ::= <<
 <if(field.annotationMap.Field.params.alias)>
 <field.annotationMap.Field.params.alias><elseif(options.alphanumeric)>
 f<field.number><else>
-<field.name; format="CC"><endif>
+<if(options.field_map_original_names)>
+<field.name>
+<else>
+<field.name; format="CC">
+<endif>
+<endif>
 >>
 
 field_switch_case(field, options) ::= <<
