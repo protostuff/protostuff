@@ -1,9 +1,9 @@
-package io.protostuff.compiler;
+package io.protostuff.compiler.java_bean_model;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.protostuff.compiler.it.JavaBeanModelSimpleMessage;
+import io.protostuff.compiler.it.java_bean_model.JavaBeanModelSimpleMessage;
 
 /**
  * @author Konstantin Shchepanovskyi

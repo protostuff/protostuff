@@ -1,4 +1,4 @@
-package io.protostuff.compiler;
+package io.protostuff.compiler.java_bean;
 
 import java.io.ByteArrayOutputStream;
 
@@ -9,8 +9,8 @@ import org.junit.Test;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
-import io.protostuff.compiler.it.EmptyMessage;
-import io.protostuff.compiler.it.MessageWithEmptyMessage;
+import io.protostuff.compiler.it.java_bean.EmptyMessage;
+import io.protostuff.compiler.it.java_bean.MessageWithEmptyMessage;
 
 /**
  * Test that protostuff compiler generates valid code for messages w/o fields
