@@ -1,0 +1,22 @@
+package it;
+option java_package = "io.protostuff.compiler.it.java_bean";
+
+
+message MessageWithoutDefaultValues {
+    optional int32 a = 1;
+    optional TestEnum e = 2;
+    optional string s = 3;
+}
+
+message MessageWithDefaultValues {
+    optional int32 a = 1 [default = 1];
+    optional TestEnum e = 2 [default = D];
+    optional string s = 3 [default = "string"];
+}
+
+enum TestEnum {
+    A = 1;
+    B = 2;
+    // C missing
+    D = 4;
+}

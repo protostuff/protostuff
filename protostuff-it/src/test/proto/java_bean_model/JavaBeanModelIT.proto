@@ -5,6 +5,6 @@ option models = true;
 
 message JavaBeanModelSimpleMessage {
   optional int32 a = 1;
-  optional int64 b = 2;
+  optional int64 b = 2; // [default = 0]; TODO https://github.com/protostuff/protostuff/issues/108
 }
 

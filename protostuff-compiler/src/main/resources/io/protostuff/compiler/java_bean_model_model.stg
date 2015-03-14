@@ -96,15 +96,8 @@ public <field:builder_pattern_return_type(field=it, options=options, type=(remot
 <else>
 
 public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">() {
-    <if(field.enumField)>
-    <if(field.required)>
+
     return <var(val=field.name, fmt="CC", options=options)>;
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)> == null ? <field.defaultValueAsString> : <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
 }
 
 public <field:builder_pattern_return_type(field=it, options=options, type=(remote_model_name(message=message, name=message.name, noprefix=1)))> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>) {
