@@ -14,7 +14,6 @@
 
 package io.protostuff.runtime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.protostuff.Input;
-import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
 
@@ -37,18 +34,24 @@ import io.protostuff.Schema;
 public abstract class MappedSchema<T> implements Schema<T>
 {
 
-    private final Class<T> typeClass;
     private final Field<T>[] fields;
     private final List<Field<T>> fieldList;
-    protected final Field<T>[] fieldsByNumber;
-	private final Map<String, Field<T>> fieldsByName;
+    private final Field<T>[] fieldsByNumber;
+    private final Map<String, Field<T>> fieldsByName;
     private final Pipe.Schema<T> pipeSchema;
 
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
-            int lastFieldNumber)
+    public MappedSchema(Collection<Field<T>> fields)
     {
-        this.typeClass = typeClass;
+        int lastFieldNumber = 0;
+        for (Field<T> field : fields)
+        {
+            if (field.number > lastFieldNumber)
+            {
+                lastFieldNumber = field.number;
+            }
+        }
+
         fieldsByName = new HashMap<>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
@@ -74,24 +77,21 @@ public abstract class MappedSchema<T> implements Schema<T>
             if (fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-		List<Field<T>> fieldList = new ArrayList<>(fields.size());
-		Collections.addAll(fieldList, this.fields);
-		this.fieldList = Collections.unmodifiableList(fieldList);
+        List<Field<T>> fieldList = new ArrayList<>(fields.size());
+        Collections.addAll(fieldList, this.fields);
+        this.fieldList = Collections.unmodifiableList(fieldList);
         pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
-    public Class<T> getTypeClass()
+    public Field<T> getFieldByNumber(int n)
     {
-        return typeClass;
+        return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
     }
 
-	public Field<T> getFieldByNumber(int n) {
-		return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
-	}
-
-	public Field<T> getFieldByName(String fieldName) {
-		return fieldsByName.get(fieldName);
-	}
+    public Field<T> getFieldByName(String fieldName)
+    {
+        return fieldsByName.get(fieldName);
+    }
 
     /**
      * Returns the message's total number of fields.
@@ -99,64 +99,6 @@ public abstract class MappedSchema<T> implements Schema<T>
     public int getFieldCount()
     {
         return fields.length;
-    }
-
-    @Override
-    public Class<T> typeClass()
-    {
-        return typeClass;
-    }
-
-    @Override
-    public String messageName()
-    {
-        return typeClass.getSimpleName();
-    }
-
-    @Override
-    public String messageFullName()
-    {
-        return typeClass.getName();
-    }
-
-    @Override
-    public String getFieldName(int number)
-    {
-        // only called on writes
-        final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                : null;
-
-        return field == null ? null : field.name;
-    }
-
-    @Override
-    public int getFieldNumber(String name)
-    {
-        final Field<T> field = fieldsByName.get(name);
-        return field == null ? 0 : field.number;
-    }
-
-    @Override
-    public final void mergeFrom(Input input, T message) throws IOException
-    {
-        for (int number = input.readFieldNumber(this); number != 0; number = input
-                .readFieldNumber(this))
-        {
-            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                    : null;
-
-            if (field == null)
-                input.handleUnknownField(number, this);
-            else
-                field.mergeFrom(input, message);
-        }
-    }
-
-    @Override
-    public final void writeTo(Output output, T message) throws IOException
-    {
-        for (Field<T> f : fields)
-            f.writeTo(output, message);
     }
 
     /**
@@ -167,9 +109,9 @@ public abstract class MappedSchema<T> implements Schema<T>
         return pipeSchema;
     }
 
-	public List<Field<T>> getFields()
-	{
-		return fieldList;
-	}
+    public List<Field<T>> getFields()
+    {
+        return fieldList;
+    }
 
 }

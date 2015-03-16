@@ -80,17 +80,17 @@ public final class RuntimeView
      */
     public static abstract class BaseSchema<T> implements Schema<T>
     {
-        public final Class<T> typeClass;
+        public final Class<? super T> typeClass;
         public final Instantiator<T> instantiator;
 
-        protected BaseSchema(Class<T> typeClass, Instantiator<T> instantiator)
+        protected BaseSchema(Class<? super T> typeClass, Instantiator<T> instantiator)
         {
             this.typeClass = typeClass;
             this.instantiator = instantiator;
         }
 
         @Override
-        public Class<T> typeClass()
+        public Class<? super T> typeClass()
         {
             return typeClass;
         }
@@ -125,7 +125,7 @@ public final class RuntimeView
     {
         public final Field<T>[] fields;
 
-        protected PostFilteredSchema(Class<T> typeClass, Instantiator<T> instantiator,
+        protected PostFilteredSchema(Class<? super T> typeClass, Instantiator<T> instantiator,
                 Field<T>[] fields)
         {
             super(typeClass, instantiator);
@@ -289,7 +289,7 @@ public final class RuntimeView
                 final HashMap<String, Field<T>> fieldsByName =
                         new HashMap<>();
 
-                int maxFieldNumber = includeAndAddTo(fieldsByName, ms.getTypeClass(), ms.getFields(), args);
+                int maxFieldNumber = includeAndAddTo(fieldsByName, ms.typeClass(), ms.getFields(), args);
 
 				@SuppressWarnings("unchecked")
 				Field<T>[] fields = new Field[fieldsByName.size()];
@@ -343,7 +343,7 @@ public final class RuntimeView
         };
     }
 
-    static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
+    static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
             List<Field<T>> fields, final Predicate predicate)
     {
         final HashMap<String, Field<T>> map = new HashMap<>();
@@ -357,7 +357,7 @@ public final class RuntimeView
         return map;
     }
 
-    static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
+    static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
 														List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
@@ -377,7 +377,7 @@ public final class RuntimeView
     }
 
     static <T> int includeAndAddTo(Map<String, Field<T>> map,
-            Class<T> typeClass, List<Field<T>> fields, final String[] args)
+            Class<? super T> typeClass, List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to include.");
