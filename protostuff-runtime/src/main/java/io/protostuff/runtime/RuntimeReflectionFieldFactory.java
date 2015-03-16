@@ -47,7 +47,6 @@ import io.protostuff.Pipe;
 import io.protostuff.Schema;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Field factory via plain old reflection api.

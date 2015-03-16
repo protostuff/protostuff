@@ -24,7 +24,6 @@ import java.util.Set;
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Schema;
-import io.protostuff.runtime.MappedSchema.Field;
 import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**

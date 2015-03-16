@@ -20,7 +20,6 @@ import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Runtime pipe schema.

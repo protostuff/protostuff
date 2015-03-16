@@ -29,7 +29,6 @@ import io.protostuff.Pipe;
 import io.protostuff.Schema;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * Static utility for creating runtime {@link Collection} fields.

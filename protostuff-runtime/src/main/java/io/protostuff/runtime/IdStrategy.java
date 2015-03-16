@@ -17,7 +17,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.Schema;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * This base class handles all the IO for reading and writing polymorphic fields. When a field's type is

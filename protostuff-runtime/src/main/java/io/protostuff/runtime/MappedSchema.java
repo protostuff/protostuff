@@ -23,8 +23,6 @@ import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
-import io.protostuff.Tag;
-import io.protostuff.WireFormat.FieldType;
 
 /**
  * Base class for schemas that maps fields by number and name. For fast initialization, the last field number is
@@ -43,38 +41,6 @@ public abstract class MappedSchema<T> implements Schema<T>
     private final Pipe.Schema<T> pipeSchema;
 
     @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Field<T>[] fields,
-            int lastFieldNumber)
-    {
-        if (fields.length == 0)
-            throw new IllegalStateException("At least one field is required.");
-
-        this.typeClass = typeClass;
-        this.fields = fields;
-        fieldsByName = new HashMap<>();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-        for (Field<T> f : fields)
-        {
-            Field<T> last = this.fieldsByName.put(f.name, f);
-            if (last != null)
-            {
-                throw new IllegalStateException(last + " and " + f
-                        + " cannot have the same name.");
-            }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-            // f.owner = this;
-        }
-
-        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
-    }
-
-    @SuppressWarnings("unchecked")
     public MappedSchema(Class<T> typeClass, Collection<Field<T>> fields,
             int lastFieldNumber)
     {
@@ -89,37 +55,6 @@ public abstract class MappedSchema<T> implements Schema<T>
                 throw new IllegalStateException(last + " and " + f
                         + " cannot have the same name.");
             }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-            // f.owner = this;
-        }
-
-        this.fields = (Field<T>[]) new Field<?>[fields.size()];
-        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
-        {
-            if (fieldsByNumber[i] != null)
-                this.fields[j++] = fieldsByNumber[i];
-        }
-
-        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
-    }
-
-    @SuppressWarnings("unchecked")
-    public MappedSchema(Class<T> typeClass, Map<String, Field<T>> fieldsByName,
-            int lastFieldNumber)
-    {
-        this.typeClass = typeClass;
-        this.fieldsByName = fieldsByName;
-        Collection<Field<T>> fields = fieldsByName.values();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-
-        for (Field<T> f : fields)
-        {
             if (fieldsByNumber[f.number] != null)
             {
                 throw new IllegalStateException(fieldsByNumber[f.number]
@@ -231,53 +166,5 @@ public abstract class MappedSchema<T> implements Schema<T>
 	{
 		return fields;
 	}
-
-	/**
-     * Represents a field of a message/pojo.
-     */
-    public static abstract class Field<T>
-    {
-        public final FieldType type;
-        public final int number;
-        public final String name;
-        public final boolean repeated;
-        public final int groupFilter;
-
-        // public final Tag tag;
-
-        public Field(FieldType type, int number, String name, boolean repeated,
-                Tag tag)
-        {
-            this.type = type;
-            this.number = number;
-            this.name = name;
-            this.repeated = repeated;
-            this.groupFilter = tag == null ? 0 : tag.groupFilter();
-            // this.tag = tag;
-        }
-
-        public Field(FieldType type, int number, String name, Tag tag)
-        {
-            this(type, number, name, false, tag);
-        }
-
-        /**
-         * Writes the value of a field to the {@code output}.
-         */
-        protected abstract void writeTo(Output output, T message)
-                throws IOException;
-
-        /**
-         * Reads the field value into the {@code message}.
-         */
-        protected abstract void mergeFrom(Input input, T message)
-                throws IOException;
-
-        /**
-         * Transfer the input field to the output field.
-         */
-        protected abstract void transfer(Pipe pipe, Input input, Output output,
-                boolean repeated) throws IOException;
-    }
 
 }

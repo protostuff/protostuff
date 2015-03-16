@@ -18,7 +18,6 @@ import io.protostuff.Pipe;
 import io.protostuff.Schema;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime message field that lazily loads the schema to support cyclic dependencies.

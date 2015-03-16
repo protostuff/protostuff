@@ -25,7 +25,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field for a {@link Map}. Allows null keys and values.
