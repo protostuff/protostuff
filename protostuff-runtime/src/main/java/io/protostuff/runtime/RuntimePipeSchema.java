@@ -30,13 +30,13 @@ import io.protostuff.Schema;
 public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
 {
 
-    final Field<T>[] fieldsByNumber;
+    final FieldMap<T> fieldsMap;
 
-    public RuntimePipeSchema(Schema<T> schema, Field<T>[] fieldsByNumber)
+    public RuntimePipeSchema(Schema<T> schema, FieldMap<T> fieldMap)
     {
         super(schema);
 
-        this.fieldsByNumber = fieldsByNumber;
+        this.fieldsMap = fieldMap;
     }
 
     @Override
@@ -46,9 +46,7 @@ public final class RuntimePipeSchema<T> extends Pipe.Schema<T>
         for (int number = input.readFieldNumber(wrappedSchema); number != 0; number = input
                 .readFieldNumber(wrappedSchema))
         {
-            final Field<T> field = number < fieldsByNumber.length ? fieldsByNumber[number]
-                    : null;
-
+            final Field<T> field = fieldsMap.getFieldByNumber(number);
             if (field == null)
                 input.handleUnknownField(number, wrappedSchema);
             else

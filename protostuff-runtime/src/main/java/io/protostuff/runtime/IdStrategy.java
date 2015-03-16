@@ -114,9 +114,7 @@ public abstract class IdStrategy
                             + rs.messageFullName() + " on group " + groupId);
                 }
 
-                return new RuntimeSchema<>(typeClass, fields,
-                        // the last field
-                        fields.get(size - 1).number, rs.instantiator);
+                return new RuntimeSchema<>(typeClass, fields, rs.instantiator);
             }
 
             return s;

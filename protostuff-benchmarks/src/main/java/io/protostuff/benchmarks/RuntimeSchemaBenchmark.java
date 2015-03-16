@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import io.protostuff.Tag;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -38,13 +39,17 @@ public class RuntimeSchemaBenchmark
 
     private RuntimeSchema<Int1> int1RuntimeSchema;
     private RuntimeSchema<Int10> int10RuntimeSchema;
+	private RuntimeSchema<SparseInt1> sparseInt1RuntimeSchema;
+	private RuntimeSchema<SparseInt10> sparseInt10RuntimeSchema;
     private Schema<GeneratedInt1> generatedInt1Schema;
     private Schema<GeneratedInt10> generatedInt10Schema;
 
-    private Int1 int1Instance;
-    private Int10 int10Instance;
-    private GeneratedInt1 generatedInt1Instance;
-    private GeneratedInt10 generatedInt10Instance;
+    private Int1 int1;
+    private Int10 int10;
+	private SparseInt1 sparseInt1;
+	private SparseInt10 sparseInt10;
+    private GeneratedInt1 generatedInt1;
+    private GeneratedInt10 generatedInt10;
 
     private byte[] data_1_int;
     private byte[] data_10_int;
@@ -64,43 +69,58 @@ public class RuntimeSchemaBenchmark
     {
         int1RuntimeSchema = RuntimeSchema.createFrom(Int1.class);
         int10RuntimeSchema = RuntimeSchema.createFrom(Int10.class);
+		sparseInt1RuntimeSchema = RuntimeSchema.createFrom(SparseInt1.class);
+		sparseInt10RuntimeSchema = RuntimeSchema.createFrom(SparseInt10.class);
         generatedInt1Schema = GeneratedInt1.getSchema();
         generatedInt10Schema = GeneratedInt10.getSchema();
-        int1Instance = new Int1();
-        int1Instance.a0 = 1;
-        int10Instance = new Int10();
-        int10Instance.a0 = 1;
-        int10Instance.a1 = 2;
-        int10Instance.a2 = 3;
-        int10Instance.a3 = 4;
-        int10Instance.a4 = 5;
-        int10Instance.a5 = 6;
-        int10Instance.a6 = 7;
-        int10Instance.a7 = 8;
-        int10Instance.a8 = 9;
-        int10Instance.a9 = 10;
-        generatedInt1Instance = new GeneratedInt1();
-        generatedInt1Instance.setA0(1);
-        generatedInt10Instance = new GeneratedInt10();
-        generatedInt10Instance.setA0(1);
-        generatedInt10Instance.setA1(2);
-        generatedInt10Instance.setA2(3);
-        generatedInt10Instance.setA3(4);
-        generatedInt10Instance.setA4(5);
-        generatedInt10Instance.setA5(6);
-        generatedInt10Instance.setA6(7);
-        generatedInt10Instance.setA7(8);
-        generatedInt10Instance.setA8(9);
-        generatedInt10Instance.setA9(10);
+        int1 = new Int1();
+        int1.a0 = 1;
+        int10 = new Int10();
+        int10.a0 = 1;
+        int10.a1 = 2;
+        int10.a2 = 3;
+        int10.a3 = 4;
+        int10.a4 = 5;
+        int10.a5 = 6;
+        int10.a6 = 7;
+        int10.a7 = 8;
+        int10.a8 = 9;
+        int10.a9 = 10;
+		sparseInt1 = new SparseInt1();
+		sparseInt1.a0 = 1;
+		sparseInt10 = new SparseInt10();
+		sparseInt10.a0 = 1;
+		sparseInt10.a1 = 2;
+		sparseInt10.a2 = 3;
+		sparseInt10.a3 = 4;
+		sparseInt10.a4 = 5;
+		sparseInt10.a5 = 6;
+		sparseInt10.a6 = 7;
+		sparseInt10.a7 = 8;
+		sparseInt10.a8 = 9;
+		sparseInt10.a9 = 10;
+        generatedInt1 = new GeneratedInt1();
+        generatedInt1.setA0(1);
+        generatedInt10 = new GeneratedInt10();
+        generatedInt10.setA0(1);
+        generatedInt10.setA1(2);
+        generatedInt10.setA2(3);
+        generatedInt10.setA3(4);
+        generatedInt10.setA4(5);
+        generatedInt10.setA5(6);
+        generatedInt10.setA6(7);
+        generatedInt10.setA7(8);
+        generatedInt10.setA8(9);
+        generatedInt10.setA9(10);
         buffer = LinkedBuffer.allocate();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ProtobufIOUtil.writeTo(outputStream, int1Instance, int1RuntimeSchema, buffer);
+        ProtobufIOUtil.writeTo(outputStream, int1, int1RuntimeSchema, buffer);
         data_1_int = outputStream.toByteArray();
         outputStream.reset();
         buffer.clear();
 
-        ProtobufIOUtil.writeTo(outputStream, int10Instance, int10RuntimeSchema, buffer);
+        ProtobufIOUtil.writeTo(outputStream, int10, int10RuntimeSchema, buffer);
         data_10_int = outputStream.toByteArray();
         outputStream.reset();
         buffer.clear();
@@ -125,7 +145,7 @@ public class RuntimeSchemaBenchmark
     {
         try
         {
-            ProtobufIOUtil.writeTo(buffer, int1Instance, int1RuntimeSchema);
+            ProtobufIOUtil.writeTo(buffer, int1, int1RuntimeSchema);
         }
         finally
         {
@@ -146,13 +166,55 @@ public class RuntimeSchemaBenchmark
     {
         try
         {
-            ProtobufIOUtil.writeTo(buffer, int10Instance, int10RuntimeSchema);
+            ProtobufIOUtil.writeTo(buffer, int10, int10RuntimeSchema);
         }
         finally
         {
             buffer.clear();
         }
     }
+
+	@Benchmark
+	public SparseInt1 runtime_sparse_deserialize_1_int_field() throws Exception
+	{
+		SparseInt1 int1 = new SparseInt1();
+		ProtobufIOUtil.mergeFrom(data_1_int, int1, sparseInt1RuntimeSchema);
+		return int1;
+	}
+
+	@Benchmark
+	public void runtime_sparse_serialize_1_int_field() throws Exception
+	{
+		try
+		{
+			ProtobufIOUtil.writeTo(buffer, sparseInt1, sparseInt1RuntimeSchema);
+		}
+		finally
+		{
+			buffer.clear();
+		}
+	}
+
+	@Benchmark
+	public SparseInt10 runtime_sparse_deserialize_10_int_field() throws Exception
+	{
+		SparseInt10 int10 = new SparseInt10();
+		ProtobufIOUtil.mergeFrom(data_10_int, int10, sparseInt10RuntimeSchema);
+		return int10;
+	}
+
+	@Benchmark
+	public void runtime_sparse_serialize_10_int_fields() throws Exception
+	{
+		try
+		{
+			ProtobufIOUtil.writeTo(buffer, sparseInt10, sparseInt10RuntimeSchema);
+		}
+		finally
+		{
+			buffer.clear();
+		}
+	}
 
     @Benchmark
     public GeneratedInt1 generated_deserialize_1_int_field() throws Exception
@@ -167,7 +229,7 @@ public class RuntimeSchemaBenchmark
     {
         try
         {
-            ProtobufIOUtil.writeTo(buffer, generatedInt1Instance, generatedInt1Schema);
+            ProtobufIOUtil.writeTo(buffer, generatedInt1, generatedInt1Schema);
         }
         finally
         {
@@ -188,7 +250,7 @@ public class RuntimeSchemaBenchmark
     {
         try
         {
-            ProtobufIOUtil.writeTo(buffer, generatedInt10Instance, generatedInt10Schema);
+            ProtobufIOUtil.writeTo(buffer, generatedInt10, generatedInt10Schema);
         }
         finally
         {
@@ -215,4 +277,22 @@ public class RuntimeSchemaBenchmark
         public int a9;
     }
 
+	private static class SparseInt1
+	{
+		@Tag(101) public int a0;
+	}
+
+	private static class SparseInt10
+	{
+		@Tag(1) public int a0;
+		@Tag(2) public int a1;
+		@Tag(3) public int a2;
+		@Tag(4) public int a3;
+		@Tag(5) public int a4;
+		@Tag(6) public int a5;
+		@Tag(7) public int a6;
+		@Tag(8) public int a7;
+		@Tag(9) public int a8;
+		@Tag(101) public int a9;
+	}
 }

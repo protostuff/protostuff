@@ -14,94 +14,52 @@
 
 package io.protostuff.runtime;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
 
 /**
- * Base class for schemas that maps fields by number and name. For fast initialization, the last field number is
- * provided in the constructor.
+ * Base class for schemas that maps fields by number and name.
  * 
  * @author David Yu
  * @created Nov 10, 2009
  */
-public abstract class MappedSchema<T> implements Schema<T>
+public abstract class MappedSchema<T> implements Schema<T>,FieldMap<T>
 {
 
-    private final Field<T>[] fields;
-    private final List<Field<T>> fieldList;
-    private final Field<T>[] fieldsByNumber;
-    private final Map<String, Field<T>> fieldsByName;
-    private final Pipe.Schema<T> pipeSchema;
+	public static final int MIN_TAG_FOR_HASH_FIELD_MAP = 100;
 
-    @SuppressWarnings("unchecked")
+	private final Pipe.Schema<T> pipeSchema;
+	private final FieldMap<T> fieldMap;
+
     public MappedSchema(Collection<Field<T>> fields)
     {
-        int lastFieldNumber = 0;
-        for (Field<T> field : fields)
-        {
-            if (field.number > lastFieldNumber)
-            {
-                lastFieldNumber = field.number;
-            }
-        }
-
-        fieldsByName = new HashMap<>();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-        for (Field<T> f : fields)
-        {
-            Field<T> last = this.fieldsByName.put(f.name, f);
-            if (last != null)
-            {
-                throw new IllegalStateException(last + " and " + f
-                        + " cannot have the same name.");
-            }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
-            }
-
-            fieldsByNumber[f.number] = f;
-        }
-
-        this.fields = (Field<T>[]) new Field<?>[fields.size()];
-        for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
-        {
-            if (fieldsByNumber[i] != null)
-                this.fields[j++] = fieldsByNumber[i];
-        }
-        List<Field<T>> fieldList = new ArrayList<>(fields.size());
-        Collections.addAll(fieldList, this.fields);
-        this.fieldList = Collections.unmodifiableList(fieldList);
-        pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
+		int lastFieldNumber = 0;
+		for (Field<T> field : fields)
+		{
+			if (field.number > lastFieldNumber)
+			{
+				lastFieldNumber = field.number;
+			}
+		}
+		if (sparseFields(fields, lastFieldNumber))
+		{
+			fieldMap = new HashFieldMap<>(fields);
+		} else {
+			// array field map should be more efficient
+			fieldMap = new ArrayFieldMap<>(fields, lastFieldNumber);
+		}
+        pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
     }
 
-    public Field<T> getFieldByNumber(int n)
-    {
-        return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
-    }
+	private boolean sparseFields(Collection<Field<T>> fields, int lastFieldNumber)
+	{
+		return lastFieldNumber > MIN_TAG_FOR_HASH_FIELD_MAP && lastFieldNumber >= 2*fields.size();
+	}
 
-    public Field<T> getFieldByName(String fieldName)
-    {
-        return fieldsByName.get(fieldName);
-    }
-
-    /**
-     * Returns the message's total number of fields.
-     */
-    public int getFieldCount()
-    {
-        return fields.length;
-    }
-
-    /**
+	/**
      * Returns the pipe schema linked to this.
      */
     public Pipe.Schema<T> getPipeSchema()
@@ -109,9 +67,27 @@ public abstract class MappedSchema<T> implements Schema<T>
         return pipeSchema;
     }
 
-    public List<Field<T>> getFields()
-    {
-        return fieldList;
-    }
+	@Override
+	public Field<T> getFieldByNumber(int n)
+	{
+		return fieldMap.getFieldByNumber(n);
+	}
 
+	@Override
+	public Field<T> getFieldByName(String fieldName)
+	{
+		return fieldMap.getFieldByName(fieldName);
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return fieldMap.getFieldCount();
+	}
+
+	@Override
+	public List<Field<T>> getFields()
+	{
+		return fieldMap.getFields();
+	}
 }
