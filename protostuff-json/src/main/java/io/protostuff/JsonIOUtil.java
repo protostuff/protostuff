@@ -28,9 +28,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
 import com.fasterxml.jackson.core.json.UTF8StreamJsonParser;
-import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 
 /**
@@ -197,7 +197,7 @@ public final class JsonIOUtil
             int offset, int limit, boolean bufferRecyclable, IOContext context)
             throws IOException
     {
-        return new UTF8StreamJsonParser (context,
+        return new UTF8StreamJsonParser(context,
                 DEFAULT_JSON_FACTORY.getParserFeatures(), in,
                 DEFAULT_JSON_FACTORY.getCodec(),
                 DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(true, true),

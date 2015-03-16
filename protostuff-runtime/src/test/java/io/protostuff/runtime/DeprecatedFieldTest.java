@@ -14,13 +14,11 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
-import org.junit.Assert;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * Test for runtime schemas to skip deprecated field and still allow backward-forward compatibility.
@@ -41,13 +39,13 @@ public class DeprecatedFieldTest
         long timestamp;
     }
 
-	@Test
+    @Test
     public void testIt() throws Exception
     {
         MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
         assertTrue(schema.getFields().size() == 3);
-		assertEquals(schema.getFields().get(0).name, "id");
+        assertEquals(schema.getFields().get(0).name, "id");
         assertEquals(schema.getFields().get(0).number, 1);
 
         assertEquals(schema.getFields().get(1).name, "name");
@@ -57,7 +55,7 @@ public class DeprecatedFieldTest
         assertEquals(schema.getFields().get(2).number, 4);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-		assertNull(schema.getFieldByName("alias"));
+        assertNull(schema.getFieldByName("alias"));
     }
 
 }

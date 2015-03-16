@@ -643,7 +643,6 @@ public class StringSerializerTest extends TestCase
         // System.err.println(msg);
     }
 
-
     /**
      * Reads a var int 32 from the buffer.
      */
@@ -694,7 +693,5 @@ public class StringSerializerTest extends TestCase
         }
         return result;
     }
-
-
 
 }

@@ -72,8 +72,8 @@ public final class RuntimeView
          * @param args
          *            is optional, depending on the view factory used.
          */
-		<T> Schema<T> create(MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args);
-	}
+        <T> Schema<T> create(MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args);
+    }
 
     /**
      * The base schema used by the built-in factories.
@@ -158,7 +158,8 @@ public final class RuntimeView
         PREDICATE
         {
             @Override
-            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args)
+            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf,
+                    String[] args)
             {
                 if (pf == null)
                     throw new IllegalArgumentException("Predicate.Factory arg must not be null.");
@@ -218,9 +219,10 @@ public final class RuntimeView
         EXCLUDE
         {
             @Override
-			public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory factory, String[] args)
+            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator,
+                    Predicate.Factory factory, String[] args)
 
-			{
+            {
                 final HashMap<String, Field<T>> fieldsByName = factory == null ?
                         copyAndExclude(ms.typeClass(), ms.getFields(), args) :
                         copyAndExclude(ms.typeClass(), ms.getFields(), factory.create(args));
@@ -228,11 +230,11 @@ public final class RuntimeView
                 @SuppressWarnings("unchecked")
                 Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
 
-				int i=0;
-				for (Field<T> field : fieldsByName.values())
-				{
-					fields[i++] = field;
-				}
+                int i = 0;
+                for (Field<T> field : fieldsByName.values())
+                {
+                    fields[i++] = field;
+                }
 
                 return new PostFilteredSchema<T>(ms.typeClass(), instantiator, fields)
                 {
@@ -284,20 +286,21 @@ public final class RuntimeView
         INCLUDE
         {
             @Override
-			public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory factory, String[] args)
-			{
+            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator,
+                    Predicate.Factory factory, String[] args)
+            {
                 final HashMap<String, Field<T>> fieldsByName =
                         new HashMap<>();
 
                 int maxFieldNumber = includeAndAddTo(fieldsByName, ms.typeClass(), ms.getFields(), args);
 
-				@SuppressWarnings("unchecked")
-				Field<T>[] fields = new Field[fieldsByName.size()];
-				int i=0;
-				for (Field<T> field : fieldsByName.values())
-				{
-					fields[i++] = field;
-				}
+                @SuppressWarnings("unchecked")
+                Field<T>[] fields = new Field[fieldsByName.size()];
+                int i = 0;
+                for (Field<T> field : fieldsByName.values())
+                {
+                    fields[i++] = field;
+                }
 
                 return new PostFilteredSchema<T>(ms.typeClass(), instantiator, fields)
                 {
@@ -347,32 +350,34 @@ public final class RuntimeView
             List<Field<T>> fields, final Predicate predicate)
     {
         final HashMap<String, Field<T>> map = new HashMap<>();
-		for (Field<T> field : fields)
-		{
-			if (!predicate.apply(field)) {
-				map.put(field.name, field);
-			}
-		}
+        for (Field<T> field : fields)
+        {
+            if (!predicate.apply(field))
+            {
+                map.put(field.name, field);
+            }
+        }
 
         return map;
     }
 
     static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
-														List<Field<T>> fields, final String[] args)
+            List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
 
         HashMap<String, Field<T>> map = new HashMap<>();
-		Set<String> exclude = new HashSet<>();
-		Collections.addAll(exclude, args);
+        Set<String> exclude = new HashSet<>();
+        Collections.addAll(exclude, args);
 
-		for (Field<T> field : fields)
-		{
-			if (!exclude.contains(field.name)) {
-				map.put(field.name, field);
-			}
-		}
+        for (Field<T> field : fields)
+        {
+            if (!exclude.contains(field.name))
+            {
+                map.put(field.name, field);
+            }
+        }
         return map;
     }
 
@@ -383,15 +388,16 @@ public final class RuntimeView
             throw new IllegalArgumentException("You must provide at least 1 field to include.");
 
         int maxFieldNumber = 0;
-		Set<String> include = new HashSet<>();
-		Collections.addAll(include, args);
-		for (Field<T> field : fields)
-		{
-			if (include.contains(field.name)) {
-				map.put(field.name, field);
-				maxFieldNumber = Math.max(field.number, maxFieldNumber);
-			}
-		}
-		return maxFieldNumber;
+        Set<String> include = new HashSet<>();
+        Collections.addAll(include, args);
+        for (Field<T> field : fields)
+        {
+            if (include.contains(field.name))
+            {
+                map.put(field.name, field);
+                maxFieldNumber = Math.max(field.number, maxFieldNumber);
+            }
+        }
+        return maxFieldNumber;
     }
 }

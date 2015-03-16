@@ -14,20 +14,20 @@
 
 package io.protostuff.runtime;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
-import org.junit.Test;
-
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for abstract generic collection types.
@@ -418,7 +418,7 @@ public class CollectionTest
     }
 
     @Test
-	public void testSimpleTask() throws Exception
+    public void testSimpleTask() throws Exception
     {
         Schema<Task> schema = RuntimeSchema.getSchema(Task.class);
 
@@ -435,7 +435,7 @@ public class CollectionTest
     }
 
     @Test
-	public void testITask() throws Exception
+    public void testITask() throws Exception
     {
         // Because we mapped ITask to Task, this is ok.
         Schema<ITask> schema = RuntimeSchema.getSchema(ITask.class);
@@ -471,7 +471,7 @@ public class CollectionTest
     }
 
     @Test
-	public void testEmployee() throws Exception
+    public void testEmployee() throws Exception
     {
         Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
 
@@ -488,7 +488,7 @@ public class CollectionTest
     }
 
     @Test
-	public void testIEmployee() throws Exception
+    public void testIEmployee() throws Exception
     {
         // Because we mapped IEmployee to Employee, this is ok.
         Schema<AbstractEmployee> schema = RuntimeSchema
@@ -537,7 +537,7 @@ public class CollectionTest
     }
 
     @Test
-	public void testPojoWithMappedAbstractTypes()
+    public void testPojoWithMappedAbstractTypes()
     {
         MappedSchema<PojoWithMappedAbstractTypes> schema = (MappedSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
                 .getSchema(PojoWithMappedAbstractTypes.class,

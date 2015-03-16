@@ -117,23 +117,23 @@ public class CompatTest
         MappedSchema<Mixed> mappedSchema = (MappedSchema<Mixed>) schema;
 
         assertTrue(RuntimeMessageField.class
-				.isAssignableFrom(mappedSchema.getFieldByName("rfoo")
-                        .getClass()));
-        assertTrue(RuntimeMessageField.class
-				.isAssignableFrom(mappedSchema.getFieldByName("rbar")
+                .isAssignableFrom(mappedSchema.getFieldByName("rfoo")
 						.getClass()));
         assertTrue(RuntimeMessageField.class
-				.isAssignableFrom(mappedSchema.getFieldByName("rbaz")
+                .isAssignableFrom(mappedSchema.getFieldByName("rbar")
+						.getClass()));
+        assertTrue(RuntimeMessageField.class
+                .isAssignableFrom(mappedSchema.getFieldByName("rbaz")
 						.getClass()));
 
-		RuntimeMessageField<Mixed, io.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, io.protostuff.Foo>) mappedSchema
-				.getFieldByName("rfoo");
+        RuntimeMessageField<Mixed, io.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, io.protostuff.Foo>) mappedSchema
+                .getFieldByName("rfoo");
 
-		RuntimeMessageField<Mixed, io.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, io.protostuff.Bar>) mappedSchema
-				.getFieldByName("rbar");
+        RuntimeMessageField<Mixed, io.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, io.protostuff.Bar>) mappedSchema
+                .getFieldByName("rbar");
 
-		RuntimeMessageField<Mixed, io.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, io.protostuff.Baz>) mappedSchema
-				.getFieldByName("rbaz");
+        RuntimeMessageField<Mixed, io.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, io.protostuff.Baz>) mappedSchema
+                .getFieldByName("rbaz");
 
         assertTrue(rfoo
                 .getSchema()

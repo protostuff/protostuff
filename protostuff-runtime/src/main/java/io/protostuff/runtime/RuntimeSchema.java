@@ -53,7 +53,7 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
 
-	private final Class<T> typeClass;
+    private final Class<T> typeClass;
 
     /**
      * Maps the {@code baseClass} to a specific non-interface/non-abstract {@code typeClass} and registers it (this must
@@ -339,65 +339,65 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
     {
         super(fields);
         this.instantiator = instantiator;
-		this.typeClass = typeClass;
+        this.typeClass = typeClass;
     }
 
-	@Override
-	public Class<T> typeClass()
-	{
-		return typeClass;
-	}
+    @Override
+    public Class<T> typeClass()
+    {
+        return typeClass;
+    }
 
-	@Override
-	public String messageName()
-	{
-		return typeClass.getSimpleName();
-	}
+    @Override
+    public String messageName()
+    {
+        return typeClass.getSimpleName();
+    }
 
-	@Override
-	public String messageFullName()
-	{
-		return typeClass.getName();
-	}
+    @Override
+    public String messageFullName()
+    {
+        return typeClass.getName();
+    }
 
-	@Override
-	public String getFieldName(int number)
-	{
-		// only called on writes
-		final Field<T> field = getFieldByNumber(number);
-		return field == null ? null : field.name;
-	}
+    @Override
+    public String getFieldName(int number)
+    {
+        // only called on writes
+        final Field<T> field = getFieldByNumber(number);
+        return field == null ? null : field.name;
+    }
 
-	@Override
-	public int getFieldNumber(String name)
-	{
-		final Field<T> field = getFieldByName(name);
-		return field == null ? 0 : field.number;
-	}
+    @Override
+    public int getFieldNumber(String name)
+    {
+        final Field<T> field = getFieldByName(name);
+        return field == null ? 0 : field.number;
+    }
 
-	@Override
-	public final void mergeFrom(Input input, T message) throws IOException
-	{
-		for (int n = input.readFieldNumber(this); n != 0; n = input.readFieldNumber(this))
-		{
-			final Field<T> field = getFieldByNumber(n);
-			if (field == null)
-			{
-				input.handleUnknownField(n, this);
-			}
-			else
-			{
-				field.mergeFrom(input, message);
-			}
-		}
-	}
+    @Override
+    public final void mergeFrom(Input input, T message) throws IOException
+    {
+        for (int n = input.readFieldNumber(this); n != 0; n = input.readFieldNumber(this))
+        {
+            final Field<T> field = getFieldByNumber(n);
+            if (field == null)
+            {
+                input.handleUnknownField(n, this);
+            }
+            else
+            {
+                field.mergeFrom(input, message);
+            }
+        }
+    }
 
-	@Override
-	public final void writeTo(Output output, T message) throws IOException
-	{
-		for (Field<T> f : getFields())
-			f.writeTo(output, message);
-	}
+    @Override
+    public final void writeTo(Output output, T message) throws IOException
+    {
+        for (Field<T> f : getFields())
+            f.writeTo(output, message);
+    }
 
     /**
      * Always returns true, everything is optional.

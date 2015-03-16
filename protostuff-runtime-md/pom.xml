@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
@@ -27,17 +28,17 @@
               <tasks>
                 <copy todir="${project.build.directory}/extra-sources">
                   <fileset dir="../protostuff-runtime/src/main/java">
-                    <exclude name="**/RuntimeUnsafeFieldFactory.java" />
-                    <exclude name="**/OnDemandSunReflectionFactory.java" />
-                    <exclude name="**/RuntimeFieldFactory.java" />
-                    <exclude name="**/RuntimeEnv.java" />
+                    <exclude name="**/RuntimeUnsafeFieldFactory.java"/>
+                    <exclude name="**/OnDemandSunReflectionFactory.java"/>
+                    <exclude name="**/RuntimeFieldFactory.java"/>
+                    <exclude name="**/RuntimeEnv.java"/>
                   </fileset>
                 </copy>
                 <copy todir="${project.build.directory}/extra-test-sources">
                   <fileset dir="../protostuff-runtime/src/test/java">
-                    <exclude name="**/ImmutableObjectsTest.java" />
-                    <exclude name="**/EnumSetAndMapTest.java" />
-                    <exclude name="**/*RuntimeObjectSchemaTest.java" />
+                    <exclude name="**/ImmutableObjectsTest.java"/>
+                    <exclude name="**/EnumSetAndMapTest.java"/>
+                    <exclude name="**/*RuntimeObjectSchemaTest.java"/>
                   </fileset>
                 </copy>
               </tasks>

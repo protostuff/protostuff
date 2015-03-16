@@ -28,15 +28,14 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
-import io.protostuff.Tag;
-import junit.framework.TestCase;
-import org.junit.Test;
-
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
+
+import io.protostuff.Tag;
 
 /**
  * Test for runtime schemas to handle annotation-based field mapping.
@@ -119,7 +118,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityFullyAnnotated()
+    public void testEntityFullyAnnotated()
     {
         MappedSchema<EntityFullyAnnotated> schema = (MappedSchema<EntityFullyAnnotated>) RuntimeSchema
                 .getSchema(EntityFullyAnnotated.class, RuntimeEnv.ID_STRATEGY);
@@ -132,11 +131,11 @@ public class AnnotatedFieldsTest
         assertEquals(schema.getFields().get(1).number, 5);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-		assertNull(schema.getFieldByName("alias"));
+        assertNull(schema.getFieldByName("alias"));
     }
 
     @Test
-	public void testEntityPartlyAnnotated1()
+    public void testEntityPartlyAnnotated1()
     {
         try
         {
@@ -150,7 +149,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityPartlyAnnotated2()
+    public void testEntityPartlyAnnotated2()
     {
         try
         {
@@ -164,7 +163,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityInvalidAnnotated1()
+    public void testEntityInvalidAnnotated1()
     {
         try
         {
@@ -178,7 +177,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityInvalidAnnotated2()
+    public void testEntityInvalidAnnotated2()
     {
         try
         {
@@ -192,7 +191,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityInvalidTagNumber() throws Exception
+    public void testEntityInvalidTagNumber() throws Exception
     {
         try
         {
@@ -216,7 +215,7 @@ public class AnnotatedFieldsTest
     }
 
     @Test
-	public void testEntityWithFieldAlias()
+    public void testEntityWithFieldAlias()
     {
         MappedSchema<EntityWithFieldAlias> schema = (MappedSchema<EntityWithFieldAlias>) RuntimeSchema
                 .getSchema(EntityWithFieldAlias.class, RuntimeEnv.ID_STRATEGY);

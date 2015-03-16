@@ -7,11 +7,11 @@ import java.util.List;
  */
 public interface FieldMap<T>
 {
-	Field<T> getFieldByNumber(int n);
+    Field<T> getFieldByNumber(int n);
 
-	Field<T> getFieldByName(String fieldName);
+    Field<T> getFieldByName(String fieldName);
 
-	int getFieldCount();
+    int getFieldCount();
 
-	List<Field<T>> getFields();
+    List<Field<T>> getFields();
 }

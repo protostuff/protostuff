@@ -23,10 +23,10 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
 import com.fasterxml.jackson.dataformat.smile.SmileParser;
-import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 
 /**
  * Smile IO utilities for messages.

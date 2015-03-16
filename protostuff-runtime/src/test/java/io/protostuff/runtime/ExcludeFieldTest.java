@@ -14,14 +14,14 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
-import io.protostuff.Exclude;
-import io.protostuff.Tag;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import io.protostuff.Exclude;
+import io.protostuff.Tag;
 
 /**
  * Test for runtime schemas to skip fields annotated with @Exclude and still allow backward-forward compatibility.
@@ -66,7 +66,7 @@ public class ExcludeFieldTest
     }
 
     @Test
-	public void testIt() throws Exception
+    public void testIt() throws Exception
     {
         MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
@@ -81,11 +81,11 @@ public class ExcludeFieldTest
         assertEquals(schema.getFields().get(2).number, 3);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-		assertNull(schema.getFieldByName("alias"));
+        assertNull(schema.getFieldByName("alias"));
     }
 
     @Test
-	public void testMuchExcludedEntity() throws Exception
+    public void testMuchExcludedEntity() throws Exception
     {
         MappedSchema<MuchExcludedEntity> schema = (MappedSchema<MuchExcludedEntity>) RuntimeSchema
                 .getSchema(MuchExcludedEntity.class);
@@ -93,36 +93,36 @@ public class ExcludeFieldTest
         assertTrue(schema.getFieldCount() == 1);
 
         assertTrue(schema.getFieldNumber("id") == 0);
-		assertNull(schema.getFieldByName("id"));
+        assertNull(schema.getFieldByName("id"));
 
         assertTrue(schema.getFieldNumber("name") == 0);
-		assertNull(schema.getFieldByName("name"));
+        assertNull(schema.getFieldByName("name"));
 
         assertEquals(schema.getFields().get(0).name, "alias");
         assertEquals(schema.getFields().get(0).number, 1);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-		assertNull(schema.getFieldByName("timestamp"));
+        assertNull(schema.getFieldByName("timestamp"));
     }
 
     @Test
-	public void testTaggedAndExcludedEntity() throws Exception
+    public void testTaggedAndExcludedEntity() throws Exception
     {
         MappedSchema<TaggedAndExcludedEntity> schema = (MappedSchema<TaggedAndExcludedEntity>) RuntimeSchema
                 .getSchema(TaggedAndExcludedEntity.class);
         assertEquals(2, schema.getFieldCount());
 
-		assertEquals(0, schema.getFieldNumber("id"));
-		assertNull(schema.getFieldByName("id"));
+        assertEquals(0, schema.getFieldNumber("id"));
+        assertNull(schema.getFieldByName("id"));
 
         assertEquals(schema.getFields().get(0).name, "alias");
         assertEquals(schema.getFields().get(0).number, 2);
 
-		assertEquals("name", schema.getFields().get(1).name);
-		assertEquals(4, schema.getFields().get(1).number);
+        assertEquals("name", schema.getFields().get(1).name);
+        assertEquals(4, schema.getFields().get(1).number);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-		assertNull(schema.getFieldByName("timestamp"));
+        assertNull(schema.getFieldByName("timestamp"));
     }
 
 }

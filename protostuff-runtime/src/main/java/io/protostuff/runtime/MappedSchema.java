@@ -26,40 +26,42 @@ import io.protostuff.Schema;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public abstract class MappedSchema<T> implements Schema<T>,FieldMap<T>
+public abstract class MappedSchema<T> implements Schema<T>, FieldMap<T>
 {
 
-	public static final int MIN_TAG_FOR_HASH_FIELD_MAP = 100;
+    public static final int MIN_TAG_FOR_HASH_FIELD_MAP = 100;
 
-	private final Pipe.Schema<T> pipeSchema;
-	private final FieldMap<T> fieldMap;
+    private final Pipe.Schema<T> pipeSchema;
+    private final FieldMap<T> fieldMap;
 
     public MappedSchema(Collection<Field<T>> fields)
     {
-		int lastFieldNumber = 0;
-		for (Field<T> field : fields)
-		{
-			if (field.number > lastFieldNumber)
-			{
-				lastFieldNumber = field.number;
-			}
-		}
-		if (sparseFields(fields, lastFieldNumber))
-		{
-			fieldMap = new HashFieldMap<>(fields);
-		} else {
-			// array field map should be more efficient
-			fieldMap = new ArrayFieldMap<>(fields, lastFieldNumber);
-		}
+        int lastFieldNumber = 0;
+        for (Field<T> field : fields)
+        {
+            if (field.number > lastFieldNumber)
+            {
+                lastFieldNumber = field.number;
+            }
+        }
+        if (sparseFields(fields, lastFieldNumber))
+        {
+            fieldMap = new HashFieldMap<>(fields);
+        }
+        else
+        {
+            // array field map should be more efficient
+            fieldMap = new ArrayFieldMap<>(fields, lastFieldNumber);
+        }
         pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
     }
 
-	private boolean sparseFields(Collection<Field<T>> fields, int lastFieldNumber)
-	{
-		return lastFieldNumber > MIN_TAG_FOR_HASH_FIELD_MAP && lastFieldNumber >= 2*fields.size();
-	}
+    private boolean sparseFields(Collection<Field<T>> fields, int lastFieldNumber)
+    {
+        return lastFieldNumber > MIN_TAG_FOR_HASH_FIELD_MAP && lastFieldNumber >= 2 * fields.size();
+    }
 
-	/**
+    /**
      * Returns the pipe schema linked to this.
      */
     public Pipe.Schema<T> getPipeSchema()
@@ -67,27 +69,27 @@ public abstract class MappedSchema<T> implements Schema<T>,FieldMap<T>
         return pipeSchema;
     }
 
-	@Override
-	public Field<T> getFieldByNumber(int n)
-	{
-		return fieldMap.getFieldByNumber(n);
-	}
+    @Override
+    public Field<T> getFieldByNumber(int n)
+    {
+        return fieldMap.getFieldByNumber(n);
+    }
 
-	@Override
-	public Field<T> getFieldByName(String fieldName)
-	{
-		return fieldMap.getFieldByName(fieldName);
-	}
+    @Override
+    public Field<T> getFieldByName(String fieldName)
+    {
+        return fieldMap.getFieldByName(fieldName);
+    }
 
-	@Override
-	public int getFieldCount()
-	{
-		return fieldMap.getFieldCount();
-	}
+    @Override
+    public int getFieldCount()
+    {
+        return fieldMap.getFieldCount();
+    }
 
-	@Override
-	public List<Field<T>> getFields()
-	{
-		return fieldMap.getFields();
-	}
+    @Override
+    public List<Field<T>> getFields()
+    {
+        return fieldMap.getFields();
+    }
 }

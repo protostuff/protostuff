@@ -98,8 +98,9 @@ public class MessageField extends Field<Message>
         return path + targetPackage.replace('.', '/') + "/";
     }
 
-	@Override
-	public java.lang.String getProtoType() {
+    @Override
+    public java.lang.String getProtoType()
+    {
         return getRegularType();
-	}
+    }
 }
