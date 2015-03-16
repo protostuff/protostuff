@@ -54,7 +54,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
 
     static
     {
-        java.lang.reflect.Field cause = null;
+        java.lang.reflect.Field cause;
         try
         {
             cause = Throwable.class.getDeclaredField("cause");
@@ -64,7 +64,6 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
         {
             cause = null;
         }
-
         __cause = cause;
     }
 
@@ -162,7 +161,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
         {
             // ignore the field "cause" if its references itself (cyclic)
             final MappedSchema<Object> ms = (MappedSchema<Object>) schema;
-            if (ms.fields.length > 1 && ms.fields[1].name.equals("cause"))
+            if (ms.getFieldCount() > 1 && ms.getFields().get(1).name.equals("cause"))
             {
                 final Object cause;
                 try
@@ -177,10 +176,10 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
                 if (cause == value)
                 {
                     // its cyclic, skip the second field "cause"
-                    ms.fields[0].writeTo(output, value);
+                    ms.getFields().get(0).writeTo(output, value);
 
-                    for (int i = 2, len = ms.fields.length; i < len; i++)
-                        ms.fields[i].writeTo(output, value);
+                    for (int i = 2, len = ms.getFieldCount(); i < len; i++)
+                        ms.getFields().get(i).writeTo(output, value);
 
                     return true;
                 }

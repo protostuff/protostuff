@@ -15,6 +15,12 @@
 package io.protostuff.runtime;
 
 import io.protostuff.AbstractTest;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for runtime schemas to skip deprecated field and still allow backward-forward compatibility.
@@ -22,7 +28,7 @@ import io.protostuff.AbstractTest;
  * @author David Yu
  * @created Oct 28, 2010
  */
-public class DeprecatedFieldTest extends AbstractTest
+public class DeprecatedFieldTest
 {
 
     public static class Entity
@@ -35,20 +41,20 @@ public class DeprecatedFieldTest extends AbstractTest
         long timestamp;
     }
 
+	@Test
     public void testIt() throws Exception
     {
         MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
-        System.err.println(schema.fields.length);
-        assertTrue(schema.fields.length == 3);
-        assertEquals(schema.fields[0].name, "id");
-        assertEquals(schema.fields[0].number, 1);
+        assertTrue(schema.getFields().size() == 3);
+		assertEquals(schema.getFields().get(0).name, "id");
+        assertEquals(schema.getFields().get(0).number, 1);
 
-        assertEquals(schema.fields[1].name, "name");
-        assertEquals(schema.fields[1].number, 2);
+        assertEquals(schema.getFields().get(1).name, "name");
+        assertEquals(schema.getFields().get(1).number, 2);
 
-        assertEquals(schema.fields[2].name, "timestamp");
-        assertEquals(schema.fields[2].number, 4);
+        assertEquals(schema.getFields().get(2).name, "timestamp");
+        assertEquals(schema.getFields().get(2).number, 4);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
 		assertNull(schema.getFieldByName("alias"));

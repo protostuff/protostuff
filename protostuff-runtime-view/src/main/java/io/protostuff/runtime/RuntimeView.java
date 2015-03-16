@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -343,7 +344,7 @@ public final class RuntimeView
     }
 
     static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
-            Field<T> fields[], final Predicate predicate)
+            List<Field<T>> fields, final Predicate predicate)
     {
         final HashMap<String, Field<T>> map = new HashMap<>();
 		for (Field<T> field : fields)
@@ -357,7 +358,7 @@ public final class RuntimeView
     }
 
     static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
-														Field<T> fields[], final String[] args)
+														List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
@@ -376,7 +377,7 @@ public final class RuntimeView
     }
 
     static <T> int includeAndAddTo(Map<String, Field<T>> map,
-            Class<T> typeClass, Field<T>[] fields, final String[] args)
+            Class<T> typeClass, List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to include.");

@@ -24,6 +24,10 @@ import junit.framework.TestCase;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for abstract generic collection types.
@@ -31,7 +35,7 @@ import io.protostuff.Schema;
  * @author David Yu
  * @created Sep 11, 2010
  */
-public class CollectionTest extends TestCase
+public class CollectionTest
 {
 
     static
@@ -413,7 +417,8 @@ public class CollectionTest extends TestCase
         return task;
     }
 
-    public void testSimpleTask() throws Exception
+    @Test
+	public void testSimpleTask() throws Exception
     {
         Schema<Task> schema = RuntimeSchema.getSchema(Task.class);
 
@@ -429,7 +434,8 @@ public class CollectionTest extends TestCase
         assertEquals(p, p2);
     }
 
-    public void testITask() throws Exception
+    @Test
+	public void testITask() throws Exception
     {
         // Because we mapped ITask to Task, this is ok.
         Schema<ITask> schema = RuntimeSchema.getSchema(ITask.class);
@@ -464,7 +470,8 @@ public class CollectionTest extends TestCase
         return p;
     }
 
-    public void testEmployee() throws Exception
+    @Test
+	public void testEmployee() throws Exception
     {
         Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
 
@@ -480,7 +487,8 @@ public class CollectionTest extends TestCase
         assertEquals(p, p2);
     }
 
-    public void testIEmployee() throws Exception
+    @Test
+	public void testIEmployee() throws Exception
     {
         // Because we mapped IEmployee to Employee, this is ok.
         Schema<AbstractEmployee> schema = RuntimeSchema
@@ -528,19 +536,20 @@ public class CollectionTest extends TestCase
         AbstractFoo afoo;
     }
 
-    public void testPojoWithMappedAbstractTypes()
+    @Test
+	public void testPojoWithMappedAbstractTypes()
     {
         MappedSchema<PojoWithMappedAbstractTypes> schema = (MappedSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
                 .getSchema(PojoWithMappedAbstractTypes.class,
                         RuntimeEnv.ID_STRATEGY);
 
-        assertTrue(schema.fields.length == 4);
+        assertTrue(schema.getFields().size() == 4);
 
-        assertTrue(schema.fields[0] instanceof RuntimeMessageField);
-        assertTrue(schema.fields[1] instanceof RuntimeMessageField);
+        assertTrue(schema.getFields().get(0) instanceof RuntimeMessageField);
+        assertTrue(schema.getFields().get(1) instanceof RuntimeMessageField);
 
-        assertTrue(schema.fields[2] instanceof RuntimeObjectField);
-        assertTrue(schema.fields[3] instanceof RuntimeDerivativeField);
+        assertTrue(schema.getFields().get(2) instanceof RuntimeObjectField);
+        assertTrue(schema.getFields().get(3) instanceof RuntimeDerivativeField);
     }
 
 }

@@ -124,7 +124,7 @@ public class FieldExclusionTest
 
         MappedSchema<ComplexFieldsPojo> mappedSchema = (MappedSchema<ComplexFieldsPojo>) schema;
 
-        assertTrue(mappedSchema.fields.length == 45);
+        assertTrue(mappedSchema.getFieldCount() == 45);
 
         Class<?> expectedCollectionClass = RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? RuntimeCollectionField.class
                 : RuntimeObjectField.class;

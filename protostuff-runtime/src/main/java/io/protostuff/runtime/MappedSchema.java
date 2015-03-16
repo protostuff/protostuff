@@ -15,8 +15,11 @@
 package io.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.protostuff.Input;
@@ -35,7 +38,8 @@ public abstract class MappedSchema<T> implements Schema<T>
 {
 
     private final Class<T> typeClass;
-    protected final Field<T>[] fields;
+    private final Field<T>[] fields;
+    private final List<Field<T>> fieldList;
     protected final Field<T>[] fieldsByNumber;
 	private final Map<String, Field<T>> fieldsByName;
     private final Pipe.Schema<T> pipeSchema;
@@ -62,7 +66,6 @@ public abstract class MappedSchema<T> implements Schema<T>
             }
 
             fieldsByNumber[f.number] = f;
-            // f.owner = this;
         }
 
         this.fields = (Field<T>[]) new Field<?>[fields.size()];
@@ -71,7 +74,9 @@ public abstract class MappedSchema<T> implements Schema<T>
             if (fieldsByNumber[i] != null)
                 this.fields[j++] = fieldsByNumber[i];
         }
-
+		List<Field<T>> fieldList = new ArrayList<>(fields.size());
+		Collections.addAll(fieldList, this.fields);
+		this.fieldList = Collections.unmodifiableList(fieldList);
         pipeSchema = new RuntimePipeSchema<>(this, fieldsByNumber);
     }
 
@@ -162,9 +167,9 @@ public abstract class MappedSchema<T> implements Schema<T>
         return pipeSchema;
     }
 
-	public Field<T>[] getFields()
+	public List<Field<T>> getFields()
 	{
-		return fields;
+		return fieldList;
 	}
 
 }

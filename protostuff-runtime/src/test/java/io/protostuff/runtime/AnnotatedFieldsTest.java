@@ -30,6 +30,13 @@ package io.protostuff.runtime;
 
 import io.protostuff.AbstractTest;
 import io.protostuff.Tag;
+import junit.framework.TestCase;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Test for runtime schemas to handle annotation-based field mapping.
@@ -38,7 +45,7 @@ import io.protostuff.Tag;
  * @author David Yu
  * @created Mar 30, 2012
  */
-public class AnnotatedFieldsTest extends AbstractTest
+public class AnnotatedFieldsTest
 {
 
     public static class EntityFullyAnnotated
@@ -111,23 +118,25 @@ public class AnnotatedFieldsTest extends AbstractTest
         int field200;
     }
 
-    public void testEntityFullyAnnotated()
+    @Test
+	public void testEntityFullyAnnotated()
     {
         MappedSchema<EntityFullyAnnotated> schema = (MappedSchema<EntityFullyAnnotated>) RuntimeSchema
                 .getSchema(EntityFullyAnnotated.class, RuntimeEnv.ID_STRATEGY);
 
-        assertTrue(schema.fields.length == 2);
-        assertEquals(schema.fields[0].name, "id");
-        assertEquals(schema.fields[0].number, 3);
+        assertTrue(schema.getFieldCount() == 2);
+        assertEquals(schema.getFields().get(0).name, "id");
+        assertEquals(schema.getFields().get(0).number, 3);
 
-        assertEquals(schema.fields[1].name, "name");
-        assertEquals(schema.fields[1].number, 5);
+        assertEquals(schema.getFields().get(1).name, "name");
+        assertEquals(schema.getFields().get(1).number, 5);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
 		assertNull(schema.getFieldByName("alias"));
     }
 
-    public void testEntityPartlyAnnotated1()
+    @Test
+	public void testEntityPartlyAnnotated1()
     {
         try
         {
@@ -140,7 +149,8 @@ public class AnnotatedFieldsTest extends AbstractTest
         }
     }
 
-    public void testEntityPartlyAnnotated2()
+    @Test
+	public void testEntityPartlyAnnotated2()
     {
         try
         {
@@ -153,7 +163,8 @@ public class AnnotatedFieldsTest extends AbstractTest
         }
     }
 
-    public void testEntityInvalidAnnotated1()
+    @Test
+	public void testEntityInvalidAnnotated1()
     {
         try
         {
@@ -166,7 +177,8 @@ public class AnnotatedFieldsTest extends AbstractTest
         }
     }
 
-    public void testEntityInvalidAnnotated2()
+    @Test
+	public void testEntityInvalidAnnotated2()
     {
         try
         {
@@ -179,7 +191,8 @@ public class AnnotatedFieldsTest extends AbstractTest
         }
     }
 
-    public void testEntityInvalidTagNumber() throws Exception
+    @Test
+	public void testEntityInvalidTagNumber() throws Exception
     {
         try
         {
@@ -195,19 +208,20 @@ public class AnnotatedFieldsTest extends AbstractTest
     static <T> void verify(MappedSchema<T> schema, int number, String name,
             int offset)
     {
-        assertEquals(schema.fields[offset].name, name);
-        assertEquals(schema.fields[offset].number, number);
+        assertEquals(schema.getFields().get(offset).name, name);
+        assertEquals(schema.getFields().get(offset).number, number);
 
         assertEquals(name, schema.getFieldName(number));
         assertEquals(number, schema.getFieldNumber(name));
     }
 
-    public void testEntityWithFieldAlias()
+    @Test
+	public void testEntityWithFieldAlias()
     {
         MappedSchema<EntityWithFieldAlias> schema = (MappedSchema<EntityWithFieldAlias>) RuntimeSchema
                 .getSchema(EntityWithFieldAlias.class, RuntimeEnv.ID_STRATEGY);
 
-        assertTrue(schema.fields.length == 2);
+        assertTrue(schema.getFieldCount() == 2);
 
         // The field with the smallest field number will be written first.
         // In this case, field200 (despite field400 being declared 1st)

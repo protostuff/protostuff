@@ -72,10 +72,9 @@ public abstract class IdStrategy
             {
                 final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
 
-                final ArrayList<Field<T>> fields = new ArrayList<>(
-                        rs.fields.length);
+                final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
 
-                for (Field<T> f : rs.fields)
+                for (Field<T> f : rs.getFields())
                 {
                     final int groupFilter = f.groupFilter;
                     if (groupFilter != 0)
@@ -103,7 +102,7 @@ public abstract class IdStrategy
                 }
 
                 final int size = fields.size();
-                if (size == rs.fields.length)
+                if (size == rs.getFieldCount())
                 {
                     // nothing is excluded
                     return rs;
