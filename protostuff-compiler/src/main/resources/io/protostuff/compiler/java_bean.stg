@@ -203,7 +203,6 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 
 field_defaults_declaration(field, options) ::= <<
 <if(field.defaultValueSet)>
-<if(!field.enumField)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
 static final <field.javaType> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
@@ -212,7 +211,6 @@ static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; forma
 <endif>
 <else>
 static final <map_primitive_wrapper.(field.javaType)> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
-<endif>
 <endif>
 <endif>
 >>
@@ -265,9 +263,7 @@ field_singular_type(field, options) ::= <<
 
 field_assign_defaults(field, options) ::= <<
 <if(field.defaultValueSet)>
-<if(!field.enumField)>
  = DEFAULT_<field.name; format="UUC">
-<endif>
 <endif>
 >>
 
@@ -352,15 +348,7 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 
 public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">()
 {
-    <if(field.enumField)>
-    <if(field.required)>
     return <var(val=field.name, fmt="CC", options=options)>;
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)> == null ? <field.defaultValueAsString> : <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
-    <else>
-    return <var(val=field.name, fmt="CC", options=options)>;
-    <endif>
 }
 
 <if(!options.no_setters)>
@@ -684,7 +672,6 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 
 singular_field_write_check(field, options) ::= <<
 <if(field.defaultValueSet)>
-<if(!field.enumField)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
@@ -693,9 +680,6 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<va
 <endif>
 <else>
 if(<name>.<var(val=field.name, fmt="CC", options=options)> != null && <name>.<var(val=field.name, fmt="CC", options=options)> != DEFAULT_<field.name; format="UUC">)
-<endif>
-<else>
-if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 <endif>
 <else>
 <if(field.numberField)>

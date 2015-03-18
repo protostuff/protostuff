@@ -1,9 +1,9 @@
-package io.protostuff.compiler;
+package io.protostuff.compiler.java_bean_primitives;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.protostuff.compiler.it.PrimitiveFields;
+import io.protostuff.compiler.it.java_bean_primitives.PrimitiveFields;
 
 /**
  * Integration tests for java_bean_primitives

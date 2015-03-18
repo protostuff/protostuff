@@ -85,17 +85,22 @@
         <configuration>
           <protoModules>
             <protoModule>
-              <source>src/test/proto/EmptyMessageIT.proto</source>
+              <source>src/test/proto/java_bean/EmptyMessageIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
             </protoModule>
             <protoModule>
-              <source>src/test/proto/RepeatedIT.proto</source>
+              <source>src/test/proto/java_bean/RepeatedIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
             </protoModule>
             <protoModule>
-              <source>src/test/proto/UnmodifiableRepeatedIT.proto</source>
+              <source>src/test/proto/java_bean/DefaultValueIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>java_bean</output>
+            </protoModule>
+            <protoModule>
+              <source>src/test/proto/java_bean/UnmodifiableRepeatedIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean</output>
               <options>
@@ -105,17 +110,17 @@
               </options>
             </protoModule>
             <protoModule>
-              <source>src/test/proto/PrimitivesIT.proto</source>
+              <source>src/test/proto/java_bean_primitives/PrimitivesIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean_primitives</output>
             </protoModule>
             <protoModule>
-              <source>src/test/proto/JavaBeanModelIT.proto</source>
+              <source>src/test/proto/java_bean_model/JavaBeanModelIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>java_bean_model</output>
             </protoModule>
             <protoModule>
-              <source>src/test/proto/ProtoTypeIT.proto</source>
+              <source>src/test/proto/custom/ProtoTypeIT.proto</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>src/test/stg/java_bean_with_proto_descriptor.java.stg</output>
             </protoModule>

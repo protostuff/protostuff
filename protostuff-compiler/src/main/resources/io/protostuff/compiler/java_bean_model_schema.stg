@@ -421,7 +421,6 @@ if (<get_val(field=field, options=options, accessor=accessor, this=name, nocast=
 
 singular_field_accessor_write_check(field, options) ::= <<
 <if(field.defaultValue)>
-<if(!field.enumField)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
 if (<name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
@@ -430,9 +429,6 @@ if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(fi
 <endif>
 <else>
 if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
-<endif>
-<else>
-if (<name>.<getter(field=field, options=options)>() != null)
 <endif>
 <else>
 <if(field.numberField)>

@@ -1,5 +1,5 @@
 package it;
-option java_package = "io.protostuff.compiler.it";
+option java_package = "io.protostuff.compiler.it.custom";
 
 enum E {
     A = 1;
