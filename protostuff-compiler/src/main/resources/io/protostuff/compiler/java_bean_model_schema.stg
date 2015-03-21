@@ -5,6 +5,7 @@ message_block(message, module, options, nested) ::= <<
 <message:message_header(message=it, module=module, options=options)>
 <endif>
 
+@Generated("<module.generator>")
 public <if(nested)>static <endif>class <remote_model_schema_name(message=message, name=message.name)>
        <options.(message.name + ".extends_schema_declaration"); format=" ">
        <message:message_impl_declaration(message=it, options=options)> {
@@ -423,12 +424,12 @@ singular_field_accessor_write_check(field, options) ::= <<
 <if(field.defaultValue)>
 <if(field.numberField)>
 <if(options.primitive_numbers_if_optional)>
-if (<name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+if (<name>.<getter(field=field, options=options)>() != <field:field_default()>)
 <else>
-if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != <field:field_default()>)
 <endif>
 <else>
-if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != DEFAULT_<field.name; format="UUC">)
+if (<name>.<getter(field=field, options=options)>() != null && <name>.<getter(field=field, options=options)>() != <field:field_default()>)
 <endif>
 <else>
 <if(field.numberField)>
@@ -441,6 +442,10 @@ if (<name>.<getter(field=field, options=options)>() != null)
 if (<name>.<getter(field=field, options=options)>() != null)
 <endif>
 <endif>
+>>
+
+field_default(field) ::= <<
+<remote_model_name(message=field.owner, name=field.owner.name)>.DEFAULT_<field.name; format="UUC">
 >>
 
 message_field_map(message, options) ::= <<

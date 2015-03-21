@@ -5,6 +5,7 @@ message_block(message, module, options, nested) ::= <<
 <message:message_header(message=it, module=module, options=options)>
 <endif>
 
+@Generated("<module.generator>")
 public <if(nested)>static <endif>class <remote_model_name(message=message, name=message.name, noprefix=1)>
        <options.(message.name + ".extends_model_declaration"); format=" ">
        <message:message_impl_declaration(message=it, options=options)> {
