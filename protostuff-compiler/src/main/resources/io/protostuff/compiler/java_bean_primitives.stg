@@ -3,9 +3,7 @@ group java_bean2 : java_bean;
 
 field_defaults_declaration(field, options) ::= <<
 <if(field.defaultValueSet)>
-<if(!field.enumField)>
 static final <field.javaType> DEFAULT_<field.name; format="UUC"> = <field:field_default_value(field=it, options=options)>;
-<endif>
 <endif>
 >>
 

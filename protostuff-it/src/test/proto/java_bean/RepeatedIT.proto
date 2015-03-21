@@ -1,5 +1,5 @@
 package it;
-option java_package = "io.protostuff.compiler.it";
+option java_package = "io.protostuff.compiler.it.java_bean";
 
 message Int32List {
   repeated int32 numbers = 1;

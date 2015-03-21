@@ -1,8 +1,9 @@
-package io.protostuff.compiler;
+package io.protostuff.compiler.java_bean;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import io.protostuff.compiler.it.java_bean.UnmodifiableInt32List;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

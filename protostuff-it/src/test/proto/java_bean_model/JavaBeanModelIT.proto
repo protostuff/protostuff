@@ -1,0 +1,10 @@
+package it;
+
+option java_package = "io.protostuff.compiler.it.java_bean_model";
+option models = true;
+
+message JavaBeanModelSimpleMessage {
+  optional int32 a = 1;
+  optional int64 b = 2; // [default = 0]; TODO https://github.com/protostuff/protostuff/issues/108
+}
+

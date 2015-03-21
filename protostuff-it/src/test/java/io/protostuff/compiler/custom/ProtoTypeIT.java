@@ -1,9 +1,9 @@
-package io.protostuff.compiler;
+package io.protostuff.compiler.custom;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.protostuff.compiler.it.JavaBeanWithProtoDescriptor;
+import io.protostuff.compiler.it.custom.JavaBeanWithProtoDescriptor;
 
 /**
  * @author Kostiantyn Shchepanovskyi
