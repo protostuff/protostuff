@@ -3,6 +3,7 @@ package io.protostuff.compiler.java_bean;
 import java.io.IOException;
 import java.util.Arrays;
 
+import io.protostuff.compiler.it.java_bean.Int32List;
 import io.protostuff.compiler.it.java_bean.UnmodifiableInt32List;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -12,8 +13,6 @@ import org.mockito.Mockito;
 
 import io.protostuff.Input;
 import io.protostuff.Schema;
-import io.protostuff.compiler.it.Int32List;
-import io.protostuff.compiler.it.UnmodifiableInt32List;
 
 /**
  * Integration tests for java_bean repeated fields
