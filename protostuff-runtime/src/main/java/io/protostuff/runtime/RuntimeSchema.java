@@ -43,7 +43,6 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * pojos from 3rd party libraries.
  * 
  * @author David Yu
- * @created Nov 9, 2009
  */
 public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 {
@@ -180,9 +179,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
             String[] exclusions, IdStrategy strategy)
     {
         HashSet<String> set = new HashSet<>();
-        for (String exclusion : exclusions)
-            set.add(exclusion);
-
+		Collections.addAll(set, exclusions);
         return createFrom(typeClass, set, strategy);
     }
 
@@ -342,6 +339,14 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, Instantiator<T> instantiator)
     {
+		this.fieldMap = createFieldMap(fields);
+		this.pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
+        this.instantiator = instantiator;
+        this.typeClass = typeClass;
+    }
+
+	private FieldMap<T> createFieldMap(Collection<Field<T>> fields)
+	{
 		int lastFieldNumber = 0;
 		for (Field<T> field : fields)
 		{
@@ -352,23 +357,16 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 		}
 		if (preferHashFieldMap(fields, lastFieldNumber))
 		{
-			fieldMap = new HashFieldMap<>(fields);
+			return new HashFieldMap<>(fields);
 		}
-		else
-		{
-			// array field map should be more efficient
-			fieldMap = new ArrayFieldMap<>(fields, lastFieldNumber);
-		}
-		pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
-        this.instantiator = instantiator;
-        this.typeClass = typeClass;
-    }
+		// array field map should be more efficient
+		return new ArrayFieldMap<>(fields, lastFieldNumber);
+	}
 
 	private boolean preferHashFieldMap(Collection<Field<T>> fields, int lastFieldNumber)
 	{
 		return lastFieldNumber > MIN_TAG_FOR_HASH_FIELD_MAP && lastFieldNumber >= 2 * fields.size();
 	}
-
 
 	/**
 	 * Returns the pipe schema linked to this.
@@ -486,9 +484,8 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
             try
             {
                 // use the pipe schema of code-generated messages if available.
-                java.lang.reflect.Method m = clazz.getDeclaredMethod(
-                        "getPipeSchema", new Class[] {});
-                return (Pipe.Schema<T>) m.invoke(null, new Object[] {});
+                java.lang.reflect.Method m = clazz.getDeclaredMethod("getPipeSchema");
+                return (Pipe.Schema<T>) m.invoke(null);
             }
             catch (Exception e)
             {

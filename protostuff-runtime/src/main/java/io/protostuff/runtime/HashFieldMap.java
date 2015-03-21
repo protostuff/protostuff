@@ -9,7 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Field mapping implemented on top of hash for field lookup by number
+ * Field mapping implemented on top of hash for field lookup by number.
+ *
+ * This is the less efficient than {@code ArrayFieldMap} for almost all cases.
+ * But in case when field numbers are sparse and especially when max field
+ * number is big - this mapping should be used.
+ *
+ * @see io.protostuff.runtime.ArrayFieldMap
  *
  * @author Kostiantyn Shchepanovskyi
  */

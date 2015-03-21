@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Field mapping implemented on top of java array for lookup by number
+ * Field mapping implemented on top of java array for lookup by number.
+ *
+ * This is the most efficient implementation for almost all cases. But
+ * it should not be used when field numbers are sparse and especially
+ * when max field number is big - as this mapping internally uses array
+ * of integers with size equal to max field number. In latter case
+ * {@code HashFieldMap} should be used.
+ *
+ * @see io.protostuff.runtime.HashFieldMap
  *
  * @author Kostiantyn Shchepanovskyi
  */
