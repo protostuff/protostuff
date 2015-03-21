@@ -122,7 +122,7 @@ public class FieldExclusionTest
         Schema<ComplexFieldsPojo> schema = RuntimeSchema
                 .getSchema(ComplexFieldsPojo.class);
 
-        MappedSchema<ComplexFieldsPojo> mappedSchema = (MappedSchema<ComplexFieldsPojo>) schema;
+        RuntimeSchema<ComplexFieldsPojo> mappedSchema = (RuntimeSchema<ComplexFieldsPojo>) schema;
 
         assertTrue(mappedSchema.getFieldCount() == 45);
 

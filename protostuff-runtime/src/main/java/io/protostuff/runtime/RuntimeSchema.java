@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
  * @author David Yu
  * @created Nov 9, 2009
  */
-public final class RuntimeSchema<T> extends MappedSchema<T>
+public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 {
 
     public static final int MIN_TAG_VALUE = 1;
@@ -53,6 +54,10 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
 
+	public static final int MIN_TAG_FOR_HASH_FIELD_MAP = 100;
+
+	private final Pipe.Schema<T> pipeSchema;
+	private final FieldMap<T> fieldMap;
     private final Class<T> typeClass;
 
     /**
@@ -337,10 +342,65 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, Instantiator<T> instantiator)
     {
-        super(fields);
+		int lastFieldNumber = 0;
+		for (Field<T> field : fields)
+		{
+			if (field.number > lastFieldNumber)
+			{
+				lastFieldNumber = field.number;
+			}
+		}
+		if (preferHashFieldMap(fields, lastFieldNumber))
+		{
+			fieldMap = new HashFieldMap<>(fields);
+		}
+		else
+		{
+			// array field map should be more efficient
+			fieldMap = new ArrayFieldMap<>(fields, lastFieldNumber);
+		}
+		pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
         this.instantiator = instantiator;
         this.typeClass = typeClass;
     }
+
+	private boolean preferHashFieldMap(Collection<Field<T>> fields, int lastFieldNumber)
+	{
+		return lastFieldNumber > MIN_TAG_FOR_HASH_FIELD_MAP && lastFieldNumber >= 2 * fields.size();
+	}
+
+
+	/**
+	 * Returns the pipe schema linked to this.
+	 */
+	public Pipe.Schema<T> getPipeSchema()
+	{
+		return pipeSchema;
+	}
+
+	@Override
+	public Field<T> getFieldByNumber(int n)
+	{
+		return fieldMap.getFieldByNumber(n);
+	}
+
+	@Override
+	public Field<T> getFieldByName(String fieldName)
+	{
+		return fieldMap.getFieldByName(fieldName);
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return fieldMap.getFieldCount();
+	}
+
+	@Override
+	public List<Field<T>> getFields()
+	{
+		return fieldMap.getFields();
+	}
 
     @Override
     public Class<T> typeClass()
@@ -436,8 +496,8 @@ public final class RuntimeSchema<T> extends MappedSchema<T>
             }
         }
 
-        if (MappedSchema.class.isAssignableFrom(schema.getClass()))
-            return ((MappedSchema<T>) schema).getPipeSchema();
+        if (RuntimeSchema.class.isAssignableFrom(schema.getClass()))
+            return ((RuntimeSchema<T>) schema).getPipeSchema();
 
         if (throwIfNone)
             throw new RuntimeException("No pipe schema for: " + clazz);

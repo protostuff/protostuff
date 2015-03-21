@@ -68,7 +68,7 @@ public class ExcludeFieldTest
     @Test
     public void testIt() throws Exception
     {
-        MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
+        RuntimeSchema<Entity> schema = (RuntimeSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
         assertTrue(schema.getFieldCount() == 3);
         assertEquals(schema.getFields().get(0).name, "id");
@@ -87,7 +87,7 @@ public class ExcludeFieldTest
     @Test
     public void testMuchExcludedEntity() throws Exception
     {
-        MappedSchema<MuchExcludedEntity> schema = (MappedSchema<MuchExcludedEntity>) RuntimeSchema
+        RuntimeSchema<MuchExcludedEntity> schema = (RuntimeSchema<MuchExcludedEntity>) RuntimeSchema
                 .getSchema(MuchExcludedEntity.class);
 
         assertTrue(schema.getFieldCount() == 1);
@@ -108,7 +108,7 @@ public class ExcludeFieldTest
     @Test
     public void testTaggedAndExcludedEntity() throws Exception
     {
-        MappedSchema<TaggedAndExcludedEntity> schema = (MappedSchema<TaggedAndExcludedEntity>) RuntimeSchema
+        RuntimeSchema<TaggedAndExcludedEntity> schema = (RuntimeSchema<TaggedAndExcludedEntity>) RuntimeSchema
                 .getSchema(TaggedAndExcludedEntity.class);
         assertEquals(2, schema.getFieldCount());
 

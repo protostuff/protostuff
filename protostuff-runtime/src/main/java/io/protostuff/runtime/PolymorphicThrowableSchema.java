@@ -157,10 +157,10 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
     static boolean tryWriteWithoutCause(Output output, Object value,
             Schema<Object> schema) throws IOException
     {
-        if (schema instanceof MappedSchema && __cause != null)
+        if (schema instanceof RuntimeSchema && __cause != null)
         {
             // ignore the field "cause" if its references itself (cyclic)
-            final MappedSchema<Object> ms = (MappedSchema<Object>) schema;
+            final RuntimeSchema<Object> ms = (RuntimeSchema<Object>) schema;
             if (ms.getFieldCount() > 1 && ms.getFields().get(1).name.equals("cause"))
             {
                 final Object cause;

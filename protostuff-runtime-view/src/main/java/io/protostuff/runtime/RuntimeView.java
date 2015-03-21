@@ -53,7 +53,7 @@ public final class RuntimeView
     /**
      * Returns a new view schema based from an existing one.
      */
-    public static <T> Schema<T> createFrom(MappedSchema<T> ms,
+    public static <T> Schema<T> createFrom(RuntimeSchema<T> ms,
             Instantiator<T> instantiator,
             Factory vf,
             Predicate.Factory pf,
@@ -72,7 +72,7 @@ public final class RuntimeView
          * @param args
          *            is optional, depending on the view factory used.
          */
-        <T> Schema<T> create(MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args);
+        <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args);
     }
 
     /**
@@ -158,7 +158,7 @@ public final class RuntimeView
         PREDICATE
         {
             @Override
-            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf,
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf,
                     String[] args)
             {
                 if (pf == null)
@@ -219,7 +219,7 @@ public final class RuntimeView
         EXCLUDE
         {
             @Override
-            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator,
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator,
                     Predicate.Factory factory, String[] args)
 
             {
@@ -286,7 +286,7 @@ public final class RuntimeView
         INCLUDE
         {
             @Override
-            public <T> Schema<T> create(final MappedSchema<T> ms, Instantiator<T> instantiator,
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator,
                     Predicate.Factory factory, String[] args)
             {
                 final HashMap<String, Field<T>> fieldsByName =

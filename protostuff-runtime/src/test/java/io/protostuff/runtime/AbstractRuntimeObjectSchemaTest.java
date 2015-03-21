@@ -1575,7 +1575,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public void testPojo() throws Exception
     {
         Schema<Pojo> schema = RuntimeSchema.getSchema(Pojo.class);
-        Pipe.Schema<Pojo> pipeSchema = ((MappedSchema<Pojo>) schema).getPipeSchema();
+        Pipe.Schema<Pojo> pipeSchema = ((RuntimeSchema<Pojo>) schema).getPipeSchema();
 
         Pojo p = new Pojo().fill();
 
@@ -1597,7 +1597,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithArray> schema = RuntimeSchema
                 .getSchema(PojoWithArray.class);
-        Pipe.Schema<PojoWithArray> pipeSchema = ((MappedSchema<PojoWithArray>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithArray> pipeSchema = ((RuntimeSchema<PojoWithArray>) schema).getPipeSchema();
 
         PojoWithArray p = new PojoWithArray().fill();
 
@@ -1619,7 +1619,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithArray2D> schema = RuntimeSchema
                 .getSchema(PojoWithArray2D.class);
-        Pipe.Schema<PojoWithArray2D> pipeSchema = ((MappedSchema<PojoWithArray2D>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithArray2D> pipeSchema = ((RuntimeSchema<PojoWithArray2D>) schema).getPipeSchema();
 
         PojoWithArray2D p = new PojoWithArray2D().fill();
 
@@ -1641,7 +1641,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithCollection> schema = RuntimeSchema
                 .getSchema(PojoWithCollection.class);
-        Pipe.Schema<PojoWithCollection> pipeSchema = ((MappedSchema<PojoWithCollection>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithCollection> pipeSchema = ((RuntimeSchema<PojoWithCollection>) schema).getPipeSchema();
 
         PojoWithCollection p = new PojoWithCollection().fill();
 
@@ -1662,7 +1662,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public void testPojoWithMap() throws Exception
     {
         Schema<PojoWithMap> schema = RuntimeSchema.getSchema(PojoWithMap.class);
-        Pipe.Schema<PojoWithMap> pipeSchema = ((MappedSchema<PojoWithMap>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithMap> pipeSchema = ((RuntimeSchema<PojoWithMap>) schema).getPipeSchema();
 
         PojoWithMap p = new PojoWithMap().fill();
 
@@ -1887,7 +1887,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public void testBat() throws Exception
     {
         Schema<WrapsBat> schema = RuntimeSchema.getSchema(WrapsBat.class);
-        Pipe.Schema<WrapsBat> pipeSchema = ((MappedSchema<WrapsBat>) schema).getPipeSchema();
+        Pipe.Schema<WrapsBat> pipeSchema = ((RuntimeSchema<WrapsBat>) schema).getPipeSchema();
 
         WrapsBat p = new WrapsBat().fill();
 
@@ -2059,7 +2059,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithCustomArrayListAndHashMap> schema = RuntimeSchema
                 .getSchema(PojoWithCustomArrayListAndHashMap.class);
-        Pipe.Schema<PojoWithCustomArrayListAndHashMap> pipeSchema = ((MappedSchema<PojoWithCustomArrayListAndHashMap>) schema)
+        Pipe.Schema<PojoWithCustomArrayListAndHashMap> pipeSchema = ((RuntimeSchema<PojoWithCustomArrayListAndHashMap>) schema)
                 .getPipeSchema();
 
         PojoWithCustomArrayListAndHashMap p = new PojoWithCustomArrayListAndHashMap()
@@ -2582,7 +2582,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithClassFields> schema = RuntimeSchema
                 .getSchema(PojoWithClassFields.class);
-        Pipe.Schema<PojoWithClassFields> pipeSchema = ((MappedSchema<PojoWithClassFields>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithClassFields> pipeSchema = ((RuntimeSchema<PojoWithClassFields>) schema).getPipeSchema();
 
         PojoWithClassFields p = new PojoWithClassFields().fill();
 
@@ -3007,7 +3007,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithObjectCollectionFields> schema = RuntimeSchema
                 .getSchema(PojoWithObjectCollectionFields.class);
-        Pipe.Schema<PojoWithObjectCollectionFields> pipeSchema = ((MappedSchema<PojoWithObjectCollectionFields>) schema)
+        Pipe.Schema<PojoWithObjectCollectionFields> pipeSchema = ((RuntimeSchema<PojoWithObjectCollectionFields>) schema)
                 .getPipeSchema();
 
         PojoWithObjectCollectionFields p = new PojoWithObjectCollectionFields()
@@ -3116,7 +3116,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithObjectCollectionNullKV> schema = RuntimeSchema
                 .getSchema(PojoWithObjectCollectionNullKV.class);
-        Pipe.Schema<PojoWithObjectCollectionNullKV> pipeSchema = ((MappedSchema<PojoWithObjectCollectionNullKV>) schema)
+        Pipe.Schema<PojoWithObjectCollectionNullKV> pipeSchema = ((RuntimeSchema<PojoWithObjectCollectionNullKV>) schema)
                 .getPipeSchema();
 
         PojoWithObjectCollectionNullKV p = new PojoWithObjectCollectionNullKV()
@@ -3332,7 +3332,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithObjectMapFields> schema = RuntimeSchema
                 .getSchema(PojoWithObjectMapFields.class);
-        Pipe.Schema<PojoWithObjectMapFields> pipeSchema = ((MappedSchema<PojoWithObjectMapFields>) schema)
+        Pipe.Schema<PojoWithObjectMapFields> pipeSchema = ((RuntimeSchema<PojoWithObjectMapFields>) schema)
                 .getPipeSchema();
 
         PojoWithObjectMapFields p = new PojoWithObjectMapFields().fill();
@@ -3434,7 +3434,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithSingletonMapNullKV> schema = RuntimeSchema
                 .getSchema(PojoWithSingletonMapNullKV.class);
-        Pipe.Schema<PojoWithSingletonMapNullKV> pipeSchema = ((MappedSchema<PojoWithSingletonMapNullKV>) schema)
+        Pipe.Schema<PojoWithSingletonMapNullKV> pipeSchema = ((RuntimeSchema<PojoWithSingletonMapNullKV>) schema)
                 .getPipeSchema();
 
         PojoWithSingletonMapNullKV p = new PojoWithSingletonMapNullKV().fill();
@@ -3535,7 +3535,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithThrowable> schema = RuntimeSchema
                 .getSchema(PojoWithThrowable.class);
-        Pipe.Schema<PojoWithThrowable> pipeSchema = ((MappedSchema<PojoWithThrowable>) schema).getPipeSchema();
+        Pipe.Schema<PojoWithThrowable> pipeSchema = ((RuntimeSchema<PojoWithThrowable>) schema).getPipeSchema();
 
         PojoWithThrowable p = new PojoWithThrowable().fill();
 
@@ -3663,7 +3663,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     {
         Schema<PojoWithThrowableArray> schema = RuntimeSchema
                 .getSchema(PojoWithThrowableArray.class);
-        Pipe.Schema<PojoWithThrowableArray> pipeSchema = ((MappedSchema<PojoWithThrowableArray>) schema)
+        Pipe.Schema<PojoWithThrowableArray> pipeSchema = ((RuntimeSchema<PojoWithThrowableArray>) schema)
                 .getPipeSchema();
 
         PojoWithThrowableArray p = new PojoWithThrowableArray().fill();
@@ -3882,7 +3882,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         Schema<PojoWithSingletonAsDelegate> schema = RuntimeSchema
                 .getSchema(PojoWithSingletonAsDelegate.class);
-        Pipe.Schema<PojoWithSingletonAsDelegate> pipeSchema = ((MappedSchema<PojoWithSingletonAsDelegate>) schema)
+        Pipe.Schema<PojoWithSingletonAsDelegate> pipeSchema = ((RuntimeSchema<PojoWithSingletonAsDelegate>) schema)
                 .getPipeSchema();
 
         PojoWithSingletonAsDelegate p = new PojoWithSingletonAsDelegate()
@@ -3996,7 +3996,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
         Schema<PojoWithShortArrayAsDelegate> schema = RuntimeSchema
                 .getSchema(PojoWithShortArrayAsDelegate.class);
-        Pipe.Schema<PojoWithShortArrayAsDelegate> pipeSchema = ((MappedSchema<PojoWithShortArrayAsDelegate>) schema)
+        Pipe.Schema<PojoWithShortArrayAsDelegate> pipeSchema = ((RuntimeSchema<PojoWithShortArrayAsDelegate>) schema)
                 .getPipeSchema();
 
         PojoWithShortArrayAsDelegate p = new PojoWithShortArrayAsDelegate()

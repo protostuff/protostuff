@@ -42,7 +42,7 @@ public class DeprecatedFieldTest
     @Test
     public void testIt() throws Exception
     {
-        MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
+        RuntimeSchema<Entity> schema = (RuntimeSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
         assertTrue(schema.getFields().size() == 3);
         assertEquals(schema.getFields().get(0).name, "id");

@@ -112,9 +112,9 @@ public class CompatTest
 
         Schema<Mixed> schema = RuntimeSchema.getSchema(Mixed.class);
 
-        assertTrue(MappedSchema.class.isAssignableFrom(schema.getClass()));
+        assertTrue(RuntimeSchema.class.isAssignableFrom(schema.getClass()));
 
-        MappedSchema<Mixed> mappedSchema = (MappedSchema<Mixed>) schema;
+        RuntimeSchema<Mixed> mappedSchema = (RuntimeSchema<Mixed>) schema;
 
         assertTrue(RuntimeMessageField.class
                 .isAssignableFrom(mappedSchema.getFieldByName("rfoo")

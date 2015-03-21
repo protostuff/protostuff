@@ -120,7 +120,7 @@ public class AnnotatedFieldsTest
     @Test
     public void testEntityFullyAnnotated()
     {
-        MappedSchema<EntityFullyAnnotated> schema = (MappedSchema<EntityFullyAnnotated>) RuntimeSchema
+        RuntimeSchema<EntityFullyAnnotated> schema = (RuntimeSchema<EntityFullyAnnotated>) RuntimeSchema
                 .getSchema(EntityFullyAnnotated.class, RuntimeEnv.ID_STRATEGY);
 
         assertTrue(schema.getFieldCount() == 2);
@@ -204,7 +204,7 @@ public class AnnotatedFieldsTest
         }
     }
 
-    static <T> void verify(MappedSchema<T> schema, int number, String name,
+    static <T> void verify(RuntimeSchema<T> schema, int number, String name,
             int offset)
     {
         assertEquals(schema.getFields().get(offset).name, name);
@@ -217,7 +217,7 @@ public class AnnotatedFieldsTest
     @Test
     public void testEntityWithFieldAlias()
     {
-        MappedSchema<EntityWithFieldAlias> schema = (MappedSchema<EntityWithFieldAlias>) RuntimeSchema
+        RuntimeSchema<EntityWithFieldAlias> schema = (RuntimeSchema<EntityWithFieldAlias>) RuntimeSchema
                 .getSchema(EntityWithFieldAlias.class, RuntimeEnv.ID_STRATEGY);
 
         assertTrue(schema.getFieldCount() == 2);

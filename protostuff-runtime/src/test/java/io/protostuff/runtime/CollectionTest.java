@@ -539,7 +539,7 @@ public class CollectionTest
     @Test
     public void testPojoWithMappedAbstractTypes()
     {
-        MappedSchema<PojoWithMappedAbstractTypes> schema = (MappedSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
+        RuntimeSchema<PojoWithMappedAbstractTypes> schema = (RuntimeSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
                 .getSchema(PojoWithMappedAbstractTypes.class,
                         RuntimeEnv.ID_STRATEGY);
 

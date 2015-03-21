@@ -20,7 +20,7 @@ import static io.protostuff.JsonPipeTest.protostuffRoundTrip;
 import io.protostuff.runtime.Bar;
 import io.protostuff.runtime.Baz;
 import io.protostuff.runtime.Foo;
-import io.protostuff.runtime.MappedSchema;
+import io.protostuff.runtime.RuntimeSchema;
 import io.protostuff.runtime.PolymorphicSerializationTest;
 import io.protostuff.runtime.PolymorphicSerializationTest.Zoo;
 import io.protostuff.runtime.RuntimeSchema;
@@ -38,7 +38,7 @@ public class JsonRuntimePipeTest extends AbstractTest
     public void testFoo() throws Exception
     {
         Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
-        Pipe.Schema<Foo> pipeSchema = ((MappedSchema<Foo>) schema).getPipeSchema();
+        Pipe.Schema<Foo> pipeSchema = ((RuntimeSchema<Foo>) schema).getPipeSchema();
 
         Foo foo = SerializableObjects.foo;
 
@@ -53,7 +53,7 @@ public class JsonRuntimePipeTest extends AbstractTest
     public void testBar() throws Exception
     {
         Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
-        Pipe.Schema<Bar> pipeSchema = ((MappedSchema<Bar>) schema).getPipeSchema();
+        Pipe.Schema<Bar> pipeSchema = ((RuntimeSchema<Bar>) schema).getPipeSchema();
 
         Bar bar = SerializableObjects.bar;
 
@@ -68,7 +68,7 @@ public class JsonRuntimePipeTest extends AbstractTest
     public void testBaz() throws Exception
     {
         Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
-        Pipe.Schema<Baz> pipeSchema = ((MappedSchema<Baz>) schema).getPipeSchema();
+        Pipe.Schema<Baz> pipeSchema = ((RuntimeSchema<Baz>) schema).getPipeSchema();
 
         Baz baz = SerializableObjects.baz;
 
@@ -83,7 +83,7 @@ public class JsonRuntimePipeTest extends AbstractTest
     public void testPolymorphic() throws Exception
     {
         Schema<Zoo> schema = RuntimeSchema.getSchema(Zoo.class);
-        Pipe.Schema<Zoo> pipeSchema = ((MappedSchema<Zoo>) schema).getPipeSchema();
+        Pipe.Schema<Zoo> pipeSchema = ((RuntimeSchema<Zoo>) schema).getPipeSchema();
 
         Zoo zoo = PolymorphicSerializationTest.filledZoo();
 

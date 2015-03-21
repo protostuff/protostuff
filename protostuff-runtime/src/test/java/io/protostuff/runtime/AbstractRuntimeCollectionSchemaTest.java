@@ -765,7 +765,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         }
 
         Schema<PojoFoo> schema = RuntimeSchema.getSchema(PojoFoo.class);
-        Pipe.Schema<PojoFoo> pipeSchema = ((MappedSchema<PojoFoo>) schema).getPipeSchema();
+        Pipe.Schema<PojoFoo> pipeSchema = ((RuntimeSchema<PojoFoo>) schema).getPipeSchema();
 
         PojoFoo p = new PojoFoo().fill();
 
