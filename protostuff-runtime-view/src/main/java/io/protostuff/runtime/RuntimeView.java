@@ -278,6 +278,17 @@ public final class RuntimeView
             }
         },
 
+		/**
+		 * @deprecated use {@link io.protostuff.runtime.RuntimeView.Factories#EXCLUDE}
+		 */
+		EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY {
+			@Override
+			public <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args)
+			{
+				return EXCLUDE.create(ms, instantiator, pf, args);
+			}
+		},
+
         /**
          * Include the fields for merging and writing.
          * <p>
@@ -343,7 +354,18 @@ public final class RuntimeView
                     }
                 };
             }
-        };
+        },
+
+		/**
+		 * @deprecated use {@link io.protostuff.runtime.RuntimeView.Factories#INCLUDE}
+		 */
+		INCLUDE_OPTIMIZED_FOR_MERGE_ONLY {
+			@Override
+			public <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args)
+			{
+				return INCLUDE.create(ms, instantiator, pf, args);
+			}
+		};
     }
 
     static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
