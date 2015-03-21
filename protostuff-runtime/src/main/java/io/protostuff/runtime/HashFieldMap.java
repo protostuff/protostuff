@@ -19,9 +19,9 @@ import java.util.Map;
  *
  * @author Kostiantyn Shchepanovskyi
  */
-public class HashFieldMap<T> implements FieldMap<T>
+final class HashFieldMap<T> implements FieldMap<T>
 {
-    public static final FieldComparator FIELD_COMPARATOR = new FieldComparator();
+    private static final FieldComparator FIELD_COMPARATOR = new FieldComparator();
     private final List<Field<T>> fields;
     private final Map<Integer, Field<T>> fieldsByNumber;
     private final Map<String, Field<T>> fieldsByName;
@@ -64,9 +64,6 @@ public class HashFieldMap<T> implements FieldMap<T>
         return fieldsByName.get(fieldName);
     }
 
-    /**
-     * Returns the message's total number of fields.
-     */
     @Override
     public int getFieldCount()
     {

@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author Kostiantyn Shchepanovskyi
  */
-public class ArrayFieldMap<T> implements FieldMap<T>
+final class ArrayFieldMap<T> implements FieldMap<T>
 {
     private final List<Field<T>> fields;
     private final Field<T>[] fieldsByNumber;
