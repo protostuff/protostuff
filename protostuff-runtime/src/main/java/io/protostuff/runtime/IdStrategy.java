@@ -17,7 +17,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.Schema;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * This base class handles all the IO for reading and writing polymorphic fields. When a field's type is
@@ -73,10 +72,9 @@ public abstract class IdStrategy
             {
                 final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
 
-                final ArrayList<Field<T>> fields = new ArrayList<>(
-                        rs.fields.length);
+                final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
 
-                for (Field<T> f : rs.fields)
+                for (Field<T> f : rs.getFields())
                 {
                     final int groupFilter = f.groupFilter;
                     if (groupFilter != 0)
@@ -104,7 +102,7 @@ public abstract class IdStrategy
                 }
 
                 final int size = fields.size();
-                if (size == rs.fields.length)
+                if (size == rs.getFieldCount())
                 {
                     // nothing is excluded
                     return rs;
@@ -116,9 +114,7 @@ public abstract class IdStrategy
                             + rs.messageFullName() + " on group " + groupId);
                 }
 
-                return new RuntimeSchema<>(typeClass, fields,
-                        // the last field
-                        fields.get(size - 1).number, rs.instantiator);
+                return new RuntimeSchema<>(typeClass, fields, rs.instantiator);
             }
 
             return s;

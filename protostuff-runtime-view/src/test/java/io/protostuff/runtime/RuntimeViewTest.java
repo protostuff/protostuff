@@ -77,13 +77,6 @@ public class RuntimeViewTest extends AbstractTest
                 null, args);
     }
 
-    static Schema<Baz> ex2(String... args)
-    {
-        return RuntimeView.createFrom(rs(),
-                RuntimeView.Factories.EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY,
-                null, args);
-    }
-
     static Schema<Baz> ex3(int min, int max)
     {
         return RuntimeView.createFrom(rs(),
@@ -95,13 +88,6 @@ public class RuntimeViewTest extends AbstractTest
     {
         return RuntimeView.createFrom(rs(),
                 RuntimeView.Factories.INCLUDE,
-                null, args);
-    }
-
-    static Schema<Baz> in2(String... args)
-    {
-        return RuntimeView.createFrom(rs(),
-                RuntimeView.Factories.INCLUDE_OPTIMIZED_FOR_MERGE_ONLY,
                 null, args);
     }
 
@@ -157,11 +143,9 @@ public class RuntimeViewTest extends AbstractTest
     public void testExcludeBazId()
     {
         assertEquals(WITHOUT_ID_LEN, len(ex1("id")));
-        assertEquals(WITHOUT_ID_LEN, len(ex2("id")));
         assertEquals(WITHOUT_ID_LEN, len(ex3(FN_ID, FN_ID)));
 
         assertEquals(WITHOUT_ID_LEN, len(in1("name", "timestamp")));
-        assertEquals(WITHOUT_ID_LEN, len(in2("name", "timestamp")));
 
         assertEquals(WITHOUT_ID_LEN, len(NOTEQ(STR_FN_ID)));
         assertEquals(WITHOUT_ID_LEN, len(GT(STR_FN_ID)));
@@ -171,11 +155,9 @@ public class RuntimeViewTest extends AbstractTest
     public void testExcludeBazName()
     {
         assertEquals(WITHOUT_NAME_LEN, len(ex1("name")));
-        assertEquals(WITHOUT_NAME_LEN, len(ex2("name")));
         assertEquals(WITHOUT_NAME_LEN, len(ex3(FN_NAME, FN_NAME)));
 
         assertEquals(WITHOUT_NAME_LEN, len(in1("id", "timestamp")));
-        assertEquals(WITHOUT_NAME_LEN, len(in2("id", "timestamp")));
 
         assertEquals(WITHOUT_NAME_LEN, len(NOTEQ(STR_FN_NAME)));
         assertEquals(WITHOUT_NAME_LEN, len(NOTRANGE(STR_FN_NAME, STR_FN_NAME)));
@@ -184,11 +166,9 @@ public class RuntimeViewTest extends AbstractTest
     public void testExcludeBazTimestamp()
     {
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(ex1("timestamp")));
-        assertEquals(WITHOUT_TIMESTAMP_LEN, len(ex2("timestamp")));
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(ex3(FN_TIMESTAMP, FN_TIMESTAMP)));
 
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(in1("id", "name")));
-        assertEquals(WITHOUT_TIMESTAMP_LEN, len(in2("id", "name")));
 
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(NOTEQ(STR_FN_TIMESTAMP)));
         assertEquals(WITHOUT_TIMESTAMP_LEN, len(LT(STR_FN_TIMESTAMP)));
@@ -198,11 +178,9 @@ public class RuntimeViewTest extends AbstractTest
     public void testIncludeOnlyBazId()
     {
         assertEquals(ID_LEN, len(ex1("name", "timestamp")));
-        assertEquals(ID_LEN, len(ex2("name", "timestamp")));
         assertEquals(ID_LEN, len(ex3(FN_NAME, FN_TIMESTAMP)));
 
         assertEquals(ID_LEN, len(in1("id")));
-        assertEquals(ID_LEN, len(in2("id")));
 
         assertEquals(ID_LEN, len(EQ(STR_FN_ID)));
         assertEquals(ID_LEN, len(LT(STR_FN_NAME)));
@@ -212,10 +190,8 @@ public class RuntimeViewTest extends AbstractTest
     public void testIncludeOnlyBazName()
     {
         assertEquals(NAME_LEN, len(ex1("id", "timestamp")));
-        assertEquals(NAME_LEN, len(ex2("id", "timestamp")));
 
         assertEquals(NAME_LEN, len(in1("name")));
-        assertEquals(NAME_LEN, len(in2("name")));
 
         assertEquals(NAME_LEN, len(EQ(STR_FN_NAME)));
         assertEquals(NAME_LEN, len(RANGE(STR_FN_NAME, STR_FN_NAME)));
@@ -224,11 +200,9 @@ public class RuntimeViewTest extends AbstractTest
     public void testIncludeOnlyBazTimestamp()
     {
         assertEquals(TIMESTAMP_LEN, len(ex1("id", "name")));
-        assertEquals(TIMESTAMP_LEN, len(ex2("id", "name")));
         assertEquals(TIMESTAMP_LEN, len(ex3(FN_ID, FN_NAME)));
 
         assertEquals(TIMESTAMP_LEN, len(in1("timestamp")));
-        assertEquals(TIMESTAMP_LEN, len(in2("timestamp")));
 
         assertEquals(TIMESTAMP_LEN, len(EQ(STR_FN_TIMESTAMP)));
         assertEquals(TIMESTAMP_LEN, len(GT(STR_FN_NAME)));

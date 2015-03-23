@@ -14,8 +14,6 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.runtime.MappedSchema.Field;
-
 /**
  * A filter for the fields that need to be included.
  * 

@@ -112,28 +112,28 @@ public class CompatTest
 
         Schema<Mixed> schema = RuntimeSchema.getSchema(Mixed.class);
 
-        assertTrue(MappedSchema.class.isAssignableFrom(schema.getClass()));
+        assertTrue(RuntimeSchema.class.isAssignableFrom(schema.getClass()));
 
-        MappedSchema<Mixed> mappedSchema = (MappedSchema<Mixed>) schema;
+        RuntimeSchema<Mixed> mappedSchema = (RuntimeSchema<Mixed>) schema;
 
         assertTrue(RuntimeMessageField.class
-                .isAssignableFrom(mappedSchema.fieldsByName.get("rfoo")
-                        .getClass()));
+                .isAssignableFrom(mappedSchema.getFieldByName("rfoo")
+						.getClass()));
         assertTrue(RuntimeMessageField.class
-                .isAssignableFrom(mappedSchema.fieldsByName.get("rbar")
-                        .getClass()));
+                .isAssignableFrom(mappedSchema.getFieldByName("rbar")
+						.getClass()));
         assertTrue(RuntimeMessageField.class
-                .isAssignableFrom(mappedSchema.fieldsByName.get("rbaz")
-                        .getClass()));
+                .isAssignableFrom(mappedSchema.getFieldByName("rbaz")
+						.getClass()));
 
-        RuntimeMessageField<Mixed, io.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, io.protostuff.Foo>) mappedSchema.fieldsByName
-                .get("rfoo");
+        RuntimeMessageField<Mixed, io.protostuff.Foo> rfoo = (RuntimeMessageField<Mixed, io.protostuff.Foo>) mappedSchema
+                .getFieldByName("rfoo");
 
-        RuntimeMessageField<Mixed, io.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, io.protostuff.Bar>) mappedSchema.fieldsByName
-                .get("rbar");
+        RuntimeMessageField<Mixed, io.protostuff.Bar> rbar = (RuntimeMessageField<Mixed, io.protostuff.Bar>) mappedSchema
+                .getFieldByName("rbar");
 
-        RuntimeMessageField<Mixed, io.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, io.protostuff.Baz>) mappedSchema.fieldsByName
-                .get("rbaz");
+        RuntimeMessageField<Mixed, io.protostuff.Baz> rbaz = (RuntimeMessageField<Mixed, io.protostuff.Baz>) mappedSchema
+                .getFieldByName("rbaz");
 
         assertTrue(rfoo
                 .getSchema()

@@ -16,7 +16,6 @@ package io.protostuff.runtime;
 
 import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
  * A runtime field whose field type is {@link Object} (dynamic).

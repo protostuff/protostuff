@@ -15,13 +15,16 @@
 package io.protostuff.runtime;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.protostuff.Input;
 import io.protostuff.Output;
 import io.protostuff.Schema;
-import io.protostuff.runtime.MappedSchema.Field;
 import io.protostuff.runtime.RuntimeEnv.Instantiator;
 
 /**
@@ -50,14 +53,13 @@ public final class RuntimeView
     /**
      * Returns a new view schema based from an existing one.
      */
-    public static <T> Schema<T> createFrom(MappedSchema<T> ms,
+    public static <T> Schema<T> createFrom(RuntimeSchema<T> ms,
             Instantiator<T> instantiator,
             Factory vf,
             Predicate.Factory pf,
             String... args)
     {
-        return vf.create(ms.typeClass, ms.fields, ms.fieldsByNumber,
-                ms.fieldsByName, instantiator, pf, args);
+        return vf.create(ms, instantiator, pf, args);
     }
 
     public interface Factory
@@ -70,13 +72,7 @@ public final class RuntimeView
          * @param args
          *            is optional, depending on the view factory used.
          */
-        public <T> Schema<T> create(Class<T> typeClass,
-                Field<T>[] fields,
-                Field<T>[] fieldsByNumber,
-                Map<String, Field<T>> fieldsByName,
-                Instantiator<T> instantiator,
-                Predicate.Factory pf,
-                String[] args);
+        <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args);
     }
 
     /**
@@ -84,17 +80,17 @@ public final class RuntimeView
      */
     public static abstract class BaseSchema<T> implements Schema<T>
     {
-        public final Class<T> typeClass;
+        public final Class<? super T> typeClass;
         public final Instantiator<T> instantiator;
 
-        protected BaseSchema(Class<T> typeClass, Instantiator<T> instantiator)
+        protected BaseSchema(Class<? super T> typeClass, Instantiator<T> instantiator)
         {
             this.typeClass = typeClass;
             this.instantiator = instantiator;
         }
 
         @Override
-        public Class<T> typeClass()
+        public Class<? super T> typeClass()
         {
             return typeClass;
         }
@@ -129,7 +125,7 @@ public final class RuntimeView
     {
         public final Field<T>[] fields;
 
-        protected PostFilteredSchema(Class<T> typeClass, Instantiator<T> instantiator,
+        protected PostFilteredSchema(Class<? super T> typeClass, Instantiator<T> instantiator,
                 Field<T>[] fields)
         {
             super(typeClass, instantiator);
@@ -162,13 +158,7 @@ public final class RuntimeView
         PREDICATE
         {
             @Override
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
-                    final Map<String, Field<T>> fieldsByName,
-                    Instantiator<T> instantiator,
-                    Predicate.Factory pf,
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf,
                     String[] args)
             {
                 if (pf == null)
@@ -176,12 +166,12 @@ public final class RuntimeView
 
                 final Predicate predicate = pf.create(args);
 
-                return new BaseSchema<T>(typeClass, instantiator)
+                return new BaseSchema<T>(ms.typeClass(), instantiator)
                 {
                     @Override
                     public int getFieldNumber(String name)
                     {
-                        final Field<T> field = fieldsByName.get(name);
+                        final Field<T> field = ms.getFieldByName(name);
                         return field != null && predicate.apply(field) ? field.number : 0;
                     }
 
@@ -191,9 +181,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
-
+                            final Field<T> field = ms.getFieldByNumber(number);
                             if (field == null || !predicate.apply(field, message))
                                 input.handleUnknownField(number, this);
                             else
@@ -206,16 +194,14 @@ public final class RuntimeView
                     {
                         // only called during writes
                         // the predicate already applied on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
+                        final Field<T> field = ms.getFieldByNumber(number);
                         return field == null ? null : field.name;
                     }
 
                     @Override
                     public void writeTo(Output output, T message) throws IOException
                     {
-                        for (Field<T> f : fields)
+                        for (Field<T> f : ms.getFields())
                         {
                             if (predicate.apply(f, message))
                                 f.writeTo(output, message);
@@ -233,29 +219,24 @@ public final class RuntimeView
         EXCLUDE
         {
             @Override
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    Field<T>[] flds,
-                    final Field<T>[] fieldsByNumber,
-                    Map<String, Field<T>> byName,
-                    Instantiator<T> instantiator,
-                    Predicate.Factory factory,
-                    String[] args)
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator,
+                    Predicate.Factory factory, String[] args)
+
             {
                 final HashMap<String, Field<T>> fieldsByName = factory == null ?
-                        copyAndExclude(typeClass, byName, args) :
-                        copyAndExclude(typeClass, byName, factory.create(args));
+                        copyAndExclude(ms.typeClass(), ms.getFields(), args) :
+                        copyAndExclude(ms.typeClass(), ms.getFields(), factory.create(args));
 
                 @SuppressWarnings("unchecked")
                 Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
-                for (int i = 1, j = 0; i < fieldsByNumber.length; i++)
+
+                int i = 0;
+                for (Field<T> field : fieldsByName.values())
                 {
-                    Field<T> field = fieldsByNumber[i];
-                    if (field != null && fieldsByName.containsKey(field.name))
-                        fields[j++] = field;
+                    fields[i++] = field;
                 }
 
-                return new PostFilteredSchema<T>(typeClass, instantiator, fields)
+                return new PostFilteredSchema<T>(ms.typeClass(), instantiator, fields)
                 {
                     @Override
                     public int getFieldNumber(String name)
@@ -270,8 +251,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = ms.getFieldByNumber(number);
 
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
@@ -284,9 +264,7 @@ public final class RuntimeView
                     public String getFieldName(int number)
                     {
                         // only called during writes
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
+                        final Field<T> field = ms.getFieldByNumber(number);
                         return field == null ? null : field.name;
                     }
 
@@ -300,77 +278,16 @@ public final class RuntimeView
             }
         },
 
-        /**
-         * Optimized only for merging. If you need to do writes, use {@link #EXCLUDE} instead. The extra map lookups
-         * during writes makes this slower than {@link #EXCLUDE}.
-         * <p>
-         * The args param is required (the field names to exclude).
-         */
-        EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY
-        {
-            @Override
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
-                    Map<String, Field<T>> byName,
-                    Instantiator<T> instantiator,
-                    Predicate.Factory pf,
-                    String[] args)
-            {
-                final HashMap<String, Field<T>> fieldsByName = copyAndExclude(typeClass,
-                        byName, args);
-
-                return new BaseSchema<T>(typeClass, instantiator)
-                {
-                    @Override
-                    public int getFieldNumber(String name)
-                    {
-                        final Field<T> field = fieldsByName.get(name);
-                        return field == null ? 0 : field.number;
-                    }
-
-                    @Override
-                    public void mergeFrom(Input input, T message) throws IOException
-                    {
-                        for (int number = input.readFieldNumber(this); number != 0;
-                        number = input.readFieldNumber(this))
-                        {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
-
-                            if (field == null || !fieldsByName.containsKey(field.name))
-                                input.handleUnknownField(number, this);
-                            else
-                                field.mergeFrom(input, message);
-                        }
-                    }
-
-                    @Override
-                    public String getFieldName(int number)
-                    {
-                        // only called during writes
-                        // already filtered on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
-                        return field == null ? null : field.name;
-                    }
-
-                    @Override
-                    public void writeTo(Output output, T message) throws IOException
-                    {
-                        for (Field<T> f : fields)
-                        {
-                            // this extra lookup makes this slower
-                            // hence use EXCLUDE instead
-                            if (fieldsByName.containsKey(f.name))
-                                f.writeTo(output, message);
-                        }
-                    }
-                };
-            }
-        },
+		/**
+		 * @deprecated use {@link io.protostuff.runtime.RuntimeView.Factories#EXCLUDE}
+		 */
+		EXCLUDE_OPTIMIZED_FOR_MERGE_ONLY {
+			@Override
+			public <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args)
+			{
+				return EXCLUDE.create(ms, instantiator, pf, args);
+			}
+		},
 
         /**
          * Include the fields for merging and writing.
@@ -380,30 +297,23 @@ public final class RuntimeView
         INCLUDE
         {
             @Override
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    Field<T>[] flds,
-                    final Field<T>[] fieldsByNumber,
-                    Map<String, Field<T>> byName,
-                    Instantiator<T> instantiator,
-                    Predicate.Factory factory,
-                    String[] args)
+            public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator,
+                    Predicate.Factory factory, String[] args)
             {
                 final HashMap<String, Field<T>> fieldsByName =
                         new HashMap<>();
 
-                int maxFieldNumber = includeAndAddTo(fieldsByName, typeClass, byName, args);
+                int maxFieldNumber = includeAndAddTo(fieldsByName, ms.typeClass(), ms.getFields(), args);
 
                 @SuppressWarnings("unchecked")
-                Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
-                for (int i = 1, j = 0; i <= maxFieldNumber; i++)
+                Field<T>[] fields = new Field[fieldsByName.size()];
+                int i = 0;
+                for (Field<T> field : fieldsByName.values())
                 {
-                    Field<T> field = fieldsByNumber[i];
-                    if (field != null && fieldsByName.containsKey(field.name))
-                        fields[j++] = field;
+                    fields[i++] = field;
                 }
 
-                return new PostFilteredSchema<T>(typeClass, instantiator, fields)
+                return new PostFilteredSchema<T>(ms.typeClass(), instantiator, fields)
                 {
                     @Override
                     public int getFieldNumber(String name)
@@ -418,8 +328,7 @@ public final class RuntimeView
                         for (int number = input.readFieldNumber(this); number != 0;
                         number = input.readFieldNumber(this))
                         {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
+                            final Field<T> field = ms.getFieldByNumber(number);
 
                             if (field == null || !fieldsByName.containsKey(field.name))
                                 input.handleUnknownField(number, this);
@@ -432,8 +341,7 @@ public final class RuntimeView
                     public String getFieldName(int number)
                     {
                         // only called during writes
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
+                        final Field<T> field = ms.getFieldByNumber(number);
 
                         return field == null ? null : field.name;
                     }
@@ -448,150 +356,70 @@ public final class RuntimeView
             }
         },
 
-        /**
-         * Optimized only for merging. If you need to do writes, use {@link #INCLUDE} instead. The extra map lookups
-         * during writes makes this slower than {@link #INCLUDE}.
-         * <p>
-         * The args param is required (the field names to include).
-         */
-        INCLUDE_OPTIMIZED_FOR_MERGE_ONLY
-        {
-            @Override
-            public <T> Schema<T> create(
-                    Class<T> typeClass,
-                    final Field<T>[] fields,
-                    final Field<T>[] fieldsByNumber,
-                    Map<String, Field<T>> byName,
-                    Instantiator<T> instantiator,
-                    Predicate.Factory pf,
-                    String[] args)
-            {
-                final HashMap<String, Field<T>> fieldsByName =
-                        new HashMap<>();
-
-                includeAndAddTo(fieldsByName, typeClass, byName, args);
-
-                return new BaseSchema<T>(typeClass, instantiator)
-                {
-                    @Override
-                    public int getFieldNumber(String name)
-                    {
-                        final Field<T> field = fieldsByName.get(name);
-                        return field == null ? 0 : field.number;
-                    }
-
-                    @Override
-                    public void mergeFrom(Input input, T message) throws IOException
-                    {
-                        for (int number = input.readFieldNumber(this); number != 0;
-                        number = input.readFieldNumber(this))
-                        {
-                            final Field<T> field = number < fieldsByNumber.length ?
-                                    fieldsByNumber[number] : null;
-
-                            if (field == null || !fieldsByName.containsKey(field.name))
-                                input.handleUnknownField(number, this);
-                            else
-                                field.mergeFrom(input, message);
-                        }
-                    }
-
-                    @Override
-                    public String getFieldName(int number)
-                    {
-                        // only called during writes
-                        // already filtered on writeTo (the method below)
-                        final Field<T> field = number < fieldsByNumber.length ?
-                                fieldsByNumber[number] : null;
-
-                        return field == null ? null : field.name;
-                    }
-
-                    @Override
-                    public void writeTo(Output output, T message) throws IOException
-                    {
-                        for (Field<T> f : fields)
-                        {
-                            // this extra lookup makes this slower
-                            // hence use INCLUDE instead
-                            if (fieldsByName.containsKey(f.name))
-                                f.writeTo(output, message);
-                        }
-                    }
-                };
-            }
-        };
+		/**
+		 * @deprecated use {@link io.protostuff.runtime.RuntimeView.Factories#INCLUDE}
+		 */
+		INCLUDE_OPTIMIZED_FOR_MERGE_ONLY {
+			@Override
+			public <T> Schema<T> create(RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory pf, String[] args)
+			{
+				return INCLUDE.create(ms, instantiator, pf, args);
+			}
+		};
     }
 
-    static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
-            Map<String, Field<T>> byName, final Predicate predicate)
+    static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
+            List<Field<T>> fields, final Predicate predicate)
     {
-        // copy
-        final HashMap<String, Field<T>> map = new HashMap<>(byName);
-
-        for (Field<T> f : byName.values())
+        final HashMap<String, Field<T>> map = new HashMap<>();
+        for (Field<T> field : fields)
         {
-            if (predicate.apply(f))
-                map.remove(f.name);
-        }
-
-        if (map.size() == 0)
-        {
-            throw new IllegalArgumentException("No fields are left.  " +
-                    "Everything was excluded.");
+            if (!predicate.apply(field))
+            {
+                map.put(field.name, field);
+            }
         }
 
         return map;
     }
 
-    static <T> HashMap<String, Field<T>> copyAndExclude(Class<T> typeClass,
-            Map<String, Field<T>> byName, final String[] args)
+    static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
+            List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
 
-        // copy
-        final HashMap<String, Field<T>> map = new HashMap<>(byName);
+        HashMap<String, Field<T>> map = new HashMap<>();
+        Set<String> exclude = new HashSet<>();
+        Collections.addAll(exclude, args);
 
-        for (String name : args)
+        for (Field<T> field : fields)
         {
-            // remove
-            if (null == map.remove(name))
+            if (!exclude.contains(field.name))
             {
-                throw new IllegalArgumentException(name +
-                        " field is either a duplicate or not a field of " + typeClass);
+                map.put(field.name, field);
             }
         }
-
-        if (map.size() == 0)
-        {
-            throw new IllegalArgumentException("No fields are left.  " +
-                    "Everything was excluded.");
-        }
-
         return map;
     }
 
     static <T> int includeAndAddTo(Map<String, Field<T>> map,
-            Class<T> typeClass, Map<String, Field<T>> byName, final String[] args)
+            Class<? super T> typeClass, List<Field<T>> fields, final String[] args)
     {
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to include.");
 
         int maxFieldNumber = 0;
-        for (String name : args)
+        Set<String> include = new HashSet<>();
+        Collections.addAll(include, args);
+        for (Field<T> field : fields)
         {
-            final Field<T> field = byName.get(name);
-            if (field == null)
+            if (include.contains(field.name))
             {
-                throw new IllegalArgumentException(name +
-                        " is not a field of " + typeClass);
+                map.put(field.name, field);
+                maxFieldNumber = Math.max(field.number, maxFieldNumber);
             }
-
-            map.put(field.name, field);
-            maxFieldNumber = Math.max(field.number, maxFieldNumber);
         }
-
         return maxFieldNumber;
     }
 }

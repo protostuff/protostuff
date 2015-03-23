@@ -122,93 +122,93 @@ public class FieldExclusionTest
         Schema<ComplexFieldsPojo> schema = RuntimeSchema
                 .getSchema(ComplexFieldsPojo.class);
 
-        MappedSchema<ComplexFieldsPojo> mappedSchema = (MappedSchema<ComplexFieldsPojo>) schema;
+        RuntimeSchema<ComplexFieldsPojo> mappedSchema = (RuntimeSchema<ComplexFieldsPojo>) schema;
 
-        assertTrue(mappedSchema.fields.length == 45);
+        assertTrue(mappedSchema.getFieldCount() == 45);
 
         Class<?> expectedCollectionClass = RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? RuntimeCollectionField.class
                 : RuntimeObjectField.class;
 
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueArray"),
+                mappedSchema.getFieldByName("someCollectionValueArray"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueCollection"),
+                mappedSchema.getFieldByName("someCollectionValueCollection"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueList"),
+                mappedSchema.getFieldByName("someCollectionValueList"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueSet"),
+                mappedSchema.getFieldByName("someCollectionValueSet"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueMap"),
+                mappedSchema.getFieldByName("someCollectionValueMap"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueObject"),
+                mappedSchema.getFieldByName("someCollectionValueObject"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someCollectionValueWildcard"),
+                mappedSchema.getFieldByName("someCollectionValueWildcard"),
                 expectedCollectionClass);
 
-        assertAssignable(mappedSchema.fieldsByName.get("someListValueArray"),
+        assertAssignable(mappedSchema.getFieldByName("someListValueArray"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someListValueCollection"),
+                mappedSchema.getFieldByName("someListValueCollection"),
                 expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someListValueList"),
+        assertAssignable(mappedSchema.getFieldByName("someListValueList"),
                 expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someListValueSet"),
+        assertAssignable(mappedSchema.getFieldByName("someListValueSet"),
                 expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someListValueMap"),
+        assertAssignable(mappedSchema.getFieldByName("someListValueMap"),
                 expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someListValueObject"),
-                expectedCollectionClass);
-        assertAssignable(
-                mappedSchema.fieldsByName.get("someListValueWildcard"),
-                expectedCollectionClass);
-
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueArray"),
+        assertAssignable(mappedSchema.getFieldByName("someListValueObject"),
                 expectedCollectionClass);
         assertAssignable(
-                mappedSchema.fieldsByName.get("someSetValueCollection"),
-                expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueList"),
-                expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueSet"),
-                expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueMap"),
-                expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueObject"),
-                expectedCollectionClass);
-        assertAssignable(mappedSchema.fieldsByName.get("someSetValueWildcard"),
+                mappedSchema.getFieldByName("someListValueWildcard"),
                 expectedCollectionClass);
 
-        assertTrue(mappedSchema.fieldsByName.get("someMapKeyArray") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapValueArray") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothArray") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothObject") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothWildcard") instanceof RuntimeMapField<?, ?, ?>);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueArray"),
+                expectedCollectionClass);
+        assertAssignable(
+                mappedSchema.getFieldByName("someSetValueCollection"),
+                expectedCollectionClass);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueList"),
+                expectedCollectionClass);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueSet"),
+                expectedCollectionClass);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueMap"),
+                expectedCollectionClass);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueObject"),
+                expectedCollectionClass);
+        assertAssignable(mappedSchema.getFieldByName("someSetValueWildcard"),
+                expectedCollectionClass);
 
-        assertTrue(mappedSchema.fieldsByName.get("someMapKeyCollection") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapValueCollection") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothCollection") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapKeyArray") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapValueArray") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothArray") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothObject") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothWildcard") instanceof RuntimeMapField<?, ?, ?>);
 
-        assertTrue(mappedSchema.fieldsByName.get("someMapKeyList") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapValueList") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothList") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapKeyCollection") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapValueCollection") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothCollection") instanceof RuntimeMapField<?, ?, ?>);
 
-        assertTrue(mappedSchema.fieldsByName.get("someMapKeySet") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapValueSet") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothSet") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapKeyList") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapValueList") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothList") instanceof RuntimeMapField<?, ?, ?>);
 
-        assertTrue(mappedSchema.fieldsByName.get("someMapKeyMap") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapValueMap") instanceof RuntimeMapField<?, ?, ?>);
-        assertTrue(mappedSchema.fieldsByName.get("someMapBothMap") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapKeySet") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapValueSet") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothSet") instanceof RuntimeMapField<?, ?, ?>);
 
-        assertTrue(mappedSchema.fieldsByName.get("someIntArray4D") instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someLongArray3D") instanceof RuntimeObjectField<?>);
-        assertTrue(mappedSchema.fieldsByName.get("someByteArray2D") instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.getFieldByName("someMapKeyMap") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapValueMap") instanceof RuntimeMapField<?, ?, ?>);
+        assertTrue(mappedSchema.getFieldByName("someMapBothMap") instanceof RuntimeMapField<?, ?, ?>);
+
+        assertTrue(mappedSchema.getFieldByName("someIntArray4D") instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.getFieldByName("someLongArray3D") instanceof RuntimeObjectField<?>);
+        assertTrue(mappedSchema.getFieldByName("someByteArray2D") instanceof RuntimeObjectField<?>);
 
     }
 

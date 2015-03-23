@@ -14,7 +14,12 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import io.protostuff.Exclude;
 import io.protostuff.Tag;
 
@@ -24,7 +29,7 @@ import io.protostuff.Tag;
  * @author Johannes Elgh
  * @created Jul 30, 2014
  */
-public class ExcludeFieldTest extends AbstractTest
+public class ExcludeFieldTest
 {
 
     public static class Entity
@@ -60,63 +65,64 @@ public class ExcludeFieldTest extends AbstractTest
         long timestamp;
     }
 
+    @Test
     public void testIt() throws Exception
     {
-        MappedSchema<Entity> schema = (MappedSchema<Entity>) RuntimeSchema
+        RuntimeSchema<Entity> schema = (RuntimeSchema<Entity>) RuntimeSchema
                 .getSchema(Entity.class);
-        System.err.println(schema.fields.length);
-        assertTrue(schema.fields.length == 3);
-        assertEquals(schema.fields[0].name, "id");
-        assertEquals(schema.fields[0].number, 1);
+        assertTrue(schema.getFieldCount() == 3);
+        assertEquals(schema.getFields().get(0).name, "id");
+        assertEquals(schema.getFields().get(0).number, 1);
 
-        assertEquals(schema.fields[1].name, "name");
-        assertEquals(schema.fields[1].number, 2);
+        assertEquals(schema.getFields().get(1).name, "name");
+        assertEquals(schema.getFields().get(1).number, 2);
 
-        assertEquals(schema.fields[2].name, "timestamp");
-        assertEquals(schema.fields[2].number, 3);
+        assertEquals(schema.getFields().get(2).name, "timestamp");
+        assertEquals(schema.getFields().get(2).number, 3);
 
         assertTrue(schema.getFieldNumber("alias") == 0);
-        assertNull(schema.fieldsByName.get("alias"));
+        assertNull(schema.getFieldByName("alias"));
     }
 
+    @Test
     public void testMuchExcludedEntity() throws Exception
     {
-        MappedSchema<MuchExcludedEntity> schema = (MappedSchema<MuchExcludedEntity>) RuntimeSchema
+        RuntimeSchema<MuchExcludedEntity> schema = (RuntimeSchema<MuchExcludedEntity>) RuntimeSchema
                 .getSchema(MuchExcludedEntity.class);
-        System.err.println(schema.fields.length);
-        assertTrue(schema.fields.length == 1);
+
+        assertTrue(schema.getFieldCount() == 1);
 
         assertTrue(schema.getFieldNumber("id") == 0);
-        assertNull(schema.fieldsByName.get("id"));
+        assertNull(schema.getFieldByName("id"));
 
         assertTrue(schema.getFieldNumber("name") == 0);
-        assertNull(schema.fieldsByName.get("name"));
+        assertNull(schema.getFieldByName("name"));
 
-        assertEquals(schema.fields[0].name, "alias");
-        assertEquals(schema.fields[0].number, 1);
+        assertEquals(schema.getFields().get(0).name, "alias");
+        assertEquals(schema.getFields().get(0).number, 1);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-        assertNull(schema.fieldsByName.get("timestamp"));
+        assertNull(schema.getFieldByName("timestamp"));
     }
 
+    @Test
     public void testTaggedAndExcludedEntity() throws Exception
     {
-        MappedSchema<TaggedAndExcludedEntity> schema = (MappedSchema<TaggedAndExcludedEntity>) RuntimeSchema
+        RuntimeSchema<TaggedAndExcludedEntity> schema = (RuntimeSchema<TaggedAndExcludedEntity>) RuntimeSchema
                 .getSchema(TaggedAndExcludedEntity.class);
-        System.err.println(schema.fields.length);
-        assertTrue(schema.fields.length == 2);
+        assertEquals(2, schema.getFieldCount());
 
-        assertTrue(schema.getFieldNumber("id") == 0);
-        assertNull(schema.fieldsByName.get("id"));
+        assertEquals(0, schema.getFieldNumber("id"));
+        assertNull(schema.getFieldByName("id"));
 
-        assertEquals(schema.fields[0].name, "alias");
-        assertEquals(schema.fields[0].number, 2);
+        assertEquals(schema.getFields().get(0).name, "alias");
+        assertEquals(schema.getFields().get(0).number, 2);
 
-        assertEquals(schema.fields[1].name, "name");
-        assertEquals(schema.fields[1].number, 4);
+        assertEquals("name", schema.getFields().get(1).name);
+        assertEquals(4, schema.getFields().get(1).number);
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
-        assertNull(schema.fieldsByName.get("timestamp"));
+        assertNull(schema.getFieldByName("timestamp"));
     }
 
 }

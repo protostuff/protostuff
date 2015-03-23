@@ -28,15 +28,15 @@ import io.protostuff.runtime.MathObjectsTest.Payment;
 public class RuntimePipeTest extends ProtostuffPipeTest
 {
 
-    static <T> MappedSchema<T> getSchema(Class<T> typeClass)
+    static <T> RuntimeSchema<T> getSchema(Class<T> typeClass)
     {
-        return (MappedSchema<T>) RuntimeSchema.getSchema(typeClass);
+        return (RuntimeSchema<T>) RuntimeSchema.getSchema(typeClass);
     }
 
     @Override
     public void testFoo() throws Exception
     {
-        MappedSchema<Foo> schema = getSchema(Foo.class);
+        RuntimeSchema<Foo> schema = getSchema(Foo.class);
 
         Foo foo = SerializableObjects.foo;
 
@@ -46,7 +46,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
     @Override
     public void testBar() throws Exception
     {
-        MappedSchema<Bar> schema = getSchema(Bar.class);
+        RuntimeSchema<Bar> schema = getSchema(Bar.class);
 
         Bar bar = SerializableObjects.bar;
 
@@ -56,7 +56,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
     @Override
     public void testBaz() throws Exception
     {
-        MappedSchema<Baz> schema = getSchema(Baz.class);
+        RuntimeSchema<Baz> schema = getSchema(Baz.class);
 
         Baz baz = SerializableObjects.baz;
 
@@ -65,7 +65,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
 
     public void testEmployee() throws Exception
     {
-        MappedSchema<Employee> schema = getSchema(Employee.class);
+        RuntimeSchema<Employee> schema = getSchema(Employee.class);
 
         Employee emp = CollectionTest.filledEmployee();
 
@@ -74,7 +74,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
 
     public void testTask() throws Exception
     {
-        MappedSchema<Task> schema = getSchema(Task.class);
+        RuntimeSchema<Task> schema = getSchema(Task.class);
 
         Task task = CollectionTest.filledTask();
 
@@ -83,7 +83,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
 
     public void testPayment() throws Exception
     {
-        MappedSchema<Payment> schema = getSchema(Payment.class);
+        RuntimeSchema<Payment> schema = getSchema(Payment.class);
 
         Payment payment = MathObjectsTest.filledPayment();
 
@@ -92,7 +92,7 @@ public class RuntimePipeTest extends ProtostuffPipeTest
 
     public void testPojoWithArrayAndSet() throws Exception
     {
-        MappedSchema<PojoWithArrayAndSet> schema = getSchema(PojoWithArrayAndSet.class);
+        RuntimeSchema<PojoWithArrayAndSet> schema = getSchema(PojoWithArrayAndSet.class);
 
         PojoWithArrayAndSet p = SerDeserTest.filledPojoWithArrayAndSet();
 

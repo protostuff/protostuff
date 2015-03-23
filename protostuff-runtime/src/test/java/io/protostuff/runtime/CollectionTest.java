@@ -14,13 +14,17 @@
 
 package io.protostuff.runtime;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
@@ -31,7 +35,7 @@ import io.protostuff.Schema;
  * @author David Yu
  * @created Sep 11, 2010
  */
-public class CollectionTest extends TestCase
+public class CollectionTest
 {
 
     static
@@ -413,6 +417,7 @@ public class CollectionTest extends TestCase
         return task;
     }
 
+    @Test
     public void testSimpleTask() throws Exception
     {
         Schema<Task> schema = RuntimeSchema.getSchema(Task.class);
@@ -429,6 +434,7 @@ public class CollectionTest extends TestCase
         assertEquals(p, p2);
     }
 
+    @Test
     public void testITask() throws Exception
     {
         // Because we mapped ITask to Task, this is ok.
@@ -464,6 +470,7 @@ public class CollectionTest extends TestCase
         return p;
     }
 
+    @Test
     public void testEmployee() throws Exception
     {
         Schema<Employee> schema = RuntimeSchema.getSchema(Employee.class);
@@ -480,6 +487,7 @@ public class CollectionTest extends TestCase
         assertEquals(p, p2);
     }
 
+    @Test
     public void testIEmployee() throws Exception
     {
         // Because we mapped IEmployee to Employee, this is ok.
@@ -528,19 +536,20 @@ public class CollectionTest extends TestCase
         AbstractFoo afoo;
     }
 
+    @Test
     public void testPojoWithMappedAbstractTypes()
     {
-        MappedSchema<PojoWithMappedAbstractTypes> schema = (MappedSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
+        RuntimeSchema<PojoWithMappedAbstractTypes> schema = (RuntimeSchema<PojoWithMappedAbstractTypes>) RuntimeSchema
                 .getSchema(PojoWithMappedAbstractTypes.class,
                         RuntimeEnv.ID_STRATEGY);
 
-        assertTrue(schema.fields.length == 4);
+        assertTrue(schema.getFields().size() == 4);
 
-        assertTrue(schema.fields[0] instanceof RuntimeMessageField);
-        assertTrue(schema.fields[1] instanceof RuntimeMessageField);
+        assertTrue(schema.getFields().get(0) instanceof RuntimeMessageField);
+        assertTrue(schema.getFields().get(1) instanceof RuntimeMessageField);
 
-        assertTrue(schema.fields[2] instanceof RuntimeObjectField);
-        assertTrue(schema.fields[3] instanceof RuntimeDerivativeField);
+        assertTrue(schema.getFields().get(2) instanceof RuntimeObjectField);
+        assertTrue(schema.getFields().get(3) instanceof RuntimeDerivativeField);
     }
 
 }

@@ -33,10 +33,9 @@ import java.util.Map;
 import io.protostuff.ByteString;
 import io.protostuff.Message;
 import io.protostuff.Morph;
-import io.protostuff.runtime.MappedSchema.Field;
 
 /**
- * A factory to create runtime {@link MappedSchema.Field fields} based on reflection.
+ * A factory to create runtime {@link Field fields} based on reflection.
  * 
  * @author David Yu
  * @created Nov 10, 2009
@@ -388,7 +387,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
     }
 
     /**
-     * Creates a runtime {@link MappedSchema.Field field} based on reflection.
+     * Creates a runtime {@link Field field} based on reflection.
      */
     public abstract <T> Field<T> create(int number, java.lang.String name,
             java.lang.reflect.Field field, IdStrategy strategy);

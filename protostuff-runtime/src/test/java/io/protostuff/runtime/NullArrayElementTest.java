@@ -244,7 +244,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { null, null, null },
@@ -290,7 +290,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { null, true, false },
@@ -336,7 +336,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { true, false, null },
@@ -382,7 +382,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { true, null, false },
@@ -428,7 +428,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { null, true, false, null },
@@ -474,7 +474,7 @@ public abstract class NullArrayElementTest extends AbstractTest
                 RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
-                ((MappedSchema<PojoWithNonPrimitiveArrays>) schema).pipeSchema;
+                ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
 
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(
                 new Boolean[] { null, true, null, false, null },
