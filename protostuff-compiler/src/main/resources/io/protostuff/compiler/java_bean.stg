@@ -56,6 +56,7 @@ enum_block(eg, module, options, nested) ::= <<
 <eg:enum_header(eg=it, module=module, options=options)>
 <endif>
 
+@Generated("<module.generator>")
 public enum <eg.name> implements io.protostuff.EnumLite\<<eg.name>\>
 {
     <eg.values:{v|<v.name>(<v.number>)}; separator=",\n">;
@@ -91,7 +92,6 @@ package <eg.proto.javaPackageName>;
 
 import javax.annotation.Generated;
 
-@Generated("<module.generator>")
 >>
 
 enum_switch_case(value, options) ::= <<
@@ -105,6 +105,7 @@ message_block(message, module, options, nested) ::= <<
 <message:message_header(message=it, module=module, options=options)>
 <endif>
 
+@Generated("<module.generator>")
 public <if(nested)>static <endif>final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
     <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
@@ -175,7 +176,6 @@ import io.protostuff.Schema;
 import io.protostuff.UninitializedMessageException;
 <endif>
 
-@Generated("<module.generator>")
 >>
 
 message_impl_declaration(message, options) ::= <<

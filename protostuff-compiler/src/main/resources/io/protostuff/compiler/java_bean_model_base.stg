@@ -44,7 +44,6 @@ import io.protostuff.UninitializedMessageException;
 
 <message.proto.messages:message_header_import(message=it, module=module, options=options)>
 
-@Generated("<module.generator>")
 >>
 
 message_header_import(message, module, options) ::= <<
