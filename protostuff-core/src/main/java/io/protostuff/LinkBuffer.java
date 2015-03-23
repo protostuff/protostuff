@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * A list of ByteBuffers.
- * <p>
  * 
  * @author Ryan Rawson
  */
@@ -18,12 +17,13 @@ public class LinkBuffer
     public static final int DEFAULT_BUFFER_SIZE = 256;
 
     public final int allocSize;
+    ByteBuffer current;
+    List<ByteBuffer> buffers = new ArrayList<>();
 
     public LinkBuffer()
     {
         this(DEFAULT_BUFFER_SIZE);
     }
-
     public LinkBuffer(int allocSize)
     {
 
@@ -33,9 +33,6 @@ public class LinkBuffer
 
         current = ByteBuffer.allocate(allocSize);
     }
-
-    ByteBuffer current;
-    List<ByteBuffer> buffers = new ArrayList<>();
 
     public long size()
     {
@@ -52,10 +49,17 @@ public class LinkBuffer
 
     public List<ByteBuffer> getBuffers()
     {
-        List<ByteBuffer> copy = new ArrayList<>(buffers.size());
+        int size = buffers.size() + (current != null ? 1 : 0);
+        List<ByteBuffer> copy = new ArrayList<>(size);
         for (ByteBuffer b : buffers)
         {
             copy.add(b.duplicate());
+        }
+        if (current != null)
+        {
+            ByteBuffer duplicate = current.duplicate();
+            duplicate.flip();
+            copy.add(duplicate);
         }
         return Collections.unmodifiableList(copy);
     }
@@ -96,7 +100,7 @@ public class LinkBuffer
         buffers.add(current);
         current = null; // mark as finished.
 
-        // make the buffers unmodifyable now.
+        // make the buffers unmodifiable now.
 
         buffers = Collections.unmodifiableList(buffers);
         return getBuffers();
@@ -180,34 +184,8 @@ public class LinkBuffer
         }
     }
 
-    public LinkBuffer writeVarInt32_2(int value) throws IOException
-    {
-        int encSize = ProtobufOutput.computeRawVarint32Size(value);
-        ensureCapacity(encSize);
-
-        byte[] buf = new byte[encSize];
-        int locPtr = 0;
-
-        while (true)
-        {
-            if ((value & ~0x7F) == 0)
-            {
-                buf[locPtr++] = (byte) value;
-                // current.put((byte) value);
-                current.put(buf);
-                return this;
-            }
-            else
-            {
-                buf[locPtr++] = (byte) ((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
-        }
-    }
-
     public LinkBuffer writeVarInt64(long value) throws IOException
     {
-        // this implementation appears to be a bit faster.
 
         byte[] buf = new byte[10];
         int locPtr = 0;
@@ -219,31 +197,6 @@ public class LinkBuffer
                 buf[locPtr++] = (byte) value;
                 ensureCapacity(locPtr);
                 current.put(buf, 0, locPtr);
-                return this;
-            }
-            else
-            {
-                buf[locPtr++] = (byte) (((int) value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
-        }
-    }
-
-    public LinkBuffer writeVarInt64_2(long value) throws IOException
-    {
-        int encSize = ProtobufOutput.computeRawVarint64Size(value);
-
-        ensureCapacity(encSize);
-
-        byte[] buf = new byte[encSize];
-        int locPtr = 0;
-
-        while (true)
-        {
-            if ((value & ~0x7FL) == 0)
-            {
-                buf[locPtr++] = (byte) value;
-                current.put(buf);
                 return this;
             }
             else
