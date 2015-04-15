@@ -28,7 +28,6 @@ import org.antlr.stringtemplate.StringTemplateErrorListener;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.StringTemplateGroupLoader;
 
-import io.protostuff.parser.Formatter;
 import io.protostuff.parser.Proto;
 import io.protostuff.parser.ProtoUtil;
 

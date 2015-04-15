@@ -1,0 +1,55 @@
+group java_bean_with_plural_to_singular_format : java_bean;
+
+field_getters_and_setters(field, options, message) ::= <<
+
+// <field.name; format="CC">
+<if(field.repeated)>
+
+public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC&&SINGULAR">List()
+{
+    return <var(val=field.name, fmt="CC", options=options)>;
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC&&SINGULAR">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
+{
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC&&SINGULAR">(int index)
+{
+    return <var(val=field.name, fmt="CC", options=options)> == null ? null : <var(val=field.name, fmt="CC", options=options)>.get(index);
+}
+
+public int get<field.name; format="PC&&SINGULAR">Count()
+{
+    return <var(val=field.name, fmt="CC", options=options)> == null ? 0 : <var(val=field.name, fmt="CC", options=options)>.size();
+}
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> add<field.name; format="PC&&SINGULAR">(<map_primitive_wrapper.(field.javaType)> <var(val=field.name, fmt="CC", options=options)>)
+{
+    if(this.<var(val=field.name, fmt="CC", options=options)> == null)
+        this.<var(val=field.name, fmt="CC", options=options)> = new ArrayList\<<map_primitive_wrapper.(field.javaType)>\>();
+    this.<var(val=field.name, fmt="CC", options=options)>.add(<var(val=field.name, fmt="CC", options=options)>);
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<else>
+
+public <field:field_singular_type(field=it, options=options)> get<field.name; format="PC">()
+{
+    return <var(val=field.name, fmt="CC", options=options)>;
+}
+
+<if(!options.no_setters)>
+
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(<field:field_singular_type(field=it, options=options)> <var(val=field.name, fmt="CC", options=options)>)
+{
+    this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
+    <field:builder_pattern_return(field=it, options=options)>
+}
+
+<endif>
+
+<endif>
+>>
