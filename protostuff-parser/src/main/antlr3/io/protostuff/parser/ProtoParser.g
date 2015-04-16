@@ -53,6 +53,8 @@ parse [Proto proto]
     :   (statement[proto])+ EOF! {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
             
             proto.postParse();
         }
@@ -67,6 +69,7 @@ statement [Proto proto]
     |   extend_block[proto, null]
     |   service_block[proto, null]
     |   annotation_entry[proto]
+    |   doc_entry[proto]
     |   option_entry[proto, proto]
     ;
 
@@ -113,6 +116,12 @@ annotation_keyval [Proto proto, Annotation annotation]
         )
     ;
 
+doc_entry [Proto proto]
+    :   DOC {
+            proto.addDoc($DOC.text.substring(3).trim());
+        }
+    ;
+
 header_syntax [Proto proto]
     :   SYNTAX ASSIGN STRING_LITERAL SEMICOLON! {
             if(!"proto2".equals(getStringFromStringLiteral($STRING_LITERAL.text))) {
@@ -122,6 +131,8 @@ header_syntax [Proto proto]
                   
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
 
@@ -137,6 +148,8 @@ header_package [Proto proto]
             
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
     
@@ -146,6 +159,8 @@ header_import [Proto proto]
             
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
 
@@ -163,6 +178,8 @@ option_entry [Proto proto, HasOptions ho]
         ) SEMICOLON! {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
     
@@ -177,6 +194,8 @@ message_block [Proto proto, Message parent]
         LEFTCURLY (message_body[proto, message])* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
 
@@ -188,6 +207,7 @@ message_body [Proto proto, Message message]
     |   extend_block[proto, message]
     |   extensions_range[proto, message]
     |   annotation_entry[proto]
+    |   doc_entry[proto]
     |   option_entry[proto, message]
     ;
     
@@ -531,12 +551,15 @@ enum_block [Proto proto, Message message]
         LEFTCURLY (enum_body[proto, message, enumGroup])* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         } (SEMICOLON?)!
     ;
     
 enum_body [Proto proto, Message message, EnumGroup enumGroup]
     :   enum_field[proto, message, enumGroup]
     |   annotation_entry[proto]
+    |   doc_entry[proto]
     |   option_entry[proto, enumGroup]
     ;
 
@@ -569,12 +592,15 @@ service_block [Proto proto, Message message]
                 
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
     
 service_body [Proto proto, Service service]
     :   rpc_block[proto, service]
     |   annotation_entry[proto]
+    |   doc_entry[proto]
     |   option_entry[proto, service]
     ;
     
@@ -604,6 +630,8 @@ rpc_body_block [Proto proto, Service.RpcMethod rm]
     :   LEFTCURLY option_entry[proto, rm]* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
         }
     ;
     
@@ -629,6 +657,8 @@ extend_block [Proto proto, Message parent]
         LEFTCURLY (extend_body[proto, extension])* RIGHTCURLY {
             if(!proto.annotations.isEmpty())
                 throw new IllegalStateException("Misplaced annotations: " + proto.annotations);
+            if(!proto.docs.isEmpty())
+                throw new IllegalStateException("Misplaced docs: " + proto.docs);
                 
         } (SEMICOLON?)!
     ;
@@ -636,6 +666,7 @@ extend_block [Proto proto, Message parent]
 extend_body [Proto proto, Extension extension]
     :   message_field[proto, extension]
     |   annotation_entry[proto]
+    |   doc_entry[proto]
     ;
     
 ignore_block

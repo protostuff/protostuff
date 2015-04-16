@@ -768,6 +768,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         to.addAnnotations(from.annotations, true);
         to.standardOptions.putAll(from.standardOptions);
         to.extraOptions.putAll(from.extraOptions);
+        to.docs.addAll(from.docs);
     }
 
     static void resolveFullName(Message message, StringBuilder buffer)
