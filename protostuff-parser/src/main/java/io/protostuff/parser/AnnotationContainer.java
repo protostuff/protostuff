@@ -14,6 +14,7 @@
 
 package io.protostuff.parser;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,6 +30,18 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
 
     final LinkedHashMap<String, Annotation> annotations =
             new LinkedHashMap<>();
+    
+    final ArrayList<String> docs = new ArrayList<>();
+    
+    public ArrayList<String> getDocs()
+    {
+        return docs;
+    }
+    
+    public void addDoc(String doc)
+    {
+        docs.add(doc);
+    }
 
     @Override
     public void add(Annotation annotation)

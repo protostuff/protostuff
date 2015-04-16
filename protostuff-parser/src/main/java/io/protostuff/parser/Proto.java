@@ -379,6 +379,12 @@ public class Proto extends AnnotationContainer implements HasOptions
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;
             }
         }
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
+        }
     }
 
     void addAnnotationsTo(EnumGroup target)
@@ -392,6 +398,12 @@ public class Proto extends AnnotationContainer implements HasOptions
                 while (refOffset < size)
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;
             }
+        }
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
         }
     }
 
@@ -407,6 +419,12 @@ public class Proto extends AnnotationContainer implements HasOptions
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;
             }
         }
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
+        }
     }
 
     void addAnnotationsTo(Field<?> target, String enclosingNamespace)
@@ -420,6 +438,12 @@ public class Proto extends AnnotationContainer implements HasOptions
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;
             }
         }
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
+        }
     }
 
     void addAnnotationsTo(Service target)
@@ -427,6 +451,12 @@ public class Proto extends AnnotationContainer implements HasOptions
         // enclosingNamespace not necessary
         if (target.addAnnotations(annotations, true))
             refOffset = references.size();
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
+        }
     }
 
     void addAnnotationsTo(Service.RpcMethod target)
@@ -434,6 +464,12 @@ public class Proto extends AnnotationContainer implements HasOptions
         // enclosingNamespace not necessary
         if (target.addAnnotations(annotations, true))
             refOffset = references.size();
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
+        }
     }
 
     void addAnnotationsTo(Extension target)
@@ -447,6 +483,12 @@ public class Proto extends AnnotationContainer implements HasOptions
                 while (refOffset < size)
                     references.get(refOffset++).enclosingNamespace = enclosingNamespace;
             }
+        }
+        
+        if (!docs.isEmpty())
+        {
+            target.docs.addAll(docs);
+            docs.clear();
         }
     }
 

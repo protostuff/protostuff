@@ -256,6 +256,10 @@ OCTAL
     :   '0' ('0'..'7')+
     ;
     
+DOC
+    :   '///' ~('\n'|'\r')* '\r'? '\n'
+    ;
+    
 COMMENT
     :   '//' ~('\n'|'\r')* '\r'? '\n' {skip();}
     |   '/*' ( options {greedy=false;} : . )* '*/' {skip();}
