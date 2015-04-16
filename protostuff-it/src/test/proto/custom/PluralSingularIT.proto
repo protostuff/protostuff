@@ -1,0 +1,14 @@
+package it;
+option java_package = "io.protostuff.compiler.it.custom";
+
+enum E {
+    A = 1;
+    B = 2;
+}
+
+message PluralToSingularTestMessage {
+  repeated int32 numbers = 1;
+  repeated int64 categories = 2;
+  repeated E errors = 3;
+}
+
