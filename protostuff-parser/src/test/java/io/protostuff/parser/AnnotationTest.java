@@ -14,10 +14,14 @@
 
 package io.protostuff.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Tests for annotations on messages, enums, fields, services, rpc methods, extensions
@@ -25,9 +29,10 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Dec 30, 2010
  */
-public class AnnotationTest extends TestCase
+public class AnnotationTest
 {
 
+    @Test
     public void testIt() throws Exception
     {
         File f = ProtoParserTest.getFile("io/protostuff/parser/test_annotations.proto");
@@ -38,7 +43,7 @@ public class AnnotationTest extends TestCase
 
         Message person = proto.getMessage("Person");
         assertNotNull(person);
-        assertEquals("[doc1]", person.getDocs().toString());
+        assertEquals("[ doc1]", person.getDocs().toString());
 
         Annotation defaultPerson = person.getAnnotation("DefaultPerson");
         assertNotNull(defaultPerson);
@@ -46,7 +51,7 @@ public class AnnotationTest extends TestCase
 
         Field<?> age = person.getField("age");
         assertNotNull(age);
-        assertEquals("[doc2]", age.getDocs().toString());
+        assertEquals("[ doc2]", age.getDocs().toString());
 
         Annotation defaultAge = age.getAnnotation("DefaultAge");
         assertNotNull(defaultAge);
@@ -54,15 +59,15 @@ public class AnnotationTest extends TestCase
 
         EnumGroup gender = person.getNestedEnumGroup("Gender");
         assertNotNull(gender);
-        assertEquals("[doc3]", gender.getDocs().toString());
+        assertEquals("[ doc3]", gender.getDocs().toString());
 
         Annotation defaultGender = gender.getAnnotation("DefaultGender");
         assertEquals("MALE", defaultGender.getValue("value"));
 
         EnumGroup.Value male = gender.getValue(0);
         assertNotNull(male);
-        assertEquals("[doc4]", male.getDocs().toString());
-        
+        assertEquals("[ doc4]", male.getDocs().toString());
+
         Annotation maleA = male.getAnnotation("Alias");
         assertNotNull(maleA);
         assertEquals("m", maleA.getValue("value"));
@@ -70,8 +75,8 @@ public class AnnotationTest extends TestCase
 
         EnumGroup.Value female = gender.getValue(1);
         assertNotNull(female);
-        assertEquals("[doc5]", female.getDocs().toString());
-        
+        assertEquals("[ doc5]", female.getDocs().toString());
+
         Annotation femaleA = female.getAnnotation("Alias");
         assertNotNull(femaleA);
         assertEquals("f", femaleA.getValue("value"));
@@ -79,7 +84,7 @@ public class AnnotationTest extends TestCase
 
         Message listRequest = person.getNestedMessage("ListRequest");
         assertNotNull(listRequest);
-        assertEquals("[doc6]", listRequest.getDocs().toString());
+        assertEquals("[ doc6]", listRequest.getDocs().toString());
 
         Annotation nestedMessageAnnotation = listRequest.getAnnotation("NestedMessageAnnotation");
         assertNotNull(nestedMessageAnnotation);
@@ -87,7 +92,7 @@ public class AnnotationTest extends TestCase
 
         Message response = listRequest.getNestedMessage("Response");
         assertNotNull(response);
-        assertEquals("[doc7]", response.getDocs().toString());
+        assertEquals("[ doc7]", response.getDocs().toString());
 
         Annotation deeperMessageAnnotation = response.getAnnotation("DeeperMessageAnnotation");
         assertNotNull(deeperMessageAnnotation);
@@ -95,7 +100,7 @@ public class AnnotationTest extends TestCase
 
         Field<?> personField = response.getField("person");
         assertNotNull(personField);
-        assertEquals("[doc8]", personField.getDocs().toString());
+        assertEquals("[ doc8]", personField.getDocs().toString());
 
         Annotation deeperMessageFieldAnnotation = personField.getAnnotation("DeeperMessageFieldAnnotation");
         assertNotNull(deeperMessageFieldAnnotation);
@@ -105,7 +110,7 @@ public class AnnotationTest extends TestCase
 
         Field<?> keyField = response.getField("key");
         assertNotNull(keyField);
-        assertEquals("[doc9]", keyField.getDocs().toString());
+        assertEquals("[ doc9]", keyField.getDocs().toString());
 
         Annotation testNested = keyField.getAnnotation("TestNested");
         assertNotNull(testNested);
@@ -116,7 +121,7 @@ public class AnnotationTest extends TestCase
         assertTrue(extensions.size() == 1);
         Extension extendPerson = extensions.iterator().next();
         assertNotNull(extendPerson);
-        assertEquals("[doc10]", extendPerson.getDocs().toString());
+        assertEquals("[ doc10]", extendPerson.getDocs().toString());
 
         Annotation personExtras = extendPerson.getAnnotation("PersonExtras");
         assertNotNull(personExtras);
@@ -124,11 +129,11 @@ public class AnnotationTest extends TestCase
 
         Field<?> country = extendPerson.getField("country");
         assertNotNull(country);
-        assertEquals("[doc11]", country.getDocs().toString());
-        
+        assertEquals("[ doc11]", country.getDocs().toString());
+
         Field<?> k = extendPerson.getField("key");
         assertNotNull(k);
-        assertEquals("[doc12]", k.getDocs().toString());
+        assertEquals("[ doc12]", k.getDocs().toString());
 
         Annotation validate = country.getAnnotation("Validate");
         assertNotNull(validate);
@@ -136,8 +141,8 @@ public class AnnotationTest extends TestCase
 
         Service personService = proto.getService("PersonService");
         assertNotNull(personService);
-        assertEquals("[doc13]", personService.getDocs().toString());
-        
+        assertEquals("[ doc13]", personService.getDocs().toString());
+
         assertTrue(personService.getAnnotationMap().size() == 2);
 
         Annotation someServiceAnnotation = personService.getAnnotation("SomeServiceAnnotation");
@@ -148,7 +153,7 @@ public class AnnotationTest extends TestCase
 
         Service.RpcMethod put = personService.getRpcMethod("Put");
         assertNotNull(put);
-        assertEquals("[doc14]", put.getDocs().toString());
+        assertEquals("[ doc14]", put.getDocs().toString());
 
         Annotation authRequired = put.getAnnotation("AuthRequired");
         assertNotNull(authRequired);
@@ -157,7 +162,7 @@ public class AnnotationTest extends TestCase
 
         Service.RpcMethod list = personService.getRpcMethod("List");
         assertNotNull(list);
-        assertEquals("[doc15]", list.getDocs().toString());
+        assertEquals("[ doc15]", list.getDocs().toString());
 
         Annotation testRpc = list.getAnnotation("TestRpc");
         assertNotNull(testRpc);

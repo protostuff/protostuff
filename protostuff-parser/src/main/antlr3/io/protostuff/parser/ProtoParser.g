@@ -118,7 +118,14 @@ annotation_keyval [Proto proto, Annotation annotation]
 
 doc_entry [Proto proto]
     :   DOC {
-            proto.addDoc($DOC.text.substring(3).trim());
+            String comment = $DOC.text;
+            // remove leading triple slash and trailing spaces/newline
+            int len = comment.length();
+            while ((0 < len) && (comment.charAt(len - 1) <= ' ')) {
+                len--;
+            }
+            comment = comment.substring(3, len);
+            proto.addDoc(comment);
         }
     ;
 

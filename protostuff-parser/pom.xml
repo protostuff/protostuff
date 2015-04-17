@@ -19,9 +19,6 @@
         <groupId>org.antlr</groupId>
         <artifactId>antlr3-maven-plugin</artifactId>
         <version>${antlr3-version}</version>
-        <configuration>
-          <outputDirectory>src/main/java</outputDirectory>
-        </configuration>
         <executions>
           <execution>
             <goals>
