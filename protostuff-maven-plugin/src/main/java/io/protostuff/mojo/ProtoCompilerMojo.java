@@ -161,6 +161,10 @@ public class ProtoCompilerMojo extends AbstractMojo
                 {
                     for (ProtoModule m : protoModules)
                     {
+                        if (m.getOutput() == null || m.getOutput().isEmpty())
+                        {
+                            throw new MojoExecutionException("<output> is not set.");
+                        }
                         m.setCachingProtoLoader(loader);
                         updateRelativeOutputLocation(m);
                         CompilerMain.compile(m);
