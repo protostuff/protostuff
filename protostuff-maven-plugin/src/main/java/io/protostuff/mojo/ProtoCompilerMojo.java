@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -45,6 +47,7 @@ import io.protostuff.compiler.CompilerMain;
 public class ProtoCompilerMojo extends AbstractMojo
 {
 
+    public static final String GENERATE_TEST_SOURCES_PHASE = "generate-test-sources";
     /**
      * The current Maven project.
      */
@@ -126,6 +129,10 @@ public class ProtoCompilerMojo extends AbstractMojo
     @Parameter
     protected Properties properties;
 
+    @Component
+    private MojoExecution execution;
+
+
     private Properties systemPropertiesBackup;
 
     @Override
@@ -162,8 +169,16 @@ public class ProtoCompilerMojo extends AbstractMojo
                         if (m.isAddToCompileSourceRoot())
                         {
                             // Include generated directory to the list of compilation sources
-                            project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                            if (GENERATE_TEST_SOURCES_PHASE.equals(execution.getLifecyclePhase()))
+                            {
+                                project.addTestCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                            }
+                            else
+                            {
+                                project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                            }
                         }
+
                     }
                 }
                 catch (Exception e)
@@ -186,7 +201,14 @@ public class ProtoCompilerMojo extends AbstractMojo
                             if (m.isAddToCompileSourceRoot())
                             {
                                 // Include generated directory to the list of compilation sources
-                                project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                                if (GENERATE_TEST_SOURCES_PHASE.equals(execution.getLifecyclePhase()))
+                                {
+                                    project.addTestCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                                }
+                                else
+                                {
+                                    project.addCompileSourceRoot(m.getOutputDir().getAbsolutePath());
+                                }
                             }
                         }
                     }
