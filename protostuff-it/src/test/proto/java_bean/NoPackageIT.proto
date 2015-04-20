@@ -1,0 +1,7 @@
+// Test that our generator behaves correctly with proto files without a package.
+
+option java_package = "io.protostuff.compiler.it.java_bean";
+
+message NoPackage {
+    optional int32 a = 1;
+}
