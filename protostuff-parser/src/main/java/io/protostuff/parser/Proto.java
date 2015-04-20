@@ -328,7 +328,9 @@ public class Proto extends AnnotationContainer implements HasOptions
     void postParse()
     {
         if (packageName == null)
-            throw err("proto package not defined", this);
+        {
+            setPackageName("");
+        }
 
         String javaPkg = (String) extraOptions.get("java_package");
         String javaPackageName = javaPkg == null || javaPkg.length() == 0 ?
