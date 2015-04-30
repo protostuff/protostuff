@@ -18,6 +18,7 @@ import static io.protostuff.compiler.Formatter.BUILTIN.PLURAL;
 import static io.protostuff.compiler.Formatter.BUILTIN.SINGULAR;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -180,5 +181,25 @@ public class FomatterTest
         assertEquals("urlsList", SINGULAR.format("urlsList"));
         assertEquals("winnerListRange", SINGULAR.format("winnerListRanges"));
         assertEquals("winner", SINGULAR.format("winners"));
+    }
+
+    @Test
+    public void testTrim() throws Exception {
+        final Formatter f = Formatter.BUILTIN.TRIM;
+        Assert.assertEquals("Some Foo", f.format("\n\n   Some Foo\n"));
+    }
+
+    @Test
+    public void testCutL() throws Exception {
+        final Formatter f = Formatter.BUILTIN.CUT_L;
+        Assert.assertEquals("oo", f.format("foo"));
+        Assert.assertEquals("", f.format(""));
+    }
+
+    @Test
+    public void testCutR() throws Exception {
+        final Formatter f = Formatter.BUILTIN.CUT_R;
+        Assert.assertEquals("fo", f.format("foo"));
+        Assert.assertEquals("", f.format(""));
     }
 }
