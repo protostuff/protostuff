@@ -71,7 +71,7 @@ public interface Formatter
         /**
          * camel-case.
          * <p>
-         * 
+         *
          * <pre>
          * some_foo/SomeFoo becomes someFoo
          * </pre>
@@ -88,7 +88,7 @@ public interface Formatter
         /**
          * camel-case with trailing underscore.
          * <p>
-         * 
+         *
          * <pre>
          * some_foo/SomeFoo/someFoo becomes someFoo_
          * </pre>
@@ -105,7 +105,7 @@ public interface Formatter
         /**
          * underscore-case.
          * <p>
-         * 
+         *
          * <pre>
          * someFoo/SomeFoo becomes some_foo
          * </pre>
@@ -122,7 +122,7 @@ public interface Formatter
         /**
          * underscore-case with trailing underscore.
          * <p>
-         * 
+         *
          * <pre>
          * someFoo/SomeFoo/some_foo becomes some_foo_
          * </pre>
@@ -139,7 +139,7 @@ public interface Formatter
         /**
          * "uppercased" underscore-case.
          * <p>
-         * 
+         *
          * <pre>
          * someFoo/SomeFoo/some_foo becomes SOME_FOO
          * </pre>
@@ -156,7 +156,7 @@ public interface Formatter
         /**
          * pascal-case.
          * <p>
-         * 
+         *
          * <pre>
          * some_foo/someFoo becomes SomeFoo
          * </pre>
@@ -173,7 +173,7 @@ public interface Formatter
         /**
          * pascal-case with space in between.
          * <p>
-         * 
+         *
          * <pre>
          * someFoo/some_foo/SomeFoo becomes "Some Foo"
          * </pre>
@@ -271,7 +271,37 @@ public interface Formatter
             {
                 return singularize(str);
             }
-        }
+        },
+
+        TRIM
+        {
+            @Override
+            public String format(String str) {
+                return str.trim();
+            }
+        },
+
+        CUT_L
+        {
+            @Override
+            public String format(String str) {
+                if (str.isEmpty()) {
+                    return str;
+                }
+                return str.substring(1, str.length());
+            }
+        },
+
+        CUT_R
+        {
+            @Override
+            public String format(String str) {
+                if (str.isEmpty()) {
+                    return str;
+                }
+                return str.substring(0, str.length()-1);
+            }
+        },
 
         ;
         private static List<String[]> singulars, plurals, irregulars;
