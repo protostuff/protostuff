@@ -40,7 +40,9 @@ Usage
 Documentation
 -------------
 
-http://code.google.com/p/protostuff/
+ * http://www.protostuff.io/
+ * For old docs: http://code.google.com/p/protostuff/
+
 
 Questions/Concerns/Suggestions
 ------------------------------
