@@ -9,6 +9,8 @@
 
   <artifactId>protostuff-benchmarks</artifactId>
 
+  <name>protostuff :: benchmarks</name>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <uberjar.name>protostuff-benchmarks</uberjar.name>

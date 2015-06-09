@@ -83,6 +83,12 @@
         <artifactId>protostuff-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
+          <properties>
+            <property>
+              <name>proto_path</name>
+              <value>${project.basedir}/src/test/proto</value>
+            </property>
+          </properties>
           <protoModules>
             <protoModule>
               <source>src/test/proto/java_bean/EmptyMessageIT.proto</source>
@@ -131,6 +137,11 @@
             </protoModule>
             <protoModule>
               <source>src/test/proto/custom/PluralSingularIT.proto</source>
+              <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
+              <output>src/test/stg/java_bean_with_plural_to_singular_format.java.stg</output>
+            </protoModule>
+            <protoModule>
+              <source>src/test/proto/core/</source>
               <outputDir>${project.build.directory}/generated-test-sources/test-proto</outputDir>
               <output>src/test/stg/java_bean_with_plural_to_singular_format.java.stg</output>
             </protoModule>

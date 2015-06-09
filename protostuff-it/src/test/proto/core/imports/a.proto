@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package core.imports;
+
+import "core/imports/b.proto";
+
+message A {
+    optional B b = 1;
+}

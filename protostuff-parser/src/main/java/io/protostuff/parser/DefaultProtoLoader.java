@@ -38,16 +38,31 @@ public class DefaultProtoLoader implements Proto.Loader
     public static final int DEFAULT_PROTO_SEARCH_STRATEGY = Integer.getInteger(
             "proto_search_strategy", ALL);
 
+    /**
+     * Standard JVM property.
+     * See https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
+     */
+    public static final String PATH_SEPARATOR;
+    public static final String PATH_SEPARATOR_PROPERTY = "path.separator";
+    private static final String PATH_SEPARATOR_DEFAULT = ";";
+
     public static final DefaultProtoLoader DEFAULT_INSTANCE = new DefaultProtoLoader();
 
     private static final ArrayList<File> __protoLoadDirs = new ArrayList<>();
 
     static
     {
+        String pathSeparatorProperty = System.getProperty(PATH_SEPARATOR_PROPERTY);
+        if (pathSeparatorProperty == null)
+        {
+            pathSeparatorProperty = PATH_SEPARATOR_DEFAULT;
+        }
+        PATH_SEPARATOR = pathSeparatorProperty;
+
         String protoPath = System.getProperty("proto_path");
         if (protoPath != null)
         {
-            StringTokenizer tokenizer = new StringTokenizer(protoPath, ",:;");
+            StringTokenizer tokenizer = new StringTokenizer(protoPath, PATH_SEPARATOR);
             while (tokenizer.hasMoreTokens())
             {
                 String path = tokenizer.nextToken().trim();
@@ -103,7 +118,7 @@ public class DefaultProtoLoader implements Proto.Loader
     /**
      * Search from proto_path only. For full protoc compatibility, use this.
      * <p>
-     * 
+     *
      * <pre>
      * Enable via:
      * -Dproto_path=$path -Dproto_search_strategy=1
@@ -126,7 +141,7 @@ public class DefaultProtoLoader implements Proto.Loader
     /**
      * Search from proto_path and classpath (in that order).
      * <p>
-     * 
+     *
      * <pre>
      * Enable via:
      * -Dproto_path=$path -Dproto_search_strategy=2
@@ -157,7 +172,7 @@ public class DefaultProtoLoader implements Proto.Loader
     /**
      * Search from every possible resource. Also loads from a remote url (if path starts with http://).
      * <p>
-     * 
+     *
      * <pre>
      * Search order is:
      * 1. relative path
