@@ -1,40 +1,24 @@
-Usage
------
+Usage (maven)
+-------------
 
 1. When you generate schemas for your classes
    
-  Maven:
   ```xml
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-core</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.5</version>
   </dependency>
-  ```
-  
-  Gradle:
-  ```groovy
-  dependencies {
-      compile 'io.protostuff:protostuff-core:1.3.3'
-  }
   ```
 
 2. Runtime schemas
    
-  Maven:
   ```xml
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-runtime</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.5</version>
   </dependency>
-  ```
-  
-  Gradle:
-  ```groovy
-  dependencies {
-      compile 'io.protostuff:protostuff-runtime:1.3.3'
-  }
   ```
   
 Documentation
