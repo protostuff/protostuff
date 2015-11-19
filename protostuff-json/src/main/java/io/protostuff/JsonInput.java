@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonToken;
 
 /**
  * An input used for reading data with json format.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */
@@ -115,10 +115,10 @@ public final class JsonInput implements Input
             }
             return;
         }
-		else
-		{
-			skipObjectField(parser);
-		}
+        else
+        {
+            skipObjectField(parser);
+        }
     }
 
     @Override
@@ -152,7 +152,7 @@ public final class JsonInput implements Input
     private <T> int readFieldNumber(final Schema<T> schema, final JsonParser parser)
             throws IOException
     {
-        for (;;)
+        for (; ; )
         {
             if (parser.nextToken() == END_OBJECT)
                 return 0;
@@ -197,11 +197,11 @@ public final class JsonInput implements Input
                         while (parser.nextToken() != END_ARRAY)
                             ;
                     }
-					else
-					{
-						skipObjectField(parser);
-					}
-					continue;
+                    else
+                    {
+                        skipObjectField(parser);
+                    }
+                    continue;
                 }
 
                 lastRepeated = true;
@@ -219,14 +219,14 @@ public final class JsonInput implements Input
                     schema.getFieldNumber(name);
 
             if (number == 0)
-			{
-				// we can skip this unknown field
-				if (!parser.getCurrentToken().isScalarValue())
-				{
-					skipObjectField(parser);
-				}
-				continue;
-			}
+            {
+                // we can skip this unknown field
+                if (!parser.getCurrentToken().isScalarValue())
+                {
+                    skipObjectField(parser);
+                }
+                continue;
+            }
 
             lastName = name;
             lastNumber = number;
@@ -441,24 +441,24 @@ public final class JsonInput implements Input
         return ByteBuffer.wrap(readByteArray());
     }
 
-	/**
-	 * Skip through the entire objct field and all nested objects inside it
-	 */
-	private void skipObjectField(JsonParser parser) throws IOException
-	{
-		int nestedObjects = 0;
-		while (parser.nextToken() != END_OBJECT || nestedObjects > 0)
-		{
-			JsonToken token = parser.getCurrentToken();
-			if (token == START_OBJECT)
-			{
-				nestedObjects++;
-			}
-			else if (token == END_OBJECT)
-			{
-				nestedObjects--;
-			}
-		}
+    /**
+     * Skip through the entire objct field and all nested objects inside it
+     */
+    private void skipObjectField(JsonParser parser) throws IOException
+    {
+        int nestedObjects = 0;
+        while (parser.nextToken() != END_OBJECT || nestedObjects > 0)
+        {
+            JsonToken token = parser.getCurrentToken();
+            if (token == START_OBJECT)
+            {
+                nestedObjects++;
+            }
+            else if (token == END_OBJECT)
+            {
+                nestedObjects--;
+            }
+        }
     }
 
 }
