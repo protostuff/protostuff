@@ -46,22 +46,6 @@ public class JsonUnknownFieldTest
             + "\"field2\":\"testValue\""
             + "}";
 
-    public static final String INVALID_JSON_MESSAGE = "{"
-            + "\"field1\":42,"
-            + "\"unknownField\":{"
-            + "\"a\":0,"
-            + "\"field1\":43,"
-            + "\"anotherNestedField\":{"
-            + "\"b\":0,"
-            + "\"c\":[1, 2, 3],"
-            + "\"thirdNestedField\":{"
-            + "\"e\":1,"
-            + "\"f\":\"foobar\""
-            + "}"
-            + "},"
-            + "\"field2\":\"testValue\""
-            + "}";
-
     public static final Schema<TestMessage> SCHEMA = RuntimeSchema.getSchema(TestMessage.class);
 
     private TestMessage instance;
@@ -97,13 +81,6 @@ public class JsonUnknownFieldTest
     public void unknownNestedMessageField() throws Exception
     {
         JsonIOUtil.mergeFrom(UNKNOWN_NESTED_MESSAGE_FIELD.getBytes(), instance, SCHEMA, false);
-        checkKnownFields(instance);
-    }
-
-    @Test
-    public void invalidJsonMessageField() throws Exception
-    {
-        JsonIOUtil.mergeFrom(INVALID_JSON_MESSAGE.getBytes(), instance, SCHEMA, false);
         checkKnownFields(instance);
     }
 
