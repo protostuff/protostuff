@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonToken;
 
 /**
  * An input used for reading data with json format.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */
@@ -115,11 +115,10 @@ public final class JsonInput implements Input
             }
             return;
         }
-
-        throw new JsonInputException("Unknown field: " +
-                (numeric ? fieldNumber : lastName) +
-                " on message " +
-                schema.messageFullName());
+        else
+        {
+            skipObjectField(parser);
+        }
     }
 
     @Override
@@ -153,7 +152,7 @@ public final class JsonInput implements Input
     private <T> int readFieldNumber(final Schema<T> schema, final JsonParser parser)
             throws IOException
     {
-        for (;;)
+        for (; ; )
         {
             if (parser.nextToken() == END_OBJECT)
                 return 0;
@@ -197,12 +196,12 @@ public final class JsonInput implements Input
                         // skip the scalar elements
                         while (parser.nextToken() != END_ARRAY)
                             ;
-
-                        continue;
                     }
-
-                    throw new JsonInputException("Unknown field: " + name + " on message " +
-                            schema.messageFullName());
+                    else
+                    {
+                        skipObjectField(parser);
+                    }
+                    continue;
                 }
 
                 lastRepeated = true;
@@ -222,11 +221,11 @@ public final class JsonInput implements Input
             if (number == 0)
             {
                 // we can skip this unknown field
-                if (parser.getCurrentToken().isScalarValue())
-                    continue;
-
-                throw new JsonInputException("Unknown field: " + name + " on message " +
-                        schema.messageFullName());
+                if (!parser.getCurrentToken().isScalarValue())
+                {
+                    skipObjectField(parser);
+                }
+                continue;
             }
 
             lastName = name;
@@ -440,6 +439,26 @@ public final class JsonInput implements Input
     public ByteBuffer readByteBuffer() throws IOException
     {
         return ByteBuffer.wrap(readByteArray());
+    }
+
+    /**
+     * Skip through the entire objct field and all nested objects inside it
+     */
+    private void skipObjectField(JsonParser parser) throws IOException
+    {
+        int nestedObjects = 0;
+        while (parser.nextToken() != END_OBJECT || nestedObjects > 0)
+        {
+            JsonToken token = parser.getCurrentToken();
+            if (token == START_OBJECT)
+            {
+                nestedObjects++;
+            }
+            else if (token == END_OBJECT)
+            {
+                nestedObjects--;
+            }
+        }
     }
 
 }
