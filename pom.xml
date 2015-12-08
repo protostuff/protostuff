@@ -31,19 +31,12 @@
     <developer>
       <id>dyu</id>
       <name>David Yu</name>
-      <email>david.yu.ftw@gmail.com</email>
-      <url>http://davidyu.myopenid.com</url>
-    </developer>
-    <developer>
-      <id>posix4e</id>
-      <name>Alex Newman</name>
-      <email>alex@ohmdata.com</email>
-      <url>http://www.ohmdata.com</url>
+      <email>dyu@protostuff.io</email>
     </developer>
     <developer>
       <id>kshchepanovskyi</id>
       <name>Kostiantyn Shchepanovskyi</name>
-      <email>schepanovsky@gmail.com</email>
+      <email>ks@protostuff.io</email>
       <timezone>+2</timezone>
     </developer>
   </developers>
