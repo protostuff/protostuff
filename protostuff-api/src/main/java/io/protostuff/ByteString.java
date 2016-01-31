@@ -263,7 +263,7 @@ public final class ByteString
      * @ Constructs a new {@code String} by decoding the bytes using the specified charset.
      */
     /*
-     * @public String toString(final String charsetName) throws UnsupportedEncodingException { return new String(bytes,
+     * @public String unsignedIntToString(final String charsetName) throws UnsupportedEncodingException { return new String(bytes,
      * charsetName); }
      */
 

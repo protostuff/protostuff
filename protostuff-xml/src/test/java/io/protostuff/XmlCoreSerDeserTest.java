@@ -19,6 +19,8 @@ import static io.protostuff.SerializableObjects.baz;
 import static io.protostuff.SerializableObjects.foo;
 import static io.protostuff.SerializableObjects.negativeBar;
 import static io.protostuff.SerializableObjects.negativeBaz;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +31,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import io.protostuff.StringSerializer.STRING;
+import org.junit.Test;
 
 /**
  * Testing for xml ser/deser against messages.
@@ -36,9 +39,10 @@ import io.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created May 24, 2010
  */
-public class XmlCoreSerDeserTest extends TestCase
+public class XmlCoreSerDeserTest
 {
 
+    @Test
     public void testFoo() throws Exception
     {
         Foo fooCompare = foo;
@@ -49,6 +53,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
 
+    @Test
     public void testBar() throws Exception
     {
         for (Bar barCompare : new Bar[] { bar, negativeBar })
@@ -61,6 +66,7 @@ public class XmlCoreSerDeserTest extends TestCase
         }
     }
 
+    @Test
     public void testBarWithEmptyStringAndByteString() throws Exception
     {
         Bar barCompare = new Bar();
@@ -74,10 +80,12 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(barCompare, dbar);
 
         // test equal serialization on both xml outputs
-        assertTrue(Arrays.equals(data, XmlXIOUtil.toByteArray(barCompare,
-                barCompare.cachedSchema(), LinkedBuffer.allocate(256))));
+        byte[] actuals = XmlXIOUtil.toByteArray(barCompare,
+                barCompare.cachedSchema(), LinkedBuffer.allocate(256));
+        assertArrayEquals(data, actuals);
     }
 
+    @Test
     public void testBaz() throws Exception
     {
         for (Baz bazCompare : new Baz[] { baz, negativeBaz })
@@ -90,6 +98,7 @@ public class XmlCoreSerDeserTest extends TestCase
         }
     }
 
+    @Test
     public void testUnknownScalarFields() throws Exception
     {
         String[] regularMessages = new String[] {
@@ -116,6 +125,7 @@ public class XmlCoreSerDeserTest extends TestCase
         }
     }
 
+    @Test
     public void testListIO() throws Exception
     {
         ArrayList<Bar> bars = new ArrayList<>();
@@ -137,6 +147,7 @@ public class XmlCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(bars.get(i++), b);
     }
 
+    @Test
     public void testListIOEmpty() throws Exception
     {
         ArrayList<Bar> bars = new ArrayList<>();
@@ -159,6 +170,7 @@ public class XmlCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(bars.get(i++), b);
     }
 
+    @Test
     public void testListIOWithArrays() throws Exception
     {
         ArrayList<Foo> foos = new ArrayList<>();
@@ -180,6 +192,7 @@ public class XmlCoreSerDeserTest extends TestCase
             SerializableObjects.assertEquals(foos.get(i++), f);
     }
 
+    @Test
     public void testEmptyMessage() throws Exception
     {
         Bar bar = new Bar();
@@ -194,6 +207,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testEmptyMessageInner() throws Exception
     {
         Baz baz = new Baz();
@@ -212,6 +226,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessage() throws Exception
     {
         Baz baz = new Baz();
@@ -230,6 +245,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessageWithString() throws Exception
     {
         Baz baz = new Baz();
@@ -248,6 +264,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessageWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
@@ -266,6 +283,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessageInner() throws Exception
     {
         Baz baz = new Baz();
@@ -284,6 +302,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessageInnerWithString() throws Exception
     {
         Baz baz = new Baz();
@@ -302,6 +321,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testPartialEmptyMessageInnerWithEmptyString() throws Exception
     {
         Baz baz = new Baz();
@@ -320,6 +340,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(bar, parsedBar);
     }
 
+    @Test
     public void testEmptyFoo() throws Exception
     {
         Foo foo = new Foo();
@@ -334,6 +355,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
 
+    @Test
     public void testEmptyFooInner() throws Exception
     {
         Foo foo = new Foo();
@@ -353,6 +375,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
 
+    @Test
     public void testEmptyFooDeeper() throws Exception
     {
         Foo foo = new Foo();
@@ -373,6 +396,7 @@ public class XmlCoreSerDeserTest extends TestCase
         SerializableObjects.assertEquals(foo, parsedFoo);
     }
 
+    @Test
     public void testNestedRequiredField()
     {
         Schema<WrapperPojo> schema = WrapperPojo.SCHEMA;

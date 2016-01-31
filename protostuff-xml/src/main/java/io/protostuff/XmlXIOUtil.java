@@ -29,7 +29,7 @@ public final class XmlXIOUtil
     {
     }
 
-    static final byte[] HEADER = "<?xml version='1.0' encoding='UTF-8'?>".getBytes();
+    static final byte[] HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes();
 
     /**
      * Serializes the {@code message} into a byte array using the given schema.

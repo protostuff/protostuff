@@ -23,3 +23,5 @@ It is licensed under the apache 2.0 license.
 jarjar is copyright Google inc unless otherwise noted. 
 It is licensed under the apache 2.0 license.
 
+guava is copyright Google inc unless otherwise noted.
+It is licensed under the apache 2.0 license.
