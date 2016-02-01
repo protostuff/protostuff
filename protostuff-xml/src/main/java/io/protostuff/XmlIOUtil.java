@@ -189,7 +189,7 @@ public final class XmlIOUtil
     public static <T> void mergeFrom(byte[] data, int offset, int len, T message,
             Schema<T> schema)
     {
-        mergeFrom(data, 0, data.length, message, schema, DEFAULT_INPUT_FACTORY);
+        mergeFrom(data, offset, len, message, schema, DEFAULT_INPUT_FACTORY);
     }
 
     /**
