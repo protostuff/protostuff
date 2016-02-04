@@ -1,3 +1,16 @@
+
+![Protostuff](http://www.protostuff.io/images/protostuff_300x100.png)
+
+A serialization library with built-in support for forward-backward compatibility (schema evolution) and validation.
+
+Documentation:
+
+1. http://www.protostuff.io/
+
+Benchmarks:
+
+1. http://hperadin.github.io/jvm-serializers-report/report.html
+
 Usage (maven)
 -------------
 
@@ -20,13 +33,6 @@ Usage (maven)
     <version>1.3.5</version>
   </dependency>
   ```
-  
-Documentation
--------------
-
- * http://www.protostuff.io/
- * For old docs: http://code.google.com/p/protostuff/
-
 
 Questions/Concerns/Suggestions
 ------------------------------
