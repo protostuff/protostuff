@@ -221,16 +221,16 @@ public class ProtoCompilerMojo extends AbstractMojo
                         throw new MojoExecutionException(modulesFile + " does not exist.");
 
                     File parent = modulesFile.getParentFile();
-                    File sourceBaseDir = this.sourceBaseDir, outputBaseDir = this.outputBaseDir;
+                    File sourceBaseDirLocal = this.sourceBaseDir, outputBaseDirLocal = this.outputBaseDir;
 
-                    if (sourceBaseDir == null)
-                        sourceBaseDir = parent;
+                    if (sourceBaseDirLocal == null)
+                        sourceBaseDirLocal = parent;
 
-                    if (outputBaseDir == null)
-                        outputBaseDir = parent;
+                    if (outputBaseDirLocal == null)
+                        outputBaseDirLocal = parent;
 
                     CompilerMain.compile(CompilerMain.loadModules(modulesFile,
-                            sourceBaseDir, outputBaseDir));
+                            sourceBaseDirLocal, outputBaseDirLocal));
                 }
                 catch (Exception e)
                 {

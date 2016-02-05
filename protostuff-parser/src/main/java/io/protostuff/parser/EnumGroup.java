@@ -228,19 +228,19 @@ public class EnumGroup extends AnnotationContainer implements HasName, HasOption
         else
             Collections.sort(sortedValues, Value.NO_ALIAS_COMPARATOR);
 
-        final Proto proto = getProto();
+        final Proto protoLocal = getProto();
         final String fullName = getFullName();
 
-        proto.fullyQualifiedEnumGroups.put(fullName, this);
+        protoLocal.fullyQualifiedEnumGroups.put(fullName, this);
 
         if (!standardOptions.isEmpty())
-            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, fullName));
+            protoLocal.references.add(new ConfiguredReference(standardOptions, extraOptions, fullName));
 
         for (Value v : values.values())
         {
             if (!v.field.standardOptions.isEmpty())
             {
-                proto.references.add(new ConfiguredReference(
+                protoLocal.references.add(new ConfiguredReference(
                         v.field.standardOptions, v.field.extraOptions, fullName));
             }
         }

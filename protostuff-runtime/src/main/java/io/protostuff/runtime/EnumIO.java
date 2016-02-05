@@ -272,16 +272,16 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public CollectionSchema.MessageFactory getEnumSetFactory()
     {
-        CollectionSchema.MessageFactory enumSetFactory = this.enumSetFactory;
-        if (enumSetFactory == null)
+        CollectionSchema.MessageFactory enumSetFactoryLocal = this.enumSetFactory;
+        if (enumSetFactoryLocal == null)
         {
             synchronized (this)
             {
-                if ((enumSetFactory = this.enumSetFactory) == null)
-                    this.enumSetFactory = enumSetFactory = newEnumSetFactory(this);
+                if ((enumSetFactoryLocal = this.enumSetFactory) == null)
+                    this.enumSetFactory = enumSetFactoryLocal = newEnumSetFactory(this);
             }
         }
-        return enumSetFactory;
+        return enumSetFactoryLocal;
     }
 
     /**
@@ -289,16 +289,16 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public MapSchema.MessageFactory getEnumMapFactory()
     {
-        MapSchema.MessageFactory enumMapFactory = this.enumMapFactory;
-        if (enumMapFactory == null)
+        MapSchema.MessageFactory enumMapFactoryLocal = this.enumMapFactory;
+        if (enumMapFactoryLocal == null)
         {
             synchronized (this)
             {
-                if ((enumMapFactory = this.enumMapFactory) == null)
-                    this.enumMapFactory = enumMapFactory = newEnumMapFactory(this);
+                if ((enumMapFactoryLocal = this.enumMapFactory) == null)
+                    this.enumMapFactory = enumMapFactoryLocal = newEnumMapFactory(this);
             }
         }
-        return enumMapFactory;
+        return enumMapFactoryLocal;
     }
 
     /**
@@ -335,8 +335,8 @@ public abstract class EnumIO<E extends Enum<E>> implements
         @Override
         public E readFrom(Input input) throws IOException
         {
-            String alias = input.readString();
-            return getByAlias(alias);
+            String aliasLocal = input.readString();
+            return getByAlias(aliasLocal);
         }
     }
 
@@ -353,8 +353,8 @@ public abstract class EnumIO<E extends Enum<E>> implements
         @Override
         public E readFrom(Input input) throws IOException
         {
-            int tag = input.readEnum();
-            return getByTag(tag);
+            int tagLocal = input.readEnum();
+            return getByTag(tagLocal);
         }
     }
 

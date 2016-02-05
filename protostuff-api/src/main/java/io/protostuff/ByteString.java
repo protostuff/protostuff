@@ -335,13 +335,13 @@ public final class ByteString
      */
     public boolean equals(final byte[] data, int offset, final int len)
     {
-        final byte[] bytes = this.bytes;
-        if (len != bytes.length)
+        final byte[] bytesLocal = this.bytes;
+        if (len != bytesLocal.length)
             return false;
 
         for (int i = 0; i < len;)
         {
-            if (bytes[i++] != data[offset++])
+            if (bytesLocal[i++] != data[offset++])
             {
                 return false;
             }

@@ -135,16 +135,16 @@ public abstract class DerivativeSchema implements Schema<Object>
             if (first != ID_POJO)
                 throw new ProtostuffException("order not preserved.");
 
-            final Pipe.Schema<Object> pipeSchema = strategy.transferPojoId(
+            final Pipe.Schema<Object> pipeSchemaLocal = strategy.transferPojoId(
                     input, output, ID_POJO).getPipeSchema();
 
             if (output instanceof StatefulOutput)
             {
                 // update using the derived schema.
-                ((StatefulOutput) output).updateLast(pipeSchema, this);
+                ((StatefulOutput) output).updateLast(pipeSchemaLocal, this);
             }
 
-            Pipe.transferDirect(pipeSchema, pipe, input, output);
+            Pipe.transferDirect(pipeSchemaLocal, pipe, input, output);
         }
 
     };

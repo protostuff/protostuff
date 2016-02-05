@@ -325,39 +325,39 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
 
         void resolveReferences()
         {
-            final Proto proto = getProto();
+            final Proto protoLocal = getProto();
 
             String enclosingNs = service.isNested() ?
-                    service.parentMessage.getFullName() : proto.getPackageName();
+                    service.parentMessage.getFullName() : protoLocal.getPackageName();
 
             String fullArgName = (argPackage != null ? argPackage + '.' + argName : argName);
             if (!"void".equals(fullArgName))
             {
-                Message argType = proto.findMessageReference(fullArgName, enclosingNs);
-                if (argType == null)
+                Message argTypeLocal = protoLocal.findMessageReference(fullArgName, enclosingNs);
+                if (argTypeLocal == null)
                 {
                     throw err("The message " + fullArgName + " is not defined",
-                            proto);
+                            protoLocal);
                 }
 
-                this.argType = argType;
+                this.argType = argTypeLocal;
             }
 
             String fullReturnName = (retPackage != null ? retPackage + '.' + retName : retName);
             if (!"void".equals(fullReturnName))
             {
-                Message returnType = proto.findMessageReference(fullReturnName, enclosingNs);
-                if (returnType == null)
+                Message returnTypeLocal = protoLocal.findMessageReference(fullReturnName, enclosingNs);
+                if (returnTypeLocal == null)
                 {
                     throw err("The message " + fullReturnName + " is not defined",
-                            proto);
+                            protoLocal);
                 }
 
-                this.returnType = returnType;
+                this.returnType = returnTypeLocal;
             }
 
             if (!standardOptions.isEmpty())
-                proto.references.add(new ConfiguredReference(standardOptions, extraOptions, proto.getPackageName()));
+                protoLocal.references.add(new ConfiguredReference(standardOptions, extraOptions, protoLocal.getPackageName()));
         }
 
     }

@@ -122,27 +122,27 @@ public abstract class Pipe
                 pipe.output = output;
 
                 // begin message pipe
-                final Input input = pipe.begin(this);
+                final Input inputLocal = pipe.begin(this);
 
-                if (input == null)
+                if (inputLocal == null)
                 {
                     // empty message pipe.
                     pipe.output = null;
-                    pipe.end(this, input, true);
+                    pipe.end(this, inputLocal, true);
                     return;
                 }
 
-                pipe.input = input;
+                pipe.input = inputLocal;
 
                 boolean transferComplete = false;
                 try
                 {
-                    transfer(pipe, input, output);
+                    transfer(pipe, inputLocal, output);
                     transferComplete = true;
                 }
                 finally
                 {
-                    pipe.end(this, input, !transferComplete);
+                    pipe.end(this, inputLocal, !transferComplete);
                     // pipe.input = null;
                     // pipe.output = null;
                 }

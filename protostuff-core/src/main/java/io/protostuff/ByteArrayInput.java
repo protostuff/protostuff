@@ -437,11 +437,11 @@ public final class ByteArrayInput implements Input
         if (offset + length > limit)
             throw ProtobufException.misreportedSize();
 
-        final int offset = this.offset;
+        final int offsetLocal = this.offset;
 
         this.offset += length;
 
-        return STRING.deser(buffer, offset, length);
+        return STRING.deser(buffer, offsetLocal, length);
     }
 
     @Override
@@ -564,18 +564,18 @@ public final class ByteArrayInput implements Input
      */
     public long readRawVarint64() throws IOException
     {
-        final byte[] buffer = this.buffer;
-        int offset = this.offset;
+        final byte[] bufferLocal = this.buffer;
+        int offsetLocal = this.offset;
 
         int shift = 0;
         long result = 0;
         while (shift < 64)
         {
-            final byte b = buffer[offset++];
+            final byte b = bufferLocal[offsetLocal++];
             result |= (long) (b & 0x7F) << shift;
             if ((b & 0x80) == 0)
             {
-                this.offset = offset;
+                this.offset = offsetLocal;
                 return result;
             }
             shift += 7;
@@ -588,15 +588,15 @@ public final class ByteArrayInput implements Input
      */
     public int readRawLittleEndian32() throws IOException
     {
-        final byte[] buffer = this.buffer;
-        int offset = this.offset;
+        final byte[] bufferLocal = this.buffer;
+        int offsetLocal = this.offset;
 
-        final byte b1 = buffer[offset++];
-        final byte b2 = buffer[offset++];
-        final byte b3 = buffer[offset++];
-        final byte b4 = buffer[offset++];
+        final byte b1 = bufferLocal[offsetLocal++];
+        final byte b2 = bufferLocal[offsetLocal++];
+        final byte b3 = bufferLocal[offsetLocal++];
+        final byte b4 = bufferLocal[offsetLocal++];
 
-        this.offset = offset;
+        this.offset = offsetLocal;
 
         return (((int) b1 & 0xff)) |
                 (((int) b2 & 0xff) << 8) |
@@ -609,19 +609,19 @@ public final class ByteArrayInput implements Input
      */
     public long readRawLittleEndian64() throws IOException
     {
-        final byte[] buffer = this.buffer;
-        int offset = this.offset;
+        final byte[] bufferLocal = this.buffer;
+        int offsetLocal = this.offset;
 
-        final byte b1 = buffer[offset++];
-        final byte b2 = buffer[offset++];
-        final byte b3 = buffer[offset++];
-        final byte b4 = buffer[offset++];
-        final byte b5 = buffer[offset++];
-        final byte b6 = buffer[offset++];
-        final byte b7 = buffer[offset++];
-        final byte b8 = buffer[offset++];
+        final byte b1 = bufferLocal[offsetLocal++];
+        final byte b2 = bufferLocal[offsetLocal++];
+        final byte b3 = bufferLocal[offsetLocal++];
+        final byte b4 = bufferLocal[offsetLocal++];
+        final byte b5 = bufferLocal[offsetLocal++];
+        final byte b6 = bufferLocal[offsetLocal++];
+        final byte b7 = bufferLocal[offsetLocal++];
+        final byte b8 = bufferLocal[offsetLocal++];
 
-        this.offset = offset;
+        this.offset = offsetLocal;
 
         return (((long) b1 & 0xff)) |
                 (((long) b2 & 0xff) << 8) |

@@ -135,9 +135,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public Int1 runtime_deserialize_1_int_field() throws Exception
     {
-        Int1 int1 = new Int1();
-        ProtobufIOUtil.mergeFrom(data_1_int, int1, int1RuntimeSchema);
-        return int1;
+        Int1 int1Local = new Int1();
+        ProtobufIOUtil.mergeFrom(data_1_int, int1Local, int1RuntimeSchema);
+        return int1Local;
     }
 
     @Benchmark
@@ -156,9 +156,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public Int10 runtime_deserialize_10_int_field() throws Exception
     {
-        Int10 int10 = new Int10();
-        ProtobufIOUtil.mergeFrom(data_10_int, int10, int10RuntimeSchema);
-        return int10;
+        Int10 int10Local = new Int10();
+        ProtobufIOUtil.mergeFrom(data_10_int, int10Local, int10RuntimeSchema);
+        return int10Local;
     }
 
     @Benchmark
@@ -177,9 +177,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public SparseInt1 runtime_sparse_deserialize_1_int_field() throws Exception
     {
-        SparseInt1 int1 = new SparseInt1();
-        ProtobufIOUtil.mergeFrom(data_1_int, int1, sparseInt1RuntimeSchema);
-        return int1;
+        SparseInt1 int1Local = new SparseInt1();
+        ProtobufIOUtil.mergeFrom(data_1_int, int1Local, sparseInt1RuntimeSchema);
+        return int1Local;
     }
 
     @Benchmark
@@ -198,9 +198,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public SparseInt10 runtime_sparse_deserialize_10_int_field() throws Exception
     {
-        SparseInt10 int10 = new SparseInt10();
-        ProtobufIOUtil.mergeFrom(data_10_int, int10, sparseInt10RuntimeSchema);
-        return int10;
+        SparseInt10 int10Local = new SparseInt10();
+        ProtobufIOUtil.mergeFrom(data_10_int, int10Local, sparseInt10RuntimeSchema);
+        return int10Local;
     }
 
     @Benchmark
@@ -219,9 +219,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public GeneratedInt1 generated_deserialize_1_int_field() throws Exception
     {
-        GeneratedInt1 int1 = new GeneratedInt1();
-        ProtobufIOUtil.mergeFrom(data_1_int, int1, GeneratedInt1.getSchema());
-        return int1;
+        GeneratedInt1 int1Local = new GeneratedInt1();
+        ProtobufIOUtil.mergeFrom(data_1_int, int1Local, GeneratedInt1.getSchema());
+        return int1Local;
     }
 
     @Benchmark
@@ -240,9 +240,9 @@ public class RuntimeSchemaBenchmark
     @Benchmark
     public GeneratedInt10 generated_deserialize_10_int_field() throws Exception
     {
-        GeneratedInt10 int10 = new GeneratedInt10();
-        ProtobufIOUtil.mergeFrom(data_10_int, int10, GeneratedInt10.getSchema());
-        return int10;
+        GeneratedInt10 int10Local = new GeneratedInt10();
+        ProtobufIOUtil.mergeFrom(data_10_int, int10Local, GeneratedInt10.getSchema());
+        return int10Local;
     }
 
     @Benchmark
