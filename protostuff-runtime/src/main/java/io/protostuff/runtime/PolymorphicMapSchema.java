@@ -388,25 +388,8 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 break;
 
             case ID_SINGLETON_MAP:
-            {
-                final Object k, v;
-                try
-                {
-                    k = fSingletonMap_k.get(value);
-                    v = fSingletonMap_v.get(value);
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                output.writeUInt32(id, 0, false);
-                if (k != null)
-                    output.writeObject(1, k, strategy.OBJECT_SCHEMA, false);
-                if (v != null)
-                    output.writeObject(3, v, strategy.OBJECT_SCHEMA, false);
-                break;
-            }
+            writeNonPublicMapToIdSingletonMao(output, value, strategy, id);
+            break;
 
             case ID_UNMODIFIABLE_MAP:
                 writeUnmodifiableMapTo(output, value, currentSchema, strategy, id);
@@ -436,6 +419,29 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 throw new RuntimeException("Should not happen.");
         }
     }
+
+	private static void writeNonPublicMapToIdSingletonMao(Output output, Object value, IdStrategy strategy,
+			final int id) throws IOException {
+		{
+		    final Object k, v;
+		    try
+		    {
+		        k = fSingletonMap_k.get(value);
+		        v = fSingletonMap_v.get(value);
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    output.writeUInt32(id, 0, false);
+		    if (k != null)
+		        output.writeObject(1, k, strategy.OBJECT_SCHEMA, false);
+		    if (v != null)
+		        output.writeObject(3, v, strategy.OBJECT_SCHEMA, false);
+		    
+		}
+	}
 
     private static void writeUnmodifiableMapTo(Output output, Object value,
             Schema<?> currentSchema, IdStrategy strategy, int id)
@@ -527,20 +533,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 break;
 
             case ID_SINGLETON_MAP:
-            {
-                final Object map = iSingletonMap.newInstance();
-                if (graph)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(map, owner);
-                }
-
-                if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
-
-                return fillSingletonMapFrom(input, schema, owner, strategy, graph,
-                        map);
-            }
+            return readObjectFromIdSingletonMap(input, schema, owner, strategy, graph);
 
             case ID_UNMODIFIABLE_MAP:
                 ret = readUnmodifiableMapFrom(input, schema, owner, strategy,
@@ -573,35 +566,9 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM_MAP:
-            {
-                final Map<?, Object> em = strategy.resolveEnumFrom(input)
-                        .newEnumMap();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(em, owner);
-                }
-
-                strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
-
-                return em;
-            }
+            return readObjectFromIdEnumMap(input, owner, strategy);
             case ID_MAP:
-            {
-                final Map<Object, Object> map = strategy.resolveMapFrom(input)
-                        .newMessage();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(map, owner);
-                }
-
-                strategy.MAP_SCHEMA.mergeFrom(input, map);
-
-                return map;
-            }
+            return readObjectFromIdMap(input, owner, strategy);
 
             default:
                 throw new ProtostuffException("Corrupt input.");
@@ -612,6 +579,58 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
 
         return ret;
     }
+
+	private static Object readObjectFromIdMap(Input input, Object owner, IdStrategy strategy) throws IOException {
+		{
+		    final Map<Object, Object> map = strategy.resolveMapFrom(input)
+		            .newMessage();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(map, owner);
+		    }
+
+		    strategy.MAP_SCHEMA.mergeFrom(input, map);
+
+		    return map;
+		}
+	}
+
+	private static Object readObjectFromIdEnumMap(Input input, Object owner, IdStrategy strategy) throws IOException {
+		{
+		    final Map<?, Object> em = strategy.resolveEnumFrom(input)
+		            .newEnumMap();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(em, owner);
+		    }
+
+		    strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
+
+		    return em;
+		}
+	}
+
+	private static Object readObjectFromIdSingletonMap(Input input, Schema<?> schema, Object owner, IdStrategy strategy,
+			final boolean graph) throws IOException, ProtostuffException {
+		{
+		    final Object map = iSingletonMap.newInstance();
+		    if (graph)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(map, owner);
+		    }
+
+		    if (0 != input.readUInt32())
+		        throw new ProtostuffException("Corrupt input.");
+
+		    return fillSingletonMapFrom(input, schema, owner, strategy, graph,
+		            map);
+		}
+	}
 
     /**
      * Return true to
@@ -626,32 +645,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 // both are null
                 return map;
             case 1:
-            {
+            
                 // key exists
                 break;
-            }
+            
             case 3:
-            {
-                // key is null
-                final Wrapper wrapper = new Wrapper();
-                Object v = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
-                if (!graph || !((GraphInput) input).isCurrentMessageReference())
-                    v = wrapper.value;
-
-                try
-                {
-                    fSingletonMap_v.set(map, v);
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                if (0 != input.readFieldNumber(schema))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return map;
-            }
+            return fillSingletonMapFromWrapper(input, schema, strategy, graph, map);
             default:
                 throw new ProtostuffException("Corrupt input.");
         }
@@ -701,6 +700,31 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
 
         return map;
     }
+
+	private static Object fillSingletonMapFromWrapper(Input input, Schema<?> schema, IdStrategy strategy, boolean graph,
+			Object map) throws IOException, ProtostuffException {
+		{
+		    // key is null
+		    final Wrapper wrapper = new Wrapper();
+		    Object v = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+		    if (!graph || !((GraphInput) input).isCurrentMessageReference())
+		        v = wrapper.value;
+
+		    try
+		    {
+		        fSingletonMap_v.set(map, v);
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    if (0 != input.readFieldNumber(schema))
+		        throw new ProtostuffException("Corrupt input.");
+
+		    return map;
+		}
+	}
 
     private static Object readUnmodifiableMapFrom(Input input,
             Schema<?> schema, Object owner, IdStrategy strategy, boolean graph,
@@ -918,20 +942,13 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 // both are null
                 return;
             case 1:
-            {
+            
                 // key exists
                 break;
-            }
+            
             case 3:
-            {
-                // key is null
-                output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
-
-                if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return;
-            }
+            transferSingletonMapCaseThree(pipeSchema, pipe, input, output, strategy);
+			return;
             default:
                 throw new ProtostuffException("Corrupt input.");
         }
@@ -955,4 +972,17 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");
     }
+
+	private static void transferSingletonMapCaseThree(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, IdStrategy strategy) throws IOException, ProtostuffException {
+		{
+		    // key is null
+		    output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+
+		    if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
+		        throw new ProtostuffException("Corrupt input.");
+
+		    return;
+		}
+	}
 }

@@ -108,19 +108,24 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             }
 
             // Generate schema
-            {
-                Writer writer = CompilerUtil.newWriter(module, javaPackageName,
-                        getRemoteModelSchemaName(schemaTemplateGroup, m) + ".java");
-                AutoIndentWriter out = new AutoIndentWriter(writer);
+            generateSchema(module, javaPackageName, schemaTemplateGroup, m);
+        }
+    }
 
-                StringTemplate messageBlock = schemaTemplateGroup.getInstanceOf("message_block");
-                messageBlock.setAttribute("message", m);
-                messageBlock.setAttribute("module", module);
-                messageBlock.setAttribute("options", module.getOptions());
+    private void generateSchema(ProtoModule module, String javaPackageName, StringTemplateGroup schemaTemplateGroup,
+            Message m) throws IOException {
+        {
+            Writer writer = CompilerUtil.newWriter(module, javaPackageName,
+                    getRemoteModelSchemaName(schemaTemplateGroup, m) + ".java");
+            AutoIndentWriter out = new AutoIndentWriter(writer);
 
-                messageBlock.write(out);
-                writer.close();
-            }
+            StringTemplate messageBlock = schemaTemplateGroup.getInstanceOf("message_block");
+            messageBlock.setAttribute("message", m);
+            messageBlock.setAttribute("module", module);
+            messageBlock.setAttribute("options", module.getOptions());
+
+            messageBlock.write(out);
+            writer.close();
         }
     }
 
