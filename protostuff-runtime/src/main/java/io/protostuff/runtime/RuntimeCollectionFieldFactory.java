@@ -356,7 +356,7 @@ final class RuntimeCollectionFieldFactory
                     Collection<Object> collection) throws IOException
             {
                 final Object value = input.mergeObject(collection,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
+                        strategy.polymorphicPojoElementSchema);
 
                 if (input instanceof GraphInput
                         && ((GraphInput) input).isCurrentMessageReference())
@@ -370,7 +370,7 @@ final class RuntimeCollectionFieldFactory
                     Object value, boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, value,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
+                        strategy.polymorphicPojoElementSchema, repeated);
             }
 
             @Override
@@ -378,7 +378,7 @@ final class RuntimeCollectionFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
+                        strategy.polymorphicPojoElementSchema.pipeSchema,
                         repeated);
             }
         };
@@ -519,8 +519,8 @@ final class RuntimeCollectionFieldFactory
             {
                 // the value is not a simple parameterized type.
                 return createCollectionObjectV(number, name, f, messageFactory,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema, strategy);
             }
 
             final Delegate<Object> inline = getDelegateOrInline(genericType,
@@ -553,8 +553,8 @@ final class RuntimeCollectionFieldFactory
             if (genericType.isInterface())
             {
                 return createCollectionObjectV(number, name, f, messageFactory,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema, strategy);
             }
 
             return createCollectionPolymorphicV(number, name, f,

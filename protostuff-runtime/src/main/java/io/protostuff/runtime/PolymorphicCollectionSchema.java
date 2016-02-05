@@ -562,11 +562,11 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
         if (output instanceof StatefulOutput)
         {
             // update using the derived schema.
-            ((StatefulOutput) output).updateLast(strategy.COLLECTION_SCHEMA,
+            ((StatefulOutput) output).updateLast(strategy.collectionSchema,
                     currentSchema);
         }
 
-        strategy.COLLECTION_SCHEMA.writeTo(output, (Collection<Object>) value);
+        strategy.collectionSchema.writeTo(output, (Collection<Object>) value);
     }
 
     static void writeNonPublicCollectionTo(Output output, Object value,
@@ -602,7 +602,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (element != null)
-                    output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
+                    output.writeObject(1, element, strategy.objectSchema, false);
 
                 break;
             }
@@ -615,7 +615,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 final Object element = ((List<?>) value).get(0);
 
                 if (element != null)
-                    output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
+                    output.writeObject(1, element, strategy.objectSchema, false);
 
                 break;
             }
@@ -632,7 +632,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     throw new RuntimeException(e);
                 }
 
-                output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
+                output.writeObject(id, m, strategy.polymorphicMapSchema, false);
 
                 break;
             }
@@ -655,7 +655,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 output.writeUInt32(1, n, false);
 
                 if (element != null)
-                    output.writeObject(2, element, strategy.OBJECT_SCHEMA, false);
+                    output.writeObject(2, element, strategy.objectSchema, false);
 
                 break;
             }
@@ -736,7 +736,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             throw new RuntimeException(e);
         }
 
-        output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
+        output.writeObject(id, c, strategy.polymorphicCollectionSchema, false);
     }
 
     private static void writeSynchronizedCollectionTo(Output output,
@@ -765,7 +765,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                             + "work if graph format is used, since the reference is retained.");
         }
 
-        output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
+        output.writeObject(id, c, strategy.polymorphicCollectionSchema, false);
     }
 
     private static void writeCheckedCollectionTo(Output output, Object value,
@@ -783,8 +783,8 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             throw new RuntimeException(e);
         }
 
-        output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
-        output.writeObject(1, type, strategy.CLASS_SCHEMA, false);
+        output.writeObject(id, c, strategy.polymorphicCollectionSchema, false);
+        output.writeObject(1, type, strategy.classSchema, false);
     }
 
     @SuppressWarnings("unchecked")
@@ -846,7 +846,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input");
 
                 final Wrapper wrapper = new Wrapper();
-                Object element = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+                Object element = input.mergeObject(wrapper, strategy.objectSchema);
                 if (!graph || !((GraphInput) input).isCurrentMessageReference())
                     element = wrapper.value;
 
@@ -886,7 +886,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
 
                 final Wrapper wrapper = new Wrapper();
-                Object element = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+                Object element = input.mergeObject(wrapper, strategy.objectSchema);
                 if (!graph || !((GraphInput) input).isCurrentMessageReference())
                     element = wrapper.value;
 
@@ -914,7 +914,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
                 final Wrapper wrapper = new Wrapper();
                 Object m = input.mergeObject(wrapper,
-                        strategy.POLYMORPHIC_MAP_SCHEMA);
+                        strategy.polymorphicMapSchema);
                 if (!graph || !((GraphInput) input).isCurrentMessageReference())
                     m = wrapper.value;
 
@@ -969,7 +969,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
 
                 final Wrapper wrapper = new Wrapper();
-                Object element = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+                Object element = input.mergeObject(wrapper, strategy.objectSchema);
                 if (!graph || !((GraphInput) input).isCurrentMessageReference())
                     element = wrapper.value;
 
@@ -1072,7 +1072,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 // TODO enum schema
-                strategy.COLLECTION_SCHEMA
+                strategy.collectionSchema
                         .mergeFrom(input, (Collection<Object>) es);
                 return es;
             }
@@ -1088,7 +1088,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(collection, owner);
                 }
 
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
+                strategy.collectionSchema.mergeFrom(input, collection);
 
                 return collection;
             }
@@ -1115,7 +1115,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         final Wrapper wrapper = new Wrapper();
         Object c = input.mergeObject(wrapper,
-                strategy.POLYMORPHIC_COLLECTION_SCHEMA);
+                strategy.polymorphicCollectionSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             c = wrapper.value;
         try
@@ -1148,7 +1148,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         final Wrapper wrapper = new Wrapper();
         Object c = input.mergeObject(wrapper,
-                strategy.POLYMORPHIC_COLLECTION_SCHEMA);
+                strategy.polymorphicCollectionSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             c = wrapper.value;
         try
@@ -1183,14 +1183,14 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         final Wrapper wrapper = new Wrapper();
         Object c = input.mergeObject(wrapper,
-                strategy.POLYMORPHIC_COLLECTION_SCHEMA);
+                strategy.polymorphicCollectionSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             c = wrapper.value;
 
         if (1 != input.readFieldNumber(schema))
             throw new ProtostuffException("Corrupt input.");
 
-        Object type = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
+        Object type = input.mergeObject(wrapper, strategy.classSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             type = wrapper.value;
         try
@@ -1241,12 +1241,12 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 if (next != 1)
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(1, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+                output.writeObject(1, pipe, strategy.objectPipeSchema, false);
                 break;
             }
             case ID_SET_FROM_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
                 break;
 
             case ID_COPIES_LIST:
@@ -1269,7 +1269,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 if (next != 2)
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(2, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+                output.writeObject(2, pipe, strategy.objectPipeSchema, false);
                 break;
             }
             case ID_UNMODIFIABLE_COLLECTION:
@@ -1278,7 +1278,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_UNMODIFIABLE_LIST:
             case ID_UNMODIFIABLE_RANDOM_ACCESS_LIST:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, false);
+                        strategy.polymorphicCollectionPipeSchema, false);
                 break;
 
             case ID_SYNCHRONIZED_COLLECTION:
@@ -1287,7 +1287,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_SYNCHRONIZED_LIST:
             case ID_SYNCHRONIZED_RANDOM_ACCESS_LIST:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, false);
+                        strategy.polymorphicCollectionPipeSchema, false);
                 break;
 
             case ID_CHECKED_COLLECTION:
@@ -1296,12 +1296,12 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_CHECKED_LIST:
             case ID_CHECKED_RANDOM_ACCESS_LIST:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, false);
+                        strategy.polymorphicCollectionPipeSchema, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
+                output.writeObject(1, pipe, strategy.classPipeSchema, false);
                 break;
 
             case ID_ENUM_SET:
@@ -1311,11 +1311,11 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+                            strategy.collectionPipeSchema, pipeSchema);
                 }
 
                 // TODO use enum schema
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input,
+                Pipe.transferDirect(strategy.collectionPipeSchema, pipe, input,
                         output);
                 return;
             case ID_COLLECTION:
@@ -1325,10 +1325,10 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+                            strategy.collectionPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input,
+                Pipe.transferDirect(strategy.collectionPipeSchema, pipe, input,
                         output);
                 return;
             default:

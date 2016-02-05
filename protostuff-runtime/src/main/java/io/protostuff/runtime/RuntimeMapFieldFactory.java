@@ -442,7 +442,7 @@ final class RuntimeMapFieldFactory
                     throws IOException
             {
                 final Object value = input.mergeObject(wrapper,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
+                        strategy.polymorphicPojoElementSchema);
                 if (value != wrapper)
                 {
                     // referenced.
@@ -465,7 +465,7 @@ final class RuntimeMapFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
+                        strategy.polymorphicPojoElementSchema, repeated);
             }
 
             @Override
@@ -473,7 +473,7 @@ final class RuntimeMapFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
+                        strategy.polymorphicPojoElementSchema.pipeSchema,
                         repeated);
             }
         };
@@ -977,7 +977,7 @@ final class RuntimeMapFieldFactory
                     throws IOException
             {
                 final Object value = input.mergeObject(wrapper,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
+                        strategy.polymorphicPojoElementSchema);
                 if (value != wrapper)
                 {
                     // referenced.
@@ -1000,7 +1000,7 @@ final class RuntimeMapFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
+                        strategy.polymorphicPojoElementSchema, repeated);
             }
 
             @Override
@@ -1008,7 +1008,7 @@ final class RuntimeMapFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
+                        strategy.polymorphicPojoElementSchema.pipeSchema,
                         repeated);
             }
         };
@@ -1525,7 +1525,7 @@ final class RuntimeMapFieldFactory
                     throws IOException
             {
                 final Object value = input.mergeObject(wrapper,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA);
+                        strategy.polymorphicPojoElementSchema);
                 if (value != wrapper)
                 {
                     // referenced.
@@ -1548,7 +1548,7 @@ final class RuntimeMapFieldFactory
                     boolean repeated) throws IOException
             {
                 output.writeObject(fieldNumber, val,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
+                        strategy.polymorphicPojoElementSchema, repeated);
             }
 
             @Override
@@ -1556,7 +1556,7 @@ final class RuntimeMapFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
+                        strategy.polymorphicPojoElementSchema.pipeSchema,
                         repeated);
             }
         };
@@ -1858,10 +1858,10 @@ final class RuntimeMapFieldFactory
             {
                 // the key is not a simple parameterized type.
                 return createMapObjectKObjectV(number, name, f, messageFactory,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema,
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema, strategy);
             }
 
             final Class<Object> clazzV = (Class<Object>) getGenericType(f, 1);
@@ -1874,24 +1874,24 @@ final class RuntimeMapFieldFactory
                 {
                     return createMapInlineKObjectV(number, name, f,
                             messageFactory, inlineK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 if (Message.class.isAssignableFrom(clazzK))
                 {
                     return createMapPojoKObjectV(number, name, f,
                             messageFactory, clazzK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 if (clazzK.isEnum())
                 {
                     return createMapEnumKObjectV(number, name, f,
                             messageFactory, clazzK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 final PolymorphicSchema psK = PolymorphicSchemaFactories
@@ -1902,16 +1902,16 @@ final class RuntimeMapFieldFactory
                 {
                     return createMapObjectKObjectV(number, name, f,
                             messageFactory, psK, psK.getPipeSchema(),
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 if (pojo(clazzK, f.getAnnotation(Morph.class), strategy))
                 {
                     return createMapPojoKObjectV(number, name, f,
                             messageFactory, clazzK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 /*
@@ -1923,10 +1923,10 @@ final class RuntimeMapFieldFactory
                  * // TODO add createMapPolymorphicKObjectV?
                  */
                 return createMapObjectKObjectV(number, name, f, messageFactory,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema,
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema, strategy);
             }
 
             final Delegate<Object> inlineK = getDelegateOrInline(clazzK,
@@ -1966,8 +1966,8 @@ final class RuntimeMapFieldFactory
                 {
                     return createMapInlineKObjectV(number, name, f,
                             messageFactory, inlineK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 return createMapInlineKPolymorphicV(number, name, f,
@@ -2008,8 +2008,8 @@ final class RuntimeMapFieldFactory
                 {
                     return createMapEnumKObjectV(number, name, f,
                             messageFactory, clazzK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 return createMapEnumKPolymorphicV(number, name, f,
@@ -2022,8 +2022,8 @@ final class RuntimeMapFieldFactory
             {
                 return createMapObjectKObjectV(number, name, f, messageFactory,
                         psK, psK.getPipeSchema(),
-                        strategy.OBJECT_ELEMENT_SCHEMA,
-                        strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                        strategy.objectElementSchema,
+                        strategy.objectElementSchema.pipeSchema, strategy);
             }
 
             if (pojo(clazzK, f.getAnnotation(Morph.class), strategy))
@@ -2060,8 +2060,8 @@ final class RuntimeMapFieldFactory
                 {
                     return createMapPojoKObjectV(number, name, f,
                             messageFactory, clazzK,
-                            strategy.OBJECT_ELEMENT_SCHEMA,
-                            strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                            strategy.objectElementSchema,
+                            strategy.objectElementSchema.pipeSchema, strategy);
                 }
 
                 return createMapPojoKPolymorphicV(number, name, f,
@@ -2069,10 +2069,10 @@ final class RuntimeMapFieldFactory
             }
 
             return createMapObjectKObjectV(number, name, f, messageFactory,
-                    strategy.OBJECT_ELEMENT_SCHEMA,
-                    strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-                    strategy.OBJECT_ELEMENT_SCHEMA,
-                    strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+                    strategy.objectElementSchema,
+                    strategy.objectElementSchema.pipeSchema,
+                    strategy.objectElementSchema,
+                    strategy.objectElementSchema.pipeSchema, strategy);
         }
 
         @Override
