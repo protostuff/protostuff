@@ -1033,12 +1033,12 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
-            Schema<T> schema = this.schema;
-            if (schema == null)
+            Schema<T> schemaLocal = this.schema;
+            if (schemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((schema = this.schema) == null)
+                    if ((schemaLocal = this.schema) == null)
                     {
                         if (Message.class.isAssignableFrom(typeClass))
                         {
@@ -1046,7 +1046,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                             try
                             {
                                 final Message<T> m = (Message<T>) typeClass.newInstance();
-                                this.schema = schema = m.cachedSchema();
+                                this.schema = schemaLocal = m.cachedSchema();
                             }
                             catch (InstantiationException | IllegalAccessException e)
                             {
@@ -1056,31 +1056,31 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         else
                         {
                             // create new
-                            this.schema = schema = strategy.newSchema(typeClass);
+                            this.schema = schemaLocal = strategy.newSchema(typeClass);
                         }
                     }
                 }
             }
 
-            return schema;
+            return schemaLocal;
         }
 
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if (pipeSchema == null)
+            Pipe.Schema<T> pipeSchemaLocal = this.pipeSchema;
+            if (pipeSchemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((pipeSchema = this.pipeSchema) == null)
+                    if ((pipeSchemaLocal = this.pipeSchema) == null)
                     {
-                        this.pipeSchema = pipeSchema = RuntimeSchema.resolvePipeSchema(
+                        this.pipeSchema = pipeSchemaLocal = RuntimeSchema.resolvePipeSchema(
                                 getSchema(), typeClass, true);
                     }
                 }
             }
-            return pipeSchema;
+            return pipeSchemaLocal;
         }
     }
 }

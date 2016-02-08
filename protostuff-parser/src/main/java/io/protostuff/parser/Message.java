@@ -578,7 +578,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
 
     void resolveReferences(Message root)
     {
-        final Proto proto = getProto();
+        final Proto protoLocal = getProto();
         final String fullName = getFullName();
 
         for (Field<?> f : fields.values())
@@ -648,7 +648,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
                 String packageName = fr.packageName;
                 String fullRefName = (packageName == null ? refName : packageName + '.' + refName);
 
-                HasName refObj = proto.findReference(fullRefName, fullName);
+                HasName refObj = protoLocal.findReference(fullRefName, fullName);
                 if (refObj instanceof Message)
                 {
                     MessageField mf = newMessageField((Message) refObj, fr, this);
@@ -666,7 +666,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
 
                     // references inside options
                     if (!mf.standardOptions.isEmpty())
-                        proto.references.add(new ConfiguredReference(mf.standardOptions, mf.extraOptions, fullName));
+                        protoLocal.references.add(new ConfiguredReference(mf.standardOptions, mf.extraOptions, fullName));
 
                     continue;
                 }
@@ -688,7 +688,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
 
                     // references inside options
                     if (!ef.standardOptions.isEmpty())
-                        proto.references.add(new ConfiguredReference(ef.standardOptions, ef.extraOptions, fullName));
+                        protoLocal.references.add(new ConfiguredReference(ef.standardOptions, ef.extraOptions, fullName));
 
                     continue;
                 }
@@ -698,7 +698,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
 
             // references inside options
             if (!f.standardOptions.isEmpty())
-                proto.references.add(new ConfiguredReference(f.standardOptions, f.extraOptions, fullName));
+                protoLocal.references.add(new ConfiguredReference(f.standardOptions, f.extraOptions, fullName));
         }
         sortedFields.addAll(fields.values());
         Collections.sort(sortedFields);
@@ -715,8 +715,8 @@ public class Message extends AnnotationContainer implements HasName, HasFields
 
     void cacheFullyQualifiedNames()
     {
-        Proto proto = getProto();
-        proto.fullyQualifiedMessages.put(getFullName(), this);
+        Proto protoLocal = getProto();
+        protoLocal.fullyQualifiedMessages.put(getFullName(), this);
 
         for (Message m : nestedMessages.values())
             m.cacheFullyQualifiedNames();
@@ -724,7 +724,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
             eg.cacheFullyQualifiedName();
 
         if (!standardOptions.isEmpty())
-            proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
+            protoLocal.references.add(new ConfiguredReference(standardOptions, extraOptions, getFullName()));
     }
 
     static MessageField newMessageField(Message message, Field.Reference fr, Message owner)

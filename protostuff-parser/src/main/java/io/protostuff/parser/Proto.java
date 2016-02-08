@@ -333,9 +333,9 @@ public class Proto extends AnnotationContainer implements HasOptions
         }
 
         String javaPkg = (String) extraOptions.get("java_package");
-        String javaPackageName = javaPkg == null || javaPkg.length() == 0 ?
+        String javaPackageNameLocal = javaPkg == null || javaPkg.length() == 0 ?
                 packageName.getValue() : javaPkg;
-        this.javaPackageName = new Mutable<>(javaPackageName);
+        this.javaPackageName = new Mutable<>(javaPackageNameLocal);
 
         // Cache all fully-qualified message names and enum group names so we
         // can look them up quickly

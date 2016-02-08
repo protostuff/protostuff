@@ -90,41 +90,41 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 int initialPojoSize,
                 int initialDelegateSize)
         {
-            IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMapping =
+            IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMappingLocal =
                     newMap(initialCollectionSize);
 
-            ArrayList<RegisteredCollectionFactory> collections =
+            ArrayList<RegisteredCollectionFactory> collectionsLocal =
                     newList(initialCollectionSize + 1);
 
-            IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping =
+            IdentityHashMap<Class<?>, RegisteredMapFactory> mapMappingLocal =
                     new IdentityHashMap<>(
                             initialMapSize);
 
-            ArrayList<RegisteredMapFactory> maps = newList(initialMapSize);
+            ArrayList<RegisteredMapFactory> mapsLocal = newList(initialMapSize);
 
-            IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping =
+            IdentityHashMap<Class<?>, RegisteredEnumIO> enumMappingLocal =
                     newMap(initialEnumSize);
 
-            ArrayList<RegisteredEnumIO> enums =
+            ArrayList<RegisteredEnumIO> enumsLocal =
                     newList(initialEnumSize + 1);
 
-            IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping =
+            IdentityHashMap<Class<?>, BaseHS<?>> pojoMappingLocal =
                     newMap(initialPojoSize);
 
-            ArrayList<BaseHS<?>> pojos = newList(initialPojoSize + 1);
+            ArrayList<BaseHS<?>> pojosLocal = newList(initialPojoSize + 1);
 
-            IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping =
+            IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMappingLocal =
                     newMap(initialDelegateSize);
 
-            ArrayList<RegisteredDelegate<?>> delegates = newList(initialDelegateSize + 1);
+            ArrayList<RegisteredDelegate<?>> delegatesLocal = newList(initialDelegateSize + 1);
 
             strategy = new ExplicitIdStrategy(
                     primaryGroup, groupId,
-                    collectionMapping, collections,
-                    mapMapping, maps,
-                    enumMapping, enums,
-                    pojoMapping, pojos,
-                    delegateMapping, delegates);
+                    collectionMappingLocal, collectionsLocal,
+                    mapMappingLocal, mapsLocal,
+                    enumMappingLocal, enumsLocal,
+                    pojoMappingLocal, pojosLocal,
+                    delegateMappingLocal, delegatesLocal);
         }
 
         /**
@@ -942,12 +942,12 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
-            Schema<T> schema = this.schema;
-            if (schema == null)
+            Schema<T> schemaLocal = this.schema;
+            if (schemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((schema = this.schema) == null)
+                    if ((schemaLocal = this.schema) == null)
                     {
                         if (Message.class.isAssignableFrom(typeClass))
                         {
@@ -955,7 +955,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                             try
                             {
                                 final Message<T> m = (Message<T>) typeClass.newInstance();
-                                this.schema = schema = m.cachedSchema();
+                                this.schema = schemaLocal = m.cachedSchema();
                             }
                             catch (InstantiationException | IllegalAccessException e)
                             {
@@ -965,31 +965,31 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         else
                         {
                             // create new
-                            this.schema = schema = strategy.newSchema(typeClass);
+                            this.schema = schemaLocal = strategy.newSchema(typeClass);
                         }
                     }
                 }
             }
 
-            return schema;
+            return schemaLocal;
         }
 
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if (pipeSchema == null)
+            Pipe.Schema<T> pipeSchemaLocal = this.pipeSchema;
+            if (pipeSchemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((pipeSchema = this.pipeSchema) == null)
+                    if ((pipeSchemaLocal = this.pipeSchema) == null)
                     {
-                        this.pipeSchema = pipeSchema = RuntimeSchema.resolvePipeSchema(
+                        this.pipeSchema = pipeSchemaLocal = RuntimeSchema.resolvePipeSchema(
                                 getSchema(), typeClass, true);
                     }
                 }
             }
-            return pipeSchema;
+            return pipeSchemaLocal;
         }
     }
 }

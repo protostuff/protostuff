@@ -114,21 +114,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeBoolean(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeBoolean(value);
         }
         else
-            generator.writeBooleanField(name, value);
+            generatorLocal.writeBooleanField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -144,23 +144,23 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeBinary(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeBinary(value);
         }
         else
         {
-            generator.writeFieldName(name);
-            generator.writeBinary(value);
+            generatorLocal.writeFieldName(name);
+            generatorLocal.writeBinary(value);
         }
 
         lastNumber = fieldNumber;
@@ -181,29 +181,29 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
+            generatorLocal.writeArrayFieldStart(name);
             if (utf8String)
-                generator.writeUTF8String(value, offset, length);
+                generatorLocal.writeUTF8String(value, offset, length);
             else
-                generator.writeBinary(value, offset, length);
+                generatorLocal.writeBinary(value, offset, length);
         }
         else
         {
-            generator.writeFieldName(name);
+            generatorLocal.writeFieldName(name);
             if (utf8String)
-                generator.writeUTF8String(value, offset, length);
+                generatorLocal.writeUTF8String(value, offset, length);
             else
-                generator.writeBinary(value, offset, length);
+                generatorLocal.writeBinary(value, offset, length);
         }
 
         lastNumber = fieldNumber;
@@ -226,21 +226,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeNumber(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeNumber(value);
         }
         else
-            generator.writeNumberField(name, value);
+            generatorLocal.writeNumberField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -274,21 +274,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeNumber(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeNumber(value);
         }
         else
-            generator.writeNumberField(name, value);
+            generatorLocal.writeNumberField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -304,21 +304,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeNumber(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeNumber(value);
         }
         else
-            generator.writeNumberField(name, value);
+            generatorLocal.writeNumberField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -334,21 +334,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeNumber(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeNumber(value);
         }
         else
-            generator.writeNumberField(name, value);
+            generatorLocal.writeNumberField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -388,21 +388,21 @@ public final class JsonOutput implements Output, StatefulOutput
             return;
         }
 
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
         final String name = numeric ? Integer.toString(fieldNumber) :
                 schema.getFieldName(fieldNumber);
 
         if (repeated)
         {
-            generator.writeArrayFieldStart(name);
-            generator.writeString(value);
+            generatorLocal.writeArrayFieldStart(name);
+            generatorLocal.writeString(value);
         }
         else
-            generator.writeStringField(name, value);
+            generatorLocal.writeStringField(name, value);
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;
@@ -424,21 +424,21 @@ public final class JsonOutput implements Output, StatefulOutput
     public <T> void writeObject(final int fieldNumber, final T value, final Schema<T> schema,
             final boolean repeated) throws IOException
     {
-        final JsonGenerator generator = this.generator;
+        final JsonGenerator generatorLocal = this.generator;
         final Schema<?> lastSchema = this.schema;
 
         if (lastNumber != fieldNumber)
         {
             if (lastRepeated)
-                generator.writeEndArray();
+                generatorLocal.writeEndArray();
 
             final String name = numeric ? Integer.toString(fieldNumber) :
                     lastSchema.getFieldName(fieldNumber);
 
             if (repeated)
-                generator.writeArrayFieldStart(name);
+                generatorLocal.writeArrayFieldStart(name);
             else
-                generator.writeFieldName(name);
+                generatorLocal.writeFieldName(name);
         }
 
         // reset
@@ -446,14 +446,14 @@ public final class JsonOutput implements Output, StatefulOutput
         lastNumber = 0;
         lastRepeated = false;
 
-        generator.writeStartObject();
+        generatorLocal.writeStartObject();
         // recursive write
         schema.writeTo(this, value);
 
         if (lastRepeated)
-            generator.writeEndArray();
+            generatorLocal.writeEndArray();
 
-        generator.writeEndObject();
+        generatorLocal.writeEndObject();
 
         // restore state
         lastNumber = fieldNumber;

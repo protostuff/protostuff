@@ -659,12 +659,12 @@ public final class DefaultIdStrategy extends IdStrategy
         @SuppressWarnings("unchecked")
         public Schema<T> getSchema()
         {
-            Schema<T> schema = this.schema;
-            if (schema == null)
+            Schema<T> schemaLocal = this.schema;
+            if (schemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((schema = this.schema) == null)
+                    if ((schemaLocal = this.schema) == null)
                     {
                         if (Message.class.isAssignableFrom(typeClass))
                         {
@@ -673,7 +673,7 @@ public final class DefaultIdStrategy extends IdStrategy
                             {
                                 final Message<T> m = (Message<T>) typeClass
                                         .newInstance();
-                                this.schema = schema = m.cachedSchema();
+                                this.schema = schemaLocal = m.cachedSchema();
                             }
                             catch (InstantiationException | IllegalAccessException e)
                             {
@@ -683,32 +683,32 @@ public final class DefaultIdStrategy extends IdStrategy
                         else
                         {
                             // create new
-                            this.schema = schema = strategy
+                            this.schema = schemaLocal = strategy
                                     .newSchema(typeClass);
                         }
                     }
                 }
             }
 
-            return schema;
+            return schemaLocal;
         }
 
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if (pipeSchema == null)
+            Pipe.Schema<T> pipeSchemaLocal = this.pipeSchema;
+            if (pipeSchemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((pipeSchema = this.pipeSchema) == null)
+                    if ((pipeSchemaLocal = this.pipeSchema) == null)
                     {
-                        this.pipeSchema = pipeSchema = RuntimeSchema
+                        this.pipeSchema = pipeSchemaLocal = RuntimeSchema
                                 .resolvePipeSchema(getSchema(), typeClass, true);
                     }
                 }
             }
-            return pipeSchema;
+            return pipeSchemaLocal;
         }
     }
 
@@ -731,39 +731,39 @@ public final class DefaultIdStrategy extends IdStrategy
         @Override
         public Schema<T> getSchema()
         {
-            HasSchema<T> wrapper = this.wrapper;
-            if (wrapper == null)
+            HasSchema<T> wrapperLocal = this.wrapper;
+            if (wrapperLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((wrapper = this.wrapper) == null)
+                    if ((wrapperLocal = this.wrapper) == null)
                     {
-                        this.wrapper = wrapper = strategy.getSchemaWrapper(
+                        this.wrapper = wrapperLocal = strategy.getSchemaWrapper(
                                 typeClass, true);
                     }
                 }
             }
 
-            return wrapper.getSchema();
+            return wrapperLocal.getSchema();
         }
 
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
-            HasSchema<T> wrapper = this.wrapper;
-            if (wrapper == null)
+            HasSchema<T> wrapperLocal = this.wrapper;
+            if (wrapperLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((wrapper = this.wrapper) == null)
+                    if ((wrapperLocal = this.wrapper) == null)
                     {
-                        this.wrapper = wrapper = strategy.getSchemaWrapper(
+                        this.wrapper = wrapperLocal = strategy.getSchemaWrapper(
                                 typeClass, true);
                     }
                 }
             }
 
-            return wrapper.getPipeSchema();
+            return wrapperLocal.getPipeSchema();
         }
 
     }
@@ -787,20 +787,20 @@ public final class DefaultIdStrategy extends IdStrategy
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
-            Pipe.Schema<T> pipeSchema = this.pipeSchema;
-            if (pipeSchema == null)
+            Pipe.Schema<T> pipeSchemaLocal = this.pipeSchema;
+            if (pipeSchemaLocal == null)
             {
                 synchronized (this)
                 {
-                    if ((pipeSchema = this.pipeSchema) == null)
+                    if ((pipeSchemaLocal = this.pipeSchema) == null)
                     {
-                        this.pipeSchema = pipeSchema = RuntimeSchema
+                        this.pipeSchema = pipeSchemaLocal = RuntimeSchema
                                 .resolvePipeSchema(schema, schema.typeClass(),
                                         true);
                     }
                 }
             }
-            return pipeSchema;
+            return pipeSchemaLocal;
         }
     }
 }

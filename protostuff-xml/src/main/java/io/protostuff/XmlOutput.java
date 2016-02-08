@@ -217,14 +217,14 @@ public final class XmlOutput implements Output, StatefulOutput
         final Schema<?> lastSchema = this.schema;
         this.schema = schema;
 
-        final XMLStreamWriter writer = this.writer;
+        final XMLStreamWriter writerLocal = this.writer;
         try
         {
-            writer.writeStartElement(lastSchema.getFieldName(fieldNumber));
+            writerLocal.writeStartElement(lastSchema.getFieldName(fieldNumber));
 
             schema.writeTo(this, value);
 
-            writer.writeEndElement();
+            writerLocal.writeEndElement();
         }
         catch (XMLStreamException e)
         {

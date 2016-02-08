@@ -389,9 +389,9 @@ public final class JsonInput implements Input
                     schema.messageFullName());
         }
 
-        final int lastNumber = this.lastNumber;
-        final boolean lastRepeated = this.lastRepeated;
-        final String lastName = this.lastName;
+        final int lastNumberLocal = this.lastNumber;
+        final boolean lastRepeatedLocal = this.lastRepeated;
+        final String lastNameLocal = this.lastName;
 
         // reset
         this.lastRepeated = false;
@@ -404,7 +404,7 @@ public final class JsonInput implements Input
         if (parser.getCurrentToken() != END_OBJECT)
         {
             throw new JsonInputException("Expected token: } but was " +
-                    parser.getCurrentToken() + " on " + lastName + " of message " +
+                    parser.getCurrentToken() + " on " + lastNameLocal + " of message " +
                     schema.messageFullName());
         }
 
@@ -412,11 +412,11 @@ public final class JsonInput implements Input
             throw new UninitializedMessageException(value, schema);
 
         // restore state
-        this.lastNumber = lastNumber;
-        this.lastRepeated = lastRepeated;
-        this.lastName = lastName;
+        this.lastNumber = lastNumberLocal;
+        this.lastRepeated = lastRepeatedLocal;
+        this.lastName = lastNameLocal;
 
-        if (lastRepeated && parser.nextToken() == END_ARRAY)
+        if (lastRepeatedLocal && parser.nextToken() == END_ARRAY)
             this.lastRepeated = false;
 
         return value;
