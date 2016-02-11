@@ -60,6 +60,8 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
 public abstract class PolymorphicMapSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+
     static final int ID_EMPTY_MAP = 1, ID_SINGLETON_MAP = 2,
             ID_UNMODIFIABLE_MAP = 3, ID_UNMODIFIABLE_SORTED_MAP = 4,
             ID_SYNCHRONIZED_MAP = 5, ID_SYNCHRONIZED_SORTED_MAP = 6,
@@ -521,7 +523,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 }
 
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 ret = Collections.EMPTY_MAP;
                 break;
@@ -536,7 +538,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 }
 
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return fillSingletonMapFrom(input, schema, owner, strategy, graph,
                         map);
@@ -604,11 +606,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             }
 
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return ret;
     }
@@ -648,12 +650,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 }
 
                 if (0 != input.readFieldNumber(schema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return map;
             }
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         final Wrapper wrapper = new Wrapper();
@@ -679,7 +681,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 // key and value exist
                 break;
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         Object v = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
@@ -697,7 +699,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return map;
     }
@@ -777,14 +779,14 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             m = wrapper.value;
 
         if (1 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         Object keyType = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             keyType = wrapper.value;
 
         if (2 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         Object valueType = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
@@ -819,7 +821,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
 
             case ID_SINGLETON_MAP:
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeUInt32(number, 0, false);
 
@@ -851,12 +853,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                         strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
 
                 if (2 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(2, pipe, strategy.CLASS_PIPE_SCHEMA, false);
                 break;
@@ -866,12 +868,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                         strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
 
                 if (2 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(2, pipe, strategy.CLASS_PIPE_SCHEMA, false);
                 break;
@@ -902,11 +904,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 return;
 
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 
     static void transferSingletonMap(Pipe.Schema<Object> pipeSchema, Pipe pipe,
@@ -928,12 +930,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return;
             }
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         output.writeObject(1, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
@@ -947,12 +949,12 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 // key and value exist
                 break;
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 }

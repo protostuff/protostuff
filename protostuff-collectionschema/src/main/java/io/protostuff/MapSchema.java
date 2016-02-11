@@ -30,6 +30,8 @@ import java.util.Map.Entry;
 public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
 {
 
+    private static final String MAP_INCORRECTLY_SERIALIZED = "The map was incorrectly serialized.";
+
     /**
      * Creates new {@code Map} messages.
      */
@@ -331,7 +333,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     }
                     break;
                 default:
-                    throw new ProtostuffException("The map was incorrectly serialized.");
+                    throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
             }
         }
     }
@@ -366,8 +368,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                                 output.writeObject(number, pipe, entryPipeSchema, true);
                                 break;
                             default:
-                                throw new ProtostuffException("The map was incorrectly " +
-                                        "serialized.");
+                                throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
                         }
                     }
                 }
@@ -466,8 +467,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     case 1:
                         if (key != null)
                         {
-                            throw new ProtostuffException("The map was incorrectly " +
-                                    "serialized.");
+                            throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
                         }
                         key = readKeyFrom(input, wrapper);
                         assert key != null;
@@ -475,16 +475,14 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     case 2:
                         if (valueRetrieved)
                         {
-                            throw new ProtostuffException("The map was incorrectly " +
-                                    "serialized.");
+                            throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
                         }
                         valueRetrieved = true;
 
                         putValueFrom(input, wrapper, key);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly " +
-                                "serialized.");
+                        throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
                 }
             }
         }
@@ -522,8 +520,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                                 transferValue(pipe, input, output, 2, false);
                                 break;
                             default:
-                                throw new ProtostuffException("The map was incorrectly " +
-                                        "serialized.");
+                                throw new ProtostuffException(MAP_INCORRECTLY_SERIALIZED);
                         }
                     }
                 }

@@ -53,6 +53,9 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
  */
 public final class ArraySchemas
 {
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+    private static final String SHOULD_NOT_HAPPEN = "Should not happen.";
+
     private ArraySchemas()
     {
     }
@@ -128,7 +131,7 @@ public final class ArraySchemas
             case ID_DATE:
                 return DateArray.ELEMENT_SCHEMA;
             default:
-                throw new RuntimeException("Should not happen.");
+                throw new RuntimeException(SHOULD_NOT_HAPPEN);
         }
     }
 
@@ -163,7 +166,7 @@ public final class ArraySchemas
             case ID_DATE:
                 return DateArray.ELEMENT_SCHEMA;
             default:
-                throw new RuntimeException("Should not happen.");
+                throw new RuntimeException(SHOULD_NOT_HAPPEN);
         }
     }
 
@@ -199,7 +202,7 @@ public final class ArraySchemas
             case ID_DATE:
                 return new DateArray(handler);
             default:
-                throw new RuntimeException("Should not happen.");
+                throw new RuntimeException(SHOULD_NOT_HAPPEN);
         }
     }
 
@@ -241,7 +244,7 @@ public final class ArraySchemas
             Delegate<?> delegate) throws IOException
     {
         if (ID_ARRAY_LEN != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         final int len = input.readUInt32();
         // write it back
@@ -261,12 +264,12 @@ public final class ArraySchemas
                     output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                     break;
                 default:
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
             }
         }
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 
     public static abstract class Base extends PolymorphicSchema
@@ -368,7 +371,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -384,13 +387,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = input.readBool();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -413,12 +416,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -514,7 +517,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -530,13 +533,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = (char) input.readUInt32();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -559,12 +562,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -660,7 +663,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -676,13 +679,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = (short) input.readUInt32();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -705,12 +708,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -806,7 +809,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -822,13 +825,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = input.readInt32();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -851,12 +854,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -952,7 +955,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -968,13 +971,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = input.readInt64();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -997,12 +1000,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1098,7 +1101,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1114,13 +1117,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = input.readFloat();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -1143,12 +1146,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1244,7 +1247,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1260,13 +1263,13 @@ public final class ArraySchemas
                 for (int i = 0; i < len; i++)
                 {
                     if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
 
                     array[i] = input.readDouble();
                 }
 
                 if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 return array;
             }
@@ -1289,12 +1292,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1384,7 +1387,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1406,12 +1409,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1491,7 +1494,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1513,12 +1516,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1598,7 +1601,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1620,12 +1623,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1705,7 +1708,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1727,12 +1730,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1812,7 +1815,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1834,12 +1837,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -1918,7 +1921,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -1940,12 +1943,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -2013,7 +2016,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -2035,12 +2038,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -2089,7 +2092,7 @@ public final class ArraySchemas
             {
                 if (ID_ARRAY_LEN != input
                         .readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final int len = input.readUInt32();
                 // write it back
@@ -2109,12 +2112,12 @@ public final class ArraySchemas
                             output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                             break;
                         default:
-                            throw new ProtostuffException("Corrupt input.");
+                            throw new ProtostuffException(CORRUPT_INPUT);
                     }
                 }
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
             }
         };
 
@@ -2136,7 +2139,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -2158,12 +2161,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }
@@ -2212,7 +2215,7 @@ public final class ArraySchemas
             {
                 if (ID_ARRAY_LEN != input
                         .readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final int len = input.readUInt32();
                 // write it back
@@ -2233,12 +2236,12 @@ public final class ArraySchemas
                             output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
                             break;
                         default:
-                            throw new ProtostuffException("Corrupt input.");
+                            throw new ProtostuffException(CORRUPT_INPUT);
                     }
                 }
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
             }
         };
 
@@ -2260,7 +2263,7 @@ public final class ArraySchemas
         public Object readFrom(Input input, Object owner) throws IOException
         {
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             final int len = input.readUInt32();
 
@@ -2282,12 +2285,12 @@ public final class ArraySchemas
                         i += input.readUInt32();
                         break;
                     default:
-                        throw new ProtostuffException("Corrupt input.");
+                        throw new ProtostuffException(CORRUPT_INPUT);
                 }
             }
 
             if (0 != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             return array;
         }

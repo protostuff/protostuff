@@ -28,6 +28,8 @@ import java.io.InputStream;
 final class IOUtil
 {
 
+    private static final String FILL_BUFFER_WITH_DELIMITED_MESSAGE = "fillBufferWithDelimitedMessageFrom";
+
     private IOUtil()
     {
     }
@@ -245,7 +247,7 @@ final class IOUtil
         int offset = lb.start, len = buf.length - offset, read = in.read(buf, offset, len);
 
         if (read < 1)
-            throw new EOFException("fillBufferWithDelimitedMessageFrom");
+            throw new EOFException(FILL_BUFFER_WITH_DELIMITED_MESSAGE);
 
         int last = offset + read, size = buf[offset++];
         if (0 != (size & 0x80))
@@ -259,7 +261,7 @@ final class IOUtil
                     // read too few bytes
                     read = in.read(buf, last, len - (last - lb.start));
                     if (read < 1)
-                        throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                        throw new EOFException(FILL_BUFFER_WITH_DELIMITED_MESSAGE);
 
                     last += read;
                 }
@@ -280,7 +282,7 @@ final class IOUtil
                             // read more
                             read = in.read(buf, last, len - (last - lb.start));
                             if (read < 1)
-                                throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                                throw new EOFException(FILL_BUFFER_WITH_DELIMITED_MESSAGE);
 
                             last += read;
                         }
@@ -327,7 +329,7 @@ final class IOUtil
                 {
                     read = in.read(buf, lb.start, Math.min(remaining, len));
                     if (read < 1)
-                        throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                        throw new EOFException(FILL_BUFFER_WITH_DELIMITED_MESSAGE);
 
                     remaining -= read;
                 }

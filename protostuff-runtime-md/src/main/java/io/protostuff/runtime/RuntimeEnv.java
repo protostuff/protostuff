@@ -30,6 +30,9 @@ import java.util.Properties;
  */
 public final class RuntimeEnv
 {
+    private static final String NEW_INSTANCE = "newInstance";
+    private static final String FALSE = "false";
+
     /**
      * Returns true if serializing enums by name is activated. Disabled by default.
      */
@@ -171,28 +174,28 @@ public final class RuntimeEnv
                 : System.getProperties();
 
         ENUMS_BY_NAME = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.enums_by_name", "false"));
+                "protostuff.runtime.enums_by_name", FALSE));
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));
 
         ALLOW_NULL_ARRAY_ELEMENT = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.allow_null_array_element", "false"));
+                "protostuff.runtime.allow_null_array_element", FALSE));
 
         MORPH_NON_FINAL_POJOS = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_non_final_pojos", "false"));
+                "protostuff.runtime.morph_non_final_pojos", FALSE));
 
         MORPH_COLLECTION_INTERFACES = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_collection_interfaces", "false"));
+                "protostuff.runtime.morph_collection_interfaces", FALSE));
 
         MORPH_MAP_INTERFACES = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_map_interfaces", "false"));
+                "protostuff.runtime.morph_map_interfaces", FALSE));
 
         COLLECTION_SCHEMA_ON_REPEATED_FIELDS = Boolean
                 .parseBoolean(props
                         .getProperty(
                                 "protostuff.runtime.collection_schema_on_repeated_fields",
-                                "false"));
+                                FALSE));
 
         // must be on a sun jre
         USE_SUN_MISC_UNSAFE = OBJECT_CONSTRUCTOR != null
@@ -226,7 +229,7 @@ public final class RuntimeEnv
         try
         {
             return java.io.ObjectInputStream.class.getDeclaredMethod(
-                    "newInstance", Class.class, Class.class);
+                    NEW_INSTANCE, Class.class, Class.class);
         }
         catch (Exception e)
         {
@@ -240,7 +243,7 @@ public final class RuntimeEnv
         {
             // android >= 4.3
             Method m43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
-                    "newInstance", Class.class, long.class);
+                    NEW_INSTANCE, Class.class, long.class);
 
             Method mcid43 = java.io.ObjectStreamClass.class.getDeclaredMethod(
                     "getConstructorId", Class.class);
@@ -255,7 +258,7 @@ public final class RuntimeEnv
             {
                 // android <= 4.2.2
                 Method m = java.io.ObjectStreamClass.class.getDeclaredMethod(
-                        "newInstance", Class.class, int.class);
+                        NEW_INSTANCE, Class.class, int.class);
 
                 Method mcid = java.io.ObjectStreamClass.class.getDeclaredMethod(
                         "getConstructorId", Class.class);

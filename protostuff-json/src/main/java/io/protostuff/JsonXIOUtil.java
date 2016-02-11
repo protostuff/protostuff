@@ -27,6 +27,9 @@ import java.util.List;
 public final class JsonXIOUtil
 {
 
+    private static final String SHOULD_NEVER_HAPPEN = "(should never happen).";
+    private static final String SERIALIZING_TO_BYTE_ARRAY_THREW_IO_EXCEPTION = "Serializing to a byte array threw an IOException ";
+    private static final String BUFFER_USED_AND_NOT_RESET = "Buffer previously used and had not been reset.";
     private static final byte[] EMPTY_ARRAY = new byte[] {
             (byte) '[', (byte) ']'
     };
@@ -35,7 +38,7 @@ public final class JsonXIOUtil
             LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final JsonXOutput output = new JsonXOutput(buffer, numeric, schema);
 
@@ -52,8 +55,8 @@ public final class JsonXIOUtil
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " +
-                    "(should never happen).", e);
+            throw new RuntimeException(SERIALIZING_TO_BYTE_ARRAY_THREW_IO_EXCEPTION +
+                    SHOULD_NEVER_HAPPEN, e);
         }
 
         return output.toByteArray();
@@ -67,7 +70,7 @@ public final class JsonXIOUtil
             boolean numeric)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final JsonXOutput output = new JsonXOutput(buffer, numeric, schema);
 
@@ -84,8 +87,8 @@ public final class JsonXIOUtil
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " +
-                    "(should never happen).", e);
+            throw new RuntimeException(SERIALIZING_TO_BYTE_ARRAY_THREW_IO_EXCEPTION +
+                    SHOULD_NEVER_HAPPEN, e);
         }
     }
 
@@ -107,7 +110,7 @@ public final class JsonXIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final JsonXOutput output = new JsonXOutput(buffer, out, numeric, schema);
 
@@ -130,7 +133,7 @@ public final class JsonXIOUtil
             List<T> messages, Schema<T> schema, boolean numeric)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         if (messages.isEmpty())
         {
@@ -167,8 +170,8 @@ public final class JsonXIOUtil
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Serializing to a byte array threw an IOException " +
-                    "(should never happen).", e);
+            throw new RuntimeException(SERIALIZING_TO_BYTE_ARRAY_THREW_IO_EXCEPTION +
+                    SHOULD_NEVER_HAPPEN, e);
         }
     }
 
@@ -179,7 +182,7 @@ public final class JsonXIOUtil
             boolean numeric, LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         if (messages.isEmpty())
         {

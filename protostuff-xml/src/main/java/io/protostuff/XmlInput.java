@@ -33,6 +33,8 @@ import javax.xml.stream.XMLStreamReader;
  */
 public final class XmlInput implements Input
 {
+    private static final String ON_MESSAGE = " on message ";
+    private static final String UNKNOWN_FIELD = "Unknown field: ";
     private static final byte[] EMPTY = new byte[0];
 
     private final XMLStreamReader parser;
@@ -136,14 +138,14 @@ public final class XmlInput implements Input
                         nextTag();
                         return;
                     }
-                    throw new XmlInputException("Unknown field: " + name + " on message " +
+                    throw new XmlInputException(UNKNOWN_FIELD + name + ON_MESSAGE +
                             schema.messageFullName());
                 case END_DOCUMENT:
                     // malformed xml.
                 case START_ELEMENT:
                     // message field
                     // we do not know how deep this message is
-                    throw new XmlInputException("Unknown field: " + name + " on message " +
+                    throw new XmlInputException(UNKNOWN_FIELD + name + ON_MESSAGE +
                             schema.messageFullName());
             }
         }
@@ -177,14 +179,14 @@ public final class XmlInput implements Input
                             nextTag();
                             return readFieldNumber(schema);
                         }
-                        throw new XmlInputException("Unknown field: " + name + " on message " +
+                        throw new XmlInputException(UNKNOWN_FIELD + name + ON_MESSAGE +
                                 schema.messageFullName());
                     case END_DOCUMENT:
                         // malformed xml.
                     case START_ELEMENT:
                         // message field
                         // we do not know how deep this message is
-                        throw new XmlInputException("Unknown field: " + name + " on message " +
+                        throw new XmlInputException(UNKNOWN_FIELD + name + ON_MESSAGE +
                                 schema.messageFullName());
                 }
             }

@@ -126,6 +126,8 @@ import io.protostuff.StatefulOutput;
 public abstract class ObjectSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+
     static final int ID_ENUM_VALUE = 1;
     static final int ID_ARRAY_LEN = 3;
     static final int ID_ARRAY_DIMENSION = 2;
@@ -363,11 +365,11 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 input, mapped);
 
         if (input.readFieldNumber(schema) != ID_ARRAY_LEN)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
         final int len = input.readUInt32();
 
         if (input.readFieldNumber(schema) != ID_ARRAY_DIMENSION)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
         final int dimensions = input.readUInt32();
 
         if (dimensions == 1)
@@ -384,12 +386,12 @@ public abstract class ObjectSchema extends PolymorphicSchema
         strategy.transferArrayId(input, output, number, mapped);
 
         if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_LEN)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         output.writeUInt32(ID_ARRAY_LEN, input.readUInt32(), false);
 
         if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_DIMENSION)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         output.writeUInt32(ID_ARRAY_DIMENSION, input.readUInt32(), false);
 
@@ -411,7 +413,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
         if (array)
         {
             if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ARRAY_DIMENSION)
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
 
             output.writeUInt32(ID_ARRAY_DIMENSION, input.readUInt32(), false);
         }
@@ -421,7 +423,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             final Class<?> componentType) throws IOException
     {
         if (input.readFieldNumber(schema) != ID_ARRAY_DIMENSION)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
         final int dimensions = input.readUInt32();
 
         // TODO is there another way (reflection) to obtain an array class?
@@ -502,7 +504,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             }
             case ID_OBJECT:
                 if (input.readUInt32() != 0)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 value = new Object();
 
@@ -543,7 +545,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 final EnumIO<?> eio = strategy.resolveEnumFrom(input);
 
                 if (input.readFieldNumber(schema) != ID_ENUM_VALUE)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 value = eio.readFrom(input);
                 break;
@@ -609,7 +611,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             case ID_POLYMORPHIC_COLLECTION:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Object collection = PolymorphicCollectionSchema.readObjectFrom(input,
                         strategy.POLYMORPHIC_COLLECTION_SCHEMA, owner, strategy);
@@ -625,7 +627,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             case ID_POLYMORPHIC_MAP:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Object map = PolymorphicMapSchema.readObjectFrom(input,
                         strategy.POLYMORPHIC_MAP_SCHEMA, owner, strategy);
@@ -642,7 +644,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             {
                 final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
                 if (1 != input.readFieldNumber(schema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 value = hd.delegate.readFrom(input);
                 break;
@@ -704,7 +706,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
         }
 
         if (input.readFieldNumber(schema) != 0)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return value;
     }
@@ -1076,7 +1078,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 strategy.transferEnumId(input, output, number);
 
                 if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
                 EnumIO.transfer(pipe, input, output, 1, false);
                 break;
             }
@@ -1140,7 +1142,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             case ID_POLYMORPHIC_COLLECTION:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
                 output.writeUInt32(number, 0, false);
 
                 if (output instanceof StatefulOutput)
@@ -1158,7 +1160,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             case ID_POLYMORPHIC_MAP:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
                 output.writeUInt32(number, 0, false);
 
                 if (output instanceof StatefulOutput)
@@ -1178,7 +1180,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 final HasDelegate<Object> hd = strategy.transferDelegateId(input,
                         output, number);
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 hd.delegate.transfer(pipe, input, output, 1, false);
                 break;
@@ -1281,7 +1283,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
         }
 
         if (input.readFieldNumber(pipeSchema.wrappedSchema) != 0)
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 
     /**

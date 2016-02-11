@@ -34,6 +34,8 @@ import io.protostuff.Schema;
 public final class DefaultIdStrategy extends IdStrategy
 {
 
+    private static final String JAVA_UTIL = "java.util";
+
     final ConcurrentHashMap<String, HasSchema<?>> pojoMapping = new ConcurrentHashMap<>();
 
     final ConcurrentHashMap<String, EnumIO<?>> enumMapping = new ConcurrentHashMap<>();
@@ -240,7 +242,7 @@ public final class DefaultIdStrategy extends IdStrategy
                 .get(className);
         if (factory == null)
         {
-            if (className.startsWith("java.util"))
+            if (className.startsWith(JAVA_UTIL))
             {
                 factory = CollectionSchema.MessageFactories.valueOf(clazz
                         .getSimpleName());
@@ -265,7 +267,7 @@ public final class DefaultIdStrategy extends IdStrategy
         MapSchema.MessageFactory factory = mapMapping.get(className);
         if (factory == null)
         {
-            if (className.startsWith("java.util"))
+            if (className.startsWith(JAVA_UTIL))
             {
                 factory = MapSchema.MessageFactories.valueOf(clazz
                         .getSimpleName());
@@ -289,7 +291,7 @@ public final class DefaultIdStrategy extends IdStrategy
     {
         final CollectionSchema.MessageFactory factory = collectionMapping
                 .get(clazz);
-        if (factory == null && clazz.getName().startsWith("java.util"))
+        if (factory == null && clazz.getName().startsWith(JAVA_UTIL))
         {
             // jdk collection
             // better not to register the jdk collection if using this strategy
@@ -341,7 +343,7 @@ public final class DefaultIdStrategy extends IdStrategy
             throws IOException
     {
         final MapSchema.MessageFactory factory = mapMapping.get(clazz);
-        if (factory == null && clazz.getName().startsWith("java.util"))
+        if (factory == null && clazz.getName().startsWith(JAVA_UTIL))
         {
             // jdk map
             // better not to register the jdk map if using this strategy

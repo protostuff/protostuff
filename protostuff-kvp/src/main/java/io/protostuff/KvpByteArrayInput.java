@@ -37,6 +37,8 @@ import io.protostuff.StringSerializer.STRING;
 public final class KvpByteArrayInput implements Input
 {
 
+    private static final String MISREPORTED_SIZE = "Misreported size.";
+
     final byte[] buffer;
     int offset, limit;
 
@@ -105,7 +107,7 @@ public final class KvpByteArrayInput implements Input
             return ByteString.EMPTY_BYTE_ARRAY;
 
         if (offset + size > limit)
-            throw new ProtostuffException("Misreported size.");
+            throw new ProtostuffException(MISREPORTED_SIZE);
 
         byte[] data = new byte[size];
         System.arraycopy(buffer, offset, data, 0, size);
@@ -155,7 +157,7 @@ public final class KvpByteArrayInput implements Input
             return 0;
 
         if (offset + size > limit)
-            throw new ProtostuffException("Misreported size.");
+            throw new ProtostuffException(MISREPORTED_SIZE);
 
         final int number = parseInt(buffer, offset, size, 10);
         offset += size;
@@ -170,7 +172,7 @@ public final class KvpByteArrayInput implements Input
             return 0;
 
         if (offset + size > limit)
-            throw new ProtostuffException("Misreported size.");
+            throw new ProtostuffException(MISREPORTED_SIZE);
 
         final long number = parseLong(buffer, offset, size, 10);
         offset += size;
@@ -227,7 +229,7 @@ public final class KvpByteArrayInput implements Input
             return ByteString.EMPTY_STRING;
 
         if (offset + size > limit)
-            throw new ProtostuffException("Misreported size.");
+            throw new ProtostuffException(MISREPORTED_SIZE);
 
         final String str = STRING.deser(buffer, offset, size);
         offset += size;

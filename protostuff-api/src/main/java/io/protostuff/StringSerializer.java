@@ -1100,6 +1100,8 @@ public final class StringSerializer
 
     public static final class STRING
     {
+        private static final String MALFORMED_INPUT_PARTIAL_CHARACTER_AT_END = "Malformed input: Partial character at end";
+
         static final boolean CESU8_COMPAT = Boolean.getBoolean("io.protostuff.cesu8_compat");
 
         private STRING()
@@ -1262,7 +1264,7 @@ public final class StringSerializer
                     i += 2;
 
                     if (i > len)
-                        throw new UTFDataFormatException("Malformed input: Partial character at end");
+                        throw new UTFDataFormatException(MALFORMED_INPUT_PARTIAL_CHARACTER_AT_END);
 
                     int ch2 = (int) buffer[offset + i - 1];
 
@@ -1278,7 +1280,7 @@ public final class StringSerializer
                     i += 3;
 
                     if (i > len)
-                        throw new UTFDataFormatException("Malformed input: Partial character at end");
+                        throw new UTFDataFormatException(MALFORMED_INPUT_PARTIAL_CHARACTER_AT_END);
 
                     int ch2 = (int) buffer[offset + i - 2];
                     int ch3 = (int) buffer[offset + i - 1];
@@ -1301,7 +1303,7 @@ public final class StringSerializer
 
                         i += 4;
                         if (i > len)
-                            throw new UTFDataFormatException("Malformed input: Partial character at end");
+                            throw new UTFDataFormatException(MALFORMED_INPUT_PARTIAL_CHARACTER_AT_END);
 
                         int ch2 = (int) buffer[offset + i - 3];
                         int ch3 = (int) buffer[offset + i - 2];

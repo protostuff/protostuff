@@ -41,6 +41,13 @@ import io.protostuff.parser.Proto;
  */
 public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
 {
+    private static final String NO_MODELS = "no_models";
+    private static final String MODELS = "models";
+    private static final String MESSAGE = "message";
+    private static final String OPTIONS = "options";
+    private static final String MODULE = "module";
+    private static final String JAVA = ".java";
+
     public ProtoToJavaBeanModelCompiler()
     {
         super("java_bean_model");
@@ -60,13 +67,13 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             if (eg.getAnnotation("Transient") != null)
                 continue;
 
-            Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + ".java");
+            Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + JAVA);
             AutoIndentWriter out = new AutoIndentWriter(writer);
 
             StringTemplate enumBlock = schemaTemplateGroup.getInstanceOf("enum_block");
             enumBlock.setAttribute("eg", eg);
-            enumBlock.setAttribute("module", module);
-            enumBlock.setAttribute("options", module.getOptions());
+            enumBlock.setAttribute(MODULE, module);
+            enumBlock.setAttribute(OPTIONS, module.getOptions());
 
             enumBlock.write(out);
             writer.close();
@@ -95,13 +102,13 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
                     modelName = modelFullName.substring(lastDotIndex + 1);
                 }
 
-                Writer writer = CompilerUtil.newWriter(module, modelPackage, modelName + ".java");
+                Writer writer = CompilerUtil.newWriter(module, modelPackage, modelName + JAVA);
                 AutoIndentWriter out = new AutoIndentWriter(writer);
 
                 StringTemplate messageBlock = modelTemplateGroup.getInstanceOf("message_block");
-                messageBlock.setAttribute("message", m);
-                messageBlock.setAttribute("module", module);
-                messageBlock.setAttribute("options", module.getOptions());
+                messageBlock.setAttribute(MESSAGE, m);
+                messageBlock.setAttribute(MODULE, module);
+                messageBlock.setAttribute(OPTIONS, module.getOptions());
 
                 messageBlock.write(out);
                 writer.close();
@@ -110,13 +117,13 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
             // Generate schema
             {
                 Writer writer = CompilerUtil.newWriter(module, javaPackageName,
-                        getRemoteModelSchemaName(schemaTemplateGroup, m) + ".java");
+                        getRemoteModelSchemaName(schemaTemplateGroup, m) + JAVA);
                 AutoIndentWriter out = new AutoIndentWriter(writer);
 
                 StringTemplate messageBlock = schemaTemplateGroup.getInstanceOf("message_block");
-                messageBlock.setAttribute("message", m);
-                messageBlock.setAttribute("module", module);
-                messageBlock.setAttribute("options", module.getOptions());
+                messageBlock.setAttribute(MESSAGE, m);
+                messageBlock.setAttribute(MODULE, module);
+                messageBlock.setAttribute(OPTIONS, module.getOptions());
 
                 messageBlock.write(out);
                 writer.close();
@@ -128,31 +135,31 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
     {
         boolean generateModel = false;
 
-        if (module.getOptions().containsKey("models"))
+        if (module.getOptions().containsKey(MODELS))
         {
-            String optGenerateModel = module.getOption("models");
+            String optGenerateModel = module.getOption(MODELS);
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
         }
-        else if (module.getOptions().containsKey("no_models"))
+        else if (module.getOptions().containsKey(NO_MODELS))
         {
-            String optGenerateModel = module.getOption("no_models");
+            String optGenerateModel = module.getOption(NO_MODELS);
             generateModel =
                     !optGenerateModel.equalsIgnoreCase("true") &&
                             !optGenerateModel.equals("1");
         }
 
-        if (proto.getOptions().containsKey("models"))
+        if (proto.getOptions().containsKey(MODELS))
         {
-            String optGenerateModel = proto.getExtraOption("models").toString();
+            String optGenerateModel = proto.getExtraOption(MODELS).toString();
             generateModel =
                     optGenerateModel.equalsIgnoreCase("true") ||
                             optGenerateModel.equals("1");
         }
-        else if (proto.getOptions().containsKey("no_models"))
+        else if (proto.getOptions().containsKey(NO_MODELS))
         {
-            String optGenerateModel = proto.getExtraOption("no_models");
+            String optGenerateModel = proto.getExtraOption(NO_MODELS);
             generateModel =
                     !optGenerateModel.equalsIgnoreCase("true") &&
                             !optGenerateModel.equals("1");
@@ -182,7 +189,7 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         NoIndentWriter out = new NoIndentWriter(writer);
 
         StringTemplate messageBlock = group.getInstanceOf("remote_model_name");
-        messageBlock.setAttribute("message", message);
+        messageBlock.setAttribute(MESSAGE, message);
         messageBlock.setAttribute("name", message.getName());
         messageBlock.write(out);
 
@@ -198,7 +205,7 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         NoIndentWriter out = new NoIndentWriter(writer);
 
         StringTemplate messageBlock = group.getInstanceOf("remote_model_schema_name");
-        messageBlock.setAttribute("message", message);
+        messageBlock.setAttribute(MESSAGE, message);
         messageBlock.setAttribute("name", message.getName());
         messageBlock.write(out);
 

@@ -49,6 +49,8 @@ import io.protostuff.Schema;
 public abstract class PolymorphicEnumSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+
     static final int ID_ENUM_VALUE = 1;
     static final String STR_ENUM_VALUE = "a";
 
@@ -161,12 +163,12 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
             IdStrategy strategy) throws IOException
     {
         if (ID_ENUM != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         final EnumIO<?> eio = strategy.resolveEnumFrom(input);
 
         if (ID_ENUM_VALUE != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         final Object value = eio.readFrom(input);
 
@@ -177,7 +179,7 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return value;
     }
@@ -186,17 +188,17 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
             Input input, Output output, IdStrategy strategy) throws IOException
     {
         if (ID_ENUM != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         strategy.transferEnumId(input, output, ID_ENUM);
 
         if (ID_ENUM_VALUE != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         EnumIO.transfer(pipe, input, output, 1, false);
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 
 }

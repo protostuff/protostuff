@@ -31,6 +31,8 @@ import java.util.List;
 public final class ProtobufIOUtil
 {
 
+    private static final String BUFFER_USED_AND_NOT_RESET = "Buffer previously used and had not been reset.";
+
     private ProtobufIOUtil()
     {
     }
@@ -177,7 +179,7 @@ public final class ProtobufIOUtil
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         try
@@ -201,7 +203,7 @@ public final class ProtobufIOUtil
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         try
@@ -226,7 +228,7 @@ public final class ProtobufIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         schema.writeTo(output, message);
@@ -242,7 +244,7 @@ public final class ProtobufIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         schema.writeTo(output, message);
@@ -286,7 +288,7 @@ public final class ProtobufIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         int totalSize = 0;
@@ -386,7 +388,7 @@ public final class ProtobufIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in,
                 drainRemainingBytesIfTooLarge, buffer);
@@ -433,7 +435,7 @@ public final class ProtobufIOUtil
             Schema<T> schema, LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
 

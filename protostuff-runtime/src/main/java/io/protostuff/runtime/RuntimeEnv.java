@@ -27,6 +27,8 @@ import java.util.Properties;
  */
 public final class RuntimeEnv
 {
+    private static final String FALSE = "false";
+
     /**
      * Returns true if serializing enums by name is activated. Disabled by default.
      */
@@ -157,28 +159,28 @@ public final class RuntimeEnv
                 : System.getProperties();
 
         ENUMS_BY_NAME = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.enums_by_name", "false"));
+                "protostuff.runtime.enums_by_name", FALSE));
 
         AUTO_LOAD_POLYMORPHIC_CLASSES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.auto_load_polymorphic_classes", "true"));
 
         ALLOW_NULL_ARRAY_ELEMENT = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.allow_null_array_element", "false"));
+                "protostuff.runtime.allow_null_array_element", FALSE));
 
         MORPH_NON_FINAL_POJOS = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_non_final_pojos", "false"));
+                "protostuff.runtime.morph_non_final_pojos", FALSE));
 
         MORPH_COLLECTION_INTERFACES = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_collection_interfaces", "false"));
+                "protostuff.runtime.morph_collection_interfaces", FALSE));
 
         MORPH_MAP_INTERFACES = Boolean.parseBoolean(props.getProperty(
-                "protostuff.runtime.morph_map_interfaces", "false"));
+                "protostuff.runtime.morph_map_interfaces", FALSE));
 
         COLLECTION_SCHEMA_ON_REPEATED_FIELDS = Boolean
                 .parseBoolean(props
                         .getProperty(
                                 "protostuff.runtime.collection_schema_on_repeated_fields",
-                                "false"));
+                                FALSE));
 
         // must be on a sun jre
         USE_SUN_MISC_UNSAFE = OBJECT_CONSTRUCTOR != null
@@ -188,7 +190,7 @@ public final class RuntimeEnv
         ALWAYS_USE_SUN_REFLECTION_FACTORY = OBJECT_CONSTRUCTOR != null
                 && Boolean.parseBoolean(props.getProperty(
                         "protostuff.runtime.always_use_sun_reflection_factory",
-                        "false"));
+                        FALSE));
 
         String factoryProp = props
                 .getProperty("protostuff.runtime.id_strategy_factory");

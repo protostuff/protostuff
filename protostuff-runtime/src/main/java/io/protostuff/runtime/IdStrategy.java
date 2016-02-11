@@ -33,6 +33,9 @@ import io.protostuff.Schema;
 public abstract class IdStrategy
 {
 
+    private static final String THE_MAP_WAS_INCORRECTLY = "The map was incorrectly ";
+    private static final String SERIALIZED = "serialized.";
+
     public final IdStrategy primaryGroup;
     public final int groupId;
 
@@ -579,7 +582,7 @@ public abstract class IdStrategy
                         break;
                     default:
                         throw new ProtostuffException(
-                                "The collection was incorrectly " + "serialized.");
+                                "The collection was incorrectly " + SERIALIZED);
                 }
             }
         }
@@ -670,7 +673,7 @@ public abstract class IdStrategy
                         break;
                     default:
                         throw new ProtostuffException("The array was incorrectly "
-                                + "serialized.");
+                                + SERIALIZED);
                 }
             }
         }
@@ -786,8 +789,8 @@ public abstract class IdStrategy
                         output.writeObject(number, pipe, ENTRY_PIPE_SCHEMA, true);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly "
-                                + "serialized.");
+                        throw new ProtostuffException(THE_MAP_WAS_INCORRECTLY
+                                + SERIALIZED);
                 }
             }
         }
@@ -876,7 +879,7 @@ public abstract class IdStrategy
                         if (key != null)
                         {
                             throw new ProtostuffException(
-                                    "The map was incorrectly " + "serialized.");
+                                    THE_MAP_WAS_INCORRECTLY + SERIALIZED);
                         }
                         key = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
                         if (entry != key)
@@ -895,7 +898,7 @@ public abstract class IdStrategy
                         if (value != null)
                         {
                             throw new ProtostuffException(
-                                    "The map was incorrectly " + "serialized.");
+                                    THE_MAP_WAS_INCORRECTLY + SERIALIZED);
                         }
                         value = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
                         if (entry != value)
@@ -911,8 +914,8 @@ public abstract class IdStrategy
                         }
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly "
-                                + "serialized.");
+                        throw new ProtostuffException(THE_MAP_WAS_INCORRECTLY
+                                + SERIALIZED);
                 }
             }
         }
@@ -954,8 +957,8 @@ public abstract class IdStrategy
                                 false);
                         break;
                     default:
-                        throw new ProtostuffException("The map was incorrectly "
-                                + "serialized.");
+                        throw new ProtostuffException(THE_MAP_WAS_INCORRECTLY
+                                + SERIALIZED);
                 }
             }
         }

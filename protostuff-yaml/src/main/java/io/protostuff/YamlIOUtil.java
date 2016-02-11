@@ -27,6 +27,8 @@ import java.util.List;
 public final class YamlIOUtil
 {
 
+    private static final String SHOULD_NEVER_HAPPEN = "(should never happen).";
+    private static final String BUFFER_USED_AND_NOT_RESET = "Buffer previously used and had not been reset.";
     private static final byte[] START_DIRECTIVE = new byte[] {
             (byte) '-', (byte) '-', (byte) '-', (byte) ' '
     };
@@ -37,7 +39,7 @@ public final class YamlIOUtil
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final YamlOutput output = new YamlOutput(buffer, schema);
 
@@ -58,7 +60,7 @@ public final class YamlIOUtil
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException " +
-                    "(should never happen).", e);
+                    SHOULD_NEVER_HAPPEN, e);
         }
 
         return output.toByteArray();
@@ -72,7 +74,7 @@ public final class YamlIOUtil
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final YamlOutput output = new YamlOutput(buffer, schema);
 
@@ -93,7 +95,7 @@ public final class YamlIOUtil
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " +
-                    "(should never happen).", e);
+                    SHOULD_NEVER_HAPPEN, e);
         }
 
         return output.getSize();
@@ -108,7 +110,7 @@ public final class YamlIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final YamlOutput output = new YamlOutput(buffer, out, schema);
 
@@ -138,7 +140,7 @@ public final class YamlIOUtil
             Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final YamlOutput output = new YamlOutput(buffer, schema);
 
@@ -163,7 +165,7 @@ public final class YamlIOUtil
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a LinkedBuffer threw an IOException " +
-                    "(should never happen).", e);
+                    SHOULD_NEVER_HAPPEN, e);
         }
 
         return output.getSize();
@@ -178,7 +180,7 @@ public final class YamlIOUtil
             Schema<T> schema, LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final YamlOutput output = new YamlOutput(buffer, out, schema);
 
