@@ -23,7 +23,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
+import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
 import com.fasterxml.jackson.dataformat.smile.SmileParser;
@@ -50,9 +50,9 @@ public final class SmileIOUtil
         /**
          * Needed by jackson's internal utf8 stream parser.
          */
-        public BytesToNameCanonicalizer getRootByteSymbols()
+        public ByteQuadsCanonicalizer getRootByteSymbols()
         {
-            return _rootByteSymbols;
+            return _byteSymbolCanonicalizer;
         }
 
         /**
@@ -159,7 +159,7 @@ public final class SmileIOUtil
                 DEFAULT_SMILE_FACTORY.getParserFeatures(),
                 DEFAULT_SMILE_FACTORY.getSmileParserFeatures(),
                 DEFAULT_SMILE_FACTORY.getCodec(),
-                DEFAULT_SMILE_FACTORY.getRootByteSymbols().makeChild(true, true),
+                DEFAULT_SMILE_FACTORY.getRootByteSymbols().makeChild(1),
                 in,
                 buf, offset, limit, bufferRecyclable);
     }

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
 import com.fasterxml.jackson.core.json.UTF8StreamJsonParser;
-import com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
+import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 
 /**
  * Utility for the JSON serialization/deserialization of messages and objects tied to a schema.
@@ -55,9 +55,9 @@ public final class JsonIOUtil
         /**
          * Needed by jackson's internal utf8 strema parser.
          */
-        public BytesToNameCanonicalizer getRootByteSymbols()
+        public ByteQuadsCanonicalizer getRootByteSymbols()
         {
-            return _rootByteSymbols;
+            return _byteSymbolCanonicalizer;
         }
 
         /**
@@ -200,7 +200,7 @@ public final class JsonIOUtil
         return new UTF8StreamJsonParser(context,
                 DEFAULT_JSON_FACTORY.getParserFeatures(), in,
                 DEFAULT_JSON_FACTORY.getCodec(),
-                DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(true, true),
+                DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(1),
                 buf, offset, limit, bufferRecyclable);
     }
 
