@@ -3,11 +3,13 @@ package io.protostuff.runtime;
 import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Tag;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Kostiantyn Shchepanovskyi
@@ -15,6 +17,9 @@ import io.protostuff.Tag;
 @SuppressWarnings("unused")
 public class RuntimeSchemaTagTest
 {
+
+    @Rule
+    public ExpectedException thrown= ExpectedException.none();
 
     /**
      * Simple serialization/deserialization test
@@ -62,6 +67,18 @@ public class RuntimeSchemaTagTest
     {
         RuntimeSchema<MaxTag> schema = RuntimeSchema.createFrom(MaxTag.class);
         Assert.assertNotNull(schema);
+    }
+
+	/**
+	 * Class and field names should be included in the message when one of fields is not
+     * annotated by @Tag (and at least one other field is)
+     */
+    @Test
+    public void testMissingTagException() throws Exception
+    {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("io.protostuff.runtime.RuntimeSchemaTagTest.OneFieldIsNotAnnotated#b is not annotated with @Tag");
+        RuntimeSchema.getSchema(OneFieldIsNotAnnotated.class);
     }
 
     static class A1
@@ -188,6 +205,14 @@ public class RuntimeSchemaTagTest
     {
         @Tag(RuntimeSchema.MAX_TAG_VALUE - 1)
         private int x;
+    }
+
+    static class OneFieldIsNotAnnotated
+    {
+        @Tag(1)
+        private int a;
+
+        private int b;
     }
 
 }

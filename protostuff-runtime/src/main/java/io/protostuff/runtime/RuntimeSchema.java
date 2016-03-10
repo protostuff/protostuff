@@ -223,10 +223,10 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
                     // definition order
                     if (annotated)
                     {
-                        throw new RuntimeException(
-                                "When using annotation-based mapping, "
-                                        + "all fields must be annotated with @"
-                                        + Tag.class.getSimpleName());
+                        String className = typeClass.getCanonicalName();
+                        String fieldName = f.getName();
+                        String message = String.format("%s#%s is not annotated with @Tag", className, fieldName);
+                        throw new RuntimeException(message);
                     }
                     fieldMapping = ++i;
 
