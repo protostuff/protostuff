@@ -99,9 +99,11 @@ public final class ByteString
         output.writeByteArray(fieldNumber, bs.bytes, repeated);
     }
 
+    @Override
     public String toString()
     {
-        return toStringUtf8();
+        return String.format("<ByteString@%s size=%d>",
+                Integer.toHexString(System.identityHashCode(this)), size());
     }
 
     // END EXTRA
