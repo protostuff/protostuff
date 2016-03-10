@@ -73,13 +73,6 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <version>${woodstox-version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>io.protostuff</groupId>
       <artifactId>protostuff-api</artifactId>

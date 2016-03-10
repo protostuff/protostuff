@@ -287,13 +287,31 @@ public final class JsonInput implements Input
     @Override
     public int readFixed32() throws IOException
     {
-        return readInt32();
+        String rawValue = parser.getText();
+        if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
+            lastRepeated = false;
+        }
+        if (rawValue.startsWith("-"))
+        {
+            return Integer.parseInt(rawValue);
+        }
+        return UnsignedNumberUtil.parseUnsignedInt(rawValue);
     }
 
     @Override
     public long readFixed64() throws IOException
     {
-        return readInt64();
+        String rawValue = parser.getText();
+        if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
+            lastRepeated = false;
+        }
+        if (rawValue.startsWith("-"))
+        {
+            return Long.parseLong(rawValue);
+        }
+        return UnsignedNumberUtil.parseUnsignedLong(rawValue);
     }
 
     @Override
@@ -370,13 +388,31 @@ public final class JsonInput implements Input
     @Override
     public int readUInt32() throws IOException
     {
-        return readInt32();
+        String rawValue = parser.getText();
+        if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
+            lastRepeated = false;
+        }
+        if (rawValue.startsWith("-"))
+        {
+            return Integer.parseInt(rawValue);
+        }
+        return UnsignedNumberUtil.parseUnsignedInt(rawValue);
     }
 
     @Override
     public long readUInt64() throws IOException
     {
-        return readInt64();
+        String rawValue = parser.getText();
+        if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
+            lastRepeated = false;
+        }
+        if (rawValue.startsWith("-"))
+        {
+            return Long.parseLong(rawValue);
+        }
+        return UnsignedNumberUtil.parseUnsignedLong(rawValue);
     }
 
     @Override

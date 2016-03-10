@@ -78,7 +78,7 @@ public abstract class DelimiterTest extends AbstractTest
          * 
          * StringBuilder s2 = new StringBuilder(); for(int b : data) s2.append(b).append(' ');
          * 
-         * assertEquals(s1.toString(), s2.toString());
+         * assertEquals(s1.unsignedIntToString(), s2.unsignedIntToString());
          */
 
         assertTrue(Arrays.equals(optData, data));

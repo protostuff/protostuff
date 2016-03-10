@@ -121,6 +121,6 @@ public final class UninitializedMessageException extends RuntimeException
      * List<String> missingFields) { final StringBuilder description = new
      * StringBuilder("Message missing required fields: "); boolean first = true; for (final String field :
      * missingFields) { if (first) { first = false; } else { description.append(", "); } description.append(field); }
-     * return description.toString(); }
+     * return description.unsignedIntToString(); }
      */
 }

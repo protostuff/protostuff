@@ -6,15 +6,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.protostuff</groupId>
   <artifactId>protostuff-json</artifactId>
   <name>protostuff :: json</name>
   <description>protostuff serialization using json format</description>
   <packaging>jar</packaging>
-
-  <build>
-    <defaultGoal>install</defaultGoal>
-  </build>
 
   <dependencies>
     <dependency>

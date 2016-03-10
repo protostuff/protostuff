@@ -28,6 +28,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 public final class JsonOutput implements Output, StatefulOutput
 {
 
+    public static final boolean FIX_UNSIGNED_INT = Boolean.getBoolean("io.protostuff.json.fix_unsigned_int");
+
     private final JsonGenerator generator;
     private Schema<?> schema;
     private final boolean numeric;
@@ -255,13 +257,13 @@ public final class JsonOutput implements Output, StatefulOutput
     @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeInt32(fieldNumber, value, repeated);
+        writeUInt32(fieldNumber, value, repeated);
     }
 
     @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeInt64(fieldNumber, value, repeated);
+        writeUInt64(fieldNumber, value, repeated);
     }
 
     @Override
@@ -411,13 +413,67 @@ public final class JsonOutput implements Output, StatefulOutput
     @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        writeInt32(fieldNumber, value, repeated);
+        String unsignedValue = UnsignedNumberUtil.unsignedIntToString(value);
+        if (lastNumber == fieldNumber)
+        {
+            // repeated field
+            generator.writeNumber(unsignedValue);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+
+        if (lastRepeated)
+            generator.writeEndArray();
+
+        final String name = numeric ? Integer.toString(fieldNumber) :
+                schema.getFieldName(fieldNumber);
+
+        if (repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(unsignedValue);
+        }
+        else
+        {
+            generator.writeFieldName(name);
+            generator.writeNumber(unsignedValue);
+        }
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        writeInt64(fieldNumber, value, repeated);
+        String unsignedValue = UnsignedNumberUtil.unsignedLongToString(value);
+        if (lastNumber == fieldNumber)
+        {
+            // repeated field
+            generator.writeNumber(unsignedValue);
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+
+        if (lastRepeated)
+            generator.writeEndArray();
+
+        final String name = numeric ? Integer.toString(fieldNumber) :
+                schema.getFieldName(fieldNumber);
+
+        if (repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeNumber(unsignedValue);
+        }
+        else
+        {
+            generator.writeFieldName(name);
+            generator.writeNumber(unsignedValue);
+        }
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
     }
 
     @Override
