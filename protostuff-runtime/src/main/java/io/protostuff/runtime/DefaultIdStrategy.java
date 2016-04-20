@@ -10,6 +10,8 @@ import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
@@ -669,16 +671,8 @@ public final class DefaultIdStrategy extends IdStrategy
                         if (Message.class.isAssignableFrom(typeClass))
                         {
                             // use the message's schema.
-                            try
-                            {
-                                final Message<T> m = (Message<T>) typeClass
-                                        .newInstance();
-                                this.schema = schema = m.cachedSchema();
-                            }
-                            catch (InstantiationException | IllegalAccessException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
+                            Message<T> m = (Message<T>)createInstance(typeClass);
+                            this.schema = schema = m.cachedSchema();
                         }
                         else
                         {
@@ -691,6 +685,23 @@ public final class DefaultIdStrategy extends IdStrategy
             }
 
             return schema;
+        }
+
+        private static <T> T createInstance(Class<T> clazz) {
+            try {
+                return clazz.newInstance();
+            } catch (IllegalAccessException e) {
+                try {
+                    Constructor<T> constructor = clazz.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    return constructor.newInstance();
+                } catch (NoSuchMethodException | InstantiationException
+                        | InvocationTargetException | IllegalAccessException e1) {
+                    throw new RuntimeException(e);
+                }
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
