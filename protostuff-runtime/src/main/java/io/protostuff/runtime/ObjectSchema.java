@@ -486,20 +486,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ARRAY:
-            {
-                final ArrayWrapper arrayWrapper = newArrayWrapper(input, schema, false,
-                        strategy);
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(arrayWrapper.array, owner);
-                }
-
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
-
-                return arrayWrapper.array;
-            }
+            return readObjectFromIdArray(input, schema, owner, strategy);
             case ID_OBJECT:
                 if (input.readUInt32() != 0)
                     throw new ProtostuffException("Corrupt input.");
@@ -509,20 +496,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ARRAY_MAPPED:
-            {
-                final ArrayWrapper mArrayWrapper = newArrayWrapper(input, schema, true,
-                        strategy);
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(mArrayWrapper.array, owner);
-                }
-
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
-
-                return mArrayWrapper.array;
-            }
+            return readObjectFromIdArrayMaped(input, schema, owner, strategy);
             case ID_CLASS:
                 value = strategy.resolveClassFrom(input, false, false);
                 break;
@@ -539,160 +513,36 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM:
-            {
-                final EnumIO<?> eio = strategy.resolveEnumFrom(input);
-
-                if (input.readFieldNumber(schema) != ID_ENUM_VALUE)
-                    throw new ProtostuffException("Corrupt input.");
-
-                value = eio.readFrom(input);
-                break;
-            }
+            value = readObjectFromIdEnum(input, schema, strategy);
+            break;
             case ID_ENUM_SET:
-            {
-                final Collection<?> es = strategy.resolveEnumFrom(input).newEnumSet();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(es, owner);
-                }
-
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>) es);
-
-                return es;
-            }
+            return readObjectFromIdEnumSet(input, owner, strategy);
             case ID_ENUM_MAP:
-            {
-                final Map<?, Object> em = strategy.resolveEnumFrom(input).newEnumMap();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(em, owner);
-                }
-
-                strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
-
-                return em;
-            }
+            return readObjectFromIdEnumMap(input, owner, strategy);
             case ID_COLLECTION:
-            {
-                final Collection<Object> collection = strategy.resolveCollectionFrom(
-                        input).newMessage();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(collection, owner);
-                }
-
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
-
-                return collection;
-            }
+            return readObjectFromIdCollection(input, owner, strategy);
             case ID_MAP:
-            {
-                final Map<Object, Object> map =
-                        strategy.resolveMapFrom(input).newMessage();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(map, owner);
-                }
-
-                strategy.MAP_SCHEMA.mergeFrom(input, map);
-
-                return map;
-            }
+            return readObjectFromIdMap(input, owner, strategy);
             case ID_POLYMORPHIC_COLLECTION:
-            {
-                if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
-
-                final Object collection = PolymorphicCollectionSchema.readObjectFrom(input,
-                        strategy.POLYMORPHIC_COLLECTION_SCHEMA, owner, strategy);
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(collection, owner);
-                }
-
-                return collection;
-            }
+            return readObjectFromIdPolymorphicCollection(input, owner, strategy);
             case ID_POLYMORPHIC_MAP:
-            {
-                if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
-
-                final Object map = PolymorphicMapSchema.readObjectFrom(input,
-                        strategy.POLYMORPHIC_MAP_SCHEMA, owner, strategy);
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(map, owner);
-                }
-
-                return map;
-            }
+            return readObjectFromIdPolymorphicMap(input, owner, strategy);
             case ID_DELEGATE:
-            {
-                final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
-                if (1 != input.readFieldNumber(schema))
-                    throw new ProtostuffException("Corrupt input.");
-
-                value = hd.delegate.readFrom(input);
-                break;
-            }
+            value = readObjectFromIdDelegate(input, schema, strategy);
+            break;
             case ID_ARRAY_DELEGATE:
-            {
-                final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
-
-                return hd.genericElementSchema.readFrom(input, owner);
-            }
+            return readObjectFromIdArrayDelegate(input, owner, strategy);
             case ID_ARRAY_SCALAR:
-            {
-                final int arrayId = input.readUInt32(), id = ArraySchemas.toInlineId(arrayId);
-
-                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id,
-                        ArraySchemas.isPrimitive(arrayId));
-
-                return arraySchema.readFrom(input, owner);
-            }
+            return readObjectFromIDArrayScalar(input, owner);
             case ID_ARRAY_ENUM:
-            {
-                final EnumIO<?> eio = strategy.resolveEnumFrom(input);
-
-                return eio.genericElementSchema.readFrom(input, owner);
-            }
+            return readObjectFromIdArrayEnum(input, owner, strategy);
             case ID_ARRAY_POJO:
-            {
-                final HasSchema<Object> hs = strategy.resolvePojoFrom(input, number);
-
-                return hs.genericElementSchema.readFrom(input, owner);
-            }
+            return readObjectFromIdArrayPojo(input, owner, strategy, number);
             case ID_THROWABLE:
                 return PolymorphicThrowableSchema.readObjectFrom(input, schema, owner,
                         strategy, number);
             case ID_POJO:
-            {
-                final Schema<Object> derivedSchema = strategy.resolvePojoFrom(
-                        input, number).getSchema();
-
-                final Object pojo = derivedSchema.newMessage();
-
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(pojo, owner);
-                }
-
-                derivedSchema.mergeFrom(input, pojo);
-                return pojo;
-            }
+            return readObjectFromIdPojo(input, owner, strategy, number);
             default:
                 throw new ProtostuffException("Corrupt input.  Unknown field number: " + number);
         }
@@ -708,6 +558,235 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
         return value;
     }
+
+	private static Object readObjectFromIdPojo(final Input input, Object owner, IdStrategy strategy, final int number)
+			throws IOException {
+		{
+		    final Schema<Object> derivedSchema = strategy.resolvePojoFrom(
+		            input, number).getSchema();
+
+		    final Object pojo = derivedSchema.newMessage();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(pojo, owner);
+		    }
+
+		    derivedSchema.mergeFrom(input, pojo);
+		    return pojo;
+		}
+	}
+
+	private static Object readObjectFromIdArrayPojo(final Input input, Object owner, IdStrategy strategy,
+			final int number) throws IOException {
+		{
+		    final HasSchema<Object> hs = strategy.resolvePojoFrom(input, number);
+
+		    return hs.genericElementSchema.readFrom(input, owner);
+		}
+	}
+
+	private static Object readObjectFromIdArrayEnum(final Input input, Object owner, IdStrategy strategy)
+			throws IOException {
+		{
+		    final EnumIO<?> eio = strategy.resolveEnumFrom(input);
+
+		    return eio.genericElementSchema.readFrom(input, owner);
+		}
+	}
+
+	private static Object readObjectFromIDArrayScalar(final Input input, Object owner) throws IOException {
+		{
+		    final int arrayId = input.readUInt32(), id = ArraySchemas.toInlineId(arrayId);
+
+		    final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id,
+		            ArraySchemas.isPrimitive(arrayId));
+
+		    return arraySchema.readFrom(input, owner);
+		}
+	}
+
+	private static Object readObjectFromIdArrayDelegate(final Input input, Object owner, IdStrategy strategy)
+			throws IOException {
+		{
+		    final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
+
+		    return hd.genericElementSchema.readFrom(input, owner);
+		}
+	}
+
+	private static Object readObjectFromIdDelegate(final Input input, final Schema<?> schema, IdStrategy strategy)
+			throws IOException, ProtostuffException {
+		Object value;
+		{
+		    final HasDelegate<Object> hd = strategy.resolveDelegateFrom(input);
+		    if (1 != input.readFieldNumber(schema))
+		        throw new ProtostuffException("Corrupt input.");
+
+		    value = hd.delegate.readFrom(input);
+		    
+		}
+		return value;
+	}
+
+	private static Object readObjectFromIdPolymorphicMap(final Input input, Object owner, IdStrategy strategy)
+			throws IOException, ProtostuffException {
+		{
+		    if (0 != input.readUInt32())
+		        throw new ProtostuffException("Corrupt input.");
+
+		    final Object map = PolymorphicMapSchema.readObjectFrom(input,
+		            strategy.POLYMORPHIC_MAP_SCHEMA, owner, strategy);
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(map, owner);
+		    }
+
+		    return map;
+		}
+	}
+
+	private static Object readObjectFromIdPolymorphicCollection(final Input input, Object owner, IdStrategy strategy)
+			throws IOException, ProtostuffException {
+		{
+		    if (0 != input.readUInt32())
+		        throw new ProtostuffException("Corrupt input.");
+
+		    final Object collection = PolymorphicCollectionSchema.readObjectFrom(input,
+		            strategy.POLYMORPHIC_COLLECTION_SCHEMA, owner, strategy);
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(collection, owner);
+		    }
+
+		    return collection;
+		}
+	}
+
+	private static Object readObjectFromIdMap(final Input input, Object owner, IdStrategy strategy) throws IOException {
+		{
+		    final Map<Object, Object> map =
+		            strategy.resolveMapFrom(input).newMessage();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(map, owner);
+		    }
+
+		    strategy.MAP_SCHEMA.mergeFrom(input, map);
+
+		    return map;
+		}
+	}
+
+	private static Object readObjectFromIdCollection(final Input input, Object owner, IdStrategy strategy)
+			throws IOException {
+		{
+		    final Collection<Object> collection = strategy.resolveCollectionFrom(
+		            input).newMessage();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(collection, owner);
+		    }
+
+		    strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
+
+		    return collection;
+		}
+	}
+
+	private static Object readObjectFromIdEnumMap(final Input input, Object owner, IdStrategy strategy)
+			throws IOException {
+		{
+		    final Map<?, Object> em = strategy.resolveEnumFrom(input).newEnumMap();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(em, owner);
+		    }
+
+		    strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
+
+		    return em;
+		}
+	}
+
+	private static Object readObjectFromIdEnumSet(final Input input, Object owner, IdStrategy strategy)
+			throws IOException {
+		{
+		    final Collection<?> es = strategy.resolveEnumFrom(input).newEnumSet();
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(es, owner);
+		    }
+
+		    strategy.COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>) es);
+
+		    return es;
+		}
+	}
+
+	private static Object readObjectFromIdEnum(final Input input, final Schema<?> schema, IdStrategy strategy)
+			throws IOException, ProtostuffException {
+		Object value;
+		{
+		    final EnumIO<?> eio = strategy.resolveEnumFrom(input);
+
+		    if (input.readFieldNumber(schema) != ID_ENUM_VALUE)
+		        throw new ProtostuffException("Corrupt input.");
+
+		    value = eio.readFrom(input);
+		    
+		}
+		return value;
+	}
+
+	private static Object readObjectFromIdArrayMaped(final Input input, final Schema<?> schema, Object owner,
+			IdStrategy strategy) throws IOException {
+		{
+		    final ArrayWrapper mArrayWrapper = newArrayWrapper(input, schema, true,
+		            strategy);
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(mArrayWrapper.array, owner);
+		    }
+
+		    strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
+
+		    return mArrayWrapper.array;
+		}
+	}
+
+	private static Object readObjectFromIdArray(final Input input, final Schema<?> schema, Object owner,
+			IdStrategy strategy) throws IOException {
+		{
+		    final ArrayWrapper arrayWrapper = newArrayWrapper(input, schema, false,
+		            strategy);
+
+		    if (input instanceof GraphInput)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(arrayWrapper.array, owner);
+		    }
+
+		    strategy.COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
+
+		    return arrayWrapper.array;
+		}
+	}
 
     @SuppressWarnings("unchecked")
     static void writeObjectTo(Output output, Object value,
@@ -1072,192 +1151,51 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM:
-            {
-                strategy.transferEnumId(input, output, number);
-
-                if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
-                    throw new ProtostuffException("Corrupt input.");
-                EnumIO.transfer(pipe, input, output, 1, false);
-                break;
-            }
+            transferObjectIdEnum(pipeSchema, pipe, input, output, strategy, number);
+            break;
 
             case ID_ENUM_SET:
-            {
-                strategy.transferEnumId(input, output, number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
-                return;
-            }
+            transferObjectIdEnumSet(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_ENUM_MAP:
-            {
-                strategy.transferEnumId(input, output, number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
-                return;
-            }
+            transferObjectIdEnumMap(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_COLLECTION:
-            {
-                strategy.transferCollectionId(input, output, number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
-                return;
-            }
+            transferObjectIdCollection(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_MAP:
-            {
-                strategy.transferMapId(input, output, number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
-                return;
-            }
+            transferObjectIdMap(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_POLYMORPHIC_COLLECTION:
-            {
-                if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
-                output.writeUInt32(number, 0, false);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA,
-                        pipe, input, output);
-                return;
-            }
+            transferObjectIdPolymorphicCollection(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_POLYMORPHIC_MAP:
-            {
-                if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
-                output.writeUInt32(number, 0, false);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, pipeSchema);
-                }
-
-                Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA,
-                        pipe, input, output);
-                return;
-            }
+            transferObjectIdPolymorphicMap(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_DELEGATE:
-            {
-                final HasDelegate<Object> hd = strategy.transferDelegateId(input,
-                        output, number);
-                if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
-
-                hd.delegate.transfer(pipe, input, output, 1, false);
-                break;
-            }
+            transferObjectIdDelegate(pipeSchema, pipe, input, output, strategy, number);break;
 
             case ID_ARRAY_DELEGATE:
-            {
-                final HasDelegate<Object> hd = strategy.transferDelegateId(input,
-                        output, number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(
-                            hd.genericElementSchema.getPipeSchema(),
-                            pipeSchema);
-                }
-
-                Pipe.transferDirect(hd.genericElementSchema.getPipeSchema(),
-                        pipe, input, output);
-                return;
-            }
+            transferObjectIdArrayDelegate(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_ARRAY_SCALAR:
-            {
-                final int arrayId = input.readUInt32(), id = ArraySchemas.toInlineId(arrayId);
-
-                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id,
-                        ArraySchemas.isPrimitive(arrayId));
-
-                output.writeUInt32(number, arrayId, false);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(arraySchema.getPipeSchema(),
-                            pipeSchema);
-                }
-
-                Pipe.transferDirect(arraySchema.getPipeSchema(), pipe, input, output);
-                return;
-            }
+            transferObjectIdArrayScalar(pipeSchema, pipe, input, output, number);
+			return;
 
             case ID_ARRAY_ENUM:
-            {
-                final EnumIO<?> eio = strategy.resolveEnumFrom(input);
-
-                strategy.writeEnumIdTo(output, number, eio.enumClass);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(
-                            eio.genericElementSchema.getPipeSchema(),
-                            pipeSchema);
-                }
-
-                Pipe.transferDirect(eio.genericElementSchema.getPipeSchema(),
-                        pipe, input, output);
-                return;
-            }
+            transferObjectIdArrayEnum(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_ARRAY_POJO:
-            {
-                final HasSchema<Object> hs = strategy.transferPojoId(input, output,
-                        number);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(
-                            hs.genericElementSchema.getPipeSchema(),
-                            pipeSchema);
-                }
-
-                Pipe.transferDirect(hs.genericElementSchema.getPipeSchema(),
-                        pipe, input, output);
-                return;
-            }
+            transferObjectIdArrayPojo(pipeSchema, pipe, input, output, strategy, number);
+			return;
 
             case ID_THROWABLE:
                 PolymorphicThrowableSchema.transferObject(pipeSchema, pipe, input,
@@ -1283,6 +1221,218 @@ public abstract class ObjectSchema extends PolymorphicSchema
         if (input.readFieldNumber(pipeSchema.wrappedSchema) != 0)
             throw new ProtostuffException("Corrupt input.");
     }
+
+	private static void transferObjectIdArrayPojo(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException {
+		{
+		    final HasSchema<Object> hs = strategy.transferPojoId(input, output,
+		            number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(
+		                hs.genericElementSchema.getPipeSchema(),
+		                pipeSchema);
+		    }
+
+		    Pipe.transferDirect(hs.genericElementSchema.getPipeSchema(),
+		            pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdArrayEnum(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException {
+		{
+		    final EnumIO<?> eio = strategy.resolveEnumFrom(input);
+
+		    strategy.writeEnumIdTo(output, number, eio.enumClass);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(
+		                eio.genericElementSchema.getPipeSchema(),
+		                pipeSchema);
+		    }
+
+		    Pipe.transferDirect(eio.genericElementSchema.getPipeSchema(),
+		            pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdArrayScalar(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, final int number) throws IOException {
+		{
+		    final int arrayId = input.readUInt32(), id = ArraySchemas.toInlineId(arrayId);
+
+		    final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(id,
+		            ArraySchemas.isPrimitive(arrayId));
+
+		    output.writeUInt32(number, arrayId, false);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(arraySchema.getPipeSchema(),
+		                pipeSchema);
+		    }
+
+		    Pipe.transferDirect(arraySchema.getPipeSchema(), pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdArrayDelegate(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, IdStrategy strategy, final int number) throws IOException {
+		{
+		    final HasDelegate<Object> hd = strategy.transferDelegateId(input,
+		            output, number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(
+		                hd.genericElementSchema.getPipeSchema(),
+		                pipeSchema);
+		    }
+
+		    Pipe.transferDirect(hd.genericElementSchema.getPipeSchema(),
+		            pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdDelegate(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException, ProtostuffException {
+		{
+		    final HasDelegate<Object> hd = strategy.transferDelegateId(input,
+		            output, number);
+		    if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
+		        throw new ProtostuffException("Corrupt input.");
+
+		    hd.delegate.transfer(pipe, input, output, 1, false);
+		    
+		}
+	}
+
+	private static void transferObjectIdPolymorphicMap(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, IdStrategy strategy, final int number) throws IOException, ProtostuffException {
+		{
+		    if (0 != input.readUInt32())
+		        throw new ProtostuffException("Corrupt input.");
+		    output.writeUInt32(number, 0, false);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(
+		                strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA,
+		            pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdPolymorphicCollection(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, IdStrategy strategy, final int number) throws IOException, ProtostuffException {
+		{
+		    if (0 != input.readUInt32())
+		        throw new ProtostuffException("Corrupt input.");
+		    output.writeUInt32(number, 0, false);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(
+		                strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA,
+		            pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdMap(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException {
+		{
+		    strategy.transferMapId(input, output, number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdCollection(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input,
+			Output output, IdStrategy strategy, final int number) throws IOException {
+		{
+		    strategy.transferCollectionId(input, output, number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdEnumMap(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException {
+		{
+		    strategy.transferEnumId(input, output, number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdEnumSet(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException {
+		{
+		    strategy.transferEnumId(input, output, number);
+
+		    if (output instanceof StatefulOutput)
+		    {
+		        // update using the derived schema.
+		        ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+		    }
+
+		    Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
+		    return;
+		}
+	}
+
+	private static void transferObjectIdEnum(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output,
+			IdStrategy strategy, final int number) throws IOException, ProtostuffException {
+		{
+		    strategy.transferEnumId(input, output, number);
+
+		    if (input.readFieldNumber(pipeSchema.wrappedSchema) != ID_ENUM_VALUE)
+		        throw new ProtostuffException("Corrupt input.");
+		    EnumIO.transfer(pipe, input, output, 1, false);
+		    
+		}
+	}
 
     /**
      * An array wrapper internally used for adding objects.

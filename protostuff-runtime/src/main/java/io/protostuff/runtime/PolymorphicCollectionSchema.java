@@ -588,77 +588,20 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 break;
 
             case ID_SINGLETON_SET:
-            {
-                output.writeUInt32(id, 0, false);
-
-                final Object element;
-                try
-                {
-                    element = fSingletonSet_element.get(value);
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                if (element != null)
-                    output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
-
-                break;
-            }
+            writeNonPublicCollectionToIdSingletonSet(output, value, strategy, id);
+            break;
 
             case ID_SINGLETON_LIST:
-            {
-                output.writeUInt32(id, 0, false);
-
-                // faster path (reflection not needed to get the single element).
-                final Object element = ((List<?>) value).get(0);
-
-                if (element != null)
-                    output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
-
-                break;
-            }
+            writeNonPublicCollectionToIdSingletonList(output, value, strategy, id);
+            break;
 
             case ID_SET_FROM_MAP:
-            {
-                final Object m;
-                try
-                {
-                    m = fSetFromMap_m.get(value);
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
-
-                break;
-            }
+            writeNonPublicCollectionToIdSetFromMap(output, value, strategy, id);
+            break;
 
             case ID_COPIES_LIST:
-            {
-                output.writeUInt32(id, 0, false);
-
-                final int n = ((List<?>) value).size();
-                final Object element;
-                try
-                {
-                    element = fCopiesList_element.get(value);
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                output.writeUInt32(1, n, false);
-
-                if (element != null)
-                    output.writeObject(2, element, strategy.OBJECT_SCHEMA, false);
-
-                break;
-            }
+            writeNonPublicCollectionToIdCopiesList(output, value, strategy, id);
+            break;
             case ID_UNMODIFIABLE_COLLECTION:
                 writeUnmodifiableCollectionTo(output, value, currentSchema,
                         strategy, id);
@@ -721,6 +664,87 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 throw new RuntimeException("Should not happen.");
         }
     }
+
+	private static void writeNonPublicCollectionToIdCopiesList(Output output, Object value, IdStrategy strategy,
+			final int id) throws IOException {
+		{
+		    output.writeUInt32(id, 0, false);
+
+		    final int n = ((List<?>) value).size();
+		    final Object element;
+		    try
+		    {
+		        element = fCopiesList_element.get(value);
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    output.writeUInt32(1, n, false);
+
+		    if (element != null)
+		        output.writeObject(2, element, strategy.OBJECT_SCHEMA, false);
+
+		    
+		}
+	}
+
+	private static void writeNonPublicCollectionToIdSetFromMap(Output output, Object value, IdStrategy strategy,
+			final int id) throws IOException {
+		{
+		    final Object m;
+		    try
+		    {
+		        m = fSetFromMap_m.get(value);
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
+
+		    
+		}
+	}
+
+	private static void writeNonPublicCollectionToIdSingletonList(Output output, Object value, IdStrategy strategy,
+			final int id) throws IOException {
+		{
+		    output.writeUInt32(id, 0, false);
+
+		    // faster path (reflection not needed to get the single element).
+		    final Object element = ((List<?>) value).get(0);
+
+		    if (element != null)
+		        output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
+
+		    
+		}
+	}
+
+	private static void writeNonPublicCollectionToIdSingletonSet(Output output, Object value, IdStrategy strategy,
+			final int id) throws IOException {
+		{
+		    output.writeUInt32(id, 0, false);
+
+		    final Object element;
+		    try
+		    {
+		        element = fSingletonSet_element.get(value);
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    if (element != null)
+		        output.writeObject(1, element, strategy.OBJECT_SCHEMA, false);
+
+		    
+		}
+	}
 
     private static void writeUnmodifiableCollectionTo(Output output,
             Object value, Schema<?> currentSchema, IdStrategy strategy, int id)
@@ -904,33 +928,8 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             }
 
             case ID_SET_FROM_MAP:
-            {
-                final Object collection = iSetFromMap.newInstance();
-                if (graph)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(collection, owner);
-                }
-
-                final Wrapper wrapper = new Wrapper();
-                Object m = input.mergeObject(wrapper,
-                        strategy.POLYMORPHIC_MAP_SCHEMA);
-                if (!graph || !((GraphInput) input).isCurrentMessageReference())
-                    m = wrapper.value;
-
-                try
-                {
-                    fSetFromMap_m.set(collection, m);
-                    fSetFromMap_s.set(collection, ((Map<?, ?>) m).keySet());
-                }
-                catch (IllegalArgumentException | IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-
-                ret = collection;
-                break;
-            }
+            ret = readObjectFromIdSetFromMap(input, owner, strategy, graph);
+            break;
 
             case ID_COPIES_LIST:
             {
@@ -1061,37 +1060,10 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 break;
 
             case ID_ENUM_SET:
-            {
-                final Collection<?> es = strategy.resolveEnumFrom(input)
-                        .newEnumSet();
-
-                if (graph)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(es, owner);
-                }
-
-                // TODO enum schema
-                strategy.COLLECTION_SCHEMA
-                        .mergeFrom(input, (Collection<Object>) es);
-                return es;
-            }
+            return readObjectFromIdEnumSet(input, owner, strategy, graph);
 
             case ID_COLLECTION:
-            {
-                final Collection<Object> collection = strategy
-                        .resolveCollectionFrom(input).newMessage();
-
-                if (graph)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(collection, owner);
-                }
-
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
-
-                return collection;
-            }
+            return readObjectFromIdCollection(input, owner, strategy, graph);
 
             default:
                 throw new ProtostuffException("Corrupt input.");
@@ -1102,6 +1074,76 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         return ret;
     }
+
+	private static Object readObjectFromIdCollection(Input input, Object owner, IdStrategy strategy,
+			final boolean graph) throws IOException {
+		{
+		    final Collection<Object> collection = strategy
+		            .resolveCollectionFrom(input).newMessage();
+
+		    if (graph)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(collection, owner);
+		    }
+
+		    strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
+
+		    return collection;
+		}
+	}
+
+	private static Object readObjectFromIdEnumSet(Input input, Object owner, IdStrategy strategy, final boolean graph)
+			throws IOException {
+		{
+		    final Collection<?> es = strategy.resolveEnumFrom(input)
+		            .newEnumSet();
+
+		    if (graph)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(es, owner);
+		    }
+
+		    // TODO enum schema
+		    strategy.COLLECTION_SCHEMA
+		            .mergeFrom(input, (Collection<Object>) es);
+		    return es;
+		}
+	}
+
+	private static Object readObjectFromIdSetFromMap(Input input, Object owner, IdStrategy strategy,
+			final boolean graph) throws IOException {
+		Object ret;
+		{
+		    final Object collection = iSetFromMap.newInstance();
+		    if (graph)
+		    {
+		        // update the actual reference.
+		        ((GraphInput) input).updateLast(collection, owner);
+		    }
+
+		    final Wrapper wrapper = new Wrapper();
+		    Object m = input.mergeObject(wrapper,
+		            strategy.POLYMORPHIC_MAP_SCHEMA);
+		    if (!graph || !((GraphInput) input).isCurrentMessageReference())
+		        m = wrapper.value;
+
+		    try
+		    {
+		        fSetFromMap_m.set(collection, m);
+		        fSetFromMap_s.set(collection, ((Map<?, ?>) m).keySet());
+		    }
+		    catch (IllegalArgumentException | IllegalAccessException e)
+		    {
+		        throw new RuntimeException(e);
+		    }
+
+		    ret = collection;
+		    
+		}
+		return ret;
+	}
 
     private static Object readUnmodifiableCollectionFrom(Input input,
             Schema<?> schema, Object owner, IdStrategy strategy, boolean graph,
