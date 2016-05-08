@@ -74,6 +74,8 @@ import io.protostuff.StatefulOutput;
 public abstract class NumberSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+
     static String name(int number)
     {
         switch (number)
@@ -269,7 +271,7 @@ public abstract class NumberSchema extends PolymorphicSchema
                 value = BIGINTEGER.readFrom(input);
                 break;
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (input instanceof GraphInput)
@@ -279,7 +281,7 @@ public abstract class NumberSchema extends PolymorphicSchema
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return value;
     }
@@ -332,7 +334,7 @@ public abstract class NumberSchema extends PolymorphicSchema
                 BIGINTEGER.transfer(pipe, input, output, number, false);
                 break;
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
     }
 

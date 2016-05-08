@@ -38,6 +38,9 @@ public final class CompilerMain
 
     public static final Pattern COMMA = Pattern.compile(",");
 
+    private static final String DOES_NOT_EXIST = " does not exist.";
+    private static final String CACHE_PROTOS = "cache_protos";
+    
     static final HashMap<String, ProtoCompiler> __compilers =
             new HashMap<>();
     private static CompilerResolver __compilerResolver = null;
@@ -133,7 +136,7 @@ public final class CompilerMain
             propsErr();
             return null;
         }
-        CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ?
+        CachingProtoLoader loader = "true".equals(props.getProperty(CACHE_PROTOS)) ?
                 new CachingProtoLoader() : null;
 
         Properties globalOptions = newGlobalOptions(props);
@@ -493,15 +496,15 @@ public final class CompilerMain
         Properties props = propsFrom(propsResource);
         if (props == null)
         {
-            System.err.println(propsResource + " does not exist.");
+            System.err.println(propsResource + DOES_NOT_EXIST);
             return;
         }
 
         Properties globalOptions = newGlobalOptions(props);
 
         final CachingProtoLoader loader =
-                ("true".equals(props.getProperty("cache_protos")) ||
-                "true".equals(System.getProperty("cache_protos"))) ?
+                ("true".equals(props.getProperty(CACHE_PROTOS)) ||
+                "true".equals(System.getProperty(CACHE_PROTOS))) ?
                         new CachingProtoLoader() : null;
 
         boolean selectedProfileOrModule = false;
@@ -541,7 +544,7 @@ public final class CompilerMain
                 if ((props = propsFrom((arg = args[offset++]))) == null)
                 {
                     // the next properties file does not exist.
-                    System.err.println(arg + " does not exist.");
+                    System.err.println(arg + DOES_NOT_EXIST);
                     return;
                 }
 
@@ -580,7 +583,7 @@ public final class CompilerMain
             if ((props = propsFrom((arg = args[offset++]))) == null)
             {
                 // the next properties file does not exist.
-                System.err.println(arg + " does not exist.");
+                System.err.println(arg + DOES_NOT_EXIST);
                 return;
             }
 

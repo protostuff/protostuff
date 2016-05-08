@@ -43,6 +43,9 @@ import io.protostuff.parser.Service;
 public class PluginProtoCompiler extends STCodeGenerator
 {
 
+    private static final String OPTIONS = "options";
+    private static final String MODULE = "module";
+
     /**
      * To enable, specify -Dppc.check_filename_placeholder=true
      */
@@ -313,8 +316,8 @@ public class PluginProtoCompiler extends STCodeGenerator
 
         StringTemplate messageBlock = serviceBlockTemplate.getInstanceOf();
         messageBlock.setAttribute("service", service);
-        messageBlock.setAttribute("module", module);
-        messageBlock.setAttribute("options", module.getOptions());
+        messageBlock.setAttribute(MODULE, module);
+        messageBlock.setAttribute(OPTIONS, module.getOptions());
 
         messageBlock.write(out);
     }
@@ -338,8 +341,8 @@ public class PluginProtoCompiler extends STCodeGenerator
 
         StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
         enumBlock.setAttribute("eg", eg);
-        enumBlock.setAttribute("module", module);
-        enumBlock.setAttribute("options", module.getOptions());
+        enumBlock.setAttribute(MODULE, module);
+        enumBlock.setAttribute(OPTIONS, module.getOptions());
 
         enumBlock.write(out);
     }
@@ -363,8 +366,8 @@ public class PluginProtoCompiler extends STCodeGenerator
 
         StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
         messageBlock.setAttribute("message", message);
-        messageBlock.setAttribute("module", module);
-        messageBlock.setAttribute("options", module.getOptions());
+        messageBlock.setAttribute(MODULE, module);
+        messageBlock.setAttribute(OPTIONS, module.getOptions());
 
         messageBlock.write(out);
     }
@@ -408,8 +411,8 @@ public class PluginProtoCompiler extends STCodeGenerator
 
         StringTemplate protoBlock = protoBlockTemplate.getInstanceOf();
         protoBlock.setAttribute("proto", proto);
-        protoBlock.setAttribute("module", module);
-        protoBlock.setAttribute("options", module.getOptions());
+        protoBlock.setAttribute(MODULE, module);
+        protoBlock.setAttribute(OPTIONS, module.getOptions());
 
         protoBlock.write(out);
         writer.close();

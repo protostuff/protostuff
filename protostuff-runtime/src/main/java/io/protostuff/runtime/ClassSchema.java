@@ -55,6 +55,8 @@ import io.protostuff.Schema;
 public abstract class ClassSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+
     static final int ID_ARRAY_DIMENSION = 2;
     static final String STR_ARRAY_DIMENSION = "b";
 
@@ -206,7 +208,7 @@ public abstract class ClassSchema extends PolymorphicSchema
                 break;
 
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (input instanceof GraphInput)
@@ -216,7 +218,7 @@ public abstract class ClassSchema extends PolymorphicSchema
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return value;
     }
@@ -248,11 +250,11 @@ public abstract class ClassSchema extends PolymorphicSchema
                 break;
 
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 
 }

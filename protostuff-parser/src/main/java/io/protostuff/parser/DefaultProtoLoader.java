@@ -44,11 +44,12 @@ public class DefaultProtoLoader implements Proto.Loader
      */
     public static final String PATH_SEPARATOR;
     public static final String PATH_SEPARATOR_PROPERTY = "path.separator";
-    private static final String PATH_SEPARATOR_DEFAULT = ";";
-
     public static final DefaultProtoLoader DEFAULT_INSTANCE = new DefaultProtoLoader();
 
     private static final ArrayList<File> __protoLoadDirs = new ArrayList<>();
+    private static final String NOT_FOUND = " not found. (";
+    private static final String IMPORTED_PROTO = "Imported proto ";
+    private static final String PATH_SEPARATOR_DEFAULT = ";";
 
     static
     {
@@ -134,8 +135,8 @@ public class DefaultProtoLoader implements Proto.Loader
                 return loadFrom(protoFile, importer);
         }
 
-        throw new IllegalStateException("Imported proto " + path +
-                " not found. (" + importer.getSourcePath() + ")");
+        throw new IllegalStateException(IMPORTED_PROTO + path +
+                NOT_FOUND + importer.getSourcePath() + ")");
     }
 
     /**
@@ -162,8 +163,8 @@ public class DefaultProtoLoader implements Proto.Loader
         Proto protoFromOtherResource = loadFromOtherResource(path, importer);
         if (protoFromOtherResource == null)
         {
-            throw new IllegalStateException("Imported proto " + path +
-                    " not found. (" + importer.getSourcePath() + ")");
+            throw new IllegalStateException(IMPORTED_PROTO + path +
+                    NOT_FOUND + importer.getSourcePath() + ")");
         }
 
         return protoFromOtherResource;
@@ -224,8 +225,8 @@ public class DefaultProtoLoader implements Proto.Loader
         Proto protoFromOtherResource = loadFromOtherResource(path, importer);
         if (protoFromOtherResource == null)
         {
-            throw new IllegalStateException("Imported proto " + path +
-                    " not found. (" + importer.getSourcePath() + ")");
+            throw new IllegalStateException(IMPORTED_PROTO + path +
+                    NOT_FOUND + importer.getSourcePath() + ")");
         }
 
         return protoFromOtherResource;

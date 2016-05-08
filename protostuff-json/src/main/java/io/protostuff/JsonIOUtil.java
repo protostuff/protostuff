@@ -42,6 +42,10 @@ import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 public final class JsonIOUtil
 {
 
+    private static final String EXPECTED_TOKEN_CLOSED_BRACE_BUT = "Expected token: } but was ";
+    private static final String ON_MESSAGE = " on message ";
+    private static final String EXPECTED_TOKEN_OPEN_BRACE_BUT = "Expected token: { but was ";
+
     private JsonIOUtil()
     {
     }
@@ -146,8 +150,8 @@ public final class JsonIOUtil
             {
                 if (parser.nextToken() != JsonToken.START_OBJECT)
                 {
-                    throw new JsonInputException("Expected token: { but was " +
-                            parser.getCurrentToken() + " on message " +
+                    throw new JsonInputException(EXPECTED_TOKEN_OPEN_BRACE_BUT +
+                            parser.getCurrentToken() + ON_MESSAGE +
                             pipeSchema.wrappedSchema.messageFullName());
                 }
 
@@ -171,8 +175,8 @@ public final class JsonIOUtil
 
                 if (token != JsonToken.END_OBJECT)
                 {
-                    throw new JsonInputException("Expected token: } but was " +
-                            token + " on message " +
+                    throw new JsonInputException(EXPECTED_TOKEN_CLOSED_BRACE_BUT +
+                            token + ON_MESSAGE +
                             pipeSchema.wrappedSchema.messageFullName());
                 }
             }
@@ -329,8 +333,8 @@ public final class JsonIOUtil
     {
         if (parser.nextToken() != JsonToken.START_OBJECT)
         {
-            throw new JsonInputException("Expected token: { but was " +
-                    parser.getCurrentToken() + " on message " +
+            throw new JsonInputException(EXPECTED_TOKEN_OPEN_BRACE_BUT +
+                    parser.getCurrentToken() + ON_MESSAGE +
                     schema.messageFullName());
         }
 
@@ -338,8 +342,8 @@ public final class JsonIOUtil
 
         if (parser.getCurrentToken() != JsonToken.END_OBJECT)
         {
-            throw new JsonInputException("Expected token: } but was " +
-                    parser.getCurrentToken() + " on message " +
+            throw new JsonInputException(EXPECTED_TOKEN_CLOSED_BRACE_BUT +
+                    parser.getCurrentToken() + ON_MESSAGE +
                     schema.messageFullName());
         }
     }
@@ -636,8 +640,8 @@ public final class JsonIOUtil
         {
             if (t != JsonToken.START_OBJECT)
             {
-                throw new JsonInputException("Expected token: { but was " +
-                        parser.getCurrentToken() + " on message " +
+                throw new JsonInputException(EXPECTED_TOKEN_OPEN_BRACE_BUT +
+                        parser.getCurrentToken() + ON_MESSAGE +
                         schema.messageFullName());
             }
 
@@ -646,8 +650,8 @@ public final class JsonIOUtil
 
             if (parser.getCurrentToken() != JsonToken.END_OBJECT)
             {
-                throw new JsonInputException("Expected token: } but was " +
-                        parser.getCurrentToken() + " on message " +
+                throw new JsonInputException(EXPECTED_TOKEN_CLOSED_BRACE_BUT +
+                        parser.getCurrentToken() + ON_MESSAGE +
                         schema.messageFullName());
             }
 

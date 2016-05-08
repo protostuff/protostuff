@@ -38,6 +38,8 @@ import io.protostuff.StringSerializer.STRING;
 public final class KvpInput implements Input
 {
 
+    private static final String TRUNCATED_MESSAGE = "Truncated message.";
+
     static final int DEFAULT_BUFFER_SIZE =
             Integer.getInteger("kvpinput.default_buffer_size", 1024);
 
@@ -135,7 +137,7 @@ public final class KvpInput implements Input
         {
             read = in.read(data, dataOffset, toRead);
             if (read == -1)
-                throw new ProtostuffException("Truncated message.");
+                throw new ProtostuffException(TRUNCATED_MESSAGE);
 
             dataOffset += read;
             toRead -= read;
@@ -150,7 +152,7 @@ public final class KvpInput implements Input
         if (offset + 2 > limit && !readable(2))
         {
             if (offset != limit)
-                throw new ProtostuffException("Truncated message.");
+                throw new ProtostuffException(TRUNCATED_MESSAGE);
 
             return 0;
         }
@@ -158,7 +160,7 @@ public final class KvpInput implements Input
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 
         if (offset + size > limit && !readable(size))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int number = numeric ? parseInt(buffer, offset, size, 10, true) :
                 schema.getFieldNumber(STRING.deser(buffer, offset, size));
@@ -179,7 +181,7 @@ public final class KvpInput implements Input
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         if (offset + 2 > limit && !readable(2))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
         if (offset + size > limit)
@@ -190,7 +192,7 @@ public final class KvpInput implements Input
             {
                 read = in.read(buffer, 0, buffer.length);
                 if (read == -1)
-                    throw new ProtostuffException("Truncated message.");
+                    throw new ProtostuffException(TRUNCATED_MESSAGE);
 
                 toRead -= read;
             } while (toRead > 0);
@@ -214,7 +216,7 @@ public final class KvpInput implements Input
     public boolean readBool() throws IOException
     {
         if (offset + 3 > limit && !readable(3))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 
@@ -262,7 +264,7 @@ public final class KvpInput implements Input
     public int readInt32() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 
@@ -270,7 +272,7 @@ public final class KvpInput implements Input
             return 0;
 
         if (offset + size > limit && !readable(size))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int number = parseInt(buffer, offset, size, 10);
 
@@ -283,7 +285,7 @@ public final class KvpInput implements Input
     public long readInt64() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 
@@ -291,7 +293,7 @@ public final class KvpInput implements Input
             return 0;
 
         if (offset + size > limit && !readable(size))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final long number = parseLong(buffer, offset, size, 10);
 
@@ -346,7 +348,7 @@ public final class KvpInput implements Input
     public byte[] readByteArray() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 
@@ -369,7 +371,7 @@ public final class KvpInput implements Input
     public String readString() throws IOException
     {
         if (offset + 2 > limit && !readable(2))
-            throw new ProtostuffException("Truncated message.");
+            throw new ProtostuffException(TRUNCATED_MESSAGE);
 
         final int size = buffer[offset++] | (buffer[offset++] << 8);
 

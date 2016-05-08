@@ -92,6 +92,9 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     public static class Registry implements NumericIdStrategy.Registry
     {
 
+        private static final String DUPLICATE_REGISTRATION_FOR = "Duplicate registration for: ";
+        private static final String DUPLICATE_ID_REGISTRATION = "Duplicate id registration: ";
+
         public final IncrementalIdStrategy strategy;
 
         public Registry(
@@ -136,7 +139,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("collection ids must be lesser than " + strategy.collectionIdStart);
             else if (strategy.collections.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + factory.typeClass() + ")");
             }
 
@@ -146,7 +149,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             strategy.collections.set(id, rf);
             // just in case
             if (strategy.collectionMapping.put(factory.typeClass(), rf) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + factory.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + factory.typeClass());
 
             return this;
         }
@@ -165,7 +168,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("map ids must be lesser than " + strategy.mapIdStart);
             else if (strategy.maps.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + factory.typeClass() + ")");
             }
 
@@ -175,7 +178,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             strategy.maps.set(id, rf);
             // just in case
             if (strategy.mapMapping.put(factory.typeClass(), rf) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + factory.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + factory.typeClass());
 
             return this;
         }
@@ -193,7 +196,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("enum ids must be lesser than " + strategy.enumIdStart);
             else if (strategy.enums.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + clazz.getName() + ")");
             }
 
@@ -205,7 +208,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
             // just in case
             if (strategy.enumMapping.put(clazz, reio) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + clazz);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + clazz);
 
             return this;
         }
@@ -223,7 +226,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("enum ids must be lesser than " + strategy.enumIdStart);
             else if (strategy.enums.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + eio.enumClass.getName() + ")");
             }
 
@@ -234,7 +237,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
             // just in case
             if (strategy.enumMapping.put(eio.enumClass, reio) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + eio.enumClass);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + eio.enumClass);
 
             return this;
         }
@@ -255,12 +258,12 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("pojo ids must be lesser than " + strategy.pojoIdStart);
             else if (strategy.pojos.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + clazz.getName() + ")");
             }
 
             if (strategy.pojoMapping.containsKey(clazz))
-                throw new IllegalArgumentException("Duplicate registration for: " + clazz);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + clazz);
 
             BaseHS<T> wrapper = new Lazy<>(clazz, strategy);
             wrapper.id = id;
@@ -282,12 +285,12 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 throw new IllegalArgumentException("pojo ids must be lesser than " + strategy.pojoIdStart);
             else if (strategy.pojos.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + schema.typeClass().getName() + ")");
             }
 
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
-                throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + schema.typeClass());
 
             Registered<T> wrapper = new Registered<>(id, schema, pipeSchema);
             strategy.pojos.set(id, wrapper);
@@ -309,7 +312,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass)
         {
             if (strategy.pojoMapping.containsKey(baseClass))
-                throw new IllegalArgumentException("Duplicate registration for: " + baseClass);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + baseClass);
 
             BaseHS<?> wrapper = strategy.pojoMapping.get(implClass);
             if (wrapper == null)
@@ -335,7 +338,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 grow(strategy.delegates, id + 1);
             else if (strategy.delegates.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + delegate.typeClass() + ")");
             }
 
@@ -343,7 +346,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + delegate.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + delegate.typeClass());
 
             return this;
         }

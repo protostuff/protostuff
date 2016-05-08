@@ -25,6 +25,8 @@ import java.io.OutputStream;
  */
 public final class XmlXIOUtil
 {
+    private static final String BUFFER_USED_AND_NOT_RESET = "Buffer previously used and had not been reset.";
+
     private XmlXIOUtil()
     {
     }
@@ -39,7 +41,7 @@ public final class XmlXIOUtil
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final XmlXOutput output = new XmlXOutput(buffer, schema);
 
@@ -76,7 +78,7 @@ public final class XmlXIOUtil
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final XmlXOutput output = new XmlXOutput(buffer, schema);
 
@@ -114,7 +116,7 @@ public final class XmlXIOUtil
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_RESET);
 
         final XmlXOutput output = new XmlXOutput(buffer, out, schema);
 

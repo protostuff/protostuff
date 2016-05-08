@@ -63,6 +63,9 @@ import io.protostuff.runtime.RuntimeEnv.Instantiator;
 public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 {
 
+    private static final String CORRUPT_INPUT = "Corrupt input.";
+    private static final String ELEMENT = "element";
+
     static final int ID_EMPTY_SET = 1, ID_EMPTY_LIST = 2,
 
             ID_SINGLETON_SET = 3, ID_SINGLETON_LIST = 4,
@@ -191,15 +194,15 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         try
         {
-            fSingletonSet_element = cSingletonSet.getDeclaredField("element");
+            fSingletonSet_element = cSingletonSet.getDeclaredField(ELEMENT);
 
-            fSingletonList_element = cSingletonList.getDeclaredField("element");
+            fSingletonList_element = cSingletonList.getDeclaredField(ELEMENT);
 
             fSetFromMap_m = cSetFromMap.getDeclaredField("m");
             fSetFromMap_s = cSetFromMap.getDeclaredField("s");
 
             fCopiesList_n = cCopiesList.getDeclaredField("n");
-            fCopiesList_element = cCopiesList.getDeclaredField("element");
+            fCopiesList_element = cCopiesList.getDeclaredField(ELEMENT);
 
             fUnmodifiableCollection_c = cUnmodifiableCollection
                     .getDeclaredField("c");
@@ -799,7 +802,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
         {
             case ID_EMPTY_SET:
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 if (graph)
                 {
@@ -812,7 +815,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
             case ID_EMPTY_LIST:
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 if (graph)
                 {
@@ -826,7 +829,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_SINGLETON_SET:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Object collection = iSingletonSet.newInstance();
                 if (graph)
@@ -866,7 +869,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_SINGLETON_LIST:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Object collection = iSingletonList.newInstance();
                 if (graph)
@@ -883,7 +886,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (next != 1)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Wrapper wrapper = new Wrapper();
                 Object element = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
@@ -935,7 +938,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             case ID_COPIES_LIST:
             {
                 if (0 != input.readUInt32())
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Object collection = iCopiesList.newInstance();
                 if (graph)
@@ -945,7 +948,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (1 != input.readFieldNumber(schema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final int n = input.readUInt32(), next = input
                         .readFieldNumber(schema);
@@ -966,7 +969,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (next != 2)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 final Wrapper wrapper = new Wrapper();
                 Object element = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
@@ -1094,11 +1097,11 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             }
 
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (0 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         return ret;
     }
@@ -1188,7 +1191,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
             c = wrapper.value;
 
         if (1 != input.readFieldNumber(schema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
 
         Object type = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
@@ -1239,7 +1242,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (next != 1)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(1, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
                 break;
@@ -1254,7 +1257,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 output.writeUInt32(number, input.readUInt32(), false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 // size
                 output.writeUInt32(1, input.readUInt32(), false);
@@ -1267,7 +1270,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 }
 
                 if (next != 2)
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(2, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
                 break;
@@ -1299,7 +1302,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                         strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
-                    throw new ProtostuffException("Corrupt input.");
+                    throw new ProtostuffException(CORRUPT_INPUT);
 
                 output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
                 break;
@@ -1332,10 +1335,10 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                         output);
                 return;
             default:
-                throw new ProtostuffException("Corrupt input.");
+                throw new ProtostuffException(CORRUPT_INPUT);
         }
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
-            throw new ProtostuffException("Corrupt input.");
+            throw new ProtostuffException(CORRUPT_INPUT);
     }
 }

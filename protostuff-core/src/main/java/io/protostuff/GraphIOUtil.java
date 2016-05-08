@@ -29,6 +29,8 @@ import java.io.OutputStream;
 public final class GraphIOUtil
 {
 
+    private static final String BUFFER_USED_AND_NOT_BEEN_RESET = "Buffer previously used and had not been reset.";
+
     private GraphIOUtil()
     {
     }
@@ -252,7 +254,7 @@ public final class GraphIOUtil
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -277,7 +279,7 @@ public final class GraphIOUtil
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -303,7 +305,7 @@ public final class GraphIOUtil
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer, out);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -321,7 +323,7 @@ public final class GraphIOUtil
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -377,7 +379,7 @@ public final class GraphIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in,
                 drainRemainingBytesIfTooLarge, buffer);
@@ -425,7 +427,7 @@ public final class GraphIOUtil
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
-            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+            throw new IllegalArgumentException(BUFFER_USED_AND_NOT_BEEN_RESET);
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);

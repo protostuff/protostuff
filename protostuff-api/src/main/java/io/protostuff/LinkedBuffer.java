@@ -37,6 +37,8 @@ public final class LinkedBuffer
      */
     public static final int DEFAULT_BUFFER_SIZE = 512;
 
+    private static final String MINIMUM_BUFFER_SIZE = " is the minimum buffer size.";
+
     /**
      * Allocates a new buffer with default size.
      */
@@ -51,7 +53,7 @@ public final class LinkedBuffer
     public static LinkedBuffer allocate(int size)
     {
         if (size < MIN_BUFFER_SIZE)
-            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + MINIMUM_BUFFER_SIZE);
 
         return new LinkedBuffer(size);
     }
@@ -62,7 +64,7 @@ public final class LinkedBuffer
     public static LinkedBuffer allocate(int size, LinkedBuffer previous)
     {
         if (size < MIN_BUFFER_SIZE)
-            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + MINIMUM_BUFFER_SIZE);
 
         return new LinkedBuffer(size, previous);
     }
@@ -90,7 +92,7 @@ public final class LinkedBuffer
     {
         assert start >= 0;
         if (buffer.length - start < MIN_BUFFER_SIZE)
-            throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+            throw new IllegalArgumentException(MIN_BUFFER_SIZE + MINIMUM_BUFFER_SIZE);
 
         return new LinkedBuffer(buffer, start, start);
     }

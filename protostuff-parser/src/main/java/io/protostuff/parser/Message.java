@@ -29,6 +29,8 @@ import java.util.List;
 public class Message extends AnnotationContainer implements HasName, HasFields
 {
 
+    private static final String FROM_MESSAGE = " from message: ";
+
     final String name;
     final Message parentMessage;
     final Proto proto;
@@ -136,7 +138,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         if (nestedMessages.put(message.name, message) != null)
         {
             throw err("Duplicate nested message: " +
-                    message.name + " from message: " + name, getProto());
+                    message.name + FROM_MESSAGE + name, getProto());
         }
     }
 
@@ -162,7 +164,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         if (nestedEnumGroups.put(enumGroup.name, enumGroup) != null)
         {
             throw err("Duplicate nested enum: " +
-                    enumGroup.name + " from message: " + name, getProto());
+                    enumGroup.name + FROM_MESSAGE + name, getProto());
         }
     }
 
@@ -188,7 +190,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields
         if (nestedServices.put(service.name, service) != null)
         {
             throw err("Duplicate nested service: " +
-                    service.name + " from message: " + name, getProto());
+                    service.name + FROM_MESSAGE + name, getProto());
         }
     }
 

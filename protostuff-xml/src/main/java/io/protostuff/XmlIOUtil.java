@@ -44,6 +44,8 @@ import javax.xml.stream.XMLStreamWriter;
 public final class XmlIOUtil
 {
 
+    private static final String EXPECTED_TOKEN_START_ELEMENT = "Expected token START_ELEMENT: ";
+
     private XmlIOUtil()
     {
     }
@@ -114,7 +116,7 @@ public final class XmlIOUtil
                     if (parser.nextTag() != START_ELEMENT ||
                             !pipeSchema.wrappedSchema.messageName().equals(parser.getLocalName()))
                     {
-                        throw new XmlInputException("Expected token START_ELEMENT: " +
+                        throw new XmlInputException(EXPECTED_TOKEN_START_ELEMENT +
                                 pipeSchema.wrappedSchema.messageName());
                     }
 
@@ -302,7 +304,7 @@ public final class XmlIOUtil
         if (parser.nextTag() != START_ELEMENT ||
                 !schema.messageName().equals(parser.getLocalName()))
         {
-            throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
+            throw new XmlInputException(EXPECTED_TOKEN_START_ELEMENT + schema.messageName());
         }
 
         if (parser.nextTag() == END_ELEMENT)
@@ -581,7 +583,7 @@ public final class XmlIOUtil
         for (int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())
         {
             if (tag != START_ELEMENT || !schema.messageName().equals(parser.getLocalName()))
-                throw new XmlInputException("Expected token START_ELEMENT: " + schema.messageName());
+                throw new XmlInputException(EXPECTED_TOKEN_START_ELEMENT + schema.messageName());
 
             final T message = schema.newMessage();
 

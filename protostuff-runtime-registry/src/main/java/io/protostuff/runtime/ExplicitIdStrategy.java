@@ -54,11 +54,21 @@ import io.protostuff.Schema;
 public final class ExplicitIdStrategy extends NumericIdStrategy
 {
 
+    private static final String POJO_ID = "pojo id: ";
+    private static final String OUTDATED_REGISTRY = " (Outdated registry)";
+    private static final String MAP = "map: ";
+    private static final String COLLECTION = "collection: ";
+    private static final String ENUM = "enum: ";
+    private static final String POJO = "pojo: ";
+
     /**
      * This Registry is only way to register your pojos/enums/collections/maps/delegates.
      */
     public static class Registry implements NumericIdStrategy.Registry
     {
+
+        private static final String DUPLICATE_REGISTRATION_FOR = "Duplicate registration for: ";
+        private static final String DUPLICATE_ID_REGISTRATION = "Duplicate id registration: ";
 
         public final ExplicitIdStrategy strategy;
 
@@ -141,7 +151,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.collections, id + 1);
             else if (strategy.collections.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + factory.typeClass() + ")");
             }
 
@@ -149,7 +159,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             strategy.collections.set(id, rf);
             // just in case
             if (strategy.collectionMapping.put(factory.typeClass(), rf) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + factory.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + factory.typeClass());
 
             return this;
         }
@@ -168,7 +178,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.maps, id + 1);
             else if (strategy.maps.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + factory.typeClass() + ")");
             }
 
@@ -176,7 +186,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             strategy.maps.set(id, rf);
             // just in case
             if (strategy.mapMapping.put(factory.typeClass(), rf) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + factory.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + factory.typeClass());
 
             return this;
         }
@@ -194,7 +204,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.enums, id + 1);
             else if (strategy.enums.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + clazz.getName() + ")");
             }
 
@@ -204,7 +214,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
             // just in case
             if (strategy.enumMapping.put(clazz, reio) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + clazz);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + clazz);
 
             return this;
         }
@@ -222,7 +232,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.enums, id + 1);
             else if (strategy.enums.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + eio.enumClass.getName() + ")");
             }
 
@@ -231,7 +241,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
             // just in case
             if (strategy.enumMapping.put(eio.enumClass, reio) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + eio.enumClass);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + eio.enumClass);
 
             return this;
         }
@@ -252,12 +262,12 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.pojos, id + 1);
             else if (strategy.pojos.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + clazz.getName() + ")");
             }
 
             if (strategy.pojoMapping.containsKey(clazz))
-                throw new IllegalArgumentException("Duplicate registration for: " + clazz);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + clazz);
 
             BaseHS<T> wrapper = new Lazy<>(id, clazz, strategy);
             strategy.pojos.set(id, wrapper);
@@ -278,12 +288,12 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.pojos, id + 1);
             else if (strategy.pojos.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + schema.typeClass().getName() + ")");
             }
 
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
-                throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + schema.typeClass());
 
             Registered<T> wrapper = new Registered<>(id, schema, pipeSchema);
             strategy.pojos.set(id, wrapper);
@@ -305,7 +315,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         public <T> Registry mapPojo(Class<? super T> baseClass, Class<T> implClass)
         {
             if (strategy.pojoMapping.containsKey(baseClass))
-                throw new IllegalArgumentException("Duplicate registration for: " + baseClass);
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + baseClass);
 
             BaseHS<?> wrapper = strategy.pojoMapping.get(implClass);
             if (wrapper == null)
@@ -331,7 +341,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 grow(strategy.delegates, id + 1);
             else if (strategy.delegates.get(id) != null)
             {
-                throw new IllegalArgumentException("Duplicate id registration: " + id +
+                throw new IllegalArgumentException(DUPLICATE_ID_REGISTRATION + id +
                         " (" + delegate.typeClass() + ")");
             }
 
@@ -339,7 +349,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
-                throw new IllegalArgumentException("Duplicate registration for: " + delegate.typeClass());
+                throw new IllegalArgumentException(DUPLICATE_REGISTRATION_FOR + delegate.typeClass());
 
             return this;
         }
@@ -429,7 +439,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final BaseHS<T> wrapper = (BaseHS<T>) pojoMapping.get(typeClass);
         if (wrapper == null && create)
-            throw new UnknownTypeException("pojo: " + typeClass);
+            throw new UnknownTypeException(POJO + typeClass);
 
         return wrapper;
     }
@@ -439,7 +449,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredEnumIO reio = enumMapping.get(enumClass);
         if (reio == null)
-            throw new UnknownTypeException("enum: " + enumClass);
+            throw new UnknownTypeException(ENUM + enumClass);
 
         return reio.eio;
     }
@@ -453,7 +463,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             if (clazz.getName().startsWith("java.util"))
                 return CollectionSchema.MessageFactories.valueOf(clazz.getSimpleName());
 
-            throw new UnknownTypeException("collection: " + clazz);
+            throw new UnknownTypeException(COLLECTION + clazz);
         }
 
         return rf;
@@ -468,7 +478,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             if (clazz.getName().startsWith("java.util"))
                 return MapSchema.MessageFactories.valueOf(clazz.getSimpleName());
 
-            throw new UnknownTypeException("map: " + clazz);
+            throw new UnknownTypeException(MAP + clazz);
         }
 
         return rf;
@@ -480,7 +490,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredCollectionFactory factory = collectionMapping.get(clazz);
         if (factory == null)
-            throw new UnknownTypeException("collection: " + clazz);
+            throw new UnknownTypeException(COLLECTION + clazz);
 
         output.writeUInt32(fieldNumber, factory.id, false);
     }
@@ -501,7 +511,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final CollectionSchema.MessageFactory factory = id < collections.size() ?
                 collections.get(id) : null;
         if (factory == null)
-            throw new UnknownTypeException("collection id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException("collection id: " + id + OUTDATED_REGISTRY);
 
         return factory;
     }
@@ -512,7 +522,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredMapFactory factory = mapMapping.get(clazz);
         if (factory == null)
-            throw new UnknownTypeException("map: " + clazz);
+            throw new UnknownTypeException(MAP + clazz);
 
         output.writeUInt32(fieldNumber, factory.id, false);
     }
@@ -532,7 +542,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         final MapSchema.MessageFactory factory = id < maps.size() ? maps.get(id) : null;
         if (factory == null)
-            throw new UnknownTypeException("map id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException("map id: " + id + OUTDATED_REGISTRY);
 
         return factory;
     }
@@ -543,7 +553,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredEnumIO reio = enumMapping.get(clazz);
         if (reio == null)
-            throw new UnknownTypeException("enum: " + clazz);
+            throw new UnknownTypeException(ENUM + clazz);
 
         output.writeUInt32(fieldNumber, reio.id, false);
     }
@@ -562,7 +572,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         final RegisteredEnumIO reio = id < enums.size() ? enums.get(id) : null;
         if (reio == null)
-            throw new UnknownTypeException("enum id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException("enum id: " + id + OUTDATED_REGISTRY);
 
         return reio.eio;
     }
@@ -616,7 +626,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final RegisteredDelegate<T> rd = id < delegates.size() ?
                 (RegisteredDelegate<T>) delegates.get(id) : null;
         if (rd == null)
-            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException("delegate id: " + id + OUTDATED_REGISTRY);
 
         output.writeUInt32(fieldNumber, id, false);
 
@@ -632,7 +642,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final RegisteredDelegate<T> rd = id < delegates.size() ?
                 (RegisteredDelegate<T>) delegates.get(id) : null;
         if (rd == null)
-            throw new UnknownTypeException("delegate id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException("delegate id: " + id + OUTDATED_REGISTRY);
 
         return rd;
     }
@@ -644,7 +654,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final BaseHS<T> wrapper = (BaseHS<T>) pojoMapping.get(clazz);
         if (wrapper == null)
-            throw new UnknownTypeException("pojo: " + clazz);
+            throw new UnknownTypeException(POJO + clazz);
 
         output.writeUInt32(fieldNumber, wrapper.id, false);
 
@@ -660,7 +670,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         final BaseHS<T> wrapper = (BaseHS<T>) pojos.get(id);
         if (wrapper == null)
-            throw new UnknownTypeException("pojo id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException(POJO_ID + id + OUTDATED_REGISTRY);
 
         output.writeUInt32(fieldNumber, id, false);
 
@@ -676,7 +686,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         final BaseHS<T> wrapper = id < pojos.size() ? (BaseHS<T>) pojos.get(id) : null;
         if (wrapper == null)
-            throw new UnknownTypeException("pojo id: " + id + " (Outdated registry)");
+            throw new UnknownTypeException(POJO_ID + id + OUTDATED_REGISTRY);
 
         return wrapper;
     }
@@ -689,7 +699,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final BaseHS<T> wrapper = (BaseHS<T>) pojoMapping.get(message.getClass());
 
         if (wrapper == null)
-            throw new UnknownTypeException("pojo: " + message.getClass());
+            throw new UnknownTypeException(POJO + message.getClass());
 
         output.writeUInt32(fieldNumber, wrapper.id, false);
 
@@ -705,7 +715,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         if (factory == null)
         {
             throw new UnknownTypeException("collection id: " + id +
-                    " (Outdated registry)");
+                    OUTDATED_REGISTRY);
         }
 
         return factory.typeClass();
@@ -719,7 +729,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         if (factory == null)
         {
             throw new UnknownTypeException("map id: " + id +
-                    " (Outdated registry)");
+                    OUTDATED_REGISTRY);
         }
 
         return factory.typeClass();
@@ -732,7 +742,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         if (reio == null)
         {
             throw new UnknownTypeException("enum id: " + id +
-                    " (Outdated registry)");
+                    OUTDATED_REGISTRY);
         }
 
         return reio.eio.enumClass;
@@ -751,8 +761,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final BaseHS<?> wrapper = id < pojos.size() ? pojos.get(id) : null;
         if (wrapper == null)
         {
-            throw new UnknownTypeException("pojo id: " + id +
-                    " (Outdated registry)");
+            throw new UnknownTypeException(POJO_ID + id +
+                    OUTDATED_REGISTRY);
         }
 
         return wrapper.getSchema().typeClass();
@@ -769,7 +779,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredEnumIO reio = enumMapping.get(clazz);
         if (reio == null)
-            throw new UnknownTypeException("enum: " + clazz);
+            throw new UnknownTypeException(ENUM + clazz);
 
         return (reio.id << 5) | CID_ENUM;
     }
@@ -781,7 +791,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         {
             final BaseHS<?> wrapper = pojoMapping.get(clazz);
             if (wrapper == null)
-                throw new UnknownTypeException("pojo: " + clazz);
+                throw new UnknownTypeException(POJO + clazz);
 
             return (wrapper.id << 5) | CID_POJO;
         }
@@ -794,7 +804,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         final BaseHS<?> wrapper = pojoMapping.get(clazz);
         if (wrapper == null)
-            throw new UnknownTypeException("pojo: " + clazz);
+            throw new UnknownTypeException(POJO + clazz);
 
         return (wrapper.id << 5) | CID_POJO;
     }
@@ -803,7 +813,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredCollectionFactory factory = collectionMapping.get(clazz);
         if (factory == null)
-            throw new UnknownTypeException("collection: " + clazz);
+            throw new UnknownTypeException(COLLECTION + clazz);
 
         return (factory.id << 5) | CID_COLLECTION;
     }
@@ -812,7 +822,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final RegisteredMapFactory factory = mapMapping.get(clazz);
         if (factory == null)
-            throw new UnknownTypeException("map: " + clazz);
+            throw new UnknownTypeException(MAP + clazz);
 
         return (factory.id << 5) | CID_MAP;
     }
