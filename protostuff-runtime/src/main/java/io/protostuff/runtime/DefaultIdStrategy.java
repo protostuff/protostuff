@@ -671,7 +671,7 @@ public final class DefaultIdStrategy extends IdStrategy
                         if (Message.class.isAssignableFrom(typeClass))
                         {
                             // use the message's schema.
-                            Message<T> m = (Message<T>)createInstance(typeClass);
+                            Message<T> m = (Message<T>) createInstance(typeClass);
                             this.schema = schema = m.cachedSchema();
                         }
                         else
@@ -687,19 +687,28 @@ public final class DefaultIdStrategy extends IdStrategy
             return schema;
         }
 
-        private static <T> T createInstance(Class<T> clazz) {
-            try {
+        private static <T> T createInstance(Class<T> clazz)
+        {
+            try
+            {
                 return clazz.newInstance();
-            } catch (IllegalAccessException e) {
-                try {
+            }
+            catch (IllegalAccessException e)
+            {
+                try
+                {
                     Constructor<T> constructor = clazz.getDeclaredConstructor();
                     constructor.setAccessible(true);
                     return constructor.newInstance();
-                } catch (NoSuchMethodException | InstantiationException
-                        | InvocationTargetException | IllegalAccessException e1) {
+                }
+                catch (NoSuchMethodException | InstantiationException
+                        | InvocationTargetException | IllegalAccessException e1)
+                {
                     throw new RuntimeException(e);
                 }
-            } catch (InstantiationException e) {
+            }
+            catch (InstantiationException e)
+            {
                 throw new RuntimeException(e);
             }
         }
