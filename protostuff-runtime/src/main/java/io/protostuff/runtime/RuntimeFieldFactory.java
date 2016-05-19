@@ -224,7 +224,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         if (inline != null)
             return inline;
 
-        if (Message.class.isAssignableFrom(clazz) || strategy.isRegistered(clazz))
+        if (Message.class.isAssignableFrom(clazz))
             return POJO;
 
         if (clazz.isEnum())
@@ -261,7 +261,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         //
         // If you have declared fields as serializable, it wont be compatible
         if (clazz.isInterface())
-            return OBJECT;
+            return strategy.isRegistered(clazz) ? POJO : OBJECT;
 
         // checks delegated to POLYMORPHIC_POJO
         return POLYMORPHIC_POJO;
