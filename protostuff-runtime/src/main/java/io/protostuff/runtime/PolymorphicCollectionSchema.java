@@ -351,13 +351,15 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
                 return null;
         }
     }
-
+    
     static int number(String name)
     {
-        if (name.length() != 1)
-            return 0;
+        return name.length() != 1 ? 0 : number(name.charAt(0));
+    }
 
-        switch (name.charAt(0))
+    static int number(char c)
+    {
+        switch (c)
         {
             case 'a':
                 return 1;
@@ -786,15 +788,20 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
         output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
         output.writeObject(1, type, strategy.CLASS_SCHEMA, false);
     }
+    
+    static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
+            IdStrategy strategy) throws IOException
+    {
+        return readObjectFrom(input, schema, owner, strategy, 
+                input.readFieldNumber(schema));
+    }
 
     @SuppressWarnings("unchecked")
     static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
-            IdStrategy strategy) throws IOException // TODO pass in type
-    // (Class<?>)
+            IdStrategy strategy, final int number) throws IOException
     {
         final boolean graph = input instanceof GraphInput;
         Object ret = null;
-        final int number = input.readFieldNumber(schema);
         switch (number)
         {
             case ID_EMPTY_SET:
@@ -1211,11 +1218,18 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema
 
         return collection;
     }
-
+    
     static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe,
             Input input, Output output, IdStrategy strategy) throws IOException
     {
-        final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
+        transferObject(pipeSchema, pipe, input, output, strategy, 
+                input.readFieldNumber(pipeSchema.wrappedSchema));
+    }
+
+    static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe,
+            Input input, Output output, IdStrategy strategy, 
+            final int number) throws IOException
+    {
         switch (number)
         {
             case ID_EMPTY_SET:

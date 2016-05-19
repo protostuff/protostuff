@@ -14,6 +14,11 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.AbstractTest;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,11 +62,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-
-import io.protostuff.AbstractTest;
-import io.protostuff.CollectionSchema;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
 
 /**
  * Test for runtime collection fields with {@link CollectionSchema}.
@@ -781,6 +781,256 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         assertEquals(p, pFromByteArray);
 
         roundTrip(p, schema, pipeSchema);
+    }
+    
+    @SuppressWarnings("serial")
+    static final class PersistentObjectList<T> extends ArrayList<T>
+    {
+        public final int id;
+        
+        public PersistentObjectList()
+        {
+            id = 0;
+        }
+        
+        public PersistentObjectList(int id)
+        {
+            this.id = id;
+        }
+    }
+    
+    
+    @SuppressWarnings("serial")
+    static final class PersistentObjectMap<K,V> extends HashMap<K,V>
+    {
+        public final int id;
+        
+        public PersistentObjectMap()
+        {
+            id = 0;
+        }
+        
+        public PersistentObjectMap(int id)
+        {
+            this.id = id;
+        }
+    }
+    
+    static final class ObjectWrapper
+    {
+        Object obj;
+    }
+    
+    static final class ListWrapper
+    {
+        List<?> obj;
+    }
+    
+    static final class MapWrapper
+    {
+        Map<?,?> obj;
+    }
+    
+    /*static final class EagerDelegate<T> implements Delegate<T>
+    {
+        final Class<T> typeClass;
+        final IdStrategy strategy;
+        final RuntimeSchema<T> schema;
+        
+        public EagerDelegate(final Class<T> typeClass, IdStrategy strategy)
+        {
+            this.typeClass = typeClass;
+            this.strategy = strategy;
+            schema = RuntimeSchema.createFrom(typeClass, strategy);
+        }
+        
+        @Override
+        public FieldType getFieldType()
+        {
+            return FieldType.MESSAGE;
+        }
+
+        @Override
+        public T readFrom(Input input) throws IOException
+        {
+            return input.mergeObject(null, schema);
+        }
+
+        @Override
+        public void writeTo(Output output, int number, T value, boolean repeated)
+                throws IOException
+        {
+            output.writeObject(number, value, schema, repeated);
+        }
+
+        @Override
+        public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated)
+                throws IOException
+        {
+            output.writeObject(number, pipe, schema.getPipeSchema(), repeated);
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return typeClass;
+        }
+    };
+    
+    // For objects that have circular dependencies.
+    static final class LazyDelegate<T> implements Delegate<T>
+    {
+        final Class<T> typeClass;
+        final IdStrategy strategy;
+        private volatile RuntimeSchema<T> schema;
+        
+        public LazyDelegate(final Class<T> typeClass, IdStrategy strategy)
+        {
+            this.typeClass = typeClass;
+            this.strategy = strategy;
+        }
+        
+        private RuntimeSchema<T> getSchema()
+        {
+            RuntimeSchema<T> schema = this.schema;
+            if (schema == null)
+            {
+                synchronized (this)
+                {
+                    if ((schema = this.schema) == null)
+                        this.schema = schema = RuntimeSchema.createFrom(typeClass, strategy);
+                }
+            }
+            
+            return schema;
+        }
+
+        @Override
+        public FieldType getFieldType()
+        {
+            return FieldType.MESSAGE;
+        }
+
+        @Override
+        public T readFrom(Input input) throws IOException
+        {
+            return input.mergeObject(null, getSchema());
+        }
+
+        @Override
+        public void writeTo(Output output, int number, T value, boolean repeated)
+                throws IOException
+        {
+            output.writeObject(number, value, getSchema(), repeated);
+        }
+
+        @Override
+        public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated)
+                throws IOException
+        {
+            output.writeObject(number, pipe, getSchema().getPipeSchema(), repeated);
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return typeClass;
+        }
+    };*/
+    
+    private void verifyObjectListField() throws IOException
+    {
+        ObjectWrapper wrapper = new ObjectWrapper();
+        wrapper.obj = new PersistentObjectList<Object>(15);
+        
+        Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
+        
+        byte[] data = toByteArray(wrapper, schema);
+        
+        ObjectWrapper parsed = schema.newMessage();
+        mergeFrom(data, 0, data.length, parsed, schema);
+        
+        assertNotNull(parsed.obj);
+        assertTrue(parsed.obj instanceof PersistentObjectList);
+        
+        @SuppressWarnings("unchecked")
+        PersistentObjectList<Object> list = (PersistentObjectList<Object>)parsed.obj;
+        assertEquals(15, list.id);
+    }
+    
+    private void verifyObjectMapField() throws IOException
+    {
+        ObjectWrapper wrapper = new ObjectWrapper();
+        wrapper.obj = new PersistentObjectMap<String,Object>(15);
+        
+        Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
+        
+        byte[] data = toByteArray(wrapper, schema);
+        
+        ObjectWrapper parsed = schema.newMessage();
+        mergeFrom(data, 0, data.length, parsed, schema);
+        
+        assertNotNull(parsed.obj);
+        assertTrue(parsed.obj instanceof PersistentObjectMap);
+        
+        @SuppressWarnings("unchecked")
+        PersistentObjectMap<String,Object> map = (PersistentObjectMap<String,Object>)parsed.obj;
+        assertEquals(15, map.id);
+    }
+    
+    private void verifyListField() throws IOException
+    {
+        ListWrapper wrapper = new ListWrapper();
+        wrapper.obj = new PersistentObjectList<Object>(15);
+        
+        Schema<ListWrapper> schema = RuntimeSchema.getSchema(ListWrapper.class);
+        
+        byte[] data = toByteArray(wrapper, schema);
+        
+        ListWrapper parsed = schema.newMessage();
+        mergeFrom(data, 0, data.length, parsed, schema);
+        
+        assertNotNull(parsed.obj);
+        assertTrue(parsed.obj instanceof PersistentObjectList);
+        
+        @SuppressWarnings("unchecked")
+        PersistentObjectList<Object> list = (PersistentObjectList<Object>)parsed.obj;
+        assertEquals(15, list.id);
+    }
+    
+    private void verifyMapField() throws IOException
+    {
+        MapWrapper wrapper = new MapWrapper();
+        wrapper.obj = new PersistentObjectMap<String,Object>(15);
+        
+        Schema<MapWrapper> schema = RuntimeSchema.getSchema(MapWrapper.class);
+        
+        byte[] data = toByteArray(wrapper, schema);
+        
+        MapWrapper parsed = schema.newMessage();
+        mergeFrom(data, 0, data.length, parsed, schema);
+        
+        assertNotNull(parsed.obj);
+        assertTrue(parsed.obj instanceof PersistentObjectMap);
+        
+        @SuppressWarnings("unchecked")
+        PersistentObjectMap<String,Object> map = (PersistentObjectMap<String,Object>)parsed.obj;
+        assertEquals(15, map.id);
+    }
+    
+    public void testRegisterCustom() throws IOException
+    {
+        RuntimeSchema.register(PersistentObjectList.class);
+        RuntimeSchema.register(PersistentObjectMap.class);
+        
+        verifyObjectListField();
+        verifyObjectMapField();
+        
+        if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS)
+            verifyListField();
+        
+        if (RuntimeEnv.POJO_SCHEMA_ON_MAP_FIELDS)
+            verifyMapField();
     }
 
 }

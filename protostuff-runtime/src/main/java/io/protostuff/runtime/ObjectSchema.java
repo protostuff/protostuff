@@ -746,7 +746,22 @@ public abstract class ObjectSchema extends PolymorphicSchema
             schema.writeTo(output, value);
             return;
         }
+        
+        HasSchema<Object> hs = strategy.tryWritePojoIdTo(output, ID_POJO, clazz, false);
+        if (hs != null)
+        {
+            final Schema<Object> schema = hs.getSchema();
+            
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput) output).updateLast(schema, currentSchema);
+            }
 
+            schema.writeTo(output, value);
+            return;
+        }
+        
         if (clazz.isEnum())
         {
             EnumIO<?> eio = strategy.getEnumIO(clazz);
@@ -828,7 +843,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     strategy.isRegistered(componentType))
             {
                 // messsage / registered pojo
-                final HasSchema<Object> hs = strategy.writePojoIdTo(output,
+                hs = strategy.writePojoIdTo(output,
                         ID_ARRAY_POJO, (Class<Object>) componentType);
 
                 if (output instanceof StatefulOutput)

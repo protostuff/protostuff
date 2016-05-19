@@ -1206,7 +1206,7 @@ public final class RuntimeUnsafeFieldFactory
                     name,
                     false,
                     f.getAnnotation(Tag.class),
-                    PolymorphicSchemaFactories.getFactoryFromField(f.getType()),
+                    PolymorphicSchemaFactories.getFactoryFromField(f, strategy),
                     strategy)
             {
                 @Override

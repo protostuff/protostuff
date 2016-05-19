@@ -1814,6 +1814,20 @@ final class RuntimeMapFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final Class<?> clazz = f.getType();
+            final Morph morph = f.getAnnotation(Morph.class);
+            
+            if (RuntimeEnv.POJO_SCHEMA_ON_MAP_FIELDS && 
+                    (morph == null || morph.value()))
+            {
+                if (!clazz.getName().startsWith("java.util") && 
+                        pojo(clazz, morph, strategy))
+                {
+                    return POJO.create(number, name, f, strategy);
+                }
+                
+                return OBJECT.create(number, name, f, strategy);
+            }
+            
             if (Modifier.isAbstract(clazz.getModifiers()))
             {
                 if (!clazz.isInterface())
@@ -1822,7 +1836,6 @@ final class RuntimeMapFieldFactory
                     return OBJECT.create(number, name, f, strategy);
                 }
 
-                final Morph morph = f.getAnnotation(Morph.class);
                 if (morph == null)
                 {
                     if (RuntimeEnv.MORPH_MAP_INTERFACES)
@@ -1906,7 +1919,7 @@ final class RuntimeMapFieldFactory
                             strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
                 }
 
-                if (pojo(clazzK, f.getAnnotation(Morph.class), strategy))
+                if (pojo(clazzK, morph, strategy))
                 {
                     return createMapPojoKObjectV(number, name, f,
                             messageFactory, clazzK,

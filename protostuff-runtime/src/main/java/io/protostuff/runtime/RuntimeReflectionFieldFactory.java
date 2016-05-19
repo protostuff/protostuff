@@ -1385,7 +1385,7 @@ public final class RuntimeReflectionFieldFactory
                     name,
                     false,
                     f.getAnnotation(Tag.class),
-                    PolymorphicSchemaFactories.getFactoryFromField(f.getType()),
+                    PolymorphicSchemaFactories.getFactoryFromField(f, strategy),
                     strategy)
             {
                 {

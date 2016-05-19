@@ -28,10 +28,10 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.runtime.PolymorphicSchema.Handler;
+
 import java.util.Collection;
 import java.util.Map;
-
-import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Polymorphic types.
@@ -185,6 +185,54 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
             };
         }
     },
+    POJO
+    {
+        @Override
+        public PolymorphicSchema newSchema(Class<?> typeClass,
+                IdStrategy strategy, final Handler handler)
+        {
+            return new PolymorphicPojoSchema(strategy)
+            {
+                @Override
+                protected void setValue(Object value, Object owner)
+                {
+                    handler.setValue(value, owner);
+                }
+            };
+        }
+    },
+    POJO_MAP
+    {
+        @Override
+        public PolymorphicSchema newSchema(Class<?> typeClass,
+                IdStrategy strategy, final Handler handler)
+        {
+            return new PolymorphicPojoMapSchema(strategy)
+            {
+                @Override
+                protected void setValue(Object value, Object owner)
+                {
+                    handler.setValue(value, owner);
+                }
+            };
+        }
+    },
+    POJO_COLLECTION
+    {
+        @Override
+        public PolymorphicSchema newSchema(Class<?> typeClass,
+                IdStrategy strategy, final Handler handler)
+        {
+            return new PolymorphicPojoCollectionSchema(strategy)
+            {
+                @Override
+                protected void setValue(Object value, Object owner)
+                {
+                    handler.setValue(value, owner);
+                }
+            };
+        }
+    },
     OBJECT
     {
         @Override
@@ -202,8 +250,11 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         }
     };
 
-    public static PolymorphicSchema.Factory getFactoryFromField(Class<?> clazz)
+    public static PolymorphicSchema.Factory getFactoryFromField(
+            final java.lang.reflect.Field f, final IdStrategy strategy)
     {
+        final Class<?> clazz = f.getType();
+        
         if (clazz.isArray())
             return ARRAY;
 
@@ -215,12 +266,12 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
 
         if (Enum.class == clazz)
             return ENUM;
-
+        
         if (Map.class.isAssignableFrom(clazz))
-            return MAP;
+            return RuntimeEnv.POJO_SCHEMA_ON_MAP_FIELDS ? POJO_MAP : MAP;
 
         if (Collection.class.isAssignableFrom(clazz))
-            return COLLECTION;
+            return RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS ? POJO_COLLECTION : COLLECTION;
 
         if (Throwable.class.isAssignableFrom(clazz))
             return THROWABLE;

@@ -2,6 +2,8 @@ package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -55,72 +57,70 @@ public abstract class IdStrategy
         this.primaryGroup = primaryGroup;
         this.groupId = groupId;
     }
-
+    
     /**
      * Generates a schema from the given class. If this strategy is part of a group, the existing fields of that group's
      * schema will be re-used.
      */
     protected <T> Schema<T> newSchema(Class<T> typeClass)
     {
-        // check if this is part of a group
-        if (primaryGroup != null)
-        {
-            // only pojos created by runtime schema support groups
-            final Schema<T> s = primaryGroup.getSchemaWrapper(typeClass, true)
-                    .getSchema();
-            if (s instanceof RuntimeSchema)
-            {
-                final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
+        return newSchema(typeClass, false);
+    }
 
-                final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
-
-                for (Field<T> f : rs.getFields())
-                {
-                    final int groupFilter = f.groupFilter;
-                    if (groupFilter != 0)
-                    {
-                        final int set; // set for exclusion
-                        if (groupFilter > 0)
-                        {
-                            // inclusion
-                            set = ~groupFilter & 0x7FFFFFFF;
-                        }
-                        else
-                        {
-                            // exclusion
-                            set = -groupFilter;
-                        }
-
-                        if (0 != (groupId & set))
-                        {
-                            // this field is excluded on the current group id
-                            continue;
-                        }
-                    }
-
-                    fields.add(f);
-                }
-
-                final int size = fields.size();
-                if (size == rs.getFieldCount())
-                {
-                    // nothing is excluded
-                    return rs;
-                }
-
-                if (size == 0)
-                {
-                    throw new RuntimeException("All fields were excluded for "
-                            + rs.messageFullName() + " on group " + groupId);
-                }
-
-                return new RuntimeSchema<>(typeClass, fields, rs.instantiator);
-            }
-
+    /**
+     * Generates a schema from the given class. If this strategy is part of a group, the existing fields of that group's
+     * schema will be re-used.
+     */
+    protected <T> Schema<T> newSchema(Class<T> typeClass, boolean registered)
+    {
+        final Schema<T> s = registered || primaryGroup == null ? 
+                RuntimeSchema.createFrom(typeClass, this) : 
+                primaryGroup.getSchemaWrapper(typeClass, true).getSchema();
+        
+        // only pojos created by runtime schema support groups
+        if (!(s instanceof RuntimeSchema))
             return s;
-        }
+        
+        final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
+        
+        final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
+        
+        for (Field<T> f : rs.getFields())
+        {
+            final int groupFilter = f.groupFilter;
+            if (groupFilter != 0)
+            {
+                final int set; // set for exclusion
+                if (groupFilter > 0)
+                {
+                    // inclusion
+                    set = ~groupFilter & 0x7FFFFFFF;
+                }
+                else
+                {
+                    // exclusion
+                    set = -groupFilter;
+                }
 
-        return RuntimeSchema.createFrom(typeClass, this);
+                if (0 != (groupId & set))
+                {
+                    // this field is excluded on the current group id
+                    continue;
+                }
+            }
+            
+            fields.add(f);
+        }
+        
+        final int size = fields.size();
+        if (size == 0)
+        {
+            throw new RuntimeException("All fields were excluded for "
+                    + rs.messageFullName() + " on group " + groupId);
+        }
+        
+        return size == rs.getFieldCount() ? rs : 
+                new RuntimeSchema<>(typeClass, fields, rs.instantiator);
     }
 
     /**
@@ -234,6 +234,9 @@ public abstract class IdStrategy
             throws IOException;
 
     // pojo
+    
+    protected abstract <T> HasSchema<T> tryWritePojoIdTo(Output output,
+            int fieldNumber, Class<T> clazz, boolean registered) throws IOException;
 
     protected abstract <T> HasSchema<T> writePojoIdTo(Output output,
             int fieldNumber, Class<T> clazz) throws IOException;
@@ -1283,6 +1286,32 @@ public abstract class IdStrategy
     static final class Wrapper
     {
         Object value;
+    }
+    
+    protected static <T> T createMessageInstance(Class<T> clazz)
+    {
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (IllegalAccessException e)
+        {
+            try
+            {
+                Constructor<T> constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                return constructor.newInstance();
+            }
+            catch (NoSuchMethodException | InstantiationException
+                    | InvocationTargetException | IllegalAccessException e1)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        catch (InstantiationException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
 }

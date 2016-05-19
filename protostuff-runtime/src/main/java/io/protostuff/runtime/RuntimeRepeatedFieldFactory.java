@@ -481,7 +481,22 @@ final class RuntimeRepeatedFieldFactory
         public <T> Field<T> create(int number, String name,
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
-            if (null != f.getAnnotation(Morph.class))
+            final Class<?> clazz = f.getType();
+            final Morph morph = f.getAnnotation(Morph.class);
+            
+            if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS && 
+                    (morph == null || morph.value()))
+            {
+                if (!clazz.getName().startsWith("java.util") && 
+                        pojo(clazz, morph, strategy))
+                {
+                    return POJO.create(number, name, f, strategy);
+                }
+                
+                return OBJECT.create(number, name, f, strategy);
+            }
+            
+            if (morph != null)
             {
                 // can be used to override the configured system property:
                 // RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS
@@ -493,7 +508,7 @@ final class RuntimeRepeatedFieldFactory
                         number, name, f, strategy);
             }
 
-            if (EnumSet.class.isAssignableFrom(f.getType()))
+            if (EnumSet.class.isAssignableFrom(clazz))
             {
                 final Class<Object> enumType = (Class<Object>) getGenericType(
                         f, 0);
@@ -511,7 +526,7 @@ final class RuntimeRepeatedFieldFactory
             }
 
             final MessageFactory messageFactory = strategy
-                    .getCollectionFactory(f.getType());
+                    .getCollectionFactory(clazz);
 
             final Class<Object> genericType = (Class<Object>) getGenericType(f,
                     0);
@@ -545,7 +560,7 @@ final class RuntimeRepeatedFieldFactory
                         genericType, factory, strategy);
             }
 
-            if (pojo(genericType, f.getAnnotation(Morph.class), strategy))
+            if (pojo(genericType, morph, strategy))
                 return createCollectionPojoV(number, name, f, messageFactory,
                         genericType, strategy);
 
