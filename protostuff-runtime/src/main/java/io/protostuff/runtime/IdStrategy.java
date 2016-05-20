@@ -1300,8 +1300,10 @@ public abstract class IdStrategy
     
     // array element schema
     
-    final ArraySchemas.BoolArray ARRAY_BOOL_PRIMITIVE_SCHEMA = new ArraySchemas.BoolArray(this, null, true);
-    final ArraySchemas.BoolArray ARRAY_BOOL_BOXED_SCHEMA = new ArraySchemas.BoolArray(this, null, false)
+    final ArraySchemas.BoolArray ARRAY_BOOL_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.BoolArray(this, null, true);
+    final ArraySchemas.BoolArray ARRAY_BOOL_BOXED_SCHEMA = 
+            new ArraySchemas.BoolArray(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1314,8 +1316,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.CharArray ARRAY_CHAR_PRIMITIVE_SCHEMA = new ArraySchemas.CharArray(this, null, true);
-    final ArraySchemas.CharArray ARRAY_CHAR_BOXED_SCHEMA = new ArraySchemas.CharArray(this, null, false)
+    final ArraySchemas.CharArray ARRAY_CHAR_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.CharArray(this, null, true);
+    final ArraySchemas.CharArray ARRAY_CHAR_BOXED_SCHEMA = 
+            new ArraySchemas.CharArray(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1328,8 +1332,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.ShortArray ARRAY_SHORT_PRIMITIVE_SCHEMA = new ArraySchemas.ShortArray(this, null, true);
-    final ArraySchemas.ShortArray ARRAY_SHORT_BOXED_SCHEMA = new ArraySchemas.ShortArray(this, null, false)
+    final ArraySchemas.ShortArray ARRAY_SHORT_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.ShortArray(this, null, true);
+    final ArraySchemas.ShortArray ARRAY_SHORT_BOXED_SCHEMA = 
+            new ArraySchemas.ShortArray(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1342,8 +1348,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.Int32Array ARRAY_INT32_PRIMITIVE_SCHEMA = new ArraySchemas.Int32Array(this, null, true);
-    final ArraySchemas.Int32Array ARRAY_INT32_BOXED_SCHEMA = new ArraySchemas.Int32Array(this, null, false)
+    final ArraySchemas.Int32Array ARRAY_INT32_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.Int32Array(this, null, true);
+    final ArraySchemas.Int32Array ARRAY_INT32_BOXED_SCHEMA = 
+            new ArraySchemas.Int32Array(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1356,8 +1364,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.Int64Array ARRAY_INT64_PRIMITIVE_SCHEMA = new ArraySchemas.Int64Array(this, null, true);
-    final ArraySchemas.Int64Array ARRAY_INT64_BOXED_SCHEMA = new ArraySchemas.Int64Array(this, null, false)
+    final ArraySchemas.Int64Array ARRAY_INT64_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.Int64Array(this, null, true);
+    final ArraySchemas.Int64Array ARRAY_INT64_BOXED_SCHEMA = 
+            new ArraySchemas.Int64Array(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1370,8 +1380,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.FloatArray ARRAY_FLOAT_PRIMITIVE_SCHEMA = new ArraySchemas.FloatArray(this, null, true);
-    final ArraySchemas.FloatArray ARRAY_FLOAT_BOXED_SCHEMA = new ArraySchemas.FloatArray(this, null, false)
+    final ArraySchemas.FloatArray ARRAY_FLOAT_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.FloatArray(this, null, true);
+    final ArraySchemas.FloatArray ARRAY_FLOAT_BOXED_SCHEMA = 
+            new ArraySchemas.FloatArray(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1384,8 +1396,10 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.DoubleArray ARRAY_DOUBLE_PRIMITIVE_SCHEMA = new ArraySchemas.DoubleArray(this, null, true);
-    final ArraySchemas.DoubleArray ARRAY_DOUBLE_BOXED_SCHEMA = new ArraySchemas.DoubleArray(this, null, false)
+    final ArraySchemas.DoubleArray ARRAY_DOUBLE_PRIMITIVE_SCHEMA = 
+            new ArraySchemas.DoubleArray(this, null, true);
+    final ArraySchemas.DoubleArray ARRAY_DOUBLE_BOXED_SCHEMA = 
+            new ArraySchemas.DoubleArray(this, null, false)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1398,7 +1412,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.StringArray ARRAY_STRING_SCHEMA = new ArraySchemas.StringArray(this, null)
+    final ArraySchemas.StringArray ARRAY_STRING_SCHEMA = 
+            new ArraySchemas.StringArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1411,7 +1426,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.ByteStringArray ARRAY_BYTESTRING_SCHEMA = new ArraySchemas.ByteStringArray(this, null)
+    final ArraySchemas.ByteStringArray ARRAY_BYTESTRING_SCHEMA = 
+            new ArraySchemas.ByteStringArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1424,7 +1440,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.ByteArrayArray ARRAY_BYTEARRAY_SCHEMA = new ArraySchemas.ByteArrayArray(this, null)
+    final ArraySchemas.ByteArrayArray ARRAY_BYTEARRAY_SCHEMA = 
+            new ArraySchemas.ByteArrayArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1437,7 +1454,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.BigDecimalArray ARRAY_BIGDECIMAL_SCHEMA = new ArraySchemas.BigDecimalArray(this, null)
+    final ArraySchemas.BigDecimalArray ARRAY_BIGDECIMAL_SCHEMA = 
+            new ArraySchemas.BigDecimalArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1450,7 +1468,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.BigIntegerArray ARRAY_BIGINTEGER_SCHEMA = new ArraySchemas.BigIntegerArray(this, null)
+    final ArraySchemas.BigIntegerArray ARRAY_BIGINTEGER_SCHEMA = 
+            new ArraySchemas.BigIntegerArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -1463,7 +1482,8 @@ public abstract class IdStrategy
         }
     };
     
-    final ArraySchemas.DateArray ARRAY_DATE_SCHEMA = new ArraySchemas.DateArray(this, null)
+    final ArraySchemas.DateArray ARRAY_DATE_SCHEMA = 
+            new ArraySchemas.DateArray(this, null)
     {
         @Override
         @SuppressWarnings("unchecked")
