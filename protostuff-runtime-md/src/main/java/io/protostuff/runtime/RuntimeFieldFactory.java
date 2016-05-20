@@ -22,6 +22,7 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.WireFormat.FieldType;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
