@@ -161,7 +161,7 @@ public abstract class IdStrategy
         }
         
         final int size = fields.size();
-        if (size == 0)
+        if (size == 0 && primaryGroup != null)
         {
             throw new RuntimeException("All fields were excluded for "
                     + rs.messageFullName() + " on group " + groupId);

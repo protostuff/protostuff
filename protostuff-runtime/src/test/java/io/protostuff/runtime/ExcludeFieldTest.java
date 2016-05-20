@@ -15,6 +15,7 @@
 package io.protostuff.runtime;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -123,6 +124,17 @@ public class ExcludeFieldTest
 
         assertTrue(schema.getFieldNumber("timestamp") == 0);
         assertNull(schema.getFieldByName("timestamp"));
+    }
+    
+    static final class Empty
+    {
+        
+    }
+    
+    @Test
+    public void testEmptyMessage()
+    {
+        assertNotNull(RuntimeSchema.getSchema(Empty.class));
     }
 
 }
