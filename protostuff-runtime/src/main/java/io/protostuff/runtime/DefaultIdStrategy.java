@@ -812,7 +812,7 @@ public final class DefaultIdStrategy extends IdStrategy
                     if ((schema = this.schema) == null)
                     {
                         // create new
-                        this.schema = schema = strategy.newSchema(typeClass, true);
+                        this.schema = schema = strategy.newSchema(typeClass);
                     }
                 }
             }
