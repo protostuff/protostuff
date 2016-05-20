@@ -207,16 +207,16 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         if (strategy.isDelegateRegistered(clazz))
             return DELEGATE;
 
-        if (Message.class.isAssignableFrom(clazz))
-            return POJO;
-
-        if (clazz.isEnum())
-            return ENUM;
-
         final RuntimeFieldFactory<?> inline = __inlineValues.get(clazz
                 .getName());
         if (inline != null)
             return inline;
+
+        if (Message.class.isAssignableFrom(clazz) || strategy.isRegistered(clazz))
+            return POJO;
+
+        if (clazz.isEnum())
+            return ENUM;
 
         // Of all the scalar (inline) fields, java.lang.Number is the only
         // abstract
@@ -249,7 +249,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         //
         // If you have declared fields as serializable, it wont be compatible
         if (clazz.isInterface())
-            return strategy.isRegistered(clazz) ? POJO : OBJECT;
+            return OBJECT;
 
         // checks delegated to POLYMORPHIC_POJO
         return POLYMORPHIC_POJO;

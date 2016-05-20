@@ -474,6 +474,20 @@ final class RuntimeCollectionFieldFactory
                 final java.lang.reflect.Field f, IdStrategy strategy)
         {
             final Class<?> clazz = f.getType();
+            final Morph morph = f.getAnnotation(Morph.class);
+            
+            if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS && 
+                    (morph == null || morph.value()))
+            {
+                if (!clazz.getName().startsWith("java.util") && 
+                        pojo(clazz, morph, strategy))
+                {
+                    return POJO.create(number, name, f, strategy);
+                }
+                
+                return OBJECT.create(number, name, f, strategy);
+            }
+            
             if (Modifier.isAbstract(clazz.getModifiers()))
             {
                 if (!clazz.isInterface())
@@ -481,8 +495,7 @@ final class RuntimeCollectionFieldFactory
                     // abstract class
                     return OBJECT.create(number, name, f, strategy);
                 }
-
-                final Morph morph = f.getAnnotation(Morph.class);
+                
                 if (morph == null)
                 {
                     if (RuntimeEnv.MORPH_COLLECTION_INTERFACES)
@@ -546,7 +559,7 @@ final class RuntimeCollectionFieldFactory
                         ps, ps.getPipeSchema(), strategy);
             }
 
-            if (pojo(genericType, f.getAnnotation(Morph.class), strategy))
+            if (pojo(genericType, morph, strategy))
                 return createCollectionPojoV(number, name, f, messageFactory,
                         genericType, strategy);
 

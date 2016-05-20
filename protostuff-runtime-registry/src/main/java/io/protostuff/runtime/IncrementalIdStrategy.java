@@ -745,6 +745,24 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
         return rd;
     }
+    
+    @Override
+    protected <T> HasSchema<T> tryWritePojoIdTo(Output output, int fieldNumber, 
+            Class<T> clazz, boolean registered) throws IOException
+    {
+        BaseHS<T> wrapper = getBaseHS(clazz, false);
+        if (wrapper == null || (registered && !(wrapper instanceof Registered)))
+            return null;
+        
+        int id;
+        // wait till everything is completely set
+        while (0 == (id = wrapper.id))
+            LockSupport.parkNanos(1);
+
+        output.writeUInt32(fieldNumber, id, false);
+
+        return wrapper;
+    }
 
     @Override
     protected <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber, Class<T> clazz)
@@ -1043,15 +1061,8 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         if (Message.class.isAssignableFrom(typeClass))
                         {
                             // use the message's schema.
-                            try
-                            {
-                                final Message<T> m = (Message<T>) typeClass.newInstance();
-                                this.schema = schema = m.cachedSchema();
-                            }
-                            catch (InstantiationException | IllegalAccessException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
+                            final Message<T> m = (Message<T>) createMessageInstance(typeClass);
+                            this.schema = schema = m.cachedSchema();
                         }
                         else
                         {

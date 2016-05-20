@@ -8,15 +8,6 @@ import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import io.protostuff.CollectionSchema;
 import io.protostuff.Input;
 import io.protostuff.MapSchema;
@@ -25,6 +16,12 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.Schema;
+
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The FQCN(fully qualified class name) will serve as the id (string). Does not need any registration in the user-code
@@ -69,6 +66,20 @@ public final class DefaultIdStrategy extends IdStrategy
 
         return last == null
                 || (last instanceof Registered<?> && ((Registered<?>) last).schema == schema);
+    }
+    
+    /**
+     * Registers a pojo. Returns true if registration is successful or if the same exact schema was previously
+     * registered.
+     */
+    public <T> boolean registerPojo(Class<T> typeClass)
+    {
+        assert typeClass != null;
+
+        final HasSchema<?> last = pojoMapping.putIfAbsent(typeClass.getName(),
+                new LazyRegister<>(typeClass, this));
+        
+        return last == null || (last instanceof LazyRegister);
     }
 
     /**
@@ -456,6 +467,19 @@ public final class DefaultIdStrategy extends IdStrategy
 
         return hd;
     }
+    
+    @Override
+    protected <T> HasSchema<T> tryWritePojoIdTo(Output output, int fieldNumber,
+            Class<T> clazz, boolean registered) throws IOException
+    {
+        HasSchema<T> hs = getSchemaWrapper(clazz, false);
+        if (hs == null || (registered && hs instanceof Lazy<?>))
+            return null;
+        
+        output.writeString(fieldNumber, clazz.getName(), false);
+        
+        return hs;
+    }
 
     @Override
     protected <T> HasSchema<T> writePojoIdTo(Output output, int fieldNumber,
@@ -643,7 +667,7 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
     }
-
+    
     static final class Lazy<T> extends HasSchema<T>
     {
         final IdStrategy strategy;
@@ -671,7 +695,7 @@ public final class DefaultIdStrategy extends IdStrategy
                         if (Message.class.isAssignableFrom(typeClass))
                         {
                             // use the message's schema.
-                            Message<T> m = (Message<T>) createInstance(typeClass);
+                            Message<T> m = (Message<T>) createMessageInstance(typeClass);
                             this.schema = schema = m.cachedSchema();
                         }
                         else
@@ -685,32 +709,6 @@ public final class DefaultIdStrategy extends IdStrategy
             }
 
             return schema;
-        }
-
-        private static <T> T createInstance(Class<T> clazz)
-        {
-            try
-            {
-                return clazz.newInstance();
-            }
-            catch (IllegalAccessException e)
-            {
-                try
-                {
-                    Constructor<T> constructor = clazz.getDeclaredConstructor();
-                    constructor.setAccessible(true);
-                    return constructor.newInstance();
-                }
-                catch (NoSuchMethodException | InstantiationException
-                        | InvocationTargetException | IllegalAccessException e1)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException(e);
-            }
         }
 
         @Override
@@ -786,6 +784,58 @@ public final class DefaultIdStrategy extends IdStrategy
             return wrapper.getPipeSchema();
         }
 
+    }
+    
+    static final class LazyRegister<T> extends HasSchema<T>
+    {
+        final IdStrategy strategy;
+        final Class<T> typeClass;
+        private volatile Schema<T> schema;
+        private volatile Pipe.Schema<T> pipeSchema;
+
+        LazyRegister(Class<T> typeClass, IdStrategy strategy)
+        {
+            this.typeClass = typeClass;
+            this.strategy = strategy;
+        }
+
+        @Override
+        public Schema<T> getSchema()
+        {
+            Schema<T> schema = this.schema;
+            if (schema == null)
+            {
+                synchronized (this)
+                {
+                    if ((schema = this.schema) == null)
+                    {
+                        // create new
+                        this.schema = schema = strategy.newSchema(typeClass, true);
+                    }
+                }
+            }
+            
+            return schema;
+        }
+        
+        @Override
+        public Pipe.Schema<T> getPipeSchema()
+        {
+            Pipe.Schema<T> pipeSchema = this.pipeSchema;
+            if (pipeSchema == null)
+            {
+                synchronized (this)
+                {
+                    if ((pipeSchema = this.pipeSchema) == null)
+                    {
+                        this.pipeSchema = pipeSchema = RuntimeSchema
+                                .resolvePipeSchema(getSchema(), typeClass, true);
+                    }
+                }
+            }
+            
+            return pipeSchema;
+        }
     }
 
     static final class Registered<T> extends HasSchema<T>

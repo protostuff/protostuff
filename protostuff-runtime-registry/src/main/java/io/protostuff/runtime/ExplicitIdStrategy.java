@@ -636,6 +636,18 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         return rd;
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <T> HasSchema<T> tryWritePojoIdTo(Output output, int fieldNumber, 
+            Class<T> clazz, boolean registered) throws IOException
+    {
+        final BaseHS<T> wrapper = (BaseHS<T>) pojoMapping.get(clazz);
+        if (wrapper != null)
+            output.writeUInt32(fieldNumber, wrapper.id, false);
+        
+        return wrapper;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -952,15 +964,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         if (Message.class.isAssignableFrom(typeClass))
                         {
                             // use the message's schema.
-                            try
-                            {
-                                final Message<T> m = (Message<T>) typeClass.newInstance();
-                                this.schema = schema = m.cachedSchema();
-                            }
-                            catch (InstantiationException | IllegalAccessException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
+                            final Message<T> m = (Message<T>) createMessageInstance(typeClass);
+                            this.schema = schema = m.cachedSchema();
                         }
                         else
                         {

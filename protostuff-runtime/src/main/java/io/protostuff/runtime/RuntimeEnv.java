@@ -102,6 +102,18 @@ public final class RuntimeEnv
      * Disabled by default for protobuf compatibility.
      */
     public static final boolean COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
+    
+    /**
+     * Disabled by default.  If enabled, a list's internal state/fields 
+     * will be serialized instead of just its elements.
+     */
+    public static final boolean POJO_SCHEMA_ON_COLLECTION_FIELDS;
+    
+    /**
+     * Disabled by default.  If enabled, a map's internal state/fields 
+     * will be serialized instead of just its elements.
+     */
+    public static final boolean POJO_SCHEMA_ON_MAP_FIELDS;
 
     /**
      * If true, sun.misc.Unsafe is used to access the fields of the objects instead of plain java reflections. Enabled
@@ -174,11 +186,17 @@ public final class RuntimeEnv
         MORPH_MAP_INTERFACES = Boolean.parseBoolean(props.getProperty(
                 "protostuff.runtime.morph_map_interfaces", "false"));
 
-        COLLECTION_SCHEMA_ON_REPEATED_FIELDS = Boolean
-                .parseBoolean(props
-                        .getProperty(
-                                "protostuff.runtime.collection_schema_on_repeated_fields",
-                                "false"));
+        COLLECTION_SCHEMA_ON_REPEATED_FIELDS = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.collection_schema_on_repeated_fields",
+                "false"));
+        
+        POJO_SCHEMA_ON_COLLECTION_FIELDS = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.pojo_schema_on_collection_fields",
+                "false"));
+        
+        POJO_SCHEMA_ON_MAP_FIELDS = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.pojo_schema_on_map_fields",
+                "false"));
 
         // must be on a sun jre
         USE_SUN_MISC_UNSAFE = OBJECT_CONSTRUCTOR != null
