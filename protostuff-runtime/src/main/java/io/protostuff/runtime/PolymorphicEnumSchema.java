@@ -193,7 +193,7 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema
         if (ID_ENUM_VALUE != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");
 
-        EnumIO.transfer(pipe, input, output, 1, false);
+        EnumIO.transfer(pipe, input, output, 1, false, strategy);
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");

@@ -83,9 +83,9 @@ public abstract class NumericIdStrategy extends IdStrategy
             CID_COLLECTION = 26, CID_MAP = 27,
             CID_POJO = 28, CID_CLASS = 29, CID_DELEGATE = 30;
 
-    protected NumericIdStrategy(IdStrategy primaryGroup, int groupId)
+    protected NumericIdStrategy(int flags, IdStrategy primaryGroup, int groupId)
     {
-        super(primaryGroup, groupId);
+        super(flags, primaryGroup, groupId);
     }
 
     @Override
@@ -350,9 +350,9 @@ public abstract class NumericIdStrategy extends IdStrategy
     {
         public final int id;
 
-        RegisteredDelegate(int id, Delegate<T> delegate)
+        RegisteredDelegate(int id, Delegate<T> delegate, IdStrategy strategy)
         {
-            super(delegate);
+            super(delegate, strategy);
 
             this.id = id;
         }

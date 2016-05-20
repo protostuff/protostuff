@@ -122,7 +122,8 @@ final class RuntimeRepeatedFieldFactory
     private static <T> Field<T> createCollectionEnumV(int number, String name,
             final java.lang.reflect.Field f,
             final MessageFactory messageFactory,
-            final Class<Object> genericType, IdStrategy strategy)
+            final Class<Object> genericType, 
+            final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         return new Field<T>(FieldType.ENUM, number, name, true,
@@ -185,7 +186,7 @@ final class RuntimeRepeatedFieldFactory
             protected void transfer(Pipe pipe, Input input, Output output,
                     boolean repeated) throws IOException
             {
-                EnumIO.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated, strategy);
             }
         };
     }
@@ -484,7 +485,7 @@ final class RuntimeRepeatedFieldFactory
             final Class<?> clazz = f.getType();
             final Morph morph = f.getAnnotation(Morph.class);
             
-            if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS && 
+            if (0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) && 
                     (morph == null || morph.value()))
             {
                 if (!clazz.getName().startsWith("java.util") && 

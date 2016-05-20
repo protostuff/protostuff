@@ -100,7 +100,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 int enumIdMax, int enumIdStart,
                 int pojoIdMax, int pojoIdStart)
         {
-            this(null, 0,
+            this(DEFAULT_FLAGS, null, 0,
                     collectionIdMax, collectionIdStart,
                     mapIdMax, mapIdStart,
                     enumIdMax, enumIdStart,
@@ -108,6 +108,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         }
 
         public Registry(
+                int flags,
                 IdStrategy primaryGroup, int groupId,
                 int collectionIdMax, int collectionIdStart,
                 int mapIdMax, int mapIdStart,
@@ -115,6 +116,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 int pojoIdMax, int pojoIdStart)
         {
             strategy = new IncrementalIdStrategy(
+                    flags, 
                     primaryGroup, groupId,
                     collectionIdMax, collectionIdStart,
                     mapIdMax, mapIdStart,
@@ -197,7 +199,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         " (" + clazz.getName() + ")");
             }
 
-            EnumIO<?> eio = EnumIO.newEnumIO(clazz);
+            EnumIO<?> eio = EnumIO.newEnumIO(clazz, strategy);
             RuntimeEnumIO reio = new RuntimeEnumIO();
             reio.id = id;
             reio.eio = eio;
@@ -289,7 +291,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
                 throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
 
-            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema);
+            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema, strategy);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(schema.typeClass(), wrapper);
@@ -339,7 +341,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         " (" + delegate.typeClass() + ")");
             }
 
-            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate);
+            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate, strategy);
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
@@ -378,7 +380,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             int enumIdMax, int enumIdStart,
             int pojoIdMax, int pojoIdStart)
     {
-        this(null, 0,
+        this(DEFAULT_FLAGS, null, 0,
                 collectionIdMax, collectionIdStart,
                 mapIdMax, mapIdStart,
                 enumIdMax, enumIdStart,
@@ -386,6 +388,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     }
 
     public IncrementalIdStrategy(
+            int flags, 
             IdStrategy primaryGroup, int groupId,
             int collectionIdMax, int collectionIdStart,
             int mapIdMax, int mapIdStart,
@@ -393,7 +396,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             int pojoIdMax, int pojoIdStart)
     // int delegateIdMax, int delegateIdStart)
     {
-        super(primaryGroup, groupId);
+        super(flags, primaryGroup, groupId);
 
         assert collectionIdMax > collectionIdStart;
         assert mapIdMax > mapIdStart;
@@ -476,7 +479,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 reio = existing;
             else
             {
-                reio.eio = EnumIO.newEnumIO(enumClass);
+                reio.eio = EnumIO.newEnumIO(enumClass, this);
                 int id = enumId.getAndIncrement();
                 enums.set(id, reio);
 
@@ -1005,6 +1008,11 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     static abstract class BaseHS<T> extends HasSchema<T>
     {
         volatile int id;
+        
+        protected BaseHS(IdStrategy strategy)
+        {
+            super(strategy);
+        }
     }
 
     static final class Registered<T> extends BaseHS<T>
@@ -1013,8 +1021,10 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         final Schema<T> schema;
         final Pipe.Schema<T> pipeSchema;
 
-        Registered(int id, Schema<T> schema, Pipe.Schema<T> pipeSchema)
+        Registered(int id, Schema<T> schema, Pipe.Schema<T> pipeSchema, 
+                IdStrategy strategy)
         {
+            super(strategy);
             this.id = id;
 
             this.schema = schema;
@@ -1036,15 +1046,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
     static final class Lazy<T> extends BaseHS<T>
     {
-        final IdStrategy strategy;
         final Class<T> typeClass;
         private volatile Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
         Lazy(Class<T> typeClass, IdStrategy strategy)
         {
+            super(strategy);
             this.typeClass = typeClass;
-            this.strategy = strategy;
         }
 
         @Override

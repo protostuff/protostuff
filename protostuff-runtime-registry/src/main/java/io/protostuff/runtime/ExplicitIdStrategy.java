@@ -64,7 +64,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         public Registry()
         {
-            this(null, 0, 10, 10, 10, 10, 10);
+            this(DEFAULT_FLAGS, null, 0, 10, 10, 10, 10, 10);
         }
 
         public Registry(
@@ -74,7 +74,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 int initialPojoSize,
                 int initialDelegateSize)
         {
-            this(null, 0,
+            this(DEFAULT_FLAGS, null, 0,
                     initialCollectionSize,
                     initialMapSize,
                     initialEnumSize,
@@ -83,6 +83,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         }
 
         public Registry(
+                int flags, 
                 IdStrategy primaryGroup, int groupId,
                 int initialCollectionSize,
                 int initialMapSize,
@@ -119,6 +120,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             ArrayList<RegisteredDelegate<?>> delegates = newList(initialDelegateSize + 1);
 
             strategy = new ExplicitIdStrategy(
+                    flags, 
                     primaryGroup, groupId,
                     collectionMapping, collections,
                     mapMapping, maps,
@@ -198,7 +200,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         " (" + clazz.getName() + ")");
             }
 
-            EnumIO<?> eio = EnumIO.newEnumIO(clazz);
+            EnumIO<?> eio = EnumIO.newEnumIO(clazz, strategy);
             RegisteredEnumIO reio = new RegisteredEnumIO(id, eio);
             strategy.enums.set(id, reio);
 
@@ -285,7 +287,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
                 throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
 
-            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema);
+            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema, strategy);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(schema.typeClass(), wrapper);
@@ -335,7 +337,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         " (" + delegate.typeClass() + ")");
             }
 
-            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate);
+            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate, strategy);
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
@@ -377,7 +379,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping,
             ArrayList<RegisteredDelegate<?>> delegates)
     {
-        this(null, 0,
+        this(DEFAULT_FLAGS, null, 0,
                 collectionMapping,
                 collections,
                 mapMapping,
@@ -390,7 +392,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 delegates);
     }
 
-    public ExplicitIdStrategy(
+    public ExplicitIdStrategy(final int flags,
             IdStrategy primaryGroup, int groupId,
             IdentityHashMap<Class<?>, RegisteredCollectionFactory> collectionMapping,
             ArrayList<RegisteredCollectionFactory> collections,
@@ -403,7 +405,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping,
             ArrayList<RegisteredDelegate<?>> delegates)
     {
-        super(primaryGroup, groupId);
+        super(flags, primaryGroup, groupId);
 
         this.collectionMapping = collectionMapping;
         this.collections = collections;
@@ -903,8 +905,9 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
     {
         final int id;
 
-        BaseHS(int id)
+        BaseHS(int id, IdStrategy strategy)
         {
+            super(strategy);
             this.id = id;
         }
     }
@@ -915,9 +918,10 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         final Schema<T> schema;
         final Pipe.Schema<T> pipeSchema;
 
-        Registered(int id, Schema<T> schema, Pipe.Schema<T> pipeSchema)
+        Registered(int id, Schema<T> schema, Pipe.Schema<T> pipeSchema, 
+                IdStrategy strategy)
         {
-            super(id);
+            super(id, strategy);
 
             this.schema = schema;
             this.pipeSchema = pipeSchema;
@@ -938,16 +942,14 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
     static final class Lazy<T> extends BaseHS<T>
     {
-        final IdStrategy strategy;
         final Class<T> typeClass;
         private volatile Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
         Lazy(int id, Class<T> typeClass, IdStrategy strategy)
         {
-            super(id);
+            super(id, strategy);
             this.typeClass = typeClass;
-            this.strategy = strategy;
         }
 
         @Override
