@@ -147,7 +147,7 @@ final class RuntimeCollectionFieldFactory
 
     private static <T> Field<T> createCollectionEnumV(int number, String name,
             final java.lang.reflect.Field f, MessageFactory messageFactory,
-            Class<Object> genericType, IdStrategy strategy)
+            Class<Object> genericType, final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         return new RuntimeCollectionField<T, Enum<?>>(FieldType.ENUM, number,
@@ -215,7 +215,7 @@ final class RuntimeCollectionFieldFactory
             protected void transferValue(Pipe pipe, Input input, Output output,
                     int number, boolean repeated) throws IOException
             {
-                EnumIO.transfer(pipe, input, output, number, repeated);
+                EnumIO.transfer(pipe, input, output, number, repeated, strategy);
             }
         };
     }
@@ -476,7 +476,7 @@ final class RuntimeCollectionFieldFactory
             final Class<?> clazz = f.getType();
             final Morph morph = f.getAnnotation(Morph.class);
             
-            if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS && 
+            if (0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) && 
                     (morph == null || morph.value()))
             {
                 if (!clazz.getName().startsWith("java.util") && 
@@ -498,7 +498,7 @@ final class RuntimeCollectionFieldFactory
                 
                 if (morph == null)
                 {
-                    if (RuntimeEnv.MORPH_COLLECTION_INTERFACES)
+                    if (0 != (IdStrategy.MORPH_COLLECTION_INTERFACES & strategy.flags))
                         return OBJECT.create(number, name, f, strategy);
                 }
                 else if (morph.value())

@@ -268,10 +268,16 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
             return ENUM;
         
         if (Map.class.isAssignableFrom(clazz))
-            return RuntimeEnv.POJO_SCHEMA_ON_MAP_FIELDS ? POJO_MAP : MAP;
+        {
+            return 0 != (IdStrategy.POJO_SCHEMA_ON_MAP_FIELDS & strategy.flags) ? 
+                    POJO_MAP : MAP;
+        }
 
         if (Collection.class.isAssignableFrom(clazz))
-            return RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS ? POJO_COLLECTION : COLLECTION;
+        {
+            return 0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) ? 
+                    POJO_COLLECTION : COLLECTION;
+        }
 
         if (Throwable.class.isAssignableFrom(clazz))
             return THROWABLE;
@@ -323,7 +329,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
             if (rff.id > 0 && rff.id < 15)
             {
                 // scalar
-                return ArraySchemas.getGenericElementSchema(rff.id);
+                return ArraySchemas.getGenericElementSchema(rff.id, strategy);
             }
 
             if (ct.isEnum())

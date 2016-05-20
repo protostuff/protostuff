@@ -14,10 +14,16 @@
 
 package io.protostuff.runtime;
 
-import static io.protostuff.runtime.RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
-import static io.protostuff.runtime.RuntimeEnv.MORPH_NON_FINAL_POJOS;
 import static io.protostuff.runtime.RuntimeEnv.USE_SUN_MISC_UNSAFE;
+import io.protostuff.ByteString;
+import io.protostuff.Input;
+import io.protostuff.Message;
+import io.protostuff.Morph;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.WireFormat.FieldType;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
@@ -29,10 +35,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.protostuff.ByteString;
-import io.protostuff.Message;
-import io.protostuff.Morph;
 
 /**
  * A factory to create runtime {@link Field fields} based on reflection.
@@ -118,7 +120,53 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
     static final RuntimeFieldFactory<Object> POJO;
     static final RuntimeFieldFactory<Object> POLYMORPHIC_POJO;
 
-    static final RuntimeFieldFactory<Collection<?>> COLLECTION;
+    static final RuntimeFieldFactory<Collection<?>> COLLECTION = 
+            new RuntimeFieldFactory<Collection<?>>(ID_COLLECTION)
+    {
+        @Override
+        public <T> Field<T> create(int number, String name, java.lang.reflect.Field field,
+                IdStrategy strategy)
+        {
+            final RuntimeFieldFactory<Collection<?>> factory = 
+                    0 != (IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS & strategy.flags) ? 
+                    RuntimeCollectionFieldFactory.getFactory() :
+                    RuntimeRepeatedFieldFactory.getFactory();
+                    
+            return factory.create(number, name, field, strategy);
+        }
+        
+        @Override
+        public void transfer(Pipe pipe, Input input, Output output, int number,
+                boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Collection<?> readFrom(Input input) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void writeTo(Output output, int number, Collection<?> value,
+                boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public FieldType getFieldType()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            throw new UnsupportedOperationException();
+        }
+    };
 
     static final RuntimeFieldFactory<Object> DELEGATE;
 
@@ -172,10 +220,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
 
             DELEGATE = RuntimeReflectionFieldFactory.DELEGATE;
         }
-
-        COLLECTION = COLLECTION_SCHEMA_ON_REPEATED_FIELDS ? RuntimeCollectionFieldFactory
-                .getFactory() : RuntimeRepeatedFieldFactory.getFactory();
-
+        
         __inlineValues.put(Integer.TYPE.getName(), INT32);
         __inlineValues.put(Integer.class.getName(), INT32);
         __inlineValues.put(Long.TYPE.getName(), INT64);
@@ -285,7 +330,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         if (morph != null)
             return !morph.value();
 
-        return !MORPH_NON_FINAL_POJOS;
+        return 0 == (IdStrategy.MORPH_NON_FINAL_POJOS & strategy.flags);
     }
 
     static Class<?> getGenericType(java.lang.reflect.Field f, int index)

@@ -14,7 +14,6 @@
 
 package io.protostuff.runtime;
 
-import static io.protostuff.runtime.RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGDECIMAL;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BIGINTEGER;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
@@ -28,22 +27,19 @@ import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
+import io.protostuff.ByteString;
+import io.protostuff.GraphInput;
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.ProtostuffException;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
-
-import io.protostuff.ByteString;
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.MapSchema.MapWrapper;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.ProtostuffException;
-import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Built-in array schemas.
@@ -96,72 +92,78 @@ public final class ArraySchemas
         return arrayId - 7;
     }
 
-    static Base getSchema(int id, boolean primitive)
+    static Base getSchema(int id, boolean primitive, IdStrategy strategy)
     {
         switch (id)
         {
             case ID_BOOL:
-                return primitive ? BoolArray.PRIMITIVE : BoolArray.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_BOOL_PRIMITIVE_SCHEMA : strategy.ARRAY_BOOL_BOXED_SCHEMA;
             case ID_CHAR:
-                return primitive ? CharArray.PRIMITIVE : CharArray.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_CHAR_PRIMITIVE_SCHEMA : strategy.ARRAY_CHAR_BOXED_SCHEMA;
             case ID_SHORT:
-                return primitive ? ShortArray.PRIMITIVE : ShortArray.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_SHORT_PRIMITIVE_SCHEMA : strategy.ARRAY_SHORT_BOXED_SCHEMA;
             case ID_INT32:
-                return primitive ? Int32Array.PRIMITIVE : Int32Array.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_INT32_PRIMITIVE_SCHEMA : strategy.ARRAY_INT32_BOXED_SCHEMA;
             case ID_INT64:
-                return primitive ? Int64Array.PRIMITIVE : Int64Array.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_INT64_PRIMITIVE_SCHEMA : strategy.ARRAY_INT64_BOXED_SCHEMA;
             case ID_FLOAT:
-                return primitive ? FloatArray.PRIMITIVE : FloatArray.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_FLOAT_PRIMITIVE_SCHEMA : strategy.ARRAY_FLOAT_BOXED_SCHEMA;
             case ID_DOUBLE:
-                return primitive ? DoubleArray.PRIMITIVE
-                        : DoubleArray.ELEMENT_SCHEMA;
+                return primitive ? 
+                        strategy.ARRAY_DOUBLE_PRIMITIVE_SCHEMA : strategy.ARRAY_DOUBLE_BOXED_SCHEMA;
             case ID_STRING:
-                return StringArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_STRING_SCHEMA;
             case ID_BYTES:
-                return ByteStringArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BYTESTRING_SCHEMA;
             case ID_BYTE_ARRAY:
-                return ByteArrayArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BYTEARRAY_SCHEMA;
             case ID_BIGDECIMAL:
-                return BigDecimalArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BIGDECIMAL_SCHEMA;
             case ID_BIGINTEGER:
-                return BigIntegerArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BIGINTEGER_SCHEMA;
             case ID_DATE:
-                return DateArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_DATE_SCHEMA;
             default:
                 throw new RuntimeException("Should not happen.");
         }
     }
 
-    static Base getGenericElementSchema(int id)
+    static Base getGenericElementSchema(int id, IdStrategy strategy)
     {
         switch (id)
         {
             case ID_BOOL:
-                return BoolArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BOOL_BOXED_SCHEMA;
             case ID_CHAR:
-                return CharArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_CHAR_BOXED_SCHEMA;
             case ID_SHORT:
-                return ShortArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_SHORT_BOXED_SCHEMA;
             case ID_INT32:
-                return Int32Array.ELEMENT_SCHEMA;
+                return strategy.ARRAY_INT32_BOXED_SCHEMA;
             case ID_INT64:
-                return Int64Array.ELEMENT_SCHEMA;
+                return strategy.ARRAY_INT64_BOXED_SCHEMA;
             case ID_FLOAT:
-                return FloatArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_FLOAT_BOXED_SCHEMA;
             case ID_DOUBLE:
-                return DoubleArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_DOUBLE_BOXED_SCHEMA;
             case ID_STRING:
-                return StringArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_STRING_SCHEMA;
             case ID_BYTES:
-                return ByteStringArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BYTESTRING_SCHEMA;
             case ID_BYTE_ARRAY:
-                return ByteArrayArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BYTEARRAY_SCHEMA;
             case ID_BIGDECIMAL:
-                return BigDecimalArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BIGDECIMAL_SCHEMA;
             case ID_BIGINTEGER:
-                return BigIntegerArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_BIGINTEGER_SCHEMA;
             case ID_DATE:
-                return DateArray.ELEMENT_SCHEMA;
+                return strategy.ARRAY_DATE_SCHEMA;
             default:
                 throw new RuntimeException("Should not happen.");
         }
@@ -173,31 +175,31 @@ public final class ArraySchemas
         switch (id)
         {
             case ID_BOOL:
-                return new BoolArray(handler, compontentType.isPrimitive());
+                return new BoolArray(strategy, handler, compontentType.isPrimitive());
             case ID_CHAR:
-                return new CharArray(handler, compontentType.isPrimitive());
+                return new CharArray(strategy, handler, compontentType.isPrimitive());
             case ID_SHORT:
-                return new ShortArray(handler, compontentType.isPrimitive());
+                return new ShortArray(strategy, handler, compontentType.isPrimitive());
             case ID_INT32:
-                return new Int32Array(handler, compontentType.isPrimitive());
+                return new Int32Array(strategy, handler, compontentType.isPrimitive());
             case ID_INT64:
-                return new Int64Array(handler, compontentType.isPrimitive());
+                return new Int64Array(strategy, handler, compontentType.isPrimitive());
             case ID_FLOAT:
-                return new FloatArray(handler, compontentType.isPrimitive());
+                return new FloatArray(strategy, handler, compontentType.isPrimitive());
             case ID_DOUBLE:
-                return new DoubleArray(handler, compontentType.isPrimitive());
+                return new DoubleArray(strategy, handler, compontentType.isPrimitive());
             case ID_STRING:
-                return new StringArray(handler);
+                return new StringArray(strategy, handler);
             case ID_BYTES:
-                return new ByteStringArray(handler);
+                return new ByteStringArray(strategy, handler);
             case ID_BYTE_ARRAY:
-                return new ByteArrayArray(handler);
+                return new ByteArrayArray(strategy, handler);
             case ID_BIGDECIMAL:
-                return new BigDecimalArray(handler);
+                return new BigDecimalArray(strategy, handler);
             case ID_BIGINTEGER:
-                return new BigIntegerArray(handler);
+                return new BigIntegerArray(strategy, handler);
             case ID_DATE:
-                return new DateArray(handler);
+                return new DateArray(strategy, handler);
             default:
                 throw new RuntimeException("Should not happen.");
         }
@@ -272,12 +274,15 @@ public final class ArraySchemas
     public static abstract class Base extends PolymorphicSchema
     {
         protected final Handler handler;
+        protected final boolean allowNullArrayElement;
 
-        public Base(final Handler handler)
+        public Base(IdStrategy strategy, final Handler handler)
         {
-            super(null);
+            super(strategy);
 
             this.handler = handler;
+            
+            allowNullArrayElement = 0 != (IdStrategy.ALLOW_NULL_ARRAY_ELEMENT & strategy.flags);
         }
 
         @Override
@@ -322,22 +327,6 @@ public final class ArraySchemas
 
     public static class BoolArray extends Base
     {
-        public static final BoolArray PRIMITIVE = new BoolArray(null, true);
-
-        public static final BoolArray ELEMENT_SCHEMA = new BoolArray(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -352,9 +341,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        BoolArray(Handler handler, boolean primitive)
+        BoolArray(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -454,7 +443,7 @@ public final class ArraySchemas
 
                     output.writeBool(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -468,22 +457,6 @@ public final class ArraySchemas
 
     public static class CharArray extends Base
     {
-        public static final CharArray PRIMITIVE = new CharArray(null, true);
-
-        public static final CharArray ELEMENT_SCHEMA = new CharArray(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -498,9 +471,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        CharArray(Handler handler, boolean primitive)
+        CharArray(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -600,7 +573,7 @@ public final class ArraySchemas
 
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -614,22 +587,6 @@ public final class ArraySchemas
 
     public static class ShortArray extends Base
     {
-        public static final ShortArray PRIMITIVE = new ShortArray(null, true);
-
-        public static final ShortArray ELEMENT_SCHEMA = new ShortArray(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -644,9 +601,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        ShortArray(Handler handler, boolean primitive)
+        ShortArray(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -746,7 +703,7 @@ public final class ArraySchemas
 
                     output.writeUInt32(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -760,22 +717,6 @@ public final class ArraySchemas
 
     public static class Int32Array extends Base
     {
-        public static final Int32Array PRIMITIVE = new Int32Array(null, true);
-
-        public static final Int32Array ELEMENT_SCHEMA = new Int32Array(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -790,9 +731,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        Int32Array(Handler handler, boolean primitive)
+        Int32Array(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -892,7 +833,7 @@ public final class ArraySchemas
 
                     output.writeInt32(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -906,22 +847,6 @@ public final class ArraySchemas
 
     public static class Int64Array extends Base
     {
-        public static final Int64Array PRIMITIVE = new Int64Array(null, true);
-
-        public static final Int64Array ELEMENT_SCHEMA = new Int64Array(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -936,9 +861,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        Int64Array(Handler handler, boolean primitive)
+        Int64Array(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -1038,7 +963,7 @@ public final class ArraySchemas
 
                     output.writeInt64(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1052,22 +977,6 @@ public final class ArraySchemas
 
     public static class FloatArray extends Base
     {
-        public static final FloatArray PRIMITIVE = new FloatArray(null, true);
-
-        public static final FloatArray ELEMENT_SCHEMA = new FloatArray(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1082,9 +991,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        FloatArray(Handler handler, boolean primitive)
+        FloatArray(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -1184,7 +1093,7 @@ public final class ArraySchemas
 
                     output.writeFloat(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1198,22 +1107,6 @@ public final class ArraySchemas
 
     public static class DoubleArray extends Base
     {
-        public static final DoubleArray PRIMITIVE = new DoubleArray(null, true);
-
-        public static final DoubleArray ELEMENT_SCHEMA = new DoubleArray(null,
-                false)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1228,9 +1121,9 @@ public final class ArraySchemas
 
         final boolean primitive;
 
-        DoubleArray(Handler handler, boolean primitive)
+        DoubleArray(IdStrategy strategy, Handler handler, boolean primitive)
         {
-            super(handler);
+            super(strategy, handler);
             this.primitive = primitive;
         }
 
@@ -1330,7 +1223,7 @@ public final class ArraySchemas
 
                     output.writeDouble(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1344,19 +1237,6 @@ public final class ArraySchemas
 
     public static class StringArray extends Base
     {
-        public static final StringArray ELEMENT_SCHEMA = new StringArray(null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1369,9 +1249,9 @@ public final class ArraySchemas
             }
         };
 
-        StringArray(Handler handler)
+        StringArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1436,7 +1316,7 @@ public final class ArraySchemas
 
                     output.writeString(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1450,20 +1330,6 @@ public final class ArraySchemas
 
     public static class ByteStringArray extends Base
     {
-        public static final ByteStringArray ELEMENT_SCHEMA = new ByteStringArray(
-                null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1476,9 +1342,9 @@ public final class ArraySchemas
             }
         };
 
-        ByteStringArray(Handler handler)
+        ByteStringArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1543,7 +1409,7 @@ public final class ArraySchemas
 
                     output.writeBytes(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1557,20 +1423,6 @@ public final class ArraySchemas
 
     public static class ByteArrayArray extends Base
     {
-        public static final ByteArrayArray ELEMENT_SCHEMA = new ByteArrayArray(
-                null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1583,9 +1435,9 @@ public final class ArraySchemas
             }
         };
 
-        ByteArrayArray(Handler handler)
+        ByteArrayArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1650,7 +1502,7 @@ public final class ArraySchemas
 
                     output.writeByteArray(ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1664,20 +1516,6 @@ public final class ArraySchemas
 
     public static class BigDecimalArray extends Base
     {
-        public static final BigDecimalArray ELEMENT_SCHEMA = new BigDecimalArray(
-                null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1690,9 +1528,9 @@ public final class ArraySchemas
             }
         };
 
-        BigDecimalArray(Handler handler)
+        BigDecimalArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1757,7 +1595,7 @@ public final class ArraySchemas
 
                     output.writeString(ID_ARRAY_DATA, v.toString(), true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1771,20 +1609,6 @@ public final class ArraySchemas
 
     public static class BigIntegerArray extends Base
     {
-        public static final BigIntegerArray ELEMENT_SCHEMA = new BigIntegerArray(
-                null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1797,9 +1621,9 @@ public final class ArraySchemas
             }
         };
 
-        BigIntegerArray(Handler handler)
+        BigIntegerArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1864,7 +1688,7 @@ public final class ArraySchemas
 
                     output.writeByteArray(ID_ARRAY_DATA, v.toByteArray(), true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1878,19 +1702,6 @@ public final class ArraySchemas
 
     public static class DateArray extends Base
     {
-        public static final DateArray ELEMENT_SCHEMA = new DateArray(null)
-        {
-            @Override
-            @SuppressWarnings("unchecked")
-            protected void setValue(Object value, Object owner)
-            {
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-            }
-        };
-
         protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
                 this)
         {
@@ -1903,9 +1714,9 @@ public final class ArraySchemas
             }
         };
 
-        DateArray(Handler handler)
+        DateArray(IdStrategy strategy, Handler handler)
         {
-            super(handler);
+            super(strategy, handler);
         }
 
         @Override
@@ -1970,7 +1781,7 @@ public final class ArraySchemas
 
                     output.writeFixed64(ID_ARRAY_DATA, v.getTime(), true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -1997,9 +1808,9 @@ public final class ArraySchemas
 
         final Delegate<Object> delegate;
 
-        public DelegateArray(Handler handler, Delegate<Object> delegate)
+        public DelegateArray(IdStrategy strategy, Handler handler, Delegate<Object> delegate)
         {
-            super(handler);
+            super(strategy, handler);
             this.delegate = delegate;
         }
 
@@ -2066,7 +1877,7 @@ public final class ArraySchemas
 
                     delegate.writeTo(output, ID_ARRAY_DATA, v, true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -2101,7 +1912,7 @@ public final class ArraySchemas
                     {
                         case ID_ARRAY_DATA:
                             i++;
-                            EnumIO.transfer(pipe, input, output, ID_ARRAY_DATA, true);
+                            EnumIO.transfer(pipe, input, output, ID_ARRAY_DATA, true, eio.strategy);
                             break;
                         case ID_ARRAY_NULLCOUNT:
                             nullCount = input.readUInt32();
@@ -2120,9 +1931,9 @@ public final class ArraySchemas
 
         final EnumIO<?> eio;
 
-        public EnumArray(Handler handler, EnumIO<?> eio)
+        public EnumArray(IdStrategy strategy, Handler handler, EnumIO<?> eio)
         {
-            super(handler);
+            super(strategy, handler);
             this.eio = eio;
         }
 
@@ -2189,7 +2000,7 @@ public final class ArraySchemas
 
                     eio.writeTo(output, ID_ARRAY_DATA, true, v);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }
@@ -2244,9 +2055,9 @@ public final class ArraySchemas
 
         final HasSchema<Object> hs;
 
-        public PojoArray(Handler handler, HasSchema<Object> hs)
+        public PojoArray(IdStrategy strategy, Handler handler, HasSchema<Object> hs)
         {
-            super(handler);
+            super(strategy, handler);
             this.hs = hs;
         }
 
@@ -2313,7 +2124,7 @@ public final class ArraySchemas
 
                     output.writeObject(ID_ARRAY_DATA, v, hs.getSchema(), true);
                 }
-                else if (ALLOW_NULL_ARRAY_ELEMENT)
+                else if (allowNullArrayElement)
                 {
                     nullCount++;
                 }

@@ -14,7 +14,13 @@
 
 package io.protostuff.runtime;
 
-import static io.protostuff.runtime.RuntimeEnv.ENUMS_BY_NAME;
+import io.protostuff.CollectionSchema;
+import io.protostuff.Input;
+import io.protostuff.MapSchema;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.Tag;
+import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -23,14 +29,6 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.protostuff.CollectionSchema;
-import io.protostuff.Input;
-import io.protostuff.MapSchema;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Tag;
-import io.protostuff.runtime.PolymorphicSchema.Handler;
 
 /**
  * Determines how enums are serialized/deserialized. Default is BY_NUMBER. To enable BY_NAME, set the property
@@ -113,9 +111,10 @@ public abstract class EnumIO<E extends Enum<E>> implements
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static EnumIO<? extends Enum<?>> newEnumIO(Class<?> enumClass)
+    static EnumIO<? extends Enum<?>> newEnumIO(Class<?> enumClass, IdStrategy strategy)
     {
-        return ENUMS_BY_NAME ? new ByName(enumClass) : new ByNumber(enumClass);
+        return 0 == (IdStrategy.ENUMS_BY_NAME & strategy.flags) ? 
+                new ByNumber(enumClass, strategy) : new ByName(enumClass, strategy);
     }
 
     /**
@@ -124,26 +123,22 @@ public abstract class EnumIO<E extends Enum<E>> implements
     public void writeTo(Output output, int number, boolean repeated,
             Enum<?> e) throws IOException
     {
-        if (ENUMS_BY_NAME)
-        {
-            output.writeString(number, getAlias(e), repeated);
-        }
-        else
-        {
+        if (0 == (IdStrategy.ENUMS_BY_NAME & strategy.flags))
             output.writeEnum(number, getTag(e), repeated);
-        }
+        else
+            output.writeString(number, getAlias(e), repeated);
     }
 
     /**
      * Transfers the {@link Enum} from the input to the output.
      */
     public static void transfer(Pipe pipe, Input input, Output output,
-            int number, boolean repeated) throws IOException
+            int number, boolean repeated, IdStrategy strategy) throws IOException
     {
-        if (ENUMS_BY_NAME)
-            input.transferByteRangeTo(output, true, number, repeated);
-        else
+        if (0 == (IdStrategy.ENUMS_BY_NAME & strategy.flags))
             output.writeEnum(number, input.readEnum(), repeated);
+        else
+            input.transferByteRangeTo(output, true, number, repeated);
     }
 
     private static <E extends Enum<E>> CollectionSchema.MessageFactory newEnumSetFactory(
@@ -190,21 +185,24 @@ public abstract class EnumIO<E extends Enum<E>> implements
      * The enum class.
      */
     public final Class<E> enumClass;
+    public final IdStrategy strategy;
+    public final ArraySchemas.Base genericElementSchema;
+    
     private volatile CollectionSchema.MessageFactory enumSetFactory;
     private volatile MapSchema.MessageFactory enumMapFactory;
-
-    final ArraySchemas.Base genericElementSchema = new ArraySchemas.EnumArray(
-            null, this);
-
+    
     private final String[] alias;
     private final int[] tag;
 
     private final Map<String, E> valueByAliasMap;
     private final Map<Integer, E> valueByTagMap;
 
-    public EnumIO(Class<E> enumClass)
+    public EnumIO(Class<E> enumClass, IdStrategy strategy)
     {
         this.enumClass = enumClass;
+        this.strategy = strategy;
+        genericElementSchema = new ArraySchemas.EnumArray(strategy, null, this);
+        
         Field[] fields = enumClass.getFields();
         int n = fields.length;
         alias = new String[n];
@@ -244,7 +242,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
     public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy,
             Handler handler)
     {
-        return new ArraySchemas.EnumArray(handler, this);
+        return new ArraySchemas.EnumArray(strategy, handler, this);
     }
 
     public int getTag(Enum<?> element)
@@ -327,9 +325,9 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public static final class ByName<E extends Enum<E>> extends EnumIO<E>
     {
-        public ByName(Class<E> enumClass)
+        public ByName(Class<E> enumClass, IdStrategy strategy)
         {
-            super(enumClass);
+            super(enumClass, strategy);
         }
 
         @Override
@@ -345,9 +343,9 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public static final class ByNumber<E extends Enum<E>> extends EnumIO<E>
     {
-        public ByNumber(Class<E> enumClass)
+        public ByNumber(Class<E> enumClass, IdStrategy strategy)
         {
-            super(enumClass);
+            super(enumClass, strategy);
         }
 
         @Override

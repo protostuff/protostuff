@@ -45,12 +45,17 @@ public final class DefaultIdStrategy extends IdStrategy
 
     public DefaultIdStrategy()
     {
-        super(null, 0);
+        super(DEFAULT_FLAGS, null, 0);
     }
 
     public DefaultIdStrategy(IdStrategy primaryGroup, int groupId)
     {
-        super(primaryGroup, groupId);
+        super(DEFAULT_FLAGS, primaryGroup, groupId);
+    }
+    
+    public DefaultIdStrategy(int flags, IdStrategy primaryGroup, int groupId)
+    {
+        super(flags, primaryGroup, groupId);
     }
 
     /**
@@ -62,7 +67,7 @@ public final class DefaultIdStrategy extends IdStrategy
         assert typeClass != null && schema != null;
 
         final HasSchema<?> last = pojoMapping.putIfAbsent(typeClass.getName(),
-                new Registered<>(schema));
+                new Registered<>(schema, this));
 
         return last == null
                 || (last instanceof Registered<?> && ((Registered<?>) last).schema == schema);
@@ -88,7 +93,7 @@ public final class DefaultIdStrategy extends IdStrategy
     public <T extends Enum<T>> boolean registerEnum(Class<T> enumClass)
     {
         return null == enumMapping.putIfAbsent(enumClass.getName(),
-                EnumIO.newEnumIO(enumClass));
+                EnumIO.newEnumIO(enumClass, this));
     }
 
     /**
@@ -97,7 +102,7 @@ public final class DefaultIdStrategy extends IdStrategy
     public <T> boolean registerDelegate(Delegate<T> delegate)
     {
         return null == delegateMapping.putIfAbsent(delegate.typeClass()
-                .getName(), new HasDelegate<>(delegate));
+                .getName(), new HasDelegate<>(delegate, this));
     }
 
     /**
@@ -216,7 +221,7 @@ public final class DefaultIdStrategy extends IdStrategy
 
             final Class<?> enumClass = RuntimeEnv.loadClass(className);
 
-            eio = EnumIO.newEnumIO(enumClass);
+            eio = EnumIO.newEnumIO(enumClass, this);
 
             final EnumIO<?> existing = enumMapping.putIfAbsent(
                     enumClass.getName(), eio);
@@ -233,7 +238,7 @@ public final class DefaultIdStrategy extends IdStrategy
         EnumIO<?> eio = enumMapping.get(enumClass.getName());
         if (eio == null)
         {
-            eio = EnumIO.newEnumIO(enumClass);
+            eio = EnumIO.newEnumIO(enumClass, this);
 
             final EnumIO<?> existing = enumMapping.putIfAbsent(
                     enumClass.getName(), eio);
@@ -498,7 +503,7 @@ public final class DefaultIdStrategy extends IdStrategy
         final String className = input.readString();
 
         final HasSchema<T> wrapper = getSchemaWrapper(className,
-                RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                0 != (AUTO_LOAD_POLYMORPHIC_CLASSES & flags));
         if (wrapper == null)
         {
             throw new ProtostuffException("polymorphic pojo not registered: "
@@ -517,7 +522,7 @@ public final class DefaultIdStrategy extends IdStrategy
         final String className = input.readString();
 
         final HasSchema<T> wrapper = getSchemaWrapper(className,
-                RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES);
+                0 != (AUTO_LOAD_POLYMORPHIC_CLASSES & flags));
         if (wrapper == null)
             throw new ProtostuffException("polymorphic pojo not registered: "
                     + className);
@@ -670,15 +675,14 @@ public final class DefaultIdStrategy extends IdStrategy
     
     static final class Lazy<T> extends HasSchema<T>
     {
-        final IdStrategy strategy;
         final Class<T> typeClass;
         private volatile Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
         Lazy(Class<T> typeClass, IdStrategy strategy)
         {
+            super(strategy);
             this.typeClass = typeClass;
-            this.strategy = strategy;
         }
 
         @Override
@@ -733,7 +737,6 @@ public final class DefaultIdStrategy extends IdStrategy
     static final class Mapped<T> extends HasSchema<T>
     {
 
-        final IdStrategy strategy;
         final Class<? super T> baseClass;
         final Class<T> typeClass;
         private volatile HasSchema<T> wrapper;
@@ -741,9 +744,9 @@ public final class DefaultIdStrategy extends IdStrategy
         Mapped(Class<? super T> baseClass, Class<T> typeClass,
                 IdStrategy strategy)
         {
+            super(strategy);
             this.baseClass = baseClass;
             this.typeClass = typeClass;
-            this.strategy = strategy;
         }
 
         @Override
@@ -788,15 +791,14 @@ public final class DefaultIdStrategy extends IdStrategy
     
     static final class LazyRegister<T> extends HasSchema<T>
     {
-        final IdStrategy strategy;
         final Class<T> typeClass;
         private volatile Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
         LazyRegister(Class<T> typeClass, IdStrategy strategy)
         {
+            super(strategy);
             this.typeClass = typeClass;
-            this.strategy = strategy;
         }
 
         @Override
@@ -843,8 +845,9 @@ public final class DefaultIdStrategy extends IdStrategy
         final Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
-        Registered(Schema<T> schema)
+        Registered(Schema<T> schema, IdStrategy strategy)
         {
+            super(strategy);
             this.schema = schema;
         }
 

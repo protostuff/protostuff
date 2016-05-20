@@ -947,7 +947,8 @@ public final class RuntimeUnsafeFieldFactory
     {
         @Override
         public <T> Field<T> create(int number, java.lang.String name,
-                final java.lang.reflect.Field f, IdStrategy strategy)
+                final java.lang.reflect.Field f, 
+                final IdStrategy strategy)
         {
             final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f
                     .getType());
@@ -976,7 +977,7 @@ public final class RuntimeUnsafeFieldFactory
                 public void transfer(Pipe pipe, Input input, Output output,
                         boolean repeated) throws IOException
                 {
-                    EnumIO.transfer(pipe, input, output, number, repeated);
+                    EnumIO.transfer(pipe, input, output, number, repeated, strategy);
                 }
             };
         }

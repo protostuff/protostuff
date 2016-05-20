@@ -26,15 +26,17 @@ public class HasDelegate<T> implements PolymorphicSchema.Factory
 {
 
     public final Delegate<T> delegate;
+    public final IdStrategy strategy;
 
     public final ArraySchemas.Base genericElementSchema;
 
     @SuppressWarnings("unchecked")
-    public HasDelegate(Delegate<T> delegate)
+    public HasDelegate(Delegate<T> delegate, IdStrategy strategy)
     {
         this.delegate = delegate;
+        this.strategy = strategy;
 
-        genericElementSchema = new ArraySchemas.DelegateArray(null,
+        genericElementSchema = new ArraySchemas.DelegateArray(strategy, null,
                 (Delegate<Object>) delegate);
     }
 
@@ -51,7 +53,7 @@ public class HasDelegate<T> implements PolymorphicSchema.Factory
     public final PolymorphicSchema newSchema(Class<?> typeClass,
             IdStrategy strategy, Handler handler)
     {
-        return new ArraySchemas.DelegateArray(handler,
+        return new ArraySchemas.DelegateArray(strategy, handler,
                 (Delegate<Object>) delegate);
     }
 
