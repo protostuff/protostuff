@@ -201,7 +201,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
     {
         this.enumClass = enumClass;
         this.strategy = strategy;
-        genericElementSchema= new ArraySchemas.EnumArray(strategy, null, this);
+        genericElementSchema = new ArraySchemas.EnumArray(strategy, null, this);
         
         Field[] fields = enumClass.getFields();
         int n = fields.length;
