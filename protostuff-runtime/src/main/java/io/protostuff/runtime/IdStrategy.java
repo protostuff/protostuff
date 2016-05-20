@@ -101,9 +101,9 @@ public abstract class IdStrategy
                     + "(standalone) must have a groupId of zero.");
         }
 
+        this.flags = flags;
         this.primaryGroup = primaryGroup;
         this.groupId = groupId;
-        this.flags = flags;
     }
     
     /**
