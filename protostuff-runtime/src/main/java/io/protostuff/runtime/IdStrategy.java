@@ -112,24 +112,20 @@ public abstract class IdStrategy
      */
     protected <T> Schema<T> newSchema(Class<T> typeClass)
     {
-        return newSchema(typeClass, false);
-    }
-
-    /**
-     * Generates a schema from the given class. If this strategy is part of a group, the existing fields of that group's
-     * schema will be re-used.
-     */
-    protected <T> Schema<T> newSchema(Class<T> typeClass, boolean registered)
-    {
-        final Schema<T> s = registered || primaryGroup == null ? 
-                RuntimeSchema.createFrom(typeClass, this) : 
-                primaryGroup.getSchemaWrapper(typeClass, true).getSchema();
+        if (primaryGroup == null)
+            return RuntimeSchema.createFrom(typeClass, this);
+        
+        final Schema<T> s = primaryGroup.getSchemaWrapper(typeClass, true).getSchema();
         
         // only pojos created by runtime schema support groups
         if (!(s instanceof RuntimeSchema))
             return s;
         
         final RuntimeSchema<T> rs = (RuntimeSchema<T>) s;
+        
+        // check if we need to filter
+        if (rs.getFieldCount() == 0)
+            return rs;
         
         final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
         
@@ -160,14 +156,15 @@ public abstract class IdStrategy
             fields.add(f);
         }
         
-        final int size = fields.size();
-        if (size == 0 && primaryGroup != null)
+        // The behavior has been changed to always allow messages with zero fields
+        // regardless if it has a primary group or not.
+        /*if (fields.size() == 0)
         {
             throw new RuntimeException("All fields were excluded for "
                     + rs.messageFullName() + " on group " + groupId);
-        }
+        }*/
         
-        return size == rs.getFieldCount() ? rs : 
+        return fields.size() == rs.getFieldCount() ? rs : 
                 new RuntimeSchema<>(typeClass, fields, rs.instantiator);
     }
 
