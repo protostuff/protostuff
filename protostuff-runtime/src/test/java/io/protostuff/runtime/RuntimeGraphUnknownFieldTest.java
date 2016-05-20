@@ -60,6 +60,8 @@ public class RuntimeGraphUnknownFieldTest extends AbstractTest
 
             @Tag(102)
             ClassB a2;
+            
+            ClassA() {}
 
             public ClassA(ClassB a2)
             {
@@ -102,6 +104,11 @@ public class RuntimeGraphUnknownFieldTest extends AbstractTest
             @Tag(102)
             ClassB a2;
 
+            ClassA()
+            {
+                super(null);
+            }
+            
             public ClassA(ClassB a2)
             {
                 super(a2);
