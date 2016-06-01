@@ -23,6 +23,14 @@ public class JsonUnknownFieldTest
             + "\"field2\":\"testValue\""
             + "}";
 
+    public static final String UNKNOWN_ARRAY_FIELD = "{"
+            + "\"field1\":42,"
+            + "\"unknownField\":["
+            + "{\"x\":1}, "
+            + "{\"x\":1, \"y\": [1,2,3]}],"
+            + "\"field2\":\"testValue\""
+            + "}";
+
     public static final String UNKNOWN_EMPTY_MESSAGE_FIELD = "{"
             + "\"field1\":42,"
             + "\"unknownField\":{},"
@@ -71,6 +79,13 @@ public class JsonUnknownFieldTest
     }
 
     @Test
+    public void unknownArrayField() throws Exception
+    {
+        JsonIOUtil.mergeFrom(UNKNOWN_ARRAY_FIELD.getBytes(), instance, SCHEMA, false);
+        checkKnownFields(instance);
+    }
+
+    @Test
     public void unknownEmptyMessageField() throws Exception
     {
         JsonIOUtil.mergeFrom(UNKNOWN_EMPTY_MESSAGE_FIELD.getBytes(), instance, SCHEMA, false);
@@ -86,8 +101,8 @@ public class JsonUnknownFieldTest
 
     private void checkKnownFields(TestMessage instance)
     {
-        Assert.assertEquals(instance.field1, 42);
-        Assert.assertEquals(instance.field2, "testValue");
+        Assert.assertEquals(42, instance.field1);
+        Assert.assertEquals("testValue", instance.field2);
     }
 
     static class TestMessage
