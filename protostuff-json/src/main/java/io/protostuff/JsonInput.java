@@ -117,7 +117,7 @@ public final class JsonInput implements Input
         }
         else
         {
-            skipObjectField(parser);
+            skipField(parser);
         }
     }
 
@@ -166,42 +166,48 @@ public final class JsonInput implements Input
             final String name = parser.getCurrentName();
 
             // move to the next token
-            if (parser.nextToken() == START_ARRAY)
+            parser.nextToken();
+
+            // skip null value
+            if (parser.getCurrentToken() == VALUE_NULL)
+            {
+                continue;
+            }
+
+            int number = numeric ? Integer.parseInt(name) : schema.getFieldNumber(name);
+
+            if (number == 0)
+            {
+                // we can skip this unknown field
+                if (!parser.getCurrentToken().isScalarValue())
+                {
+                    skipField(parser);
+                }
+                continue;
+            }
+
+            if (parser.getCurrentToken() == START_ARRAY)
             {
                 JsonToken jt = parser.nextToken();
 
                 // if empty array, read the next field
                 if (jt == END_ARRAY)
+                {
                     continue;
+                }
 
                 if (jt == VALUE_NULL)
                 {
                     // skip null elements
+                    //noinspection StatementWithEmptyBody
                     while (VALUE_NULL == (jt = parser.nextToken()))
                         ;
 
                     // all elements were null.
                     if (jt == END_ARRAY)
+                    {
                         continue;
-                }
-
-                final int number = numeric ? Integer.parseInt(name) :
-                        schema.getFieldNumber(name);
-
-                if (number == 0)
-                {
-                    // unknown field
-                    if (parser.getCurrentToken().isScalarValue())
-                    {
-                        // skip the scalar elements
-                        while (parser.nextToken() != END_ARRAY)
-                            ;
                     }
-                    else
-                    {
-                        skipObjectField(parser);
-                    }
-                    continue;
                 }
 
                 lastRepeated = true;
@@ -209,23 +215,6 @@ public final class JsonInput implements Input
                 lastNumber = number;
 
                 return number;
-            }
-
-            // skip null value
-            if (parser.getCurrentToken() == VALUE_NULL)
-                continue;
-
-            final int number = numeric ? Integer.parseInt(name) :
-                    schema.getFieldNumber(name);
-
-            if (number == 0)
-            {
-                // we can skip this unknown field
-                if (!parser.getCurrentToken().isScalarValue())
-                {
-                    skipObjectField(parser);
-                }
-                continue;
             }
 
             lastName = name;
@@ -478,19 +467,19 @@ public final class JsonInput implements Input
     }
 
     /**
-     * Skip through the entire objct field and all nested objects inside it
+     * Skip through the entire object/array field and all nested objects/arrays inside it
      */
-    private void skipObjectField(JsonParser parser) throws IOException
+    private void skipField(JsonParser parser) throws IOException
     {
-        int nestedObjects = 0;
-        while (parser.nextToken() != END_OBJECT || nestedObjects > 0)
+        int nestedObjects = 1; // we already parsed first '{' or '['
+        while (nestedObjects > 0 && parser.nextToken() != null)
         {
             JsonToken token = parser.getCurrentToken();
-            if (token == START_OBJECT)
+            if (token == START_OBJECT || token == START_ARRAY)
             {
                 nestedObjects++;
             }
-            else if (token == END_OBJECT)
+            else if (token == END_OBJECT || token == END_ARRAY)
             {
                 nestedObjects--;
             }
