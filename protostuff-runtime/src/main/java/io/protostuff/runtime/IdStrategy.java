@@ -1570,7 +1570,7 @@ public abstract class IdStrategy
     final ArraySchemas.DoubleArray ARRAY_DOUBLE_PRIMITIVE_SCHEMA = 
             new ArraySchemas.DoubleArray(this, null, true);
     final ArraySchemas.DoubleArray ARRAY_DOUBLE_BOXED_SCHEMA = 
-            new ArraySchemas.DoubleArray(this, null, true);
+            new ArraySchemas.DoubleArray(this, null, false);
     final ArraySchemas.DoubleArray ARRAY_DOUBLE_DERIVED_SCHEMA = 
             new ArraySchemas.DoubleArray(this, null, false)
     {
