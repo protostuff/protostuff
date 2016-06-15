@@ -249,6 +249,8 @@ public final class ArraySchemas
         // write it back
         output.writeInt32(ID_ARRAY_LEN, len, false);
         
+        // if from derived schema and the array is boxed, the length written
+        // during serialization is: -(len + 1)
         if (len < 0)
             len = -len - 1;
 
