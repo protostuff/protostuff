@@ -1300,8 +1300,37 @@ public abstract class IdStrategy
     final ArraySchemas.BoolArray ARRAY_BOOL_PRIMITIVE_SCHEMA = 
             new ArraySchemas.BoolArray(this, null, true);
     final ArraySchemas.BoolArray ARRAY_BOOL_BOXED_SCHEMA = 
+            new ArraySchemas.BoolArray(this, null, false);
+    final ArraySchemas.BoolArray ARRAY_BOOL_DERIVED_SCHEMA = 
             new ArraySchemas.BoolArray(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1316,8 +1345,37 @@ public abstract class IdStrategy
     final ArraySchemas.CharArray ARRAY_CHAR_PRIMITIVE_SCHEMA = 
             new ArraySchemas.CharArray(this, null, true);
     final ArraySchemas.CharArray ARRAY_CHAR_BOXED_SCHEMA = 
+            new ArraySchemas.CharArray(this, null, false);
+    final ArraySchemas.CharArray ARRAY_CHAR_DERIVED_SCHEMA = 
             new ArraySchemas.CharArray(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1332,8 +1390,37 @@ public abstract class IdStrategy
     final ArraySchemas.ShortArray ARRAY_SHORT_PRIMITIVE_SCHEMA = 
             new ArraySchemas.ShortArray(this, null, true);
     final ArraySchemas.ShortArray ARRAY_SHORT_BOXED_SCHEMA = 
+            new ArraySchemas.ShortArray(this, null, false);
+    final ArraySchemas.ShortArray ARRAY_SHORT_DERIVED_SCHEMA = 
             new ArraySchemas.ShortArray(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1348,8 +1435,37 @@ public abstract class IdStrategy
     final ArraySchemas.Int32Array ARRAY_INT32_PRIMITIVE_SCHEMA = 
             new ArraySchemas.Int32Array(this, null, true);
     final ArraySchemas.Int32Array ARRAY_INT32_BOXED_SCHEMA = 
+            new ArraySchemas.Int32Array(this, null, false);
+    final ArraySchemas.Int32Array ARRAY_INT32_DERIVED_SCHEMA = 
             new ArraySchemas.Int32Array(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1364,8 +1480,37 @@ public abstract class IdStrategy
     final ArraySchemas.Int64Array ARRAY_INT64_PRIMITIVE_SCHEMA = 
             new ArraySchemas.Int64Array(this, null, true);
     final ArraySchemas.Int64Array ARRAY_INT64_BOXED_SCHEMA = 
+            new ArraySchemas.Int64Array(this, null, false);
+    final ArraySchemas.Int64Array ARRAY_INT64_DERIVED_SCHEMA = 
             new ArraySchemas.Int64Array(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1380,8 +1525,37 @@ public abstract class IdStrategy
     final ArraySchemas.FloatArray ARRAY_FLOAT_PRIMITIVE_SCHEMA = 
             new ArraySchemas.FloatArray(this, null, true);
     final ArraySchemas.FloatArray ARRAY_FLOAT_BOXED_SCHEMA = 
+            new ArraySchemas.FloatArray(this, null, false);
+    final ArraySchemas.FloatArray ARRAY_FLOAT_DERIVED_SCHEMA = 
             new ArraySchemas.FloatArray(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)
@@ -1396,8 +1570,37 @@ public abstract class IdStrategy
     final ArraySchemas.DoubleArray ARRAY_DOUBLE_PRIMITIVE_SCHEMA = 
             new ArraySchemas.DoubleArray(this, null, true);
     final ArraySchemas.DoubleArray ARRAY_DOUBLE_BOXED_SCHEMA = 
+            new ArraySchemas.DoubleArray(this, null, true);
+    final ArraySchemas.DoubleArray ARRAY_DOUBLE_DERIVED_SCHEMA = 
             new ArraySchemas.DoubleArray(this, null, false)
     {
+        @Override
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ArraySchemas.ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+            
+            int len = input.readInt32();
+            return len >= 0 ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, -len - 1);
+        }
+
+        @Override
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            if (primitive)
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, len, false);
+            else
+                output.writeInt32(ArraySchemas.ID_ARRAY_LEN, -(len + 1), false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, value.getClass().getComponentType().isPrimitive());
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object value, Object owner)

@@ -18,10 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 import io.protostuff.AbstractTest;
 import io.protostuff.ByteString;
@@ -501,6 +504,544 @@ public abstract class NullArrayElementTest extends AbstractTest
         assertEquals(p, pFromByteArray);
 
         PojoWithNonPrimitiveArrays pFromStream = schema.newMessage();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public static final class PojoWithArrayInList
+    {
+        ArrayList<Boolean[]> boolArrayList = new ArrayList<>();
+        ArrayList<Character[]> charArrayList = new ArrayList<>();
+        ArrayList<Short[]> shortArrayList = new ArrayList<>();
+        ArrayList<Integer[]> intArrayList = new ArrayList<>();
+        ArrayList<Long[]> longArrayList = new ArrayList<>();
+        ArrayList<Float[]> floatArrayList = new ArrayList<>();
+        ArrayList<Double[]> doubleArrayList = new ArrayList<>();
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((boolArrayList == null) ? 0 : boolArrayList.hashCode());
+            result = prime * result + ((charArrayList == null) ? 0 : charArrayList.hashCode());
+            result = prime * result + ((doubleArrayList == null) ? 0 : doubleArrayList.hashCode());
+            result = prime * result + ((floatArrayList == null) ? 0 : floatArrayList.hashCode());
+            result = prime * result + ((intArrayList == null) ? 0 : intArrayList.hashCode());
+            result = prime * result + ((longArrayList == null) ? 0 : longArrayList.hashCode());
+            result = prime * result + ((shortArrayList == null) ? 0 : shortArrayList.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithArrayInList other = (PojoWithArrayInList)obj;
+            if (boolArrayList == null)
+            {
+                if (other.boolArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(boolArrayList.get(0)).equals(Arrays.asList(other.boolArrayList.get(0))))
+                return false;
+            if (charArrayList == null)
+            {
+                if (other.charArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(charArrayList.get(0)).equals(Arrays.asList(other.charArrayList.get(0))))
+                return false;
+            if (doubleArrayList == null)
+            {
+                if (other.doubleArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(doubleArrayList.get(0)).equals(Arrays.asList(other.doubleArrayList.get(0))))
+                return false;
+            if (floatArrayList == null)
+            {
+                if (other.floatArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(floatArrayList.get(0)).equals(Arrays.asList(other.floatArrayList.get(0))))
+                return false;
+            if (intArrayList == null)
+            {
+                if (other.intArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(intArrayList.get(0)).equals(Arrays.asList(other.intArrayList.get(0))))
+                return false;
+            if (longArrayList == null)
+            {
+                if (other.longArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(longArrayList.get(0)).equals(Arrays.asList(other.longArrayList.get(0))))
+                return false;
+            if (shortArrayList == null)
+            {
+                if (other.shortArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.asList(shortArrayList.get(0)).equals(Arrays.asList(other.shortArrayList.get(0))))
+                return false;
+            return true;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "PojoWithArrayInList " +
+            		"[boolArrayList=" + Arrays.asList(boolArrayList.get(0)) + 
+            		", charArrayList=" + Arrays.asList(charArrayList.get(0)) + 
+            		", shortArrayList=" + Arrays.asList(shortArrayList.get(0)) + 
+            		", intArrayList=" + Arrays.asList(intArrayList.get(0)) + 
+                    ", longArrayList=" + Arrays.asList(longArrayList.get(0)) + 
+                    ", floatArrayList=" + Arrays.asList(floatArrayList.get(0)) + 
+                    ", doubleArrayList=" + Arrays.asList(doubleArrayList.get(0)) + "]";
+        }
+    }
+    
+    public void testArrayInList() throws IOException
+    {
+        Schema<PojoWithArrayInList> schema =
+                RuntimeSchema.getSchema(PojoWithArrayInList.class);
+
+        Pipe.Schema<PojoWithArrayInList> pipeSchema =
+                ((RuntimeSchema<PojoWithArrayInList>) schema).getPipeSchema();
+
+        PojoWithArrayInList p = new PojoWithArrayInList();
+        p.boolArrayList.add(new Boolean[] { true, false });
+        p.charArrayList.add(new Character[] { 'a', 'b' });
+        p.shortArrayList.add(new Short[] { 1, 2 });
+        p.intArrayList.add(new Integer[] { 1, 2 });
+        p.longArrayList.add(new Long[] { 1l, 2l });
+        p.floatArrayList.add(new Float[] { 1.1f, 2.2f });
+        p.doubleArrayList.add(new Double[] { 1.1d, 2.2d });
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithArrayInList pFromByteArray = schema.newMessage();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithArrayInList pFromStream = schema.newMessage();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public static final class PojoWithArrayPrimitiveInList
+    {
+        ArrayList<boolean[]> boolArrayList = new ArrayList<>();
+        ArrayList<char[]> charArrayList = new ArrayList<>();
+        ArrayList<short[]> shortArrayList = new ArrayList<>();
+        ArrayList<int[]> intArrayList = new ArrayList<>();
+        ArrayList<long[]> longArrayList = new ArrayList<>();
+        ArrayList<float[]> floatArrayList = new ArrayList<>();
+        ArrayList<double[]> doubleArrayList = new ArrayList<>();
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((boolArrayList == null) ? 0 : boolArrayList.hashCode());
+            result = prime * result + ((charArrayList == null) ? 0 : charArrayList.hashCode());
+            result = prime * result + ((doubleArrayList == null) ? 0 : doubleArrayList.hashCode());
+            result = prime * result + ((floatArrayList == null) ? 0 : floatArrayList.hashCode());
+            result = prime * result + ((intArrayList == null) ? 0 : intArrayList.hashCode());
+            result = prime * result + ((longArrayList == null) ? 0 : longArrayList.hashCode());
+            result = prime * result + ((shortArrayList == null) ? 0 : shortArrayList.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithArrayPrimitiveInList other = (PojoWithArrayPrimitiveInList)obj;
+            if (boolArrayList == null)
+            {
+                if (other.boolArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(boolArrayList.get(0), other.boolArrayList.get(0)))
+                return false;
+            if (charArrayList == null)
+            {
+                if (other.charArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(charArrayList.get(0), other.charArrayList.get(0)))
+                return false;
+            if (doubleArrayList == null)
+            {
+                if (other.doubleArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(doubleArrayList.get(0), other.doubleArrayList.get(0)))
+                return false;
+            if (floatArrayList == null)
+            {
+                if (other.floatArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(floatArrayList.get(0), other.floatArrayList.get(0)))
+                return false;
+            if (intArrayList == null)
+            {
+                if (other.intArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(intArrayList.get(0), other.intArrayList.get(0)))
+                return false;
+            if (longArrayList == null)
+            {
+                if (other.longArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(longArrayList.get(0), other.longArrayList.get(0)))
+                return false;
+            if (shortArrayList == null)
+            {
+                if (other.shortArrayList != null)
+                    return false;
+            }
+            else if (!Arrays.equals(shortArrayList.get(0), other.shortArrayList.get(0)))
+                return false;
+            return true;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "PojoWithArrayPrimitiveInList " +
+                    "[boolArrayList=" + Arrays.asList(boolArrayList.get(0)) + 
+                    ", charArrayList=" + Arrays.asList(charArrayList.get(0)) + 
+                    ", shortArrayList=" + Arrays.asList(shortArrayList.get(0)) + 
+                    ", intArrayList=" + Arrays.asList(intArrayList.get(0)) + 
+                    ", longArrayList=" + Arrays.asList(longArrayList.get(0)) + 
+                    ", floatArrayList=" + Arrays.asList(floatArrayList.get(0)) + 
+                    ", doubleArrayList=" + Arrays.asList(doubleArrayList.get(0)) + "]";
+        }
+    }
+    
+    public void testArrayPrimitiveInList() throws IOException
+    {
+        Schema<PojoWithArrayPrimitiveInList> schema =
+                RuntimeSchema.getSchema(PojoWithArrayPrimitiveInList.class);
+
+        Pipe.Schema<PojoWithArrayPrimitiveInList> pipeSchema =
+                ((RuntimeSchema<PojoWithArrayPrimitiveInList>) schema).getPipeSchema();
+
+        PojoWithArrayPrimitiveInList p = new PojoWithArrayPrimitiveInList();
+        p.boolArrayList.add(new boolean[] { true, false });
+        p.charArrayList.add(new char[] { 'a', 'b' });
+        p.shortArrayList.add(new short[] { 1, 2 });
+        p.intArrayList.add(new int[] { 1, 2 });
+        p.longArrayList.add(new long[] { 1l, 2l });
+        p.floatArrayList.add(new float[] { 1.1f, 2.2f });
+        p.doubleArrayList.add(new double[] { 1.1d, 2.2d });
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithArrayPrimitiveInList pFromByteArray = schema.newMessage();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithArrayPrimitiveInList pFromStream = schema.newMessage();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public static final class PojoWithArrayInMap
+    {
+        HashMap<Integer,Boolean[]> boolHashMap = new HashMap<>();
+        HashMap<Integer,Character[]> charHashMap = new HashMap<>();
+        HashMap<Integer,Short[]> shortHashMap = new HashMap<>();
+        HashMap<Integer,Integer[]> intHashMap = new HashMap<>();
+        HashMap<Integer,Long[]> longHashMap = new HashMap<>();
+        HashMap<Integer,Float[]> floatHashMap = new HashMap<>();
+        HashMap<Integer,Double[]> doubleHashMap = new HashMap<>();
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((boolHashMap == null) ? 0 : boolHashMap.hashCode());
+            result = prime * result + ((charHashMap == null) ? 0 : charHashMap.hashCode());
+            result = prime * result + ((doubleHashMap == null) ? 0 : doubleHashMap.hashCode());
+            result = prime * result + ((floatHashMap == null) ? 0 : floatHashMap.hashCode());
+            result = prime * result + ((intHashMap == null) ? 0 : intHashMap.hashCode());
+            result = prime * result + ((longHashMap == null) ? 0 : longHashMap.hashCode());
+            result = prime * result + ((shortHashMap == null) ? 0 : shortHashMap.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithArrayInMap other = (PojoWithArrayInMap)obj;
+            if (boolHashMap == null)
+            {
+                if (other.boolHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(boolHashMap.get(0)).equals(Arrays.asList(other.boolHashMap.get(0))))
+                return false;
+            if (charHashMap == null)
+            {
+                if (other.charHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(charHashMap.get(0)).equals(Arrays.asList(other.charHashMap.get(0))))
+                return false;
+            if (doubleHashMap == null)
+            {
+                if (other.doubleHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(doubleHashMap.get(0)).equals(Arrays.asList(other.doubleHashMap.get(0))))
+                return false;
+            if (floatHashMap == null)
+            {
+                if (other.floatHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(floatHashMap.get(0)).equals(Arrays.asList(other.floatHashMap.get(0))))
+                return false;
+            if (intHashMap == null)
+            {
+                if (other.intHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(intHashMap.get(0)).equals(Arrays.asList(other.intHashMap.get(0))))
+                return false;
+            if (longHashMap == null)
+            {
+                if (other.longHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(longHashMap.get(0)).equals(Arrays.asList(other.longHashMap.get(0))))
+                return false;
+            if (shortHashMap == null)
+            {
+                if (other.shortHashMap != null)
+                    return false;
+            }
+            else if (!Arrays.asList(shortHashMap.get(0)).equals(Arrays.asList(other.shortHashMap.get(0))))
+                return false;
+            return true;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "PojoWithArrayInMap " +
+                    "[boolHashMap=" + Arrays.asList(boolHashMap.get(0)) + 
+                    ", charHashMap=" + Arrays.asList(charHashMap.get(0)) + 
+                    ", shortHashMap=" + Arrays.asList(shortHashMap.get(0)) + 
+                    ", intHashMap=" + Arrays.asList(intHashMap.get(0)) + 
+                    ", longHashMap=" + Arrays.asList(longHashMap.get(0)) + 
+                    ", floatHashMap=" + Arrays.asList(floatHashMap.get(0)) + 
+                    ", doubleHashMap=" + Arrays.asList(doubleHashMap.get(0)) + "]";
+        }
+    }
+    
+    public void testArrayInMap() throws IOException
+    {
+        Schema<PojoWithArrayInMap> schema =
+                RuntimeSchema.getSchema(PojoWithArrayInMap.class);
+
+        Pipe.Schema<PojoWithArrayInMap> pipeSchema =
+                ((RuntimeSchema<PojoWithArrayInMap>) schema).getPipeSchema();
+
+        PojoWithArrayInMap p = new PojoWithArrayInMap();
+        p.boolHashMap.put(0, new Boolean[] { true, false });
+        p.charHashMap.put(0, new Character[] { 'a', 'b' });
+        p.shortHashMap.put(0, new Short[] { 1, 2 });
+        p.intHashMap.put(0, new Integer[] { 1, 2 });
+        p.longHashMap.put(0, new Long[] { 1l, 2l });
+        p.floatHashMap.put(0, new Float[] { 1.1f, 2.2f });
+        p.doubleHashMap.put(0, new Double[] { 1.1d, 2.2d });
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithArrayInMap pFromByteArray = schema.newMessage();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithArrayInMap pFromStream = schema.newMessage();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    static ArrayList<Object> asList(Object array)
+    {
+        ArrayList<Object> list = new ArrayList<>();
+        if (array == null)
+            return list;
+        
+        int len = Array.getLength(array);
+        for (int i = 0; i < len; i++)
+            list.add(Array.get(array, i));
+        
+        return list;
+    }
+    
+    public static final class PojoWithArrayPrimitiveInMap
+    {
+        HashMap<Integer,boolean[]> boolHashMap = new HashMap<>();
+        HashMap<Integer,char[]> charHashMap = new HashMap<>();
+        HashMap<Integer,short[]> shortHashMap = new HashMap<>();
+        HashMap<Integer,int[]> intHashMap = new HashMap<>();
+        HashMap<Integer,long[]> longHashMap = new HashMap<>();
+        HashMap<Integer,float[]> floatHashMap = new HashMap<>();
+        HashMap<Integer,double[]> doubleHashMap = new HashMap<>();
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((boolHashMap == null) ? 0 : boolHashMap.hashCode());
+            result = prime * result + ((charHashMap == null) ? 0 : charHashMap.hashCode());
+            result = prime * result + ((doubleHashMap == null) ? 0 : doubleHashMap.hashCode());
+            result = prime * result + ((floatHashMap == null) ? 0 : floatHashMap.hashCode());
+            result = prime * result + ((intHashMap == null) ? 0 : intHashMap.hashCode());
+            result = prime * result + ((longHashMap == null) ? 0 : longHashMap.hashCode());
+            result = prime * result + ((shortHashMap == null) ? 0 : shortHashMap.hashCode());
+            return result;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PojoWithArrayPrimitiveInMap other = (PojoWithArrayPrimitiveInMap)obj;
+            if (boolHashMap == null)
+            {
+                if (other.boolHashMap != null)
+                    return false;
+            }
+            else if (!asList(boolHashMap.get(0)).equals(asList(other.boolHashMap.get(0))))
+                return false;
+            if (charHashMap == null)
+            {
+                if (other.charHashMap != null)
+                    return false;
+            }
+            else if (!asList(charHashMap.get(0)).equals(asList(other.charHashMap.get(0))))
+                return false;
+            if (doubleHashMap == null)
+            {
+                if (other.doubleHashMap != null)
+                    return false;
+            }
+            else if (!asList(doubleHashMap.get(0)).equals(asList(other.doubleHashMap.get(0))))
+                return false;
+            if (floatHashMap == null)
+            {
+                if (other.floatHashMap != null)
+                    return false;
+            }
+            else if (!asList(floatHashMap.get(0)).equals(asList(other.floatHashMap.get(0))))
+                return false;
+            if (intHashMap == null)
+            {
+                if (other.intHashMap != null)
+                    return false;
+            }
+            else if (!asList(intHashMap.get(0)).equals(asList(other.intHashMap.get(0))))
+                return false;
+            if (longHashMap == null)
+            {
+                if (other.longHashMap != null)
+                    return false;
+            }
+            else if (!asList(longHashMap.get(0)).equals(asList(other.longHashMap.get(0))))
+                return false;
+            if (shortHashMap == null)
+            {
+                if (other.shortHashMap != null)
+                    return false;
+            }
+            else if (!asList(shortHashMap.get(0)).equals(asList(other.shortHashMap.get(0))))
+                return false;
+            return true;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "PojoWithArrayPrimitiveInMap " +
+                    "[boolHashMap=" + asList(boolHashMap.get(0)) + 
+                    ", charHashMap=" + asList(charHashMap.get(0)) + 
+                    ", shortHashMap=" + asList(shortHashMap.get(0)) + 
+                    ", intHashMap=" + asList(intHashMap.get(0)) + 
+                    ", longHashMap=" + asList(longHashMap.get(0)) + 
+                    ", floatHashMap=" + asList(floatHashMap.get(0)) + 
+                    ", doubleHashMap=" + asList(doubleHashMap.get(0)) + "]";
+        }
+    }
+    
+    public void testArrayPrimitiveInMap() throws IOException
+    {
+        Schema<PojoWithArrayPrimitiveInMap> schema =
+                RuntimeSchema.getSchema(PojoWithArrayPrimitiveInMap.class);
+
+        Pipe.Schema<PojoWithArrayPrimitiveInMap> pipeSchema =
+                ((RuntimeSchema<PojoWithArrayPrimitiveInMap>) schema).getPipeSchema();
+
+        PojoWithArrayPrimitiveInMap p = new PojoWithArrayPrimitiveInMap();
+        p.boolHashMap.put(0, new boolean[] { true, false });
+        p.charHashMap.put(0, new char[] { 'a', 'b' });
+        p.shortHashMap.put(0, new short[] { 1, 2 });
+        p.intHashMap.put(0, new int[] { 1, 2 });
+        p.longHashMap.put(0, new long[] { 1l, 2l });
+        p.floatHashMap.put(0, new float[] { 1.1f, 2.2f });
+        p.doubleHashMap.put(0, new double[] { 1.1d, 2.2d });
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithArrayPrimitiveInMap pFromByteArray = schema.newMessage();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithArrayPrimitiveInMap pFromStream = schema.newMessage();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
         assertEquals(p, pFromStream);

@@ -139,19 +139,19 @@ public final class ArraySchemas
         switch (id)
         {
             case ID_BOOL:
-                return strategy.ARRAY_BOOL_BOXED_SCHEMA;
+                return strategy.ARRAY_BOOL_DERIVED_SCHEMA;
             case ID_CHAR:
-                return strategy.ARRAY_CHAR_BOXED_SCHEMA;
+                return strategy.ARRAY_CHAR_DERIVED_SCHEMA;
             case ID_SHORT:
-                return strategy.ARRAY_SHORT_BOXED_SCHEMA;
+                return strategy.ARRAY_SHORT_DERIVED_SCHEMA;
             case ID_INT32:
-                return strategy.ARRAY_INT32_BOXED_SCHEMA;
+                return strategy.ARRAY_INT32_DERIVED_SCHEMA;
             case ID_INT64:
-                return strategy.ARRAY_INT64_BOXED_SCHEMA;
+                return strategy.ARRAY_INT64_DERIVED_SCHEMA;
             case ID_FLOAT:
-                return strategy.ARRAY_FLOAT_BOXED_SCHEMA;
+                return strategy.ARRAY_FLOAT_DERIVED_SCHEMA;
             case ID_DOUBLE:
-                return strategy.ARRAY_DOUBLE_BOXED_SCHEMA;
+                return strategy.ARRAY_DOUBLE_DERIVED_SCHEMA;
             case ID_STRING:
                 return strategy.ARRAY_STRING_SCHEMA;
             case ID_BYTES:
@@ -245,9 +245,12 @@ public final class ArraySchemas
         if (ID_ARRAY_LEN != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");
 
-        final int len = input.readUInt32();
+        int len = input.readInt32();
         // write it back
-        output.writeUInt32(ID_ARRAY_LEN, len, false);
+        output.writeInt32(ID_ARRAY_LEN, len, false);
+        
+        if (len < 0)
+            len = -len - 1;
 
         for (int i = 0, nullCount = 0; i < len;)
         {
@@ -352,38 +355,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            boolean[] array = new boolean[len];
+            if (input instanceof GraphInput)
             {
-                boolean[] array = new boolean[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readBool();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = input.readBool();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Boolean[] array = new Boolean[len];
             if (input instanceof GraphInput)
             {
@@ -411,14 +410,31 @@ public final class ArraySchemas
 
             return array;
         }
-
+        
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 boolean[] array = (boolean[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeBool(ID_ARRAY_DATA, array[i], true);
@@ -427,7 +443,7 @@ public final class ArraySchemas
             }
 
             final Boolean[] array = (Boolean[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -452,6 +468,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -482,38 +504,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            char[] array = new char[len];
+            if (input instanceof GraphInput)
             {
-                char[] array = new char[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = (char) input.readUInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = (char) input.readUInt32();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Character[] array = new Character[len];
             if (input instanceof GraphInput)
             {
@@ -543,12 +561,29 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 char[] array = (char[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
@@ -557,7 +592,7 @@ public final class ArraySchemas
             }
 
             final Character[] array = (Character[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -582,6 +617,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -612,38 +653,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            short[] array = new short[len];
+            if (input instanceof GraphInput)
             {
-                short[] array = new short[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = (short) input.readUInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = (short) input.readUInt32();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Short[] array = new Short[len];
             if (input instanceof GraphInput)
             {
@@ -673,12 +710,29 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 short[] array = (short[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeUInt32(ID_ARRAY_DATA, array[i], true);
@@ -687,7 +741,7 @@ public final class ArraySchemas
             }
 
             final Short[] array = (Short[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -712,6 +766,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -742,38 +802,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            int[] array = new int[len];
+            if (input instanceof GraphInput)
             {
-                int[] array = new int[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readInt32();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = input.readInt32();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Integer[] array = new Integer[len];
             if (input instanceof GraphInput)
             {
@@ -803,12 +859,28 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive) throws IOException
         {
             if (primitive)
             {
                 int[] array = (int[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt32(ID_ARRAY_DATA, array[i], true);
@@ -817,7 +889,7 @@ public final class ArraySchemas
             }
 
             final Integer[] array = (Integer[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -842,6 +914,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -872,38 +950,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            long[] array = new long[len];
+            if (input instanceof GraphInput)
             {
-                long[] array = new long[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readInt64();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = input.readInt64();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Long[] array = new Long[len];
             if (input instanceof GraphInput)
             {
@@ -933,12 +1007,29 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 long[] array = (long[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeInt64(ID_ARRAY_DATA, array[i], true);
@@ -947,7 +1038,7 @@ public final class ArraySchemas
             }
 
             final Long[] array = (Long[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -972,6 +1063,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -1002,38 +1099,34 @@ public final class ArraySchemas
         {
             return pipeSchema;
         }
-
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            float[] array = new float[len];
+            if (input instanceof GraphInput)
             {
-                float[] array = new float[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readFloat();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = input.readFloat();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Float[] array = new Float[len];
             if (input instanceof GraphInput)
             {
@@ -1063,12 +1156,29 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 float[] array = (float[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeFloat(ID_ARRAY_DATA, array[i], true);
@@ -1077,7 +1187,7 @@ public final class ArraySchemas
             }
 
             final Float[] array = (Float[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1102,6 +1212,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -1133,37 +1249,33 @@ public final class ArraySchemas
             return pipeSchema;
         }
 
-        @Override
-        public Object readFrom(Input input, Object owner) throws IOException
+        protected Object readPrimitiveFrom(Input input, Object owner, int len)
+                throws IOException
         {
-            if (ID_ARRAY_LEN != input.readFieldNumber(this))
-                throw new ProtostuffException("Corrupt input.");
-
-            final int len = input.readUInt32();
-
-            if (primitive)
+            double[] array = new double[len];
+            if (input instanceof GraphInput)
             {
-                double[] array = new double[len];
-                if (input instanceof GraphInput)
-                {
-                    // update the actual reference.
-                    ((GraphInput) input).updateLast(array, owner);
-                }
-
-                for (int i = 0; i < len; i++)
-                {
-                    if (ID_ARRAY_DATA != input.readFieldNumber(this))
-                        throw new ProtostuffException("Corrupt input.");
-
-                    array[i] = input.readDouble();
-                }
-
-                if (0 != input.readFieldNumber(this))
-                    throw new ProtostuffException("Corrupt input.");
-
-                return array;
+                // update the actual reference.
+                ((GraphInput) input).updateLast(array, owner);
             }
 
+            for (int i = 0; i < len; i++)
+            {
+                if (ID_ARRAY_DATA != input.readFieldNumber(this))
+                    throw new ProtostuffException("Corrupt input.");
+
+                array[i] = input.readDouble();
+            }
+
+            if (0 != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            return array;
+        }
+        
+        protected Object readBoxedFrom(Input input, Object owner, int len)
+                throws IOException
+        {
             final Double[] array = new Double[len];
             if (input instanceof GraphInput)
             {
@@ -1191,14 +1303,31 @@ public final class ArraySchemas
 
             return array;
         }
-
+        
         @Override
-        public void writeTo(Output output, Object value) throws IOException
+        public Object readFrom(Input input, Object owner) throws IOException
+        {
+            if (ID_ARRAY_LEN != input.readFieldNumber(this))
+                throw new ProtostuffException("Corrupt input.");
+
+            final int len = input.readInt32();
+            return primitive ? readPrimitiveFrom(input, owner, len) : 
+                    readBoxedFrom(input, owner, len);
+        }
+        
+        protected void writeLengthTo(Output output, int len, boolean primitive)
+                throws IOException
+        {
+            output.writeInt32(ID_ARRAY_LEN, len, false);
+        }
+        
+        protected void writeTo(Output output, Object value, boolean primitive)
+                throws IOException
         {
             if (primitive)
             {
                 double[] array = (double[]) value;
-                output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+                writeLengthTo(output, array.length, true);
 
                 for (int i = 0, len = array.length; i < len; i++)
                     output.writeDouble(ID_ARRAY_DATA, array[i], true);
@@ -1207,7 +1336,7 @@ public final class ArraySchemas
             }
 
             final Double[] array = (Double[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            writeLengthTo(output, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1232,6 +1361,12 @@ public final class ArraySchemas
             // if last element is null
             if (nullCount != 0)
                 output.writeUInt32(ID_ARRAY_NULLCOUNT, nullCount, false);
+        }
+        
+        @Override
+        public void writeTo(Output output, Object value) throws IOException
+        {
+            writeTo(output, value, primitive);
         }
     }
 
@@ -1266,7 +1401,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             String[] array = new String[len];
             if (input instanceof GraphInput)
@@ -1300,7 +1435,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             String[] array = (String[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1359,7 +1494,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             ByteString[] array = new ByteString[len];
             if (input instanceof GraphInput)
@@ -1393,7 +1528,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             ByteString[] array = (ByteString[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1452,7 +1587,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             byte[][] array = new byte[len][];
             if (input instanceof GraphInput)
@@ -1486,7 +1621,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             byte[][] array = (byte[][]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1545,7 +1680,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             BigDecimal[] array = new BigDecimal[len];
             if (input instanceof GraphInput)
@@ -1579,7 +1714,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             BigDecimal[] array = (BigDecimal[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1638,7 +1773,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             BigInteger[] array = new BigInteger[len];
             if (input instanceof GraphInput)
@@ -1672,7 +1807,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             BigInteger[] array = (BigInteger[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1731,7 +1866,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             Date[] array = new Date[len];
             if (input instanceof GraphInput)
@@ -1765,7 +1900,7 @@ public final class ArraySchemas
         public void writeTo(Output output, Object value) throws IOException
         {
             Date[] array = (Date[]) value;
-            output.writeUInt32(ID_ARRAY_LEN, array.length, false);
+            output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
@@ -1826,7 +1961,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             Object array = Array.newInstance(delegate.typeClass(), len);
             if (input instanceof GraphInput)
@@ -1861,7 +1996,7 @@ public final class ArraySchemas
         {
             final int len = Array.getLength(array);
 
-            output.writeUInt32(ID_ARRAY_LEN, len, false);
+            output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
@@ -1902,9 +2037,9 @@ public final class ArraySchemas
                         .readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                final int len = input.readUInt32();
+                final int len = input.readInt32();
                 // write it back
-                output.writeUInt32(ID_ARRAY_LEN, len, false);
+                output.writeInt32(ID_ARRAY_LEN, len, false);
 
                 for (int i = 0, nullCount = 0; i < len;)
                 {
@@ -1949,7 +2084,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             Object array = Array.newInstance(eio.enumClass, len);
             if (input instanceof GraphInput)
@@ -1984,7 +2119,7 @@ public final class ArraySchemas
         {
             final int len = Array.getLength(array);
 
-            output.writeUInt32(ID_ARRAY_LEN, len, false);
+            output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
@@ -2025,9 +2160,9 @@ public final class ArraySchemas
                         .readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                final int len = input.readUInt32();
+                final int len = input.readInt32();
                 // write it back
-                output.writeUInt32(ID_ARRAY_LEN, len, false);
+                output.writeInt32(ID_ARRAY_LEN, len, false);
 
                 for (int i = 0, nullCount = 0; i < len;)
                 {
@@ -2073,7 +2208,7 @@ public final class ArraySchemas
             if (ID_ARRAY_LEN != input.readFieldNumber(this))
                 throw new ProtostuffException("Corrupt input.");
 
-            final int len = input.readUInt32();
+            final int len = input.readInt32();
 
             Object array = Array.newInstance(hs.getSchema().typeClass(), len);
             if (input instanceof GraphInput)
@@ -2108,7 +2243,7 @@ public final class ArraySchemas
         {
             final int len = Array.getLength(array);
 
-            output.writeUInt32(ID_ARRAY_LEN, len, false);
+            output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
