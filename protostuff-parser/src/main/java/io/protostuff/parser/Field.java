@@ -45,10 +45,10 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
     T defaultValue;
     Message owner;
     final LinkedHashMap<java.lang.String, Object> standardOptions =
-            new LinkedHashMap<>();
+            new LinkedHashMap<java.lang.String, Object>();
 
     final LinkedHashMap<java.lang.String, Object> extraOptions =
-            new LinkedHashMap<>();
+            new LinkedHashMap<java.lang.String, Object>();
 
     public Field()
     {

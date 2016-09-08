@@ -134,7 +134,7 @@ public class RuntimeSchemaTagTest
 
     static class A6
     {
-        @Tag(1000_000)
+        @Tag(1000000)
         private int x;
 
         public A6()

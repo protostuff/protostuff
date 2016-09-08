@@ -30,10 +30,10 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
     final Message parentMessage;
     final Proto proto;
 
-    final LinkedHashMap<String, RpcMethod> rpcMethods = new LinkedHashMap<>();
+    final LinkedHashMap<String, RpcMethod> rpcMethods = new LinkedHashMap<String, RpcMethod>();
 
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
 
     public Service(String name, Message parentMessage, Proto proto)
     {
@@ -181,8 +181,8 @@ public class Service extends AnnotationContainer implements HasName, HasOptions
     public static class RpcMethod extends AnnotationContainer implements HasName, HasOptions
     {
 
-        final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
-        final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
+        final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
+        final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
 
         final String name;
         final Service service;

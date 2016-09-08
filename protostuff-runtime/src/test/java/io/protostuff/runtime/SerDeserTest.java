@@ -138,16 +138,16 @@ public class SerDeserTest extends TestCase
 
     static PojoWithArrayAndSet filledPojoWithArrayAndSet()
     {
-        LinkedHashSet<Status> someEnumAsSet = new LinkedHashSet<>();
+        LinkedHashSet<Status> someEnumAsSet = new LinkedHashSet<Status>();
         someEnumAsSet.add(Status.PENDING);
         someEnumAsSet.add(Status.STARTED);
         someEnumAsSet.add(Status.COMPLETED);
 
-        LinkedHashSet<Bar> someBarAsSet = new LinkedHashSet<>();
+        LinkedHashSet<Bar> someBarAsSet = new LinkedHashSet<Bar>();
         someBarAsSet.add(bar);
         someBarAsSet.add(negativeBar);
 
-        LinkedHashSet<Float> someFloatAsSet = new LinkedHashSet<>();
+        LinkedHashSet<Float> someFloatAsSet = new LinkedHashSet<Float>();
         someFloatAsSet.add(123.321f);
         someFloatAsSet.add(-456.654f);
 

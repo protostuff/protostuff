@@ -82,7 +82,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __keyTypeFromEnumMap.get(enumMap);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -104,7 +104,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
         {
             return (Class<?>) __elementTypeFromEnumSet.get(enumSet);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -207,8 +207,8 @@ public abstract class EnumIO<E extends Enum<E>> implements
         int n = fields.length;
         alias = new String[n];
         tag = new int[n];
-        valueByAliasMap = new HashMap<>(n * 2);
-        valueByTagMap = new HashMap<>(n * 2);
+        valueByAliasMap = new HashMap<String, E>(n * 2);
+        valueByTagMap = new HashMap<Integer, E>(n * 2);
         for (E instance : enumClass.getEnumConstants())
         {
             int ordinal = instance.ordinal();
@@ -312,7 +312,7 @@ public abstract class EnumIO<E extends Enum<E>> implements
      */
     public <V> EnumMap<E, V> newEnumMap()
     {
-        return new EnumMap<>(enumClass);
+        return new EnumMap<E, V>(enumClass);
     }
 
     /**

@@ -197,7 +197,7 @@ public class ObjectSchemaTest extends TestCase
         bean.secondMapList = secondMapList;
 
         Item share13 = new Item("share13");
-        EnumMap<Order, Item> orderMap = new EnumMap<>(Order.class);
+        EnumMap<Order, Item> orderMap = new EnumMap<Order, Item>(Order.class);
         orderMap.put(Order.ASCENDING, share13);
         orderMap.put(Order.DESCENDING, share);
 
@@ -227,13 +227,13 @@ public class ObjectSchemaTest extends TestCase
         Set<Item> secondSet = newSet(share15);
         bean.secondSet = secondSet;
 
-        IdentityHashMap<Item, Item> identityMap = new IdentityHashMap<>();
+        IdentityHashMap<Item, Item> identityMap = new IdentityHashMap<Item, Item>();
         identityMap.put(share, share);
 
         bean.identityMap = identityMap;
 
         Item share16 = new Item("share16");
-        IdentityHashMap<Order, Item> anotherIdentityMap = new IdentityHashMap<>();
+        IdentityHashMap<Order, Item> anotherIdentityMap = new IdentityHashMap<Order, Item>();
         anotherIdentityMap.put(Order.ASCENDING, share16);
         anotherIdentityMap.put(Order.DESCENDING, share);
 
@@ -387,7 +387,7 @@ public class ObjectSchemaTest extends TestCase
 
     static <T> Set<T> newSet(T... ts)
     {
-        HashSet<T> set = new HashSet<>();
+        HashSet<T> set = new HashSet<T>();
 
         for (T t : ts)
             set.add(t);
@@ -397,22 +397,22 @@ public class ObjectSchemaTest extends TestCase
 
     static <K, V> Map<K, V> newMap()
     {
-        return new HashMap<>();
+        return new HashMap<K, V>();
     }
 
     static <T> Set<T> newSet()
     {
-        return new HashSet<>();
+        return new HashSet<T>();
     }
 
     static <T> List<T> newList()
     {
-        return new ArrayList<>();
+        return new ArrayList<T>();
     }
 
     static <T> List<T> newList(T... ts)
     {
-        ArrayList<T> list = new ArrayList<>();
+        ArrayList<T> list = new ArrayList<T>();
 
         for (T t : ts)
             list.add(t);
@@ -422,7 +422,7 @@ public class ObjectSchemaTest extends TestCase
 
     static <K, V> Map<K, V> newMap(K key, V value)
     {
-        HashMap<K, V> map = new HashMap<>();
+        HashMap<K, V> map = new HashMap<K, V>();
         map.put(key, value);
         return map;
     }

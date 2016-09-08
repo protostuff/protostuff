@@ -109,7 +109,7 @@ public class RuntimeGraphTest extends AbstractTest
         public void addStudent(Student student)
         {
             if (this.student == null)
-                this.student = new ArrayList<>();
+                this.student = new ArrayList<Student>();
             this.student.add(student);
         }
 
@@ -138,7 +138,7 @@ public class RuntimeGraphTest extends AbstractTest
         public void addPartnerClub(Club partnerClub)
         {
             if (this.partnerClub == null)
-                this.partnerClub = new ArrayList<>();
+                this.partnerClub = new ArrayList<Club>();
             this.partnerClub.add(partnerClub);
         }
     }
@@ -187,7 +187,7 @@ public class RuntimeGraphTest extends AbstractTest
         public void addClub(Club club)
         {
             if (this.club == null)
-                this.club = new ArrayList<>();
+                this.club = new ArrayList<Club>();
             this.club.add(club);
         }
     }

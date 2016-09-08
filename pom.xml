@@ -24,7 +24,7 @@
     <stringtemplate-version>3.2.1</stringtemplate-version>
     <mavenVersion>3.2.3</mavenVersion>
     <jmh.version>1.6.1</jmh.version>
-    <javac.target>1.7</javac.target>
+    <javac.target>1.6</javac.target>
   </properties>
 
   <developers>

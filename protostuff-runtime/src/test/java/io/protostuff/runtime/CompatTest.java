@@ -186,12 +186,12 @@ public class CompatTest
 
     static <T> List<T> newList()
     {
-        return new ArrayList<>();
+        return new ArrayList<T>();
     }
 
     static <K, V> Map<K, V> newMap()
     {
-        return new LinkedHashMap<>();
+        return new LinkedHashMap<K, V>();
     }
 
     @Test

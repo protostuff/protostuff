@@ -36,7 +36,7 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
 
     static
     {

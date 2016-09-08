@@ -33,15 +33,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class DefaultIdStrategy extends IdStrategy
 {
 
-    final ConcurrentHashMap<String, HasSchema<?>> pojoMapping = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<String, HasSchema<?>> pojoMapping = new ConcurrentHashMap<String, HasSchema<?>>();
 
-    final ConcurrentHashMap<String, EnumIO<?>> enumMapping = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<String, EnumIO<?>> enumMapping = new ConcurrentHashMap<String, EnumIO<?>>();
 
-    final ConcurrentHashMap<String, CollectionSchema.MessageFactory> collectionMapping = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<String, CollectionSchema.MessageFactory> collectionMapping = new ConcurrentHashMap<String, CollectionSchema.MessageFactory>();
 
-    final ConcurrentHashMap<String, MapSchema.MessageFactory> mapMapping = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<String, MapSchema.MessageFactory> mapMapping = new ConcurrentHashMap<String, MapSchema.MessageFactory>();
 
-    final ConcurrentHashMap<String, HasDelegate<?>> delegateMapping = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<String, HasDelegate<?>> delegateMapping = new ConcurrentHashMap<String, HasDelegate<?>>();
 
     public DefaultIdStrategy()
     {
@@ -67,7 +67,7 @@ public final class DefaultIdStrategy extends IdStrategy
         assert typeClass != null && schema != null;
 
         final HasSchema<?> last = pojoMapping.putIfAbsent(typeClass.getName(),
-                new Registered<>(schema, this));
+                new Registered<T>(schema, this));
 
         return last == null
                 || (last instanceof Registered<?> && ((Registered<?>) last).schema == schema);
@@ -82,7 +82,7 @@ public final class DefaultIdStrategy extends IdStrategy
         assert typeClass != null;
 
         final HasSchema<?> last = pojoMapping.putIfAbsent(typeClass.getName(),
-                new LazyRegister<>(typeClass, this));
+                new LazyRegister<T>(typeClass, this));
         
         return last == null || (last instanceof LazyRegister);
     }
@@ -102,7 +102,7 @@ public final class DefaultIdStrategy extends IdStrategy
     public <T> boolean registerDelegate(Delegate<T> delegate)
     {
         return null == delegateMapping.putIfAbsent(delegate.typeClass()
-                .getName(), new HasDelegate<>(delegate, this));
+                .getName(), new HasDelegate<T>(delegate, this));
     }
 
     /**
@@ -138,7 +138,7 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
         final HasSchema<?> last = pojoMapping.putIfAbsent(baseClass.getName(),
-                new Mapped<>(baseClass, typeClass, this));
+                new Mapped<T>(baseClass, typeClass, this));
 
         return last == null
                 || (last instanceof Mapped<?> && ((Mapped<?>) last).typeClass == typeClass);
@@ -184,7 +184,7 @@ public final class DefaultIdStrategy extends IdStrategy
 
             final Class<T> typeClass = RuntimeEnv.loadClass(className);
 
-            hs = new Lazy<>(typeClass, this);
+            hs = new Lazy<T>(typeClass, this);
             final HasSchema<T> last = (HasSchema<T>) pojoMapping.putIfAbsent(
                     typeClass.getName(), hs);
             if (last != null)
@@ -201,7 +201,7 @@ public final class DefaultIdStrategy extends IdStrategy
         HasSchema<T> hs = (HasSchema<T>) pojoMapping.get(typeClass.getName());
         if (hs == null && create)
         {
-            hs = new Lazy<>(typeClass, this);
+            hs = new Lazy<T>(typeClass, this);
             final HasSchema<T> last = (HasSchema<T>) pojoMapping.putIfAbsent(
                     typeClass.getName(), hs);
             if (last != null)

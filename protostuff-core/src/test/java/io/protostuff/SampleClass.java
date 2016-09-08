@@ -106,7 +106,7 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
                         return;
                     case 1:
                         if (message.testString == null)
-                            message.testString = new ArrayList<>();
+                            message.testString = new ArrayList<String>();
                         message.testString.add(input.readString());
                         break;
                     default:
@@ -144,7 +144,7 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
         {
             fieldMap.put("testString", 1);
         }

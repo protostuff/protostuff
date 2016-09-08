@@ -177,7 +177,7 @@ public class ImmutableObjectsTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Pojo> list = new ArrayList<>();
+        List<Pojo> list = new ArrayList<Pojo>();
         list.add(p);
         list.add(p2);
 
@@ -204,7 +204,7 @@ public class ImmutableObjectsTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<ImmutablePojo> list = new ArrayList<>();
+        List<ImmutablePojo> list = new ArrayList<ImmutablePojo>();
         list.add(p);
         list.add(p2);
 

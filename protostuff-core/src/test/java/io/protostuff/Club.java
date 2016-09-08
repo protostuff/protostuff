@@ -75,7 +75,7 @@ public final class Club implements Externalizable, Message<Club>
     public void addStudent(Student student)
     {
         if (this.student == null)
-            this.student = new ArrayList<>();
+            this.student = new ArrayList<Student>();
         this.student.add(student);
     }
 
@@ -104,7 +104,7 @@ public final class Club implements Externalizable, Message<Club>
     public void addPartnerClub(Club partnerClub)
     {
         if (this.partnerClub == null)
-            this.partnerClub = new ArrayList<>();
+            this.partnerClub = new ArrayList<Club>();
         this.partnerClub.add(partnerClub);
     }
 
@@ -178,13 +178,13 @@ public final class Club implements Externalizable, Message<Club>
                         break;
                     case 2:
                         if (message.student == null)
-                            message.student = new ArrayList<>();
+                            message.student = new ArrayList<Student>();
                         message.student.add(input.mergeObject(null, Student.getSchema()));
                         break;
 
                     case 3:
                         if (message.partnerClub == null)
-                            message.partnerClub = new ArrayList<>();
+                            message.partnerClub = new ArrayList<Club>();
                         message.partnerClub.add(input.mergeObject(null, Club.getSchema()));
                         break;
 
@@ -243,7 +243,7 @@ public final class Club implements Externalizable, Message<Club>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
 
         {
             fieldMap.put("name", 1);

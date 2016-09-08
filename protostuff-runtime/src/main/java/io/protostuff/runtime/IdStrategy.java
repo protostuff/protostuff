@@ -127,7 +127,7 @@ public abstract class IdStrategy
         if (rs.getFieldCount() == 0)
             return rs;
         
-        final ArrayList<Field<T>> fields = new ArrayList<>(rs.getFieldCount());
+        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(rs.getFieldCount());
         
         for (Field<T> f : rs.getFields())
         {
@@ -165,7 +165,7 @@ public abstract class IdStrategy
         }*/
         
         return fields.size() == rs.getFieldCount() ? rs : 
-                new RuntimeSchema<>(typeClass, fields, rs.instantiator);
+                new RuntimeSchema<T>(typeClass, fields, rs.instantiator);
     }
 
     /**
@@ -1545,8 +1545,7 @@ public abstract class IdStrategy
                 constructor.setAccessible(true);
                 return constructor.newInstance();
             }
-            catch (NoSuchMethodException | InstantiationException
-                    | InvocationTargetException | IllegalAccessException e1)
+            catch (Exception e1)
             {
                 throw new RuntimeException(e);
             }

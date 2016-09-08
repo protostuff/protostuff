@@ -17,8 +17,8 @@ public class ListAdapterTest
     @Test
     public void checkConvertedValues() throws Exception
     {
-        List<Integer> a = new ArrayList<>();
-        ListAdapter<Integer, String> adapter = new ListAdapter<>(a, new ListAdapter.Converter<Integer, String>()
+        List<Integer> a = new ArrayList<Integer>();
+        ListAdapter<Integer, String> adapter = new ListAdapter<Integer, String>(a, new ListAdapter.Converter<Integer, String>()
         {
             @Override
             public String convert(Integer from)

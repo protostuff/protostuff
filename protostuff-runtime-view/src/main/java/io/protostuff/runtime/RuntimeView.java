@@ -301,7 +301,7 @@ public final class RuntimeView
                     Predicate.Factory factory, String[] args)
             {
                 final HashMap<String, Field<T>> fieldsByName =
-                        new HashMap<>();
+                        new HashMap<String, Field<T>>();
 
                 int maxFieldNumber = includeAndAddTo(fieldsByName, ms.typeClass(), ms.getFields(), args);
 
@@ -371,7 +371,7 @@ public final class RuntimeView
     static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass,
             List<Field<T>> fields, final Predicate predicate)
     {
-        final HashMap<String, Field<T>> map = new HashMap<>();
+        final HashMap<String, Field<T>> map = new HashMap<String, Field<T>>();
         for (Field<T> field : fields)
         {
             if (!predicate.apply(field))
@@ -389,8 +389,8 @@ public final class RuntimeView
         if (args == null || args.length == 0)
             throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
 
-        HashMap<String, Field<T>> map = new HashMap<>();
-        Set<String> exclude = new HashSet<>();
+        HashMap<String, Field<T>> map = new HashMap<String, Field<T>>();
+        Set<String> exclude = new HashSet<String>();
         Collections.addAll(exclude, args);
 
         for (Field<T> field : fields)
@@ -410,7 +410,7 @@ public final class RuntimeView
             throw new IllegalArgumentException("You must provide at least 1 field to include.");
 
         int maxFieldNumber = 0;
-        Set<String> include = new HashSet<>();
+        Set<String> include = new HashSet<String>();
         Collections.addAll(include, args);
         for (Field<T> field : fields)
         {

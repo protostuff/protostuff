@@ -101,7 +101,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Bar bar = new Bar();
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(bar);
         foo.setSomeBar(bars);
 
@@ -114,10 +114,10 @@ public abstract class StandardTest extends AbstractTest
     public void testPartialEmptyFoo() throws Exception
     {
         Bar bar = new Bar();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(bar);
         Foo foo = new Foo();
-        ArrayList<Integer> someInt = new ArrayList<>();
+        ArrayList<Integer> someInt = new ArrayList<Integer>();
         someInt.add(1);
         foo.setSomeInt(someInt);
 
@@ -135,9 +135,9 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<>();
+        ArrayList<String> strings = new ArrayList<String>();
         strings.add("someString");
         foo.setSomeString(strings);
 
@@ -153,9 +153,9 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<>();
+        ArrayList<String> strings = new ArrayList<String>();
         strings.add("");
         foo.setSomeString(strings);
 
@@ -171,7 +171,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -187,7 +187,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -203,7 +203,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);

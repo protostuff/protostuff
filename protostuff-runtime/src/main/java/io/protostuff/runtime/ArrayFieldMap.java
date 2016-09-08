@@ -29,7 +29,7 @@ final class ArrayFieldMap<T> implements FieldMap<T>
     @SuppressWarnings("unchecked")
     public ArrayFieldMap(Collection<Field<T>> fields, int lastFieldNumber)
     {
-        fieldsByName = new HashMap<>();
+        fieldsByName = new HashMap<String, Field<T>>();
         fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
         for (Field<T> f : fields)
         {
@@ -48,7 +48,7 @@ final class ArrayFieldMap<T> implements FieldMap<T>
             fieldsByNumber[f.number] = f;
         }
 
-        List<Field<T>> fieldList = new ArrayList<>(fields.size());
+        List<Field<T>> fieldList = new ArrayList<Field<T>>(fields.size());
         for (Field<T> field : fieldsByNumber)
         {
             if (field != null)

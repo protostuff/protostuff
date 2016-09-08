@@ -98,7 +98,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
             // annotations
             STR_POJO = "_";
 
-    private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = new HashMap<>();
+    private static final HashMap<String, RuntimeFieldFactory<?>> __inlineValues = new HashMap<String, RuntimeFieldFactory<?>>();
 
     static final RuntimeFieldFactory<BigDecimal> BIGDECIMAL;
     static final RuntimeFieldFactory<BigInteger> BIGINTEGER;

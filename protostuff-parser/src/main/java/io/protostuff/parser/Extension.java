@@ -28,9 +28,9 @@ public class Extension extends AnnotationContainer implements HasFields
     final String packageName;
     final String type;
     Proto proto;
-    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<>();
-    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
-    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
+    final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<String, Field<?>>();
+    final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<String, Object>();
 
     Message extendedMessage;
 

@@ -27,8 +27,8 @@ public class Annotation implements HasName
 
     final String name;
 
-    final LinkedHashMap<String, Object> refs = new LinkedHashMap<>();
-    final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> refs = new LinkedHashMap<String, Object>();
+    final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
     public Annotation(String name)
     {

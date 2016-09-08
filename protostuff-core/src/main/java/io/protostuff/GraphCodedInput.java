@@ -42,7 +42,7 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<>();
+        references = new ArrayList<Object>();
     }
 
     public GraphCodedInput(CodedInput input, int initialCapacity)
@@ -52,7 +52,7 @@ public final class GraphCodedInput extends FilterInput<CodedInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<>(initialCapacity);
+        references = new ArrayList<Object>(initialCapacity);
     }
 
     @Override

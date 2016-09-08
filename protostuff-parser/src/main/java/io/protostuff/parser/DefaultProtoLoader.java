@@ -48,7 +48,7 @@ public class DefaultProtoLoader implements Proto.Loader
 
     public static final DefaultProtoLoader DEFAULT_INSTANCE = new DefaultProtoLoader();
 
-    private static final ArrayList<File> __protoLoadDirs = new ArrayList<>();
+    private static final ArrayList<File> __protoLoadDirs = new ArrayList<File>();
 
     static
     {

@@ -248,7 +248,7 @@ public class ProtoCompilerMojo extends AbstractMojo
     {
         String originalOutput = m.getOutput();
         String[] outputList = CompilerMain.COMMA.split(originalOutput);
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<String>();
         for (String output : outputList)
         {
             output = output.trim();

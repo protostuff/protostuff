@@ -270,10 +270,10 @@ public final class RuntimeEnv
                 throw new RuntimeException("Could not resolve constructor for "
                         + clazz);
 
-            return new Android2Instantiator<>(clazz);
+            return new Android2Instantiator<T>(clazz);
         }
 
-        return new DefaultInstantiator<>(constructor);
+        return new DefaultInstantiator<T>(constructor);
     }
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz)
@@ -330,8 +330,7 @@ public final class RuntimeEnv
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
-                    | InstantiationException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -357,7 +356,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectInputStream.invoke(null, clazz,
                         Object.class);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }

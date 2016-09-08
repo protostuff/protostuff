@@ -309,10 +309,10 @@ public interface Formatter
 
         static
         {
-            singulars = new ArrayList<>();
-            plurals = new ArrayList<>();
-            irregulars = new ArrayList<>();
-            uncountables = new ArrayList<>();
+            singulars = new ArrayList<String[]>();
+            plurals = new ArrayList<String[]>();
+            irregulars = new ArrayList<String[]>();
+            uncountables = new ArrayList<String>();
 
             addPlural("$", "s");
             addPlural("s$", "s");

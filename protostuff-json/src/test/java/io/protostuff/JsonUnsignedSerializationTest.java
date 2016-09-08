@@ -20,10 +20,10 @@ public class JsonUnsignedSerializationTest
     public void testSerialize() throws Exception
     {
         UnsignedNumbers msg = new UnsignedNumbers();
-        msg.setUint32(0xFFFF_FFFF);
-        msg.setFixed32(0xFFFF_FFFF);
-        msg.setUint64(0xFFFF_FFFF_FFFF_FFFFL);
-        msg.setFixed64(0xFFFF_FFFF_FFFF_FFFFL);
+        msg.setUint32(0xFFFFFFFF);
+        msg.setFixed32(0xFFFFFFFF);
+        msg.setUint64(0xFFFFFFFFFFFFFFFFL);
+        msg.setFixed64(0xFFFFFFFFFFFFFFFFL);
         byte[] bytes = JsonIOUtil.toByteArray(msg, UnsignedNumbers.getSchema(), false);
         String result = new String(bytes);
         Assert.assertEquals(JSON, result);

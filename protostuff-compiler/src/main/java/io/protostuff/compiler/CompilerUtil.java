@@ -61,7 +61,7 @@ public final class CompilerUtil
     {
         if (!dir.isDirectory() || extensions == null)
             return Collections.emptyList();
-        List<File> files = new ArrayList<>();
+        List<File> files = new ArrayList<File>();
         addFilesByExtension(files, dir, extensions);
         return files;
     }
