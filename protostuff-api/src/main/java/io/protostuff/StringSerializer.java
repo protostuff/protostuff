@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
 
+import static java.lang.Character.MIN_HIGH_SURROGATE;
+import static java.lang.Character.MIN_LOW_SURROGATE;
+import static java.lang.Character.MIN_SUPPLEMENTARY_CODE_POINT;
+
 /**
  * UTF-8 String serialization
  *
@@ -1215,10 +1219,6 @@ public final class StringSerializer
          * 4-byte surrogates, de-serializing them as surrogate pairs.
          *
          * See: http://en.wikipedia.org/wiki/UTF-8#Description for encoding details.
-         *
-         * @param in
-         * @return
-         * @throws IOException
          */
         private static String readUTF(byte[] buffer, int offset, int len) throws UTFDataFormatException
         {
@@ -1313,8 +1313,8 @@ public final class StringSerializer
                                         ((ch3 & 0x3F) << 6) |
                                         ((ch4 & 0x3F));
 
-                        charArray[c++] = Character.highSurrogate(value);
-                        charArray[c++] = Character.lowSurrogate(value);
+                        charArray[c++] = highSurrogate(value);
+                        charArray[c++] = lowSurrogate(value);
                     }
                     else
                     {
@@ -1327,4 +1327,15 @@ public final class StringSerializer
             return new String(charArray, 0, c);
         }
     }
+
+
+    public static char highSurrogate(int codePoint) {
+        return (char) ((codePoint >>> 10)
+                + (MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT >>> 10)));
+    }
+
+    public static char lowSurrogate(int codePoint) {
+        return (char) ((codePoint & 0x3ff) + MIN_LOW_SURROGATE);
+    }
+
 }

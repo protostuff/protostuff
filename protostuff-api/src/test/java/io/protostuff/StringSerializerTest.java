@@ -19,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -596,7 +595,7 @@ public class StringSerializerTest extends TestCase
 
     static void checkAscii(String str) throws Exception
     {
-        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
+        byte[] builtin = str.getBytes("UTF-8");
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
@@ -618,7 +617,7 @@ public class StringSerializerTest extends TestCase
 
     static void check(String str) throws Exception
     {
-        byte[] builtin = str.getBytes(StandardCharsets.UTF_8);
+        byte[] builtin = str.getBytes("UTF-8");
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
