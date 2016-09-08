@@ -313,20 +313,20 @@ public final class RuntimeEnv
         {
             // non-sun jre
             if (android43)
-                return new Android43Instantiator<>(clazz);
+                return new Android43Instantiator<T>(clazz);
 
             if (newInstanceFromObjectInputStream == null)
             {
                 if (objectConstructorId == -1)
                     throw new RuntimeException("Could not resolve constructor for " + clazz);
 
-                return new Android3Instantiator<>(clazz);
+                return new Android3Instantiator<T>(clazz);
             }
 
-            return new Android2Instantiator<>(clazz);
+            return new Android2Instantiator<T>(clazz);
         }
 
-        return new DefaultInstantiator<>(constructor);
+        return new DefaultInstantiator<T>(constructor);
     }
 
     private static <T> Constructor<T> getConstructor(Class<T> clazz)
@@ -381,8 +381,7 @@ public final class RuntimeEnv
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
-                    | InstantiationException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -408,7 +407,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectInputStream.invoke(null, clazz,
                         Object.class);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -434,7 +433,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
                         (int) objectConstructorId);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -460,7 +459,7 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
                         objectConstructorId);
             }
-            catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }

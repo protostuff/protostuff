@@ -98,7 +98,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                     newList(initialCollectionSize + 1);
 
             IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping =
-                    new IdentityHashMap<>(
+                    new IdentityHashMap<Class<?>, RegisteredMapFactory>(
                             initialMapSize);
 
             ArrayList<RegisteredMapFactory> maps = newList(initialMapSize);
@@ -261,7 +261,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(clazz))
                 throw new IllegalArgumentException("Duplicate registration for: " + clazz);
 
-            BaseHS<T> wrapper = new Lazy<>(id, clazz, strategy);
+            BaseHS<T> wrapper = new Lazy<T>(id, clazz, strategy);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(clazz, wrapper);
@@ -287,7 +287,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
                 throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
 
-            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema, strategy);
+            Registered<T> wrapper = new Registered<T>(id, schema, pipeSchema, strategy);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(schema.typeClass(), wrapper);
@@ -337,7 +337,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                         " (" + delegate.typeClass() + ")");
             }
 
-            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate, strategy);
+            RegisteredDelegate<T> rd = new RegisteredDelegate<T>(id, delegate, strategy);
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
@@ -833,7 +833,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
     static <K, V> IdentityHashMap<K, V> newMap(int size)
     {
-        return new IdentityHashMap<>(size);
+        return new IdentityHashMap<K,V>(size);
     }
 
     static final class RegisteredCollectionFactory implements CollectionSchema.MessageFactory

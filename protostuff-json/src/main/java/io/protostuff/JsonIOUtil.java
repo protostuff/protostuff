@@ -631,7 +631,7 @@ public final class JsonIOUtil
         }
 
         final JsonInput input = new JsonInput(parser, numeric);
-        final List<T> list = new ArrayList<>();
+        final List<T> list = new ArrayList<T>();
         for (JsonToken t = parser.nextToken(); t != JsonToken.END_ARRAY; t = parser.nextToken())
         {
             if (t != JsonToken.START_OBJECT)

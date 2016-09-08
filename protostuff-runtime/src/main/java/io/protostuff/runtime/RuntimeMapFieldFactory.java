@@ -87,7 +87,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -102,7 +102,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -184,7 +184,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -199,7 +199,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -284,7 +284,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -299,7 +299,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -384,7 +384,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -399,7 +399,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -502,7 +502,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -517,7 +517,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -617,7 +617,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -632,7 +632,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -716,7 +716,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -731,7 +731,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -817,7 +817,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -832,7 +832,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -919,7 +919,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -934,7 +934,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1038,7 +1038,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Enum<?>, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1053,7 +1053,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Enum<?>, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1154,7 +1154,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Enum<?>>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1169,7 +1169,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Enum<?>>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1256,7 +1256,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1271,7 +1271,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1360,7 +1360,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1375,7 +1375,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1465,7 +1465,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1480,7 +1480,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1587,7 +1587,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1602,7 +1602,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1704,7 +1704,7 @@ final class RuntimeMapFieldFactory
                     f.set(message, input.mergeObject(
                             (Map<Object, Object>) f.get(message), schema));
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -1719,7 +1719,7 @@ final class RuntimeMapFieldFactory
                 {
                     existing = (Map<Object, Object>) f.get(message);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }

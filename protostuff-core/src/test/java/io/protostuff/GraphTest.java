@@ -96,7 +96,7 @@ public class GraphTest extends AbstractTest
         bar2.setSomeInt(2);
         bar2.setSomeBaz(baz);
 
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(bar1);
         bars.add(bar2);
 

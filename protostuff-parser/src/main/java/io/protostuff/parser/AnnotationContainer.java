@@ -29,9 +29,9 @@ public abstract class AnnotationContainer implements HasAnnotations, HasProto
 {
 
     final LinkedHashMap<String, Annotation> annotations =
-            new LinkedHashMap<>();
+            new LinkedHashMap<String, Annotation>();
     
-    final ArrayList<String> docs = new ArrayList<>();
+    final ArrayList<String> docs = new ArrayList<String>();
     
     public ArrayList<String> getDocs()
     {

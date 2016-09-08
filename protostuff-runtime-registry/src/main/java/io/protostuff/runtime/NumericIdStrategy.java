@@ -334,7 +334,7 @@ public abstract class NumericIdStrategy extends IdStrategy
     protected static <T> ArrayList<T> newList(int size)
     {
         List<T> l = Collections.nCopies(size, null);
-        return new ArrayList<>(l);
+        return new ArrayList<T>(l);
     }
 
     protected static <T> void grow(ArrayList<T> list, int size)

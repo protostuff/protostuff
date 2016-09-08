@@ -264,7 +264,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(clazz))
                 throw new IllegalArgumentException("Duplicate registration for: " + clazz);
 
-            BaseHS<T> wrapper = new Lazy<>(clazz, strategy);
+            BaseHS<T> wrapper = new Lazy<T>(clazz, strategy);
             wrapper.id = id;
             strategy.pojos.set(id, wrapper);
 
@@ -291,7 +291,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(schema.typeClass()))
                 throw new IllegalArgumentException("Duplicate registration for: " + schema.typeClass());
 
-            Registered<T> wrapper = new Registered<>(id, schema, pipeSchema, strategy);
+            Registered<T> wrapper = new Registered<T>(id, schema, pipeSchema, strategy);
             strategy.pojos.set(id, wrapper);
 
             strategy.pojoMapping.put(schema.typeClass(), wrapper);
@@ -341,7 +341,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                         " (" + delegate.typeClass() + ")");
             }
 
-            RegisteredDelegate<T> rd = new RegisteredDelegate<>(id, delegate, strategy);
+            RegisteredDelegate<T> rd = new RegisteredDelegate<T>(id, delegate, strategy);
             strategy.delegates.set(id, rd);
             // just in case
             if (strategy.delegateMapping.put(delegate.typeClass(), rd) != null)
@@ -406,27 +406,27 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
         this.collectionIdStart = collectionIdStart;
         collectionId = new AtomicInteger(collectionIdStart);
-        collectionMapping = new ConcurrentHashMap<>(
+        collectionMapping = new ConcurrentHashMap<Class<?>, RuntimeCollectionFactory>(
                 collectionIdMax);
         collections = newList(collectionIdMax + 1);
 
         this.mapIdStart = mapIdStart;
         mapId = new AtomicInteger(mapIdStart);
-        mapMapping = new ConcurrentHashMap<>(mapIdMax);
+        mapMapping = new ConcurrentHashMap<Class<?>, RuntimeMapFactory>(mapIdMax);
         maps = newList(mapIdMax + 1);
 
         this.enumIdStart = enumIdStart;
         enumId = new AtomicInteger(enumIdStart);
-        enumMapping = new ConcurrentHashMap<>(enumIdMax);
+        enumMapping = new ConcurrentHashMap<Class<?>, RuntimeEnumIO>(enumIdMax);
         enums = newList(enumIdMax + 1);
 
         this.pojoIdStart = pojoIdStart;
         pojoId = new AtomicInteger(pojoIdStart);
-        pojoMapping = new ConcurrentHashMap<>(pojoIdMax);
+        pojoMapping = new ConcurrentHashMap<Class<?>, BaseHS<?>>(pojoIdMax);
         pojos = newList(pojoIdMax + 1);
 
         // delegates require explicit registration
-        delegateMapping = new IdentityHashMap<>(
+        delegateMapping = new IdentityHashMap<Class<?>, RegisteredDelegate<?>>(
                 10);// delegateIdMax);
         delegates = newList(11);// delegateIdMax + 1);
     }
@@ -443,7 +443,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         BaseHS<T> hs = (BaseHS<T>) pojoMapping.get(typeClass);
         if (hs == null && create)
         {
-            hs = new Lazy<>(typeClass, this);
+            hs = new Lazy<T>(typeClass, this);
             final BaseHS<T> last = (BaseHS<T>) pojoMapping.putIfAbsent(
                     typeClass, hs);
             if (last != null)

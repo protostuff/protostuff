@@ -57,7 +57,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
             this.tagName = tagName;
             this.id = id;
             this.root = root;
-            self = new AtomicReference<>(this);
+            self = new AtomicReference<Node>(this);
 
             if (parent != null)
                 parent.addNode(this);
@@ -70,7 +70,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         public void setAttribute(String key, String value)
         {
             if (attributes == null)
-                attributes = new HashMap<>();
+                attributes = new HashMap<String, String>();
 
             attributes.put(key, value);
         }
@@ -89,7 +89,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
     public static abstract class ContainerNode extends Node
     {
 
-        List<Node> nodes = new ArrayList<>();
+        List<Node> nodes = new ArrayList<Node>();
 
         public ContainerNode()
         {
@@ -138,7 +138,7 @@ public class PolymorphicRuntimeGraphTest extends AbstractTest
         public void addNodeById(Node node)
         {
             if (idMap == null)
-                idMap = new HashMap<>();
+                idMap = new HashMap<String, Node>();
 
             idMap.put(node.id, node);
         }

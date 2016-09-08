@@ -70,7 +70,7 @@ public class KvpByteArrayTest extends AbstractTest
     static final Schema<PojoWithBiggerByteArray> SCHEMA = new Schema<PojoWithBiggerByteArray>()
     {
 
-        final HashMap<String, Integer> fieldMap = new HashMap<>();
+        final HashMap<String, Integer> fieldMap = new HashMap<String, Integer>();
 
         {
             fieldMap.put("id", 1);

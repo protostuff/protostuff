@@ -74,7 +74,7 @@ public class PolymorphicSerializationTest extends AbstractTest
     public static class Zoo
     {
         protected Animal largestAnimal;
-        protected List<Animal> animals = new ArrayList<>();
+        protected List<Animal> animals = new ArrayList<Animal>();
 
         public int hashCode()
         {
@@ -307,7 +307,7 @@ public class PolymorphicSerializationTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Zoo> list = new ArrayList<>();
+        List<Zoo> list = new ArrayList<Zoo>();
         list.add(p);
         list.add(p2);
 
@@ -334,7 +334,7 @@ public class PolymorphicSerializationTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Zoo> list = new ArrayList<>();
+        List<Zoo> list = new ArrayList<Zoo>();
         list.add(p);
         list.add(p2);
 

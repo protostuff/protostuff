@@ -70,7 +70,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             STR_SYNCHRONIZED_MAP = "e", STR_SYNCHRONIZED_SORTED_MAP = "f",
             STR_CHECKED_MAP = "g", STR_CHECKED_SORTED_MAP = "h";
 
-    static final IdentityHashMap<Class<?>, Integer> __nonPublicMaps = new IdentityHashMap<>();
+    static final IdentityHashMap<Class<?>, Integer> __nonPublicMaps = new IdentityHashMap<Class<?>, Integer>();
 
     static final Field fSingletonMap_k, fSingletonMap_v,
 
@@ -397,7 +397,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                     k = fSingletonMap_k.get(value);
                     v = fSingletonMap_v.get(value);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -448,7 +448,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         {
             m = fUnmodifiableMap_m.get(value);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -466,7 +466,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             m = fSynchronizedMap_m.get(value);
             mutex = fSynchronizedMap_mutex.get(value);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -496,7 +496,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             keyType = fCheckedMap_keyType.get(value);
             valueType = fCheckedMap_valueType.get(value);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -650,7 +650,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_v.set(map, v);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -677,7 +677,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_k.set(map, k);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -699,7 +699,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             fSingletonMap_k.set(map, k);
             fSingletonMap_v.set(map, v);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -731,7 +731,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fUnmodifiableSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -761,7 +761,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fSynchronizedSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -807,7 +807,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fCheckedSortedMap_sm.set(map, m);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }

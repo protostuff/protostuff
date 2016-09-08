@@ -28,8 +28,8 @@ final class HashFieldMap<T> implements FieldMap<T>
 
     public HashFieldMap(Collection<Field<T>> fields)
     {
-        fieldsByName = new HashMap<>();
-        fieldsByNumber = new HashMap<>();
+        fieldsByName = new HashMap<String, Field<T>>();
+        fieldsByNumber = new HashMap<Integer, Field<T>>();
         for (Field<T> f : fields)
         {
             if (fieldsByName.containsKey(f.name))
@@ -46,7 +46,7 @@ final class HashFieldMap<T> implements FieldMap<T>
             this.fieldsByName.put(f.name, f);
         }
 
-        List<Field<T>> fieldList = new ArrayList<>(fields.size());
+        List<Field<T>> fieldList = new ArrayList<Field<T>>(fields.size());
         fieldList.addAll(fields);
         Collections.sort(fieldList, FIELD_COMPARATOR);
         this.fields = Collections.unmodifiableList(fieldList);
@@ -81,7 +81,11 @@ final class HashFieldMap<T> implements FieldMap<T>
         @Override
         public int compare(Field<?> o1, Field<?> o2)
         {
-            return Integer.compare(o1.number, o2.number);
+            return compare(o1.number, o2.number);
+        }
+
+        public static int compare(int x, int y) {
+            return (x < y) ? -1 : ((x == y) ? 0 : 1);
         }
     }
 }

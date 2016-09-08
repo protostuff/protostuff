@@ -23,7 +23,7 @@ public class CodedDataInputTest extends TestCase
         {
 
             SampleClass _clazz = new SampleClass();
-            List<String> testStrings = new ArrayList<>();
+            List<String> testStrings = new ArrayList<String>();
             for (int i = 0; i < 1800; i++)
             {
                 String test = new String("TestingString" + i);
@@ -54,7 +54,7 @@ public class CodedDataInputTest extends TestCase
     public void testIt() throws Exception
     {
         SampleClass _clazz = new SampleClass();
-        List<String> testStrings = new ArrayList<>();
+        List<String> testStrings = new ArrayList<String>();
         for (int i = 0; i < 1800; i++)
         {
             String test = new String("TestingString" + i);

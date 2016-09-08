@@ -575,7 +575,7 @@ public final class XmlIOUtil
             throw new XmlInputException("Expected token START_ELEMENT: list");
 
         // final String simpleName = schema.messageName();
-        final ArrayList<T> list = new ArrayList<>();
+        final ArrayList<T> list = new ArrayList<T>();
         final XmlInput input = new XmlInput(parser);
 
         for (int tag = parser.nextTag(); tag != END_ELEMENT; tag = parser.nextTag())

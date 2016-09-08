@@ -39,7 +39,7 @@ public final class CompilerMain
     public static final Pattern COMMA = Pattern.compile(",");
 
     static final HashMap<String, ProtoCompiler> __compilers =
-            new HashMap<>();
+            new HashMap<String, ProtoCompiler>();
     private static CompilerResolver __compilerResolver = null;
     static
     {
@@ -138,7 +138,7 @@ public final class CompilerMain
 
         Properties globalOptions = newGlobalOptions(props);
 
-        ArrayList<ProtoModule> modules = new ArrayList<>();
+        ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
         for (String m : COMMA.split(moduleString))
         {
             modules.add(loadModule(props, m.trim(), loader,

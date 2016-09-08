@@ -174,7 +174,7 @@ public abstract class SerDeserTest extends StandardTest
     public void testEmptyInnerFooDelimited() throws Exception
     {
         Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         bars.add(new Bar());
         fooCompare.setSomeBar(bars);
 
@@ -358,7 +358,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFoo2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
         bars.add(bar);
         Foo foo = new Foo();
@@ -376,7 +376,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);

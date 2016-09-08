@@ -168,7 +168,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
                 {
                     cause = __cause.get(value);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -220,7 +220,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
             {
                 cause = __cause.get(pojo);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -233,7 +233,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
                 {
                     __cause.set(pojo, cause);
                 }
-                catch (IllegalArgumentException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new RuntimeException(e);
                 }

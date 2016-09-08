@@ -197,8 +197,8 @@ public class MathObjectsTest extends AbstractTest
     static Payment filledPayment()
     {
         Payment p = new Payment();
-        ArrayList<BigInteger> biList = new ArrayList<>();
-        ArrayList<BigDecimal> bdList = new ArrayList<>();
+        ArrayList<BigInteger> biList = new ArrayList<BigInteger>();
+        ArrayList<BigDecimal> bdList = new ArrayList<BigDecimal>();
         p.setId(1);
         p.setBd(new BigDecimal("123456789.987654321"));
         p.setBi(BigInteger.valueOf(System.currentTimeMillis()));
@@ -231,7 +231,7 @@ public class MathObjectsTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Payment> list = new ArrayList<>();
+        List<Payment> list = new ArrayList<Payment>();
         list.add(p);
         list.add(p2);
 
@@ -261,7 +261,7 @@ public class MathObjectsTest extends AbstractTest
 
         assertEquals(p, p2);
 
-        List<Payment> list = new ArrayList<>();
+        List<Payment> list = new ArrayList<Payment>();
         list.add(p);
         list.add(p2);
 

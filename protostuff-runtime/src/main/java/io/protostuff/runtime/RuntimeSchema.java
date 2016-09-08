@@ -48,7 +48,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 {
 
     public static final int MIN_TAG_VALUE = 1;
-    public static final int MAX_TAG_VALUE = 536_870_911; // 2^29 - 1
+    public static final int MAX_TAG_VALUE = 536870911; // 2^29 - 1
     public static final String ERROR_TAG_VALUE = "Invalid tag number (value must be in range [1, 2^29-1])";
 
     private static final Set<String> NO_EXCLUSIONS = Collections.emptySet();
@@ -193,8 +193,10 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
     public static <T> RuntimeSchema<T> createFrom(Class<T> typeClass,
             String[] exclusions, IdStrategy strategy)
     {
-        HashSet<String> set = new HashSet<>();
-		Collections.addAll(set, exclusions);
+        HashSet<String> set = new HashSet<String>();
+        for (String exclusion : exclusions)
+            set.add(exclusion);
+
         return createFrom(typeClass, set, strategy);
     }
 
@@ -213,7 +215,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
         }
 
         final Map<String, java.lang.reflect.Field> fieldMap = findInstanceFields(typeClass);
-        final ArrayList<Field<T>> fields = new ArrayList<>(
+        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(
                 fieldMap.size());
         int i = 0;
         boolean annotated = false;
@@ -276,7 +278,8 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
             }
         }
 
-        return new RuntimeSchema<>(typeClass, fields, RuntimeEnv.newInstantiator(typeClass));
+        return new RuntimeSchema<T>(typeClass, fields,
+                RuntimeEnv.newInstantiator(typeClass));
     }
 
     /**
@@ -294,7 +297,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
                             + "class nor interface: \"" + typeClass.getName());
         }
 
-        final ArrayList<Field<T>> fields = new ArrayList<>(
+        final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(
                 declaredFields.size());
         int i = 0;
         for (Map.Entry<String, String> entry : declaredFields.entrySet())
@@ -319,13 +322,13 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
                 fields.add(field);
             }
         }
-        return new RuntimeSchema<>(typeClass, fields, RuntimeEnv.newInstantiator(typeClass));
+        return new RuntimeSchema<T>(typeClass, fields, RuntimeEnv.newInstantiator(typeClass));
     }
 
     static Map<String, java.lang.reflect.Field> findInstanceFields(
             Class<?> typeClass)
     {
-        LinkedHashMap<String, java.lang.reflect.Field> fieldMap = new LinkedHashMap<>();
+        LinkedHashMap<String, java.lang.reflect.Field> fieldMap = new LinkedHashMap<String, java.lang.reflect.Field>();
         fill(fieldMap, typeClass);
         return fieldMap;
     }
@@ -348,14 +351,14 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, Constructor<T> constructor)
     {
-        this(typeClass, fields, new DefaultInstantiator<>(
+        this(typeClass, fields, new DefaultInstantiator<T>(
                 constructor));
     }
 
     public RuntimeSchema(Class<T> typeClass, Collection<Field<T>> fields, Instantiator<T> instantiator)
     {
 		this.fieldMap = createFieldMap(fields);
-		this.pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
+		this.pipeSchema = new RuntimePipeSchema<T>(this, fieldMap);
         this.instantiator = instantiator;
         this.typeClass = typeClass;
     }
@@ -372,10 +375,10 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T>
 		}
 		if (preferHashFieldMap(fields, lastFieldNumber))
 		{
-			return new HashFieldMap<>(fields);
+			return new HashFieldMap<T>(fields);
 		}
 		// array field map should be more efficient
-		return new ArrayFieldMap<>(fields, lastFieldNumber);
+		return new ArrayFieldMap<T>(fields, lastFieldNumber);
 	}
 
 	private boolean preferHashFieldMap(Collection<Field<T>> fields, int lastFieldNumber)

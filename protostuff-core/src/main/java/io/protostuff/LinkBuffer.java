@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * A list of ByteBuffers.
- * 
+ *
  * @author Ryan Rawson
  */
 public class LinkBuffer
@@ -18,7 +18,7 @@ public class LinkBuffer
 
     public final int allocSize;
     ByteBuffer current;
-    List<ByteBuffer> buffers = new ArrayList<>();
+    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>();
 
     public LinkBuffer()
     {
@@ -50,7 +50,7 @@ public class LinkBuffer
     public List<ByteBuffer> getBuffers()
     {
         int size = buffers.size() + (current != null ? 1 : 0);
-        List<ByteBuffer> copy = new ArrayList<>(size);
+        List<ByteBuffer> copy = new ArrayList<ByteBuffer>(size);
         for (ByteBuffer b : buffers)
         {
             copy.add(b.duplicate());

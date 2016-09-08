@@ -70,7 +70,7 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
     public PojoWithRepeated addSomeInt32(Integer someInt32)
     {
         if (this.someInt32 == null)
-            this.someInt32 = new ArrayList<>();
+            this.someInt32 = new ArrayList<Integer>();
         this.someInt32.add(someInt32);
         return this;
     }
@@ -101,7 +101,7 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
     public PojoWithRepeated addSomeFixed64(Long someFixed64)
     {
         if (this.someFixed64 == null)
-            this.someFixed64 = new ArrayList<>();
+            this.someFixed64 = new ArrayList<Long>();
         this.someFixed64.add(someFixed64);
         return this;
     }
@@ -164,12 +164,12 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
                         return;
                     case 1:
                         if (message.someInt32 == null)
-                            message.someInt32 = new ArrayList<>();
+                            message.someInt32 = new ArrayList<Integer>();
                         message.someInt32.add(input.readInt32());
                         break;
                     case 2:
                         if (message.someFixed64 == null)
-                            message.someFixed64 = new ArrayList<>();
+                            message.someFixed64 = new ArrayList<Long>();
                         message.someFixed64.add(input.readFixed64());
                         break;
                     default:
@@ -230,7 +230,7 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
         return number == null ? 0 : number.intValue();
     }
 
-    private static final java.util.HashMap<String, Integer> __fieldMap = new java.util.HashMap<>();
+    private static final java.util.HashMap<String, Integer> __fieldMap = new java.util.HashMap<String, Integer>();
     static
     {
         __fieldMap.put("someInt32", 1);
