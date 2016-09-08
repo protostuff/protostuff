@@ -145,7 +145,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Objects;
 <if(message.repeatedFieldPresent)>
 import java.util.ArrayList;
 import java.util.List;
@@ -382,10 +381,14 @@ public boolean equals(Object obj) {
     <endif>
 }
 
+private boolean equals(Object a, Object b) {
+    return (a == b) || (a != null && a.equals(b));
+}
+
 @Override
 public int hashCode() {
     <if(first(message.fields))>
-    return Objects.hash(<message.fields:field_name(field=it, options=options, message=message); separator=", ">);
+    return java.util.Arrays.hashCode(new Object[] {<message.fields:field_name(field=it, options=options, message=message); separator=", ">});
     <else>
     return 0;
     <endif>
@@ -394,7 +397,7 @@ public int hashCode() {
 >>
 
 field_equals(field, options, message) ::= <<
-Objects.equals(this.<var(val=field.name, fmt="CC", options=options)>, that.<var(val=field.name, fmt="CC", options=options)>)
+equals(this.<var(val=field.name, fmt="CC", options=options)>, that.<var(val=field.name, fmt="CC", options=options)>)
 >>
 
 field_name(field, options, message) ::= <<

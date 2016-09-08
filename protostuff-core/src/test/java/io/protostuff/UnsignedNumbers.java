@@ -4,7 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Objects;
+import java.util.Arrays;
 
 /**
  * @author Kostiantyn Shchepanovskyi
@@ -105,17 +105,21 @@ public final class UnsignedNumbers implements Externalizable, Message<UnsignedNu
 			return false;
 		}
 		final UnsignedNumbers that = (UnsignedNumbers) obj;
-		return Objects.equals(this.uint32, that.uint32) &&
-				Objects.equals(this.uint64, that.uint64) &&
-				Objects.equals(this.fixed32, that.fixed32) &&
-				Objects.equals(this.fixed64, that.fixed64);
+		return equals(this.uint32, that.uint32) &&
+				equals(this.uint64, that.uint64) &&
+				equals(this.fixed32, that.fixed32) &&
+				equals(this.fixed64, that.fixed64);
+	}
+
+	public static boolean equals(Object a, Object b) {
+		return (a == b) || (a != null && a.equals(b));
 	}
 	// java serialization
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(uint32, uint64, fixed32, fixed64);
+		return Arrays.hashCode(new Object[] {uint32, uint64, fixed32, fixed64});
 	}
 
 	@Override

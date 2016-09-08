@@ -1,7 +1,7 @@
 package io.protostuff.benchmarks;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -61,9 +61,9 @@ public class StringSerializerBenchmark
     }
 
     @Benchmark
-    public byte[] builtInSerializer()
+    public byte[] builtInSerializer() throws UnsupportedEncodingException
     {
-        return s.getBytes(StandardCharsets.UTF_8);
+        return s.getBytes("UTF-8");
     }
 
     @Benchmark
