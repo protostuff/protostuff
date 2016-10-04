@@ -14,20 +14,21 @@
 
 package io.protostuff.runtime;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-
-import org.junit.Test;
-
 import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for abstract generic collection types.
@@ -550,6 +551,35 @@ public class CollectionTest
 
         assertTrue(schema.getFields().get(2) instanceof RuntimeObjectField);
         assertTrue(schema.getFields().get(3) instanceof RuntimeDerivativeField);
+    }
+
+    static class Entry<T> {
+        private Collection<T> collection = Collections.emptyList();
+    }
+
+    @Test
+    public void testImmutableCollection() throws IOException {
+        Schema<Entry> schema = RuntimeSchema
+                .getSchema(Entry.class);
+
+        Entry<String> originalObject = new Entry<>();
+        Collection<String> collection = new HashSet<>();
+        collection.add("hello");
+        collection.add("world");
+
+        originalObject.collection = collection;
+
+        byte[] bytes;
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ProtobufIOUtil.writeTo(bos, originalObject, schema, LinkedBuffer.allocate(1024));
+            bytes = bos.toByteArray();
+        }
+
+        Entry deserializedObject = schema.newMessage();
+        ProtobufIOUtil.mergeFrom(bytes, deserializedObject, schema);
+        assertNotNull(deserializedObject);
+        for (String word : originalObject.collection)
+            assertTrue(deserializedObject.collection.contains(word));
     }
 
 }

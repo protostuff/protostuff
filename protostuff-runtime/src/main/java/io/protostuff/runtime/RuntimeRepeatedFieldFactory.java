@@ -14,24 +14,17 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.CollectionSchema.MessageFactory;
+import io.protostuff.*;
+import io.protostuff.WireFormat.FieldType;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import io.protostuff.CollectionSchema.MessageFactory;
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Morph;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
-import io.protostuff.WireFormat.FieldType;
-
 /**
  * Static utility for creating runtime repeated (list/collection) fields.
- * 
+ *
  * @author David Yu
  * @created Jan 23, 2011
  */
@@ -122,7 +115,7 @@ final class RuntimeRepeatedFieldFactory
     private static <T> Field<T> createCollectionEnumV(int number, String name,
             final java.lang.reflect.Field f,
             final MessageFactory messageFactory,
-            final Class<Object> genericType, 
+            final Class<Object> genericType,
             final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
@@ -463,8 +456,16 @@ final class RuntimeRepeatedFieldFactory
                         collection.add(value);
                         f.set(message, collection);
                     }
-                    else
-                        existing.add(value);
+                    else {
+                        try {
+                            existing.add(value);
+                        } catch (UnsupportedOperationException e){
+                            final Collection<Object> collection = messageFactory
+                                    .newMessage();
+                            collection.add(value);
+                            f.set(message, collection);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -484,19 +485,19 @@ final class RuntimeRepeatedFieldFactory
         {
             final Class<?> clazz = f.getType();
             final Morph morph = f.getAnnotation(Morph.class);
-            
-            if (0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) && 
+
+            if (0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) &&
                     (morph == null || morph.value()))
             {
-                if (!clazz.getName().startsWith("java.util") && 
+                if (!clazz.getName().startsWith("java.util") &&
                         pojo(clazz, morph, strategy))
                 {
                     return POJO.create(number, name, f, strategy);
                 }
-                
+
                 return OBJECT.create(number, name, f, strategy);
             }
-            
+
             if (morph != null)
             {
                 // can be used to override the configured system property:
