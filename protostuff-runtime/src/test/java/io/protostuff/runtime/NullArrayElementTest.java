@@ -513,13 +513,13 @@ public abstract class NullArrayElementTest extends AbstractTest
     
     public static final class PojoWithArrayInList
     {
-        ArrayList<Boolean[]> boolArrayList = new ArrayList<>();
-        ArrayList<Character[]> charArrayList = new ArrayList<>();
-        ArrayList<Short[]> shortArrayList = new ArrayList<>();
-        ArrayList<Integer[]> intArrayList = new ArrayList<>();
-        ArrayList<Long[]> longArrayList = new ArrayList<>();
-        ArrayList<Float[]> floatArrayList = new ArrayList<>();
-        ArrayList<Double[]> doubleArrayList = new ArrayList<>();
+        ArrayList<Boolean[]> boolArrayList = new ArrayList<Boolean[]>();
+        ArrayList<Character[]> charArrayList = new ArrayList<Character[]>();
+        ArrayList<Short[]> shortArrayList = new ArrayList<Short[]>();
+        ArrayList<Integer[]> intArrayList = new ArrayList<Integer[]>();
+        ArrayList<Long[]> longArrayList = new ArrayList<Long[]>();
+        ArrayList<Float[]> floatArrayList = new ArrayList<Float[]>();
+        ArrayList<Double[]> doubleArrayList = new ArrayList<Double[]>();
         
         @Override
         public int hashCode()
@@ -644,13 +644,13 @@ public abstract class NullArrayElementTest extends AbstractTest
     
     public static final class PojoWithArrayPrimitiveInList
     {
-        ArrayList<boolean[]> boolArrayList = new ArrayList<>();
-        ArrayList<char[]> charArrayList = new ArrayList<>();
-        ArrayList<short[]> shortArrayList = new ArrayList<>();
-        ArrayList<int[]> intArrayList = new ArrayList<>();
-        ArrayList<long[]> longArrayList = new ArrayList<>();
-        ArrayList<float[]> floatArrayList = new ArrayList<>();
-        ArrayList<double[]> doubleArrayList = new ArrayList<>();
+        ArrayList<boolean[]> boolArrayList = new ArrayList<boolean[]>();
+        ArrayList<char[]> charArrayList = new ArrayList<char[]>();
+        ArrayList<short[]> shortArrayList = new ArrayList<short[]>();
+        ArrayList<int[]> intArrayList = new ArrayList<int[]>();
+        ArrayList<long[]> longArrayList = new ArrayList<long[]>();
+        ArrayList<float[]> floatArrayList = new ArrayList<float[]>();
+        ArrayList<double[]> doubleArrayList = new ArrayList<double[]>();
         
         @Override
         public int hashCode()
@@ -775,13 +775,13 @@ public abstract class NullArrayElementTest extends AbstractTest
     
     public static final class PojoWithArrayInMap
     {
-        HashMap<Integer,Boolean[]> boolHashMap = new HashMap<>();
-        HashMap<Integer,Character[]> charHashMap = new HashMap<>();
-        HashMap<Integer,Short[]> shortHashMap = new HashMap<>();
-        HashMap<Integer,Integer[]> intHashMap = new HashMap<>();
-        HashMap<Integer,Long[]> longHashMap = new HashMap<>();
-        HashMap<Integer,Float[]> floatHashMap = new HashMap<>();
-        HashMap<Integer,Double[]> doubleHashMap = new HashMap<>();
+        HashMap<Integer,Boolean[]> boolHashMap = new HashMap<Integer,Boolean[]>();
+        HashMap<Integer,Character[]> charHashMap = new HashMap<Integer,Character[]>();
+        HashMap<Integer,Short[]> shortHashMap = new HashMap<Integer,Short[]>();
+        HashMap<Integer,Integer[]> intHashMap = new HashMap<Integer,Integer[]>();
+        HashMap<Integer,Long[]> longHashMap = new HashMap<Integer,Long[]>();
+        HashMap<Integer,Float[]> floatHashMap = new HashMap<Integer,Float[]>();
+        HashMap<Integer,Double[]> doubleHashMap = new HashMap<Integer,Double[]>();
         
         @Override
         public int hashCode()
@@ -906,7 +906,7 @@ public abstract class NullArrayElementTest extends AbstractTest
     
     static ArrayList<Object> asList(Object array)
     {
-        ArrayList<Object> list = new ArrayList<>();
+        ArrayList<Object> list = new ArrayList<Object>();
         if (array == null)
             return list;
         
@@ -919,13 +919,13 @@ public abstract class NullArrayElementTest extends AbstractTest
     
     public static final class PojoWithArrayPrimitiveInMap
     {
-        HashMap<Integer,boolean[]> boolHashMap = new HashMap<>();
-        HashMap<Integer,char[]> charHashMap = new HashMap<>();
-        HashMap<Integer,short[]> shortHashMap = new HashMap<>();
-        HashMap<Integer,int[]> intHashMap = new HashMap<>();
-        HashMap<Integer,long[]> longHashMap = new HashMap<>();
-        HashMap<Integer,float[]> floatHashMap = new HashMap<>();
-        HashMap<Integer,double[]> doubleHashMap = new HashMap<>();
+        HashMap<Integer,boolean[]> boolHashMap = new HashMap<Integer,boolean[]>();
+        HashMap<Integer,char[]> charHashMap = new HashMap<Integer,char[]>();
+        HashMap<Integer,short[]> shortHashMap = new HashMap<Integer,short[]>();
+        HashMap<Integer,int[]> intHashMap = new HashMap<Integer,int[]>();
+        HashMap<Integer,long[]> longHashMap = new HashMap<Integer,long[]>();
+        HashMap<Integer,float[]> floatHashMap = new HashMap<Integer,float[]>();
+        HashMap<Integer,double[]> doubleHashMap = new HashMap<Integer,double[]>();
         
         @Override
         public int hashCode()
