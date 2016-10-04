@@ -3,7 +3,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.1</version>
   </parent>
 
   <artifactId>protostuff-runtime-registry</artifactId>
