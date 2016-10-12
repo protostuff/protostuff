@@ -57,7 +57,7 @@ import io.protostuff.WireFormat.FieldType;
 public final class RuntimeUnsafeFieldFactory
 {
 
-    private static final sun.misc.Unsafe us = initUnsafe();
+    static final sun.misc.Unsafe us = initUnsafe();
 
     private static sun.misc.Unsafe initUnsafe()
     {

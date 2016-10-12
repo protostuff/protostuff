@@ -169,6 +169,9 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
     };
 
     static final RuntimeFieldFactory<Object> DELEGATE;
+    
+    // for repeated/collection fields.
+    static final Accessor.Factory ACCESSOR_FACTORY;
 
     static
     {
@@ -195,6 +198,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
             POLYMORPHIC_POJO = RuntimeUnsafeFieldFactory.POLYMORPHIC_POJO;
 
             DELEGATE = RuntimeUnsafeFieldFactory.DELEGATE;
+            ACCESSOR_FACTORY = UnsafeAccessor.FACTORY;
         }
         else
         {
@@ -219,6 +223,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
             POLYMORPHIC_POJO = RuntimeReflectionFieldFactory.POLYMORPHIC_POJO;
 
             DELEGATE = RuntimeReflectionFieldFactory.DELEGATE;
+            ACCESSOR_FACTORY = ReflectAccessor.FACTORY;
         }
         
         __inlineValues.put(Integer.TYPE.getName(), INT32);
