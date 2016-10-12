@@ -29,6 +29,7 @@
                   <fileset dir="../protostuff-runtime/src/main/java">
                     <exclude name="**/RuntimeUnsafeFieldFactory.java" />
                     <exclude name="**/OnDemandSunReflectionFactory.java" />
+                    <exclude name="**/UnsafeAccessor.java" />
                     <exclude name="**/RuntimeFieldFactory.java" />
                     <exclude name="**/RuntimeEnv.java" />
                   </fileset>
