@@ -50,6 +50,8 @@ final class RuntimeCollectionFieldFactory
     {
         return COLLECTION;
     }
+    
+    static final Accessor.Factory AF = RuntimeFieldFactory.ACCESSOR_FACTORY;
 
     /*
      * private static final DerivativeSchema POLYMORPHIC_COLLECTION_VALUE_SCHEMA = new DerivativeSchema() {
@@ -72,45 +74,24 @@ final class RuntimeCollectionFieldFactory
      */
 
     private static <T> Field<T> createCollectionInlineV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             MessageFactory messageFactory, final Delegate<Object> inline)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(inline.getFieldType(),
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Collection<Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        accessor.<Collection<Object>>get(message), schema));
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
             }
@@ -146,46 +127,25 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionEnumV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            java.lang.reflect.Field f, MessageFactory messageFactory,
             Class<Object> genericType, final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
+        final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Enum<?>>(FieldType.ENUM, number,
                 name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Collection<Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        accessor.<Collection<Enum<?>>>get(message), schema));
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Enum<?>> existing;
-                try
-                {
-                    existing = (Collection<Enum<?>>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Enum<?>> existing = accessor.get(message);
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
             }
@@ -221,48 +181,26 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            java.lang.reflect.Field f, MessageFactory messageFactory,
             Class<Object> genericType, IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(
                 genericType, true);
+        final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
                 name, f.getAnnotation(Tag.class), messageFactory)
         {
-
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Collection<Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        accessor.<Collection<Object>>get(message), schema));
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
             }
@@ -300,46 +238,25 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             MessageFactory messageFactory, Class<Object> genericType,
             final IdStrategy strategy)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
                 name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Collection<Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        accessor.<Collection<Object>>get(message), schema));
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
             }
@@ -385,46 +302,25 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionObjectV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             MessageFactory messageFactory, final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
                 name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Collection<Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        accessor.<Collection<Object>>get(message), schema));
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
             }
@@ -471,7 +367,7 @@ final class RuntimeCollectionFieldFactory
         @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
-                final java.lang.reflect.Field f, IdStrategy strategy)
+                java.lang.reflect.Field f, IdStrategy strategy)
         {
             final Class<?> clazz = f.getType();
             final Morph morph = f.getAnnotation(Morph.class);

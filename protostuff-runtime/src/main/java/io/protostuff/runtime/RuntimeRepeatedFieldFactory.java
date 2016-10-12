@@ -49,57 +49,32 @@ final class RuntimeRepeatedFieldFactory
     {
         return REPEATED;
     }
+    
+    static final Accessor.Factory AF = RuntimeFieldFactory.ACCESSOR_FACTORY;
 
     private static <T> Field<T> createCollectionInlineV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             final MessageFactory messageFactory, final Delegate<Object> inline)
     {
+        final Accessor accessor = AF.create(f);
         return new Field<T>(inline.getFieldType(), number, name, true,
                 f.getAnnotation(Tag.class))
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = inline.readFrom(input);
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>) f
-                            .get(message);
-                    if (existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory
-                                .newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                Collection<Object> existing = accessor.get(message);
+                if (existing == null)
+                    accessor.set(message, existing = messageFactory.newMessage());
+                
+                existing.add(value);
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> collection;
-                try
-                {
-                    collection = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> collection = accessor.get(message);
                 if (collection != null && !collection.isEmpty())
                 {
                     for (Object o : collection)
@@ -120,58 +95,31 @@ final class RuntimeRepeatedFieldFactory
     }
 
     private static <T> Field<T> createCollectionEnumV(int number, String name,
-            final java.lang.reflect.Field f,
+            java.lang.reflect.Field f,
             final MessageFactory messageFactory,
             final Class<Object> genericType, 
             final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
+        final Accessor accessor = AF.create(f);
         return new Field<T>(FieldType.ENUM, number, name, true,
                 f.getAnnotation(Tag.class))
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Enum<?> value = eio.readFrom(input);
-                try
-                {
-                    final Collection<Enum<?>> existing = (Collection<Enum<?>>) f
-                            .get(message);
-                    if (existing == null)
-                    {
-                        final Collection<Enum<?>> collection = messageFactory
-                                .newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                Collection<Enum<?>> existing = accessor.get(message);
+                if (existing == null)
+                    accessor.set(message, existing = messageFactory.newMessage());
+                
+                existing.add(value);
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Enum<?>> collection;
-                try
-                {
-                    collection = (Collection<Enum<?>>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Enum<?>> collection = accessor.get(message);
                 if (collection != null && !collection.isEmpty())
                 {
                     for (Enum<?> en : collection)
@@ -192,59 +140,31 @@ final class RuntimeRepeatedFieldFactory
     }
 
     private static <T> Field<T> createCollectionPojoV(int number, String name,
-            final java.lang.reflect.Field f,
+            java.lang.reflect.Field f,
             final MessageFactory messageFactory,
             final Class<Object> genericType, IdStrategy strategy)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeMessageField<T, Object>(genericType,
                 strategy.getSchemaWrapper(genericType, true),
                 FieldType.MESSAGE, number, name, true,
                 f.getAnnotation(Tag.class))
         {
-
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = input.mergeObject(null, getSchema());
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>) f
-                            .get(message);
-                    if (existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory
-                                .newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                Collection<Object> existing = accessor.get(message);
+                if (existing == null)
+                    accessor.set(message, existing = messageFactory.newMessage());
+                
+                existing.add(value);
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> collection;
-                try
-                {
-                    collection = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> collection = accessor.get(message);
                 if (collection != null && !collection.isEmpty())
                 {
                     final Schema<Object> schema = getSchema();
@@ -266,19 +186,15 @@ final class RuntimeRepeatedFieldFactory
     }
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             final MessageFactory messageFactory,
             final Class<Object> genericType, IdStrategy strategy)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeDerivativeField<T>(genericType, FieldType.MESSAGE,
                 number, name, true, f.getAnnotation(Tag.class), strategy)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = input.mergeObject(message, schema);
@@ -286,41 +202,18 @@ final class RuntimeRepeatedFieldFactory
                         && ((GraphInput) input).isCurrentMessageReference())
                 {
                     // a reference from polymorphic+cyclic graph deser
-                    try
-                    {
-                        final Collection<Object> existing = (Collection<Object>) f
-                                .get(message);
-                        if (existing == null)
-                        {
-                            final Collection<Object> collection = messageFactory
-                                    .newMessage();
-                            collection.add(value);
-                            f.set(message, collection);
-                        }
-                        else
-                            existing.add(value);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                    Collection<Object> existing = accessor.get(message);
+                    if (existing == null)
+                        accessor.set(message, existing = messageFactory.newMessage());
+                    
+                    existing.add(value);
                 }
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null && !existing.isEmpty())
                 {
                     for (Object o : existing)
@@ -339,7 +232,6 @@ final class RuntimeRepeatedFieldFactory
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void doMergeFrom(Input input, Schema<Object> schema,
                     Object message) throws IOException
             {
@@ -351,43 +243,26 @@ final class RuntimeRepeatedFieldFactory
                 }
 
                 schema.mergeFrom(input, value);
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>) f
-                            .get(message);
-                    if (existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory
-                                .newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                Collection<Object> existing = accessor.get(message);
+                if (existing == null)
+                    accessor.set(message, existing = messageFactory.newMessage());
+                
+                existing.add(value);
             }
         };
     }
 
     private static <T> Field<T> createCollectionObjectV(int number,
-            String name, final java.lang.reflect.Field f,
+            String name, java.lang.reflect.Field f,
             final MessageFactory messageFactory, Class<Object> genericType,
             PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
+        final Accessor accessor = AF.create(f);
         return new RuntimeObjectField<T>(genericType, FieldType.MESSAGE,
                 number, name, true, f.getAnnotation(Tag.class), factory,
                 strategy)
         {
-            {
-                f.setAccessible(true);
-            }
-
             @Override
-            @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = input.mergeObject(message, schema);
@@ -395,41 +270,18 @@ final class RuntimeRepeatedFieldFactory
                         && ((GraphInput) input).isCurrentMessageReference())
                 {
                     // a reference from polymorphic+cyclic graph deser
-                    try
-                    {
-                        final Collection<Object> existing = (Collection<Object>) f
-                                .get(message);
-                        if (existing == null)
-                        {
-                            final Collection<Object> collection = messageFactory
-                                    .newMessage();
-                            collection.add(value);
-                            f.set(message, collection);
-                        }
-                        else
-                            existing.add(value);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                    Collection<Object> existing = accessor.get(message);
+                    if (existing == null)
+                        accessor.set(message, existing = messageFactory.newMessage());
+                    
+                    existing.add(value);
                 }
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Collection<Object> existing;
-                try
-                {
-                    existing = (Collection<Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-
+                final Collection<Object> existing = accessor.get(message);
                 if (existing != null && !existing.isEmpty())
                 {
                     for (Object o : existing)
@@ -449,27 +301,13 @@ final class RuntimeRepeatedFieldFactory
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             public void setValue(Object value, Object message)
             {
-                try
-                {
-                    final Collection<Object> existing = (Collection<Object>) f
-                            .get(message);
-                    if (existing == null)
-                    {
-                        final Collection<Object> collection = messageFactory
-                                .newMessage();
-                        collection.add(value);
-                        f.set(message, collection);
-                    }
-                    else
-                        existing.add(value);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                Collection<Object> existing = accessor.get(message);
+                if (existing == null)
+                    accessor.set(message, existing = messageFactory.newMessage());
+                
+                existing.add(value);
             }
         };
     }
@@ -480,7 +318,7 @@ final class RuntimeRepeatedFieldFactory
         @Override
         @SuppressWarnings("unchecked")
         public <T> Field<T> create(int number, String name,
-                final java.lang.reflect.Field f, IdStrategy strategy)
+                java.lang.reflect.Field f, IdStrategy strategy)
         {
             final Class<?> clazz = f.getType();
             final Morph morph = f.getAnnotation(Morph.class);
