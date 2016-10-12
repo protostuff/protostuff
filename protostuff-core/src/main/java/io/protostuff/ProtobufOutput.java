@@ -262,67 +262,66 @@ public final class ProtobufOutput extends WriteSession implements Output
         }
 
         final int lastOffset = tail.offset, lastSize = size;
-
-        // optimize for small messages
-        if (lastOffset != lastBuffer.buffer.length)
+        
+        if (lastOffset == lastBuffer.buffer.length)
         {
-            // we have enough space for the 1-byte delim
-            lastBuffer.offset++;
-            size++;
+            // not enough size for the 1-byte delimiter
+            final LinkedBuffer nextBuffer = new LinkedBuffer(nextBufferSize);
+            // new buffer for the content
+            tail = nextBuffer;
 
             schema.writeTo(this, value);
 
-            final int msgSize = size - lastSize - 1;
-
-            if (msgSize < 128)
-            {
-                // fits
-                lastBuffer.buffer[lastOffset] = (byte) msgSize;
-                return;
-            }
-
-            // split into two buffers
-
-            // the second buffer (contains the message contents)
-            final LinkedBuffer view = new LinkedBuffer(lastBuffer.buffer,
-                    lastOffset + 1, lastBuffer.offset);
-
-            if (lastBuffer == tail)
-                tail = view;
-            else
-                view.next = lastBuffer.next;
-
-            // the first buffer (contains the tag)
-            lastBuffer.offset = lastOffset;
+            final int msgSize = size - lastSize;
 
             final byte[] delimited = new byte[computeRawVarint32Size(msgSize)];
             writeRawVarInt32(msgSize, delimited, 0);
 
-            // add the difference
-            size += (delimited.length - 1);
+            size += delimited.length;
 
             // wrap the byte array (delimited) and insert between the two buffers
-            new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = view;
-
+            new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = nextBuffer;
             return;
         }
-
-        // not enough size for the 1-byte delimiter
-        final LinkedBuffer nextBuffer = new LinkedBuffer(nextBufferSize);
-        // new buffer for the content
-        tail = nextBuffer;
+        
+        // we have enough space for the 1-byte delim
+        lastBuffer.offset++;
+        size++;
 
         schema.writeTo(this, value);
 
-        final int msgSize = size - lastSize;
+        final int msgSize = size - lastSize - 1;
+
+        // optimize for small messages
+        if (msgSize < 128)
+        {
+            // fits
+            lastBuffer.buffer[lastOffset] = (byte) msgSize;
+            return;
+        }
+
+        // split into two buffers
+
+        // the second buffer (contains the message contents)
+        final LinkedBuffer view = new LinkedBuffer(lastBuffer.buffer,
+                lastOffset + 1, lastBuffer.offset);
+
+        if (lastBuffer == tail)
+            tail = view;
+        else
+            view.next = lastBuffer.next;
+
+        // the first buffer (contains the tag)
+        lastBuffer.offset = lastOffset;
 
         final byte[] delimited = new byte[computeRawVarint32Size(msgSize)];
         writeRawVarInt32(msgSize, delimited, 0);
 
-        size += delimited.length;
+        // add the difference
+        size += (delimited.length - 1);
 
         // wrap the byte array (delimited) and insert between the two buffers
-        new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = nextBuffer;
+        new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = view;
     }
 
     /*
