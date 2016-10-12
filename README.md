@@ -42,7 +42,7 @@ Questions/Concerns/Suggestions
 Requirements
 ------------
 
-Java 1.7 or higher
+Java 1.6 or higher
 
 Build Requirements
 ------------------
