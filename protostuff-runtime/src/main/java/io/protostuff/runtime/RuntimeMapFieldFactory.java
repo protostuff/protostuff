@@ -16,6 +16,7 @@ package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -1867,7 +1868,9 @@ final class RuntimeMapFieldFactory
             }
 
             final Class<Object> clazzK = (Class<Object>) getGenericType(f, 0);
-            if (clazzK == null)
+            if (clazzK == null || ((Map.class.isAssignableFrom(clazzK) || 
+                    Collection.class.isAssignableFrom(clazzK)) && 
+                    !strategy.isRegistered(clazzK)))
             {
                 // the key is not a simple parameterized type.
                 return createMapObjectKObjectV(number, name, f, messageFactory,
@@ -1878,7 +1881,9 @@ final class RuntimeMapFieldFactory
             }
 
             final Class<Object> clazzV = (Class<Object>) getGenericType(f, 1);
-            if (clazzV == null)
+            if (clazzV == null || ((Map.class.isAssignableFrom(clazzV) || 
+                    Collection.class.isAssignableFrom(clazzV)) && 
+                    !strategy.isRegistered(clazzV)))
             {
                 // the value is not a simple parameterized type.
                 final Delegate<Object> inlineK = getDelegateOrInline(clazzK,
