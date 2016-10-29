@@ -918,7 +918,31 @@ public abstract class ObjectSchema extends PolymorphicSchema
             strategy.writeClassIdTo(output, c, false);
             return;
         }
-
+        
+        if (Throwable.class.isAssignableFrom(clazz))
+        {
+            // throwable
+            PolymorphicThrowableSchema.writeObjectTo(output, value, currentSchema,
+                    strategy);
+            return;
+        }
+        
+        if (strategy.isRegistered(clazz))
+        {
+            // pojo
+            final Schema<Object> schema = strategy.writePojoIdTo(
+                    output, ID_POJO, clazz).getSchema();
+            
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput)output).updateLast(schema, currentSchema);
+            }
+            
+            schema.writeTo(output, value);
+            return;
+        }
+        
         if (Map.class.isAssignableFrom(clazz))
         {
             if (Collections.class == clazz.getDeclaringClass())
@@ -994,15 +1018,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
             strategy.COLLECTION_SCHEMA.writeTo(output, (Collection<Object>) value);
             return;
         }
-
-        if (Throwable.class.isAssignableFrom(clazz))
-        {
-            // throwable
-            PolymorphicThrowableSchema.writeObjectTo(output, value, currentSchema,
-                    strategy);
-            return;
-        }
-
+        
         // pojo
         final Schema<Object> schema = strategy.writePojoIdTo(
                 output, ID_POJO, clazz).getSchema();

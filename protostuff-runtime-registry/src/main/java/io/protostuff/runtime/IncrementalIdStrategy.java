@@ -264,7 +264,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             if (strategy.pojoMapping.containsKey(clazz))
                 throw new IllegalArgumentException("Duplicate registration for: " + clazz);
 
-            BaseHS<T> wrapper = new Lazy<T>(clazz, strategy);
+            BaseHS<T> wrapper = new LazyRegister<T>(clazz, strategy);
             wrapper.id = id;
             strategy.pojos.set(id, wrapper);
 
@@ -434,7 +434,8 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
     @Override
     public boolean isRegistered(Class<?> typeClass)
     {
-        return pojoMapping.get(typeClass) instanceof Registered;
+        BaseHS<?> hs = pojoMapping.get(typeClass);
+        return hs != null && !(hs instanceof Lazy);
     }
 
     @SuppressWarnings("unchecked")
@@ -1044,13 +1045,13 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         }
     }
 
-    static final class Lazy<T> extends BaseHS<T>
+    static class LazyRegister<T> extends BaseHS<T>
     {
         final Class<T> typeClass;
         private volatile Schema<T> schema;
         private volatile Pipe.Schema<T> pipeSchema;
 
-        Lazy(Class<T> typeClass, IdStrategy strategy)
+        LazyRegister(Class<T> typeClass, IdStrategy strategy)
         {
             super(strategy);
             this.typeClass = typeClass;
@@ -1101,6 +1102,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 }
             }
             return pipeSchema;
+        }
+    }
+    
+    static final class Lazy<T> extends LazyRegister<T>
+    {
+        Lazy(Class<T> typeClass, IdStrategy strategy)
+        {
+            super(typeClass, strategy);
         }
     }
 }

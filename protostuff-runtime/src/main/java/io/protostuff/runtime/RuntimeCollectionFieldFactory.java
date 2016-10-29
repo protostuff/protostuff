@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
 
 import io.protostuff.CollectionSchema.MessageFactory;
 import io.protostuff.GraphInput;
@@ -424,7 +425,9 @@ final class RuntimeCollectionFieldFactory
 
             final Class<Object> genericType = (Class<Object>) getGenericType(f,
                     0);
-            if (genericType == null)
+            if (genericType == null || ((Map.class.isAssignableFrom(genericType) || 
+                    Collection.class.isAssignableFrom(genericType)) && 
+                    !strategy.isRegistered(genericType)))
             {
                 // the value is not a simple parameterized type.
                 return createCollectionObjectV(number, name, f, messageFactory,
