@@ -48,3 +48,10 @@ Build Requirements
 ------------------
 
 Maven 3.2.3 or higher
+
+Developing with eclipse
+------------------
+```sh
+mvn install && mvn eclipse:eclipse
+# Open eclipse, import existing project, navigate to the protostuff module you're after, then hit 'Finish'.
+```
