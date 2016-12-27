@@ -47,6 +47,44 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         public Class<?> typeClass();
     }
 
+    private static final Comparable EMPTY_OBJECT = new Comparable()
+    {
+        @Override
+        public int compareTo(Object o)
+        {
+            return o == this ? 0 : -1;
+        }
+        @Override
+        public boolean equals(Object o)
+        {
+            return o == this;
+        }
+        @Override
+        public int hashCode()
+        {
+            return 0;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Map> T removeUnmodifiableWrapper(T map, MessageFactory messageFactory)
+    {
+        if(map == null)
+            return null;
+
+        try
+        {
+           map.put(EMPTY_OBJECT, EMPTY_OBJECT);
+           map.remove(EMPTY_OBJECT);
+        }
+        catch (UnsupportedOperationException e)
+        {
+            map = (T) messageFactory.newMessage();
+        }
+
+        return map;
+    }
+
     /**
      * A message factory for standard {@code Map} implementations.
      */

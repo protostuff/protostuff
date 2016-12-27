@@ -50,6 +50,45 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
         public Class<?> typeClass();
     }
 
+
+    private static final Comparable EMPTY_OBJECT = new Comparable()
+    {
+        @Override
+        public int compareTo(Object o)
+        {
+            return o == this ? 0 : -1;
+        }
+        @Override
+        public boolean equals(Object o)
+        {
+            return o == this;
+        }
+        @Override
+        public int hashCode()
+        {
+            return 0;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Collection> T removeUnmodifiableWrapper(T collection, MessageFactory messageFactory)
+    {
+        if (collection == null)
+            return (T) messageFactory.newMessage();
+
+        try
+        {
+            collection.add(EMPTY_OBJECT);
+            collection.remove(EMPTY_OBJECT);
+        }
+        catch (UnsupportedOperationException e)
+        {
+            collection = (T) messageFactory.newMessage();
+        }
+
+        return collection;
+    }
+
     public enum MessageFactories implements MessageFactory
     {
         // defaults to ArrayList

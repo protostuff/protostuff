@@ -569,10 +569,9 @@ public class CollectionTest
 
         originalObject.collection = collection;
 
-        byte[] bytes;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ProtobufIOUtil.writeTo(bos, originalObject, schema, LinkedBuffer.allocate(1024));
-        bytes = bos.toByteArray();
+        byte[] bytes = bos.toByteArray();
         bos.close();
 
         Entry deserializedObject = schema.newMessage();

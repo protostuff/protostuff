@@ -20,16 +20,9 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
+import io.protostuff.*;
 import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.MapSchema.MessageFactory;
-import io.protostuff.Message;
-import io.protostuff.Morph;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 
 /**
@@ -66,9 +59,11 @@ final class RuntimeMapFieldFactory
      */
 
     private static <T> Field<T> createMapInlineKEnumV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Delegate<Object> inlineK, final Class<Object> clazzV,
-            final IdStrategy strategy)
+                                                      final java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Delegate<Object> inlineK,
+                                                      final Class<Object> clazzV,
+                                                      final IdStrategy strategy)
     {
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
 
@@ -83,15 +78,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -165,9 +152,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKInlineV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inlineK,
-            final Delegate<Object> inlineV)
+                                                        String name,
+                                                        final java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory,
+                                                        final Delegate<Object> inlineK,
+                                                        final Delegate<Object> inlineV)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -180,15 +169,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -262,9 +243,9 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Delegate<Object> inlineK, final Class<Object> clazzV,
-            IdStrategy strategy)
+                                                      final java.lang.reflect.Field f, final MessageFactory messageFactory,
+                                                      final Delegate<Object> inlineK, final Class<Object> clazzV,
+                                                      IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV,
                 true);
@@ -280,15 +261,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -364,9 +337,9 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKPolymorphicV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inlineK,
-            final Class<Object> clazzV, final IdStrategy strategy)
+                                                             String name, final java.lang.reflect.Field f,
+                                                             final MessageFactory messageFactory, final Delegate<Object> inlineK,
+                                                             final Class<Object> clazzV, final IdStrategy strategy)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -380,15 +353,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -481,10 +446,10 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKObjectV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inlineK,
-            final Schema<Object> valueSchema,
-            final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
+                                                        String name, final java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory, final Delegate<Object> inlineK,
+                                                        final Schema<Object> valueSchema,
+                                                        final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -498,15 +463,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -595,9 +552,9 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKEnumV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Class<Object> clazzV,
-            final IdStrategy strategy)
+                                                    final java.lang.reflect.Field f, final MessageFactory messageFactory,
+                                                    final Class<Object> clazzK, final Class<Object> clazzV,
+                                                    final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
@@ -613,15 +570,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message,f, input, schema, messageFactory);
             }
 
             @Override
@@ -695,9 +644,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKInlineV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Delegate<Object> inlineV,
-            final IdStrategy strategy)
+                                                      final java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Class<Object> clazzK,
+                                                      final Delegate<Object> inlineV,
+                                                      final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
@@ -712,15 +663,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -794,9 +737,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Class<Object> clazzV,
-            final IdStrategy strategy)
+                                                    final java.lang.reflect.Field f,
+                                                    final MessageFactory messageFactory,
+                                                    final Class<Object> clazzK,
+                                                    final Class<Object> clazzV,
+                                                    final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV,
@@ -813,15 +758,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -897,9 +834,12 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKPolymorphicV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Class<Object> clazzK,
-            final Class<Object> clazzV, final IdStrategy strategy)
+                                                           String name,
+                                                           final java.lang.reflect.Field f,
+                                                           final MessageFactory messageFactory,
+                                                           final Class<Object> clazzK,
+                                                           final Class<Object> clazzV,
+                                                           final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
@@ -915,15 +855,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1016,9 +948,12 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKObjectV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Schema<Object> valueSchema,
-            final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
+                                                      final java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Class<Object> clazzK,
+                                                      final Schema<Object> valueSchema,
+                                                      final Pipe.Schema<Object> valuePipeSchema,
+                                                      final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
@@ -1034,15 +969,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1131,9 +1058,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapPojoKEnumV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Class<Object> clazzV,
-            final IdStrategy strategy)
+                                                    final java.lang.reflect.Field f,
+                                                    final MessageFactory messageFactory,
+                                                    final Class<Object> clazzK,
+                                                    final Class<Object> clazzV,
+                                                    final IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
                 true);
@@ -1150,15 +1079,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1234,9 +1155,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapPojoKInlineV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Delegate<Object> inlineV,
-            IdStrategy strategy)
+                                                      final java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Class<Object> clazzK,
+                                                      final Delegate<Object> inlineV,
+                                                      IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
                 true);
@@ -1252,15 +1175,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1336,9 +1251,11 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapPojoKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
-            final Class<Object> clazzK, final Class<Object> clazzV,
-            IdStrategy strategy)
+                                                    final java.lang.reflect.Field f,
+                                                    final MessageFactory messageFactory,
+                                                    final Class<Object> clazzK,
+                                                    final Class<Object> clazzV,
+                                                    IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
                 true);
@@ -1356,15 +1273,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message,f, input, schema, messageFactory);
             }
 
             @Override
@@ -1442,9 +1351,12 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapPojoKPolymorphicV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Class<Object> clazzK,
-            final Class<Object> clazzV, final IdStrategy strategy)
+                                                           String name,
+                                                           final java.lang.reflect.Field f,
+                                                           final MessageFactory messageFactory,
+                                                           final Class<Object> clazzK,
+                                                           final Class<Object> clazzV,
+                                                           final IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
                 true);
@@ -1461,15 +1373,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1564,7 +1468,7 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapPojoKObjectV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
@@ -1583,15 +1487,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1682,11 +1578,14 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapObjectKObjectV(int number,
-            String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Schema<Object> keySchema,
-            final Pipe.Schema<Object> keyPipeSchema,
-            final Schema<Object> valueSchema,
-            final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
+                                                        String name,
+                                                        final java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory,
+                                                        final Schema<Object> keySchema,
+                                                        final Pipe.Schema<Object> keyPipeSchema,
+                                                        final Schema<Object> valueSchema,
+                                                        final Pipe.Schema<Object> valuePipeSchema,
+                                                        final IdStrategy strategy)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -1700,15 +1599,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                merge(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -2125,5 +2016,24 @@ final class RuntimeMapFieldFactory
             throw new UnsupportedOperationException();
         }
     };
+
+    private static<T extends Map<?,?>> void merge(Object message,
+                              java.lang.reflect.Field field,
+                              Input input,
+                              Schema<T> schema,
+                              MessageFactory messageFactory)
+    {
+        try
+        {
+            @SuppressWarnings("unchecked")
+            T map = (T) field.get(message);
+            map = MapSchema.removeUnmodifiableWrapper(map, messageFactory);
+            field.set(message, input.mergeObject(map, schema));
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

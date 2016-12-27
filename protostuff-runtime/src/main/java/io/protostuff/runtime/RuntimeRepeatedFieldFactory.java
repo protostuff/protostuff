@@ -16,18 +16,12 @@ package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
 
+import io.protostuff.*;
 import io.protostuff.CollectionSchema.MessageFactory;
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Morph;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
 import io.protostuff.WireFormat.FieldType;
 
 /**
@@ -305,8 +299,10 @@ final class RuntimeRepeatedFieldFactory
             public void setValue(Object value, Object message)
             {
                 Collection<Object> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
+                Collection<Object> newCollection = CollectionSchema.removeUnmodifiableWrapper(existing, messageFactory);
+
+                if (existing != newCollection)
+                    accessor.set(message, existing = newCollection);
                 
                 existing.add(value);
             }
