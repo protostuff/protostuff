@@ -18,13 +18,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static io.protostuff.MapSchema.getEnumInstance;
+
 /**
  * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
  * <p>
  * If your application relies on {@link Object#equals(Object)}, it will fail when a serialized collection contains null
  * values (The deserialized collection will not contained the null value). {@link MapSchema} on the otherhand can
  * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.
- * 
+ *
  * @author David Yu
  * @created Jan 26, 2011
  */
@@ -71,15 +73,31 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     };
 
     @SuppressWarnings("unchecked")
-    public static <T extends Collection> T removeUnmodifiableWrapper(T collection, MessageFactory messageFactory)
+    public static <T extends Collection, E extends Enum<E>> T removeUnmodifiableWrapper(T collection,
+                                                                                        MessageFactory messageFactory,
+                                                                                        Class<E> enumType)
     {
         if (collection == null)
             return (T) messageFactory.newMessage();
 
         try
         {
-            collection.add(EMPTY_OBJECT);
-            collection.remove(EMPTY_OBJECT);
+            if (enumType == null)
+            {
+                collection.add(EMPTY_OBJECT);
+                collection.remove(EMPTY_OBJECT);
+            }
+            else
+            {
+                E instance = getEnumInstance(enumType);
+                if(instance == null)
+                    return collection;
+
+                int size = collection.size();
+                collection.add(instance);
+                if(size != collection.size())
+                    collection.remove(instance);
+            }
         }
         catch (UnsupportedOperationException e)
         {

@@ -66,16 +66,54 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         }
     };
 
+    static <T extends Enum<T>> T getEnumInstance(Class<T>type)
+    {
+        if (type.getEnumConstants().length > 0)
+            return type.getEnumConstants()[0];
+
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
-    public static <T extends Map> T removeUnmodifiableWrapper(T map, MessageFactory messageFactory)
+    public static <T extends Map> T removeUnmodifiableWrapper(T map,
+                                                              MessageFactory messageFactory,
+                                                              Class<? extends Enum>...enumType)
     {
         if(map == null)
-            return null;
+            return (T) messageFactory.newMessage();
 
         try
         {
-           map.put(EMPTY_OBJECT, EMPTY_OBJECT);
-           map.remove(EMPTY_OBJECT);
+           if(enumType.length == 0)
+           {
+                map.put(EMPTY_OBJECT, EMPTY_OBJECT);
+                map.remove(EMPTY_OBJECT);
+           }
+           else
+           {
+               Object keyInstance ;
+               if(enumType[0] == null)
+                   keyInstance = EMPTY_OBJECT;
+               else
+               {
+                   keyInstance = getEnumInstance(enumType[0]);
+                   if (keyInstance == null)
+                       return map;
+               }
+               Object valueInstance;
+               if(enumType[1] == null)
+                   valueInstance = EMPTY_OBJECT;
+               else
+                   valueInstance = getEnumInstance(enumType[1]);
+
+
+               Object value = map.get(keyInstance);
+
+               map.put(keyInstance, valueInstance);
+               map.remove(keyInstance);
+               if(value != null)
+                    map.put(keyInstance, value);
+           }
         }
         catch (UnsupportedOperationException e)
         {
@@ -84,6 +122,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
 
         return map;
     }
+
 
     /**
      * A message factory for standard {@code Map} implementations.

@@ -48,6 +48,11 @@ public class CollectionTest
         RuntimeSchema.map(AbstractEmployee.class, Employee.class);
     }
 
+    public enum Sequence
+    {
+        ONE, TWO, THREE, FOUR, FIVE
+    }
+
     public interface ITask
     {
         void setId(int id);
@@ -554,7 +559,9 @@ public class CollectionTest
 
     static class Entry<T>
     {
-        private Collection<T> collection = Collections.emptyList();
+        private Collection<T> emptyCollection = Collections.emptyList();
+        private Set<Sequence> enumSet = EnumSet.of(Sequence.TWO, Sequence.ONE);
+        private Collection<Sequence> unmodifiationEnumSet = Collections.unmodifiableSet(EnumSet.of(Sequence.ONE, Sequence.TWO));
     }
 
     @Test
@@ -567,7 +574,11 @@ public class CollectionTest
         collection.add("hello");
         collection.add("world");
 
-        originalObject.collection = collection;
+        originalObject.emptyCollection = collection;
+
+        originalObject.enumSet.add(Sequence.THREE);
+        originalObject.unmodifiationEnumSet = EnumSet.allOf(Sequence.class);
+
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ProtobufIOUtil.writeTo(bos, originalObject, schema, LinkedBuffer.allocate(1024));
@@ -577,8 +588,14 @@ public class CollectionTest
         Entry deserializedObject = schema.newMessage();
         ProtobufIOUtil.mergeFrom(bytes, deserializedObject, schema);
         assertNotNull(deserializedObject);
-        for (String word : originalObject.collection)
-            assertTrue(deserializedObject.collection.contains(word));
+        for (String word : originalObject.emptyCollection)
+            assertTrue(deserializedObject.emptyCollection.contains(word));
+
+        for(Sequence sequence : EnumSet.of(Sequence.ONE,Sequence.TWO,Sequence.THREE))
+            assertTrue(deserializedObject.enumSet.contains(sequence));
+
+        for(Sequence sequence: Sequence.values())
+            assertTrue(deserializedObject.unmodifiationEnumSet.contains(sequence));
     }
 
 
@@ -589,6 +606,8 @@ public class CollectionTest
 
         SortedMap sortedMap;
         Map unmodifiableMap;
+        Map<?,?> enumKMap, enumVMap, enumMap;
+
 
         Set unmodifiableSet;
         SortedSet sortedSet;
@@ -627,6 +646,10 @@ public class CollectionTest
 
         bean.unmodifiableCollection = Collections.unmodifiableCollection(fill(new ArrayList(), size));
 
+        bean.enumMap = Collections.unmodifiableMap(fillEnum(new HashMap<Enum,Enum>()));
+        bean.enumKMap = Collections.unmodifiableMap(fillEnumK(new HashMap<Enum,Object>()));
+        bean.enumVMap = Collections.unmodifiableMap(fillEnumV(new HashMap<Object,Enum>()));
+
         return bean;
     }
 
@@ -661,6 +684,23 @@ public class CollectionTest
         for(Object obj: collection)
             assertTrue(bean.unmodifiableCollection.contains(obj));
 
+
+        Map map = Collections.unmodifiableMap(fillEnum(new HashMap<Enum,Enum>()));
+        for(Map.Entry entry: bean.enumMap.entrySet())
+        {
+            assertNotNull(map.get(entry.getKey()));
+            assertEquals(map.get(entry.getKey()),entry.getValue());
+        }
+
+        map = Collections.unmodifiableMap(fillEnumK(new HashMap<Enum,Object>()));
+        for(Object key: bean.enumKMap.keySet())
+            assertTrue(map.containsKey(key));
+
+        map = Collections.unmodifiableMap(fillEnumV(new HashMap<Object,Enum>()));
+        for(Object value: bean.enumVMap.values())
+        {
+            assertTrue(map.containsValue(value));
+        }
     }
 
     private static List newArrayList()
@@ -674,6 +714,30 @@ public class CollectionTest
             collection.add(i);
 
         return collection;
+    }
+
+    private static <T extends Map<Enum, Object>> T fillEnumK (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(sequence, new Object());
+
+        return map;
+    }
+
+    private static <T extends Map<Enum,Enum>> T fillEnum (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(sequence, sequence);
+
+        return map;
+    }
+
+    private static <T extends Map<Object, Enum>> T fillEnumV (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(new Object(), sequence);
+
+        return map;
     }
 
     private static <T extends Map> T fill(T map, int size)

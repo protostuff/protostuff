@@ -14,16 +14,16 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.*;
+import io.protostuff.MapSchema.MapWrapper;
+import io.protostuff.MapSchema.MessageFactory;
+import io.protostuff.WireFormat.FieldType;
+
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
-
-import io.protostuff.*;
-import io.protostuff.MapSchema.MapWrapper;
-import io.protostuff.MapSchema.MessageFactory;
-import io.protostuff.WireFormat.FieldType;
 
 /**
  * Static utility for creating runtime {@link java.util.Map} fields.
@@ -62,7 +62,7 @@ final class RuntimeMapFieldFactory
                                                       final java.lang.reflect.Field f,
                                                       final MessageFactory messageFactory,
                                                       final Delegate<Object> inlineK,
-                                                      final Class<Object> clazzV,
+                                                      final Class<? extends Enum> clazzV,
                                                       final IdStrategy strategy)
     {
         final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
@@ -78,7 +78,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                merge(message,f,input,schema, messageFactory, null, clazzV);
             }
 
             @Override
@@ -243,8 +243,10 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKPojoV(int number, String name,
-                                                      final java.lang.reflect.Field f, final MessageFactory messageFactory,
-                                                      final Delegate<Object> inlineK, final Class<Object> clazzV,
+                                                      final java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Delegate<Object> inlineK,
+                                                      final Class<Object> clazzV,
                                                       IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV,
@@ -446,10 +448,13 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKObjectV(int number,
-                                                        String name, final java.lang.reflect.Field f,
-                                                        final MessageFactory messageFactory, final Delegate<Object> inlineK,
+                                                        String name,
+                                                        final java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory,
+                                                        final Delegate<Object> inlineK,
                                                         final Schema<Object> valueSchema,
-                                                        final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
+                                                        final Pipe.Schema<Object> valuePipeSchema,
+                                                        final IdStrategy strategy)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -552,8 +557,10 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKEnumV(int number, String name,
-                                                    final java.lang.reflect.Field f, final MessageFactory messageFactory,
-                                                    final Class<Object> clazzK, final Class<Object> clazzV,
+                                                    final java.lang.reflect.Field f,
+                                                    final MessageFactory messageFactory,
+                                                    final Class<? extends Enum> clazzK,
+                                                    final Class<? extends Enum> clazzV,
                                                     final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
@@ -570,7 +577,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message,f, input, schema, messageFactory);
+                merge(message, f, input, schema, messageFactory, clazzK, clazzV);
             }
 
             @Override
@@ -646,7 +653,7 @@ final class RuntimeMapFieldFactory
     private static <T> Field<T> createMapEnumKInlineV(int number, String name,
                                                       final java.lang.reflect.Field f,
                                                       final MessageFactory messageFactory,
-                                                      final Class<Object> clazzK,
+                                                      final Class<? extends Enum> clazzK,
                                                       final Delegate<Object> inlineV,
                                                       final IdStrategy strategy)
     {
@@ -663,7 +670,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                 merge(message, f, input, schema, messageFactory, clazzK);
             }
 
             @Override
@@ -739,7 +746,7 @@ final class RuntimeMapFieldFactory
     private static <T> Field<T> createMapEnumKPojoV(int number, String name,
                                                     final java.lang.reflect.Field f,
                                                     final MessageFactory messageFactory,
-                                                    final Class<Object> clazzK,
+                                                    final Class<? extends Enum> clazzK,
                                                     final Class<Object> clazzV,
                                                     final IdStrategy strategy)
     {
@@ -758,7 +765,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                 merge(message,f,input,schema, messageFactory, clazzK);
             }
 
             @Override
@@ -837,7 +844,7 @@ final class RuntimeMapFieldFactory
                                                            String name,
                                                            final java.lang.reflect.Field f,
                                                            final MessageFactory messageFactory,
-                                                           final Class<Object> clazzK,
+                                                           final Class<? extends Enum> clazzK,
                                                            final Class<Object> clazzV,
                                                            final IdStrategy strategy)
     {
@@ -855,7 +862,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                merge(message, f, input, schema, messageFactory, clazzK);
             }
 
             @Override
@@ -950,7 +957,7 @@ final class RuntimeMapFieldFactory
     private static <T> Field<T> createMapEnumKObjectV(int number, String name,
                                                       final java.lang.reflect.Field f,
                                                       final MessageFactory messageFactory,
-                                                      final Class<Object> clazzK,
+                                                      final Class<? extends Enum> clazzK,
                                                       final Schema<Object> valueSchema,
                                                       final Pipe.Schema<Object> valuePipeSchema,
                                                       final IdStrategy strategy)
@@ -969,7 +976,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                merge(message, f, input, schema, messageFactory, clazzK);
             }
 
             @Override
@@ -1061,7 +1068,7 @@ final class RuntimeMapFieldFactory
                                                     final java.lang.reflect.Field f,
                                                     final MessageFactory messageFactory,
                                                     final Class<Object> clazzK,
-                                                    final Class<Object> clazzV,
+                                                    final Class<? extends Enum> clazzV,
                                                     final IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
@@ -1079,7 +1086,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                merge(message,f,input,schema,messageFactory, null, clazzV);
             }
 
             @Override
@@ -1257,10 +1264,8 @@ final class RuntimeMapFieldFactory
                                                     final Class<Object> clazzV,
                                                     IdStrategy strategy)
     {
-        final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
-                true);
-        final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV,
-                true);
+        final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
+        final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
 
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
@@ -1798,7 +1803,7 @@ final class RuntimeMapFieldFactory
                 if (clazzK.isEnum())
                 {
                     return createMapEnumKObjectV(number, name, f,
-                            messageFactory, clazzK,
+                            messageFactory, (Class<Enum>)((Object)clazzK),
                             strategy.OBJECT_ELEMENT_SCHEMA,
                             strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
                 }
@@ -1855,7 +1860,7 @@ final class RuntimeMapFieldFactory
 
                 if (clazzV.isEnum())
                     return createMapInlineKEnumV(number, name, f,
-                            messageFactory, inlineK, clazzV, strategy);
+                            messageFactory, inlineK, (Class<Enum>)(Object) clazzV, strategy);
 
                 final PolymorphicSchema psV = PolymorphicSchemaFactories
                         .getSchemaFromCollectionOrMapGenericType(clazzV,
@@ -1889,15 +1894,18 @@ final class RuntimeMapFieldFactory
                         strategy);
                 if (inlineV != null)
                     return createMapEnumKInlineV(number, name, f,
-                            messageFactory, clazzK, inlineV, strategy);
+                            messageFactory, (Class<Enum>) (Object) clazzK, inlineV, strategy);
 
                 if (Message.class.isAssignableFrom(clazzV))
                     return createMapEnumKPojoV(number, name, f, messageFactory,
-                            clazzK, clazzV, strategy);
+                            (Class<Enum>) (Object)  clazzK, clazzV, strategy);
 
                 if (clazzV.isEnum())
-                    return createMapEnumKEnumV(number, name, f, messageFactory,
-                            clazzK, clazzV, strategy);
+                    return createMapEnumKEnumV(number, name, f,
+                            messageFactory,
+                            (Class<? extends Enum>) (Object) clazzK,
+                            (Class<? extends Enum>) (Object) clazzV,
+                            strategy);
 
                 final PolymorphicSchema psV = PolymorphicSchemaFactories
                         .getSchemaFromCollectionOrMapGenericType(clazzV,
@@ -1905,24 +1913,24 @@ final class RuntimeMapFieldFactory
                 if (psV != null)
                 {
                     return createMapEnumKObjectV(number, name, f,
-                            messageFactory, clazzK, psV, psV.getPipeSchema(),
+                            messageFactory, (Class<Enum>) (Object) clazzK, psV, psV.getPipeSchema(),
                             strategy);
                 }
 
                 if (pojo(clazzV, f.getAnnotation(Morph.class), strategy))
                     return createMapEnumKPojoV(number, name, f, messageFactory,
-                            clazzK, clazzV, strategy);
+                            (Class<? extends Enum>) (Object) clazzK, clazzV, strategy);
 
                 if (clazzV.isInterface())
                 {
                     return createMapEnumKObjectV(number, name, f,
-                            messageFactory, clazzK,
+                            messageFactory, (Class<? extends Enum>) (Object) clazzK,
                             strategy.OBJECT_ELEMENT_SCHEMA,
                             strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
                 }
 
                 return createMapEnumKPolymorphicV(number, name, f,
-                        messageFactory, clazzK, clazzV, strategy);
+                        messageFactory, (Class<? extends Enum>) (Object) clazzK, clazzV, strategy);
             }
 
             final PolymorphicSchema psK = PolymorphicSchemaFactories
@@ -1949,7 +1957,7 @@ final class RuntimeMapFieldFactory
 
                 if (clazzV.isEnum())
                     return createMapPojoKEnumV(number, name, f, messageFactory,
-                            clazzK, clazzV, strategy);
+                            clazzK, (Class< ? extends Enum>) (Object)  clazzV, strategy);
 
                 final PolymorphicSchema psV = PolymorphicSchemaFactories
                         .getSchemaFromCollectionOrMapGenericType(clazzV,
@@ -2017,17 +2025,27 @@ final class RuntimeMapFieldFactory
         }
     };
 
+
+    @SuppressWarnings("unchecked")
     private static<T extends Map<?,?>> void merge(Object message,
-                              java.lang.reflect.Field field,
-                              Input input,
-                              Schema<T> schema,
-                              MessageFactory messageFactory)
+                                                                    java.lang.reflect.Field field,
+                                                                    Input input,
+                                                                    Schema<T> schema,
+                                                                    MessageFactory messageFactory,
+                                                                    Class<? extends Enum> ... enumType)
     {
         try
         {
-            @SuppressWarnings("unchecked")
             T map = (T) field.get(message);
-            map = MapSchema.removeUnmodifiableWrapper(map, messageFactory);
+            if(enumType.length == 0)
+                map = MapSchema.removeUnmodifiableWrapper(map, messageFactory);
+            else
+            {
+                Class<? extends Enum> keyType = enumType[0];
+                Class<? extends Enum> valueType = enumType.length == 2 ? enumType[1] : null;
+                map = MapSchema.removeUnmodifiableWrapper(map, messageFactory, keyType, valueType);
+            }
+
             field.set(message, input.mergeObject(map, schema));
         }
         catch (Exception e)
