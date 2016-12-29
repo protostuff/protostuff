@@ -96,15 +96,18 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         PriorityBlockingQueue<String> priorityBlockingQueue;
         PriorityQueue<String> priorityQueue;
 
-        Map<Gender,Gender> enumMap = new EnumMap<Gender,Gender>(Gender.class);
-        Map<Gender,Gender> otherMap = new ConcurrentHashMap<Gender, Gender>();
         Set<Gender> enumSet = Collections.unmodifiableSet(EnumSet.of(Gender.FEMALE));
+        Set<String> unmodifiableSet = new TreeSet<String>();
+        Set<String> fillTreeSet = new TreeSet<String>();
+
 
         {
-            enumMap.put(Gender.FEMALE, Gender.FEMALE);
-            enumMap.put(Gender.MALE, Gender.MALE);
-            enumMap = Collections.unmodifiableMap(enumMap);
-            otherMap.put(Gender.FEMALE, Gender.MALE);
+            unmodifiableSet.add("hello");
+            unmodifiableSet.add("world");
+            unmodifiableSet = Collections.unmodifiableSet(unmodifiableSet);
+
+            fillTreeSet.add("hello");
+            fillTreeSet.add("world");
         }
 
         PojoFoo fill()
@@ -186,13 +189,12 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
              * priorityQueue = new PriorityQueue<String>(); priorityQueue.add("26");
              */
 
-            enumMap = new EnumMap<Gender,Gender>(Gender.class);
-            enumMap.put(Gender.MALE, Gender.FEMALE);
-            enumMap.put(Gender.FEMALE, Gender.MALE);
-
-            otherMap.put(Gender.FEMALE, Gender.FEMALE);
-
             enumSet = EnumSet.allOf(Gender.class);
+
+            unmodifiableSet = new TreeSet<String>();
+            unmodifiableSet.add("empty");
+
+            fillTreeSet.add("empty");
 
             return this;
         }
@@ -268,11 +270,11 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             result = prime * result
                     + ((vector == null) ? 0 : vector.hashCode());
             result = prime * result
-                    + ((enumMap == null) ? 0 : enumMap.hashCode());
-            result = prime * result
                     + ((enumSet == null) ? 0 : enumSet.hashCode());
             result = prime * result
-                    + ((otherMap == null)? 0 : otherMap.hashCode());
+                    + ((unmodifiableSet == null)? 0 : unmodifiableSet.hashCode());
+            result = prime * result
+                    + ((fillTreeSet == null)? 0 : fillTreeSet.hashCode());
 
             return result;
         }
@@ -494,20 +496,19 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             }
             else if(!enumSet.equals(other.enumSet))
                 return false;
-
-            if(enumMap == null)
+            if(unmodifiableSet == null)
             {
-                if(other.enumMap != null)
+                if(other.unmodifiableSet != null)
                     return false;
             }
-            else if(!enumMap.equals(other.enumMap))
+            else if(!unmodifiableSet.equals(other.unmodifiableSet))
                 return false;
-            if(otherMap == null)
+            if(fillTreeSet == null)
             {
-                if(other.otherMap != null)
+                if(other.fillTreeSet != null)
                     return false;
             }
-            else if(!otherMap.equals(other.otherMap))
+            else if(!fillTreeSet.equals(other.fillTreeSet))
                 return false;
 
             return true;
@@ -561,6 +562,17 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ConcurrentNavigableMap<String, String> concurrentNavigableMap;
         ConcurrentSkipListMap<String, String> concurrentSkipListMap;
 
+        Map<Gender,Gender> enumMap = new EnumMap<Gender,Gender>(Gender.class);
+        Map<Gender,Gender> otherMap = new ConcurrentHashMap<Gender, Gender>();
+
+        {
+            enumMap.put(Gender.FEMALE, Gender.FEMALE);
+            enumMap.put(Gender.MALE, Gender.MALE);
+            enumMap = Collections.unmodifiableMap(enumMap);
+            otherMap.put(Gender.FEMALE, Gender.MALE);
+        }
+
+
         PojoBar fill()
         {
             map = new LinkedHashMap<String, String>();
@@ -601,6 +613,12 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
             concurrentSkipListMap = new ConcurrentSkipListMap<String, String>();
             concurrentSkipListMap.put("23", "24");
+
+            enumMap = new EnumMap<Gender,Gender>(Gender.class);
+            enumMap.put(Gender.MALE, Gender.FEMALE);
+            enumMap.put(Gender.FEMALE, Gender.MALE);
+
+            otherMap.put(Gender.FEMALE, Gender.FEMALE);
 
             return this;
         }
@@ -643,6 +661,11 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
                     + ((treeMap == null) ? 0 : treeMap.hashCode());
             result = prime * result
                     + ((weakHashMap == null) ? 0 : weakHashMap.hashCode());
+            result = prime * result
+                    + ((enumMap == null) ? 0 : enumMap.hashCode());
+            result = prime * result
+                    + ((otherMap == null)? 0 : otherMap.hashCode());
+
             return result;
         }
 
@@ -749,6 +772,21 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             }
             else if (!weakHashMap.equals(other.weakHashMap))
                 return false;
+            if(enumMap == null)
+            {
+                if(other.enumMap != null)
+                    return false;
+            }
+            else if(!enumMap.equals(other.enumMap))
+                return false;
+            if(otherMap == null)
+            {
+                if(other.otherMap != null)
+                    return false;
+            }
+            else if(!otherMap.equals(other.otherMap))
+                return false;
+
             return true;
         }
 
