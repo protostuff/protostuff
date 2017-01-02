@@ -78,7 +78,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message,f,input,schema, messageFactory, null, clazzV);
+                mergeEnumMap(message,f,input,schema, messageFactory, null, clazzV);
             }
 
             @Override
@@ -169,7 +169,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -263,7 +263,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -355,7 +355,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -468,7 +468,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -577,7 +577,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory, clazzK, clazzV);
+                mergeEnumMap(message, f, input, schema, messageFactory, clazzK, clazzV);
             }
 
             @Override
@@ -670,7 +670,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                 merge(message, f, input, schema, messageFactory, clazzK);
+                 mergeEnumMap(message, f, input, schema, messageFactory, clazzK, null);
             }
 
             @Override
@@ -765,7 +765,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                 merge(message,f,input,schema, messageFactory, clazzK);
+                 mergeEnumMap(message,f,input,schema, messageFactory, clazzK, null);
             }
 
             @Override
@@ -862,7 +862,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory, clazzK);
+                mergeEnumMap(message, f, input, schema, messageFactory, clazzK, null);
             }
 
             @Override
@@ -976,7 +976,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory, clazzK);
+                mergeEnumMap(message, f, input, schema, messageFactory, clazzK, null);
             }
 
             @Override
@@ -1086,7 +1086,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message,f,input,schema,messageFactory, null, clazzV);
+                mergeEnumMap(message,f,input,schema,messageFactory, null, clazzV);
             }
 
             @Override
@@ -1182,7 +1182,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1278,7 +1278,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message,f, input, schema, messageFactory);
+                mergeMap(message,f, input, schema, messageFactory);
             }
 
             @Override
@@ -1378,7 +1378,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1492,7 +1492,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -1604,7 +1604,7 @@ final class RuntimeMapFieldFactory
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                merge(message, f, input, schema, messageFactory);
+                mergeMap(message, f, input, schema, messageFactory);
             }
 
             @Override
@@ -2026,25 +2026,30 @@ final class RuntimeMapFieldFactory
     };
 
 
+
+
+    private static<T extends Map<?,?>> void mergeMap(Object message,
+                                                     java.lang.reflect.Field field,
+                                                     Input input,
+                                                     Schema<T> schema,
+                                                     MessageFactory messageFactory)
+    {
+        mergeEnumMap(message, field, input, schema, messageFactory, null, null);
+    }
+
     @SuppressWarnings("unchecked")
-    private static<T extends Map<?,?>> void merge(Object message,
-                                                                    java.lang.reflect.Field field,
-                                                                    Input input,
-                                                                    Schema<T> schema,
-                                                                    MessageFactory messageFactory,
-                                                                    Class<? extends Enum> ... enumType)
+    private static<T extends Map<?,?>> void mergeEnumMap(Object message,
+                                                         java.lang.reflect.Field field,
+                                                         Input input,
+                                                         Schema<T> schema,
+                                                         MessageFactory messageFactory,
+                                                         Class<? extends Enum> keyType,
+                                                         Class<? extends Enum> valueType)
     {
         try
         {
             T map = (T) field.get(message);
-            if(enumType.length == 0)
-                map = MapSchema.removeUnmodifiableWrapper(map, messageFactory);
-            else
-            {
-                Class<? extends Enum> keyType = enumType[0];
-                Class<? extends Enum> valueType = enumType.length == 2 ? enumType[1] : null;
-                map = MapSchema.removeUnmodifiableWrapper(map, messageFactory, keyType, valueType);
-            }
+            map = MapSchema.removeUnmodifiableWrapper(map, messageFactory, keyType, valueType);
 
             field.set(message, input.mergeObject(map, schema));
         }

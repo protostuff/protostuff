@@ -77,34 +77,35 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     @SuppressWarnings("unchecked")
     public static <T extends Map> T removeUnmodifiableWrapper(T map,
                                                               MessageFactory messageFactory,
-                                                              Class<? extends Enum>...enumType)
+                                                              Class<? extends Enum> keyType,
+                                                              Class<? extends Enum> valueType)
     {
         if(map == null)
             return (T) messageFactory.newMessage();
 
         try
         {
-           if(enumType.length == 0)
+           if (keyType == null && valueType == null)
            {
                 map.put(EMPTY_OBJECT, EMPTY_OBJECT);
                 map.remove(EMPTY_OBJECT);
            }
            else
            {
-               Object keyInstance ;
-               if(enumType[0] == null)
+               Object keyInstance;
+               if(keyType == null)
                    keyInstance = EMPTY_OBJECT;
                else
                {
-                   keyInstance = getEnumInstance(enumType[0]);
+                   keyInstance = getEnumInstance(keyType);
                    if (keyInstance == null)
                        return map;
                }
                Object valueInstance;
-               if(enumType[1] == null)
+               if(valueType == null)
                    valueInstance = EMPTY_OBJECT;
                else
-                   valueInstance = getEnumInstance(enumType[1]);
+                   valueInstance = getEnumInstance(valueType);
 
 
                Object value = map.get(keyInstance);
