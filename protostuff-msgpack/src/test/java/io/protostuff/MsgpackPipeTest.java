@@ -50,10 +50,10 @@ public class MsgpackPipeTest extends AbstractTest
         ByteArrayInputStream jsonStream = new ByteArrayInputStream(msgpack);
 
         byte[] protobufRoundTrip = ProtobufIOUtil.toByteArray(
-            MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length), pipeSchema, buf());
 
         byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
-            MsgpackIOUtil.newPipe(jsonStream), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(jsonStream), pipeSchema, buf());
 
         assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
         assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
@@ -82,17 +82,17 @@ public class MsgpackPipeTest extends AbstractTest
         ByteArrayInputStream msgpackStream = new ByteArrayInputStream(msgpack);
 
         byte[] protostuffRoundTrip = ProtostuffIOUtil.toByteArray(
-            MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length), pipeSchema, buf());
 
         byte[] protostuffRoundTripFromStream = ProtostuffIOUtil.toByteArray(
-            MsgpackIOUtil.newPipe(msgpackStream), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(msgpackStream), pipeSchema, buf());
 
         assertTrue(Arrays.equals(protostuffRoundTrip, protostuffRoundTripFromStream));
         assertTrue(Arrays.equals(protostuffRoundTrip, protostuff));
 
     }
 
-     public void testFoo() throws Exception
+    public void testFoo() throws Exception
     {
         Foo foo = SerializableObjects.foo;
         protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());

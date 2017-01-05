@@ -19,12 +19,14 @@ package io.protostuff;
  * 
  * @author Alex Shvid
  */
-public class MsgpackInputException extends ProtostuffException {
+public class MsgpackInputException extends ProtostuffException
+{
 
-  private static final long serialVersionUID = 5028469109367083177L;
+    private static final long serialVersionUID = 5028469109367083177L;
 
-  public MsgpackInputException(String msg) {
-    super(msg);
-  }
+    public MsgpackInputException(String msg)
+    {
+        super(msg);
+    }
 
 }

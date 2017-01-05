@@ -25,154 +25,172 @@ import org.msgpack.core.MessagePacker;
 import org.msgpack.core.MessageUnpacker;
 
 /**
- * Utility for the message pack serialization/deserialization of messages and
- * objects tied to a schema.
+ * Utility for the message pack serialization/deserialization of messages and objects tied to a schema.
  * 
  * @author Alex Shvid
  */
-public final class MsgpackIOUtil {
+public final class MsgpackIOUtil
+{
 
-  public static final int END_OF_OBJECT = 0;
+    public static final int END_OF_OBJECT = 0;
 
-  private MsgpackIOUtil() {
-  }
-  
-  /**
-   * Creates a msgpack pipe from a byte array.
-   */
-  public static Pipe newPipe(byte[] data) throws IOException {
-    return newPipe(data, 0, data.length);
-  }
-  
-  /**
-   * Creates a msgpack pipe from a byte array.
-   */
-  public static Pipe newPipe(byte[] data, int offset, int length) throws IOException {
-    ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
-    return newPipe(in);
-  }
-
-  /**
-   * Creates a msgpack pipe from an {@link InputStream}.
-   */
-  public static Pipe newPipe(InputStream in) throws IOException {
-    MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-    return newPipe(unpacker);
-  }
-
-  /**
-   * Creates a msgpack pipe from a {@link MessageUnpacker}.
-   */
-  public static Pipe newPipe(final MessageUnpacker unpacker) throws IOException
-  {
-      final MsgpackInput msgpackInput = new MsgpackInput(unpacker);
-      return new Pipe()
-      {
-          @Override
-          protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
-          {
-              return msgpackInput;
-          }
-
-          @Override
-          protected void end(Pipe.Schema<?> pipeSchema, Input input,
-                  boolean cleanupOnly) throws IOException
-          {
-              if (cleanupOnly)
-              {
-                  unpacker.close();
-                  return;
-              }
-
-              assert input == msgpackInput;
-     
-              unpacker.close();
-
-          }
-      };
-  }  
-  
-  /**
-   * Merges the {@code message} with the byte array using the given {@code schema}.
-   */
-  public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema) throws IOException
-  {
-      mergeFrom(data, 0, data.length, message, schema);
-  }  
-  
-  /**
-   * Merges the {@code message} with the byte array using the given
-   * {@code schema}.
-   */
-  public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
-      throws IOException {
-
-    ByteArrayInputStream bios = new ByteArrayInputStream(data, offset, length);
-
-    MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
-
-    try {
-      mergeFrom(unpacker, message, schema);
-    } finally {
-      unpacker.close();
+    private MsgpackIOUtil()
+    {
     }
-  }
 
-  /**
-   * Merges the {@code message} from the {@link InputStream} using the given
-   * {@code schema}.
-   */
-  public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) throws IOException {
-    
-    MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-
-    try {
-      mergeFrom(unpacker, message, schema);
-    } finally {
-      unpacker.close();
+    /**
+     * Creates a msgpack pipe from a byte array.
+     */
+    public static Pipe newPipe(byte[] data) throws IOException
+    {
+        return newPipe(data, 0, data.length);
     }
-  }
-  
-  /**
-   * Merges the {@code message} from the JsonParser using the given {@code schema}.
-   */
-  public static <T> void mergeFrom( MessageUnpacker unpacker, T message, Schema<T> schema) throws IOException
-  {
-      schema.mergeFrom(new MsgpackInput(unpacker), message);
-  }
-  
-  /**
-   * Serializes the {@code message} using the given {@code schema}.
-   */
-  public static <T> byte[] toByteArray(T message, Schema<T> schema) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try {
-      writeTo(baos, message, schema);
-    } catch (IOException e) {
-      throw new RuntimeException("Serializing to a byte array threw an IOException", e);
+
+    /**
+     * Creates a msgpack pipe from a byte array.
+     */
+    public static Pipe newPipe(byte[] data, int offset, int length) throws IOException
+    {
+        ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
+        return newPipe(in);
     }
-    return baos.toByteArray();
-  }
 
-  /**
-   * Serializes the {@code message} into an {@link OutputStream} using the given
-   * {@code schema}.
-   */
-  public static <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException {
-
-    MessagePacker packer = MessagePack.newDefaultPacker(out);
-
-    try {
-      writeTo(packer, message, schema);
-    } finally {
-      packer.flush();
+    /**
+     * Creates a msgpack pipe from an {@link InputStream}.
+     */
+    public static Pipe newPipe(InputStream in) throws IOException
+    {
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+        return newPipe(unpacker);
     }
-  }
 
-  public static <T> void writeTo(MessagePacker packer, T message, Schema<T> schema) throws IOException {
-    MsgpackOutput output = new MsgpackOutput(packer);
-    schema.writeTo(output, message);
-    output.writeEndObject();
-  }
+    /**
+     * Creates a msgpack pipe from a {@link MessageUnpacker}.
+     */
+    public static Pipe newPipe(final MessageUnpacker unpacker) throws IOException
+    {
+        final MsgpackInput msgpackInput = new MsgpackInput(unpacker);
+        return new Pipe()
+        {
+            @Override
+            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
+            {
+                return msgpackInput;
+            }
+
+            @Override
+            protected void end(Pipe.Schema<?> pipeSchema, Input input,
+                    boolean cleanupOnly) throws IOException
+            {
+                if (cleanupOnly)
+                {
+                    unpacker.close();
+                    return;
+                }
+
+                assert input == msgpackInput;
+
+                unpacker.close();
+
+            }
+        };
+    }
+
+    /**
+     * Merges the {@code message} with the byte array using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema) throws IOException
+    {
+        mergeFrom(data, 0, data.length, message, schema);
+    }
+
+    /**
+     * Merges the {@code message} with the byte array using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema)
+            throws IOException
+    {
+
+        ByteArrayInputStream bios = new ByteArrayInputStream(data, offset, length);
+
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
+
+        try
+        {
+            mergeFrom(unpacker, message, schema);
+        }
+        finally
+        {
+            unpacker.close();
+        }
+    }
+
+    /**
+     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) throws IOException
+    {
+
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+
+        try
+        {
+            mergeFrom(unpacker, message, schema);
+        }
+        finally
+        {
+            unpacker.close();
+        }
+    }
+
+    /**
+     * Merges the {@code message} from the JsonParser using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(MessageUnpacker unpacker, T message, Schema<T> schema) throws IOException
+    {
+        schema.mergeFrom(new MsgpackInput(unpacker), message);
+    }
+
+    /**
+     * Serializes the {@code message} using the given {@code schema}.
+     */
+    public static <T> byte[] toByteArray(T message, Schema<T> schema)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            writeTo(baos, message, schema);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException", e);
+        }
+        return baos.toByteArray();
+    }
+
+    /**
+     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
+     */
+    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
+    {
+
+        MessagePacker packer = MessagePack.newDefaultPacker(out);
+
+        try
+        {
+            writeTo(packer, message, schema);
+        }
+        finally
+        {
+            packer.flush();
+        }
+    }
+
+    public static <T> void writeTo(MessagePacker packer, T message, Schema<T> schema) throws IOException
+    {
+        MsgpackOutput output = new MsgpackOutput(packer);
+        schema.writeTo(output, message);
+        output.writeEndObject();
+    }
 
 }
