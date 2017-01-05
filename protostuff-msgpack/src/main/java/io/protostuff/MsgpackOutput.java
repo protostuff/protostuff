@@ -164,8 +164,9 @@ public class MsgpackOutput implements Output
 
         if (utf8String)
         {
-            String str = new String(value, offset, length, "UTF-8");
-            packer.packString(str);
+            packer.packRawStringHeader(length);
+            packer.writePayload(value, offset, length);
+            
         }
         else
         {
