@@ -143,7 +143,7 @@ public class MsgpackOutput implements Output
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         packer.packInt(fieldNumber);
-        packer.packInt(value.size());
+        packer.packBinaryHeader(value.size());
         packer.addPayload(value.getBytes());
     }
 
@@ -151,7 +151,7 @@ public class MsgpackOutput implements Output
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
         packer.packInt(fieldNumber);
-        packer.packInt(value.length);
+        packer.packBinaryHeader(value.length);
         packer.writePayload(value);
     }
 
@@ -169,7 +169,7 @@ public class MsgpackOutput implements Output
         }
         else
         {
-            packer.packInt(length);
+            packer.packBinaryHeader(length);
             packer.writePayload(value, offset, length);
         }
 

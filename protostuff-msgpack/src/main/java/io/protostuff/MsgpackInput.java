@@ -39,7 +39,7 @@ public class MsgpackInput implements Input
     @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
-        throw new MsgpackInputException("Unsupported");
+        unpacker.skipValue();
     }
 
     @Override
@@ -141,21 +141,21 @@ public class MsgpackInput implements Input
     @Override
     public ByteString readBytes() throws IOException
     {
-        int length = unpacker.unpackInt();
+        int length = unpacker.unpackBinaryHeader();
         return ByteString.wrap(unpacker.readPayload(length));
     }
 
     @Override
     public byte[] readByteArray() throws IOException
     {
-        int length = unpacker.unpackInt();
+        int length = unpacker.unpackBinaryHeader();
         return unpacker.readPayload(length);
     }
 
     @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
-        int length = unpacker.unpackInt();
+        int length = unpacker.unpackBinaryHeader();
         ByteBuffer buffer = ByteBuffer.allocate(length);
         unpacker.readPayload(buffer);
         return buffer;
