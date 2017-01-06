@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessagePacker;
@@ -193,4 +195,79 @@ public final class MsgpackIOUtil
         output.writeEndObject();
     }
 
+    /**
+     * Serializes the {@code messages} into the stream using the given schema.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages,
+            Schema<T> schema) throws IOException
+    {
+        
+        MessagePacker packer = MessagePack.newDefaultPacker(out);
+        
+        try
+        {
+            writeListTo(packer, messages, schema);
+        }
+        finally
+        {
+            packer.flush();
+        }
+    }
+    
+    /**
+     * Serializes the {@code messages} into the generator using the given schema.
+     */
+    public static <T> void writeListTo(MessagePacker packer, List<T> messages,
+            Schema<T> schema) throws IOException
+    {
+        
+        MsgpackOutput output = new MsgpackOutput(packer);
+        
+        for (T m : messages) {
+            schema.writeTo(output, m);
+            output.writeEndObject();
+        }
+        
+    }
+    
+
+    /**
+     * Parses the {@code messages} from the stream using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
+    {
+        
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+        
+        try
+        {
+            return parseListFrom(unpacker, schema);
+        }
+        finally
+        {
+            unpacker.close();
+        }
+    }
+    
+    /**
+     * Parses the {@code messages} from the parser using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(MessageUnpacker unpacker, Schema<T> schema) throws IOException
+    {
+
+        MsgpackInput input = new MsgpackInput(unpacker);
+        
+        List<T> list = new ArrayList<T>();
+        
+        while(unpacker.hasNext()) {
+            
+            T message = schema.newMessage();
+            schema.mergeFrom(input, message);
+            
+            list.add(message);
+            
+        }
+        
+        return list;
+    }
 }
