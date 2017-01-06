@@ -14,32 +14,18 @@
 
 package io.protostuff;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 /**
- * Testing stream of messages 
+ * Test msgpack with {@link Map} fields.
  * 
  * @author Alex Shvid
- *
  */
-
-public class MsgpackRepeatedMessagesTest extends RepeatedMessagesTest
+public class MsgpackNumericRuntimeMapTest extends MsgpackRuntimeMapTest
 {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return MsgpackIOUtil.parseListFrom(in, schema, false);
-    }
-
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        MsgpackIOUtil.writeListTo(out, messages, schema, false);
+    static {
+        numeric = true;
     }
     
 }

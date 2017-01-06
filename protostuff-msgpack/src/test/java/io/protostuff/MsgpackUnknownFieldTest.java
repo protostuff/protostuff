@@ -28,6 +28,8 @@ import io.protostuff.runtime.RuntimeSchema;
 public class MsgpackUnknownFieldTest
 {
 
+    protected static boolean numeric = false;
+    
     public static final Schema<TestMessage> SCHEMA = RuntimeSchema.getSchema(TestMessage.class);
     public static final Schema<TestMessageExtended> EXTENDED_SCHEMA = RuntimeSchema
             .getSchema(TestMessageExtended.class);
@@ -52,11 +54,11 @@ public class MsgpackUnknownFieldTest
     public void normalMessage() throws Exception
     {
 
-        byte[] message = MsgpackIOUtil.toByteArray(fixture, SCHEMA);
+        byte[] message = MsgpackIOUtil.toByteArray(fixture, SCHEMA, numeric);
 
         TestMessage instance = SCHEMA.newMessage();
 
-        MsgpackIOUtil.mergeFrom(message, instance, SCHEMA);
+        MsgpackIOUtil.mergeFrom(message, instance, SCHEMA, numeric);
         checkKnownFields(instance);
     }
 
@@ -64,23 +66,23 @@ public class MsgpackUnknownFieldTest
     public void normalExtendedMessage() throws Exception
     {
 
-        byte[] message = MsgpackIOUtil.toByteArray(fixtureExtended, EXTENDED_SCHEMA);
+        byte[] message = MsgpackIOUtil.toByteArray(fixtureExtended, EXTENDED_SCHEMA, numeric);
 
         TestMessageExtended instance = EXTENDED_SCHEMA.newMessage();
 
-        MsgpackIOUtil.mergeFrom(message, instance, EXTENDED_SCHEMA);
+        MsgpackIOUtil.mergeFrom(message, instance, EXTENDED_SCHEMA, numeric);
         checkKnownFields(instance);
     }
 
     @Test
     public void unknownField() throws Exception
     {
-        byte[] extendedMessage = MsgpackIOUtil.toByteArray(fixtureExtended, EXTENDED_SCHEMA);
+        byte[] extendedMessage = MsgpackIOUtil.toByteArray(fixtureExtended, EXTENDED_SCHEMA, numeric);
 
         TestMessage instance = SCHEMA.newMessage();
 
         // unknown field3
-        MsgpackIOUtil.mergeFrom(extendedMessage, instance, SCHEMA);
+        MsgpackIOUtil.mergeFrom(extendedMessage, instance, SCHEMA, numeric);
 
         checkKnownFields(instance);
 
@@ -89,12 +91,12 @@ public class MsgpackUnknownFieldTest
     @Test
     public void missingField() throws Exception
     {
-        byte[] message = MsgpackIOUtil.toByteArray(fixture, SCHEMA);
+        byte[] message = MsgpackIOUtil.toByteArray(fixture, SCHEMA, numeric);
 
         TestMessageExtended instance = EXTENDED_SCHEMA.newMessage();
 
         // missing field3
-        MsgpackIOUtil.mergeFrom(message, instance, EXTENDED_SCHEMA);
+        MsgpackIOUtil.mergeFrom(message, instance, EXTENDED_SCHEMA, numeric);
 
         Assert.assertEquals(fixtureExtended.field1, instance.field1);
         Assert.assertEquals(fixtureExtended.field2, instance.field2);

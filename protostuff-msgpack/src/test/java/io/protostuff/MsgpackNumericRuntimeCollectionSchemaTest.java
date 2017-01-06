@@ -14,32 +14,16 @@
 
 package io.protostuff;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-
 /**
- * Testing stream of messages 
+ * Test runtime collection fields with {@link CollectionSchema} via msgpack.
  * 
  * @author Alex Shvid
- *
  */
-
-public class MsgpackRepeatedMessagesTest extends RepeatedMessagesTest
+public class MsgpackNumericRuntimeCollectionSchemaTest extends MsgpackRuntimeCollectionSchemaTest
 {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return MsgpackIOUtil.parseListFrom(in, schema, false);
+    static {
+        numeric = true;
     }
-
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        MsgpackIOUtil.writeListTo(out, messages, schema, false);
-    }
-    
+   
 }

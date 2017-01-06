@@ -17,8 +17,6 @@ package io.protostuff;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.msgpack.core.MessageUnpacker;
-
 /**
  * Input is using to read source from messagepack unpacker
  * 
@@ -29,136 +27,142 @@ import org.msgpack.core.MessageUnpacker;
 public class MsgpackInput implements Input
 {
 
-    private final MessageUnpacker unpacker;
+    private MsgpackParser parser;
 
-    public MsgpackInput(MessageUnpacker unpacker)
+    public MsgpackInput(MsgpackParser parser)
     {
-        this.unpacker = unpacker;
+        this.parser = parser;
+    }
+
+    /**
+     * Use another parser in msgpack input
+     */
+
+    public MsgpackParser use(MsgpackParser newParser)
+    {
+        MsgpackParser old = this.parser;
+        this.parser = newParser;
+        return old;
     }
 
     @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
-        unpacker.skipValue();
+        parser.skipValue();
     }
 
     @Override
     public <T> int readFieldNumber(Schema<T> schema) throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseFieldNumber(schema);
     }
 
     @Override
     public int readInt32() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public int readUInt32() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public int readSInt32() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public int readFixed32() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public int readSFixed32() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public long readInt64() throws IOException
     {
-        return unpacker.unpackLong();
+        return parser.parseLong();
     }
 
     @Override
     public long readUInt64() throws IOException
     {
-        return unpacker.unpackLong();
+        return parser.parseLong();
     }
 
     @Override
     public long readSInt64() throws IOException
     {
-        return unpacker.unpackLong();
+        return parser.parseLong();
     }
 
     @Override
     public long readFixed64() throws IOException
     {
-        return unpacker.unpackLong();
+        return parser.parseLong();
     }
 
     @Override
     public long readSFixed64() throws IOException
     {
-        return unpacker.unpackLong();
+        return parser.parseLong();
     }
 
     @Override
     public float readFloat() throws IOException
     {
-        return unpacker.unpackFloat();
+        return parser.parseFloat();
     }
 
     @Override
     public double readDouble() throws IOException
     {
-        return unpacker.unpackDouble();
+        return parser.parseDouble();
     }
 
     @Override
     public boolean readBool() throws IOException
     {
-        return unpacker.unpackBoolean();
+        return parser.parseBoolean();
     }
 
     @Override
     public int readEnum() throws IOException
     {
-        return unpacker.unpackInt();
+        return parser.parseInt();
     }
 
     @Override
     public String readString() throws IOException
     {
-        return unpacker.unpackString();
+        return parser.parseString();
     }
 
     @Override
     public ByteString readBytes() throws IOException
     {
-        int length = unpacker.unpackBinaryHeader();
-        return ByteString.wrap(unpacker.readPayload(length));
+        return ByteString.wrap(parser.parsePayload());
     }
 
     @Override
     public byte[] readByteArray() throws IOException
     {
-        int length = unpacker.unpackBinaryHeader();
-        return unpacker.readPayload(length);
+        return parser.parsePayload();
     }
 
     @Override
     public ByteBuffer readByteBuffer() throws IOException
     {
-        int length = unpacker.unpackBinaryHeader();
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        unpacker.readPayload(buffer);
-        return buffer;
+        return parser.readPayload();
     }
 
     @Override
@@ -170,7 +174,12 @@ public class MsgpackInput implements Input
             value = schema.newMessage();
         }
 
+        MsgpackParser innerParser = new MsgpackParser(this.parser);
+        MsgpackParser thisParser = use(innerParser);
+
         schema.mergeFrom(this, value);
+
+        use(thisParser);
 
         return value;
     }

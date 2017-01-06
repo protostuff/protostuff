@@ -14,30 +14,26 @@
 
 package io.protostuff;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Msgpack standard tests.
  * 
  * @author Alex Shvid
  */
-public class MsgpackCoreStandardTest extends StandardTest
+public class MsgpackNumericCoreStandardTest extends StandardTest
 {
 
     @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException
     {
-        MsgpackIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
+        MsgpackIOUtil.mergeFrom(data, 0, data.length, message, schema, true);
     }
 
     @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return MsgpackIOUtil.toByteArray(message, schema, false);
+        return MsgpackIOUtil.toByteArray(message, schema, true);
     }
 
 }

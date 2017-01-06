@@ -17,142 +17,153 @@ package io.protostuff;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.msgpack.core.MessagePacker;
+import org.msgpack.value.ImmutableBooleanValue;
+import org.msgpack.value.impl.ImmutableBinaryValueImpl;
+import org.msgpack.value.impl.ImmutableBooleanValueImpl;
+import org.msgpack.value.impl.ImmutableDoubleValueImpl;
+import org.msgpack.value.impl.ImmutableLongValueImpl;
+import org.msgpack.value.impl.ImmutableStringValueImpl;
 
 /**
  * Output is using to write data in message pack format.
  * 
  * @author Alex Shvid
  */
-public class MsgpackOutput implements Output
+public class MsgpackOutput implements Output, StatefulOutput
 {
 
-    private final MessagePacker packer;
+    private MsgpackGenerator generator;
+    private Schema<?> schema;
 
-    public MsgpackOutput(MessagePacker packer)
+    public MsgpackOutput(MsgpackGenerator generator, Schema<?> schema)
     {
-        this.packer = packer;
+        this.generator = generator;
+        this.schema = schema;
+    }
+
+    @Override
+    public void updateLast(Schema<?> schema, Schema<?> lastSchema)
+    {
+
+        if (lastSchema != null && lastSchema == this.schema)
+        {
+            this.schema = schema;
+        }
+
+    }
+
+    /**
+     * Before serializing a message/object tied to a schema, this should be called. This also resets the internal state
+     * of this output.
+     */
+    public MsgpackOutput use(MsgpackGenerator generator, Schema<?> schema)
+    {
+        this.schema = schema;
+        this.generator = generator;
+        return this;
     }
 
     @Override
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeSInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeSFixed32(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packLong(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeUInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packLong(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeSInt64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packLong(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packLong(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeSFixed64(int fieldNumber, long value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packLong(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packFloat(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableDoubleValueImpl(value), repeated);
     }
 
     @Override
     public void writeDouble(int fieldNumber, double value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packDouble(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableDoubleValueImpl(value), repeated);
     }
 
     @Override
     public void writeBool(int fieldNumber, boolean value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packBoolean(value);
+        ImmutableBooleanValue val = value ? ImmutableBooleanValueImpl.TRUE : ImmutableBooleanValueImpl.FALSE;
+        generator.pushValue(schema, fieldNumber, val, repeated);
     }
 
     @Override
     public void writeEnum(int fieldNumber, int value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packInt(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableLongValueImpl(value), repeated);
     }
 
     @Override
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packString(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableStringValueImpl(value), repeated);
     }
 
     @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packBinaryHeader(value.size());
-        packer.addPayload(value.getBytes());
+        generator.pushValue(schema, fieldNumber, new ImmutableBinaryValueImpl(value.getBytes()), repeated);
     }
 
     @Override
     public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        packer.packBinaryHeader(value.length);
-        packer.writePayload(value);
+        generator.pushValue(schema, fieldNumber, new ImmutableBinaryValueImpl(value), repeated);
     }
 
     @Override
@@ -160,28 +171,37 @@ public class MsgpackOutput implements Output
             boolean repeated) throws IOException
     {
 
-        packer.packInt(fieldNumber);
+        byte[] copiedValue = new byte[length];
+        System.arraycopy(value, offset, copiedValue, 0, length);
 
         if (utf8String)
         {
-            packer.packRawStringHeader(length);
-            packer.writePayload(value, offset, length);
-            
+            generator.pushValue(schema, fieldNumber, new ImmutableStringValueImpl(copiedValue), repeated);
         }
         else
         {
-            packer.packBinaryHeader(length);
-            packer.writePayload(value, offset, length);
+            generator.pushValue(schema, fieldNumber, new ImmutableBinaryValueImpl(copiedValue), repeated);
         }
 
     }
 
     @Override
-    public <T> void writeObject(int fieldNumber, T value, Schema<T> schema, boolean repeated) throws IOException
+    public <T> void writeObject(int fieldNumber, T value, Schema<T> innerSchema, boolean repeated) throws IOException
     {
-        packer.packInt(fieldNumber);
-        schema.writeTo(this, value);
-        writeEndObject();
+
+        MsgpackGenerator innerGenerator = new MsgpackGenerator(generator.isNumeric());
+
+        MsgpackGenerator thisGenerator = this.generator;
+        Schema<?> thisSchema = this.schema;
+
+        use(innerGenerator, innerSchema);
+
+        innerSchema.writeTo(this, value);
+
+        use(thisGenerator, thisSchema);
+
+        generator.pushValue(this.schema, fieldNumber, innerGenerator.toValue(), repeated);
+
     }
 
     @Override
@@ -191,11 +211,6 @@ public class MsgpackOutput implements Output
         writeByteRange(false, fieldNumber, value.array(), value.arrayOffset() + value.position(),
                 value.remaining(), repeated);
 
-    }
-
-    public void writeEndObject() throws IOException
-    {
-        packer.packInt(MsgpackIOUtil.END_OF_OBJECT);
     }
 
 }

@@ -26,20 +26,20 @@ import java.util.List;
  *
  */
 
-public class MsgpackRepeatedMessagesTest extends RepeatedMessagesTest
+public class MsgpackNumericRepeatedMessagesTest extends RepeatedMessagesTest
 {
 
     @Override
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
-        return MsgpackIOUtil.parseListFrom(in, schema, false);
+        return MsgpackIOUtil.parseListFrom(in, schema, true);
     }
 
     @Override
     protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
             throws IOException
     {
-        MsgpackIOUtil.writeListTo(out, messages, schema, false);
+        MsgpackIOUtil.writeListTo(out, messages, schema, true);
     }
     
 }

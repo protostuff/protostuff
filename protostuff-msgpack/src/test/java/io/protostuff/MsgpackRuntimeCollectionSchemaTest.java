@@ -31,45 +31,47 @@ import io.protostuff.runtime.AbstractRuntimeCollectionSchemaTest;
 public class MsgpackRuntimeCollectionSchemaTest extends AbstractRuntimeCollectionSchemaTest
 {
 
+    protected static boolean numeric = false;
+    
     @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
-        MsgpackIOUtil.mergeFrom(data, offset, length, message, schema);
+        MsgpackIOUtil.mergeFrom(data, offset, length, message, schema, numeric);
     }
 
     @Override
     protected <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
-        MsgpackIOUtil.mergeFrom(in, message, schema);
+        MsgpackIOUtil.mergeFrom(in, message, schema, numeric);
     }
 
     @Override
     protected <T> byte[] toByteArray(T message, Schema<T> schema)
     {
-        return MsgpackIOUtil.toByteArray(message, schema);
+        return MsgpackIOUtil.toByteArray(message, schema, numeric);
     }
 
     @Override
     protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
     {
-        MsgpackIOUtil.writeTo(out, message, schema);
+        MsgpackIOUtil.writeTo(out, message, schema, numeric);
     }
 
     @Override
     protected <T> void roundTrip(T message, Schema<T> schema,
             Pipe.Schema<T> pipeSchema) throws Exception
     {
-        byte[] msgpack = MsgpackIOUtil.toByteArray(message, schema);
+        byte[] msgpack = MsgpackIOUtil.toByteArray(message, schema, numeric);
 
         ByteArrayInputStream jsonStream = new ByteArrayInputStream(msgpack);
 
         byte[] protostuff = ProtostuffIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length, numeric), pipeSchema, buf());
 
         byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(jsonStream), pipeSchema, buf());
+                MsgpackIOUtil.newPipe(jsonStream, numeric), pipeSchema, buf());
 
         assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
@@ -80,10 +82,10 @@ public class MsgpackRuntimeCollectionSchemaTest extends AbstractRuntimeCollectio
         ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
 
         byte[] msgpackRoundTrip = MsgpackIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema);
+                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, numeric);
 
         byte[] msgpackRoundTripFromStream = MsgpackIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema);
+                ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, numeric);
 
         assertTrue(msgpackRoundTrip.length == msgpackRoundTripFromStream.length);
 

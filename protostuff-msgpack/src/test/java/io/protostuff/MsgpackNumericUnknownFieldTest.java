@@ -14,32 +14,14 @@
 
 package io.protostuff;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-
 /**
- * Testing stream of messages 
- * 
- * @author Alex Shvid
- *
+ * Test for ignoring unknown fields during de-seralization
  */
-
-public class MsgpackRepeatedMessagesTest extends RepeatedMessagesTest
+public class MsgpackNumericUnknownFieldTest extends MsgpackUnknownFieldTest
 {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return MsgpackIOUtil.parseListFrom(in, schema, false);
-    }
-
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        MsgpackIOUtil.writeListTo(out, messages, schema, false);
+    static {
+        numeric = true;
     }
     
 }
