@@ -18,6 +18,7 @@
 
     <junit-version>4.11</junit-version>
     <jackson-version>2.7.1</jackson-version>
+    <msgpack.version>0.8.11</msgpack.version>
     <woodstox-version>4.1.3</woodstox-version>
     <velocity-version>1.6.3</velocity-version>
     <antlr3-version>3.5.2</antlr3-version>
@@ -437,6 +438,7 @@
     <module>protostuff-runtime-registry</module>
     <module>protostuff-runtime-view</module>
     <module>protostuff-json</module>
+    <module>protostuff-msgpack</module>    
     <module>protostuff-xml</module>
     <module>protostuff-yaml</module>
     <module>protostuff-kvp</module>
