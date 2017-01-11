@@ -15,6 +15,8 @@
 package io.protostuff;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -413,6 +415,144 @@ public final class MsgpackGenerator
             return ValueType.ARRAY;
         }
 
+    }
+    
+    /**
+     * Implementation of missing value impl for float in msgpack-core
+     * 
+     * @author Alex Shvid
+     *
+     */
+
+    public static final class ImmutableFloatValueImpl
+            extends AbstractValue
+            implements ImmutableFloatValue
+    {
+        private final float value;
+
+        public ImmutableFloatValueImpl(float value)
+        {
+            this.value = value;
+        }
+
+        @Override
+        public ValueType getValueType()
+        {
+            return ValueType.FLOAT;
+        }
+
+        @Override
+        public ImmutableFloatValueImpl immutableValue()
+        {
+            return this;
+        }
+
+        @Override
+        public ImmutableNumberValue asNumberValue()
+        {
+            return this;
+        }
+
+        @Override
+        public ImmutableFloatValue asFloatValue()
+        {
+            return this;
+        }
+
+        @Override
+        public byte toByte()
+        {
+            return (byte) value;
+        }
+
+        @Override
+        public short toShort()
+        {
+            return (short) value;
+        }
+
+        @Override
+        public int toInt()
+        {
+            return (int) value;
+        }
+
+        @Override
+        public long toLong()
+        {
+            return (long) value;
+        }
+
+        @Override
+        public BigInteger toBigInteger()
+        {
+            return new BigDecimal(value).toBigInteger();
+        }
+
+        @Override
+        public float toFloat()
+        {
+            return value;
+        }
+
+        @Override
+        public double toDouble()
+        {
+            return (double) value;
+        }
+
+        @Override
+        public void writeTo(MessagePacker pk)
+                throws IOException
+        {
+            pk.packFloat(value);
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == this)
+            {
+                return true;
+            }
+            if (!(o instanceof Value))
+            {
+                return false;
+            }
+            Value v = (Value) o;
+
+            if (!v.isFloatValue())
+            {
+                return false;
+            }
+            return value == v.asFloatValue().toFloat();
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int v = Float.floatToIntBits(value);
+            return (int) (v ^ (v >>> 32));
+        }
+
+        @Override
+        public String toJson()
+        {
+            if (Float.isNaN(value) || Float.isInfinite(value))
+            {
+                return "null";
+            }
+            else
+            {
+                return Float.toString(value);
+            }
+        }
+
+        @Override
+        public String toString()
+        {
+            return Float.toString(value);
+        }
     }
 
 }

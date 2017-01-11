@@ -24,6 +24,8 @@ import org.msgpack.value.impl.ImmutableDoubleValueImpl;
 import org.msgpack.value.impl.ImmutableLongValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
+import io.protostuff.MsgpackGenerator.ImmutableFloatValueImpl;
+
 /**
  * Output is using to write data in message pack format.
  * 
@@ -126,7 +128,7 @@ public class MsgpackOutput implements Output, StatefulOutput
     @Override
     public void writeFloat(int fieldNumber, float value, boolean repeated) throws IOException
     {
-        generator.pushValue(schema, fieldNumber, new ImmutableDoubleValueImpl(value), repeated);
+        generator.pushValue(schema, fieldNumber, new ImmutableFloatValueImpl(value), repeated);
     }
 
     @Override
