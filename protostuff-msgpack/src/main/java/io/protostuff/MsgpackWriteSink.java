@@ -77,21 +77,21 @@ public final class MsgpackWriteSink
     private LinkedBuffer writeByteAndShort(byte b, short v, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        return sink.writeInt16LE(v, session,
+        return sink.writeInt16(v, session,
                 sink.writeByte(b, session, lb));
     }
 
     private LinkedBuffer writeByteAndInt(byte b, int v, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        return sink.writeInt32LE(v, session,
+        return sink.writeInt32(v, session,
                 sink.writeByte(b, session, lb));
     }
 
     private LinkedBuffer writeByteAndLong(byte b, long v, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        return sink.writeInt64LE(v, session,
+        return sink.writeInt64(v, session,
                 sink.writeByte(b, session, lb));
     }
 
@@ -254,7 +254,11 @@ public final class MsgpackWriteSink
     public LinkedBuffer packString(String value, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        return StringSerializer.writeUTF8(value, session, lb);
+        if (value.length() == 0) {
+            return packRawStringHeader(0, session, lb);
+        }
+        int sizeInBytes = StringSerializer.computeUTF8Size(value, 0, value.length());
+        return StringSerializer.writeUTF8(value, session, packRawStringHeader(sizeInBytes, session, lb));
     }
 
     public LinkedBuffer packBytes(byte[] src, int offset, int length, WriteSession session, LinkedBuffer lb)

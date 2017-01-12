@@ -66,16 +66,6 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
         return objectHeader;
     }
 
-    public void writeEndObject() throws IOException
-    {
-        if (lastRepeated)
-        {
-            writeEndArray();
-        }
-
-        writeEndObject(head);
-    }
-
     public void writeEndObject(LinkedBuffer lb) throws IOException
     {
         this.packSink.packMapHeader(mapSize, this, lb);
@@ -97,7 +87,7 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
 
     }
 
-    private void writeEndArray() throws IOException
+    public void writeEndArray() throws IOException
     {
         this.packSink.packArrayHeader(arraySize, this, arrayHeader);
     }
@@ -108,6 +98,7 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
     @Override
     public void reset()
     {
+        arrayHeader = null;
         lastRepeated = false;
         lastNumber = 0;
         arraySize = 0;
@@ -296,6 +287,10 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
         // recursive write
         schema.writeTo(this, value);
 
+        if (isLastRepeated()) {
+            writeEndArray();
+        }
+        
         writeEndObject(objectHeader);
 
         this.schema = lastSchema;
@@ -472,7 +467,6 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
         if (lastNumber == fieldNumber && lastRepeated)
         {
             // repeated field
-            tail = packSink.packRawStringHeader(value.length(), this, tail);
             tail = packSink.packString(value, this, tail);
             arraySize++;
             return;
@@ -490,7 +484,6 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
             writeStartArray();
         }
 
-        tail = packSink.packRawStringHeader(value.length(), this, tail);
         tail = packSink.packString(value, this, tail);
 
         lastNumber = fieldNumber;
@@ -540,7 +533,6 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
         else
         {
             String fieldName = schema.getFieldName(fieldNumber);
-            tail = packSink.packRawStringHeader(fieldName.length(), this, tail);
             tail = packSink.packString(fieldName, this, tail);
         }
 

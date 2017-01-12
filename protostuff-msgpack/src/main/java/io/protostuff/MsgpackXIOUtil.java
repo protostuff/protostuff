@@ -16,6 +16,7 @@ package io.protostuff;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Custom eXtream IO util to serialize and deserialize MessagePack format
@@ -44,6 +45,12 @@ public final class MsgpackXIOUtil
         {
             LinkedBuffer objectHeader = output.writeStartObject();
             schema.writeTo(output, message);
+
+            if (output.isLastRepeated())
+            {
+                output.writeEndArray();
+            }
+
             output.writeEndObject(objectHeader);
 
         }
@@ -66,13 +73,19 @@ public final class MsgpackXIOUtil
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 
         MsgpackXOutput output = new MsgpackXOutput(buffer, numeric, schema);
-        
+
         try
         {
             LinkedBuffer objectStarter = output.writeStartObject();
             schema.writeTo(output, message);
+
+            if (output.isLastRepeated())
+            {
+                output.writeEndArray();
+            }
+
             output.writeEndObject(objectStarter);
-            
+
         }
         catch (IOException e)
         {
@@ -80,7 +93,7 @@ public final class MsgpackXIOUtil
                     "(should never happen).", e);
         }
     }
-    
+
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link MsgpackXOutput} with the supplied buffer.
      */
@@ -90,7 +103,7 @@ public final class MsgpackXIOUtil
     {
         writeTo(out, message, message.cachedSchema(), numeric, buffer);
     }
-    
+
     /**
      * Serializes the {@code message} into an {@link OutputStream} via {@link JsonXOutput} using the given
      * {@code schema}.
@@ -104,12 +117,98 @@ public final class MsgpackXIOUtil
         }
 
         MsgpackXOutput output = new MsgpackXOutput(buffer, numeric, schema);
-        
+
         LinkedBuffer objectHeader = output.writeStartObject();
         schema.writeTo(output, message);
+
+        if (output.isLastRepeated())
+        {
+            output.writeEndArray();
+        }
+
         output.writeEndObject(objectHeader);
 
         LinkedBuffer.writeTo(out, buffer);
     }
 
+    /**
+     * Serializes the {@code messages} into the {@link LinkedBuffer} using the given schema.
+     */
+    public static <T> void writeListTo(LinkedBuffer buffer,
+            List<T> messages, Schema<T> schema, boolean numeric)
+    {
+        if (buffer.start != buffer.offset)
+        {
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
+
+        if (messages.isEmpty())
+        {
+            return;
+        }
+
+        MsgpackXOutput output = new MsgpackXOutput(buffer, numeric, schema);
+
+        try
+        {
+
+            for (T m : messages)
+            {
+
+                LinkedBuffer objectStarter = output.writeStartObject();
+                schema.writeTo(output, m);
+
+                if (output.isLastRepeated())
+                {
+                    output.writeEndArray();
+                }
+
+                output.writeEndObject(objectStarter);
+
+            }
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Serializing to a byte array threw an IOException " +
+                    "(should never happen).", e);
+        }
+    }
+
+    /**
+     * Serializes the {@code messages} into the stream using the given schema with the supplied buffer.
+     */
+    public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema,
+            boolean numeric, LinkedBuffer buffer) throws IOException
+    {
+        if (buffer.start != buffer.offset)
+        {
+            throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
+
+        if (messages.isEmpty())
+        {
+            return;
+        }
+
+        MsgpackXOutput output = new MsgpackXOutput(buffer, numeric, schema);
+
+        for (T m : messages)
+        {
+
+            LinkedBuffer objectStarter = output.writeStartObject();
+            schema.writeTo(output, m);
+
+            if (output.isLastRepeated())
+            {
+                output.writeEndArray();
+            }
+
+            output.writeEndObject(objectStarter);
+
+            LinkedBuffer.writeTo(out, buffer);
+            output.reset();
+            buffer.clear();
+        }
+    }
 }

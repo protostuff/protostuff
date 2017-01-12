@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.msgpack.core.MessagePack;
 
 import io.protostuff.runtime.RuntimeSchema;
 
@@ -34,8 +35,9 @@ public class MsgpackSimpleTest
 {
 
     public static final Schema<ExampleMessage> SCHEMA = RuntimeSchema.getSchema(ExampleMessage.class);
+    public static final Schema<FooMessage> FOO_SCHEMA = RuntimeSchema.getSchema(FooMessage.class);
 
-    @Test
+    // @Test
     public void testSimple() throws IOException
     {
 
@@ -71,6 +73,78 @@ public class MsgpackSimpleTest
         Assert.assertTrue(Arrays.equals(message.field4.inner1, actual.field4.inner1));
         Assert.assertTrue(Math.abs(message.field4.inner2 - message.field4.inner2) < 0.001);
 
+    }
+
+    @Test
+    public void testXIO() throws IOException
+    {
+
+        InnerMessage inner = new InnerMessage();
+        inner.inner1 = "inner".getBytes();
+        inner.inner2 = 12.34;
+
+        ExampleMessage message = new ExampleMessage();
+        message.field1 = 42;
+        message.field2 = "hello";
+        message.field3 = Arrays.asList(true, false, true);
+        message.field4 = inner;
+
+        byte[] xdata = MsgpackXIOUtil.toByteArray(message, SCHEMA, false, LinkedBuffer.allocate());
+        byte[] data = MsgpackIOUtil.toByteArray(message, SCHEMA, false);
+
+        // System.out.println(Arrays.toString(xdata));
+        // System.out.println(Arrays.toString(data));
+
+        Assert.assertTrue(Arrays.equals(data, xdata));
+    }
+
+    @Test
+    public void testFooArray() throws IOException
+    {
+
+        FooMessage foo = new FooMessage();
+        foo.field = Arrays.asList("a", "b");
+
+        byte[] xdata = MsgpackXIOUtil.toByteArray(foo, FOO_SCHEMA, false, LinkedBuffer.allocate());
+        byte[] data = MsgpackIOUtil.toByteArray(foo, FOO_SCHEMA, false);
+
+        Assert.assertTrue(Arrays.equals(data, xdata));
+    }
+
+    @Test
+    public void testXIOCharset() throws IOException
+    {
+
+        ExampleMessage message = new ExampleMessage();
+        message.field2 = "ч";
+
+        byte[] xdata = MsgpackXIOUtil.toByteArray(message, SCHEMA, false, LinkedBuffer.allocate());
+        byte[] data = MsgpackIOUtil.toByteArray(message, SCHEMA, false);
+
+        Assert.assertTrue(Arrays.equals(data, xdata));
+    }
+
+    @Test
+    public void testString() throws IOException {
+        
+        String string = "ч";
+        
+        byte[] data = string.getBytes(MessagePack.UTF8);
+        //System.out.println(Arrays.toString(data));
+     
+        LinkedBuffer lb = LinkedBuffer.allocate();
+        WriteSession session = new WriteSession(lb);
+        StringSerializer.writeUTF8(string, session, session.tail);
+        
+        byte[] xdata = session.toByteArray();
+        //System.out.println(Arrays.toString(xdata));
+        
+        Assert.assertTrue(Arrays.equals(data, xdata));
+    }
+    
+    static class FooMessage
+    {
+        List<String> field;
     }
 
     static class ExampleMessage
