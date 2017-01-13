@@ -14,7 +14,10 @@
 
 package io.protostuff;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -125,26 +128,63 @@ public class MsgpackSimpleTest
     }
 
     @Test
-    public void testString() throws IOException {
-        
+    public void testString() throws IOException
+    {
+
         String string = "ч";
-        
+
         byte[] data = string.getBytes(MessagePack.UTF8);
-        //System.out.println(Arrays.toString(data));
-     
+        // System.out.println(Arrays.toString(data));
+
         LinkedBuffer lb = LinkedBuffer.allocate();
         WriteSession session = new WriteSession(lb);
         StringSerializer.writeUTF8(string, session, session.tail);
-        
+
         byte[] xdata = session.toByteArray();
-        //System.out.println(Arrays.toString(xdata));
-        
+        // System.out.println(Arrays.toString(xdata));
+
         Assert.assertTrue(Arrays.equals(data, xdata));
     }
-    
+
+    @Test
+    public void testFooRepeated() throws Exception
+    {
+        ArrayList<FooMessage> foos = new ArrayList<FooMessage>();
+        foos.add(new FooMessage("1", "2"));
+        foos.add(new FooMessage("a", "b", "c"));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        MsgpackXIOUtil.writeListTo(out, foos, FOO_SCHEMA, false, LinkedBuffer.allocate());
+        byte[] xdata = out.toByteArray();
+        out = new ByteArrayOutputStream();
+        MsgpackIOUtil.writeListTo(out, foos, FOO_SCHEMA, false);
+        byte[] data = out.toByteArray();
+
+        Assert.assertTrue(Arrays.equals(data, xdata));
+
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        List<FooMessage> parsedFoos = MsgpackIOUtil.parseListFrom(in, FOO_SCHEMA, false);
+
+        Assert.assertEquals(foos.size(), parsedFoos.size());
+        int i = 0;
+        for (FooMessage f : parsedFoos)
+        {
+            Assert.assertEquals(foos.get(i++).field, f.field);
+        }
+    }
+
     static class FooMessage
     {
         List<String> field;
+
+        public FooMessage()
+        {
+        }
+
+        public FooMessage(String... values)
+        {
+            this.field = Arrays.asList(values);
+        }
     }
 
     static class ExampleMessage

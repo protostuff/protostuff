@@ -50,7 +50,7 @@ public class MsgpackXNumericOutputTest extends AbstractTest
     {
         byte[] xdata = MsgpackXIOUtil.toByteArray(foo, FOO_SCHEMA, true, buf());
         byte[] data = MsgpackIOUtil.toByteArray(foo, FOO_SCHEMA, true);
-        
+
         Assert.assertTrue(Arrays.equals(data, xdata));
     }
 
@@ -103,7 +103,7 @@ public class MsgpackXNumericOutputTest extends AbstractTest
             }
             byte[] xdata = out.toByteArray();
             byte[] data = MsgpackIOUtil.toByteArray(barCompare, BAR_SCHEMA, true);
-            
+
             Assert.assertTrue(Arrays.equals(data, xdata));
         }
     }
@@ -115,7 +115,7 @@ public class MsgpackXNumericOutputTest extends AbstractTest
         {
             byte[] xdata = MsgpackXIOUtil.toByteArray(bazCompare, BAZ_SCHEMA, true, buf());
             byte[] data = MsgpackIOUtil.toByteArray(bazCompare, BAZ_SCHEMA, true);
-            
+
             Assert.assertTrue(Arrays.equals(data, xdata));
         }
     }
@@ -137,7 +137,7 @@ public class MsgpackXNumericOutputTest extends AbstractTest
             }
             byte[] xdata = out.toByteArray();
             byte[] data = MsgpackIOUtil.toByteArray(bazCompare, BAZ_SCHEMA, true);
-            
+
             Assert.assertTrue(Arrays.equals(data, xdata));
         }
     }

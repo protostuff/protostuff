@@ -205,10 +205,9 @@ public final class MsgpackXIOUtil
             }
 
             output.writeEndObject(objectStarter);
-
+            
             LinkedBuffer.writeTo(out, buffer);
-            output.reset();
-            buffer.clear();
+            output.clear();
         }
     }
 }

@@ -254,11 +254,13 @@ public final class MsgpackWriteSink
     public LinkedBuffer packString(String value, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        if (value.length() == 0) {
+        if (value.length() == 0)
+        {
             return packRawStringHeader(0, session, lb);
         }
         int sizeInBytes = StringSerializer.computeUTF8Size(value, 0, value.length());
-        return StringSerializer.writeUTF8(value, session, packRawStringHeader(sizeInBytes, session, lb));
+        return StringSerializer.writeUTF8(value, session, 
+                packRawStringHeader(sizeInBytes, session, lb));
     }
 
     public LinkedBuffer packBytes(byte[] src, int offset, int length, WriteSession session, LinkedBuffer lb)
@@ -266,69 +268,49 @@ public final class MsgpackWriteSink
     {
         return sink.writeByteArray(src, offset, length, session, lb);
     }
-    
+
     public LinkedBuffer packArrayHeader(int arraySize, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        if (arraySize < 0) {
+        if (arraySize < 0)
+        {
             throw new IllegalArgumentException("array size must be >= 0");
         }
 
-        if (arraySize < (1 << 4)) {
+        if (arraySize < (1 << 4))
+        {
             return sink.writeByte((byte) (FIXARRAY_PREFIX | arraySize), session, lb);
         }
-        else if (arraySize < (1 << 16)) {
+        else if (arraySize < (1 << 16))
+        {
             return writeByteAndShort(ARRAY16, (short) arraySize, session, lb);
         }
-        else {
+        else
+        {
             return writeByteAndInt(ARRAY32, arraySize, session, lb);
         }
-    }
-    
-    public int getFixedArrayHeaderSize() {
-        return 5;
-    }
-    
-    public LinkedBuffer packFixedArrayHeader(int arraySize, WriteSession session, LinkedBuffer lb)
-            throws IOException
-    {
-        if (arraySize < 0) {
-            throw new IllegalArgumentException("array size must be >= 0");
-        }
-
-        return writeByteAndInt(ARRAY32, arraySize, session, lb);
     }
 
     public LinkedBuffer packMapHeader(int mapSize, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
-        if (mapSize < 0) {
+        if (mapSize < 0)
+        {
             throw new IllegalArgumentException("map size must be >= 0");
         }
 
-        if (mapSize < (1 << 4)) {
+        if (mapSize < (1 << 4))
+        {
             return sink.writeByte((byte) (FIXMAP_PREFIX | mapSize), session, lb);
         }
-        else if (mapSize < (1 << 16)) {
+        else if (mapSize < (1 << 16))
+        {
             return writeByteAndShort(MAP16, (short) mapSize, session, lb);
         }
-        else {
+        else
+        {
             return writeByteAndInt(MAP32, mapSize, session, lb);
         }
     }
-    
-    public int getFixedMapHeaderSize() {
-        return 5;
-    }
-    
-    public LinkedBuffer packFixedMapHeader(int mapSize, WriteSession session, LinkedBuffer lb)
-            throws IOException
-    {
-        if (mapSize < 0) {
-            throw new IllegalArgumentException("map size must be >= 0");
-        }
 
-        return writeByteAndInt(MAP32, mapSize, session, lb);
-    }
-    
 }

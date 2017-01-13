@@ -36,8 +36,8 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
     private LinkedBuffer arrayHeader;
     private boolean lastRepeated;
     private int lastNumber;
-    private int arraySize = 0;
-    private int mapSize = 0;
+    private int arraySize;
+    private int mapSize;
 
     private MsgpackWriteSink packSink;
 
@@ -109,6 +109,7 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
     public MsgpackXOutput clear()
     {
         super.clear();
+        reset();
         return this;
     }
 
