@@ -94,9 +94,6 @@ public final class MsgpackGenerator
     public void pushValue(Schema<?> schema, int fieldNumber, Value value, boolean repeated)
     {
 
-        // System.out.println("pushValue: schema=" + schema + ", fieldNumber=" + fieldNumber + ", value=" + value + ",
-        // repeated=" + repeated);
-
         if (lastNumber == fieldNumber && lastRepeated)
         {
             // repeated field

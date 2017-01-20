@@ -15,7 +15,6 @@
 package io.protostuff;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,6 +24,8 @@ import java.util.List;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessagePacker;
 import org.msgpack.core.MessageUnpacker;
+import org.msgpack.core.buffer.ArrayBufferOutput;
+import org.msgpack.core.buffer.MessageBufferOutput;
 
 /**
  * Utility for the message pack serialization/deserialization of messages and objects tied to a schema.
@@ -161,16 +162,35 @@ public final class MsgpackIOUtil
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ArrayBufferOutput out = new ArrayBufferOutput();
         try
         {
-            writeTo(baos, message, schema, numeric);
+            writeTo(out, message, schema, numeric);
         }
         catch (IOException e)
         {
             throw new RuntimeException("Serializing to a byte array threw an IOException", e);
         }
-        return baos.toByteArray();
+        return out.toByteArray();
+    }
+
+    /**
+     * Serializes the {@code message} into an {@link MessageBufferOutput} using the given {@code schema}.
+     */
+    public static <T> void writeTo(MessageBufferOutput out, T message, Schema<T> schema, boolean numeric)
+            throws IOException
+    {
+
+        MessagePacker packer = MessagePack.newDefaultPacker(out);
+
+        try
+        {
+            writeTo(packer, message, schema, numeric);
+        }
+        finally
+        {
+            packer.flush();
+        }
     }
 
     /**
@@ -204,6 +224,25 @@ public final class MsgpackIOUtil
      * Serializes the {@code messages} into the stream using the given schema.
      */
     public static <T> void writeListTo(OutputStream out, List<T> messages,
+            Schema<T> schema, boolean numeric) throws IOException
+    {
+
+        MessagePacker packer = MessagePack.newDefaultPacker(out);
+
+        try
+        {
+            writeListTo(packer, messages, schema, numeric);
+        }
+        finally
+        {
+            packer.flush();
+        }
+    }
+
+    /**
+     * Serializes the {@code messages} into the stream using the given schema.
+     */
+    public static <T> void writeListTo(MessageBufferOutput out, List<T> messages,
             Schema<T> schema, boolean numeric) throws IOException
     {
 
@@ -274,7 +313,7 @@ public final class MsgpackIOUtil
             schema.mergeFrom(input, message);
 
             list.add(message);
-            
+
             parser.reset();
 
         }
