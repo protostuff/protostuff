@@ -14,7 +14,6 @@
 
 package io.protostuff;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +23,9 @@ import java.util.List;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessagePacker;
 import org.msgpack.core.MessageUnpacker;
+import org.msgpack.core.buffer.ArrayBufferInput;
 import org.msgpack.core.buffer.ArrayBufferOutput;
+import org.msgpack.core.buffer.MessageBufferInput;
 import org.msgpack.core.buffer.MessageBufferOutput;
 
 /**
@@ -54,8 +55,17 @@ public final class MsgpackIOUtil
      */
     public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) throws IOException
     {
-        ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
+        ArrayBufferInput in = new ArrayBufferInput(data, offset, length);
         return newPipe(in, numeric);
+    }
+    
+    /**
+     * Creates a msgpack pipe from an {@link MessageBufferInput}.
+     */
+    public static Pipe newPipe(MessageBufferInput in, boolean numeric) throws IOException
+    {
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+        return newPipe(unpacker, numeric);
     }
 
     /**
@@ -115,7 +125,7 @@ public final class MsgpackIOUtil
             throws IOException
     {
 
-        ByteArrayInputStream bios = new ByteArrayInputStream(data, offset, length);
+        ArrayBufferInput bios = new ArrayBufferInput(data, offset, length);
 
         MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
 
@@ -129,6 +139,24 @@ public final class MsgpackIOUtil
         }
     }
 
+    /**
+     * Merges the {@code message} from the {@link MessageBufferInput} using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(MessageBufferInput in, T message, Schema<T> schema, boolean numeric) throws IOException
+    {
+
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+
+        try
+        {
+            mergeFrom(unpacker, message, schema, numeric);
+        }
+        finally
+        {
+            unpacker.close();
+        }
+    }
+    
     /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
@@ -276,6 +304,24 @@ public final class MsgpackIOUtil
 
     }
 
+    /**
+     * Parses the {@code messages} from the stream using the given {@code schema}.
+     */
+    public static <T> List<T> parseListFrom(MessageBufferInput in, Schema<T> schema, boolean numeric) throws IOException
+    {
+
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+
+        try
+        {
+            return parseListFrom(unpacker, schema, numeric);
+        }
+        finally
+        {
+            unpacker.close();
+        }
+    }
+    
     /**
      * Parses the {@code messages} from the stream using the given {@code schema}.
      */
