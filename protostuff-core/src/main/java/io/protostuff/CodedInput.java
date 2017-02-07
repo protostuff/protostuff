@@ -792,8 +792,13 @@ public final class CodedInput implements Input
      */
     public void reset()
     {
-        bufferSize = 0;
-        bufferPos = 0;
+        this.bufferSize = 0;
+        this.bufferPos = 0;
+        this.bufferSizeAfterLimit = 0;
+        this.currentLimit = Integer.MAX_VALUE;
+        this.lastTag = 0;
+        this.packedLimit = 0;
+        this.sizeLimit = DEFAULT_SIZE_LIMIT;
         resetSizeCounter();
     }
 
