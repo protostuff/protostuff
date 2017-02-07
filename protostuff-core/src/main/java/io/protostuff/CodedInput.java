@@ -788,6 +788,21 @@ public final class CodedInput implements Input
     }
 
     /**
+     * Resets the buffer position and limit to re-use this CodedInput object.
+     */
+    public void reset()
+    {
+        this.bufferSize = 0;
+        this.bufferPos = 0;
+        this.bufferSizeAfterLimit = 0;
+        this.currentLimit = Integer.MAX_VALUE;
+        this.lastTag = 0;
+        this.packedLimit = 0;
+        this.sizeLimit = DEFAULT_SIZE_LIMIT;
+        resetSizeCounter();
+    }
+
+    /**
      * Note that {@code pushLimit()} does NOT affect how many bytes the {@code CodedInputStream} reads from an
      * underlying {@code InputStream} when refreshing its buffer. If you need to prevent reading past a certain point in
      * the underlying {@code InputStream} (e.g. because you expect it to contain more data after the end of the message
