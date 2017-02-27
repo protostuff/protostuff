@@ -44,12 +44,6 @@
 
 package io.protostuff;
 
-import static io.protostuff.WireFormat.TAG_TYPE_BITS;
-import static io.protostuff.WireFormat.TAG_TYPE_MASK;
-import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
-import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
-
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +53,12 @@ import java.util.List;
 
 import io.protostuff.StringSerializer.STRING;
 
+import static io.protostuff.WireFormat.TAG_TYPE_BITS;
+import static io.protostuff.WireFormat.TAG_TYPE_MASK;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
+
 /**
  * Reads and decodes protocol message fields.
  * <p>
@@ -66,7 +66,7 @@ import io.protostuff.StringSerializer.STRING;
  * (e.g. {@link #readTag()} and {@link #readInt32()}) and methods that read low-level values (e.g.
  * {@link #readRawVarint32()} and {@link #readRawBytes}). If you are reading encoded protocol messages, you should use
  * the former methods, but if you are reading some other format of your own design, use the latter.
- * 
+ *
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
@@ -124,7 +124,7 @@ public final class CodedInput implements Input
     /**
      * Verifies that the last call to readTag() returned the given tag value. This is used to verify that a nested group
      * ended with the correct end tag.
-     * 
+     *
      * @throws ProtobufException
      *             {@code value} does not match the last tag.
      */
@@ -139,7 +139,7 @@ public final class CodedInput implements Input
 
     /**
      * Reads and discards a single field, given its tag value.
-     * 
+     *
      * @return {@code false} if the tag is an endgroup tag, in which case nothing is skipped. Otherwise, returns
      *         {@code true}.
      */
@@ -288,6 +288,28 @@ public final class CodedInput implements Input
         {
             // Slow path: Build a byte array first then copy it.
             return STRING.deser(readRawBytes(size));
+        }
+    }
+
+    /**
+     * Read a {@code string} field value from the stream into a ByteBuffer.
+     */
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        final int size = readRawVarint32();
+        final ByteBuffer result;
+
+        if (size <= (bufferSize - bufferPos) && size > 0)
+        {
+            // Fast path: We already have the bytes in a contiguous buffer, so
+            // just copy directly from it.
+            bb.put(buffer, bufferPos, size);
+            bufferPos += size;
+        }
+        else
+        {
+            // Slow path: Build a byte array first then copy it.
+            bb.put(readRawBytes(size));
         }
     }
 
@@ -647,7 +669,7 @@ public final class CodedInput implements Input
      * Decode a ZigZag-encoded 32-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            An unsigned 32-bit integer, stored in a signed int because Java has no explicit unsigned support.
      * @return A signed 32-bit integer.
@@ -661,7 +683,7 @@ public final class CodedInput implements Input
      * Decode a ZigZag-encoded 64-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            An unsigned 64-bit integer, stored in a signed int because Java has no explicit unsigned support.
      * @return A signed 64-bit integer.
@@ -763,7 +785,7 @@ public final class CodedInput implements Input
      * <p>
      * If you want to read several messages from a single CodedInput, you could call {@link #resetSizeCounter()} after
      * each one to avoid hitting the size limit.
-     * 
+     *
      * @return the old limit.
      */
     public int setSizeLimit(final int limit)
@@ -808,7 +830,7 @@ public final class CodedInput implements Input
      * the underlying {@code InputStream} (e.g. because you expect it to contain more data after the end of the message
      * which you need to handle differently) then you must place a wrapper around your {@code InputStream} which limits
      * the amount of data that can be read from it.
-     * 
+     *
      * @return the old limit.
      */
     public int pushLimit(int byteLimit) throws ProtobufException
@@ -848,7 +870,7 @@ public final class CodedInput implements Input
 
     /**
      * Discards the current limit, returning to the previous limit.
-     * 
+     *
      * @param oldLimit
      *            The old limit, as returned by {@code pushLimit}.
      */
@@ -961,7 +983,7 @@ public final class CodedInput implements Input
 
     /**
      * Read one byte from the input.
-     * 
+     *
      * @throws ProtobufException
      *             The end of the stream or the current limit was reached.
      */
@@ -976,7 +998,7 @@ public final class CodedInput implements Input
 
     /**
      * Read a fixed size of bytes from the input.
-     * 
+     *
      * @throws ProtobufException
      *             The end of the stream or the current limit was reached.
      */
@@ -1096,7 +1118,7 @@ public final class CodedInput implements Input
 
     /**
      * Reads and discards {@code size} bytes.
-     * 
+     *
      * @throws ProtobufException
      *             The end of the stream or the current limit was reached.
      */
@@ -1189,7 +1211,7 @@ public final class CodedInput implements Input
     /**
      * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
      * packed fields are being read.
-     * 
+     *
      * @throws IOException
      */
     private void checkIfPackedField() throws IOException
