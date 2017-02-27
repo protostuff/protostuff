@@ -144,7 +144,8 @@ public class TailDelimiterTest extends AbstractTest
         ArrayList<Foo> foos = new ArrayList<Foo>();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        final int bytesWritten = writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+        assertEquals(0, bytesWritten);
         byte[] data = out.toByteArray();
 
         ByteArrayInputStream in = new ByteArrayInputStream(data);
