@@ -297,12 +297,12 @@ public final class CodedInput implements Input
     public void readBytes(final ByteBuffer bb) throws IOException
     {
         final int size = readRawVarint32();
-        final ByteBuffer result;
 
         if (size <= (bufferSize - bufferPos) && size > 0)
         {
             // Fast path: We already have the bytes in a contiguous buffer, so
             // just copy directly from it.
+            bb.limit(size);
             bb.put(buffer, bufferPos, size);
             bufferPos += size;
         }
