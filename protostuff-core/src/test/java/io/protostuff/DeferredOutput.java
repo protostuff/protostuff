@@ -230,6 +230,18 @@ public final class DeferredOutput implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        byte[] bytes = STRING.ser(value.toString());
+
+        int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+        byte[] delimited = CodedOutput.getTagAndRawVarInt32Bytes(tag, bytes.length);
+        size += delimited.length + bytes.length;
+
+        current = new ByteArrayNode(bytes, new ByteArrayNode(delimited, current));
+    }
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);

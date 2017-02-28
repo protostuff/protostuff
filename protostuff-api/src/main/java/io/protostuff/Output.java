@@ -102,6 +102,11 @@ public interface Output
     public void writeString(int fieldNumber, String value, boolean repeated) throws IOException;
 
     /**
+     * Writes a String field from a StringBuilder.
+     */
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException;
+
+    /**
      * Writes a ByteString(wraps byte array) field.
      */
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException;

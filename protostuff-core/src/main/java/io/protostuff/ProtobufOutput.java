@@ -215,6 +215,16 @@ public final class ProtobufOutput extends WriteSession implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        tail = writeUTF8VarDelimited(
+                value,
+                this,
+                writeRawVarInt32(makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED), this, tail));
+    }
+
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);

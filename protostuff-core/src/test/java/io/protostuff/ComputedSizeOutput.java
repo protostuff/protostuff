@@ -205,6 +205,15 @@ public final class ComputedSizeOutput implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber,
+                WireFormat.WIRETYPE_LENGTH_DELIMITED));
+        final int strSize = computeUTF8Size(value.toString(), 0, value.length());
+        size += ProtobufOutput.computeRawVarint32Size(strSize) + strSize;
+    }
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);

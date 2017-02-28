@@ -286,6 +286,18 @@ public final class KvpOutput extends WriteSession implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        tail = sink.writeStrUTF8FixedDelimited(
+                value,
+                true,
+                this,
+                writeField(
+                        fieldNumber,
+                        tail));
+    }
+
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);

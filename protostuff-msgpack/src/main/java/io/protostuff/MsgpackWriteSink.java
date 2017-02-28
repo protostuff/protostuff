@@ -263,6 +263,18 @@ public final class MsgpackWriteSink
                 packRawStringHeader(sizeInBytes, session, lb));
     }
 
+    public LinkedBuffer packString(StringBuilder value, WriteSession session, LinkedBuffer lb)
+            throws IOException
+    {
+        if (value.length() == 0)
+        {
+            return packRawStringHeader(0, session, lb);
+        }
+        int sizeInBytes = StringSerializer.computeUTF8Size(value, 0, value.length());
+        return StringSerializer.writeUTF8(value, session,
+                packRawStringHeader(sizeInBytes, session, lb));
+    }
+
     public LinkedBuffer packBytes(byte[] src, int offset, int length, WriteSession session, LinkedBuffer lb)
             throws IOException
     {

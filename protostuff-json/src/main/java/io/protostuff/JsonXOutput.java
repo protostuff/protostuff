@@ -625,6 +625,43 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        final WriteSink sink = this.sink;
+        if (lastNumber == fieldNumber)
+        {
+            // repeated field
+            tail = sink.writeByte(
+                    QUOTE,
+                    this,
+                    writeUTF8Escaped(
+                            value,
+                            sink,
+                            this,
+                            sink.writeByteArray(
+                                    COMMA_AND_QUOTE,
+                                    this,
+                                    tail)));
+            return;
+        }
+
+        tail = sink.writeByte(
+                QUOTE,
+                this,
+                writeUTF8Escaped(
+                        value,
+                        sink,
+                        this,
+                        writeKey(
+                                fieldNumber,
+                                sink,
+                                repeated ? KEY_SUFFIX_ARRAY_STRING : KEY_SUFFIX_STRING)));
+
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
+    }
+
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         writeInt32(fieldNumber, value, repeated);
@@ -748,6 +785,116 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     }
 
     private static LinkedBuffer writeUTF8Escaped(final String str, final WriteSink sink,
+            final WriteSession session, LinkedBuffer lb) throws IOException
+    {
+        final int len = str.length();
+        if (len == 0)
+            return lb;
+
+        byte[] buffer = lb.buffer;
+        int limit = buffer.length, offset = lb.offset, size = len;
+
+        for (int i = 0; i < len; i++)
+        {
+            final char c = str.charAt(i);
+            if (c < 0x0080)
+            {
+                final int escape = sOutputEscapes[c];
+                // System.out.print(c + "|" + escape + " ");
+                if (escape == 0)
+                {
+                    // nothing to escape
+                    if (offset == limit)
+                    {
+                        lb.offset = offset;
+                        lb = sink.drain(session, lb);
+                        offset = lb.offset;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+                    // ascii
+                    buffer[offset++] = (byte) c;
+                }
+                else if (escape < 0)
+                {
+                    // hex escape
+                    if (offset + 6 > limit)
+                    {
+                        lb.offset = offset;
+                        lb = sink.drain(session, lb);
+                        offset = lb.offset;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+
+                    final int value = -(escape + 1);
+
+                    buffer[offset++] = (byte) '\\';
+                    buffer[offset++] = (byte) 'u';
+                    buffer[offset++] = (byte) '0';
+                    buffer[offset++] = (byte) '0';
+                    buffer[offset++] = HEX_BYTES[value >> 4];
+                    buffer[offset++] = HEX_BYTES[value & 0x0F];
+
+                    size += 5;
+                }
+                else
+                {
+                    if (offset + 2 > limit)
+                    {
+                        lb.offset = offset;
+                        lb = sink.drain(session, lb);
+                        offset = lb.offset;
+                        buffer = lb.buffer;
+                        limit = buffer.length;
+                    }
+
+                    buffer[offset++] = (byte) '\\';
+                    buffer[offset++] = (byte) escape;
+
+                    size++;
+                }
+            }
+            else if (c < 0x0800)
+            {
+                if (offset + 2 > limit)
+                {
+                    lb.offset = offset;
+                    lb = sink.drain(session, lb);
+                    offset = lb.offset;
+                    buffer = lb.buffer;
+                    limit = buffer.length;
+                }
+
+                buffer[offset++] = (byte) (0xC0 | ((c >> 6) & 0x1F));
+                buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                size++;
+            }
+            else
+            {
+                if (offset + 3 > limit)
+                {
+                    lb.offset = offset;
+                    lb = sink.drain(session, lb);
+                    offset = lb.offset;
+                    buffer = lb.buffer;
+                    limit = buffer.length;
+                }
+
+                buffer[offset++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
+                buffer[offset++] = (byte) (0x80 | ((c >> 6) & 0x3F));
+                buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                size += 2;
+            }
+        }
+
+        session.size += size;
+        lb.offset = offset;
+
+        return lb;
+    }
+
+    private static LinkedBuffer writeUTF8Escaped(final StringBuilder str, final WriteSink sink,
             final WriteSession session, LinkedBuffer lb) throws IOException
     {
         final int len = str.length();

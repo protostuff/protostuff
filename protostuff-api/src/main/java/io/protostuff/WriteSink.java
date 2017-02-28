@@ -325,6 +325,36 @@ public enum WriteSink
             return StringSerializer.writeUTF8FixedDelimited(value, littleEndian, session,
                     lb);
         }
+
+        @Override
+        public LinkedBuffer writeStrAscii(final StringBuilder value,
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            return StringSerializer.writeAscii(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8(final StringBuilder value,
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            return StringSerializer.writeUTF8(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8VarDelimited(final StringBuilder value,
+                final WriteSession session, LinkedBuffer lb) throws IOException
+        {
+            return StringSerializer.writeUTF8VarDelimited(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8FixedDelimited(final StringBuilder value,
+                final boolean littleEndian, final WriteSession session, LinkedBuffer lb)
+                throws IOException
+        {
+            return StringSerializer.writeUTF8FixedDelimited(value, littleEndian, session,
+                    lb);
+        }
     },
     STREAMED
     {
@@ -599,6 +629,36 @@ public enum WriteSink
             return StreamedStringSerializer.writeUTF8FixedDelimited(value,
                     littleEndian, session, lb);
         }
+
+        @Override
+        public LinkedBuffer writeStrAscii(final StringBuilder value,
+                final WriteSession session, final LinkedBuffer lb) throws IOException
+        {
+            return StreamedStringSerializer.writeAscii(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8(final StringBuilder value,
+                final WriteSession session, final LinkedBuffer lb) throws IOException
+        {
+            return StreamedStringSerializer.writeUTF8(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8VarDelimited(final StringBuilder value,
+                final WriteSession session, final LinkedBuffer lb) throws IOException
+        {
+            return StreamedStringSerializer.writeUTF8VarDelimited(value, session, lb);
+        }
+
+        @Override
+        public LinkedBuffer writeStrUTF8FixedDelimited(final StringBuilder value,
+                final boolean littleEndian, final WriteSession session,
+                final LinkedBuffer lb) throws IOException
+        {
+            return StreamedStringSerializer.writeUTF8FixedDelimited(value,
+                    littleEndian, session, lb);
+        }
     };
 
     public abstract LinkedBuffer drain(final WriteSession session,
@@ -702,4 +762,19 @@ public enum WriteSink
     public abstract LinkedBuffer writeStrUTF8FixedDelimited(final String value,
             final boolean littleEndian, final WriteSession session,
             final LinkedBuffer lb) throws IOException;
+
+    public abstract LinkedBuffer writeStrAscii(final StringBuilder value,
+            final WriteSession session, final LinkedBuffer lb) throws IOException;
+
+    public abstract LinkedBuffer writeStrUTF8(final StringBuilder value,
+            final WriteSession session, final LinkedBuffer lb) throws IOException;
+
+    public abstract LinkedBuffer writeStrUTF8VarDelimited(final StringBuilder value,
+            final WriteSession session, final LinkedBuffer lb) throws IOException;
+
+    public abstract LinkedBuffer writeStrUTF8FixedDelimited(final StringBuilder value,
+            final boolean littleEndian, final WriteSession session,
+            final LinkedBuffer lb) throws IOException;
+
+
 }
