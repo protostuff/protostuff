@@ -231,7 +231,8 @@ public final class KvpInput implements Input
     }
 
     @Override
-    public void readBytes(final ByteBuffer bb) throws IOException {
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
         if (offset + 2 > limit && !readable(2))
             throw new ProtostuffException("Truncated message.");
 
