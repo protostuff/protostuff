@@ -247,7 +247,8 @@ public final class KvpInput implements Input
         if (size > MAX_VALUE_SIZE)
             throw new ProtostuffException("Exceeded kvp max value size.");
 
-        if (offset + size > limit) {
+        if (offset + size > limit)
+        {
             fill(bb.array(), 0, size);
         }
 
