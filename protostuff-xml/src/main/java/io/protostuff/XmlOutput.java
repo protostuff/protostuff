@@ -177,9 +177,9 @@ public final class XmlOutput implements Output, StatefulOutput
     }
 
     @Override
-    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
-        write(writer, schema.getFieldName(fieldNumber), value.toString());
+        write(writer, schema.getFieldName(fieldNumber), value);
     }
 
     @Override

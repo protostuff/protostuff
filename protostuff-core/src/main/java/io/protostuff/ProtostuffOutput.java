@@ -294,7 +294,7 @@ public final class ProtostuffOutput extends WriteSession implements Output
     }
 
     @Override
-    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         tail = sink.writeStrUTF8VarDelimited(
                 value,

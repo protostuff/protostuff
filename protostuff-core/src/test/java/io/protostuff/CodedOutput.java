@@ -539,11 +539,11 @@ public final class CodedOutput implements Output
      * Write a {@code string} field, including tag, to the stream.
      */
     @Override
-    public void writeString(final int fieldNumber, final CharSequence value, boolean repeated)
+    public void writeString(final int fieldNumber, final String value, boolean repeated)
             throws IOException
     {
         writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        writeStringNoTag(value.toString());
+        writeStringNoTag(value);
     }
 
     /* @ Write a {@code group} field, including tag, to the stream. */

@@ -377,7 +377,7 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
     }
 
     @Override
-    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
         if (lastNumber == fieldNumber)

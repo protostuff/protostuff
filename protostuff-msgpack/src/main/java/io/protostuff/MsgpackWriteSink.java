@@ -251,7 +251,7 @@ public final class MsgpackWriteSink
         }
     }
 
-    public LinkedBuffer packString(CharSequence value, WriteSession session, LinkedBuffer lb)
+    public LinkedBuffer packString(String value, WriteSession session, LinkedBuffer lb)
             throws IOException
     {
         if (value.length() == 0)

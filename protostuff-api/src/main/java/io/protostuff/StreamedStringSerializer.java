@@ -138,8 +138,8 @@ public final class StreamedStringSerializer
     /**
      * Writes the utf8-encoded bytes from the string into the {@link LinkedBuffer}.
      */
-    public static LinkedBuffer writeUTF8(final CharSequence str, final WriteSession session,
-                                         final LinkedBuffer lb) throws IOException
+    public static LinkedBuffer writeUTF8(final String str, final WriteSession session,
+            final LinkedBuffer lb) throws IOException
     {
         final int len = str.length();
         if (len == 0)
@@ -215,8 +215,8 @@ public final class StreamedStringSerializer
      * know in advance that the string is 100% ascii. E.g if you convert a double/float to a string, you are sure it
      * only contains ascii chars.
      */
-    public static LinkedBuffer writeAscii(final CharSequence str, final WriteSession session,
-                                          final LinkedBuffer lb) throws IOException
+    public static LinkedBuffer writeAscii(final String str, final WriteSession session,
+            final LinkedBuffer lb) throws IOException
     {
         final int len = str.length();
         if (len == 0)
@@ -277,7 +277,7 @@ public final class StreamedStringSerializer
      * The length of the utf8 bytes is written first (big endian) before the string - which is fixed 2-bytes. Same
      * behavior as {@link java.io.DataOutputStream#writeUTF(String)}.
      */
-    public static LinkedBuffer writeUTF8FixedDelimited(final CharSequence str,
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str,
             final WriteSession session,
             LinkedBuffer lb) throws IOException
     {
@@ -287,7 +287,7 @@ public final class StreamedStringSerializer
     /**
      * The length of the utf8 bytes is written first before the string - which is fixed 2-bytes.
      */
-    public static LinkedBuffer writeUTF8FixedDelimited(final CharSequence str,
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str,
             final boolean littleEndian, final WriteSession session,
             final LinkedBuffer lb) throws IOException
     {
@@ -360,9 +360,9 @@ public final class StreamedStringSerializer
         return lb;
     }
 
-    private static LinkedBuffer writeUTF8OneByteDelimited(final CharSequence str, final int index,
-                                                          final int len, final WriteSession session,
-                                                          final LinkedBuffer lb) throws IOException
+    private static LinkedBuffer writeUTF8OneByteDelimited(final String str, final int index,
+            final int len, final WriteSession session,
+            final LinkedBuffer lb) throws IOException
     {
         int lastSize = session.size, withIntOffset = lb.offset + 1;
 
@@ -393,9 +393,9 @@ public final class StreamedStringSerializer
         return lb;
     }
 
-    private static LinkedBuffer writeUTF8VarDelimited(final CharSequence str, final int index,
-                                                      final int len, final int lowerLimit, int expectedSize,
-                                                      final WriteSession session, final LinkedBuffer lb)
+    private static LinkedBuffer writeUTF8VarDelimited(final String str, final int index,
+            final int len, final int lowerLimit, int expectedSize,
+            final WriteSession session, final LinkedBuffer lb)
             throws IOException
     {
         int lastSize = session.size, offset = lb.offset, withIntOffset = offset + expectedSize;
@@ -534,8 +534,8 @@ public final class StreamedStringSerializer
     /**
      * The length of the utf8 bytes is written first before the string - which is a variable int (1 to 5 bytes).
      */
-    public static LinkedBuffer writeUTF8VarDelimited(final CharSequence str, final WriteSession session,
-                                                     final LinkedBuffer lb) throws IOException
+    public static LinkedBuffer writeUTF8VarDelimited(final String str, final WriteSession session,
+            final LinkedBuffer lb) throws IOException
     {
         final int len = str.length();
         if (len == 0)
