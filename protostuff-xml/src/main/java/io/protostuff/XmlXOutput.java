@@ -208,7 +208,7 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
     }
 
     @Override
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
     {
         final String name = schema.getFieldName(fieldNumber);
 

@@ -99,7 +99,7 @@ public interface Output
     /**
      * Writes a String field.
      */
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException;
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException;
 
     /**
      * Writes a ByteString(wraps byte array) field.

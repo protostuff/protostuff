@@ -151,9 +151,9 @@ public class MsgpackOutput implements Output, StatefulOutput
     }
 
     @Override
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
     {
-        generator.pushValue(schema, fieldNumber, new ImmutableStringValueImpl(value), repeated);
+        generator.pushValue(schema, fieldNumber, new ImmutableStringValueImpl(value.toString()), repeated);
     }
 
     @Override

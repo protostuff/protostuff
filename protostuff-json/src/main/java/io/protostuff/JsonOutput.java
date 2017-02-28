@@ -381,12 +381,12 @@ public final class JsonOutput implements Output, StatefulOutput
     }
 
     @Override
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
     {
         if (lastNumber == fieldNumber)
         {
             // repeated field
-            generator.writeString(value);
+            generator.writeString(value.toString());
             return;
         }
 
@@ -401,10 +401,10 @@ public final class JsonOutput implements Output, StatefulOutput
         if (repeated)
         {
             generator.writeArrayFieldStart(name);
-            generator.writeString(value);
+            generator.writeString(value.toString());
         }
         else
-            generator.writeStringField(name, value);
+            generator.writeStringField(name, value.toString());
 
         lastNumber = fieldNumber;
         lastRepeated = repeated;

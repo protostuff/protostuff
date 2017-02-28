@@ -196,7 +196,7 @@ public final class ComputedSizeOutput implements Output
     }
 
     @Override
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
     {
         size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber,
                 WireFormat.WIRETYPE_LENGTH_DELIMITED));
