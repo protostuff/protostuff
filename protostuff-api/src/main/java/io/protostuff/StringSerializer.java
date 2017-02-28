@@ -318,7 +318,7 @@ public final class StringSerializer
     /**
      * Computes the size of the utf8 string beginning at the specified {@code index} with the specified {@code length}.
      */
-    public static int computeUTF8Size(final CharSequence str, final int index, final int len)
+    public static int computeUTF8Size(final String str, final int index, final int len)
     {
         int size = len;
         for (int i = index; i < len; i++)
@@ -338,7 +338,7 @@ public final class StringSerializer
     /**
      * Slow path. It checks the limit before every write. Shared with StreamedStringSerializer.
      */
-    static LinkedBuffer writeUTF8(final CharSequence str, int i, final int len,
+    static LinkedBuffer writeUTF8(final String str, int i, final int len,
             byte[] buffer, int offset, int limit,
             final WriteSession session, LinkedBuffer lb)
     {
@@ -661,7 +661,7 @@ public final class StringSerializer
     /**
      * Fast path. The {@link LinkedBuffer}'s capacity is >= string length.
      */
-    static LinkedBuffer writeUTF8(final CharSequence str, int i, final int len,
+    static LinkedBuffer writeUTF8(final String str, int i, final int len,
             final WriteSession session, final LinkedBuffer lb)
     {
         final byte[] buffer = lb.buffer;
@@ -728,7 +728,7 @@ public final class StringSerializer
     /**
      * Writes the utf8-encoded bytes from the string into the {@link LinkedBuffer}.
      */
-    public static LinkedBuffer writeUTF8(final CharSequence str, final WriteSession session,
+    public static LinkedBuffer writeUTF8(final String str, final WriteSession session,
             final LinkedBuffer lb)
     {
         final int len = str.length();
@@ -744,7 +744,7 @@ public final class StringSerializer
      * know in advance that the string is 100% ascii. E.g if you convert a double/float to a string, you are sure it
      * only contains ascii chars.
      */
-    public static LinkedBuffer writeAscii(final CharSequence str, final WriteSession session,
+    public static LinkedBuffer writeAscii(final String str, final WriteSession session,
             LinkedBuffer lb)
     {
         final int len = str.length();
@@ -807,7 +807,7 @@ public final class StringSerializer
      * The length of the utf8 bytes is written first (big endian) before the string - which is fixed 2-bytes. Same
      * behavior as {@link java.io.DataOutputStream#writeUTF(String)}.
      */
-    public static LinkedBuffer writeUTF8FixedDelimited(final CharSequence str,
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str,
             final WriteSession session, LinkedBuffer lb)
     {
         return writeUTF8FixedDelimited(str, false, session, lb);
@@ -816,7 +816,7 @@ public final class StringSerializer
     /**
      * The length of the utf8 bytes is written first before the string - which is fixed 2-bytes.
      */
-    public static LinkedBuffer writeUTF8FixedDelimited(final CharSequence str,
+    public static LinkedBuffer writeUTF8FixedDelimited(final String str,
             final boolean littleEndian, final WriteSession session, LinkedBuffer lb)
     {
         final int lastSize = session.size, len = str.length(), withIntOffset = lb.offset + 2;
@@ -890,7 +890,7 @@ public final class StringSerializer
         return rb;
     }
 
-    private static LinkedBuffer writeUTF8OneByteDelimited(final CharSequence str, final int index,
+    private static LinkedBuffer writeUTF8OneByteDelimited(final String str, final int index,
             final int len, final WriteSession session, LinkedBuffer lb)
     {
         final int lastSize = session.size;
@@ -947,7 +947,7 @@ public final class StringSerializer
         return rb;
     }
 
-    private static LinkedBuffer writeUTF8VarDelimited(final CharSequence str, final int index,
+    private static LinkedBuffer writeUTF8VarDelimited(final String str, final int index,
             final int len, final int lowerLimit, int expectedSize,
             final WriteSession session, LinkedBuffer lb)
     {
@@ -1052,7 +1052,7 @@ public final class StringSerializer
     /**
      * The length of the utf8 bytes is written first before the string - which is a variable int (1 to 5 bytes).
      */
-    public static LinkedBuffer writeUTF8VarDelimited(final CharSequence str, final WriteSession session,
+    public static LinkedBuffer writeUTF8VarDelimited(final String str, final WriteSession session,
             LinkedBuffer lb)
     {
         final int len = str.length();
