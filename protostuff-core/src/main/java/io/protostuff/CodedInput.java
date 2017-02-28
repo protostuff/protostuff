@@ -294,6 +294,7 @@ public final class CodedInput implements Input
     /**
      * Read a {@code string} field value from the stream into a ByteBuffer.
      */
+    @Override
     public void readBytes(final ByteBuffer bb) throws IOException
     {
         final int size = readRawVarint32();

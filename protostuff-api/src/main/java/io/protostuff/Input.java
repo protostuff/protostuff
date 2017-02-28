@@ -117,6 +117,11 @@ public interface Input
     public ByteString readBytes() throws IOException;
 
     /**
+     * Reads a field value into a {@link ByteBuffer}.
+     */
+    public void readBytes(ByteBuffer bb) throws IOException;
+
+    /**
      * Reads a byte array field value.
      */
     public byte[] readByteArray() throws IOException;

@@ -257,6 +257,14 @@ public final class JsonInput implements Input
     }
 
     @Override
+    public void readBytes(final ByteBuffer bb) throws IOException {
+        bb.put(parser.getBinaryValue());
+
+        if (lastRepeated && parser.nextToken() == END_ARRAY)
+            lastRepeated = false;
+    }
+
+    @Override
     public double readDouble() throws IOException
     {
         final double value = parser.getDoubleValue();
