@@ -368,11 +368,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         if (output instanceof StatefulOutput)
         {
             // update using the derived schema.
-            ((StatefulOutput) output).updateLast(strategy.MAP_SCHEMA,
+            ((StatefulOutput) output).updateLast(strategy.mapSchema,
                     currentSchema);
         }
 
-        strategy.MAP_SCHEMA.writeTo(output, (Map<Object, Object>) value);
+        strategy.mapSchema.writeTo(output, (Map<Object, Object>) value);
     }
 
     static void writeNonPublicMapTo(Output output, Object value,
@@ -404,9 +404,9 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
 
                 output.writeUInt32(id, 0, false);
                 if (k != null)
-                    output.writeObject(1, k, strategy.OBJECT_SCHEMA, false);
+                    output.writeObject(1, k, strategy.objectSchema, false);
                 if (v != null)
-                    output.writeObject(3, v, strategy.OBJECT_SCHEMA, false);
+                    output.writeObject(3, v, strategy.objectSchema, false);
                 break;
             }
 
@@ -453,7 +453,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             throw new RuntimeException(e);
         }
 
-        output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
+        output.writeObject(id, m, strategy.polymorphicMapSchema, false);
     }
 
     private static void writeSynchronizedMapTo(Output output, Object value,
@@ -482,7 +482,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                             + "work if graph format is used, since the reference is retained.");
         }
 
-        output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
+        output.writeObject(id, m, strategy.polymorphicMapSchema, false);
     }
 
     private static void writeCheckedMapTo(Output output, Object value,
@@ -501,9 +501,9 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             throw new RuntimeException(e);
         }
 
-        output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
-        output.writeObject(1, keyType, strategy.CLASS_SCHEMA, false);
-        output.writeObject(2, valueType, strategy.CLASS_SCHEMA, false);
+        output.writeObject(id, m, strategy.polymorphicMapSchema, false);
+        output.writeObject(1, keyType, strategy.classSchema, false);
+        output.writeObject(2, valueType, strategy.classSchema, false);
     }
     
     static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
@@ -591,7 +591,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(em, owner);
                 }
 
-                strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
+                strategy.mapSchema.mergeFrom(input, (Map<Object, Object>) em);
 
                 return em;
             }
@@ -606,7 +606,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(map, owner);
                 }
 
-                strategy.MAP_SCHEMA.mergeFrom(input, map);
+                strategy.mapSchema.mergeFrom(input, map);
 
                 return map;
             }
@@ -642,7 +642,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             {
                 // key is null
                 final Wrapper wrapper = new Wrapper();
-                Object v = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+                Object v = input.mergeObject(wrapper, strategy.objectSchema);
                 if (!graph || !((GraphInput) input).isCurrentMessageReference())
                     v = wrapper.value;
 
@@ -665,7 +665,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         }
 
         final Wrapper wrapper = new Wrapper();
-        Object k = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+        Object k = input.mergeObject(wrapper, strategy.objectSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             k = wrapper.value;
 
@@ -690,7 +690,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 throw new ProtostuffException("Corrupt input.");
         }
 
-        Object v = input.mergeObject(wrapper, strategy.OBJECT_SCHEMA);
+        Object v = input.mergeObject(wrapper, strategy.objectSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             v = wrapper.value;
 
@@ -721,7 +721,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         }
 
         final Wrapper wrapper = new Wrapper();
-        Object m = input.mergeObject(wrapper, strategy.POLYMORPHIC_MAP_SCHEMA);
+        Object m = input.mergeObject(wrapper, strategy.polymorphicMapSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             m = wrapper.value;
         try
@@ -750,7 +750,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         }
 
         final Wrapper wrapper = new Wrapper();
-        Object m = input.mergeObject(wrapper, strategy.POLYMORPHIC_MAP_SCHEMA);
+        Object m = input.mergeObject(wrapper, strategy.polymorphicMapSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             m = wrapper.value;
         try
@@ -780,21 +780,21 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         }
 
         final Wrapper wrapper = new Wrapper();
-        Object m = input.mergeObject(wrapper, strategy.POLYMORPHIC_MAP_SCHEMA);
+        Object m = input.mergeObject(wrapper, strategy.polymorphicMapSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             m = wrapper.value;
 
         if (1 != input.readFieldNumber(schema))
             throw new ProtostuffException("Corrupt input.");
 
-        Object keyType = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
+        Object keyType = input.mergeObject(wrapper, strategy.classSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             keyType = wrapper.value;
 
         if (2 != input.readFieldNumber(schema))
             throw new ProtostuffException("Corrupt input.");
 
-        Object valueType = input.mergeObject(wrapper, strategy.CLASS_SCHEMA);
+        Object valueType = input.mergeObject(wrapper, strategy.classSchema);
         if (!graph || !((GraphInput) input).isCurrentMessageReference())
             valueType = wrapper.value;
 
@@ -843,52 +843,52 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
 
             case ID_UNMODIFIABLE_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
                 break;
 
             case ID_UNMODIFIABLE_SORTED_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
                 break;
 
             case ID_SYNCHRONIZED_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
                 break;
 
             case ID_SYNCHRONIZED_SORTED_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
                 break;
 
             case ID_CHECKED_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
+                output.writeObject(1, pipe, strategy.classPipeSchema, false);
 
                 if (2 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(2, pipe, strategy.CLASS_PIPE_SCHEMA, false);
+                output.writeObject(2, pipe, strategy.classPipeSchema, false);
                 break;
 
             case ID_CHECKED_SORTED_MAP:
                 output.writeObject(number, pipe,
-                        strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, false);
+                        strategy.polymorphicMapPipeSchema, false);
 
                 if (1 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(1, pipe, strategy.CLASS_PIPE_SCHEMA, false);
+                output.writeObject(1, pipe, strategy.classPipeSchema, false);
 
                 if (2 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
 
-                output.writeObject(2, pipe, strategy.CLASS_PIPE_SCHEMA, false);
+                output.writeObject(2, pipe, strategy.classPipeSchema, false);
                 break;
 
             case ID_ENUM_MAP:
@@ -897,11 +897,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA,
+                    ((StatefulOutput) output).updateLast(strategy.mapPipeSchema,
                             pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.mapPipeSchema, pipe, input, output);
                 return;
             case ID_MAP:
                 strategy.transferMapId(input, output, number);
@@ -909,11 +909,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA,
+                    ((StatefulOutput) output).updateLast(strategy.mapPipeSchema,
                             pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.mapPipeSchema, pipe, input, output);
                 return;
 
             default:
@@ -940,7 +940,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             case 3:
             {
                 // key is null
-                output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+                output.writeObject(3, pipe, strategy.objectPipeSchema, false);
 
                 if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
                     throw new ProtostuffException("Corrupt input.");
@@ -951,7 +951,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 throw new ProtostuffException("Corrupt input.");
         }
 
-        output.writeObject(1, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+        output.writeObject(1, pipe, strategy.objectPipeSchema, false);
 
         switch (input.readFieldNumber(pipeSchema.wrappedSchema))
         {
@@ -965,7 +965,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 throw new ProtostuffException("Corrupt input.");
         }
 
-        output.writeObject(3, pipe, strategy.OBJECT_PIPE_SCHEMA, false);
+        output.writeObject(3, pipe, strategy.objectPipeSchema, false);
 
         if (0 != input.readFieldNumber(pipeSchema.wrappedSchema))
             throw new ProtostuffException("Corrupt input.");

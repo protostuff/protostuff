@@ -396,10 +396,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
         if (output instanceof StatefulOutput)
         {
             // update using the derived schema.
-            ((StatefulOutput) output).updateLast(strategy.ARRAY_PIPE_SCHEMA, pipeSchema);
+            ((StatefulOutput) output).updateLast(strategy.arrayPipeSchema, pipeSchema);
         }
 
-        Pipe.transferDirect(strategy.ARRAY_PIPE_SCHEMA, pipe, input, output);
+        Pipe.transferDirect(strategy.arrayPipeSchema, pipe, input, output);
     }
 
     static void transferClass(Pipe pipe, Input input, Output output, int number,
@@ -496,7 +496,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(arrayWrapper.array, owner);
                 }
 
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, arrayWrapper);
+                strategy.collectionSchema.mergeFrom(input, arrayWrapper);
 
                 return arrayWrapper.array;
             }
@@ -519,7 +519,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(mArrayWrapper.array, owner);
                 }
 
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
+                strategy.collectionSchema.mergeFrom(input, mArrayWrapper);
 
                 return mArrayWrapper.array;
             }
@@ -558,7 +558,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(es, owner);
                 }
 
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, (Collection<Object>) es);
+                strategy.collectionSchema.mergeFrom(input, (Collection<Object>) es);
 
                 return es;
             }
@@ -572,7 +572,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(em, owner);
                 }
 
-                strategy.MAP_SCHEMA.mergeFrom(input, (Map<Object, Object>) em);
+                strategy.mapSchema.mergeFrom(input, (Map<Object, Object>) em);
 
                 return em;
             }
@@ -587,7 +587,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(collection, owner);
                 }
 
-                strategy.COLLECTION_SCHEMA.mergeFrom(input, collection);
+                strategy.collectionSchema.mergeFrom(input, collection);
 
                 return collection;
             }
@@ -602,7 +602,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     ((GraphInput) input).updateLast(map, owner);
                 }
 
-                strategy.MAP_SCHEMA.mergeFrom(input, map);
+                strategy.mapSchema.mergeFrom(input, map);
 
                 return map;
             }
@@ -612,7 +612,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
 
                 final Object collection = PolymorphicCollectionSchema.readObjectFrom(input,
-                        strategy.POLYMORPHIC_COLLECTION_SCHEMA, owner, strategy);
+                        strategy.polymorphicCollectionSchema, owner, strategy);
 
                 if (input instanceof GraphInput)
                 {
@@ -628,7 +628,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
                     throw new ProtostuffException("Corrupt input.");
 
                 final Object map = PolymorphicMapSchema.readObjectFrom(input,
-                        strategy.POLYMORPHIC_MAP_SCHEMA, owner, strategy);
+                        strategy.polymorphicMapSchema, owner, strategy);
 
                 if (input instanceof GraphInput)
                 {
@@ -882,10 +882,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
             if (output instanceof StatefulOutput)
             {
                 // update using the derived schema.
-                ((StatefulOutput) output).updateLast(strategy.ARRAY_SCHEMA, currentSchema);
+                ((StatefulOutput) output).updateLast(strategy.arraySchema, currentSchema);
             }
 
-            strategy.ARRAY_SCHEMA.writeTo(output, value);
+            strategy.arraySchema.writeTo(output, value);
             return;
         }
 
@@ -953,11 +953,11 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_MAP_SCHEMA, currentSchema);
+                            strategy.polymorphicMapSchema, currentSchema);
                 }
 
                 PolymorphicMapSchema.writeNonPublicMapTo(output, value,
-                        strategy.POLYMORPHIC_MAP_SCHEMA, strategy);
+                        strategy.polymorphicMapSchema, strategy);
                 return;
             }
 
@@ -974,10 +974,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
             if (output instanceof StatefulOutput)
             {
                 // update using the derived schema.
-                ((StatefulOutput) output).updateLast(strategy.MAP_SCHEMA, currentSchema);
+                ((StatefulOutput) output).updateLast(strategy.mapSchema, currentSchema);
             }
 
-            strategy.MAP_SCHEMA.writeTo(output, (Map<Object, Object>) value);
+            strategy.mapSchema.writeTo(output, (Map<Object, Object>) value);
             return;
         }
 
@@ -991,11 +991,11 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_COLLECTION_SCHEMA, currentSchema);
+                            strategy.polymorphicCollectionSchema, currentSchema);
                 }
 
                 PolymorphicCollectionSchema.writeNonPublicCollectionTo(output, value,
-                        strategy.POLYMORPHIC_COLLECTION_SCHEMA, strategy);
+                        strategy.polymorphicCollectionSchema, strategy);
                 return;
             }
 
@@ -1012,10 +1012,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
             if (output instanceof StatefulOutput)
             {
                 // update using the derived schema.
-                ((StatefulOutput) output).updateLast(strategy.COLLECTION_SCHEMA, currentSchema);
+                ((StatefulOutput) output).updateLast(strategy.collectionSchema, currentSchema);
             }
 
-            strategy.COLLECTION_SCHEMA.writeTo(output, (Collection<Object>) value);
+            strategy.collectionSchema.writeTo(output, (Collection<Object>) value);
             return;
         }
         
@@ -1119,10 +1119,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+                    ((StatefulOutput) output).updateLast(strategy.collectionPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.collectionPipeSchema, pipe, input, output);
                 return;
             }
 
@@ -1133,10 +1133,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
+                    ((StatefulOutput) output).updateLast(strategy.mapPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.mapPipeSchema, pipe, input, output);
                 return;
             }
 
@@ -1147,10 +1147,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.COLLECTION_PIPE_SCHEMA, pipeSchema);
+                    ((StatefulOutput) output).updateLast(strategy.collectionPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.COLLECTION_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.collectionPipeSchema, pipe, input, output);
                 return;
             }
 
@@ -1161,10 +1161,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 if (output instanceof StatefulOutput)
                 {
                     // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(strategy.MAP_PIPE_SCHEMA, pipeSchema);
+                    ((StatefulOutput) output).updateLast(strategy.mapPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.MAP_PIPE_SCHEMA, pipe, input, output);
+                Pipe.transferDirect(strategy.mapPipeSchema, pipe, input, output);
                 return;
             }
 
@@ -1178,10 +1178,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA, pipeSchema);
+                            strategy.polymorphicCollectionPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.POLYMORPHIC_COLLECTION_PIPE_SCHEMA,
+                Pipe.transferDirect(strategy.polymorphicCollectionPipeSchema,
                         pipe, input, output);
                 return;
             }
@@ -1196,10 +1196,10 @@ public abstract class ObjectSchema extends PolymorphicSchema
                 {
                     // update using the derived schema.
                     ((StatefulOutput) output).updateLast(
-                            strategy.POLYMORPHIC_MAP_PIPE_SCHEMA, pipeSchema);
+                            strategy.polymorphicMapPipeSchema, pipeSchema);
                 }
 
-                Pipe.transferDirect(strategy.POLYMORPHIC_MAP_PIPE_SCHEMA,
+                Pipe.transferDirect(strategy.polymorphicMapPipeSchema,
                         pipe, input, output);
                 return;
             }

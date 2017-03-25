@@ -333,7 +333,7 @@ public abstract class IdStrategy
 
     // polymorphic requirements
 
-    final DerivativeSchema POLYMORPHIC_POJO_ELEMENT_SCHEMA = new DerivativeSchema(
+    final DerivativeSchema polymorphicPojoElementSchema = new DerivativeSchema(
             this)
     {
         @Override
@@ -360,7 +360,7 @@ public abstract class IdStrategy
 
     // object polymorphic schema requirements
 
-    final ArraySchema ARRAY_ELEMENT_SCHEMA = new ArraySchema(this)
+    final ArraySchema arrayElementSchema = new ArraySchema(this)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -373,7 +373,7 @@ public abstract class IdStrategy
         }
     };
 
-    final NumberSchema NUMBER_ELEMENT_SCHEMA = new NumberSchema(this)
+    final NumberSchema numberElementSchema = new NumberSchema(this)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -386,7 +386,7 @@ public abstract class IdStrategy
         }
     };
 
-    final ClassSchema CLASS_ELEMENT_SCHEMA = new ClassSchema(this)
+    final ClassSchema classElementSchema = new ClassSchema(this)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -399,7 +399,7 @@ public abstract class IdStrategy
         }
     };
 
-    final PolymorphicEnumSchema POLYMORPHIC_ENUM_ELEMENT_SCHEMA = new PolymorphicEnumSchema(
+    final PolymorphicEnumSchema polymorphicEnumElementSchema = new PolymorphicEnumSchema(
             this)
     {
         @Override
@@ -413,7 +413,7 @@ public abstract class IdStrategy
         }
     };
 
-    final PolymorphicThrowableSchema POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA = new PolymorphicThrowableSchema(
+    final PolymorphicThrowableSchema polymorphicThrowableElementSchema = new PolymorphicThrowableSchema(
             this)
     {
         @Override
@@ -427,7 +427,7 @@ public abstract class IdStrategy
         }
     };
 
-    final ObjectSchema OBJECT_ELEMENT_SCHEMA = new ObjectSchema(this)
+    final ObjectSchema objectElementSchema = new ObjectSchema(this)
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -442,7 +442,7 @@ public abstract class IdStrategy
 
     // object dynamic schema requirements
 
-    final Schema<Object> DYNAMIC_VALUE_SCHEMA = new Schema<Object>()
+    final Schema<Object> dynamicValueSchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -512,8 +512,8 @@ public abstract class IdStrategy
         }
     };
 
-    final Pipe.Schema<Object> DYNAMIC_VALUE_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            DYNAMIC_VALUE_SCHEMA)
+    final Pipe.Schema<Object> dynamicValuePipeSchema = new Pipe.Schema<Object>(
+            dynamicValueSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -524,7 +524,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Collection<Object>> COLLECTION_SCHEMA = new Schema<Collection<Object>>()
+    final Schema<Collection<Object>> collectionSchema = new Schema<Collection<Object>>()
     {
         @Override
         public String getFieldName(int number)
@@ -581,7 +581,7 @@ public abstract class IdStrategy
                         return;
                     case 1:
                         final Object value = input.mergeObject(message,
-                                DYNAMIC_VALUE_SCHEMA);
+                                dynamicValueSchema);
                         if (input instanceof GraphInput
                                 && ((GraphInput) input).isCurrentMessageReference())
                         {
@@ -602,13 +602,13 @@ public abstract class IdStrategy
             for (Object value : message)
             {
                 if (value != null)
-                    output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
+                    output.writeObject(1, value, dynamicValueSchema, true);
             }
         }
     };
 
-    final Pipe.Schema<Collection<Object>> COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Collection<Object>>(
-            COLLECTION_SCHEMA)
+    final Pipe.Schema<Collection<Object>> collectionPipeSchema = new Pipe.Schema<Collection<Object>>(
+            collectionSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -622,7 +622,7 @@ public abstract class IdStrategy
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                        output.writeObject(number, pipe, dynamicValuePipeSchema,
                                 true);
                         break;
                     default:
@@ -633,7 +633,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Object> ARRAY_SCHEMA = new Schema<Object>()
+    final Schema<Object> arraySchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -692,14 +692,14 @@ public abstract class IdStrategy
                 final Object value = Array.get(message, i);
                 if (value != null)
                 {
-                    output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
+                    output.writeObject(1, value, dynamicValueSchema, true);
                 }
             }
         }
     };
 
-    final Pipe.Schema<Object> ARRAY_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            ARRAY_SCHEMA)
+    final Pipe.Schema<Object> arrayPipeSchema = new Pipe.Schema<Object>(
+            arraySchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -713,7 +713,7 @@ public abstract class IdStrategy
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                        output.writeObject(number, pipe, dynamicValuePipeSchema,
                                 true);
                         break;
                     default:
@@ -724,7 +724,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Map<Object, Object>> MAP_SCHEMA = new Schema<Map<Object, Object>>()
+    final Schema<Map<Object, Object>> mapSchema = new Schema<Map<Object, Object>>()
     {
         @Override
         public final String getFieldName(int number)
@@ -787,7 +787,7 @@ public abstract class IdStrategy
                             entry = new PMapWrapper(message);
                         }
 
-                        if (entry != input.mergeObject(entry, ENTRY_SCHEMA))
+                        if (entry != input.mergeObject(entry, entrySchema))
                         {
                             // an entry will always be unique
                             // it can never be a reference.
@@ -811,13 +811,13 @@ public abstract class IdStrategy
         {
             for (Map.Entry<Object, Object> entry : message.entrySet())
             {
-                output.writeObject(1, entry, ENTRY_SCHEMA, true);
+                output.writeObject(1, entry, entrySchema, true);
             }
         }
     };
 
-    final Pipe.Schema<Map<Object, Object>> MAP_PIPE_SCHEMA = new Pipe.Schema<Map<Object, Object>>(
-            MAP_SCHEMA)
+    final Pipe.Schema<Map<Object, Object>> mapPipeSchema = new Pipe.Schema<Map<Object, Object>>(
+            mapSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -831,7 +831,7 @@ public abstract class IdStrategy
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, ENTRY_PIPE_SCHEMA, true);
+                        output.writeObject(number, pipe, entryPipeSchema, true);
                         break;
                     default:
                         throw new ProtostuffException("The map was incorrectly "
@@ -841,7 +841,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Entry<Object, Object>> ENTRY_SCHEMA = new Schema<Entry<Object, Object>>()
+    final Schema<Entry<Object, Object>> entrySchema = new Schema<Entry<Object, Object>>()
     {
         @Override
         public final String getFieldName(int number)
@@ -926,7 +926,7 @@ public abstract class IdStrategy
                             throw new ProtostuffException(
                                     "The map was incorrectly " + "serialized.");
                         }
-                        key = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
+                        key = input.mergeObject(entry, dynamicValueSchema);
                         if (entry != key)
                         {
                             // a reference.
@@ -945,7 +945,7 @@ public abstract class IdStrategy
                             throw new ProtostuffException(
                                     "The map was incorrectly " + "serialized.");
                         }
-                        value = input.mergeObject(entry, DYNAMIC_VALUE_SCHEMA);
+                        value = input.mergeObject(entry, dynamicValueSchema);
                         if (entry != value)
                         {
                             // a reference.
@@ -970,17 +970,17 @@ public abstract class IdStrategy
                 throws IOException
         {
             if (entry.getKey() != null)
-                output.writeObject(1, entry.getKey(), DYNAMIC_VALUE_SCHEMA,
+                output.writeObject(1, entry.getKey(), dynamicValueSchema,
                         false);
 
             if (entry.getValue() != null)
-                output.writeObject(2, entry.getValue(), DYNAMIC_VALUE_SCHEMA,
+                output.writeObject(2, entry.getValue(), dynamicValueSchema,
                         false);
         }
     };
 
-    final Pipe.Schema<Entry<Object, Object>> ENTRY_PIPE_SCHEMA = new Pipe.Schema<Entry<Object, Object>>(
-            ENTRY_SCHEMA)
+    final Pipe.Schema<Entry<Object, Object>> entryPipeSchema = new Pipe.Schema<Entry<Object, Object>>(
+            entrySchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -994,11 +994,11 @@ public abstract class IdStrategy
                     case 0:
                         return;
                     case 1:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                        output.writeObject(number, pipe, dynamicValuePipeSchema,
                                 false);
                         break;
                     case 2:
-                        output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
+                        output.writeObject(number, pipe, dynamicValuePipeSchema,
                                 false);
                         break;
                     default:
@@ -1009,7 +1009,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Object> OBJECT_SCHEMA = new Schema<Object>()
+    final Schema<Object> objectSchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -1068,8 +1068,8 @@ public abstract class IdStrategy
         }
     };
 
-    final Pipe.Schema<Object> OBJECT_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            OBJECT_SCHEMA)
+    final Pipe.Schema<Object> objectPipeSchema = new Pipe.Schema<Object>(
+            objectSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -1080,7 +1080,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Object> CLASS_SCHEMA = new Schema<Object>()
+    final Schema<Object> classSchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -1139,8 +1139,8 @@ public abstract class IdStrategy
         }
     };
 
-    final Pipe.Schema<Object> CLASS_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            CLASS_SCHEMA)
+    final Pipe.Schema<Object> classPipeSchema = new Pipe.Schema<Object>(
+            classSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -1151,7 +1151,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Object> POLYMORPHIC_COLLECTION_SCHEMA = new Schema<Object>()
+    final Schema<Object> polymorphicCollectionSchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -1211,8 +1211,8 @@ public abstract class IdStrategy
         }
     };
 
-    final Pipe.Schema<Object> POLYMORPHIC_COLLECTION_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            POLYMORPHIC_COLLECTION_SCHEMA)
+    final Pipe.Schema<Object> polymorphicCollectionPipeSchema = new Pipe.Schema<Object>(
+            polymorphicCollectionSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)
@@ -1223,7 +1223,7 @@ public abstract class IdStrategy
         }
     };
 
-    final Schema<Object> POLYMORPHIC_MAP_SCHEMA = new Schema<Object>()
+    final Schema<Object> polymorphicMapSchema = new Schema<Object>()
     {
         @Override
         public String getFieldName(int number)
@@ -1283,8 +1283,8 @@ public abstract class IdStrategy
         }
     };
 
-    final Pipe.Schema<Object> POLYMORPHIC_MAP_PIPE_SCHEMA = new Pipe.Schema<Object>(
-            POLYMORPHIC_MAP_SCHEMA)
+    final Pipe.Schema<Object> polymorphicMapPipeSchema = new Pipe.Schema<Object>(
+            polymorphicMapSchema)
     {
         @Override
         protected void transfer(Pipe pipe, Input input, Output output)

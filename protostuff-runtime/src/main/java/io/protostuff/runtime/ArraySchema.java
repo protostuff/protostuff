@@ -176,11 +176,11 @@ public abstract class ArraySchema extends PolymorphicSchema
         if (output instanceof StatefulOutput)
         {
             // update using the derived schema.
-            ((StatefulOutput) output).updateLast(strategy.ARRAY_SCHEMA,
+            ((StatefulOutput) output).updateLast(strategy.arraySchema,
                     currentSchema);
         }
 
-        strategy.ARRAY_SCHEMA.writeTo(output, value);
+        strategy.arraySchema.writeTo(output, value);
     }
 
     static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
@@ -211,7 +211,7 @@ public abstract class ArraySchema extends PolymorphicSchema
             ((GraphInput) input).updateLast(mArrayWrapper.array, owner);
         }
 
-        strategy.COLLECTION_SCHEMA.mergeFrom(input, mArrayWrapper);
+        strategy.collectionSchema.mergeFrom(input, mArrayWrapper);
 
         return mArrayWrapper.array;
     }

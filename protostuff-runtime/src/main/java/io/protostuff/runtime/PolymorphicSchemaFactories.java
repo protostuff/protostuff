@@ -346,23 +346,23 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
                 return strategy.getSchemaWrapper(ct, true).genericElementSchema;
             }
 
-            return strategy.ARRAY_ELEMENT_SCHEMA;
+            return strategy.arrayElementSchema;
         }
 
         if (Number.class == clazz)
-            return strategy.NUMBER_ELEMENT_SCHEMA;
+            return strategy.numberElementSchema;
 
         if (Class.class == clazz)
-            return strategy.CLASS_ELEMENT_SCHEMA;
+            return strategy.classElementSchema;
 
         if (Enum.class == clazz)
-            return strategy.POLYMORPHIC_ENUM_ELEMENT_SCHEMA;
+            return strategy.polymorphicEnumElementSchema;
 
         if (Throwable.class.isAssignableFrom(clazz))
-            return strategy.POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA;
+            return strategy.polymorphicThrowableElementSchema;
 
         if (Object.class == clazz)
-            return strategy.OBJECT_ELEMENT_SCHEMA;
+            return strategy.objectElementSchema;
 
         return null;
     }
