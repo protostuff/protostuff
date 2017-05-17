@@ -46,6 +46,11 @@
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-uberjar</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 </project>
