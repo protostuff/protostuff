@@ -138,6 +138,12 @@ public class FilterOutput<F extends Output> implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        output.writeString(fieldNumber, value, repeated);
+    }
+
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         output.writeUInt32(fieldNumber, value, repeated);

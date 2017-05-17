@@ -492,6 +492,37 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
 
     }
 
+    @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+
+        if (lastNumber == fieldNumber && lastRepeated)
+        {
+            // repeated field
+            tail = packSink.packString(value, this, tail);
+            arraySize++;
+            return;
+        }
+
+        if (lastRepeated)
+        {
+            writeEndArray();
+        }
+
+        writeFieldNumber(fieldNumber);
+
+        if (repeated)
+        {
+            writeStartArray();
+        }
+
+        tail = packSink.packString(value, this, tail);
+
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
+
+    }
+
     private void writeBytes(int fieldNumber, byte[] src, int offset, int length, boolean repeated, boolean utf8)
             throws IOException
     {

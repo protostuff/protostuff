@@ -411,6 +411,36 @@ public final class JsonOutput implements Output, StatefulOutput
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        if (lastNumber == fieldNumber)
+        {
+            // repeated field
+            generator.writeString(value.toString());
+            return;
+        }
+
+        final JsonGenerator generator = this.generator;
+
+        if (lastRepeated)
+            generator.writeEndArray();
+
+        final String name = numeric ? Integer.toString(fieldNumber) :
+                schema.getFieldName(fieldNumber);
+
+        if (repeated)
+        {
+            generator.writeArrayFieldStart(name);
+            generator.writeString(value.toString());
+        }
+        else
+            generator.writeStringField(name, value.toString());
+
+        lastNumber = fieldNumber;
+        lastRepeated = repeated;
+    }
+
+    @Override
     public void writeUInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         String unsignedValue = UnsignedNumberUtil.unsignedIntToString(value);

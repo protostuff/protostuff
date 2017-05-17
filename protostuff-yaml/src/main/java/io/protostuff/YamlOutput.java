@@ -413,6 +413,42 @@ public final class YamlOutput extends WriteSession implements Output, StatefulOu
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        final WriteSink sink = this.sink;
+        if (lastNumber == fieldNumber)
+        {
+            // repeated
+            tail = sink.writeStrUTF8(
+                    value,
+                    this,
+                    sink.writeByteArray(
+                            DASH_AND_SPACE,
+                            this,
+                            newLine(
+                                    inc(indent, 2),
+                                    sink,
+                                    this,
+                                    tail)));
+
+            return;
+        }
+
+        tail = sink.writeStrUTF8(
+                value,
+                this,
+                writeKey(
+                        schema.getFieldName(fieldNumber),
+                        indent,
+                        repeated,
+                        sink,
+                        this,
+                        tail));
+
+        lastNumber = fieldNumber;
+    }
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);

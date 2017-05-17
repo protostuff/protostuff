@@ -157,6 +157,12 @@ public class MsgpackOutput implements Output, StatefulOutput
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        generator.pushValue(schema, fieldNumber, new ImmutableStringValueImpl(value.toString()), repeated);
+    }
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         generator.pushValue(schema, fieldNumber, new ImmutableBinaryValueImpl(value.getBytes()), repeated);

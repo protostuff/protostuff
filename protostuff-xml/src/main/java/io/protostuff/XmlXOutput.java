@@ -222,6 +222,20 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        final String name = schema.getFieldName(fieldNumber);
+
+        tail = sink.writeByte(END_TAG, this,
+                sink.writeStrAscii(name, this,
+                        sink.writeByteArray(START_SLASH_TAG, this,
+                                sink.writeStrUTF8(value, this,
+                                        sink.writeByte(END_TAG, this,
+                                                sink.writeStrAscii(name, this,
+                                                        sink.writeByte(START_TAG, this, tail)))))));
+    }
+
+    @Override
     public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value,
             int offset, int length, boolean repeated) throws IOException
     {

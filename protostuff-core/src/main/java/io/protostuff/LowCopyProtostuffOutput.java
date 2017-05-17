@@ -149,6 +149,14 @@ public final class LowCopyProtostuffOutput implements Output
     }
 
     @Override
+    public void writeString(int fieldNumber, StringBuilder value, boolean repeated) throws IOException
+    {
+        // TODO the original implementation is a lot more complex, is this compatible?
+        byte[] strbytes = value.toString().getBytes("UTF-8");
+        writeByteArray(fieldNumber, strbytes, repeated);
+    }
+
+    @Override
     public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException
     {
         writeByteArray(fieldNumber, value.getBytes(), repeated);

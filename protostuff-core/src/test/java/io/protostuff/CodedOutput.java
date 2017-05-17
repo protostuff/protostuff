@@ -546,6 +546,14 @@ public final class CodedOutput implements Output
         writeStringNoTag(value);
     }
 
+    @Override
+    public void writeString(final int fieldNumber, final StringBuilder value, boolean repeated)
+            throws IOException
+    {
+        writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+        writeStringNoTag(value.toString());
+    }
+
     /* @ Write a {@code group} field, including tag, to the stream. */
     /*
      * public void writeGroup(final int fieldNumber, final MessageLite value) throws IOException { writeTag(fieldNumber,
