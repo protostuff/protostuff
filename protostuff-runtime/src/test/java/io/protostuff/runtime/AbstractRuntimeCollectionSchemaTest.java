@@ -23,49 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.NavigableSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.WeakHashMap;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Test for runtime collection fields with {@link CollectionSchema}.
- * 
+ *
  * @author David Yu
  * @created Jan 26, 2011
  */
@@ -132,6 +95,20 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ConcurrentLinkedQueue<String> concurrentLinkedQueue;
         PriorityBlockingQueue<String> priorityBlockingQueue;
         PriorityQueue<String> priorityQueue;
+
+        Set<Gender> enumSet = Collections.unmodifiableSet(EnumSet.of(Gender.FEMALE));
+        Set<String> unmodifiableSet = new TreeSet<String>();
+        Set<String> fillTreeSet = new TreeSet<String>();
+
+
+        {
+            unmodifiableSet.add("hello");
+            unmodifiableSet.add("world");
+            unmodifiableSet = Collections.unmodifiableSet(unmodifiableSet);
+
+            fillTreeSet.add("hello");
+            fillTreeSet.add("world");
+        }
 
         PojoFoo fill()
         {
@@ -212,6 +189,13 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
              * priorityQueue = new PriorityQueue<String>(); priorityQueue.add("26");
              */
 
+            enumSet = EnumSet.allOf(Gender.class);
+
+            unmodifiableSet = new TreeSet<String>();
+            unmodifiableSet.add("empty");
+
+            fillTreeSet.add("empty");
+
             return this;
         }
 
@@ -285,6 +269,13 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
                     + ((treeSet == null) ? 0 : treeSet.hashCode());
             result = prime * result
                     + ((vector == null) ? 0 : vector.hashCode());
+            result = prime * result
+                    + ((enumSet == null) ? 0 : enumSet.hashCode());
+            result = prime * result
+                    + ((unmodifiableSet == null)? 0 : unmodifiableSet.hashCode());
+            result = prime * result
+                    + ((fillTreeSet == null)? 0 : fillTreeSet.hashCode());
+
             return result;
         }
 
@@ -497,6 +488,29 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             }
             else if (!vector.equals(other.vector))
                 return false;
+
+            if(enumSet == null)
+            {
+                if(other.enumSet != null)
+                    return false;
+            }
+            else if(!enumSet.equals(other.enumSet))
+                return false;
+            if(unmodifiableSet == null)
+            {
+                if(other.unmodifiableSet != null)
+                    return false;
+            }
+            else if(!unmodifiableSet.equals(other.unmodifiableSet))
+                return false;
+            if(fillTreeSet == null)
+            {
+                if(other.fillTreeSet != null)
+                    return false;
+            }
+            else if(!fillTreeSet.equals(other.fillTreeSet))
+                return false;
+
             return true;
         }
 
@@ -548,6 +562,17 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ConcurrentNavigableMap<String, String> concurrentNavigableMap;
         ConcurrentSkipListMap<String, String> concurrentSkipListMap;
 
+        Map<Gender,Gender> enumMap = new EnumMap<Gender,Gender>(Gender.class);
+        Map<Gender,Gender> otherMap = new ConcurrentHashMap<Gender, Gender>();
+
+        {
+            enumMap.put(Gender.FEMALE, Gender.FEMALE);
+            enumMap.put(Gender.MALE, Gender.MALE);
+            enumMap = Collections.unmodifiableMap(enumMap);
+            otherMap.put(Gender.FEMALE, Gender.MALE);
+        }
+
+
         PojoBar fill()
         {
             map = new LinkedHashMap<String, String>();
@@ -588,6 +613,12 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
             concurrentSkipListMap = new ConcurrentSkipListMap<String, String>();
             concurrentSkipListMap.put("23", "24");
+
+            enumMap = new EnumMap<Gender,Gender>(Gender.class);
+            enumMap.put(Gender.MALE, Gender.FEMALE);
+            enumMap.put(Gender.FEMALE, Gender.MALE);
+
+            otherMap.put(Gender.FEMALE, Gender.FEMALE);
 
             return this;
         }
@@ -630,6 +661,11 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
                     + ((treeMap == null) ? 0 : treeMap.hashCode());
             result = prime * result
                     + ((weakHashMap == null) ? 0 : weakHashMap.hashCode());
+            result = prime * result
+                    + ((enumMap == null) ? 0 : enumMap.hashCode());
+            result = prime * result
+                    + ((otherMap == null)? 0 : otherMap.hashCode());
+
             return result;
         }
 
@@ -736,6 +772,21 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
             }
             else if (!weakHashMap.equals(other.weakHashMap))
                 return false;
+            if(enumMap == null)
+            {
+                if(other.enumMap != null)
+                    return false;
+            }
+            else if(!enumMap.equals(other.enumMap))
+                return false;
+            if(otherMap == null)
+            {
+                if(other.otherMap != null)
+                    return false;
+            }
+            else if(!otherMap.equals(other.otherMap))
+                return false;
+
             return true;
         }
 
@@ -782,146 +833,146 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
         roundTrip(p, schema, pipeSchema);
     }
-    
+
     @SuppressWarnings("serial")
     static final class PersistentObjectList<T> extends ArrayList<T>
     {
         public final int id;
-        
+
         public PersistentObjectList()
         {
             id = 0;
         }
-        
+
         public PersistentObjectList(int id)
         {
             this.id = id;
         }
     }
-    
-    
+
+
     @SuppressWarnings("serial")
     static final class PersistentObjectMap<K,V> extends HashMap<K,V>
     {
         public final int id;
-        
+
         public PersistentObjectMap()
         {
             id = 0;
         }
-        
+
         public PersistentObjectMap(int id)
         {
             this.id = id;
         }
     }
-    
+
     static final class ObjectWrapper
     {
         Object obj;
     }
-    
+
     static final class ListWrapper
     {
         List<?> obj;
     }
-    
+
     static final class MapWrapper
     {
         Map<?,?> obj;
     }
-    
+
     private void verifyObjectListField() throws IOException
     {
         ObjectWrapper wrapper = new ObjectWrapper();
         wrapper.obj = new PersistentObjectList<Object>(15);
-        
+
         Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
-        
+
         byte[] data = toByteArray(wrapper, schema);
-        
+
         ObjectWrapper parsed = schema.newMessage();
         mergeFrom(data, 0, data.length, parsed, schema);
-        
+
         assertNotNull(parsed.obj);
         assertTrue(parsed.obj instanceof PersistentObjectList);
-        
+
         @SuppressWarnings("unchecked")
         PersistentObjectList<Object> list = (PersistentObjectList<Object>)parsed.obj;
         assertEquals(15, list.id);
     }
-    
+
     private void verifyObjectMapField() throws IOException
     {
         ObjectWrapper wrapper = new ObjectWrapper();
         wrapper.obj = new PersistentObjectMap<String,Object>(15);
-        
+
         Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
-        
+
         byte[] data = toByteArray(wrapper, schema);
-        
+
         ObjectWrapper parsed = schema.newMessage();
         mergeFrom(data, 0, data.length, parsed, schema);
-        
+
         assertNotNull(parsed.obj);
         assertTrue(parsed.obj instanceof PersistentObjectMap);
-        
+
         @SuppressWarnings("unchecked")
         PersistentObjectMap<String,Object> map = (PersistentObjectMap<String,Object>)parsed.obj;
         assertEquals(15, map.id);
     }
-    
+
     private void verifyListField() throws IOException
     {
         ListWrapper wrapper = new ListWrapper();
         wrapper.obj = new PersistentObjectList<Object>(15);
-        
+
         Schema<ListWrapper> schema = RuntimeSchema.getSchema(ListWrapper.class);
-        
+
         byte[] data = toByteArray(wrapper, schema);
-        
+
         ListWrapper parsed = schema.newMessage();
         mergeFrom(data, 0, data.length, parsed, schema);
-        
+
         assertNotNull(parsed.obj);
         assertTrue(parsed.obj instanceof PersistentObjectList);
-        
+
         @SuppressWarnings("unchecked")
         PersistentObjectList<Object> list = (PersistentObjectList<Object>)parsed.obj;
         assertEquals(15, list.id);
     }
-    
+
     private void verifyMapField() throws IOException
     {
         MapWrapper wrapper = new MapWrapper();
         wrapper.obj = new PersistentObjectMap<String,Object>(15);
-        
+
         Schema<MapWrapper> schema = RuntimeSchema.getSchema(MapWrapper.class);
-        
+
         byte[] data = toByteArray(wrapper, schema);
-        
+
         MapWrapper parsed = schema.newMessage();
         mergeFrom(data, 0, data.length, parsed, schema);
-        
+
         assertNotNull(parsed.obj);
         assertTrue(parsed.obj instanceof PersistentObjectMap);
-        
+
         @SuppressWarnings("unchecked")
         PersistentObjectMap<String,Object> map = (PersistentObjectMap<String,Object>)parsed.obj;
         assertEquals(15, map.id);
     }
-    
+
     public void testRegisterCustom() throws IOException
     {
         RuntimeSchema.register(PersistentObjectList.class);
         RuntimeSchema.register(PersistentObjectMap.class);
-        
+
         verifyObjectListField();
         verifyObjectMapField();
-        
+
         if (RuntimeEnv.POJO_SCHEMA_ON_COLLECTION_FIELDS)
             verifyListField();
-        
+
         if (RuntimeEnv.POJO_SCHEMA_ON_MAP_FIELDS)
             verifyMapField();
     }

@@ -14,21 +14,14 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.*;
+import io.protostuff.CollectionSchema.MessageFactory;
+import io.protostuff.WireFormat.FieldType;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
-
-import io.protostuff.CollectionSchema.MessageFactory;
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Morph;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
-import io.protostuff.WireFormat.FieldType;
 
 /**
  * Static utility for creating runtime repeated (list/collection) fields.
@@ -51,7 +44,7 @@ final class RuntimeRepeatedFieldFactory
         return REPEATED;
     }
     
-    static final Accessor.Factory AF = RuntimeFieldFactory.ACCESSOR_FACTORY;
+    private static final Accessor.Factory AF = RuntimeFieldFactory.ACCESSOR_FACTORY;
 
     private static <T> Field<T> createCollectionInlineV(int number,
             String name, java.lang.reflect.Field f,
@@ -65,11 +58,7 @@ final class RuntimeRepeatedFieldFactory
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = inline.readFrom(input);
-                Collection<Object> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
-                
-                existing.add(value);
+                addValue(message, accessor, value, messageFactory);
             }
 
             @Override
@@ -95,11 +84,12 @@ final class RuntimeRepeatedFieldFactory
         };
     }
 
-    private static <T> Field<T> createCollectionEnumV(int number, String name,
-            java.lang.reflect.Field f,
-            final MessageFactory messageFactory,
-            final Class<Object> genericType, 
-            final IdStrategy strategy)
+    private static <T> Field<T> createCollectionEnumV(int number,
+                                                      String name,
+                                                      java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Class<? extends Enum> genericType,
+                                                      final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         final Accessor accessor = AF.create(f);
@@ -110,11 +100,7 @@ final class RuntimeRepeatedFieldFactory
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Enum<?> value = eio.readFrom(input);
-                Collection<Enum<?>> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
-                
-                existing.add(value);
+                addValue(message, accessor, value, messageFactory, genericType);
             }
 
             @Override
@@ -155,11 +141,7 @@ final class RuntimeRepeatedFieldFactory
             protected void mergeFrom(Input input, T message) throws IOException
             {
                 final Object value = input.mergeObject(null, getSchema());
-                Collection<Object> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
-                
-                existing.add(value);
+                addValue(message, accessor, value, messageFactory);
             }
 
             @Override
@@ -203,11 +185,7 @@ final class RuntimeRepeatedFieldFactory
                         && ((GraphInput) input).isCurrentMessageReference())
                 {
                     // a reference from polymorphic+cyclic graph deser
-                    Collection<Object> existing = accessor.get(message);
-                    if (existing == null)
-                        accessor.set(message, existing = messageFactory.newMessage());
-                    
-                    existing.add(value);
+                    addValue(message, accessor, value, messageFactory);
                 }
             }
 
@@ -244,11 +222,7 @@ final class RuntimeRepeatedFieldFactory
                 }
 
                 schema.mergeFrom(input, value);
-                Collection<Object> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
-                
-                existing.add(value);
+                addValue(message, accessor, value, messageFactory);
             }
         };
     }
@@ -271,11 +245,7 @@ final class RuntimeRepeatedFieldFactory
                         && ((GraphInput) input).isCurrentMessageReference())
                 {
                     // a reference from polymorphic+cyclic graph deser
-                    Collection<Object> existing = accessor.get(message);
-                    if (existing == null)
-                        accessor.set(message, existing = messageFactory.newMessage());
-                    
-                    existing.add(value);
+                    addValue(message, accessor, value, messageFactory);
                 }
             }
 
@@ -304,11 +274,7 @@ final class RuntimeRepeatedFieldFactory
             @Override
             public void setValue(Object value, Object message)
             {
-                Collection<Object> existing = accessor.get(message);
-                if (existing == null)
-                    accessor.set(message, existing = messageFactory.newMessage());
-                
-                existing.add(value);
+                addValue(message, accessor, value, messageFactory);
             }
         };
     }
@@ -350,14 +316,12 @@ final class RuntimeRepeatedFieldFactory
 
             if (EnumSet.class.isAssignableFrom(clazz))
             {
-                final Class<Object> enumType = (Class<Object>) getGenericType(
-                        f, 0);
+                final Class<? extends Enum> enumType = (Class<? extends Enum<?>>) getGenericType(f, 0);
                 if (enumType == null)
                 {
                     // still handle the serialization of EnumSets even without
                     // generics
-                    return RuntimeFieldFactory.OBJECT.create(number, name, f,
-                            strategy);
+                    return RuntimeFieldFactory.OBJECT.create(number, name, f, strategy);
                 }
 
                 return createCollectionEnumV(number, name, f, strategy
@@ -392,7 +356,7 @@ final class RuntimeRepeatedFieldFactory
 
             if (genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory,
-                        genericType, strategy);
+                        (Class<? extends Enum>)((Object) genericType), strategy);
 
             final PolymorphicSchema.Factory factory = PolymorphicSchemaFactories
                     .getFactoryFromRepeatedValueGenericType(genericType);
@@ -450,4 +414,24 @@ final class RuntimeRepeatedFieldFactory
         }
     };
 
+
+    @SuppressWarnings("unchecked")
+    private static <T> void addValue(Object message,
+                                                        Accessor accessor,
+                                                        T value,
+                                                        MessageFactory messageFactory,
+                                                        Class<? extends Enum>... enumType)
+    {
+        Collection<T> existing = accessor.get(message);
+        Collection<T> collection;
+        if(enumType.length == 0)
+             collection = CollectionSchema.removeUnmodifiableWrapper(existing, messageFactory, null);
+        else
+             collection = CollectionSchema.removeUnmodifiableWrapper(existing, messageFactory, enumType[0]);
+
+        if (existing != collection)
+            accessor.set(message, existing = collection);
+
+        existing.add(value);
+    }
 }

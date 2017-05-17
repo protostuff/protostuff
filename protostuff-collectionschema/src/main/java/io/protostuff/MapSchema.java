@@ -47,6 +47,84 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         public Class<?> typeClass();
     }
 
+    private static final Comparable EMPTY_OBJECT = new Comparable()
+    {
+        @Override
+        public int compareTo(Object o)
+        {
+            return o == this ? 0 : -1;
+        }
+        @Override
+        public boolean equals(Object o)
+        {
+            return o == this;
+        }
+        @Override
+        public int hashCode()
+        {
+            return 0;
+        }
+    };
+
+    static <T extends Enum<T>> T getEnumInstance(Class<T>type)
+    {
+        if (type.getEnumConstants().length > 0)
+            return type.getEnumConstants()[0];
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Map> T removeUnmodifiableWrapper(T map,
+                                                              MessageFactory messageFactory,
+                                                              Class<? extends Enum> keyType,
+                                                              Class<? extends Enum> valueType)
+    {
+        if(map == null)
+            return (T) messageFactory.newMessage();
+
+        try
+        {
+           if (keyType == null && valueType == null)
+           {
+                map.put(EMPTY_OBJECT, EMPTY_OBJECT);
+                map.remove(EMPTY_OBJECT);
+           }
+           else
+           {
+               Object keyInstance;
+               if(keyType == null)
+                   keyInstance = EMPTY_OBJECT;
+               else
+               {
+                   keyInstance = getEnumInstance(keyType);
+                   if (keyInstance == null)
+                       return map;
+               }
+               Object valueInstance;
+               if(valueType == null)
+                   valueInstance = EMPTY_OBJECT;
+               else
+                   valueInstance = getEnumInstance(valueType);
+
+
+               Object value = map.get(keyInstance);
+
+               map.put(keyInstance, valueInstance);
+               map.remove(keyInstance);
+               if(value != null)
+                    map.put(keyInstance, value);
+           }
+        }
+        catch (UnsupportedOperationException e)
+        {
+            map = (T) messageFactory.newMessage();
+        }
+
+        return map;
+    }
+
+
     /**
      * A message factory for standard {@code Map} implementations.
      */

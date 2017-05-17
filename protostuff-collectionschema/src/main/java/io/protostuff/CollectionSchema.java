@@ -18,13 +18,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static io.protostuff.MapSchema.getEnumInstance;
+
 /**
  * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
  * <p>
  * If your application relies on {@link Object#equals(Object)}, it will fail when a serialized collection contains null
  * values (The deserialized collection will not contained the null value). {@link MapSchema} on the otherhand can
  * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.
- * 
+ *
  * @author David Yu
  * @created Jan 26, 2011
  */
@@ -48,6 +50,61 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
          * The type to instantiate.
          */
         public Class<?> typeClass();
+    }
+
+
+    private static final Comparable EMPTY_OBJECT = new Comparable()
+    {
+        @Override
+        public int compareTo(Object o)
+        {
+            return o == this ? 0 : -1;
+        }
+        @Override
+        public boolean equals(Object o)
+        {
+            return o == this;
+        }
+        @Override
+        public int hashCode()
+        {
+            return 0;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Collection, E extends Enum<E>> T removeUnmodifiableWrapper(T collection,
+                                                                                        MessageFactory messageFactory,
+                                                                                        Class<E> enumType)
+    {
+        if (collection == null)
+            return (T) messageFactory.newMessage();
+
+        try
+        {
+            if (enumType == null)
+            {
+                collection.add(EMPTY_OBJECT);
+                collection.remove(EMPTY_OBJECT);
+            }
+            else
+            {
+                E instance = getEnumInstance(enumType);
+                if(instance == null)
+                    return collection;
+
+                int size = collection.size();
+                collection.add(instance);
+                if(size != collection.size())
+                    collection.remove(instance);
+            }
+        }
+        catch (UnsupportedOperationException e)
+        {
+            collection = (T) messageFactory.newMessage();
+        }
+
+        return collection;
     }
 
     public enum MessageFactories implements MessageFactory

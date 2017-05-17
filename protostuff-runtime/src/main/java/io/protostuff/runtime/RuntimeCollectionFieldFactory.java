@@ -14,22 +14,15 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.CollectionSchema.MessageFactory;
+import io.protostuff.*;
+import io.protostuff.WireFormat.FieldType;
+
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
-
-import io.protostuff.CollectionSchema.MessageFactory;
-import io.protostuff.GraphInput;
-import io.protostuff.Input;
-import io.protostuff.Message;
-import io.protostuff.Morph;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
-import io.protostuff.Tag;
-import io.protostuff.WireFormat.FieldType;
 
 /**
  * Static utility for creating runtime {@link Collection} fields.
@@ -75,8 +68,10 @@ final class RuntimeCollectionFieldFactory
      */
 
     private static <T> Field<T> createCollectionInlineV(int number,
-            String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inline)
+                                                        String name,
+                                                        java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory,
+                                                        final Delegate<Object> inline)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(inline.getFieldType(),
@@ -85,8 +80,7 @@ final class RuntimeCollectionFieldFactory
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                accessor.set(message, input.mergeObject(
-                        accessor.<Collection<Object>>get(message), schema));
+                merge(accessor, message, input, schema, messageFactory);
             }
 
             @Override
@@ -127,9 +121,12 @@ final class RuntimeCollectionFieldFactory
         };
     }
 
-    private static <T> Field<T> createCollectionEnumV(int number, String name,
-            java.lang.reflect.Field f, MessageFactory messageFactory,
-            Class<Object> genericType, final IdStrategy strategy)
+    private static <T> Field<T> createCollectionEnumV(int number,
+                                                      String name,
+                                                      java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      final Class<? extends Enum> genericType,
+                                                      final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         final Accessor accessor = AF.create(f);
@@ -139,8 +136,7 @@ final class RuntimeCollectionFieldFactory
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                accessor.set(message, input.mergeObject(
-                        accessor.<Collection<Enum<?>>>get(message), schema));
+                merge(accessor, message, input, schema, messageFactory, genericType);
             }
 
             @Override
@@ -181,9 +177,12 @@ final class RuntimeCollectionFieldFactory
         };
     }
 
-    private static <T> Field<T> createCollectionPojoV(int number, String name,
-            java.lang.reflect.Field f, MessageFactory messageFactory,
-            Class<Object> genericType, IdStrategy strategy)
+    private static <T> Field<T> createCollectionPojoV(int number,
+                                                      String name,
+                                                      java.lang.reflect.Field f,
+                                                      final MessageFactory messageFactory,
+                                                      Class<Object> genericType,
+                                                      IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(
                 genericType, true);
@@ -194,8 +193,7 @@ final class RuntimeCollectionFieldFactory
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                accessor.set(message, input.mergeObject(
-                        accessor.<Collection<Object>>get(message), schema));
+                merge(accessor, message, input, schema, messageFactory);
             }
 
             @Override
@@ -239,9 +237,11 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
-            String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, Class<Object> genericType,
-            final IdStrategy strategy)
+                                                             String name,
+                                                             java.lang.reflect.Field f,
+                                                             final MessageFactory messageFactory,
+                                                             Class<Object> genericType,
+                                                             final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
@@ -250,8 +250,7 @@ final class RuntimeCollectionFieldFactory
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                accessor.set(message, input.mergeObject(
-                        accessor.<Collection<Object>>get(message), schema));
+                merge(accessor, message, input, schema, messageFactory);
             }
 
             @Override
@@ -303,9 +302,12 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionObjectV(int number,
-            String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Schema<Object> valueSchema,
-            final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
+                                                        String name,
+                                                        java.lang.reflect.Field f,
+                                                        final MessageFactory messageFactory,
+                                                        final Schema<Object> valueSchema,
+                                                        final Pipe.Schema<Object> valuePipeSchema,
+                                                        final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
@@ -314,8 +316,7 @@ final class RuntimeCollectionFieldFactory
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                accessor.set(message, input.mergeObject(
-                        accessor.<Collection<Object>>get(message), schema));
+                merge(accessor, message, input, schema, messageFactory);
             }
 
             @Override
@@ -404,14 +405,12 @@ final class RuntimeCollectionFieldFactory
 
             if (EnumSet.class.isAssignableFrom(f.getType()))
             {
-                final Class<Object> enumType = (Class<Object>) getGenericType(
-                        f, 0);
+                final Class<Enum> enumType = (Class<Enum>) getGenericType(f, 0);
                 if (enumType == null)
                 {
                     // still handle the serialization of EnumSets even without
                     // generics
-                    return RuntimeFieldFactory.OBJECT.create(number, name, f,
-                            strategy);
+                    return RuntimeFieldFactory.OBJECT.create(number, name, f, strategy);
                 }
 
                 // TODO optimize
@@ -447,7 +446,7 @@ final class RuntimeCollectionFieldFactory
 
             if (genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory,
-                        genericType, strategy);
+                        (Class<Enum>)((Object) genericType), strategy);
 
             final PolymorphicSchema ps = PolymorphicSchemaFactories
                     .getSchemaFromCollectionOrMapGenericType(genericType,
@@ -506,4 +505,20 @@ final class RuntimeCollectionFieldFactory
         }
     };
 
+    @SuppressWarnings("unchecked")
+    private static<T extends Collection<?>, E extends Enum<E>> void merge(Accessor accessor,
+                                                                          Object message,
+                                                                          Input input,
+                                                                          Schema<T> schema,
+                                                                          MessageFactory messageFactory,
+                                                                          Class<E>... enumType) throws IOException
+    {
+        T collection = accessor.get(message);
+        if (enumType.length == 0)
+            collection = CollectionSchema.removeUnmodifiableWrapper(collection, messageFactory, null);
+        else
+            collection = CollectionSchema.removeUnmodifiableWrapper(collection, messageFactory, enumType[0]);
+
+        accessor.set(message, input.mergeObject(collection, schema));
+    }
 }

@@ -14,20 +14,20 @@
 
 package io.protostuff.runtime;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-
-import org.junit.Test;
-
 import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtobufIOUtil;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests for abstract generic collection types.
@@ -46,6 +46,11 @@ public class CollectionTest
         // serialization.
         RuntimeSchema.map(ITask.class, Task.class);
         RuntimeSchema.map(AbstractEmployee.class, Employee.class);
+    }
+
+    public enum Sequence
+    {
+        ONE, TWO, THREE, FOUR, FIVE
     }
 
     public interface ITask
@@ -552,4 +557,212 @@ public class CollectionTest
         assertTrue(schema.getFields().get(3) instanceof RuntimeDerivativeField);
     }
 
+    static class Entry<T>
+    {
+        private Collection<T> emptyCollection = Collections.emptyList();
+        private Set<Sequence> enumSet = EnumSet.of(Sequence.TWO, Sequence.ONE);
+        private Collection<Sequence> unmodifiationEnumSet = Collections.unmodifiableSet(EnumSet.of(Sequence.ONE, Sequence.TWO));
+    }
+
+    @Test
+    public void testImmutableCollection() throws IOException
+    {
+        Schema<Entry> schema = RuntimeSchema.getSchema(Entry.class);
+
+        Entry<String> originalObject = new Entry<String>();
+        Collection<String> collection = new HashSet<String>();
+        collection.add("hello");
+        collection.add("world");
+
+        originalObject.emptyCollection = collection;
+
+        originalObject.enumSet.add(Sequence.THREE);
+        originalObject.unmodifiationEnumSet = EnumSet.allOf(Sequence.class);
+
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ProtobufIOUtil.writeTo(bos, originalObject, schema, LinkedBuffer.allocate(1024));
+        byte[] bytes = bos.toByteArray();
+        bos.close();
+
+        Entry deserializedObject = schema.newMessage();
+        ProtobufIOUtil.mergeFrom(bytes, deserializedObject, schema);
+        assertNotNull(deserializedObject);
+        for (String word : originalObject.emptyCollection)
+            assertTrue(deserializedObject.emptyCollection.contains(word));
+
+        for(Sequence sequence : EnumSet.of(Sequence.ONE,Sequence.TWO,Sequence.THREE))
+            assertTrue(deserializedObject.enumSet.contains(sequence));
+
+        for(Sequence sequence: Sequence.values())
+            assertTrue(deserializedObject.unmodifiationEnumSet.contains(sequence));
+    }
+
+
+    private static class Bean
+    {
+
+        List arrayList, unmodifiableList, emptyList;
+
+        SortedMap sortedMap;
+        Map unmodifiableMap;
+        Map<?,?> enumKMap, enumVMap, enumMap;
+
+
+        Set unmodifiableSet;
+        SortedSet sortedSet;
+
+        Collection unmodifiableCollection;
+
+        String name;
+    }
+
+    private static class ImmutableBean extends Bean
+    {
+        ImmutableBean(){
+            fill(this, 0);
+            this.arrayList = Arrays.asList();
+        }
+    }
+
+    private static Bean fillWithUnmodifiableCollection(Bean bean)
+    {
+        int size = 10;
+        return fill(bean, size);
+    }
+
+    private static Bean fill(Bean bean, int size)
+    {
+        bean.name = "bean";
+
+        bean.arrayList = newArrayList();
+        bean.unmodifiableList = Collections.unmodifiableList(fill(new ArrayList(), size));
+
+        bean.sortedMap = Collections.unmodifiableSortedMap(fill(new TreeMap(), size));
+        bean.unmodifiableMap = Collections.unmodifiableMap(fill(new HashMap(), size));
+
+        bean.unmodifiableSet = Collections.unmodifiableSet(fill(new HashSet(), size));
+        bean.sortedSet = Collections.unmodifiableSortedSet(fill(new TreeSet(), size));
+
+        bean.unmodifiableCollection = Collections.unmodifiableCollection(fill(new ArrayList(), size));
+
+        bean.enumMap = Collections.unmodifiableMap(fillEnum(new HashMap<Enum,Enum>()));
+        bean.enumKMap = Collections.unmodifiableMap(fillEnumK(new HashMap<Enum,Object>()));
+        bean.enumVMap = Collections.unmodifiableMap(fillEnumV(new HashMap<Object,Enum>()));
+
+        return bean;
+    }
+
+
+    private static void verify(Bean bean)
+    {
+        int size = 10;
+        assertNotNull(bean.name, "bean");
+
+        assertNull(bean.emptyList);
+
+        assertNotNull(bean.arrayList);
+        assertEquals(bean.arrayList, newArrayList());
+
+        assertNotNull(bean.unmodifiableList);
+        assertEquals(bean.unmodifiableList, fill(new ArrayList(), size));
+
+        assertNotNull(bean.sortedSet);
+        assertEquals(bean.sortedSet, fill(new TreeSet(), size));
+        assertNotNull(bean.unmodifiableSet);
+        assertEquals(bean.unmodifiableSet, fill(new HashSet(), size));
+
+
+        assertNotNull(bean.sortedMap);
+        assertEquals(bean.sortedMap, fill(new TreeMap(), size));
+        assertNotNull(bean.unmodifiableMap);
+        assertEquals(bean.unmodifiableMap, fill(new HashMap(), size));
+
+        assertNotNull(bean.unmodifiableCollection);
+        Collection collection = fill(new ArrayList(), size);
+        assertTrue(collection.size() == bean.unmodifiableCollection.size());
+        for(Object obj: collection)
+            assertTrue(bean.unmodifiableCollection.contains(obj));
+
+
+        Map map = Collections.unmodifiableMap(fillEnum(new HashMap<Enum,Enum>()));
+        for(Map.Entry entry: bean.enumMap.entrySet())
+        {
+            assertNotNull(map.get(entry.getKey()));
+            assertEquals(map.get(entry.getKey()),entry.getValue());
+        }
+
+        map = Collections.unmodifiableMap(fillEnumK(new HashMap<Enum,Object>()));
+        for(Object key: bean.enumKMap.keySet())
+            assertTrue(map.containsKey(key));
+
+        map = Collections.unmodifiableMap(fillEnumV(new HashMap<Object,Enum>()));
+        for(Object value: bean.enumVMap.values())
+        {
+            assertTrue(map.containsValue(value));
+        }
+    }
+
+    private static List newArrayList()
+    {
+        return Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    }
+
+    private static <T extends Collection> T fill(T collection, int size)
+    {
+        for (int i = 0; i < size; i++)
+            collection.add(i);
+
+        return collection;
+    }
+
+    private static <T extends Map<Enum, Object>> T fillEnumK (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(sequence, new Object());
+
+        return map;
+    }
+
+    private static <T extends Map<Enum,Enum>> T fillEnum (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(sequence, sequence);
+
+        return map;
+    }
+
+    private static <T extends Map<Object, Enum>> T fillEnumV (T map)
+    {
+        for (Sequence sequence: Sequence.values())
+            map.put(new Object(), sequence);
+
+        return map;
+    }
+
+    private static <T extends Map> T fill(T map, int size)
+    {
+        for (int i = 0; i < size; i++)
+            map.put(i,i);
+
+        return map;
+    }
+
+    @Test
+    public void testBeanWithUnmodifiableCollection()
+    {
+        System.err.println(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+
+        Bean bean = fillWithUnmodifiableCollection(new Bean());
+
+        verify(bean);
+
+        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class);
+        byte[] bytes = ProtostuffIOUtil.toByteArray(bean, schema, LinkedBuffer.allocate(256));
+
+        Bean deBean = new ImmutableBean();
+        ProtostuffIOUtil.mergeFrom(bytes, deBean, schema);
+
+        verify(deBean);
+    }
 }
