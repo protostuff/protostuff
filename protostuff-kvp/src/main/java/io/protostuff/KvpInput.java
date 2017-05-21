@@ -14,14 +14,14 @@
 
 package io.protostuff;
 
-import static io.protostuff.NumberParser.parseInt;
-import static io.protostuff.NumberParser.parseLong;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import io.protostuff.StringSerializer.STRING;
+
+import static io.protostuff.NumberParser.parseInt;
+import static io.protostuff.NumberParser.parseLong;
 
 /**
  * An input for deserializing kvp-encoded messages. A kvp encoding is a binary encoding w/c contains a key-value
@@ -228,6 +228,32 @@ public final class KvpInput implements Input
     public ByteString readBytes() throws IOException
     {
         return ByteString.wrap(readByteArray());
+    }
+
+    @Override
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        if (offset + 2 > limit && !readable(2))
+            throw new ProtostuffException("Truncated message.");
+
+        final int size = buffer[offset++] | (buffer[offset++] << 8);
+
+        if (size == 0)
+        {
+            bb.put(ByteString.EMPTY_BYTE_ARRAY);
+            return;
+        }
+
+        if (size > MAX_VALUE_SIZE)
+            throw new ProtostuffException("Exceeded kvp max value size.");
+
+        if (offset + size > limit)
+        {
+            fill(bb.array(), 0, size);
+        }
+
+        bb.put(buffer, offset, size);
+        offset += size;
     }
 
     @Override

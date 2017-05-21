@@ -333,4 +333,9 @@ public final class XmlInput implements Input
         return ByteBuffer.wrap(readByteArray());
     }
 
+    @Override
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        bb.put(getB64Decoded());
+    }
 }

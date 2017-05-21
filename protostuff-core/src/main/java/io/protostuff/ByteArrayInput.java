@@ -451,6 +451,21 @@ public final class ByteArrayInput implements Input
     }
 
     @Override
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        final int length = readRawVarint32();
+        if (length < 0)
+            throw ProtobufException.negativeSize();
+
+        if (offset + length > limit)
+            throw ProtobufException.misreportedSize();
+
+        bb.put(buffer, offset, length);
+
+        offset += length;
+    }
+
+    @Override
     public byte[] readByteArray() throws IOException
     {
         final int length = readRawVarint32();

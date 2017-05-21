@@ -64,6 +64,12 @@ public class FilterInput<F extends Input> implements Input
     }
 
     @Override
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        input.readBytes(bb);
+    }
+
+    @Override
     public double readDouble() throws IOException
     {
         return input.readDouble();

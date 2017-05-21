@@ -120,6 +120,20 @@ public final class KvpByteArrayInput implements Input
     }
 
     @Override
+    public void readBytes(final ByteBuffer bb) throws IOException
+    {
+        final int size = buffer[offset++] | (buffer[offset++] << 8);
+        if (size == 0)
+            bb.put(ByteString.EMPTY_BYTE_ARRAY);
+
+        if (offset + size > limit)
+            throw new ProtostuffException("Misreported size.");
+
+        bb.put(buffer, offset, size);
+        offset += size;
+    }
+
+    @Override
     public double readDouble() throws IOException
     {
         // TODO efficiency
