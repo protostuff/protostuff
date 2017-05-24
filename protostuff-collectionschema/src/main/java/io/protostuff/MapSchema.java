@@ -18,12 +18,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * A schema for a {@link Map}. The key and value can be null (depending on the particular map impl).
  * <p>
  * The default {@link Map} message created will be an instance of {@link HashMap}.
- * 
+ *
  * @author David Yu
  * @created Jun 26, 2010
  */
@@ -159,6 +160,15 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             public <K, V> Map<K, V> newMessage()
             {
                 return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+            }
+        },
+        Properties(java.util.Properties.class)
+        {
+            @Override
+            @SuppressWarnings("unchecked")
+            public <K, V> Map<K, V> newMessage()
+            {
+                return (java.util.Map<K, V>) new Properties();
             }
         };
 

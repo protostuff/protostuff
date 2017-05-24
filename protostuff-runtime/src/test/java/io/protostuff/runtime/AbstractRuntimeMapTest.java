@@ -28,6 +28,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -106,6 +107,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         Hashtable<String, String> hashTable;
         ConcurrentHashMap<String, String> concurrentHashMap;
         ConcurrentSkipListMap<String, String> concurrentSkipListMap;
+        Properties properties;
 
         static SomePojo create(String name)
         {
@@ -144,6 +146,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             p.concurrentSkipListMap = new ConcurrentSkipListMap<String, String>();
             p.concurrentSkipListMap.put("baz", "bar");
 
+            p.properties = new Properties();
+            p.properties.put("foo", "bar");
             return p;
         }
 
@@ -179,6 +183,8 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
                     + ((treeMap == null) ? 0 : treeMap.hashCode());
             result = prime * result
                     + ((weakHashMap == null) ? 0 : weakHashMap.hashCode());
+            result = prime * result
+                    + ((properties == null) ? 0 : properties.hashCode());
             return result;
         }
 
@@ -272,6 +278,13 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
             }
             else if (!weakHashMap.equals(other.weakHashMap))
                 return false;
+            if (properties == null)
+            {
+                if (other.properties != null)
+                    return false;
+            }
+            else if (!properties.equals(other.properties))
+                return false;
             return true;
         }
 
@@ -285,7 +298,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
                     + ", linkedHashMap=" + linkedHashMap + ", map=" + map
                     + ", name=" + name + ", stringList=" + stringList
                     + ", timestamp=" + timestamp + ", treeMap=" + treeMap
-                    + ", weakHashMap=" + weakHashMap + "]";
+                    + ", weakHashMap=" + weakHashMap + ", properties=" + properties +"]";
         }
 
     }
