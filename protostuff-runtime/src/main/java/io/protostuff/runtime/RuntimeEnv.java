@@ -252,7 +252,11 @@ public final class RuntimeEnv
         }
         catch (ClassNotFoundException e)
         {
-            throw new RuntimeException(e);
+            try {
+                return (Class<T>) Class.forName(className);
+            } catch (ClassNotFoundException e1) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
