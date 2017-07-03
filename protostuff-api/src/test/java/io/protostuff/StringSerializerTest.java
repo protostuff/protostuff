@@ -548,7 +548,7 @@ public class StringSerializerTest extends TestCase
         assertEquals(bigString, STRING.deserCustomOnly(buffered));
     }
 
-    static void checkVarDelimited(String str, int size, int stringLen) throws Exception
+    static void checkVarDelimited(CharSequence str, int size, int stringLen) throws Exception
     {
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
@@ -564,12 +564,12 @@ public class StringSerializerTest extends TestCase
         print("total len: " + buf.length);
     }
 
-    static void checkFixedDelimited(String str) throws Exception
+    static void checkFixedDelimited(CharSequence str) throws Exception
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(getShortStringLengthInBytes(str));
         OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
-        writer.write(str, 0, str.length());
+        writer.write(str.toString(), 0, str.length());
         writer.close();
 
         LinkedBuffer lb = new LinkedBuffer(512);
@@ -582,9 +582,9 @@ public class StringSerializerTest extends TestCase
         assertEquals(b1, b2);
     }
 
-    static byte[] getShortStringLengthInBytes(String str) throws Exception
+    static byte[] getShortStringLengthInBytes(CharSequence str) throws Exception
     {
-        byte[] array = str.getBytes("UTF-8");
+        byte[] array = str.toString().getBytes("UTF-8");
         return new byte[] { (byte) ((array.length >> 8) & 0xff), (byte) (array.length & 0xff) };
     }
 
@@ -593,9 +593,9 @@ public class StringSerializerTest extends TestCase
         assertTrue(Arrays.equals(b1, b2));
     }
 
-    static void checkAscii(String str) throws Exception
+    static void checkAscii(CharSequence str) throws Exception
     {
-        byte[] builtin = str.getBytes("UTF-8");
+        byte[] builtin = str.toString().getBytes("UTF-8");
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
@@ -615,9 +615,9 @@ public class StringSerializerTest extends TestCase
         print("len: " + builtin.length);
     }
 
-    static void check(String str) throws Exception
+    static void check(CharSequence str) throws Exception
     {
-        byte[] builtin = str.getBytes("UTF-8");
+        byte[] builtin = str.toString().getBytes("UTF-8");
         LinkedBuffer lb = new LinkedBuffer(512);
         WriteSession session = new WriteSession(lb);
 
@@ -637,7 +637,7 @@ public class StringSerializerTest extends TestCase
         print("len: " + builtin.length);
     }
 
-    static void print(String msg)
+    static void print(CharSequence msg)
     {
         // System.err.println(msg);
     }

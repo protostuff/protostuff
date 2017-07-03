@@ -138,7 +138,7 @@ public class MsgpackSimpleTest
 
         LinkedBuffer lb = LinkedBuffer.allocate();
         WriteSession session = new WriteSession(lb);
-        StringSerializer.writeUTF8(string, session, session.tail);
+        StringSerializer.writeUTF8((CharSequence) string, session, session.tail);
 
         byte[] xdata = session.toByteArray();
         // System.out.println(Arrays.toString(xdata));

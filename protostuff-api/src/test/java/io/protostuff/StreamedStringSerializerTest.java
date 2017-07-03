@@ -358,7 +358,7 @@ public class StreamedStringSerializerTest extends TestCase
         byte[] buffered = session.toByteArray();
     }
 
-    static void checkVarDelimited(String str, int size, int stringLen) throws Exception
+    static void checkVarDelimited(CharSequence str, int size, int stringLen) throws Exception
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         LinkedBuffer lb = new LinkedBuffer(BUF_SIZE);
@@ -376,12 +376,12 @@ public class StreamedStringSerializerTest extends TestCase
         print("total len: " + buf.length);
     }
 
-    static void checkFixedDelimited(String str) throws Exception
+    static void checkFixedDelimited(CharSequence str) throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(bout, "UTF-8");
         bout.write(getShortStringLengthInBytes(str));
-        writer.write(str, 0, str.length());
+        writer.write(str.toString(), 0, str.length());
         writer.close();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -405,9 +405,9 @@ public class StreamedStringSerializerTest extends TestCase
         assertEquals(s1, s2);
     }
 
-    static void checkAscii(String str) throws Exception
+    static void checkAscii(CharSequence str) throws Exception
     {
-        byte[] builtin = str.getBytes("UTF-8");
+        byte[] builtin = str.toString().getBytes("UTF-8");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -431,9 +431,9 @@ public class StreamedStringSerializerTest extends TestCase
         print("len: " + builtin.length);
     }
 
-    static void check(String str) throws Exception
+    static void check(CharSequence str) throws Exception
     {
-        byte[] builtin = str.getBytes("UTF-8");
+        byte[] builtin = str.toString().getBytes("UTF-8");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -563,7 +563,7 @@ public class StreamedStringSerializerTest extends TestCase
         assertEquals(offset, data.length);
     }
 
-    static void writeToSession(String str1, String str2, String str3,
+    static void writeToSession(CharSequence str1, CharSequence str2, CharSequence str3,
             WriteSession session, boolean delimited) throws IOException
     {
         if (delimited)
@@ -602,7 +602,7 @@ public class StreamedStringSerializerTest extends TestCase
         }
     }
 
-    static void print(String msg)
+    static void print(CharSequence msg)
     {
         // System.err.println(msg);
     }

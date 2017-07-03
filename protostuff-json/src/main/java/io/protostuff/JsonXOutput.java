@@ -588,7 +588,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     }
 
     @Override
-    public void writeString(int fieldNumber, String value, boolean repeated) throws IOException
+    public void writeString(int fieldNumber, CharSequence value, boolean repeated) throws IOException
     {
         final WriteSink sink = this.sink;
         if (lastNumber == fieldNumber)
@@ -747,7 +747,7 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
                 session, lb);
     }
 
-    private static LinkedBuffer writeUTF8Escaped(final String str, final WriteSink sink,
+    private static LinkedBuffer writeUTF8Escaped(final CharSequence str, final WriteSink sink,
             final WriteSession session, LinkedBuffer lb) throws IOException
     {
         final int len = str.length();

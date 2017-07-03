@@ -516,9 +516,9 @@ public class XmlCoreSerDeserTest
             public void writeTo(Output output, RequiresName message) throws IOException
             {
                 if (message.name != null)
-                    output.writeString(1, message.name, false);
+                    output.writeString(1, (CharSequence) message.name, false);
                 if (message.description != null)
-                    output.writeString(2, message.description, false);
+                    output.writeString(2, (CharSequence) message.description, false);
             }
 
         };
