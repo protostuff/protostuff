@@ -539,7 +539,7 @@ public final class CodedOutput implements Output
      * Write a {@code string} field, including tag, to the stream.
      */
     @Override
-    public void writeString(final int fieldNumber, final String value, boolean repeated)
+    public void writeString(final int fieldNumber, final CharSequence value, boolean repeated)
             throws IOException
     {
         writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
@@ -731,12 +731,12 @@ public final class CodedOutput implements Output
     /**
      * Write a {@code string} field to the stream.
      */
-    public void writeStringNoTag(final String value) throws IOException
+    public void writeStringNoTag(final CharSequence value) throws IOException
     {
         // Unfortunately there does not appear to be any way to tell Java to encode
         // UTF-8 directly into our buffer, so we have to let it create its own byte
         // array and then copy.
-        final byte[] bytes = STRING.ser(value);
+        final byte[] bytes = STRING.ser(value.toString());
         writeRawVarint32(bytes.length);
         writeRawBytes(bytes);
     }

@@ -757,7 +757,7 @@ public final class RuntimeUnsafeFieldFactory
                 public void writeTo(Output output, T message)
                         throws IOException
                 {
-                    String value = (String) us.getObject(message, offset);
+                    CharSequence value = (CharSequence) us.getObject(message, offset);
                     if (value != null)
                         output.writeString(number, value, false);
                 }
@@ -788,7 +788,7 @@ public final class RuntimeUnsafeFieldFactory
         public void writeTo(Output output, int number, String value,
                 boolean repeated) throws IOException
         {
-            output.writeString(number, value, repeated);
+            output.writeString(number, (CharSequence) value, repeated);
         }
 
         @Override

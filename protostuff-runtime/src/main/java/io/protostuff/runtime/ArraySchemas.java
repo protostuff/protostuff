@@ -1436,13 +1436,13 @@ public final class ArraySchemas
         @Override
         public void writeTo(Output output, Object value) throws IOException
         {
-            String[] array = (String[]) value;
+            CharSequence[] array = (CharSequence []) value;
             output.writeInt32(ID_ARRAY_LEN, array.length, false);
 
             int nullCount = 0;
             for (int i = 0, len = array.length; i < len; i++)
             {
-                String v = array[i];
+                CharSequence v = array[i];
                 if (v != null)
                 {
                     if (nullCount != 0)

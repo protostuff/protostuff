@@ -43,7 +43,7 @@ public class StringMapSchema<V> extends MapSchema<String, V>
         protected void writeValueTo(Output output, int fieldNumber, String value,
                 boolean repeated) throws IOException
         {
-            output.writeString(fieldNumber, value, repeated);
+            output.writeString(fieldNumber, (CharSequence) value, repeated);
         }
 
         @Override
@@ -92,7 +92,7 @@ public class StringMapSchema<V> extends MapSchema<String, V>
     protected final void writeKeyTo(Output output, int fieldNumber, String value,
             boolean repeated) throws IOException
     {
-        output.writeString(fieldNumber, value, repeated);
+        output.writeString(fieldNumber, (CharSequence) value, repeated);
     }
 
     @Override

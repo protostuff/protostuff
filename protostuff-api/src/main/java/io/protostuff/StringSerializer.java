@@ -1,6 +1,5 @@
 package io.protostuff;
 
-import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
 
@@ -1184,7 +1183,7 @@ public final class StringSerializer
 
         /**
          * Deserialize using readUTF only.
-         * 
+         *
          * @param nonNullValue
          * @return
          */

@@ -850,7 +850,7 @@ public final class RuntimeReflectionFieldFactory
                 {
                     try
                     {
-                        String value = (String) f.get(message);
+                        CharSequence value = (CharSequence) f.get(message);
                         if (value != null)
                             output.writeString(number, value, false);
                     }
@@ -885,7 +885,7 @@ public final class RuntimeReflectionFieldFactory
         public void writeTo(Output output, int number, String value,
                 boolean repeated) throws IOException
         {
-            output.writeString(number, value, repeated);
+            output.writeString(number, (CharSequence) value, repeated);
         }
 
         @Override
