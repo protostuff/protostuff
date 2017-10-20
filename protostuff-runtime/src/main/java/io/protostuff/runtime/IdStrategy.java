@@ -14,7 +14,6 @@ import io.protostuff.Schema;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -343,11 +342,6 @@ public abstract class IdStrategy
         {
             final Object value = derivedSchema.newMessage();
 
-            if (MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>) owner).setValue(value);
-            else
-                ((Collection<Object>) owner).add(value);
-
             if (input instanceof GraphInput)
             {
                 // update the actual reference.
@@ -355,6 +349,11 @@ public abstract class IdStrategy
             }
 
             derivedSchema.mergeFrom(input, value);
+
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>) owner).setValue(value);
+            else
+                ((Collection<Object>) owner).add(value);
         }
     };
 
