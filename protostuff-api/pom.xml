@@ -3,7 +3,7 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
-    <version>1.5.6</version>
+    <version>1.5.7-SNAPSHOT</version>
   </parent>
 
   <artifactId>protostuff-api</artifactId>
