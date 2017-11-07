@@ -1,3 +1,14 @@
+protostuff-1.5.7 2017-11-07
+===========================
+
+* fix protostuff-runtime group filter for nested messages
+* Issue 231: HashSet serialization problem with contains(pojo)
+    
+    For circular data, the solution is to basically tag the pojos and reserve the single-digit 
+    numbers (1-9) as the tag for the fields that are part of the hashCode computation.
+    
+    This needs to be documented for data that contains hashset and has cyclic refs.
+
 protostuff-1.3.3 2015-03-23
 ===========================
 
