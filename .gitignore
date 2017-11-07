@@ -1,3 +1,4 @@
+/release.sh
 target/
 .classpath
 .project
