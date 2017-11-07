@@ -182,8 +182,8 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionPojoV(int number, String name,
-            java.lang.reflect.Field f, MessageFactory messageFactory,
-            Class<Object> genericType, IdStrategy strategy)
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
+            final Class<Object> genericType, IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(
                 genericType, true);
@@ -235,12 +235,18 @@ final class RuntimeCollectionFieldFactory
                 output.writeObject(number, pipe, schemaV.getPipeSchema(),
                         repeated);
             }
+
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionPojoV(number, name, f, messageFactory, genericType, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
-            String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, Class<Object> genericType,
+            String name, final java.lang.reflect.Field f,
+            final MessageFactory messageFactory, final Class<Object> genericType,
             final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
@@ -299,12 +305,18 @@ final class RuntimeCollectionFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
                         repeated);
             }
+
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionPolymorphicV(number, name, f, messageFactory, genericType, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createCollectionObjectV(int number,
-            String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Schema<Object> valueSchema,
+            String name, final java.lang.reflect.Field f,
+            final MessageFactory messageFactory, final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
@@ -358,6 +370,12 @@ final class RuntimeCollectionFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, valuePipeSchema, repeated);
+            }
+
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionObjectV(number, name, f, messageFactory, valueSchema, valuePipeSchema, strategy);
             }
         };
     }

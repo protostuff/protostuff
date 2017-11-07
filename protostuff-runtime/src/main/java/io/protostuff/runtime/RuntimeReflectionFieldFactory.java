@@ -1213,6 +1213,12 @@ public final class RuntimeReflectionFieldFactory
                 {
                     output.writeObject(number, pipe, getPipeSchema(), repeated);
                 }
+
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return POJO.create(number, name, f, strategy);
+                }
             };
         }
 
@@ -1336,6 +1342,12 @@ public final class RuntimeReflectionFieldFactory
                         throw new RuntimeException(e);
                     }
                 }
+                
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return POLYMORPHIC_POJO.create(number, name, f, strategy);
+                }
             };
         }
 
@@ -1446,6 +1458,12 @@ public final class RuntimeReflectionFieldFactory
                     {
                         throw new RuntimeException(e);
                     }
+                }
+                
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return OBJECT.create(number, name, f, strategy);
                 }
             };
         }

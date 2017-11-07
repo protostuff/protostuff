@@ -322,6 +322,164 @@ public class FilterFieldsByGroupTest extends AbstractTest
         assertTrue(message.prop2and3a == parsed.prop2and3a);
         assertTrue(message.prop2and3b == parsed.prop2and3b);
     }
+    
+    public enum Ent_NetworkType
+    {
+        PRIVATE,
+        PUBLIC;
+    }
+    
+    public static final class Ent_Network
+    {
+        public static final int NETWORK_CLONING_GROUP = 1;
+
+        @Tag(1)
+        private String code;
+
+        @Tag(value = 2, groupFilter = Ent_Network.NETWORK_CLONING_GROUP)
+        private Ent_NetworkType networkType;
+
+        @Tag(value = 3, groupFilter = Ent_Network.NETWORK_CLONING_GROUP)
+        private java.util.Set<Ent_NetworkLocation> networkLocations;
+        
+        @Tag(value = 4, groupFilter = Ent_Network.NETWORK_CLONING_GROUP)
+        private Ent_NetworkLocation mainNetworkLocation;
+
+        @Override
+        public String toString()
+        {
+            return "Ent_Network [code=" + code + ", networkType=" + networkType
+                    + ", networkLocations=" + networkLocations + ", mainNetworkLocation="
+                    + mainNetworkLocation + "]";
+        }
+    }
+
+    public static final class Ent_NetworkLocation
+    {
+
+        @Tag(value = 1, groupFilter = Ent_Network.NETWORK_CLONING_GROUP)
+        private Ent_Location location;
+        
+        //@Tag(value = 2, groupFilter = Ent_Network.NETWORK_CLONING_GROUP)
+        //private Ent_Network network;
+        
+        @Override
+        public int hashCode()
+        {
+            return location == null ? 0 : location.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof Ent_NetworkLocation))
+                return false;
+            Ent_NetworkLocation other = (Ent_NetworkLocation)obj;
+            return location == null ? other.location == null : location.equals(other.location);
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "location: " + (location == null ? "null" : location.toString());
+        }
+    }
+
+    public static final class Ent_Location
+    {
+        public static final int LOCATION_CLONING_GROUP = 2;
+
+        @Tag(1)
+        private String code;
+
+        @Tag(value = 2, groupFilter = Ent_Location.LOCATION_CLONING_GROUP)
+        private java.util.Set<Ent_NetworkLocation> networkLocations;
+        
+        @Tag(value = 3, groupFilter = Ent_Location.LOCATION_CLONING_GROUP)
+        private Ent_NetworkLocation sub;
+
+        @Override
+        public int hashCode()
+        {
+            return code == null ? 0 : code.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof Ent_Location))
+                return false;
+            Ent_Location other = (Ent_Location)obj;
+            return code == null ? other.code == null : code.equals(other.code);
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Ent_Location [code=" + code + ", networkLocations=" + networkLocations
+                    + ", sub=" + sub + "]";
+        }
+    }
+    
+    static Ent_Location newLocation(String code)
+    {
+        Ent_Location location = new Ent_Location();
+        location.code = code;
+        return location;
+    }
+    
+    static Ent_NetworkLocation newNetLocation(String code)
+    {
+        Ent_Location location = newLocation(code);
+        
+        Ent_NetworkLocation nl = new Ent_NetworkLocation();
+        nl.location = location;
+        
+        location.networkLocations = new java.util.HashSet<Ent_NetworkLocation>();
+        
+        Ent_NetworkLocation sub = new Ent_NetworkLocation();
+        sub.location = newLocation(code + "-sub");
+        
+        location.networkLocations.add(sub);
+        location.sub = sub;
+        
+        return nl;
+    }
+    
+    public void testNetwork()
+    {
+        Ent_Network network = new Ent_Network();
+        network.code = "hello";
+        network.networkType = Ent_NetworkType.PRIVATE;
+        network.networkLocations = new java.util.HashSet<Ent_NetworkLocation>();
+        network.networkLocations.add(newNetLocation("bar"));
+        network.mainNetworkLocation = newNetLocation("baz");
+        
+        Ent_NetworkLocation netLocation = new Ent_NetworkLocation();
+        netLocation.location = newLocation("foo");
+        
+        
+        DefaultIdStrategy primary = new DefaultIdStrategy();
+        DefaultIdStrategy g1 = new DefaultIdStrategy(primary, Ent_Network.NETWORK_CLONING_GROUP);
+        Schema<Ent_Network> schema = RuntimeSchema.getSchema(Ent_Network.class, g1);
+
+        byte[] data = ProtostuffIOUtil.toByteArray(network, schema, buf());
+        Ent_Network parsed = schema.newMessage();
+        
+        ProtostuffIOUtil.mergeFrom(data, parsed, schema);
+        
+        assertEquals("hello", parsed.code);
+        assertTrue(Ent_NetworkType.PRIVATE == parsed.networkType);
+        assertNotNull(parsed.networkLocations);
+        assertTrue(1 == parsed.networkLocations.size());
+        Ent_NetworkLocation nl = parsed.networkLocations.iterator().next();
+        assertNotNull(nl);
+        Ent_Location l = nl.location;
+        assertNotNull(l);
+        assertEquals("bar", l.code);
+        assertNull(l.networkLocations);
+    }
+
 
     /*
      * public static void main(String[] args) { int g = -(GROUP1|GROUP2); System.err.println(g); int k = ~g;
