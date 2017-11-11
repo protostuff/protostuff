@@ -306,7 +306,7 @@ public final class DefaultIdStrategy extends IdStrategy
             Class<?> clazz) throws IOException
     {
         final CollectionSchema.MessageFactory factory = collectionMapping
-                .get(clazz);
+                .get(clazz.getName());
         if (factory == null && clazz.getName().startsWith("java.util"))
         {
             // jdk collection
