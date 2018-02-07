@@ -45,7 +45,7 @@
     <url>https://github.com/protostuff/protostuff</url>
     <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
     <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
-    <tag>protostuff-1.5.10-SNAPSHOT</tag>
+    <tag>protostuff-1.5.10</tag>
   </scm>
 
   <licenses>
