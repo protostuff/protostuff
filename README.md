@@ -1,11 +1,11 @@
 
-![Protostuff](http://www.protostuff.io/images/protostuff_300x100.png)
+![Protostuff](https://protostuff.github.io/images/protostuff_300x100.png)
 
 A serialization library with built-in support for forward-backward compatibility (schema evolution) and validation.
 
 Documentation:
 
-1. http://www.protostuff.io/
+1. https://protostuff.github.io/
 
 Benchmarks:
 

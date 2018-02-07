@@ -10,7 +10,7 @@
   <description>
     Java serialization library, proto compiler, code generator
   </description>
-  <url>http://protostuff.io</url>
+  <url>https://protostuff.github.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <properties>
