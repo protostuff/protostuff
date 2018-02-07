@@ -20,7 +20,7 @@ Usage (maven)
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-core</artifactId>
-    <version>1.5.7</version>
+    <version>1.5.8</version>
   </dependency>
   ```
 
@@ -30,7 +30,7 @@ Usage (maven)
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-runtime</artifactId>
-    <version>1.5.7</version>
+    <version>1.5.8</version>
   </dependency>
   ```
 
