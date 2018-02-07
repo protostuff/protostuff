@@ -1,3 +1,8 @@
+protostuff-1.5.9 2018-02-07
+===========================
+
+* Fix bug on protostuff-bom on release
+
 protostuff-1.5.8 2018-02-07
 ===========================
 
