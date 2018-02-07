@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <parent>
+    <artifactId>protostuff</artifactId>
+    <groupId>io.protostuff</groupId>
+    <version>1.5.10-SNAPSHOT</version>
+  </parent>
+
   <groupId>io.protostuff</groupId>
   <artifactId>protostuff-bom</artifactId>
-  <version>1.5.9</version>
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
 
@@ -12,7 +17,7 @@
     Protostuff "Bill of Materials" Dependency
     http://www.protostuff.io/maven-bom/
   </description>
-  <url>http://protostuff.io</url>
+  <url>https://protostuff.github.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <developers>
@@ -40,7 +45,7 @@
     <url>https://github.com/protostuff/protostuff</url>
     <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
     <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
-    <tag>protostuff-1.5.9</tag>
+    <tag>protostuff-1.5.10-SNAPSHOT</tag>
   </scm>
 
   <licenses>
