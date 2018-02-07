@@ -1,7 +1,7 @@
 protostuff-1.5.8 2018-02-07
 ===========================
 
-* Issue 234
+* Issue 234: Fix writeCollectionIdTo
 
 protostuff-1.5.7 2017-11-07
 ===========================
