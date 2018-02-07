@@ -3,7 +3,7 @@
 
   <groupId>io.protostuff</groupId>
   <artifactId>protostuff-bom</artifactId>
-  <version>1.5.6</version>
+  <version>1.5.9-SNAPSHOT</version>
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
 
