@@ -1,18 +1,61 @@
 
 ![Protostuff](https://protostuff.github.io/images/protostuff_300x100.png)
 
-A serialization library with built-in support for forward-backward compatibility (schema evolution) and validation.
+A java serialization library with built-in support for forward-backward compatibility (schema evolution) and validation.
 
-Documentation:
+- **efficient**, both in speed and memory
+- **flexible**, supporting pluggable formats
 
-1. https://protostuff.github.io/
+### Usecase
+- messaging layer in RPC
+- storage format in the datastore or cache
 
-Benchmarks:
+For more information, go to https://protostuff.github.io/
 
-1. http://hperadin.github.io/jvm-serializers-report/report.html
+## Usage
+```java
+public final class Foo
+{
+    String name;
+    int id;
+    
+    public Foo(String name, int id)
+    {
+        this.name = name;
+        this.id = id;
+    }
+}
 
-Usage (maven)
--------------
+static void roundTrip()
+{
+    Foo foo = new Foo("foo", 1);
+
+    // this is lazily created and cached by RuntimeSchema
+    // so its safe to call RuntimeSchema.getSchema(Foo.class) over and over
+    // The getSchema method is also thread-safe
+    Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
+
+    // Re-use (manage) this buffer to avoid allocating on every serialization
+    LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+    // ser
+    final byte[] protostuff;
+    try
+    {
+        protostuff = ProtostuffIOUtil.toByteArray(foo, schema, buffer);
+    }
+    finally
+    {
+        buffer.clear();
+    }
+
+    // deser
+    Foo fooParsed = schema.newMessage();
+    ProtostuffIOUtil.mergeFrom(protostuff, fooParsed, schema);
+}
+```
+
+## Maven
 
 1. When you generate schemas for your classes
    
