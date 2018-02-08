@@ -10,7 +10,7 @@ A java serialization library with built-in support for forward-backward compatib
 - messaging layer in RPC
 - storage format in the datastore or cache
 
-For more information, go to https://protostuff.github.io/
+For more information, go to https://protostuff.github.io/docs/
 
 ## Usage
 ```java
