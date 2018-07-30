@@ -169,7 +169,7 @@ public abstract class ArraySchema extends PolymorphicSchema
 
         strategy.writeArrayIdTo(output, componentType);
         // write the length of the array
-        output.writeUInt32(ID_ARRAY_LEN, Array.getLength(value), false);
+        output.writeUInt32(ID_ARRAY_LEN, ((Object[])value).length, false);
         // write the dimensions of the array
         output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
 

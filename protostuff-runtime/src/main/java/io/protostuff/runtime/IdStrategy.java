@@ -1,5 +1,13 @@
 package io.protostuff.runtime;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import io.protostuff.CollectionSchema;
 import io.protostuff.GraphInput;
 import io.protostuff.Input;
@@ -10,15 +18,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.Schema;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * This base class handles all the IO for reading and writing polymorphic fields. When a field's type is
@@ -687,9 +686,10 @@ public abstract class IdStrategy
         @Override
         public void writeTo(Output output, Object message) throws IOException
         {
-            for (int i = 0, len = Array.getLength(message); i < len; i++)
+        	final Object[] array = (Object[])message;
+           	for (int i = 0, len = array.length; i < len; i++)
             {
-                final Object value = Array.get(message, i);
+                final Object value = array[i];
                 if (value != null)
                 {
                     output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
