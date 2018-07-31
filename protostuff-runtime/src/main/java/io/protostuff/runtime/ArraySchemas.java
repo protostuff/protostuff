@@ -27,6 +27,13 @@ import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
 import static io.protostuff.runtime.RuntimeFieldFactory.ID_STRING;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+
 import io.protostuff.ByteString;
 import io.protostuff.GraphInput;
 import io.protostuff.Input;
@@ -34,12 +41,6 @@ import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
 import io.protostuff.runtime.PolymorphicSchema.Handler;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
 
 /**
  * Built-in array schemas.
@@ -1965,7 +1966,7 @@ public final class ArraySchemas
 
             final int len = input.readInt32();
 
-            Object array = Array.newInstance(delegate.typeClass(), len);
+            Object[] array = (Object[])Array.newInstance(delegate.typeClass(), len);
             if (input instanceof GraphInput)
             {
                 // update the actual reference.
@@ -1977,7 +1978,7 @@ public final class ArraySchemas
                 switch (input.readFieldNumber(this))
                 {
                     case ID_ARRAY_DATA:
-                        Array.set(array, i++, delegate.readFrom(input));
+                        array[i++] = delegate.readFrom(input);
                         break;
                     case ID_ARRAY_NULLCOUNT:
                         i += input.readUInt32();
@@ -1994,16 +1995,17 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object array) throws IOException
+        public void writeTo(Output output, Object message) throws IOException
         {
-            final int len = Array.getLength(array);
+        	final Object[] array = (Object[])message;
+            final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
             {
-                Object v = Array.get(array, i);
+                Object v = array[i];
                 if (v != null)
                 {
                     if (nullCount != 0)
@@ -2088,7 +2090,7 @@ public final class ArraySchemas
 
             final int len = input.readInt32();
 
-            Object array = Array.newInstance(eio.enumClass, len);
+            Object[] array = (Object[])Array.newInstance(eio.enumClass, len);
             if (input instanceof GraphInput)
             {
                 // update the actual reference.
@@ -2100,7 +2102,7 @@ public final class ArraySchemas
                 switch (input.readFieldNumber(this))
                 {
                     case ID_ARRAY_DATA:
-                        Array.set(array, i++, eio.readFrom(input));
+                        array[i++] = eio.readFrom(input);
                         break;
                     case ID_ARRAY_NULLCOUNT:
                         i += input.readUInt32();
@@ -2117,16 +2119,17 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object array) throws IOException
+        public void writeTo(Output output, Object message) throws IOException
         {
-            final int len = Array.getLength(array);
+        	final Enum<?>[] array = (Enum<?>[])message;
+            final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
             {
-                Enum<?> v = (Enum<?>) Array.get(array, i);
+                Enum<?> v = array[i];
                 if (v != null)
                 {
                     if (nullCount != 0)
@@ -2212,7 +2215,7 @@ public final class ArraySchemas
 
             final int len = input.readInt32();
 
-            Object array = Array.newInstance(hs.getSchema().typeClass(), len);
+            Object[] array = (Object[])Array.newInstance(hs.getSchema().typeClass(), len);
             if (input instanceof GraphInput)
             {
                 // update the actual reference.
@@ -2224,7 +2227,7 @@ public final class ArraySchemas
                 switch (input.readFieldNumber(this))
                 {
                     case ID_ARRAY_DATA:
-                        Array.set(array, i++, input.mergeObject(null, hs.getSchema()));
+                    	array[i++] = input.mergeObject(null, hs.getSchema());
                         break;
                     case ID_ARRAY_NULLCOUNT:
                         i += input.readUInt32();
@@ -2241,16 +2244,17 @@ public final class ArraySchemas
         }
 
         @Override
-        public void writeTo(Output output, Object array) throws IOException
+        public void writeTo(Output output, Object message) throws IOException
         {
-            final int len = Array.getLength(array);
+        	final Object[] array = (Object[])message;
+            final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
 
             int nullCount = 0;
             for (int i = 0; i < len; i++)
             {
-                Object v = Array.get(array, i);
+                Object v = array[i];
                 if (v != null)
                 {
                     if (nullCount != 0)
