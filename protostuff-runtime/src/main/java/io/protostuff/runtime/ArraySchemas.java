@@ -1997,7 +1997,7 @@ public final class ArraySchemas
         @Override
         public void writeTo(Output output, Object message) throws IOException
         {
-        	final Object[] array = (Object[])message;
+            final Object[] array = (Object[])message;
             final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
@@ -2121,7 +2121,7 @@ public final class ArraySchemas
         @Override
         public void writeTo(Output output, Object message) throws IOException
         {
-        	final Enum<?>[] array = (Enum<?>[])message;
+            final Enum<?>[] array = (Enum<?>[])message;
             final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
@@ -2227,7 +2227,7 @@ public final class ArraySchemas
                 switch (input.readFieldNumber(this))
                 {
                     case ID_ARRAY_DATA:
-                    	array[i++] = input.mergeObject(null, hs.getSchema());
+                        array[i++] = input.mergeObject(null, hs.getSchema());
                         break;
                     case ID_ARRAY_NULLCOUNT:
                         i += input.readUInt32();
@@ -2246,7 +2246,7 @@ public final class ArraySchemas
         @Override
         public void writeTo(Output output, Object message) throws IOException
         {
-        	final Object[] array = (Object[])message;
+            final Object[] array = (Object[])message;
             final int len = array.length;
 
             output.writeInt32(ID_ARRAY_LEN, len, false);
