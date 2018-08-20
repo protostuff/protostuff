@@ -11,7 +11,8 @@ public class LinkBufferTest
 {
 
     @Test
-    public void testWriteLargeVar32() throws Exception {
+    public void testWriteLargeVar32() throws Exception
+    {
         LinkBuffer b = new LinkBuffer(8);
         b.writeVarInt32(Integer.MAX_VALUE);
         assertEquals(1, b.getBuffers().size());
