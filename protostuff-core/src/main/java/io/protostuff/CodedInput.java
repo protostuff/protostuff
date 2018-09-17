@@ -728,7 +728,7 @@ public final class CodedInput implements Input
     /**
      * See setSizeLimit()
      */
-    private int sizeLimit = DEFAULT_SIZE_LIMIT;
+    private long sizeLimit = DEFAULT_SIZE_LIMIT;
 
     // static final int DEFAULT_RECURSION_LIMIT = 64;
     static final int DEFAULT_SIZE_LIMIT = 64 << 20; // 64MB
@@ -789,20 +789,20 @@ public final class CodedInput implements Input
      *
      * @return the old limit.
      */
-    public int setSizeLimit(final int limit)
+    public long setSizeLimit(final long limit)
     {
         if (limit < 0)
         {
             throw new IllegalArgumentException(
                     "Size limit cannot be negative: " + limit);
         }
-        final int oldLimit = sizeLimit;
+        final long oldLimit = sizeLimit;
         sizeLimit = limit;
         return oldLimit;
     }
 
     /**
-     * Resets the current size counter to zero (see {@link #setSizeLimit(int)}). The field {@code totalBytesRetired}
+     * Resets the current size counter to zero (see {@link #setSizeLimit(long)}). The field {@code totalBytesRetired}
      * will be negative if the initial position was not zero.
      */
     public void resetSizeCounter()
