@@ -31,9 +31,6 @@ import java.io.OutputStream;
  */
 public class ProtostuffNullArrayElementInObjectArrayTest extends NullArrayElementInObjectArrayTest
 {
-    {
-        System.setProperty("protostuff.runtime.allow_null_array_element", "true");
-    }
 
     @Override
     protected <T> void mergeFrom(byte[] data, int offset, int length,

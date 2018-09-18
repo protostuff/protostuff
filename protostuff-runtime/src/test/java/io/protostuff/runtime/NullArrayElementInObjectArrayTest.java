@@ -36,10 +36,6 @@ import static org.junit.Assert.assertArrayEquals;
 public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
 {
 
-    {
-        System.setProperty("protostuff.runtime.allow_null_array_element", "true");
-    }
-
     /**
      * Serializes the {@code message} into a byte array.
      */
