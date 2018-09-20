@@ -875,7 +875,7 @@ public abstract class ObjectSchema extends PolymorphicSchema
 
             strategy.writeArrayIdTo(output, componentType);
             // write the length of the array
-            output.writeUInt32(ID_ARRAY_LEN, Array.getLength(value), false);
+            output.writeUInt32(ID_ARRAY_LEN, ((Object[])value).length, false);
             // write the dimensions of the array
             output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
 
@@ -1320,18 +1320,18 @@ public abstract class ObjectSchema extends PolymorphicSchema
      */
     static final class ArrayWrapper implements Collection<Object>
     {
-        final Object array;
+        final Object[] array;
         int offset = 0;
 
         ArrayWrapper(Object array)
         {
-            this.array = array;
+            this.array = (Object[])array;
         }
 
         @Override
         public boolean add(Object value)
         {
-            Array.set(array, offset++, value);
+            array[offset++] = value;
             return true;
         }
 

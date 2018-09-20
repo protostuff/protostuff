@@ -558,9 +558,10 @@ public abstract class IdStrategy
             @Override
             public void writeTo(Output output, Object message) throws IOException
             {
-                for (int i = 0, len = Array.getLength(message); i < len; i++)
+                final Object[] array = (Object[])message;
+                for (int i = 0, len = array.length; i < len; i++)
                 {
-                    final Object value = Array.get(message, i);
+                    final Object value = array[i];
                     if (value != null)
                     {
                         output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
