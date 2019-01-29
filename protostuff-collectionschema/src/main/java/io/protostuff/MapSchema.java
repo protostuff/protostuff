@@ -218,7 +218,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
      * This is used by {@link MessageFactories#accept(String)} method. Rather than iterating enums in runtime
      * which can be an expensive way to do, caching all the enums as static property will be a good way.
      */
-    static Set<String> MESSAGE_FACTORIES_NAMES;
+    static final Set<String> MESSAGE_FACTORIES_NAMES;
 
     static
     {
