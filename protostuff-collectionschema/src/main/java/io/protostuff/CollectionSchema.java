@@ -308,6 +308,22 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
         {
             return MessageFactories.valueOf(name);
         }
+
+        /**
+         * Check whether the specific class name can be accepted by factory.
+         */
+        public static boolean accept(String name)
+        {
+            try
+            {
+                getFactory(name);
+                return true;
+            }
+            catch (IllegalArgumentException e)
+            {
+                return false;
+            }
+        }
     }
 
     /**

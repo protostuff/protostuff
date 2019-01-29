@@ -202,6 +202,22 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         {
             return MessageFactories.valueOf(name);
         }
+
+        /**
+         * Check whether the specific class name can be accepted by factory.
+         */
+        public static boolean accept(String name)
+        {
+            try
+            {
+                getFactory(name);
+                return true;
+            }
+            catch (IllegalArgumentException e)
+            {
+                return false;
+            }
+        }
     }
 
     /**

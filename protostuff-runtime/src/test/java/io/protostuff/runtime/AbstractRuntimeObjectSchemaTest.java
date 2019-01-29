@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,9 +30,12 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -44,6 +48,7 @@ import io.protostuff.Message;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
+import io.protostuff.WireFormat;
 import io.protostuff.runtime.SampleDelegates.ShortArrayDelegate;
 import io.protostuff.runtime.SampleDelegates.Singleton;
 
@@ -4022,6 +4027,398 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             assertTrue(delegate.reads != 0);
             assertTrue(delegate.transfers != 0);
         }
+    }
+
+    static class PojoWithHashMapInnerKeySetAsDelegate
+    {
+
+        private List<Set<String>> list;
+
+        private Map<String, Set<String>> map;
+
+        private Set<String> set;
+
+        PojoWithHashMapInnerKeySetAsDelegate fill()
+        {
+            Map<String, String> map1 = newMap();
+            map1.put("hello", "world");
+            map1.put("oh", "hi");
+
+            Map<String, String> map2 = newMap();
+            map2.put("abc", "123");
+            map2.put("good", "cool");
+
+            Map<String, String> map3 = newMap();
+            map3.put("yummy", "cake");
+
+            list = newList(map1.keySet());
+
+            set = map2.keySet();
+
+            map = newMap();
+            map.put("key", map3.keySet());
+
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PojoWithHashMapInnerKeySetAsDelegate that = (PojoWithHashMapInnerKeySetAsDelegate) o;
+
+            if (list != null ? !list.equals(that.list) : that.list != null) return false;
+            if (map != null ? !map.equals(that.map) : that.map != null) return false;
+            return set != null ? set.equals(that.set) : that.set == null;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = list != null ? list.hashCode() : 0;
+            result = 31 * result + (map != null ? map.hashCode() : 0);
+            result = 31 * result + (set != null ? set.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString()
+        {
+            final StringBuilder sb = new StringBuilder("PojoWithHashMapInnerKeySetAsDelegate{");
+            sb.append("list=").append(list);
+            sb.append(", map=").append(map);
+            sb.append(", set=").append(set);
+            sb.append('}');
+            return sb.toString();
+        }
+    }
+
+    public void testPojoWithHashMapInnerKeySetAsDelegate() throws Exception
+    {
+        HashMapInnerKeySetDelegate delegate = null;
+        if (RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
+        {
+            if (!((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
+                .registerDelegate("java.util.HashMap$KeySet", delegate = new HashMapInnerKeySetDelegate(new CollectionSchemaForString())))
+            {
+                // couldn't register
+                delegate = null;
+            }
+        }
+
+        Schema<PojoWithHashMapInnerKeySetAsDelegate> schema = RuntimeSchema
+            .getSchema(PojoWithHashMapInnerKeySetAsDelegate.class);
+        Pipe.Schema<PojoWithHashMapInnerKeySetAsDelegate> pipeSchema = ((RuntimeSchema<PojoWithHashMapInnerKeySetAsDelegate>) schema)
+            .getPipeSchema();
+
+        PojoWithHashMapInnerKeySetAsDelegate p = new PojoWithHashMapInnerKeySetAsDelegate().fill();
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithHashMapInnerKeySetAsDelegate pFromByteArray = new PojoWithHashMapInnerKeySetAsDelegate();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithHashMapInnerKeySetAsDelegate pFromStream = new PojoWithHashMapInnerKeySetAsDelegate();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+
+    public class HashMapInnerKeySetDelegate<T> implements Delegate<AbstractCollection<T>>
+    {
+
+        private CollectionSchema<T> schema;
+
+        public HashMapInnerKeySetDelegate(CollectionSchema<T> schema)
+        {
+            this.schema = schema;
+        }
+
+        @Override
+        public WireFormat.FieldType getFieldType()
+        {
+            return WireFormat.FieldType.MESSAGE;
+        }
+
+        @Override
+        public AbstractCollection<T> readFrom(Input input) throws IOException
+        {
+            ArrayList<T> list = new ArrayList<T>();
+            input.mergeObject(list, schema);
+            HashMap<T, Object> map = new HashMap<T, Object>();
+            for (T t : list) {
+                map.put(t, null);
+            }
+            return (AbstractCollection<T>) map.keySet();
+        }
+
+        @Override
+        public void writeTo(Output output, int number, AbstractCollection<T> value, boolean repeated) throws IOException
+        {
+            output.writeObject(number, value, schema, repeated);
+        }
+
+        @Override
+        public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
+        {
+            writeTo(output, number, readFrom(input), repeated);
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return AbstractCollection.class;
+        }
+    }
+
+    public final class CollectionSchemaForString extends CollectionSchema<String> {
+
+        @Override
+        protected void addValueFrom(Input input, Collection<String> collection) throws IOException
+        {
+            collection.add(input.readString());
+        }
+
+        @Override
+        protected void writeValueTo(Output output, int fieldNumber, String value, boolean repeated) throws IOException
+        {
+            output.writeString(fieldNumber, value, repeated);
+        }
+
+        @Override
+        protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static class PojoWithImmutableListAsDelegate
+    {
+        private ImmutableList list;
+
+        PojoWithImmutableListAsDelegate fill()
+        {
+            List<Baz> bazList = newList(
+                new Baz(567, "baz", 202020202),
+                new Baz(999, "buzz", 10101010)
+            );
+            list = new ImmutableList(bazList);
+
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PojoWithImmutableListAsDelegate that = (PojoWithImmutableListAsDelegate) o;
+
+            return list != null ? list.equals(that.list) : that.list == null;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return list != null ? list.hashCode() : 0;
+        }
+
+        @Override
+        public String toString()
+        {
+            final StringBuilder sb = new StringBuilder("PojoWithImmutableListAsDelegate{");
+            sb.append("list=").append(list);
+            sb.append('}');
+            return sb.toString();
+        }
+    }
+
+    static class ImmutableList<E> extends AbstractCollection<E> implements List<E> {
+
+        List<E> list;
+
+        ImmutableList(List<E> list)
+        {
+            this.list = list;
+        }
+
+        public boolean equals(Object o) {return o == this || list.equals(o);}
+        public int hashCode()           {return list.hashCode();}
+        public E get(int index) { return list.get(index);}
+        public E set(int index, E element) { throw new UnsupportedOperationException(); }
+        public void add(int index, E element) { throw new UnsupportedOperationException(); }
+        public E remove(int index) { throw new UnsupportedOperationException(); }
+        public int indexOf(Object o) { return list.indexOf(o);}
+        public int lastIndexOf(Object o) { return list.lastIndexOf(o);}
+        public boolean addAll(int index, Collection<? extends E> c) { throw new UnsupportedOperationException(); }
+
+        public ListIterator<E> listIterator()
+        {
+            return listIterator(0);
+        }
+
+        public ListIterator<E> listIterator(final int index)
+        {
+            return new ListIterator<E>() {
+                private final ListIterator<? extends E> i = list.listIterator(index);
+
+                public boolean hasNext()     {return i.hasNext();}
+                public E next()              {return i.next();}
+                public boolean hasPrevious() {return i.hasPrevious();}
+                public E previous()          {return i.previous();}
+                public int nextIndex()       {return i.nextIndex();}
+                public int previousIndex()   {return i.previousIndex();}
+
+                public void remove()
+                {
+                    throw new UnsupportedOperationException();
+                }
+                public void set(E e)
+                {
+                    throw new UnsupportedOperationException();
+                }
+                public void add(E e) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+
+        public List<E> subList(int fromIndex, int toIndex)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public Iterator<E> iterator()
+        {
+            return new Iterator<E>()
+            {
+                private final Iterator<? extends E> i = list.iterator();
+                public boolean hasNext() {return i.hasNext();}
+                public E next()          {return i.next();}
+                public void remove()
+                {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+
+        @Override
+        public int size()
+        {
+            return list.size();
+        }
+    }
+
+    public void testPojoWithImmutableListAsDelegate() throws Exception
+    {
+        ImmutableListAsDelegate delegate = null;
+        if (RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
+        {
+            if (!((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
+                .registerDelegate(ImmutableList.class.getName(), delegate = new ImmutableListAsDelegate(new CollectionSchemaForBaz())))
+            {
+                // couldn't register
+                delegate = null;
+            }
+        }
+
+        Schema<PojoWithImmutableListAsDelegate> schema = RuntimeSchema
+            .getSchema(PojoWithImmutableListAsDelegate.class);
+        Pipe.Schema<PojoWithImmutableListAsDelegate> pipeSchema = ((RuntimeSchema<PojoWithImmutableListAsDelegate>) schema)
+            .getPipeSchema();
+
+        PojoWithImmutableListAsDelegate p = new PojoWithImmutableListAsDelegate().fill();
+
+        byte[] data = toByteArray(p, schema);
+
+        PojoWithImmutableListAsDelegate pFromByteArray = new PojoWithImmutableListAsDelegate();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        PojoWithImmutableListAsDelegate pFromStream = new PojoWithImmutableListAsDelegate();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromStream);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+
+    public class ImmutableListAsDelegate<T> implements Delegate<AbstractCollection<T>>
+    {
+
+        private CollectionSchema<T> schema;
+
+        public ImmutableListAsDelegate(CollectionSchema<T> schema)
+        {
+            this.schema = schema;
+        }
+
+        @Override
+        public WireFormat.FieldType getFieldType()
+        {
+            return WireFormat.FieldType.MESSAGE;
+        }
+
+        @Override
+        public AbstractCollection<T> readFrom(Input input) throws IOException
+        {
+            ArrayList<T> list = new ArrayList<T>();
+            input.mergeObject(list, schema);
+            return new ImmutableList<T>(list);
+        }
+
+        @Override
+        public void writeTo(Output output, int number, AbstractCollection<T> value, boolean repeated) throws IOException
+        {
+            output.writeObject(number, value, schema, repeated);
+        }
+
+        @Override
+        public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
+        {
+            writeTo(output, number, readFrom(input), repeated);
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return AbstractCollection.class;
+        }
+    }
+
+
+    public final class CollectionSchemaForBaz extends CollectionSchema<Baz>
+    {
+
+        private RuntimeSchema<Baz> schema = RuntimeSchema.createFrom(Baz.class);
+
+        @Override
+        protected void addValueFrom(Input input, Collection<Baz> collection) throws IOException
+        {
+            Baz baz = schema.newMessage();
+            input.mergeObject(baz, schema);
+            collection.add(baz);
+        }
+
+        @Override
+        protected void writeValueTo(Output output, int fieldNumber, Baz value, boolean repeated) throws IOException
+        {
+            output.writeObject(fieldNumber, value, schema, repeated);
+        }
+
+        @Override
+        protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated)
+            throws IOException
+        {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
 }
