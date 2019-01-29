@@ -17,6 +17,8 @@ package io.protostuff;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
@@ -307,6 +309,30 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
         public static MessageFactories getFactory(String name)
         {
             return MessageFactories.valueOf(name);
+        }
+
+        /**
+         * Check whether the specific class name can be accepted by factory.
+         */
+        public static boolean accept(String name)
+        {
+            return MESSAGE_FACTORIES_NAMES.contains(name);
+        }
+    }
+
+    /**
+     * This is used by {@link MessageFactories#accept(String)} method. Rather than iterating enums in runtime
+     * which can be an expensive way to do, caching all the enums as static property will be a good way.
+     */
+    static final Set<String> MESSAGE_FACTORIES_NAMES;
+
+    static
+    {
+        MessageFactories[] messageFactories = MessageFactories.values();
+        MESSAGE_FACTORIES_NAMES = new HashSet<String>(messageFactories.length);
+        for (MessageFactories messageFactory : messageFactories)
+        {
+            MESSAGE_FACTORIES_NAMES.add(messageFactory.name());
         }
     }
 

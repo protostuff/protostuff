@@ -101,8 +101,15 @@ public final class DefaultIdStrategy extends IdStrategy
      */
     public <T> boolean registerDelegate(Delegate<T> delegate)
     {
-        return null == delegateMapping.putIfAbsent(delegate.typeClass()
-                .getName(), new HasDelegate<T>(delegate, this));
+        return registerDelegate(delegate.typeClass().getName(), delegate);
+    }
+
+    /**
+     * Registers a delegate by specifying the class name. Returns true if registration is successful.
+     */
+    public <T> boolean registerDelegate(String className, Delegate<T> delegate)
+    {
+        return null == delegateMapping.putIfAbsent(className, new HasDelegate<T>(delegate, this));
     }
 
     /**
@@ -258,7 +265,7 @@ public final class DefaultIdStrategy extends IdStrategy
                 .get(className);
         if (factory == null)
         {
-            if (className.startsWith("java.util"))
+            if (className.startsWith("java.util") && CollectionSchema.MessageFactories.accept(clazz.getSimpleName()))
             {
                 factory = CollectionSchema.MessageFactories.valueOf(clazz
                         .getSimpleName());
@@ -283,7 +290,7 @@ public final class DefaultIdStrategy extends IdStrategy
         MapSchema.MessageFactory factory = mapMapping.get(className);
         if (factory == null)
         {
-            if (className.startsWith("java.util"))
+            if (className.startsWith("java.util") && MapSchema.MessageFactories.accept(clazz.getSimpleName()))
             {
                 factory = MapSchema.MessageFactories.valueOf(clazz
                         .getSimpleName());
@@ -307,7 +314,8 @@ public final class DefaultIdStrategy extends IdStrategy
     {
         final CollectionSchema.MessageFactory factory = collectionMapping
                 .get(clazz);
-        if (factory == null && clazz.getName().startsWith("java.util"))
+        if (factory == null && clazz.getName().startsWith("java.util")
+            && CollectionSchema.MessageFactories.accept(clazz.getSimpleName()))
         {
             // jdk collection
             // better not to register the jdk collection if using this strategy
@@ -336,7 +344,7 @@ public final class DefaultIdStrategy extends IdStrategy
                 .get(className);
         if (factory == null)
         {
-            if (className.indexOf('.') == -1)
+            if (className.indexOf('.') == -1 && CollectionSchema.MessageFactories.accept(className))
             {
                 factory = CollectionSchema.MessageFactories.valueOf(className);
             }
@@ -359,7 +367,8 @@ public final class DefaultIdStrategy extends IdStrategy
             throws IOException
     {
         final MapSchema.MessageFactory factory = mapMapping.get(clazz);
-        if (factory == null && clazz.getName().startsWith("java.util"))
+        if (factory == null && clazz.getName().startsWith("java.util")
+            && MapSchema.MessageFactories.accept(clazz.getSimpleName()))
         {
             // jdk map
             // better not to register the jdk map if using this strategy
@@ -387,7 +396,7 @@ public final class DefaultIdStrategy extends IdStrategy
         MapSchema.MessageFactory factory = mapMapping.get(className);
         if (factory == null)
         {
-            if (className.indexOf('.') == -1)
+            if (className.indexOf('.') == -1 && MapSchema.MessageFactories.accept(className))
             {
                 factory = MapSchema.MessageFactories.valueOf(className);
             }
