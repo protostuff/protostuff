@@ -16,9 +16,11 @@ package io.protostuff;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * A schema for a {@link Map}. The key and value can be null (depending on the particular map impl).
@@ -208,15 +210,22 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
          */
         public static boolean accept(String name)
         {
-            try
-            {
-                getFactory(name);
-                return true;
-            }
-            catch (IllegalArgumentException e)
-            {
-                return false;
-            }
+            return MESSAGE_FACTORIES_NAMES.contains(name);
+        }
+    }
+
+    /**
+     * This is used by {@link MessageFactories#accept(String)} method. Rather than iterating enums in runtime
+     * which can be an expensive way to do, caching all the enums as static property will be a good way.
+     */
+    static Set<String> MESSAGE_FACTORIES_NAMES;
+
+    static
+    {
+        MessageFactories[] messageFactories = MapSchema.MessageFactories.values();
+        MESSAGE_FACTORIES_NAMES = new HashSet<String>(messageFactories.length);
+        for (MessageFactories messageFactory : messageFactories) {
+            MESSAGE_FACTORIES_NAMES.add(messageFactory.name());
         }
     }
 
