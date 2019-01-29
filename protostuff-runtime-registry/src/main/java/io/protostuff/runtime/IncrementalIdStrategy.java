@@ -510,7 +510,8 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 rfactory = f;
             else
             {
-                if (clazz.getName().startsWith("java.util"))
+                if (clazz.getName().startsWith("java.util")
+                    && CollectionSchema.MessageFactories.accept(clazz.getSimpleName()))
                 {
                     rfactory.factory = CollectionSchema.MessageFactories.valueOf(
                             clazz.getSimpleName());
@@ -550,7 +551,8 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 rfactory = f;
             else
             {
-                if (clazz.getName().startsWith("java.util"))
+                if (clazz.getName().startsWith("java.util")
+                    && MapSchema.MessageFactories.accept(clazz.getSimpleName()))
                 {
                     rfactory.factory = MapSchema.MessageFactories.valueOf(
                             clazz.getSimpleName());
