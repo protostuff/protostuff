@@ -330,7 +330,8 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     {
         MessageFactories[] messageFactories = MessageFactories.values();
         MESSAGE_FACTORIES_NAMES = new HashSet<String>(messageFactories.length);
-        for (MessageFactories messageFactory : messageFactories) {
+        for (MessageFactories messageFactory : messageFactories)
+        {
             MESSAGE_FACTORIES_NAMES.add(messageFactory.name());
         }
     }

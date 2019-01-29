@@ -224,7 +224,8 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     {
         MessageFactories[] messageFactories = MapSchema.MessageFactories.values();
         MESSAGE_FACTORIES_NAMES = new HashSet<String>(messageFactories.length);
-        for (MessageFactories messageFactory : messageFactories) {
+        for (MessageFactories messageFactory : messageFactories)
+        {
             MESSAGE_FACTORIES_NAMES.add(messageFactory.name());
         }
     }
