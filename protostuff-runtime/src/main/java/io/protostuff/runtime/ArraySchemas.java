@@ -37,6 +37,7 @@ import java.util.Date;
 import io.protostuff.ByteString;
 import io.protostuff.GraphInput;
 import io.protostuff.Input;
+import io.protostuff.MapSchema.MapWrapper;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.ProtostuffException;
@@ -315,10 +316,16 @@ public final class ArraySchemas
             return Array.class.getSimpleName();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void setValue(Object value, Object owner)
         {
-            handler.setValue(value, owner);
+            if (handler != null)
+                handler.setValue(value, owner);
+            else// if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            //else
+            //    ((Collection<Object>)owner).add(value);
         }
 
         @Override

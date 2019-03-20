@@ -16,18 +16,22 @@ package io.protostuff.runtime;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
-
-import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtostuffIOUtil;
-import io.protostuff.Schema;
 
 /**
  * Tests for abstract generic collection types.
@@ -552,4 +556,114 @@ public class CollectionTest
         assertTrue(schema.getFields().get(3) instanceof RuntimeDerivativeField);
     }
 
+    public static class AA
+    {
+        public Map<String, BB[]> map;
+        public Map<BB[], String> map2;
+        public List<BB[]> list;
+    }
+
+    public static class BB
+    {
+        public long bb1;
+        public long bb2;
+
+        public BB() {}
+
+        public BB(long bb1, long bb2)
+        {
+            this.bb1 = bb1;
+            this.bb2 = bb2;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int)(bb1 ^ (bb1 >>> 32));
+            result = prime * result + (int)(bb2 ^ (bb2 >>> 32));
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            BB other = (BB)obj;
+            if (bb1 != other.bb1)
+                return false;
+            if (bb2 != other.bb2)
+                return false;
+            return true;
+        }
+    }
+
+    static void assertArrayEquals(BB[] bb1, BB[] bb2)
+    {
+        assertEquals(bb1.length, bb2.length);
+        for (int i = 0; i < bb1.length; i++)
+            assertEquals(bb1[i], bb2[i]);
+    }
+
+    public void testAA() throws IOException
+    {
+        AA aa = new AA();
+        aa.map = new HashMap<String, BB[]>();
+        aa.map.put("o1", new BB[]{ new BB(1, 2), new BB(3, 4), new BB(5, 6) });
+        aa.map.put("o2", new BB[]{ new BB(10, 11) });
+
+        aa.map2 = new HashMap<BB[], String>();
+        aa.map2.put(new BB[]{ new BB(1, 2), new BB(3, 4), new BB(5, 6) }, "o1");
+
+        aa.list = new ArrayList<BB[]>();
+        aa.list.add(new BB[]{ new BB(1, 2), new BB(3, 4), new BB(5, 6) });
+
+        LinkedBuffer buffer = LinkedBuffer.allocate(4096);
+        Schema<AA> schema = RuntimeSchema.getSchema(AA.class);
+        byte[] protostuff = null;
+        try
+        {
+            protostuff = ProtostuffIOUtil.toByteArray(aa, schema, buffer);
+        }
+        finally
+        {
+            buffer.clear();
+        }
+
+        AA result = schema.newMessage();
+        ProtostuffIOUtil.mergeFrom(protostuff, result, schema);
+
+        assertEquals(aa.map.size(), result.map.size());
+        assertEquals(aa.map.get("o1").length, result.map.get("o1").length);
+        assertEquals(aa.map.get("o2").length, result.map.get("o2").length);
+        Iterator<Map.Entry<String, BB[]>> it1 = aa.map.entrySet().iterator();
+        Iterator<Map.Entry<String, BB[]>> it2 = result.map.entrySet().iterator();
+        for (int i = 0, len = aa.map.size(); i < len; i++)
+        {
+            Map.Entry<String, BB[]> e1 = it1.next(), e2 = it2.next();
+            assertEquals(e1.getKey(), e2.getKey());
+            assertArrayEquals(e1.getValue(), e2.getValue());
+        }
+
+        assertEquals(aa.map2.size(), result.map2.size());
+        Iterator<Map.Entry<BB[], String>> it21 = aa.map2.entrySet().iterator();
+        Iterator<Map.Entry<BB[], String>> it22 = result.map2.entrySet().iterator();
+        for (int i = 0, len = aa.map2.size(); i < len; i++)
+        {
+            Map.Entry<BB[], String> e1 = it21.next(), e2 = it22.next();
+            assertArrayEquals(e1.getKey(), e2.getKey());
+            assertEquals(e1.getValue(), e2.getValue());
+        }
+
+        assertEquals(aa.list.size(), result.list.size());
+        for (int i = 0, len = aa.list.size(); i < len; i++)
+            assertArrayEquals(aa.list.get(i), result.list.get(i));
+    }
+    
 }
