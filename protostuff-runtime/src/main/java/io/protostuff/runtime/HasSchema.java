@@ -60,7 +60,7 @@ public abstract class HasSchema<T> implements PolymorphicSchema.Factory
         this.strategy = strategy;
         
         genericElementSchema = new ArraySchemas.PojoArray(strategy, 
-                null, (HasSchema<Object>) this);
+                ArraySchemas.GENERIC_HANDLER, (HasSchema<Object>) this);
     }
 
     @Override

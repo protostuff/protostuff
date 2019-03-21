@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 
 import io.protostuff.ByteString;
@@ -68,7 +69,20 @@ public final class ArraySchemas
     static final String STR_ARRAY_LEN = "a",
             STR_ARRAY_DATA = "b",
             STR_ARRAY_NULLCOUNT = "c";
-
+    
+    static final Handler GENERIC_HANDLER = new Handler()
+    {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void setValue(Object value, Object owner)
+        {
+            if (MapWrapper.class == owner.getClass())
+                ((MapWrapper<Object, Object>)owner).setValue(value);
+            else
+                ((Collection<Object>)owner).add(value);
+        }
+    };
+    
     static boolean isPrimitive(int arrayId)
     {
         return arrayId < 8;
@@ -315,17 +329,11 @@ public final class ArraySchemas
         {
             return Array.class.getSimpleName();
         }
-
-        @SuppressWarnings("unchecked")
+        
         @Override
         protected void setValue(Object value, Object owner)
         {
-            if (handler != null)
-                handler.setValue(value, owner);
-            else// if (MapWrapper.class == owner.getClass())
-                ((MapWrapper<Object, Object>)owner).setValue(value);
-            //else
-            //    ((Collection<Object>)owner).add(value);
+            handler.setValue(value, owner);
         }
 
         @Override
