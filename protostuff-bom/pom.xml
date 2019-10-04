@@ -4,12 +4,12 @@
   <parent>
     <artifactId>protostuff</artifactId>
     <groupId>io.protostuff</groupId>
-    <version>1.6.1</version>
+    <version>1.6.2-SNAPSHOT</version>
   </parent>
 
   <groupId>io.protostuff</groupId>
   <artifactId>protostuff-bom</artifactId>
-  <version>1.6.1</version>
+  <version>1.6.2-SNAPSHOT</version>
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
 
@@ -100,77 +100,77 @@
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-api</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-collectionschema</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-compiler</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-core</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-json</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-kvp</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-maven-plugin</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-parser</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-md</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-registry</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-view</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-uberjar</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-xml</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
         <artifactId>protostuff-yaml</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
