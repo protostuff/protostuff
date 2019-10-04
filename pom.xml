@@ -10,7 +10,7 @@
   <description>
     Java serialization library, proto compiler, code generator
   </description>
-  <url>https://protostuff.github.io.io</url>
+  <url>https://protostuff.github.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <properties>
@@ -32,7 +32,6 @@
     <developer>
       <id>dyu</id>
       <name>David Yu</name>
-      <email>dyu@protostuff.io</email>
     </developer>
     <developer>
       <id>kshchepanovskyi</id>

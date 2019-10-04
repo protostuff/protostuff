@@ -16,9 +16,8 @@
   <name>protostuff :: bom</name>
   <description>
     Protostuff "Bill of Materials" Dependency
-    http://www.protostuff.io/maven-bom/
   </description>
-  <url>http://protostuff.io</url>
+  <url>https://protostuff.github.io</url>
   <inceptionYear>2009</inceptionYear>
 
   <developers>
@@ -26,7 +25,6 @@
       <id>dyu</id>
       <name>David Yu</name>
       <email>david.yu.ftw@gmail.com</email>
-      <url>http://davidyu.myopenid.com</url>
     </developer>
     <developer>
       <id>posix4e</id>
@@ -46,7 +44,6 @@
     <url>https://github.com/protostuff/protostuff</url>
     <connection>scm:git:https://github.com/protostuff/protostuff.git</connection>
     <developerConnection>scm:git:git@github.com:protostuff/protostuff.git</developerConnection>
-    <tag>protostuff-1.3.2</tag>
   </scm>
 
   <licenses>
