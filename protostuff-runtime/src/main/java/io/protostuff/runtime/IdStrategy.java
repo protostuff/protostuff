@@ -212,11 +212,6 @@ public abstract class IdStrategy
             {
                 final Object value = derivedSchema.newMessage();
 
-                if (MapWrapper.class == owner.getClass())
-                    ((MapWrapper<Object, Object>) owner).setValue(value);
-                else
-                    ((Collection<Object>) owner).add(value);
-
                 if (input instanceof GraphInput)
                 {
                     // update the actual reference.
@@ -224,6 +219,12 @@ public abstract class IdStrategy
                 }
 
                 derivedSchema.mergeFrom(input, value);
+                
+                // added after deser (for hashCode computation)
+                if (MapWrapper.class == owner.getClass())
+                    ((MapWrapper<Object, Object>) owner).setValue(value);
+                else
+                    ((Collection<Object>) owner).add(value);
             }
         };
 
