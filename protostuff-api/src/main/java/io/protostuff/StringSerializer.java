@@ -1152,24 +1152,21 @@ public final class StringSerializer
                 // In general, this *should* only be required for systems reading
                 // data stored using legacy protostuff. Moving forward, the data
                 // should be readable by new String("UTF-8"), so the scan is unnecessary.
-                if (CESU8_COMPAT)
+                if (CESU8_COMPAT && result.indexOf(0xfffd) != -1)
                 {
                     // If it contains the REPLACEMENT character, then there's a strong
                     // possibility of it containing 3-byte surrogates / 6-byte surrogate
                     // pairs, and we should try decoding using readUTF to handle it.
-                    if (result.indexOf(0xfffd) != -1)
+                    try
                     {
-                        try
-                        {
-                            return readUTF(nonNullValue, offset, len);
-                        }
-                        catch (UTFDataFormatException e)
-                        {
-                            // Unexpected, but most systems previously using
-                            // Protostuff don't expect error to occur from
-                            // String deserialization, so we use this just in case.
-                            return result;
-                        }
+                        return readUTF(nonNullValue, offset, len);
+                    }
+                    catch (UTFDataFormatException e)
+                    {
+                        // Unexpected, but most systems previously using
+                        // Protostuff don't expect error to occur from
+                        // String deserialization, so we use this just in case.
+                        return result;
                     }
                 }
             }
