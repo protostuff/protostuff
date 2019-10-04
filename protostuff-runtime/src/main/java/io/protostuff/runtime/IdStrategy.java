@@ -1598,7 +1598,8 @@ public abstract class IdStrategy
             return rs;
 
         final ArrayList<Field<T>> fields = new ArrayList<Field<T>>(rs.getFieldCount());
-
+        
+        int copyCount = 0;
         for (Field<T> f : rs.getFields())
         {
             final int groupFilter = f.groupFilter;
@@ -1622,6 +1623,9 @@ public abstract class IdStrategy
                     continue;
                 }
             }
+            
+            if (f != (f = f.copy(this)))
+                copyCount++;
 
             fields.add(f);
         }
@@ -1634,7 +1638,7 @@ public abstract class IdStrategy
                     + rs.messageFullName() + " on group " + groupId);
         }*/
 
-        return fields.size() == rs.getFieldCount() ? rs :
+        return copyCount == 0 && fields.size() == rs.getFieldCount() ? rs :
                 new RuntimeSchema<T>(typeClass, fields, rs.instantiator);
     }
 

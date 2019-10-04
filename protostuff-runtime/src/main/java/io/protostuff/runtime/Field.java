@@ -36,6 +36,14 @@ public abstract class Field<T>
     {
         this(type, number, name, false, tag);
     }
+    
+    /**
+     * No copy by default.
+     */
+    protected Field<T> copy(IdStrategy strategy)
+    {
+        return this;
+    }
 
     /**
      * Writes the value of a field to the {@code output}.

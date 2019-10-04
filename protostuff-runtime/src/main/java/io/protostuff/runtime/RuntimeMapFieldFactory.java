@@ -262,7 +262,7 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapInlineKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Delegate<Object> inlineK, final Class<Object> clazzV,
             IdStrategy strategy)
     {
@@ -360,12 +360,19 @@ final class RuntimeMapFieldFactory
                 output.writeObject(number, pipe, schemaV.getPipeSchema(),
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapInlineKPojoV(number, name, f, messageFactory, inlineK, 
+                        clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapInlineKPolymorphicV(int number,
             String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inlineK,
+            final MessageFactory messageFactory, final Delegate<Object> inlineK,
             final Class<Object> clazzV, final IdStrategy strategy)
     {
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
@@ -477,12 +484,19 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapInlineKPolymorphicV(number, name, f, messageFactory, 
+                        inlineK, clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapInlineKObjectV(int number,
             String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inlineK,
+            final MessageFactory messageFactory, final Delegate<Object> inlineK,
             final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
@@ -590,6 +604,13 @@ final class RuntimeMapFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, valuePipeSchema, repeated);
+            }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, 
+                        valueSchema, valuePipeSchema, strategy);
             }
         };
     }
@@ -794,7 +815,7 @@ final class RuntimeMapFieldFactory
     }
 
     private static <T> Field<T> createMapEnumKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Class<Object> clazzV,
             final IdStrategy strategy)
     {
@@ -893,12 +914,19 @@ final class RuntimeMapFieldFactory
                 output.writeObject(number, pipe, schemaV.getPipeSchema(),
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapEnumKPojoV(number, name, f, messageFactory, clazzK, 
+                        clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapEnumKPolymorphicV(int number,
             String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Class<Object> clazzK,
+            final MessageFactory messageFactory, final Class<Object> clazzK,
             final Class<Object> clazzV, final IdStrategy strategy)
     {
         final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
@@ -1012,11 +1040,18 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapEnumKPolymorphicV(number, name, f, messageFactory, 
+                        clazzK, clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapEnumKObjectV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
@@ -1127,11 +1162,18 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, valuePipeSchema, repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapEnumKObjectV(number, name, f, messageFactory, clazzK, 
+                        valueSchema, valuePipeSchema, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapPojoKEnumV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Class<Object> clazzV,
             final IdStrategy strategy)
     {
@@ -1230,11 +1272,18 @@ final class RuntimeMapFieldFactory
             {
                 EnumIO.transfer(pipe, input, output, number, repeated, strategy);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapPojoKEnumV(number, name, f, messageFactory, clazzK, 
+                        clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapPojoKInlineV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Delegate<Object> inlineV,
             IdStrategy strategy)
     {
@@ -1332,11 +1381,18 @@ final class RuntimeMapFieldFactory
             {
                 inlineV.transfer(pipe, input, output, number, repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapPojoKInlineV(number, name, f, messageFactory, clazzK, 
+                        inlineV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapPojoKPojoV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Class<Object> clazzV,
             IdStrategy strategy)
     {
@@ -1438,12 +1494,19 @@ final class RuntimeMapFieldFactory
                 output.writeObject(number, pipe, schemaV.getPipeSchema(),
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapPojoKPojoV(number, name, f, messageFactory, clazzK, 
+                        clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapPojoKPolymorphicV(int number,
             String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Class<Object> clazzK,
+            final MessageFactory messageFactory, final Class<Object> clazzK,
             final Class<Object> clazzV, final IdStrategy strategy)
     {
         final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK,
@@ -1560,11 +1623,18 @@ final class RuntimeMapFieldFactory
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA.pipeSchema,
                         repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapPojoKPolymorphicV(number, name, f, messageFactory, 
+                        clazzK, clazzV, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapPojoKObjectV(int number, String name,
-            final java.lang.reflect.Field f, MessageFactory messageFactory,
+            final java.lang.reflect.Field f, final MessageFactory messageFactory,
             final Class<Object> clazzK, final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
@@ -1678,12 +1748,19 @@ final class RuntimeMapFieldFactory
             {
                 output.writeObject(number, pipe, valuePipeSchema, repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapPojoKObjectV(number, name, f, messageFactory, clazzK, 
+                        valueSchema, valuePipeSchema, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createMapObjectKObjectV(int number,
             String name, final java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Schema<Object> keySchema,
+            final MessageFactory messageFactory, final Schema<Object> keySchema,
             final Pipe.Schema<Object> keyPipeSchema,
             final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
@@ -1801,6 +1878,13 @@ final class RuntimeMapFieldFactory
                     int number, boolean repeated) throws IOException
             {
                 output.writeObject(number, pipe, valuePipeSchema, repeated);
+            }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createMapObjectKObjectV(number, name, f, messageFactory, 
+                        keySchema, keyPipeSchema, valueSchema, valuePipeSchema, strategy);
             }
         };
     }

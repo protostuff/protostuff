@@ -1054,6 +1054,12 @@ public final class RuntimeUnsafeFieldFactory
                 {
                     output.writeObject(number, pipe, getPipeSchema(), repeated);
                 }
+                
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return POJO.create(number, name, f, strategy);
+                }
             };
         }
 
@@ -1156,6 +1162,12 @@ public final class RuntimeUnsafeFieldFactory
 
                     us.putObject(message, offset, value);
                 }
+                
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return POLYMORPHIC_POJO.create(number, name, f, strategy);
+                }
             };
         }
 
@@ -1244,6 +1256,12 @@ public final class RuntimeUnsafeFieldFactory
                 public void setValue(Object value, Object message)
                 {
                     us.putObject(message, offset, value);
+                }
+                
+                @Override
+                protected Field<T> copy(IdStrategy strategy)
+                {
+                    return OBJECT.create(number, name, f, strategy);
                 }
             };
         }

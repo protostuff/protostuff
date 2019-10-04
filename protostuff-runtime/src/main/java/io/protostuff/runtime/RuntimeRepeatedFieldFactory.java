@@ -141,7 +141,7 @@ final class RuntimeRepeatedFieldFactory
     }
 
     private static <T> Field<T> createCollectionPojoV(int number, String name,
-            java.lang.reflect.Field f,
+            final java.lang.reflect.Field f,
             final MessageFactory messageFactory,
             final Class<Object> genericType, IdStrategy strategy)
     {
@@ -183,11 +183,18 @@ final class RuntimeRepeatedFieldFactory
             {
                 output.writeObject(number, pipe, getPipeSchema(), repeated);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionPojoV(number, name, f, messageFactory, 
+                        genericType, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
-            String name, java.lang.reflect.Field f,
+            String name, final java.lang.reflect.Field f,
             final MessageFactory messageFactory,
             final Class<Object> genericType, IdStrategy strategy)
     {
@@ -250,13 +257,20 @@ final class RuntimeRepeatedFieldFactory
                 
                 existing.add(value);
             }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionPolymorphicV(number, name, f, messageFactory, 
+                        genericType, strategy);
+            }
         };
     }
 
     private static <T> Field<T> createCollectionObjectV(int number,
-            String name, java.lang.reflect.Field f,
-            final MessageFactory messageFactory, Class<Object> genericType,
-            PolymorphicSchema.Factory factory, IdStrategy strategy)
+            String name, final java.lang.reflect.Field f,
+            final MessageFactory messageFactory, final Class<Object> genericType,
+            final PolymorphicSchema.Factory factory, IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeObjectField<T>(genericType, FieldType.MESSAGE,
@@ -309,6 +323,13 @@ final class RuntimeRepeatedFieldFactory
                     accessor.set(message, existing = messageFactory.newMessage());
                 
                 existing.add(value);
+            }
+            
+            @Override
+            protected Field<T> copy(IdStrategy strategy)
+            {
+                return createCollectionObjectV(number, name, f, messageFactory, 
+                        genericType, factory, strategy);
             }
         };
     }
