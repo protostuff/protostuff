@@ -63,7 +63,7 @@ static void roundTrip()
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-core</artifactId>
-    <version>1.5.9</version>
+    <version>1.6.1</version>
   </dependency>
   ```
 
@@ -73,7 +73,7 @@ static void roundTrip()
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-runtime</artifactId>
-    <version>1.5.9</version>
+    <version>1.6.1</version>
   </dependency>
   ```
 
