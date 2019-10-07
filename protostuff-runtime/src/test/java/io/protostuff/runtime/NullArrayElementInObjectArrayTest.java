@@ -102,7 +102,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { null, null, null },
                 new BigDecimal[] { null, null, null },
                 new BigInteger[] { null, null, null },
-                new Date[] { null, null, null }
+                new Date[] { null, null, null },
+                new Baz[] { null, null, null }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -141,7 +142,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { null, new byte[] { 'a' }, new byte[] { 'b' } },
                 new BigDecimal[] { null, new BigDecimal(1.1d), new BigDecimal(2.2d) },
                 new BigInteger[] { null, new BigInteger("1"), new BigInteger("2") },
-                new Date[] { null, new Date(), new Date() }
+                new Date[] { null, new Date(), new Date() },
+                new Baz[] { null, new Baz(0, "0", 0), new Baz(1, "1", 1) }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -180,7 +182,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { new byte[] { 'a' }, new byte[] { 'b' }, null },
                 new BigDecimal[] { new BigDecimal(1.1d), new BigDecimal(2.2d), null },
                 new BigInteger[] { new BigInteger("1"), new BigInteger("2"), null },
-                new Date[] { new Date(), new Date(), null }
+                new Date[] { new Date(), new Date(), null },
+                new Baz[] { new Baz(0, "0", 0), new Baz(1, "1", 1), null }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -219,7 +222,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { new byte[] { 'a' }, null, new byte[] { 'b' } },
                 new BigDecimal[] { new BigDecimal(1.1d), null, new BigDecimal(2.2d) },
                 new BigInteger[] { new BigInteger("1"), null, new BigInteger("2") },
-                new Date[] { new Date(), null, new Date() }
+                new Date[] { new Date(), null, new Date() },
+                new Baz[] { new Baz(0, "0", 0), null, new Baz(1, "1", 1) }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -258,7 +262,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { null, new byte[] { 'a' }, new byte[] { 'b' }, null },
                 new BigDecimal[] { null, new BigDecimal(1.1d), new BigDecimal(2.2d), null },
                 new BigInteger[] { null, new BigInteger("1"), new BigInteger("2"), null },
-                new Date[] { null, new Date(), new Date(), null }
+                new Date[] { null, new Date(), new Date(), null },
+                new Baz[] { null, new Baz(0, "0", 0), new Baz(1, "1", 1), null }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -297,7 +302,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
                 new byte[][] { null, new byte[] { 'a' }, null, new byte[] { 'b' }, null },
                 new BigDecimal[] { null, new BigDecimal(1.1d), null, new BigDecimal(2.2d), null },
                 new BigInteger[] { null, new BigInteger("1"), null, new BigInteger("2"), null },
-                new Date[] { null, new Date(), null, new Date(), null }
+                new Date[] { null, new Date(), null, new Date(), null },
+                new Baz[] { null, new Baz(0, "0", 0), null, new Baz(1, "1", 1), null }
         };
         PojoWithNonPrimitiveArrays p = new PojoWithNonPrimitiveArrays(objectArray);
 
@@ -320,8 +326,8 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
         assertNotNull(a2);
         assertNotNull(a1.objectArray);
         assertNotNull(a2.objectArray);
-        assertEquals(13, a1.objectArray.length);
-        assertEquals(13, a2.objectArray.length);
+        assertEquals(14, a1.objectArray.length);
+        assertEquals(14, a2.objectArray.length);
         assertArrayEquals((Boolean[]) a1.objectArray[0], (Boolean[]) a2.objectArray[0]);
         assertArrayEquals((Character[]) a1.objectArray[1], (Character[]) a2.objectArray[1]);
         assertArrayEquals((Short[]) a1.objectArray[2], (Short[]) a2.objectArray[2]);
@@ -335,5 +341,6 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
         assertArrayEquals((BigDecimal[]) a1.objectArray[10], (BigDecimal[]) a2.objectArray[10]);
         assertArrayEquals((BigInteger[]) a1.objectArray[11], (BigInteger[]) a2.objectArray[11]);
         assertArrayEquals((Date[]) a1.objectArray[12], (Date[]) a2.objectArray[12]);
+        assertArrayEquals((Baz[]) a1.objectArray[13], (Baz[]) a2.objectArray[13]);
     }
 }

@@ -267,6 +267,9 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         if (Enum.class == clazz)
             return ENUM;
         
+        if (Throwable.class.isAssignableFrom(clazz))
+            return THROWABLE;
+        
         if (Map.class.isAssignableFrom(clazz))
         {
             return 0 != (IdStrategy.POJO_SCHEMA_ON_MAP_FIELDS & strategy.flags) ? 
@@ -278,9 +281,6 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
             return 0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) ? 
                     POJO_COLLECTION : COLLECTION;
         }
-
-        if (Throwable.class.isAssignableFrom(clazz))
-            return THROWABLE;
 
         return OBJECT;
     }
@@ -300,12 +300,12 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         if (Enum.class == clazz)
             return ENUM;
 
-        if (Throwable.class.isAssignableFrom(clazz))
-            return THROWABLE;
-
         if (Object.class == clazz)
             return OBJECT;
 
+        if (Throwable.class.isAssignableFrom(clazz))
+            return THROWABLE;
+        
         return null;
     }
 
@@ -358,12 +358,12 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
         if (Enum.class == clazz)
             return strategy.POLYMORPHIC_ENUM_ELEMENT_SCHEMA;
 
-        if (Throwable.class.isAssignableFrom(clazz))
-            return strategy.POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA;
-
         if (Object.class == clazz)
             return strategy.OBJECT_ELEMENT_SCHEMA;
-
+        
+        if (Throwable.class.isAssignableFrom(clazz))
+            return strategy.POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA;
+        
         return null;
     }
 }

@@ -285,14 +285,18 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V>
         // super type, hence we can filter it here
         // Note that it has 10 built-in subtypes
         if (clazz.isArray() || Object.class == clazz || Number.class == clazz
-                || Class.class == clazz || Enum.class == clazz
-                || Throwable.class.isAssignableFrom(clazz))
+                || Class.class == clazz || Enum.class == clazz)
         {
             return OBJECT;
         }
         
+        // allow user to register a custom schema for throwable/map/collection
+        
         if (strategy.isRegistered(clazz))
             return clazz.isInterface() ? POJO : POLYMORPHIC_POJO;
+        
+        if (Throwable.class.isAssignableFrom(clazz))
+            return OBJECT;
         
         if (Map.class.isAssignableFrom(clazz))
             return RuntimeMapFieldFactory.MAP;
