@@ -39,7 +39,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.ByteString;
 import io.protostuff.CollectionSchema;
 import io.protostuff.Input;

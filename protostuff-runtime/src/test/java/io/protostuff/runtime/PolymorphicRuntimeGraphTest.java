@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.GraphTest;
 import io.protostuff.Schema;
 

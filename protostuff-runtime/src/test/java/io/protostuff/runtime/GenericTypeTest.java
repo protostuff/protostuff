@@ -35,15 +35,13 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import junit.framework.TestCase;
-
 /**
  * Test generic types.
  * 
  * @author David Yu
  * @created May 3, 2012
  */
-public class GenericTypeTest extends TestCase
+public class GenericTypeTest extends AbstractTest
 {
 
     static class PojoWithCollectionAndMapGenericTypes

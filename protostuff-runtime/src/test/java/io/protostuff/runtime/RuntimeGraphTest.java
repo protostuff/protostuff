@@ -18,7 +18,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.GraphTest;
 import io.protostuff.Schema;
 

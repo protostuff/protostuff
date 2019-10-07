@@ -14,7 +14,6 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.Tag;

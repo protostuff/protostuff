@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.ByteString;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;

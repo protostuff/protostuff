@@ -22,7 +22,6 @@ import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
 import java.util.LinkedHashSet;
 
-import junit.framework.TestCase;
 import io.protostuff.ComputedSizeOutput;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
@@ -35,7 +34,7 @@ import io.protostuff.runtime.Bar.Status;
  * @author David Yu
  * @created Nov 18, 2009
  */
-public class SerDeserTest extends TestCase
+public class SerDeserTest extends AbstractTest
 {
 
     static final int BUF_SIZE = 256;

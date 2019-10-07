@@ -14,7 +14,6 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.GraphIOUtil;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.Schema;

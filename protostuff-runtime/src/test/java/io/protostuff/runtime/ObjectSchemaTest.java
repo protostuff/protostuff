@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
 import io.protostuff.GraphIOUtil;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.Schema;
@@ -50,7 +49,7 @@ import io.protostuff.Schema;
  * @created Oct 20, 2011
  */
 
-public class ObjectSchemaTest extends TestCase
+public class ObjectSchemaTest extends AbstractTest
 {
 
     public void testGraph()

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 

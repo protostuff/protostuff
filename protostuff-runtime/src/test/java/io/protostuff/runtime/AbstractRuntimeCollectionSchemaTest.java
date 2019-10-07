@@ -14,7 +14,6 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.AbstractTest;
 import io.protostuff.CollectionSchema;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
