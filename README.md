@@ -132,7 +132,6 @@ static void roundTrip()
     assertArrayEquals(wrap.strArray, parsed.strArray);
     assertArrayEquals(wrap.fooArray, parsed.fooArray);
     assertNotNull(parsed.objArray);
-    assertEquals(wrap.objArray.length, parsed.objArray.length);
     assertArrayEquals((Foo[])wrap.objArray[0], (Foo[])parsed.objArray[0]);
 }
 
