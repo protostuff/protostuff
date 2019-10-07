@@ -53,6 +53,11 @@ public final class DefaultIdStrategy extends IdStrategy
         super(DEFAULT_FLAGS, primaryGroup, groupId);
     }
     
+    public DefaultIdStrategy(int flags)
+    {
+        super(flags, null, 0);
+    }
+    
     public DefaultIdStrategy(int flags, IdStrategy primaryGroup, int groupId)
     {
         super(flags, primaryGroup, groupId);
