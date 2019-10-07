@@ -101,6 +101,7 @@ import static io.protostuff.runtime.RuntimeFieldFactory.STR_THROWABLE;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -731,7 +732,53 @@ public abstract class ObjectSchema extends PolymorphicSchema
             inline.writeTo(output, inline.id, value, false);
             return;
         }
+        
+        if (clazz.isArray())
+        {
+            writeArrayTo(output, value, currentSchema, strategy, clazz);
+            return;
+        }
+        
+        Class<?> c = clazz;
+        if (clazz.isEnum() || (null != (c = clazz.getSuperclass()) && c.isEnum()))
+        {
+            EnumIO<?> eio = strategy.getEnumIO(c);
+            strategy.writeEnumIdTo(output, ID_ENUM, c);
+            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
+            return;
+        }
 
+        if (Object.class == clazz)
+        {
+            output.writeUInt32(ID_OBJECT, 0, false);
+            return;
+        }
+
+        if (Class.class == value.getClass())
+        {
+            // its a class
+            c = (Class<?>)value;
+            if (c.isArray())
+            {
+                int dimensions = 1;
+                c = c.getComponentType();
+                while (c.isArray())
+                {
+                    dimensions++;
+                    c = c.getComponentType();
+                }
+
+                strategy.writeClassIdTo(output, c, true);
+                // write the dimensions of the array
+                output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
+            }
+            else
+            {
+                strategy.writeClassIdTo(output, c, false);
+            }
+            return;
+        }
+        
         if (Message.class.isAssignableFrom(clazz))
         {
             final Schema<Object> schema = strategy.writeMessageIdTo(
@@ -762,184 +809,11 @@ public abstract class ObjectSchema extends PolymorphicSchema
             return;
         }
         
-        if (clazz.isEnum())
-        {
-            EnumIO<?> eio = strategy.getEnumIO(clazz);
-            strategy.writeEnumIdTo(output, ID_ENUM, clazz);
-            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
-            return;
-        }
-
-        if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())
-        {
-            EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());
-            strategy.writeEnumIdTo(output, ID_ENUM, clazz.getSuperclass());
-            eio.writeTo(output, ID_ENUM_VALUE, false, (Enum<?>) value);
-            return;
-        }
-
-        if (clazz.isArray())
-        {
-            Class<?> componentType = clazz.getComponentType();
-
-            final HasDelegate<Object> hdArray = strategy.tryWriteDelegateIdTo(output,
-                    ID_ARRAY_DELEGATE, (Class<Object>) componentType);
-
-            if (hdArray != null)
-            {
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(hdArray.genericElementSchema,
-                            currentSchema);
-                }
-
-                hdArray.genericElementSchema.writeTo(output, value);
-                return;
-            }
-
-            final RuntimeFieldFactory<?> inlineArray = RuntimeFieldFactory.getInline(
-                    componentType);
-            if (inlineArray != null)
-            {
-                // scalar
-                final boolean primitive = componentType.isPrimitive();
-                final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(
-                        inlineArray.id, primitive, strategy);
-
-                output.writeUInt32(ID_ARRAY_SCALAR,
-                        ArraySchemas.toArrayId(inlineArray.id, primitive),
-                        false);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(arraySchema, currentSchema);
-                }
-
-                arraySchema.writeTo(output, value);
-                return;
-            }
-
-            if (componentType.isEnum())
-            {
-                // enum
-                final EnumIO<?> eio = strategy.getEnumIO(componentType);
-
-                strategy.writeEnumIdTo(output, ID_ARRAY_ENUM, componentType);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(eio.genericElementSchema,
-                            currentSchema);
-                }
-
-                eio.genericElementSchema.writeTo(output, value);
-                return;
-            }
-
-            if (Message.class.isAssignableFrom(componentType) ||
-                    strategy.isRegistered(componentType))
-            {
-                // messsage / registered pojo
-                hs = strategy.writePojoIdTo(output,
-                        ID_ARRAY_POJO, (Class<Object>) componentType);
-
-                if (output instanceof StatefulOutput)
-                {
-                    // update using the derived schema.
-                    ((StatefulOutput) output).updateLast(hs.genericElementSchema,
-                            currentSchema);
-                }
-
-                hs.genericElementSchema.writeTo(output, value);
-                return;
-            }
-
-            /*
-             * if(!Throwable.class.isAssignableFrom(componentType)) { boolean create =
-             * Message.class.isAssignableFrom(componentType); HasSchema<Object> hs = strategy.getSchemaWrapper(
-             * (Class<Object>)componentType, create); if(hs != null) {
-             * 
-             * } }
-             */
-
-            // complex type
-            int dimensions = 1;
-            while (componentType.isArray())
-            {
-                dimensions++;
-                componentType = componentType.getComponentType();
-            }
-
-            strategy.writeArrayIdTo(output, componentType);
-            // write the length of the array
-            output.writeUInt32(ID_ARRAY_LEN, ((Object[])value).length, false);
-            // write the dimensions of the array
-            output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
-
-            if (output instanceof StatefulOutput)
-            {
-                // update using the derived schema.
-                ((StatefulOutput) output).updateLast(strategy.ARRAY_SCHEMA, currentSchema);
-            }
-
-            strategy.ARRAY_SCHEMA.writeTo(output, value);
-            return;
-        }
-
-        if (Object.class == clazz)
-        {
-            output.writeUInt32(ID_OBJECT, 0, false);
-            return;
-        }
-
-        if (Class.class == value.getClass())
-        {
-            // its a class
-            final Class<?> c = ((Class<?>) value);
-            if (c.isArray())
-            {
-                int dimensions = 1;
-                Class<?> componentType = c.getComponentType();
-                while (componentType.isArray())
-                {
-                    dimensions++;
-                    componentType = componentType.getComponentType();
-                }
-
-                strategy.writeClassIdTo(output, componentType, true);
-                // write the dimensions of the array
-                output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
-                return;
-            }
-
-            strategy.writeClassIdTo(output, c, false);
-            return;
-        }
-        
         if (Throwable.class.isAssignableFrom(clazz))
         {
             // throwable
             PolymorphicThrowableSchema.writeObjectTo(output, value, currentSchema,
                     strategy);
-            return;
-        }
-        
-        if (strategy.isRegistered(clazz))
-        {
-            // pojo
-            final Schema<Object> schema = strategy.writePojoIdTo(
-                    output, ID_POJO, clazz).getSchema();
-            
-            if (output instanceof StatefulOutput)
-            {
-                // update using the derived schema.
-                ((StatefulOutput)output).updateLast(schema, currentSchema);
-            }
-            
-            schema.writeTo(output, value);
             return;
         }
         
@@ -1030,6 +904,156 @@ public abstract class ObjectSchema extends PolymorphicSchema
         }
 
         schema.writeTo(output, value);
+    }
+    
+    private static boolean isComponentPojo(Class<?> componentType)
+    {
+        return Message.class.isAssignableFrom(componentType) ||
+                (!Throwable.class.isAssignableFrom(componentType) && 
+                        !Map.class.isAssignableFrom(componentType) && 
+                        !Collection.class.isAssignableFrom(componentType));
+    }
+    
+    private static void writeComponentTo(Output output, Object value, 
+            Schema<?> currentSchema, IdStrategy strategy, 
+            Class<?> componentType, int dimensions) throws IOException
+    {
+        strategy.writeArrayIdTo(output, componentType);
+        // write the length of the array
+        output.writeUInt32(ID_ARRAY_LEN, ((Object[])value).length, false);
+        // write the dimensions of the array
+        output.writeUInt32(ID_ARRAY_DIMENSION, dimensions, false);
+
+        if (output instanceof StatefulOutput)
+        {
+            // update using the derived schema.
+            ((StatefulOutput) output).updateLast(strategy.ARRAY_SCHEMA, currentSchema);
+        }
+
+        strategy.ARRAY_SCHEMA.writeTo(output, value);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static void writeArrayTo(Output output, Object value, Schema<?> currentSchema,
+            IdStrategy strategy, final Class<Object> clazz) throws IOException
+    {
+        final Class<?> componentType = clazz.getComponentType();
+        
+        final HasDelegate<Object> hdArray = strategy.tryWriteDelegateIdTo(output,
+                ID_ARRAY_DELEGATE, (Class<Object>) componentType);
+
+        if (hdArray != null)
+        {
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput) output).updateLast(hdArray.genericElementSchema,
+                        currentSchema);
+            }
+
+            hdArray.genericElementSchema.writeTo(output, value);
+            return;
+        }
+        
+        final RuntimeFieldFactory<?> inlineArray = RuntimeFieldFactory.getInline(
+                componentType);
+        if (inlineArray != null)
+        {
+            // scalar
+            final boolean primitive = componentType.isPrimitive();
+            final ArraySchemas.Base arraySchema = ArraySchemas.getSchema(
+                    inlineArray.id, primitive, strategy);
+
+            output.writeUInt32(ID_ARRAY_SCALAR,
+                    ArraySchemas.toArrayId(inlineArray.id, primitive),
+                    false);
+
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput) output).updateLast(arraySchema, currentSchema);
+            }
+
+            arraySchema.writeTo(output, value);
+            return;
+        }
+        
+        Class<?> c = componentType;
+        if (c.isArray())
+        {
+            int dimensions = 2;
+            c = c.getComponentType();
+            while (c.isArray())
+            {
+                dimensions++;
+                c = c.getComponentType();
+            }
+            
+            writeComponentTo(output, value, currentSchema, strategy, c, dimensions);
+            return;
+        }
+        
+        if (componentType.isEnum() || 
+                (null != (c = componentType.getSuperclass()) && c.isEnum()))
+        {
+            // enum
+            final EnumIO<?> eio = strategy.getEnumIO(c);
+
+            strategy.writeEnumIdTo(output, ID_ARRAY_ENUM, c);
+
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput) output).updateLast(eio.genericElementSchema,
+                        currentSchema);
+            }
+
+            eio.genericElementSchema.writeTo(output, value);
+            return;
+        }
+        
+        if (Object.class == componentType || Class.class == componentType)
+        {
+            writeComponentTo(output, value, currentSchema, strategy, componentType, 1);
+            return;
+        }
+        
+        HasSchema<Object> hs = strategy.tryWritePojoIdTo(output,
+                ID_ARRAY_POJO, (Class<Object>) componentType, false);
+        
+        if (hs != null)
+        {
+            if (output instanceof StatefulOutput)
+            {
+                // update using the derived schema.
+                ((StatefulOutput) output).updateLast(hs.genericElementSchema,
+                        currentSchema);
+            }
+
+            hs.genericElementSchema.writeTo(output, value);
+            return;
+        }
+        
+        if (componentType.isInterface() || 
+                Modifier.isAbstract(componentType.getModifiers()) ||
+                !isComponentPojo(componentType))
+        {
+            writeComponentTo(output, value, currentSchema, strategy, componentType, 1);
+            return;
+        }
+        
+        // pojo
+        hs = strategy.writePojoIdTo(output,
+                ID_ARRAY_POJO, (Class<Object>) componentType);
+        
+        if (output instanceof StatefulOutput)
+        {
+            // update using the derived schema.
+            ((StatefulOutput) output).updateLast(hs.genericElementSchema,
+                    currentSchema);
+        }
+        
+        hs.genericElementSchema.writeTo(output, value);
     }
 
     static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe,
