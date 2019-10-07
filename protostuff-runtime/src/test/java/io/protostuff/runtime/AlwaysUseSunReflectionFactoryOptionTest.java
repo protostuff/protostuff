@@ -14,16 +14,10 @@ import io.protostuff.Schema;
 /**
  * @author Kostiantyn Shchepanovskyi
  */
-public class AlwaysUseSunReflectionFactoryOptionTest extends AbstractTest
-{
-    
-	@Override
-    protected IdStrategy newIdStrategy()
-    {
-        return new DefaultIdStrategy(0);
-    }
+public class AlwaysUseSunReflectionFactoryOptionTest {
 
-    public void testUseSunReflectionFactory() throws Exception {
+	@Test
+	public void forceUseSunReflectionFactory() throws Exception {
 		System.setProperty("protostuff.runtime.always_use_sun_reflection_factory", "true");
 		Schema<MyClass> schema = RuntimeSchema.getSchema(MyClass.class);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
