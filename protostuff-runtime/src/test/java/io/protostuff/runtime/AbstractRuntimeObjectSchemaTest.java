@@ -4028,7 +4028,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         }
     }
 
-    static class PojoWithHashMapInnerKeySetAsDelegate
+    static final class PojoWithHashMapInnerKeySetAsDelegate
     {
 
         private List<Set<String>> list;
@@ -4050,7 +4050,8 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             Map<String, String> map3 = newMap();
             map3.put("yummy", "cake");
 
-            list = newList(map1.keySet());
+            list = new ArrayList<Set<String>>();
+            list.add(map1.keySet());
 
             set = map2.keySet();
 
@@ -4096,14 +4097,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     public void testPojoWithHashMapInnerKeySetAsDelegate() throws Exception
     {
-        HashMapInnerKeySetDelegate delegate = null;
         if (RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
         {
-            if (!((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
-                .registerDelegate("java.util.HashMap$KeySet", delegate = new HashMapInnerKeySetDelegate(new CollectionSchemaForString())))
+            if (((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
+                .registerDelegate("java.util.HashMap$KeySet", new HashMapInnerKeySetDelegate<String>(new CollectionSchemaForString())))
             {
                 // couldn't register
-                delegate = null;
+                System.err.println("registered delegate: HashMapInnerKeySetDelegate<String>");
             }
         }
 
@@ -4128,7 +4128,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         roundTrip(p, schema, pipeSchema);
     }
 
-    public class HashMapInnerKeySetDelegate<T> implements Delegate<AbstractCollection<T>>
+    public static final class HashMapInnerKeySetDelegate<T> implements Delegate<AbstractCollection<T>>
     {
 
         private CollectionSchema<T> schema;
@@ -4144,15 +4144,16 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
             return WireFormat.FieldType.MESSAGE;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public AbstractCollection<T> readFrom(Input input) throws IOException
         {
             ArrayList<T> list = new ArrayList<T>();
             input.mergeObject(list, schema);
             HashMap<T, Object> map = new HashMap<T, Object>();
-            for (T t : list) {
+            for (T t : list)
                 map.put(t, null);
-            }
+            
             return (AbstractCollection<T>) map.keySet();
         }
 
@@ -4198,7 +4199,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     static class PojoWithImmutableListAsDelegate
     {
-        private ImmutableList list;
+        private ImmutableList<Baz> list;
 
         PojoWithImmutableListAsDelegate fill()
         {
@@ -4206,7 +4207,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
                 new Baz(567, "baz", 202020202),
                 new Baz(999, "buzz", 10101010)
             );
-            list = new ImmutableList(bazList);
+            list = new ImmutableList<Baz>(bazList);
 
             return this;
         }
@@ -4316,14 +4317,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     public void testPojoWithImmutableListAsDelegate() throws Exception
     {
-        ImmutableListAsDelegate delegate = null;
         if (RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy)
         {
-            if (!((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
-                .registerDelegate(ImmutableList.class.getName(), delegate = new ImmutableListAsDelegate(new CollectionSchemaForBaz())))
+            if (((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY)
+                .registerDelegate(ImmutableList.class.getName(), new ImmutableListAsDelegate<Baz>(new CollectionSchemaForBaz())))
             {
                 // couldn't register
-                delegate = null;
+                System.err.println("registered delegate: ImmutableListAsDelegate<Baz>");
             }
         }
 
@@ -4395,7 +4395,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public final class CollectionSchemaForBaz extends CollectionSchema<Baz>
     {
 
-        private RuntimeSchema<Baz> schema = RuntimeSchema.createFrom(Baz.class);
+        private final Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
 
         @Override
         protected void addValueFrom(Input input, Collection<Baz> collection) throws IOException
