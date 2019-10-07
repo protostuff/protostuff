@@ -14,7 +14,7 @@ For more information, go to https://protostuff.github.io/docs/
 
 ## Maven
 
-1. protostuff and protobuf
+1. For the core formats (protostuff and protobuf)
    
   ```xml
   <dependency>
@@ -24,7 +24,7 @@ For more information, go to https://protostuff.github.io/docs/
   </dependency>
   ```
 
-2. schemas generated at runtime
+2. For schemas generated at runtime
    
   ```xml
   <dependency>
