@@ -445,12 +445,12 @@ public class EnumSetAndMapTest extends AbstractTest
         return bean;
     }
 
-    static void verifyCyclic(Bean bean)
+    static void verifyCyclic(Bean bean, boolean collectionSchemaOnRepeatedFields)
     {
         assertEquals(bean.name, "bean_cyclic");
 
         assertNotNull(bean.firstEnumSet);
-        if (RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        if (collectionSchemaOnRepeatedFields)
             assertTrue(bean.firstEnumSet == bean.secondEnumSet);
         else
             assertEquals(bean.firstEnumSet, bean.secondEnumSet);
@@ -458,7 +458,7 @@ public class EnumSetAndMapTest extends AbstractTest
         assertEquals(EnumSet.allOf(Sequence.class), bean.firstEnumSet);
 
         assertNotNull(bean.firstEnumMap);
-        if (RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        if (collectionSchemaOnRepeatedFields)
             assertTrue(bean.firstEnumMap == bean.secondEnumMap);
         else
             assertEquals(bean.firstEnumMap, bean.secondEnumMap);
@@ -467,7 +467,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
         assertNotNull(bean.firstSet);
 
-        if (RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        if (collectionSchemaOnRepeatedFields)
             assertTrue(bean.firstSet == bean.secondSet);
         else
             assertEquals(bean.firstSet, bean.secondSet);
@@ -476,7 +476,7 @@ public class EnumSetAndMapTest extends AbstractTest
 
         assertNotNull(bean.firstMap);
 
-        if (RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
+        if (collectionSchemaOnRepeatedFields)
             assertTrue(bean.firstMap == bean.secondMap);
         else
             assertEquals(bean.firstMap, bean.secondMap);
@@ -484,15 +484,13 @@ public class EnumSetAndMapTest extends AbstractTest
         assertEquals(newSequenceMap(), bean.firstMap);
     }
 
-    public void testBean()
+    static void doBean(IdStrategy strategy)
     {
-        System.err.println(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
-
         Bean bean = fill(new Bean());
 
         verify(bean);
 
-        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class);
+        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class, strategy);
         // print(schema);
         byte[] bytes = ProtostuffIOUtil.toByteArray(bean, schema,
                 LinkedBuffer.allocate(256));
@@ -503,15 +501,16 @@ public class EnumSetAndMapTest extends AbstractTest
         verify(deBean);
     }
 
-    public void testBeanCyclic()
+    static void doBeanCyclic(IdStrategy strategy)
     {
-        System.err.println(RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
-
+        boolean csorf = 
+                0 != (strategy.flags & IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+        
         Bean bean = fillCyclic(new Bean());
 
-        verifyCyclic(bean);
+        verifyCyclic(bean, csorf);
 
-        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class);
+        Schema<Bean> schema = RuntimeSchema.getSchema(Bean.class, strategy);
         // print(schema);
         byte[] bytes = GraphIOUtil.toByteArray(bean, schema,
                 LinkedBuffer.allocate(256));
@@ -519,7 +518,28 @@ public class EnumSetAndMapTest extends AbstractTest
         Bean deBean = new Bean();
         GraphIOUtil.mergeFrom(bytes, deBean, schema);
 
-        verifyCyclic(deBean);
+        verifyCyclic(deBean, csorf);
     }
 
+    public void testBean()
+    {
+        doBean(new DefaultIdStrategy());
+    }
+    
+    public void testBeanCSORF()
+    {
+        doBean(new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
+                IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS));
+    }
+    
+    public void testBeanCyclic()
+    {
+        doBeanCyclic(new DefaultIdStrategy());
+    }
+    
+    public void testBeanCyclicCSORF()
+    {
+        doBeanCyclic(new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
+                IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS));
+    }
 }
