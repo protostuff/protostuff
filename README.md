@@ -12,6 +12,28 @@ A java serialization library with built-in support for forward-backward compatib
 
 For more information, go to https://protostuff.github.io/docs/
 
+## Maven
+
+1. protostuff and protobuf
+   
+  ```xml
+  <dependency>
+    <groupId>io.protostuff</groupId>
+    <artifactId>protostuff-core</artifactId>
+    <version>1.6.2</version>
+  </dependency>
+  ```
+
+2. schemas generated at runtime
+   
+  ```xml
+  <dependency>
+    <groupId>io.protostuff</groupId>
+    <artifactId>protostuff-runtime</artifactId>
+    <version>1.6.2</version>
+  </dependency>
+  ```
+
 ## Usage
 ```java
 public final class Foo
@@ -55,7 +77,7 @@ static void roundTrip()
 }
 ```
 
-Support for null elements in concrete arrays.
+### Support for null elements in concrete arrays.
 ```java
 
 public final class Wrap
@@ -126,28 +148,6 @@ static <T> void assertArrayEquals(T[] a, T[] b)
 }
 
 ```
-
-## Maven
-
-1. When you generate schemas for your classes
-   
-  ```xml
-  <dependency>
-    <groupId>io.protostuff</groupId>
-    <artifactId>protostuff-core</artifactId>
-    <version>1.6.2</version>
-  </dependency>
-  ```
-
-2. Runtime schemas
-   
-  ```xml
-  <dependency>
-    <groupId>io.protostuff</groupId>
-    <artifactId>protostuff-runtime</artifactId>
-    <version>1.6.2</version>
-  </dependency>
-  ```
 
 Questions/Concerns/Suggestions
 ------------------------------
