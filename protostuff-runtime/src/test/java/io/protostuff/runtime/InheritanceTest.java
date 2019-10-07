@@ -34,11 +34,13 @@ import io.protostuff.Schema;
  */
 public class InheritanceTest extends AbstractTest
 {
-
-    static
+    final DefaultIdStrategy strategy = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
+            IdStrategy.MORPH_NON_FINAL_POJOS);
+    
+    @Override
+    protected IdStrategy newIdStrategy()
     {
-        // must enable to support inheritance on non-abstract base types.
-        System.setProperty("protostuff.runtime.morph_non_final_pojos", "true");
+        return strategy;
     }
 
     public static class InputDevice
@@ -235,27 +237,9 @@ public class InheritanceTest extends AbstractTest
 
     }
 
-    boolean skipTests = false;
-
-    @Override
-    public void setUp() throws Exception
-    {
-        System.setProperty("protostuff.morph_non_final_pojos", "true");
-        skipTests = !RuntimeEnv.MORPH_NON_FINAL_POJOS;
-        super.setUp();
-    }
-
     public void testInheritance() throws IOException
     {
-        if (skipTests)
-        {
-            System.err
-                    .println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
-            return;
-        }
-        System.err.println("executing inheritance test for protostuff ... ");
-
-        Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
+        Schema<InputSystem> schema = getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();
         Mouse ms = new Mouse();
@@ -279,15 +263,7 @@ public class InheritanceTest extends AbstractTest
 
     public void testInheritanceProtobuf() throws IOException
     {
-        if (skipTests)
-        {
-            System.err
-                    .println("RuntimeSchema.MORPH_NON_FINAL_POJOS was not enabled.");
-            return;
-        }
-        System.err.println("executing inheritance test for protobuf ... ");
-
-        Schema<InputSystem> schema = RuntimeSchema.getSchema(InputSystem.class);
+        Schema<InputSystem> schema = getSchema(InputSystem.class);
         InputSystem sys = new InputSystem();
         KeyBoard kb = new KeyBoard();
         Mouse ms = new Mouse();

@@ -38,6 +38,15 @@ import io.protostuff.Schema;
  */
 public abstract class NullArrayElementTest extends AbstractTest
 {
+    
+    final DefaultIdStrategy strategy = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
+            IdStrategy.ALLOW_NULL_ARRAY_ELEMENT);
+    
+    @Override
+    protected IdStrategy newIdStrategy()
+    {
+        return strategy;
+    }
 
     /**
      * Serializes the {@code message} into a byte array.
@@ -236,14 +245,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullAll() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullAll");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -282,14 +285,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullFirst() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullFirst");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -328,14 +325,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullLast() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullLast");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -374,14 +365,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullMid() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullMid");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -420,14 +405,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullFirstAndLast() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullFirstAndLast");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -466,14 +445,8 @@ public abstract class NullArrayElementTest extends AbstractTest
 
     public void testNullInBetween() throws IOException
     {
-        if (!RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-        {
-            System.err.println("Skipping " + getClass().getSimpleName() + "::testNullInBetween");
-            return;
-        }
-
         Schema<PojoWithNonPrimitiveArrays> schema =
-                RuntimeSchema.getSchema(PojoWithNonPrimitiveArrays.class);
+                getSchema(PojoWithNonPrimitiveArrays.class);
 
         Pipe.Schema<PojoWithNonPrimitiveArrays> pipeSchema =
                 ((RuntimeSchema<PojoWithNonPrimitiveArrays>) schema).getPipeSchema();
@@ -613,7 +586,7 @@ public abstract class NullArrayElementTest extends AbstractTest
     public void testArrayInList() throws IOException
     {
         Schema<PojoWithArrayInList> schema =
-                RuntimeSchema.getSchema(PojoWithArrayInList.class);
+                getSchema(PojoWithArrayInList.class);
 
         Pipe.Schema<PojoWithArrayInList> pipeSchema =
                 ((RuntimeSchema<PojoWithArrayInList>) schema).getPipeSchema();
@@ -744,7 +717,7 @@ public abstract class NullArrayElementTest extends AbstractTest
     public void testArrayPrimitiveInList() throws IOException
     {
         Schema<PojoWithArrayPrimitiveInList> schema =
-                RuntimeSchema.getSchema(PojoWithArrayPrimitiveInList.class);
+                getSchema(PojoWithArrayPrimitiveInList.class);
 
         Pipe.Schema<PojoWithArrayPrimitiveInList> pipeSchema =
                 ((RuntimeSchema<PojoWithArrayPrimitiveInList>) schema).getPipeSchema();
@@ -875,7 +848,7 @@ public abstract class NullArrayElementTest extends AbstractTest
     public void testArrayInMap() throws IOException
     {
         Schema<PojoWithArrayInMap> schema =
-                RuntimeSchema.getSchema(PojoWithArrayInMap.class);
+                getSchema(PojoWithArrayInMap.class);
 
         Pipe.Schema<PojoWithArrayInMap> pipeSchema =
                 ((RuntimeSchema<PojoWithArrayInMap>) schema).getPipeSchema();
@@ -1020,7 +993,7 @@ public abstract class NullArrayElementTest extends AbstractTest
     public void testArrayPrimitiveInMap() throws IOException
     {
         Schema<PojoWithArrayPrimitiveInMap> schema =
-                RuntimeSchema.getSchema(PojoWithArrayPrimitiveInMap.class);
+                getSchema(PojoWithArrayPrimitiveInMap.class);
 
         Pipe.Schema<PojoWithArrayPrimitiveInMap> pipeSchema =
                 ((RuntimeSchema<PojoWithArrayPrimitiveInMap>) schema).getPipeSchema();

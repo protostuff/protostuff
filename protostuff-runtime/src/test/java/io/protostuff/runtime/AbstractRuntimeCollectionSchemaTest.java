@@ -70,12 +70,14 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 {
-
-    static
+    
+    final DefaultIdStrategy strategy = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
+            IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+    
+    @Override
+    protected IdStrategy newIdStrategy()
     {
-        System.setProperty(
-                "protostuff.runtime.collection_schema_on_repeated_fields",
-                "true");
+        return strategy;
     }
 
     /**
@@ -756,14 +758,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
 
     public void testCollectionAndMapSchema() throws Exception
     {
-        if (!RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS)
-        {
-            System.err
-                    .println("RuntimeSchema.COLLECTION_SCHEMA_ON_REPEATED_FIELDS was not enabled.");
-            return;
-        }
-
-        Schema<PojoFoo> schema = RuntimeSchema.getSchema(PojoFoo.class);
+        Schema<PojoFoo> schema = getSchema(PojoFoo.class);
         Pipe.Schema<PojoFoo> pipeSchema = ((RuntimeSchema<PojoFoo>) schema).getPipeSchema();
 
         PojoFoo p = new PojoFoo().fill();
@@ -835,7 +830,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ObjectWrapper wrapper = new ObjectWrapper();
         wrapper.obj = new PersistentObjectList<Object>(15);
         
-        Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
+        Schema<ObjectWrapper> schema = getSchema(ObjectWrapper.class);
         
         byte[] data = toByteArray(wrapper, schema);
         
@@ -855,7 +850,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ObjectWrapper wrapper = new ObjectWrapper();
         wrapper.obj = new PersistentObjectMap<String,Object>(15);
         
-        Schema<ObjectWrapper> schema = RuntimeSchema.getSchema(ObjectWrapper.class);
+        Schema<ObjectWrapper> schema = getSchema(ObjectWrapper.class);
         
         byte[] data = toByteArray(wrapper, schema);
         
@@ -875,7 +870,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         ListWrapper wrapper = new ListWrapper();
         wrapper.obj = new PersistentObjectList<Object>(15);
         
-        Schema<ListWrapper> schema = RuntimeSchema.getSchema(ListWrapper.class);
+        Schema<ListWrapper> schema = getSchema(ListWrapper.class);
         
         byte[] data = toByteArray(wrapper, schema);
         
@@ -895,7 +890,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
         MapWrapper wrapper = new MapWrapper();
         wrapper.obj = new PersistentObjectMap<String,Object>(15);
         
-        Schema<MapWrapper> schema = RuntimeSchema.getSchema(MapWrapper.class);
+        Schema<MapWrapper> schema = getSchema(MapWrapper.class);
         
         byte[] data = toByteArray(wrapper, schema);
         
@@ -912,8 +907,8 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest
     
     public void testRegisterCustom() throws IOException
     {
-        RuntimeSchema.register(PersistentObjectList.class);
-        RuntimeSchema.register(PersistentObjectMap.class);
+        strategy.registerPojo(PersistentObjectList.class);
+        strategy.registerPojo(PersistentObjectMap.class);
         
         verifyObjectListField();
         verifyObjectMapField();
