@@ -1,3 +1,30 @@
+protostuff-1.6.2 2019-10-07
+===========================
+- null elements support for pojos in object array [`8fddbd5`](https://github.com/protostuff/protostuff/commit/8fddbd526968ace00583a3abfd64b9287351cea0) (Issue 266)
+
+protostuff-1.6.1 2019-10-04
+===========================
+
+- Added tests for io.protostuff.ProtobufOutput [`#263`](https://github.com/protostuff/protostuff/pull/263)
+- Fix immutable collection or map fields deserialization issue. [`#260`](https://github.com/protostuff/protostuff/pull/260)
+- RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT is invalid for IdStrategy#ARRAY_STRING_SCHEMA [`#253`](https://github.com/protostuff/protostuff/pull/253)
+- test: test writeVarInt32 with large Integer [`#250`](https://github.com/protostuff/protostuff/pull/250)
+- avoid use Array.get/set (JNI) to boost the performance [`#246`](https://github.com/protostuff/protostuff/pull/246)
+- Use a CharSequence as a source for read/writeString [`#216`](https://github.com/protostuff/protostuff/pull/216)
+- Re-use a ByteBuffer to read bytes from Input [`#215`](https://github.com/protostuff/protostuff/pull/215)
+- Fix JSON deserialization of "Infinite", "-Infinite" and "NaN" [`#220`](https://github.com/protostuff/protostuff/pull/220)
+- assert the returned value of writeList [`#212`](https://github.com/protostuff/protostuff/pull/212)
+- Add feature to reset CodedInput object in order to avoid a new allocation for each mergeFrom [`#211`](https://github.com/protostuff/protostuff/pull/211)
+- add protostuff-msgpack module [`#208`](https://github.com/protostuff/protostuff/pull/208)
+- Prioritize registered pojos over maps/collections [`#201`](https://github.com/protostuff/protostuff/pull/201)
+- Speedup repeated/collection fields [`#199`](https://github.com/protostuff/protostuff/pull/199)
+- [maven-release-plugin] prepare for next development iteration [`d33c699`](https://github.com/protostuff/protostuff/commit/d33c6992046c6787d0768a6c9f6bf5d4d29a7348)
+- https://github.com/protostuff/protostuff/issues/251 [`4a6b0d2`](https://github.com/protostuff/protostuff/commit/4a6b0d2a2f443f9407ff83ee27c656399ecf31b4)
+
+protostuff-1.6.0 2017-07-03
+===========================
+- Use a CharSequence as a source for read/writeString (#216)
+
 protostuff-1.3.3 2015-03-23
 ===========================
 
