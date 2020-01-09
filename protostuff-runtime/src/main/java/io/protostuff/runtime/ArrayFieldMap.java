@@ -41,8 +41,8 @@ final class ArrayFieldMap<T> implements FieldMap<T>
             }
             if (fieldsByNumber[f.number] != null)
             {
-                throw new IllegalStateException(fieldsByNumber[f.number]
-                        + " and " + f + " cannot have the same number.");
+                throw new IllegalStateException("Fields '" + fieldsByNumber[f.number].name "' " + fieldsByNumber[f.number]
+                        + " and '" + f.name + "' " + f + " cannot have the same number: " + f.number);
             }
 
             fieldsByNumber[f.number] = f;
