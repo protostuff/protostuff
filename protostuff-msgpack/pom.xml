@@ -87,6 +87,12 @@
       <artifactId>protostuff-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-json</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
 </project>

@@ -24,8 +24,9 @@
     <antlr3-version>3.5.2</antlr3-version>
     <stringtemplate-version>3.2.1</stringtemplate-version>
     <mavenVersion>3.2.3</mavenVersion>
-    <jmh.version>1.6.1</jmh.version>
+    <jmh.version>1.23</jmh.version>
     <javac.target>1.6</javac.target>
+    <javadoc.source>6</javadoc.source>
   </properties>
 
   <developers>
@@ -220,6 +221,8 @@
           </executions>
           <configuration>
             <excludePackageNames>com.google.*:org.apache.*:org.codehaus.*:javax.*:com.sun.*</excludePackageNames>
+            <!-- Workaround for: https://bugs.openjdk.java.net/browse/JDK-8212233 -->
+            <source>${javadoc.source}</source>
             <tags>
               <tag>
                 <name>created</name>
