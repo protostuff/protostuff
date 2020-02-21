@@ -94,6 +94,14 @@ public class ProtoModule implements Serializable
     }
 
     /**
+     * Determines if current runtime environment is JDK version 9 or above.
+     * @return {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
+     */
+    public boolean isJavaVersion9() {
+        return !System.getProperty("java.specification.version").startsWith("1.");
+    }
+
+    /**
      *
      * @return the current generator name that can be used generated code for identification
      */
