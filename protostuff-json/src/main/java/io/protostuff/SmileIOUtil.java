@@ -58,7 +58,7 @@ public final class SmileIOUtil
         /**
          * Returns the parser feature flags.
          */
-        public int getParserFeatures()
+        public int getParserFeaturesImpl()
         {
             return _parserFeatures;
         }
@@ -66,7 +66,7 @@ public final class SmileIOUtil
         /**
          * Returns the smile-specific parser feature flags.
          */
-        public int getSmileParserFeatures()
+        public int getSmileParserFeaturesImpl()
         {
             return _smileParserFeatures;
         }
@@ -74,7 +74,7 @@ public final class SmileIOUtil
         /**
          * Returns the generator feature flags.
          */
-        public int getGeneratorFeatures()
+        public int getGeneratorFeaturesImpl()
         {
             return _generatorFeatures;
         }
@@ -156,8 +156,8 @@ public final class SmileIOUtil
             throws IOException
     {
         return new SmileParser(context,
-                DEFAULT_SMILE_FACTORY.getParserFeatures(),
-                DEFAULT_SMILE_FACTORY.getSmileParserFeatures(),
+                DEFAULT_SMILE_FACTORY.getParserFeaturesImpl(),
+                DEFAULT_SMILE_FACTORY.getSmileParserFeaturesImpl(),
                 DEFAULT_SMILE_FACTORY.getCodec(),
                 DEFAULT_SMILE_FACTORY.getRootByteSymbols().makeChild(1),
                 in,
@@ -180,7 +180,7 @@ public final class SmileIOUtil
             boolean bufferRecyclable, IOContext context)
     {
         return new SmileGenerator(context,
-                DEFAULT_SMILE_FACTORY.getGeneratorFeatures(),
+                DEFAULT_SMILE_FACTORY.getGeneratorFeaturesImpl(),
                 DEFAULT_SMILE_FACTORY.getSmileGeneratorFeatures(),
                 DEFAULT_SMILE_FACTORY.getCodec(),
                 out,

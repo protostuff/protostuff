@@ -63,7 +63,7 @@ public final class JsonIOUtil
         /**
          * Returns the parser feature flags.
          */
-        public int getParserFeatures()
+        public int getParserFeaturesImpl()
         {
             return _parserFeatures;
         }
@@ -71,7 +71,7 @@ public final class JsonIOUtil
         /**
          * Returns the generator feature flags.
          */
-        public int getGeneratorFeatures()
+        public int getGeneratorFeaturesImpl()
         {
             return _generatorFeatures;
         }
@@ -198,7 +198,7 @@ public final class JsonIOUtil
             throws IOException
     {
         return new UTF8StreamJsonParser(context,
-                DEFAULT_JSON_FACTORY.getParserFeatures(), in,
+                DEFAULT_JSON_FACTORY.getParserFeaturesImpl(), in,
                 DEFAULT_JSON_FACTORY.getCodec(),
                 DEFAULT_JSON_FACTORY.getRootByteSymbols().makeChild(1),
                 buf, offset, limit, bufferRecyclable);
@@ -222,7 +222,7 @@ public final class JsonIOUtil
         context.setEncoding(JsonEncoding.UTF8);
 
         return new UTF8JsonGenerator(context,
-                DEFAULT_JSON_FACTORY.getGeneratorFeatures(),
+                DEFAULT_JSON_FACTORY.getGeneratorFeaturesImpl(),
                 DEFAULT_JSON_FACTORY.getCodec(),
                 out,
                 buf,
