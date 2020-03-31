@@ -17,7 +17,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <junit-version>4.11</junit-version>
-    <jackson-version>2.7.1</jackson-version>
+    <jackson-version>2.9.10</jackson-version>
     <msgpack.version>0.8.11</msgpack.version>
     <woodstox-version>4.1.3</woodstox-version>
     <velocity-version>1.6.3</velocity-version>
