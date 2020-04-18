@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import io.protostuff.MapSchema;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
 
@@ -2224,6 +2225,129 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         assertEquals(p, pFromByteArray);
 
         HasMapPojoKPolymorphicV pFromStream = new HasMapPojoKPolymorphicV();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        mergeFrom(in, pFromStream, schema);
+        assertEquals(p, pFromByteArray);
+
+        roundTrip(p, schema, pipeSchema);
+    }
+    
+    public interface IntObjectMap<V> extends Map<Integer, V>{}
+    
+    public static class IntObjectHashMap<V> extends HashMap<Integer, V> implements IntObjectMap<V>
+    {
+        private static final long serialVersionUID = 1L;
+
+        public IntObjectHashMap()
+        {
+            super();
+        }
+
+        public IntObjectHashMap(int initialCapacity, float loadFactor)
+        {
+            super(initialCapacity, loadFactor);
+        }
+
+        public IntObjectHashMap(int initialCapacity)
+        {
+            super(initialCapacity);
+        }
+
+        public IntObjectHashMap(Map<? extends Integer, ? extends V> m)
+        {
+            super(m);
+        }
+    }
+    
+    public static final class TestBean
+    {
+        IntObjectMap<Short> map = new IntObjectHashMap<Short>();
+        IntObjectHashMap<Short> concreteMap = new IntObjectHashMap<Short>();
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((concreteMap == null) ? 0 : concreteMap.hashCode());
+            result = prime * result + ((map == null) ? 0 : map.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TestBean other = (TestBean)obj;
+            if (concreteMap == null)
+            {
+                if (other.concreteMap != null)
+                    return false;
+            }
+            else if (!concreteMap.equals(other.concreteMap))
+                return false;
+            if (map == null)
+            {
+                if (other.map != null)
+                    return false;
+            }
+            else if (!map.equals(other.map))
+                return false;
+            return true;
+        }
+        
+    }
+    
+    enum CustomMapFactory implements MapSchema.MessageFactory
+    {
+        IntObjectMap(IntObjectMap.class)
+        {
+            @SuppressWarnings("unchecked")
+            @Override
+            public <K, V> Map<K, V> newMessage()
+            {
+                return (Map<K, V>)new IntObjectHashMap<V>();
+            }
+        };
+        
+        public final Class<?> typeClass;
+
+        private CustomMapFactory(Class<?> typeClass)
+        {
+            this.typeClass = typeClass;
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return typeClass;
+        }
+    }
+    
+    public void testSingleGenericTypeMap() throws Exception
+    {
+        DefaultIdStrategy strategy = new DefaultIdStrategy();
+        strategy.registerMap(CustomMapFactory.IntObjectMap);
+        
+        Schema<TestBean> schema = RuntimeSchema.getSchema(TestBean.class, strategy);
+        Pipe.Schema<TestBean> pipeSchema = ((RuntimeSchema<TestBean>) schema)
+                .getPipeSchema();
+        
+        TestBean p = new TestBean();
+        p.map.put(1, Short.valueOf((short) 25));
+        p.concreteMap.put(2, Short.valueOf((short) 50));
+        
+        byte[] data = toByteArray(p, schema);
+
+        TestBean pFromByteArray = schema.newMessage();
+        mergeFrom(data, 0, data.length, pFromByteArray, schema);
+        assertEquals(p, pFromByteArray);
+
+        TestBean pFromStream = schema.newMessage();
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         mergeFrom(in, pFromStream, schema);
         assertEquals(p, pFromByteArray);

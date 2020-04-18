@@ -1,3 +1,7 @@
+protostuff-1.7.2 2020-04-18
+===========================
+- Issue 273 - fix bug on custom maps without a K (Key) parameter type. Only the V (value) parameter type is declared.
+
 protostuff-1.6.2 2019-10-07
 ===========================
 - null elements support for pojos in object array [`8fddbd5`](https://github.com/protostuff/protostuff/commit/8fddbd526968ace00583a3abfd64b9287351cea0) (Issue 266)

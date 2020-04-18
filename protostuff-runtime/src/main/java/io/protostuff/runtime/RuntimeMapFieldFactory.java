@@ -16,6 +16,7 @@ package io.protostuff.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -1950,9 +1951,11 @@ final class RuntimeMapFieldFactory
             {
                 messageFactory = strategy.getMapFactory(f.getType());
             }
-
+            
             final Class<Object> clazzK = (Class<Object>) getGenericType(f, 0);
-            if (clazzK == null || ((Map.class.isAssignableFrom(clazzK) || 
+            if (clazzK == null ||
+                    2 != ((ParameterizedType)f.getGenericType()).getActualTypeArguments().length ||
+                    ((Map.class.isAssignableFrom(clazzK) || 
                     Collection.class.isAssignableFrom(clazzK)) && 
                     !strategy.isRegistered(clazzK)))
             {
