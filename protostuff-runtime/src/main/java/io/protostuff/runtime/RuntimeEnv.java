@@ -133,6 +133,18 @@ public final class RuntimeEnv
      */
     public static final boolean ALWAYS_USE_SUN_REFLECTION_FACTORY;
 
+    /**
+     * If true, the constructor will never be obtained from {@code ReflectionFactory.newConstructorFromSerialization}.
+     * <p>
+     * Disabled by default, which means that if the pojo has no default constructor, sun reflection will be instead.
+     * <p>
+     * Enable this if you intend to enforce filling default field values using your default constructor.
+     * This applies to complex/framework objects which may be designed with non-default constructors only.
+     * Usually it only makes sense to use this option in your development environment to fail fast on those objects
+     * instead of deferring a problem of non-initialized fields to later stages.
+     */
+    public static final boolean NEVER_USE_SUN_REFLECTION_FACTORY;
+
     static final Method newInstanceFromObjectInputStream;
 
     static final Constructor<Object> OBJECT_CONSTRUCTOR;
@@ -206,6 +218,10 @@ public final class RuntimeEnv
                 && Boolean.parseBoolean(props.getProperty(
                         "protostuff.runtime.always_use_sun_reflection_factory",
                         "false"));
+
+        NEVER_USE_SUN_REFLECTION_FACTORY = Boolean.parseBoolean(props.getProperty(
+                "protostuff.runtime.never_use_sun_reflection_factory",
+                "false"));
 
         String factoryProp = props
                 .getProperty("protostuff.runtime.id_strategy_factory");
@@ -291,12 +307,18 @@ public final class RuntimeEnv
         }
         catch (SecurityException e)
         {
+            if (NEVER_USE_SUN_REFLECTION_FACTORY) {
+                return null;
+            }
             return OBJECT_CONSTRUCTOR == null ? null
                     : OnDemandSunReflectionFactory.getConstructor(clazz,
                             OBJECT_CONSTRUCTOR);
         }
         catch (NoSuchMethodException e)
         {
+            if (NEVER_USE_SUN_REFLECTION_FACTORY) {
+                return null;
+            }
             return OBJECT_CONSTRUCTOR == null ? null
                     : OnDemandSunReflectionFactory.getConstructor(clazz,
                             OBJECT_CONSTRUCTOR);
