@@ -20,7 +20,7 @@ For more information, go to https://protostuff.github.io/docs/
   <dependency>
     <groupId>io.protostuff</groupId>
     <artifactId>protostuff-core</artifactId>
-    <version>1.6.2</version>
+    <version>1.7.2</version>
   </dependency>
   ```
 
