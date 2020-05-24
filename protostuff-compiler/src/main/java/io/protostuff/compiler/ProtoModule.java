@@ -31,7 +31,7 @@ public class ProtoModule implements Serializable
     public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
     
     // {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
-    public static final JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version").startsWith("1.");
+    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version").startsWith("1.");
 
     private static final long serialVersionUID = 6231036933426077777L;
 
