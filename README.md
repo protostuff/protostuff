@@ -14,7 +14,7 @@ For more information, go to https://protostuff.github.io/docs/
 
 ## Maven
 
-1. For the core formats (protostuff and protobuf)
+1. For the core formats (protostuff, protobuf, graph)
    
   ```xml
   <dependency>
