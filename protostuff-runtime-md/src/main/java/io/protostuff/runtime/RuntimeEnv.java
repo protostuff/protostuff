@@ -30,6 +30,11 @@ import java.util.Properties;
 public final class RuntimeEnv
 {
     /**
+     * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
+     */
+    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0").startsWith("1.");
+    
+    /**
      * Returns true if serializing enums by name is activated. Disabled by default.
      */
     public static final boolean ENUMS_BY_NAME;

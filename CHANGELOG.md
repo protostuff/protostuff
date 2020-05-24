@@ -2,6 +2,7 @@ protostuff-1.8.x
 - `-Dprotostuff.runtime.preserve_null_elements=true` preserves null elements in collections/arrays.
   This property replaces `-Dprotostuff.runtime.allow_null_array_element=true`, which only applied to arrays.
   Note that this works only on the binary formats (protostuff/protobuf/graph)
+- allow protostuff-runtime to work with java 9 and above
 
 protostuff-1.7.2 2020-04-18
 ===========================

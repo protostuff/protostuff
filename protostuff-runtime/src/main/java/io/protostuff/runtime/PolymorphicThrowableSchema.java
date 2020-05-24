@@ -49,22 +49,29 @@ import io.protostuff.StatefulOutput;
  */
 public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
 {
-
+    
     static final java.lang.reflect.Field __cause;
-
+    
     static
     {
-        java.lang.reflect.Field cause;
-        try
+        if (RuntimeEnv.JAVA_9_AND_ABOVE)
         {
-            cause = Throwable.class.getDeclaredField("cause");
-            cause.setAccessible(true);
+            __cause = null;
         }
-        catch (Exception e)
+        else
         {
-            cause = null;
+            java.lang.reflect.Field cause;
+            try
+            {
+                cause = Throwable.class.getDeclaredField("cause");
+                cause.setAccessible(true);
+            }
+            catch (Exception e)
+            {
+                cause = null;
+            }
+            __cause = cause;
         }
-        __cause = cause;
     }
 
     static String name(int number)
