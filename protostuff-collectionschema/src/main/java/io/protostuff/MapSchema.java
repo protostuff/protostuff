@@ -528,11 +528,13 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         @Override
         public void writeTo(Output output, Entry<K, V> message) throws IOException
         {
-            if (message.getKey() != null)
-                writeKeyTo(output, 1, message.getKey(), false);
+            final K key = message.getKey();
+            final V value = message.getValue();
+            if (key != null)
+                writeKeyTo(output, 1, key, false);
 
-            if (message.getValue() != null)
-                writeValueTo(output, 2, message.getValue(), false);
+            if (value != null)
+                writeValueTo(output, 2, value, false);
         }
 
     };

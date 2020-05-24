@@ -83,6 +83,7 @@ public abstract class IdStrategy
     public final int flags;
     public final IdStrategy primaryGroup;
     public final int groupId;
+    final boolean preserveNull;
 
     // polymorphic requirements
 
@@ -197,13 +198,15 @@ public abstract class IdStrategy
             throw new RuntimeException("An IdStrategy without a primaryGroup "
                     + "(standalone) must have a groupId of zero.");
         }
+        final boolean preserveNull = 0 != (flags & PRESERVE_NULL_ELEMENTS);
         // implicit
-        if (0 != (flags & PRESERVE_NULL_ELEMENTS))
+        if (preserveNull)
             flags |= COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
 
         this.flags = flags;
         this.primaryGroup = primaryGroup;
         this.groupId = groupId;
+        this.preserveNull = preserveNull;
 
         POLYMORPHIC_POJO_ELEMENT_SCHEMA = new DerivativeSchema(
                 this)
@@ -398,13 +401,13 @@ public abstract class IdStrategy
             @Override
             public String getFieldName(int number)
             {
-                return number == 1 ? CollectionSchema.FIELD_NAME_VALUE : null;
+                return CollectionSchema.fieldName(number);
             }
 
             @Override
             public int getFieldNumber(String name)
             {
-                return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
+                return CollectionSchema.fieldNumber(name);
             }
 
             @Override
@@ -441,7 +444,7 @@ public abstract class IdStrategy
             public void mergeFrom(Input input, Collection<Object> message)
                     throws IOException
             {
-                for (int number = input.readFieldNumber(this);; number = input
+                for (int number = input.readFieldNumber(this), i, nullCount;; number = input
                         .readFieldNumber(this))
                 {
                     switch (number)
@@ -458,6 +461,10 @@ public abstract class IdStrategy
                                 message.add(value);
                             }
                             break;
+                        case 2:
+                            for (nullCount = input.readUInt32(), i = 0; i < nullCount; i++)
+                                message.add(null);
+                            break;
                         default:
                             throw new ProtostuffException("Corrupt input.");
                     }
@@ -468,11 +475,26 @@ public abstract class IdStrategy
             public void writeTo(Output output, Collection<Object> message)
                     throws IOException
             {
+                final boolean preserveNull = IdStrategy.this.preserveNull;
+                int nullCount = 0;
                 for (Object value : message)
                 {
                     if (value != null)
+                    {
+                        if (nullCount != 0)
+                        {
+                            output.writeUInt32(2, nullCount, false);
+                            nullCount = 0;
+                        }
                         output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
+                    }
+                    else if (preserveNull)
+                    {
+                        nullCount++;
+                    }
                 }
+                if (nullCount != 0)
+                    output.writeUInt32(2, nullCount, false);
             }
         };
 
@@ -494,6 +516,9 @@ public abstract class IdStrategy
                             output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
                                     true);
                             break;
+                        case 2:
+                            output.writeUInt32(2, input.readUInt32(), false);
+                            break;
                         default:
                             throw new ProtostuffException(
                                     "The collection was incorrectly " + "serialized.");
@@ -507,13 +532,13 @@ public abstract class IdStrategy
             @Override
             public String getFieldName(int number)
             {
-                return number == 1 ? CollectionSchema.FIELD_NAME_VALUE : null;
+                return CollectionSchema.fieldName(number);
             }
 
             @Override
             public int getFieldNumber(String name)
             {
-                return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
+                return CollectionSchema.fieldNumber(name);
             }
 
             @Override
@@ -557,14 +582,26 @@ public abstract class IdStrategy
             public void writeTo(Output output, Object message) throws IOException
             {
                 final Object[] array = (Object[])message;
-                for (int i = 0, len = array.length; i < len; i++)
+                final boolean preserveNull = IdStrategy.this.preserveNull;
+                int nullCount = 0;
+                for (Object value : array)
                 {
-                    final Object value = array[i];
                     if (value != null)
                     {
+                        if (nullCount != 0)
+                        {
+                            output.writeUInt32(2, nullCount, false);
+                            nullCount = 0;
+                        }
                         output.writeObject(1, value, DYNAMIC_VALUE_SCHEMA, true);
                     }
+                    else if (preserveNull)
+                    {
+                        nullCount++;
+                    }
                 }
+                if (nullCount != 0)
+                    output.writeUInt32(2, nullCount, false);
             }
         };
 
@@ -585,6 +622,9 @@ public abstract class IdStrategy
                         case 1:
                             output.writeObject(number, pipe, DYNAMIC_VALUE_PIPE_SCHEMA,
                                     true);
+                            break;
+                        case 2:
+                            output.writeUInt32(2, input.readUInt32(), false);
                             break;
                         default:
                             throw new ProtostuffException("The array was incorrectly "
@@ -839,13 +879,12 @@ public abstract class IdStrategy
             public void writeTo(Output output, Entry<Object, Object> entry)
                     throws IOException
             {
-                if (entry.getKey() != null)
-                    output.writeObject(1, entry.getKey(), DYNAMIC_VALUE_SCHEMA,
-                            false);
+                final Object key = entry.getKey(), value = entry.getValue();
+                if (key != null)
+                    output.writeObject(1, key, DYNAMIC_VALUE_SCHEMA, false);
 
-                if (entry.getValue() != null)
-                    output.writeObject(2, entry.getValue(), DYNAMIC_VALUE_SCHEMA,
-                            false);
+                if (value != null)
+                    output.writeObject(2, value, DYNAMIC_VALUE_SCHEMA, false);
             }
         };
 

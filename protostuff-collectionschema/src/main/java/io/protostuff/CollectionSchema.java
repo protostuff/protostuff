@@ -34,6 +34,29 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 
     public static final String FIELD_NAME_VALUE = "v";
     public static final String FIELD_NAME_NULL = "n";
+    
+    public static final String fieldName(int number)
+    {
+        switch (number)
+        {
+            case 1: return FIELD_NAME_VALUE;
+            case 2: return FIELD_NAME_NULL;
+            default: return null;
+        }
+    }
+
+    public static final int fieldNumber(String name)
+    {
+        if (1 != name.length())
+            return 0;
+        
+        switch (name.charAt(0))
+        {
+            case 'v': return 1;
+            case 'n': return 2;
+            default: return 0;
+        }
+    }
 
     /**
      * Creates new {@code Collection} messages.
@@ -375,26 +398,13 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     @Override
     public final String getFieldName(int number)
     {
-        switch (number)
-        {
-            case 1: return FIELD_NAME_VALUE;
-            case 2: return FIELD_NAME_NULL;
-            default: return null;
-        }
+        return fieldName(number);
     }
 
     @Override
     public final int getFieldNumber(String name)
     {
-        if (1 != name.length())
-            return 0;
-        
-        switch (name.charAt(0))
-        {
-            case 'v': return 1;
-            case 'n': return 2;
-            default: return 0;
-        }
+        return fieldNumber(name);
     }
 
     @Override
