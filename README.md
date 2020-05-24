@@ -87,6 +87,20 @@ If you are to purely use this to replace java serialization (no compatibility wi
 -Dprotostuff.runtime.morph_non_final_pojos=true
 ```
 
+You can also customize it programmatically:
+```java
+static final DefaultIdStrategy STRATEGY = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS 
+        | IdStrategy.PRESERVE_NULL_ELEMENTS,
+        | IdStrategy.MORPH_COLLECTION_INTERFACES,
+        | IdStrategy.MORPH_MAP_INTERFACES,
+        | IdStrategy.MORPH_NON_FINAL_POJOS);
+```
+
+Use it:
+```java
+Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class, STRATEGY);
+```
+
 Questions/Concerns/Suggestions
 ------------------------------
 
