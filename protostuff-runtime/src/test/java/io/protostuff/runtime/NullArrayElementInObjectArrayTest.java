@@ -36,7 +36,7 @@ public abstract class NullArrayElementInObjectArrayTest extends AbstractTest
 {
     
     final DefaultIdStrategy strategy = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
-            IdStrategy.ALLOW_NULL_ARRAY_ELEMENT);
+            IdStrategy.PRESERVE_NULL_ELEMENTS);
     
     @Override
     protected IdStrategy newIdStrategy()

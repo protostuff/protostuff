@@ -14,6 +14,10 @@
 
 package io.protostuff.runtime;
 
+import io.protostuff.ByteString;
+import io.protostuff.Pipe;
+import io.protostuff.Schema;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,10 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-
-import io.protostuff.ByteString;
-import io.protostuff.Pipe;
-import io.protostuff.Schema;
+import java.util.List;
 
 /**
  * Test for arrays that contain null elements.
@@ -40,7 +41,7 @@ public abstract class NullArrayElementTest extends AbstractTest
 {
     
     final DefaultIdStrategy strategy = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
-            IdStrategy.ALLOW_NULL_ARRAY_ELEMENT);
+            IdStrategy.PRESERVE_NULL_ELEMENTS);
     
     @Override
     protected IdStrategy newIdStrategy()
@@ -124,20 +125,49 @@ public abstract class NullArrayElementTest extends AbstractTest
     public static final class PojoWithNonPrimitiveArrays
     {
         Boolean[] boolArray;
+        List<Boolean> boolList;
+        
         Character[] charArray;
+        List<Character> charList;
+        
         Short[] shortArray;
+        List<Short> shortList;
+        
         Integer[] intArray;
+        List<Integer> intList;
+        
         Long[] longArray;
+        List<Long> longList;
+        
         Float[] floatArray;
+        List<Float> floatList;
+        
         Double[] doubleArray;
+        List<Double> doubleList;
+        
         String[] stringArray;
+        List<String> stringList;
+        
         ByteString[] byteStringArray;
+        List<ByteString> byteStringList;
+        
         byte[][] byteArrayArray;
+        List<byte[]> byteArrayList;
+        
         BigDecimal[] bigDecimalArray;
+        List<BigDecimal> bigDecimalList;
+        
         BigInteger[] bigIntegerArray;
+        List<BigInteger> bigIntegerList;
+        
         Date[] dateArray;
+        List<Date> dateList;
+        
         Size[] sizeArray;
+        List<Size> sizeList;
+        
         SomePojo[] somePojoArray;
+        List<SomePojo> somePojoList;
 
         public PojoWithNonPrimitiveArrays()
         {
@@ -160,20 +190,49 @@ public abstract class NullArrayElementTest extends AbstractTest
                 SomePojo[] somePojoArray)
         {
             this.boolArray = boolArray;
+            this.boolList = Arrays.asList(boolArray);
+            
             this.charArray = charArray;
+            this.charList = Arrays.asList(charArray);
+            
             this.shortArray = shortArray;
+            this.shortList = Arrays.asList(shortArray);
+            
             this.intArray = intArray;
+            this.intList = Arrays.asList(intArray);
+            
             this.longArray = longArray;
+            this.longList = Arrays.asList(longArray);
+            
             this.floatArray = floatArray;
+            this.floatList = Arrays.asList(floatArray);
+            
             this.doubleArray = doubleArray;
+            this.doubleList = Arrays.asList(doubleArray);
+            
             this.stringArray = stringArray;
+            this.stringList = Arrays.asList(stringArray);
+            
             this.byteStringArray = byteStringArray;
+            this.byteStringList = Arrays.asList(byteStringArray);
+            
             this.byteArrayArray = byteArrayArray;
+            this.byteArrayList = Arrays.asList(byteArrayArray);
+            
             this.bigDecimalArray = bigDecimalArray;
+            this.bigDecimalList = Arrays.asList(bigDecimalArray);
+            
             this.bigIntegerArray = bigIntegerArray;
+            this.bigIntegerList = Arrays.asList(bigIntegerArray);
+            
             this.dateArray = dateArray;
+            this.dateList = Arrays.asList(dateArray);
+            
             this.sizeArray = sizeArray;
+            this.sizeList = Arrays.asList(sizeArray);
+            
             this.somePojoArray = somePojoArray;
+            this.somePojoList = Arrays.asList(somePojoArray);
         }
 
         @Override
@@ -182,20 +241,35 @@ public abstract class NullArrayElementTest extends AbstractTest
             final int prime = 31;
             int result = 1;
             result = prime * result + Arrays.hashCode(bigDecimalArray);
+            result = prime * result + ((bigDecimalList == null) ? 0 : bigDecimalList.hashCode());
             result = prime * result + Arrays.hashCode(bigIntegerArray);
+            result = prime * result + ((bigIntegerList == null) ? 0 : bigIntegerList.hashCode());
             result = prime * result + Arrays.hashCode(boolArray);
+            result = prime * result + ((boolList == null) ? 0 : boolList.hashCode());
             result = prime * result + Arrays.hashCode(byteArrayArray);
+            result = prime * result + ((byteArrayList == null) ? 0 : byteArrayList.hashCode());
             result = prime * result + Arrays.hashCode(byteStringArray);
+            result = prime * result + ((byteStringList == null) ? 0 : byteStringList.hashCode());
             result = prime * result + Arrays.hashCode(charArray);
+            result = prime * result + ((charList == null) ? 0 : charList.hashCode());
             result = prime * result + Arrays.hashCode(dateArray);
+            result = prime * result + ((dateList == null) ? 0 : dateList.hashCode());
             result = prime * result + Arrays.hashCode(doubleArray);
+            result = prime * result + ((doubleList == null) ? 0 : doubleList.hashCode());
             result = prime * result + Arrays.hashCode(floatArray);
+            result = prime * result + ((floatList == null) ? 0 : floatList.hashCode());
             result = prime * result + Arrays.hashCode(intArray);
+            result = prime * result + ((intList == null) ? 0 : intList.hashCode());
             result = prime * result + Arrays.hashCode(longArray);
+            result = prime * result + ((longList == null) ? 0 : longList.hashCode());
             result = prime * result + Arrays.hashCode(shortArray);
+            result = prime * result + ((shortList == null) ? 0 : shortList.hashCode());
             result = prime * result + Arrays.hashCode(sizeArray);
+            result = prime * result + ((sizeList == null) ? 0 : sizeList.hashCode());
             result = prime * result + Arrays.hashCode(somePojoArray);
+            result = prime * result + ((somePojoList == null) ? 0 : somePojoList.hashCode());
             result = prime * result + Arrays.hashCode(stringArray);
+            result = prime * result + ((stringList == null) ? 0 : stringList.hashCode());
             return result;
         }
 
@@ -208,38 +282,178 @@ public abstract class NullArrayElementTest extends AbstractTest
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            PojoWithNonPrimitiveArrays other = (PojoWithNonPrimitiveArrays) obj;
+            PojoWithNonPrimitiveArrays other = (PojoWithNonPrimitiveArrays)obj;
             if (!Arrays.equals(bigDecimalArray, other.bigDecimalArray))
+                return false;
+            if (bigDecimalList == null)
+            {
+                if (other.bigDecimalList != null)
+                    return false;
+            }
+            else if (!bigDecimalList.equals(other.bigDecimalList))
                 return false;
             if (!Arrays.equals(bigIntegerArray, other.bigIntegerArray))
                 return false;
+            if (bigIntegerList == null)
+            {
+                if (other.bigIntegerList != null)
+                    return false;
+            }
+            else if (!bigIntegerList.equals(other.bigIntegerList))
+                return false;
             if (!Arrays.equals(boolArray, other.boolArray))
+                return false;
+            if (boolList == null)
+            {
+                if (other.boolList != null)
+                    return false;
+            }
+            else if (!boolList.equals(other.boolList))
                 return false;
             if (!Arrays.deepEquals(byteArrayArray, other.byteArrayArray))
                 return false;
+            if (byteArrayList == null)
+            {
+                if (other.byteArrayList != null)
+                    return false;
+            }
+            //else if (!byteArrayList.equals(other.byteArrayList))
+            //    return false;
+            else
+            {
+                // custom code here because byte[] doesn't have an Object.equals impl.
+                if (other.byteArrayList == null || byteArrayList.size() != other.byteArrayList.size())
+                    return false;
+                
+                for (int i = 0, len = byteArrayList.size(); i < len; i++)
+                {
+                    if (!Arrays.equals(byteArrayList.get(i), other.byteArrayList.get(i)))
+                        return false;
+                }
+            }
             if (!Arrays.equals(byteStringArray, other.byteStringArray))
+                return false;
+            if (byteStringList == null)
+            {
+                if (other.byteStringList != null)
+                    return false;
+            }
+            else if (!byteStringList.equals(other.byteStringList))
                 return false;
             if (!Arrays.equals(charArray, other.charArray))
                 return false;
+            if (charList == null)
+            {
+                if (other.charList != null)
+                    return false;
+            }
+            else if (!charList.equals(other.charList))
+                return false;
             if (!Arrays.equals(dateArray, other.dateArray))
+                return false;
+            if (dateList == null)
+            {
+                if (other.dateList != null)
+                    return false;
+            }
+            else if (!dateList.equals(other.dateList))
                 return false;
             if (!Arrays.equals(doubleArray, other.doubleArray))
                 return false;
+            if (doubleList == null)
+            {
+                if (other.doubleList != null)
+                    return false;
+            }
+            else if (!doubleList.equals(other.doubleList))
+                return false;
             if (!Arrays.equals(floatArray, other.floatArray))
+                return false;
+            if (floatList == null)
+            {
+                if (other.floatList != null)
+                    return false;
+            }
+            else if (!floatList.equals(other.floatList))
                 return false;
             if (!Arrays.equals(intArray, other.intArray))
                 return false;
+            if (intList == null)
+            {
+                if (other.intList != null)
+                    return false;
+            }
+            else if (!intList.equals(other.intList))
+                return false;
             if (!Arrays.equals(longArray, other.longArray))
+                return false;
+            if (longList == null)
+            {
+                if (other.longList != null)
+                    return false;
+            }
+            else if (!longList.equals(other.longList))
                 return false;
             if (!Arrays.equals(shortArray, other.shortArray))
                 return false;
+            if (shortList == null)
+            {
+                if (other.shortList != null)
+                    return false;
+            }
+            else if (!shortList.equals(other.shortList))
+                return false;
             if (!Arrays.equals(sizeArray, other.sizeArray))
+                return false;
+            if (sizeList == null)
+            {
+                if (other.sizeList != null)
+                    return false;
+            }
+            else if (!sizeList.equals(other.sizeList))
                 return false;
             if (!Arrays.equals(somePojoArray, other.somePojoArray))
                 return false;
+            if (somePojoList == null)
+            {
+                if (other.somePojoList != null)
+                    return false;
+            }
+            else if (!somePojoList.equals(other.somePojoList))
+                return false;
             if (!Arrays.equals(stringArray, other.stringArray))
                 return false;
+            if (stringList == null)
+            {
+                if (other.stringList != null)
+                    return false;
+            }
+            else if (!stringList.equals(other.stringList))
+                return false;
             return true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "PojoWithNonPrimitiveArrays [boolArray=" + Arrays.toString(boolArray)
+                    + ", boolList=" + boolList + ", charArray=" + Arrays.toString(charArray)
+                    + ", charList=" + charList + ", shortArray=" + Arrays.toString(shortArray)
+                    + ", shortList=" + shortList + ", intArray=" + Arrays.toString(intArray)
+                    + ", intList=" + intList + ", longArray=" + Arrays.toString(longArray)
+                    + ", longList=" + longList + ", floatArray=" + Arrays.toString(floatArray)
+                    + ", floatList=" + floatList + ", doubleArray=" + Arrays.toString(doubleArray)
+                    + ", doubleList=" + doubleList + ", stringArray="
+                    + Arrays.toString(stringArray) + ", stringList=" + stringList
+                    + ", byteStringArray=" + Arrays.toString(byteStringArray) + ", byteStringList="
+                    + byteStringList + ", byteArrayArray=" + Arrays.toString(byteArrayArray)
+                    + ", byteArrayList=" + byteArrayList + ", bigDecimalArray="
+                    + Arrays.toString(bigDecimalArray) + ", bigDecimalList=" + bigDecimalList
+                    + ", bigIntegerArray=" + Arrays.toString(bigIntegerArray) + ", bigIntegerList="
+                    + bigIntegerList + ", dateArray=" + Arrays.toString(dateArray) + ", dateList="
+                    + dateList + ", sizeArray=" + Arrays.toString(sizeArray) + ", sizeList="
+                    + sizeList + ", somePojoArray=" + Arrays.toString(somePojoArray)
+                    + ", somePojoList=" + somePojoList + "]";
         }
     }
 

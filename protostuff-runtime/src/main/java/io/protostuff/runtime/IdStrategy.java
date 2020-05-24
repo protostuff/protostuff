@@ -37,7 +37,7 @@ public abstract class IdStrategy
     public static final int 
             ENUMS_BY_NAME = 1,
             AUTO_LOAD_POLYMORPHIC_CLASSES = 1 << 1,
-            ALLOW_NULL_ARRAY_ELEMENT = 1 << 2,
+            PRESERVE_NULL_ELEMENTS = 1 << 2,
             MORPH_NON_FINAL_POJOS = 1 << 3,
             MORPH_COLLECTION_INTERFACES = 1 << 4,
             MORPH_MAP_INTERFACES = 1 << 5,
@@ -56,8 +56,8 @@ public abstract class IdStrategy
         if (RuntimeEnv.AUTO_LOAD_POLYMORPHIC_CLASSES)
             flags |= AUTO_LOAD_POLYMORPHIC_CLASSES;
         
-        if (RuntimeEnv.ALLOW_NULL_ARRAY_ELEMENT)
-            flags |= ALLOW_NULL_ARRAY_ELEMENT;
+        if (RuntimeEnv.PRESERVE_NULL_ELEMENTS)
+            flags |= PRESERVE_NULL_ELEMENTS;
         
         if (RuntimeEnv.MORPH_NON_FINAL_POJOS)
             flags |= MORPH_NON_FINAL_POJOS;
@@ -197,6 +197,9 @@ public abstract class IdStrategy
             throw new RuntimeException("An IdStrategy without a primaryGroup "
                     + "(standalone) must have a groupId of zero.");
         }
+        // implicit
+        if (0 != (flags & PRESERVE_NULL_ELEMENTS))
+            flags |= COLLECTION_SCHEMA_ON_REPEATED_FIELDS;
 
         this.flags = flags;
         this.primaryGroup = primaryGroup;

@@ -303,7 +303,7 @@ public final class ArraySchemas
 
             this.handler = handler;
             
-            allowNullArrayElement = 0 != (IdStrategy.ALLOW_NULL_ARRAY_ELEMENT & strategy.flags);
+            allowNullArrayElement = 0 != (IdStrategy.PRESERVE_NULL_ELEMENTS & strategy.flags);
         }
 
         @Override

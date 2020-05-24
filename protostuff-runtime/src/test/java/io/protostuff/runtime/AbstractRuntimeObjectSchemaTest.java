@@ -4176,8 +4176,12 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         }
     }
 
-    public final class CollectionSchemaForString extends CollectionSchema<String> {
-
+    public final class CollectionSchemaForString extends CollectionSchema<String>
+    {
+        public CollectionSchemaForString()
+        {
+            super(RuntimeEnv.PRESERVE_NULL_ELEMENTS);
+        }
         @Override
         protected void addValueFrom(Input input, Collection<String> collection) throws IOException
         {
@@ -4395,7 +4399,12 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public final class CollectionSchemaForBaz extends CollectionSchema<Baz>
     {
 
-        private final Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
+        final Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
+        
+        public CollectionSchemaForBaz()
+        {
+            super(RuntimeEnv.PRESERVE_NULL_ELEMENTS);
+        }
 
         @Override
         protected void addValueFrom(Input input, Collection<Baz> collection) throws IOException

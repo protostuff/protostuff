@@ -1,3 +1,8 @@
+protostuff-1.8.x
+- `-Dprotostuff.runtime.preserve_null_elements=true` preserves null elements in collections/arrays.
+  This property replaces `-Dprotostuff.runtime.allow_null_array_element=true`, which only applied to arrays.
+  Note that this works only on the binary formats (protostuff/protobuf/graph)
+
 protostuff-1.7.2 2020-04-18
 ===========================
 - Issue 273 - fix bug on custom maps without a K (Key) parameter type. Only the V (value) parameter type is declared.

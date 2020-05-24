@@ -504,7 +504,7 @@ public class EnumSetAndMapTest extends AbstractTest
     static void doBeanCyclic(IdStrategy strategy)
     {
         boolean csorf = 
-                0 != (strategy.flags & IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS);
+                0 != (strategy.flags & (IdStrategy.COLLECTION_SCHEMA_ON_REPEATED_FIELDS));
         
         Bean bean = fillCyclic(new Bean());
 

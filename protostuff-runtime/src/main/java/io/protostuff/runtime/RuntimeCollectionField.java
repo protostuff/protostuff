@@ -41,10 +41,10 @@ abstract class RuntimeCollectionField<T, V> extends Field<T>
     protected final CollectionSchema<V> schema;
 
     public RuntimeCollectionField(FieldType type, int number, String name,
-            Tag tag, MessageFactory messageFactory)
+            Tag tag, MessageFactory messageFactory, boolean allowNullElement)
     {
         super(type, number, name, false, tag);
-        schema = new CollectionSchema<V>(messageFactory)
+        schema = new CollectionSchema<V>(messageFactory, allowNullElement)
         {
             @Override
             protected void addValueFrom(Input input, Collection<V> collection)

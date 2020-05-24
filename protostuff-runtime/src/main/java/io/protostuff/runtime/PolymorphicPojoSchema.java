@@ -30,7 +30,7 @@ import java.io.IOException;
  * Will be used if either {@link RuntimeEnv#POJO_SCHEMA_ON_COLLECTION_FIELDS} or 
  * {@link RuntimeEnv#POJO_SCHEMA_ON_MAP_FIELDS} is set.
  * 
- * Applies to a field which is an interface and the type is assignable from List or Map.
+ * Applies to a field which is an interface and the type is assignable from Collection or Map.
  * 
  * @author David Yu
  * @created May 19, 2016

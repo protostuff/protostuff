@@ -23,9 +23,8 @@ import java.util.Set;
 /**
  * A schema for standard jdk {@link Collection collections}. Null values are not serialized/written.
  * <p>
- * If your application relies on {@link Object#equals(Object)}, it will fail when a serialized collection contains null
- * values (The deserialized collection will not contained the null value). {@link MapSchema} on the otherhand can
- * contain both null keys and null values and still succeeding on {@link Object#equals(Object)}.
+ * If {@link #preserveNull} is false and your application relies on {@link Object#equals(Object)}, 
+ * it will fail when a serialized collection contains null values.
  * 
  * @author David Yu
  * @created Jan 26, 2011
@@ -34,6 +33,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
 {
 
     public static final String FIELD_NAME_VALUE = "v";
+    public static final String FIELD_NAME_NULL = "n";
 
     /**
      * Creates new {@code Collection} messages.
@@ -340,15 +340,18 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
      * Factory for creating {@link Collection} messages.
      */
     public final MessageFactory messageFactory;
+    
+    public final boolean preserveNull;
 
-    public CollectionSchema()
+    public CollectionSchema(boolean preserveNull)
     {
-        this(MessageFactories.ArrayList);
+        this(MessageFactories.ArrayList, preserveNull);
     }
 
-    public CollectionSchema(MessageFactory messageFactory)
+    public CollectionSchema(MessageFactory messageFactory, boolean preserveNull)
     {
         this.messageFactory = messageFactory;
+        this.preserveNull = preserveNull;
     }
 
     /**
@@ -372,13 +375,26 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     @Override
     public final String getFieldName(int number)
     {
-        return number == 1 ? FIELD_NAME_VALUE : null;
+        switch (number)
+        {
+            case 1: return FIELD_NAME_VALUE;
+            case 2: return FIELD_NAME_NULL;
+            default: return null;
+        }
     }
 
     @Override
     public final int getFieldNumber(String name)
     {
-        return name.length() == 1 && name.charAt(0) == 'v' ? 1 : 0;
+        if (1 != name.length())
+            return 0;
+        
+        switch (name.charAt(0))
+        {
+            case 'v': return 1;
+            case 'n': return 2;
+            default: return 0;
+        }
     }
 
     @Override
@@ -414,7 +430,7 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
     @Override
     public void mergeFrom(Input input, Collection<V> message) throws IOException
     {
-        for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
+        for (int number = input.readFieldNumber(this), i, nullCount;; number = input.readFieldNumber(this))
         {
             switch (number)
             {
@@ -423,22 +439,55 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                 case 1:
                     addValueFrom(input, message);
                     break;
+                case 2:
+                    for (nullCount = input.readUInt32(), i = 0; i < nullCount; i++)
+                        message.add(null);
+                    break;
                 default:
-                    throw new ProtostuffException("The collection was incorrectly " +
-                            "serialized.");
+                    throw new ProtostuffException("The collection was incorrectly serialized.");
             }
+        }
+    }
+    
+    private void writeWithNullTo(Output output, Collection<V> message) throws IOException
+    {
+        int nullCount = 0;
+        for (V value : message)
+        {
+            if (value != null)
+            {
+                if (nullCount != 0)
+                {
+                    output.writeUInt32(2, nullCount, false);
+                    nullCount = 0;
+                }
+                writeValueTo(output, 1, value, true);
+            }
+            else
+            {
+                nullCount++;
+            }
+        }
+        if (nullCount != 0)
+            output.writeUInt32(2, nullCount, false);
+    }
+    
+    private void writeWithoutNullTo(Output output, Collection<V> message) throws IOException
+    {
+        for (V value : message)
+        {
+            if (value != null)
+                writeValueTo(output, 1, value, true);
         }
     }
 
     @Override
     public void writeTo(Output output, Collection<V> message) throws IOException
     {
-        for (V value : message)
-        {
-            // null values not serialized.
-            if (value != null)
-                writeValueTo(output, 1, value, true);
-        }
+        if (preserveNull)
+            writeWithNullTo(output, message);
+        else
+            writeWithoutNullTo(output, message);
     }
 
     public final Pipe.Schema<Collection<V>> pipeSchema =
@@ -458,9 +507,11 @@ public abstract class CollectionSchema<V> implements Schema<Collection<V>>
                             case 1:
                                 transferValue(pipe, input, output, 1, true);
                                 break;
+                            case 2:
+                                output.writeUInt32(2, input.readUInt32(), false);
+                                break;
                             default:
-                                throw new ProtostuffException("The collection was incorrectly " +
-                                        "serialized.");
+                                throw new ProtostuffException("The collection was incorrectly serialized.");
                         }
                     }
                 }

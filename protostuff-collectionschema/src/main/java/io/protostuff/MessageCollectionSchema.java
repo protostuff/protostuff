@@ -36,13 +36,14 @@ public final class MessageCollectionSchema<V> extends CollectionSchema<V>
      */
     public final Pipe.Schema<V> pipeSchema;
 
-    public MessageCollectionSchema(Schema<V> schema)
+    public MessageCollectionSchema(Schema<V> schema, boolean preserveNull)
     {
-        this(schema, null);
+        this(schema, null, preserveNull);
     }
 
-    public MessageCollectionSchema(Schema<V> schema, Pipe.Schema<V> pipeSchema)
+    public MessageCollectionSchema(Schema<V> schema, Pipe.Schema<V> pipeSchema, boolean preserveNull)
     {
+        super(preserveNull);
         this.schema = schema;
         this.pipeSchema = pipeSchema;
     }

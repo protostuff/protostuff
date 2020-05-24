@@ -76,11 +76,12 @@ final class RuntimeCollectionFieldFactory
 
     private static <T> Field<T> createCollectionInlineV(int number,
             String name, java.lang.reflect.Field f,
-            MessageFactory messageFactory, final Delegate<Object> inline)
+            MessageFactory messageFactory, boolean allowNullElement,
+            final Delegate<Object> inline)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(inline.getFieldType(),
-                number, name, f.getAnnotation(Tag.class), messageFactory)
+                number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement)
         {
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
@@ -128,13 +129,14 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionEnumV(int number, String name,
-            java.lang.reflect.Field f, MessageFactory messageFactory,
+            java.lang.reflect.Field f, 
+            MessageFactory messageFactory, boolean allowNullElement, 
             Class<Object> genericType, final IdStrategy strategy)
     {
         final EnumIO<?> eio = strategy.getEnumIO(genericType);
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Enum<?>>(FieldType.ENUM, number,
-                name, f.getAnnotation(Tag.class), messageFactory)
+                name, f.getAnnotation(Tag.class), messageFactory, allowNullElement)
         {
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
@@ -182,14 +184,15 @@ final class RuntimeCollectionFieldFactory
     }
 
     private static <T> Field<T> createCollectionPojoV(int number, String name,
-            final java.lang.reflect.Field f, final MessageFactory messageFactory,
+            final java.lang.reflect.Field f,
+            final MessageFactory messageFactory, boolean allowNullElement, 
             final Class<Object> genericType, IdStrategy strategy)
     {
         final HasSchema<Object> schemaV = strategy.getSchemaWrapper(
                 genericType, true);
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
-                name, f.getAnnotation(Tag.class), messageFactory)
+                name, f.getAnnotation(Tag.class), messageFactory, allowNullElement)
         {
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
@@ -240,6 +243,7 @@ final class RuntimeCollectionFieldFactory
             protected Field<T> copy(IdStrategy strategy)
             {
                 return createCollectionPojoV(number, name, f, messageFactory, 
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         genericType, strategy);
             }
         };
@@ -247,12 +251,13 @@ final class RuntimeCollectionFieldFactory
 
     private static <T> Field<T> createCollectionPolymorphicV(int number,
             String name, final java.lang.reflect.Field f,
-            final MessageFactory messageFactory, final Class<Object> genericType,
+            final MessageFactory messageFactory, boolean allowNullElement, 
+            final Class<Object> genericType,
             final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
-                name, f.getAnnotation(Tag.class), messageFactory)
+                name, f.getAnnotation(Tag.class), messageFactory, allowNullElement)
         {
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
@@ -311,6 +316,7 @@ final class RuntimeCollectionFieldFactory
             protected Field<T> copy(IdStrategy strategy)
             {
                 return createCollectionPolymorphicV(number, name, f, messageFactory, 
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         genericType, strategy);
             }
         };
@@ -318,12 +324,13 @@ final class RuntimeCollectionFieldFactory
 
     private static <T> Field<T> createCollectionObjectV(int number,
             String name, final java.lang.reflect.Field f,
-            final MessageFactory messageFactory, final Schema<Object> valueSchema,
+            final MessageFactory messageFactory, boolean allowNullElement, 
+            final Schema<Object> valueSchema,
             final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy)
     {
         final Accessor accessor = AF.create(f);
         return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number,
-                name, f.getAnnotation(Tag.class), messageFactory)
+                name, f.getAnnotation(Tag.class), messageFactory, allowNullElement)
         {
             @Override
             protected void mergeFrom(Input input, T message) throws IOException
@@ -378,6 +385,7 @@ final class RuntimeCollectionFieldFactory
             protected Field<T> copy(IdStrategy strategy)
             {
                 return createCollectionObjectV(number, name, f, messageFactory, 
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         valueSchema, valuePipeSchema, strategy);
             }
         };
@@ -437,7 +445,9 @@ final class RuntimeCollectionFieldFactory
 
                 // TODO optimize
                 return createCollectionEnumV(number, name, f, strategy
-                        .getEnumIO(enumType).getEnumSetFactory(), enumType,
+                        .getEnumIO(enumType).getEnumSetFactory(),
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
+                        enumType,
                         strategy);
             }
 
@@ -452,6 +462,7 @@ final class RuntimeCollectionFieldFactory
             {
                 // the value is not a simple parameterized type.
                 return createCollectionObjectV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         strategy.OBJECT_ELEMENT_SCHEMA,
                         strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
             }
@@ -460,14 +471,17 @@ final class RuntimeCollectionFieldFactory
                     strategy);
             if (inline != null)
                 return createCollectionInlineV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         inline);
 
             if (Message.class.isAssignableFrom(genericType))
                 return createCollectionPojoV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         genericType, strategy);
 
             if (genericType.isEnum())
                 return createCollectionEnumV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         genericType, strategy);
 
             final PolymorphicSchema ps = PolymorphicSchemaFactories
@@ -476,22 +490,27 @@ final class RuntimeCollectionFieldFactory
             if (ps != null)
             {
                 return createCollectionObjectV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         ps, ps.getPipeSchema(), strategy);
             }
 
             if (pojo(genericType, morph, strategy))
                 return createCollectionPojoV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         genericType, strategy);
 
             if (genericType.isInterface())
             {
                 return createCollectionObjectV(number, name, f, messageFactory,
+                        0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
                         strategy.OBJECT_ELEMENT_SCHEMA,
                         strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
             }
 
             return createCollectionPolymorphicV(number, name, f,
-                    messageFactory, genericType, strategy);
+                    messageFactory,
+                    0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS),
+                    genericType, strategy);
         }
 
         @Override
