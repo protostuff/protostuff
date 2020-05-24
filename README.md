@@ -77,75 +77,13 @@ static void roundTrip()
 }
 ```
 
-### Support for null elements in concrete arrays.
-```java
-
-public final class Wrap
-{
-    Object obj, any;
-    String[] strArray;
-    Foo[] fooArray;
-    Object[] objArray;
-}
-
-// To enable by default, set the system property:
-// -Dprotostuff.runtime.allow_null_array_element=true
-static final DefaultIdStrategy STRATEGY = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | 
-        IdStrategy.ALLOW_NULL_ARRAY_ELEMENT);
-        
-static void roundTrip()
-{
-    Wrap wrap = new Wrap();
-    wrap.obj = new Foo[]{ null, new Foo("0", 0), null, new Foo("1", 1), null };
-    wrap.any = new String[]{ null, "hello", "world", null };
-    wrap.strArray = new String[]{ "hello", null, "world" };
-    wrap.fooArray = new Foo[]{ null, new Foo("0", 0), null };
-    wrap.objArray = new Object[]{
-        new Foo[] { null, new Foo("hello", 0), new Foo("world", 1), null }
-    };
-    
-    // this is lazily created and cached by RuntimeSchema
-    // so its safe to call RuntimeSchema.getSchema(Foo.class) over and over
-    // The getSchema method is also thread-safe
-    Schema<Wrap> schema = RuntimeSchema.getSchema(Wrap.class, STRATEGY);
-
-    // Re-use (manage) this buffer to avoid allocating on every serialization
-    LinkedBuffer buffer = LinkedBuffer.allocate(512);
-
-    // ser
-    final byte[] protostuff;
-    try
-    {
-        protostuff = ProtostuffIOUtil.toByteArray(wrap, schema, buffer);
-    }
-    finally
-    {
-        buffer.clear();
-    }
-
-    // deser
-    Wrap parsed = schema.newMessage();
-    ProtostuffIOUtil.mergeFrom(protostuff, parsed, schema);
-    
-    assertArrayEquals((Foo[])wrap.obj, (Foo[])parsed.obj);
-    assertArrayEquals((String[])wrap.any, (String[])parsed.any);
-    assertArrayEquals(wrap.strArray, parsed.strArray);
-    assertArrayEquals(wrap.fooArray, parsed.fooArray);
-    assertNotNull(parsed.objArray);
-    assertArrayEquals((Foo[])wrap.objArray[0], (Foo[])parsed.objArray[0]);
-}
-
-static <T> void assertArrayEquals(T[] a, T[] b)
-{
-    if (a == b)
-        return;
-    
-    assertNotNull(a);
-    assertEquals(a.length, b.length);
-    for (int i = 0, l = a.length; i < l; i++)
-        assertEquals(a[i], b[i]);
-}
-
+If you are to purely use this for java serialization (no compatibility with protobuf), set the following system properties:
+```
+-Dprotostuff.runtime.always_use_sun_reflection_factory=true
+-Dprotostuff.runtime.preserve_null_elements=true
+-Dprotostuff.runtime.morph_collection_interfaces=true
+-Dprotostuff.runtime.morph_map_interfaces=true
+-Dprotostuff.runtime.morph_non_final_pojos=true
 ```
 
 Questions/Concerns/Suggestions
