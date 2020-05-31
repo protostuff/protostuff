@@ -4166,7 +4166,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         @Override
         public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
         {
-            writeTo(output, number, readFrom(input), repeated);
+            output.writeObject(number, pipe, schema.pipeSchema, repeated);
         }
 
         @Override
@@ -4197,7 +4197,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         @Override
         protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
         {
-            throw new UnsupportedOperationException();
+            input.transferByteRangeTo(output, true, number, repeated);
         }
     }
 
