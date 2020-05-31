@@ -4385,7 +4385,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         @Override
         public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException
         {
-            writeTo(output, number, readFrom(input), repeated);
+            output.writeObject(number, pipe, schema.pipeSchema, repeated);
         }
 
         @Override
@@ -4399,7 +4399,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     public static final class CollectionSchemaForBaz extends CollectionSchema<Baz>
     {
 
-        static final Schema<Baz> SCHEMA = RuntimeSchema.getSchema(Baz.class);
+        static final HasSchema<Baz> HS = RuntimeSchema.getSchemaWrapper(Baz.class);
         
         public CollectionSchemaForBaz()
         {
@@ -4409,20 +4409,20 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         @Override
         protected void addValueFrom(Input input, Collection<Baz> collection) throws IOException
         {
-            collection.add(input.mergeObject(null, SCHEMA));
+            collection.add(input.mergeObject(null, HS.getSchema()));
         }
 
         @Override
         protected void writeValueTo(Output output, int fieldNumber, Baz value, boolean repeated) throws IOException
         {
-            output.writeObject(fieldNumber, value, SCHEMA, repeated);
+            output.writeObject(fieldNumber, value, HS.getSchema(), repeated);
         }
 
         @Override
         protected void transferValue(Pipe pipe, Input input, Output output, int number, boolean repeated)
             throws IOException
         {
-            throw new UnsupportedOperationException();
+            output.writeObject(number, pipe, HS.getPipeSchema(), repeated);
         }
 
     }
