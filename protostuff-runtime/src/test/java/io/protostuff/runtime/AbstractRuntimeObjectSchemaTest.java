@@ -4176,7 +4176,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         }
     }
 
-    public final class CollectionSchemaForString extends CollectionSchema<String>
+    public static final class CollectionSchemaForString extends CollectionSchema<String>
     {
         public CollectionSchemaForString()
         {
@@ -4352,7 +4352,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         roundTrip(p, schema, pipeSchema);
     }
 
-    public class ImmutableListAsDelegate<T> implements Delegate<AbstractCollection<T>>
+    public static final class ImmutableListAsDelegate<T> implements Delegate<AbstractCollection<T>>
     {
 
         private CollectionSchema<T> schema;
@@ -4396,10 +4396,10 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
     }
 
 
-    public final class CollectionSchemaForBaz extends CollectionSchema<Baz>
+    public static final class CollectionSchemaForBaz extends CollectionSchema<Baz>
     {
 
-        final Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
+        static final Schema<Baz> SCHEMA = RuntimeSchema.getSchema(Baz.class);
         
         public CollectionSchemaForBaz()
         {
@@ -4409,15 +4409,13 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         @Override
         protected void addValueFrom(Input input, Collection<Baz> collection) throws IOException
         {
-            Baz baz = schema.newMessage();
-            input.mergeObject(baz, schema);
-            collection.add(baz);
+            collection.add(input.mergeObject(null, SCHEMA));
         }
 
         @Override
         protected void writeValueTo(Output output, int fieldNumber, Baz value, boolean repeated) throws IOException
         {
-            output.writeObject(fieldNumber, value, schema, repeated);
+            output.writeObject(fieldNumber, value, SCHEMA, repeated);
         }
 
         @Override
