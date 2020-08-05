@@ -90,9 +90,9 @@ If you are to purely use this to replace java serialization (no compatibility wi
 You can also customize it programmatically:
 ```java
 static final DefaultIdStrategy STRATEGY = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS 
-        | IdStrategy.PRESERVE_NULL_ELEMENTS,
-        | IdStrategy.MORPH_COLLECTION_INTERFACES,
-        | IdStrategy.MORPH_MAP_INTERFACES,
+        | IdStrategy.PRESERVE_NULL_ELEMENTS
+        | IdStrategy.MORPH_COLLECTION_INTERFACES
+        | IdStrategy.MORPH_MAP_INTERFACES
         | IdStrategy.MORPH_NON_FINAL_POJOS);
 ```
 
