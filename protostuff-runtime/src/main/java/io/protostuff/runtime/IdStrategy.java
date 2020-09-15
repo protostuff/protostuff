@@ -3,6 +3,7 @@ package io.protostuff.runtime;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -1895,9 +1896,25 @@ public abstract class IdStrategy
                 constructor.setAccessible(true);
                 return constructor.newInstance();
             }
-            catch (Exception e1)
+            catch (NoSuchMethodException ne)
             {
-                throw new RuntimeException(e);
+                throw new RuntimeException(ne);
+            }
+            catch (IllegalArgumentException ne)
+            {
+                throw new RuntimeException(ne);
+            }
+            catch (IllegalAccessException ne)
+            {
+                throw new RuntimeException(ne);
+            }
+            catch (InvocationTargetException ne)
+            {
+                throw new RuntimeException(ne);
+            }
+            catch (InstantiationException ne)
+            {
+                throw new RuntimeException(ne);
             }
         }
         catch (InstantiationException e)

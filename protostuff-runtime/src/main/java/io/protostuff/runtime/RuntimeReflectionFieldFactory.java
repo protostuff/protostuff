@@ -87,7 +87,11 @@ public final class RuntimeReflectionFieldFactory
                             f.set(message, Character.valueOf((char) input
                                     .readUInt32()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -109,7 +113,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -183,7 +191,11 @@ public final class RuntimeReflectionFieldFactory
                             f.set(message,
                                     Short.valueOf((short) input.readUInt32()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -206,7 +218,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -280,7 +296,11 @@ public final class RuntimeReflectionFieldFactory
                             f.set(message,
                                     Byte.valueOf((byte) input.readUInt32()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -302,7 +322,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -374,7 +398,11 @@ public final class RuntimeReflectionFieldFactory
                         else
                             f.set(message, Integer.valueOf(input.readInt32()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -395,7 +423,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -467,7 +499,11 @@ public final class RuntimeReflectionFieldFactory
                         else
                             f.set(message, Long.valueOf(input.readInt64()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -488,7 +524,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -560,7 +600,11 @@ public final class RuntimeReflectionFieldFactory
                         else
                             f.set(message, new Float(input.readFloat()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -582,7 +626,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -654,7 +702,11 @@ public final class RuntimeReflectionFieldFactory
                         else
                             f.set(message, new Double(input.readDouble()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -676,7 +728,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -749,7 +805,11 @@ public final class RuntimeReflectionFieldFactory
                             f.set(message, input.readBool() ? Boolean.TRUE
                                     : Boolean.FALSE);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -771,7 +831,11 @@ public final class RuntimeReflectionFieldFactory
                                         false);
                         }
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -839,7 +903,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, input.readString());
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -854,7 +922,11 @@ public final class RuntimeReflectionFieldFactory
                         if (value != null)
                             output.writeString(number, value, false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -923,7 +995,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, input.readBytes());
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -939,7 +1015,11 @@ public final class RuntimeReflectionFieldFactory
                         if (bs != null)
                             output.writeBytes(number, bs, false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1008,7 +1088,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, input.readByteArray());
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1023,7 +1107,11 @@ public final class RuntimeReflectionFieldFactory
                         if (array != null)
                             output.writeByteArray(number, array, false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1094,7 +1182,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, eio.readFrom(input));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1108,7 +1200,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         existing = (Enum<?>) f.get(message);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1185,7 +1281,11 @@ public final class RuntimeReflectionFieldFactory
                         f.set(message,
                                 input.mergeObject(f.get(message), getSchema()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1199,7 +1299,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         existing = f.get(message);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1286,7 +1390,11 @@ public final class RuntimeReflectionFieldFactory
                         {
                             f.set(message, value);
                         }
-                        catch (Exception e)
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalArgumentException e)
                         {
                             throw new RuntimeException(e);
                         }
@@ -1301,7 +1409,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         existing = f.get(message);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1337,7 +1449,11 @@ public final class RuntimeReflectionFieldFactory
                         schema.mergeFrom(input, value);
                         f.set(message, value);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1417,7 +1533,11 @@ public final class RuntimeReflectionFieldFactory
                         {
                             f.set(message, value);
                         }
-                        catch (Exception e)
+                        catch (IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                        catch (IllegalArgumentException e)
                         {
                             throw new RuntimeException(e);
                         }
@@ -1432,7 +1552,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         existing = f.get(message);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1454,7 +1578,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, value);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1522,7 +1650,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, new BigDecimal(input.readString()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1537,7 +1669,11 @@ public final class RuntimeReflectionFieldFactory
                         if (value != null)
                             output.writeString(number, value.toString(), false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1605,7 +1741,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, new BigInteger(input.readByteArray()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1621,7 +1761,11 @@ public final class RuntimeReflectionFieldFactory
                             output.writeByteArray(number, value.toByteArray(),
                                     false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1689,7 +1833,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, new Date(input.readFixed64()));
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1704,7 +1852,11 @@ public final class RuntimeReflectionFieldFactory
                         if (value != null)
                             output.writeFixed64(number, value.getTime(), false);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1779,7 +1931,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         f.set(message, value);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }
@@ -1794,7 +1950,11 @@ public final class RuntimeReflectionFieldFactory
                     {
                         value = f.get(message);
                     }
-                    catch (Exception e)
+                    catch (IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         throw new RuntimeException(e);
                     }

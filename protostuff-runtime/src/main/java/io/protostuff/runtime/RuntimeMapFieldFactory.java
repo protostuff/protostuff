@@ -46,6 +46,8 @@ final class RuntimeMapFieldFactory
     {
     }
 
+    static final Accessor.Factory AF = ReflectAccessor.FACTORY;
+
     /*
      * private static final DerivativeSchema POLYMORPHIC_MAP_VALUE_SCHEMA = new DerivativeSchema() {
      * 
@@ -76,38 +78,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Enum<?>>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Enum<?>>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Enum<?>> existing;
-                try
-                {
-                    existing = (Map<Object, Enum<?>>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Enum<?>> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -173,38 +158,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -273,38 +241,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -380,38 +331,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -505,38 +439,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -627,38 +544,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Enum<?>, Enum<?>>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Enum<?>, Enum<?>>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Enum<?>, Enum<?>> existing;
-                try
-                {
-                    existing = (Map<Enum<?>, Enum<?>>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Enum<?>, Enum<?>> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -726,38 +626,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Enum<?>, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Enum<?>, Object> existing;
-                try
-                {
-                    existing = (Map<Enum<?>, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Enum<?>, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -827,38 +710,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Enum<?>, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Enum<?>, Object> existing;
-                try
-                {
-                    existing = (Map<Enum<?>, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Enum<?>, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -936,38 +802,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Enum<?>, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Enum<?>, Object> existing;
-                try
-                {
-                    existing = (Map<Enum<?>, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Enum<?>, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1062,38 +911,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Enum<?>, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Enum<?>, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Enum<?>, Object> existing;
-                try
-                {
-                    existing = (Map<Enum<?>, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Enum<?>, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1185,38 +1017,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Enum<?>>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Enum<?>>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Enum<?>>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Enum<?>> existing;
-                try
-                {
-                    existing = (Map<Object, Enum<?>>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Enum<?>> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1294,38 +1109,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1405,38 +1203,21 @@ final class RuntimeMapFieldFactory
         return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE,
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1517,38 +1298,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1646,38 +1410,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);
@@ -1770,38 +1517,21 @@ final class RuntimeMapFieldFactory
                 number, name, f.getAnnotation(Tag.class), messageFactory)
         {
 
-            {
-                f.setAccessible(true);
-            }
+            final Accessor accessor = AF.create(f);
 
             @Override
             @SuppressWarnings("unchecked")
             protected void mergeFrom(Input input, T message) throws IOException
             {
-                try
-                {
-                    f.set(message, input.mergeObject(
-                            (Map<Object, Object>) f.get(message), schema));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                accessor.set(message, input.mergeObject(
+                        (Map<Object, Object>) accessor.get(message), schema));
             }
 
             @Override
             @SuppressWarnings("unchecked")
             protected void writeTo(Output output, T message) throws IOException
             {
-                final Map<Object, Object> existing;
-                try
-                {
-                    existing = (Map<Object, Object>) f.get(message);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                final Map<Object, Object> existing = accessor.get(message);
 
                 if (existing != null)
                     output.writeObject(number, existing, schema, false);

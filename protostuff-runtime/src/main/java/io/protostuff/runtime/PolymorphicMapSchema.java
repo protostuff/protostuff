@@ -397,7 +397,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                     k = fSingletonMap_k.get(value);
                     v = fSingletonMap_v.get(value);
                 }
-                catch (Exception e)
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalArgumentException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -448,7 +452,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
         {
             m = fUnmodifiableMap_m.get(value);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -466,7 +474,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             m = fSynchronizedMap_m.get(value);
             mutex = fSynchronizedMap_mutex.get(value);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -496,7 +508,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             keyType = fCheckedMap_keyType.get(value);
             valueType = fCheckedMap_valueType.get(value);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -650,7 +666,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_v.set(map, v);
                 }
-                catch (Exception e)
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalArgumentException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -677,7 +697,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
                 {
                     fSingletonMap_k.set(map, k);
                 }
-                catch (Exception e)
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (IllegalArgumentException e)
                 {
                     throw new RuntimeException(e);
                 }
@@ -699,7 +723,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             fSingletonMap_k.set(map, k);
             fSingletonMap_v.set(map, v);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -731,7 +759,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fUnmodifiableSortedMap_sm.set(map, m);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -761,7 +793,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fSynchronizedSortedMap_sm.set(map, m);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }
@@ -807,7 +843,11 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema
             if (sm)
                 fCheckedSortedMap_sm.set(map, m);
         }
-        catch (Exception e)
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (IllegalArgumentException e)
         {
             throw new RuntimeException(e);
         }

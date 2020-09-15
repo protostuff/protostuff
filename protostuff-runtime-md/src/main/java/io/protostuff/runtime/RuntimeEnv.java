@@ -18,6 +18,7 @@
 package io.protostuff.runtime;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -385,7 +386,19 @@ public final class RuntimeEnv
             {
                 return constructor.newInstance((Object[]) null);
             }
-            catch (Exception e)
+            catch (InstantiationException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }
@@ -411,7 +424,15 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectInputStream.invoke(null, clazz,
                         Object.class);
             }
-            catch (Exception e)
+            catch (IllegalArgumentException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }
@@ -437,7 +458,15 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
                         (int) objectConstructorId);
             }
-            catch (Exception e)
+            catch (IllegalArgumentException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }
@@ -463,7 +492,15 @@ public final class RuntimeEnv
                 return (T) newInstanceFromObjectStreamClass.invoke(null, clazz,
                         objectConstructorId);
             }
-            catch (Exception e)
+            catch (IllegalArgumentException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
             {
                 throw new RuntimeException(e);
             }
