@@ -46,7 +46,7 @@ final class RuntimeMapFieldFactory
     {
     }
 
-    static final Accessor.Factory AF = ReflectAccessor.FACTORY;
+    static final Accessor.Factory AF = RuntimeFieldFactory.ACCESSOR_FACTORY;
 
     /*
      * private static final DerivativeSchema POLYMORPHIC_MAP_VALUE_SCHEMA = new DerivativeSchema() {
