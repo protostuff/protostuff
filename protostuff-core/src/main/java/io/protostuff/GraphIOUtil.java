@@ -66,15 +66,24 @@ public final class GraphIOUtil
     }
 
     /**
+     * Merges the {@code message} from the {@link CodedInput} using the given {@code schema}.
+     */
+    public static <T> void mergeFrom(CodedInput input, T message, Schema<T> schema)
+            throws IOException
+    {
+        final GraphCodedInput graphInput = new GraphCodedInput(input);
+        schema.mergeFrom(graphInput, message);
+        input.checkLastTagWas(0);
+    }
+
+    /**
      * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
      */
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema)
             throws IOException
     {
         final CodedInput input = new CodedInput(in, true);
-        final GraphCodedInput graphInput = new GraphCodedInput(input);
-        schema.mergeFrom(graphInput, message);
-        input.checkLastTagWas(0);
+        mergeFrom(input, message, schema);
     }
 
     /**
