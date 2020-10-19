@@ -18,6 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.protostuff.Pipe;
 import io.protostuff.ProtobufIOUtil;
@@ -25,6 +27,8 @@ import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.SerializableObjects;
 import io.protostuff.StringSerializer.STRING;
+import io.protostuff.LinkedBuffer;
+import org.junit.Assert;
 
 /**
  * Protostuff impl for {@link NullArrayElementTest}.
@@ -107,4 +111,30 @@ public class ProtostuffNullArrayElementTest extends NullArrayElementTest
         assertEquals(strProtobufRoundTrip, STRING.deser(protobuf));
     }
 
+    public void testNullElementList() {
+        LinkedBuffer buffer = LinkedBuffer.allocate(256);
+        List arrayList = new ArrayList();
+        arrayList.add(null);
+        arrayList.add(1);
+        arrayList.add("once");
+
+        ListWrapper listWrapper = new ListWrapper(arrayList);
+        Schema<ListWrapper> lSchema = RuntimeSchema.getSchema(ListWrapper.class);
+        byte[] bytes = ProtostuffIOUtil.toByteArray(listWrapper, lSchema, buffer);
+        ListWrapper resultLW = new ListWrapper();
+        ProtostuffIOUtil.mergeFrom(bytes, resultLW, lSchema);
+        Assert.assertEquals(listWrapper.arrayList, resultLW.arrayList);
+    }
+
+    static class ListWrapper {
+        private List arrayList;
+
+        public ListWrapper(List arrayList) {
+            this.arrayList = arrayList;
+        }
+
+        public ListWrapper() {
+
+        }
+    }
 }

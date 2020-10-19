@@ -296,13 +296,15 @@ final class RuntimeRepeatedFieldFactory
             @Override
             protected void writeTo(Output output, T message) throws IOException
             {
+                final Object nullValue = "isNull_Mark"; //mark null, "isNull" replace null
                 final Collection<Object> existing = accessor.get(message);
                 if (existing != null && !existing.isEmpty())
                 {
                     for (Object o : existing)
                     {
-                        if (o != null)
-                            output.writeObject(number, o, schema, true);
+                        if (o == null)
+                            o = nullValue;
+                        output.writeObject(number, o, schema, true);
                     }
                 }
             }

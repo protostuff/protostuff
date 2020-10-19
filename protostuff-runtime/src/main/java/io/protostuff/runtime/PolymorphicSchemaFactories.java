@@ -244,7 +244,12 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
                 @Override
                 protected void setValue(Object value, Object owner)
                 {
-                    handler.setValue(value, owner);
+                    final Object nullValue = "isNull_Mark";
+                    if (value.equals(nullValue)) {
+                        handler.setValue(null, owner);
+                    } else {
+                        handler.setValue(value, owner);
+                    }
                 }
             };
         }
