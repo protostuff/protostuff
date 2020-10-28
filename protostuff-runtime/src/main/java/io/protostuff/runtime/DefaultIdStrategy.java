@@ -19,14 +19,13 @@ import io.protostuff.Schema;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The FQCN(fully qualified class name) will serve as the id (string). Does not need any registration in the user-code
  * (works out-of-the-box). The size of serialized representation may be not very efficient.
- * 
+ *
  * @author Leo Romanoff
  * @author David Yu
  */
@@ -52,12 +51,12 @@ public final class DefaultIdStrategy extends IdStrategy
     {
         super(DEFAULT_FLAGS, primaryGroup, groupId);
     }
-    
+
     public DefaultIdStrategy(int flags)
     {
         super(flags, null, 0);
     }
-    
+
     public DefaultIdStrategy(int flags, IdStrategy primaryGroup, int groupId)
     {
         super(flags, primaryGroup, groupId);
@@ -77,7 +76,7 @@ public final class DefaultIdStrategy extends IdStrategy
         return last == null
                 || (last instanceof Registered<?> && ((Registered<?>) last).schema == schema);
     }
-    
+
     /**
      * Registers a pojo. Returns true if registration is successful or if the same exact schema was previously
      * registered.
@@ -88,7 +87,7 @@ public final class DefaultIdStrategy extends IdStrategy
 
         final HasSchema<?> last = pojoMapping.putIfAbsent(typeClass.getName(),
                 new LazyRegister<T>(typeClass, this));
-        
+
         return last == null || (last instanceof LazyRegister);
     }
 
@@ -355,8 +354,26 @@ public final class DefaultIdStrategy extends IdStrategy
             }
             else
             {
-                factory = new RuntimeCollectionFactory(
-                        RuntimeEnv.loadClass(className));
+                Class<?> clazz = RuntimeEnv.loadClass(className);
+                try
+                {
+                    factory = new RuntimeCollectionFactory(clazz);
+                    // Verify this instance can be created successful
+                    Collection<?> stubCol = factory.newMessage();
+                    // proxy breakdown: OnDemandSunReflectionFactory.getConstructor
+                    stubCol.size();
+                }
+                catch (Throwable e)
+                {
+                    // ignore
+                    // failed
+                    factory = null;
+                }
+                if (null == factory)
+                    // try adapt collection with default collection implements
+                    factory = adaptDefaultCollectionFactory(clazz);
+                if (null == factory)
+                    throw new IllegalStateException(String.format("Couldn't create or adapt [%s]'s instance", className));
                 CollectionSchema.MessageFactory f = collectionMapping
                         .putIfAbsent(className, factory);
                 if (f != null)
@@ -365,6 +382,33 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
         return factory;
+    }
+
+    /**
+     * Returns the adapted collection implement
+     */
+    private CollectionSchema.MessageFactory adaptDefaultCollectionFactory(Class<?> clazz) {
+        // make interfaces in order
+        List<Class<?>> interfaces = new ArrayList<>();
+        do
+        {
+            Collections.addAll(interfaces, clazz.getInterfaces());
+            clazz = clazz.getSuperclass();
+        } while(null != clazz);
+        for (int i = 0; i < interfaces.size(); i ++)
+        {
+            clazz = interfaces.get(i);
+            try
+            {
+                // choose top collection interface
+                return CollectionSchema.MessageFactories.getFactory((Class<Collection<?>>) clazz);
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
+        }
+        return null;
     }
 
     @Override
@@ -486,7 +530,7 @@ public final class DefaultIdStrategy extends IdStrategy
 
         return hd;
     }
-    
+
     @Override
     protected <T> HasSchema<T> tryWritePojoIdTo(Output output, int fieldNumber,
             Class<T> clazz, boolean registered) throws IOException
@@ -494,9 +538,9 @@ public final class DefaultIdStrategy extends IdStrategy
         HasSchema<T> hs = getSchemaWrapper(clazz, false);
         if (hs == null || (registered && hs instanceof Lazy<?>))
             return null;
-        
+
         output.writeString(fieldNumber, clazz.getName(), false);
-        
+
         return hs;
     }
 
@@ -686,7 +730,7 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
     }
-    
+
     static final class Lazy<T> extends HasSchema<T>
     {
         final Class<T> typeClass;
@@ -802,7 +846,7 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
     }
-    
+
     static final class LazyRegister<T> extends HasSchema<T>
     {
         final Class<T> typeClass;
@@ -830,10 +874,10 @@ public final class DefaultIdStrategy extends IdStrategy
                     }
                 }
             }
-            
+
             return schema;
         }
-        
+
         @Override
         public Pipe.Schema<T> getPipeSchema()
         {
@@ -849,7 +893,7 @@ public final class DefaultIdStrategy extends IdStrategy
                     }
                 }
             }
-            
+
             return pipeSchema;
         }
     }
