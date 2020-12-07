@@ -171,19 +171,11 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
 
     static HasBar readHasBar(Input input) throws IOException
     {
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                input.readByteArray()));
-        try
-        {
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                input.readByteArray()))) {
             return (HasBar) ois.readObject();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            ois.close();
         }
     }
 
@@ -191,15 +183,9 @@ public final class HasHasBar implements Message<HasHasBar>, Schema<HasHasBar>, E
             throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        try
-        {
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(hasBar);
             output.writeByteArray(fieldNumber, baos.toByteArray(), repeated);
-        }
-        finally
-        {
-            oos.close();
         }
     }
 

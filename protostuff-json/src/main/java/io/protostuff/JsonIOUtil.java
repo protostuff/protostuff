@@ -247,18 +247,12 @@ public final class JsonIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 data, false);
-        final JsonParser parser = newJsonParser(null, data, offset, offset + length, false,
-                context);
         /*
          * final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(data, offset, length);
          */
-        try
-        {
+        try (JsonParser parser = newJsonParser(null, data, offset, offset + length, false,
+                context)) {
             mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -270,16 +264,10 @@ public final class JsonIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 in, false);
-        final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0,
-                true, context);
         // final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        try
-        {
+        try (JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0,
+                true, context)) {
             mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -293,14 +281,8 @@ public final class JsonIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 in, false);
-        final JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context);
-        try
-        {
+        try (JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context)) {
             mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -310,14 +292,8 @@ public final class JsonIOUtil
     public static <T> void mergeFrom(Reader reader, T message, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        try
-        {
+        try (JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader)) {
             mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -392,19 +368,12 @@ public final class JsonIOUtil
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final JsonGenerator generator = newJsonGenerator(out,
-                context.allocWriteEncodingBuffer(), 0, true, context);
-
         /*
          * final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
          */
-        try
-        {
+        try (JsonGenerator generator = newJsonGenerator(out,
+                context.allocWriteEncodingBuffer(), 0, true, context)) {
             writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -419,15 +388,9 @@ public final class JsonIOUtil
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false,
-                context);
-        try
-        {
+        try (JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false,
+                context)) {
             writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -437,14 +400,8 @@ public final class JsonIOUtil
     public static <T> void writeTo(Writer writer, T message, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        try
-        {
+        try (JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer)) {
             writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -473,18 +430,12 @@ public final class JsonIOUtil
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final JsonGenerator generator = newJsonGenerator(out,
-                context.allocWriteEncodingBuffer(), 0, true, context);
         /*
          * final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(out, JsonEncoding.UTF8);
          */
-        try
-        {
+        try (JsonGenerator generator = newJsonGenerator(out,
+                context.allocWriteEncodingBuffer(), 0, true, context)) {
             writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -499,15 +450,9 @@ public final class JsonIOUtil
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false,
-                context);
-        try
-        {
+        try (JsonGenerator generator = newJsonGenerator(out, buffer.buffer, 0, false,
+                context)) {
             writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -517,14 +462,8 @@ public final class JsonIOUtil
     public static <T> void writeListTo(Writer writer, List<T> messages, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer);
-        try
-        {
+        try (JsonGenerator generator = DEFAULT_JSON_FACTORY.createJsonGenerator(writer)) {
             writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -566,16 +505,10 @@ public final class JsonIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 in, false);
-        final JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0,
-                true, context);
         // final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(in);
-        try
-        {
+        try (JsonParser parser = newJsonParser(in, context.allocReadIOBuffer(), 0, 0,
+                true, context)) {
             return parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -589,14 +522,8 @@ public final class JsonIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_JSON_FACTORY._getBufferRecycler(),
                 in, false);
-        final JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context);
-        try
-        {
+        try (JsonParser parser = newJsonParser(in, buffer.buffer, 0, 0, false, context)) {
             return parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -606,14 +533,8 @@ public final class JsonIOUtil
     public static <T> List<T> parseListFrom(Reader reader, Schema<T> schema,
             boolean numeric) throws IOException
     {
-        final JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader);
-        try
-        {
+        try (JsonParser parser = DEFAULT_JSON_FACTORY.createJsonParser(reader)) {
             return parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 

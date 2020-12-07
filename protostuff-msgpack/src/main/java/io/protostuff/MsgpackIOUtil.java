@@ -127,15 +127,8 @@ public final class MsgpackIOUtil
 
         ArrayBufferInput bios = new ArrayBufferInput(data, offset, length);
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
-
-        try
-        {
+        try (MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios)) {
             mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
         }
     }
 
@@ -145,15 +138,8 @@ public final class MsgpackIOUtil
     public static <T> void mergeFrom(MessageBufferInput in, T message, Schema<T> schema, boolean numeric) throws IOException
     {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-
-        try
-        {
+        try (MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in)) {
             mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
         }
     }
     
@@ -163,15 +149,8 @@ public final class MsgpackIOUtil
     public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric) throws IOException
     {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-
-        try
-        {
+        try (MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in)) {
             mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
         }
     }
 
@@ -310,15 +289,8 @@ public final class MsgpackIOUtil
     public static <T> List<T> parseListFrom(MessageBufferInput in, Schema<T> schema, boolean numeric) throws IOException
     {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-
-        try
-        {
+        try (MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in)) {
             return parseListFrom(unpacker, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
         }
     }
     
@@ -328,15 +300,8 @@ public final class MsgpackIOUtil
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) throws IOException
     {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-
-        try
-        {
+        try (MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in)) {
             return parseListFrom(unpacker, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
         }
     }
 

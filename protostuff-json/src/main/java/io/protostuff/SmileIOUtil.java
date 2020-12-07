@@ -206,17 +206,11 @@ public final class SmileIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 data, false);
-        final SmileParser parser = newSmileParser(null, data, offset, offset + length, false,
-                context);
 
         // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(data, offset, length);
-        try
-        {
+        try (SmileParser parser = newSmileParser(null, data, offset, offset + length, false,
+                context)) {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -228,17 +222,11 @@ public final class SmileIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
-                true, context);
 
         // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
-        try
-        {
+        try (SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
+                true, context)) {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -252,17 +240,11 @@ public final class SmileIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context);
 
         // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
 
-        try
-        {
+        try (SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context)) {
             JsonIOUtil.mergeFrom(parser, message, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -314,18 +296,11 @@ public final class SmileIOUtil
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final SmileGenerator generator = newSmileGenerator(out,
-                context.allocWriteEncodingBuffer(), 0, true, context);
-
         // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
 
-        try
-        {
+        try (SmileGenerator generator = newSmileGenerator(out,
+                context.allocWriteEncodingBuffer(), 0, true, context)) {
             JsonIOUtil.writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -340,17 +315,10 @@ public final class SmileIOUtil
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
-                context);
-
         // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
-        try
-        {
+        try (SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
+                context)) {
             JsonIOUtil.writeTo(generator, message, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -363,17 +331,10 @@ public final class SmileIOUtil
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final SmileGenerator generator = newSmileGenerator(out,
-                context.allocWriteEncodingBuffer(), 0, true, context);
-
         // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
-        try
-        {
+        try (SmileGenerator generator = newSmileGenerator(out,
+                context.allocWriteEncodingBuffer(), 0, true, context)) {
             JsonIOUtil.writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -388,17 +349,10 @@ public final class SmileIOUtil
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 out, false);
 
-        final SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
-                context);
-
         // final SmileGenerator generator = DEFAULT_SMILE_FACTORY.createJsonGenerator(out);
-        try
-        {
+        try (SmileGenerator generator = newSmileGenerator(out, buffer.buffer, 0, false,
+                context)) {
             JsonIOUtil.writeListTo(generator, messages, schema, numeric);
-        }
-        finally
-        {
-            generator.close();
         }
     }
 
@@ -410,17 +364,11 @@ public final class SmileIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
-                true, context);
 
         // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
-        try
-        {
+        try (SmileParser parser = newSmileParser(in, context.allocReadIOBuffer(), 0, 0,
+                true, context)) {
             return JsonIOUtil.parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 
@@ -434,16 +382,10 @@ public final class SmileIOUtil
     {
         final IOContext context = new IOContext(DEFAULT_SMILE_FACTORY._getBufferRecycler(),
                 in, false);
-        final SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context);
 
         // final SmileParser parser = DEFAULT_SMILE_FACTORY.createJsonParser(in);
-        try
-        {
+        try (SmileParser parser = newSmileParser(in, buffer.buffer, 0, 0, false, context)) {
             return JsonIOUtil.parseListFrom(parser, schema, numeric);
-        }
-        finally
-        {
-            parser.close();
         }
     }
 

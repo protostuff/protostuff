@@ -84,27 +84,15 @@ public final class ProtoUtil
 
     public static void loadFrom(File file, Proto target) throws Exception
     {
-        FileInputStream in = new FileInputStream(file);
-        try
-        {
+        try (FileInputStream in = new FileInputStream(file)) {
             loadFrom(in, target);
-        }
-        finally
-        {
-            in.close();
         }
     }
 
     public static void loadFrom(URL resource, Proto target) throws Exception
     {
-        InputStream in = resource.openStream();
-        try
-        {
+        try (InputStream in = resource.openStream()) {
             loadFrom(in, target);
-        }
-        finally
-        {
-            in.close();
         }
     }
 
