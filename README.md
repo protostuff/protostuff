@@ -109,7 +109,7 @@ Questions/Concerns/Suggestions
 Requirements
 ------------
 
-Java 1.6 or higher
+Java 7 or higher
 
 Build Requirements
 ------------------
