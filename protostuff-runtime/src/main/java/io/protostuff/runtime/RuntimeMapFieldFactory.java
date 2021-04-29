@@ -350,6 +350,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
             }
@@ -473,6 +478,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
@@ -904,6 +914,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
             }
@@ -1029,6 +1044,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
@@ -1240,6 +1260,11 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
+                if (!clazzK.isAssignableFrom(key.getClass()))
+                {
+                    throw new RuntimeException(clazzK + " not assignable to " + 
+                            key.getClass());
+                }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
             }
@@ -1349,6 +1374,11 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
+                if (!clazzK.isAssignableFrom(key.getClass()))
+                {
+                    throw new RuntimeException(clazzK + " not assignable to " + 
+                            key.getClass());
+                }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
             }
@@ -1460,6 +1490,11 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
+                if (!clazzK.isAssignableFrom(key.getClass()))
+                {
+                    throw new RuntimeException(clazzK + " not assignable to " + 
+                            key.getClass());
+                }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
             }
@@ -1484,6 +1519,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
             }
@@ -1580,6 +1620,11 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
+                if (!clazzK.isAssignableFrom(key.getClass()))
+                {
+                    throw new RuntimeException(clazzK + " not assignable to " + 
+                            key.getClass());
+                }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
             }
@@ -1612,6 +1657,11 @@ final class RuntimeMapFieldFactory
             protected void vTo(Output output, int fieldNumber, Object val,
                     boolean repeated) throws IOException
             {
+                if (!clazzV.isAssignableFrom(val.getClass()))
+                {
+                    throw new RuntimeException(clazzV + " not assignable to " + 
+                            val.getClass());
+                }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }
@@ -1709,6 +1759,11 @@ final class RuntimeMapFieldFactory
             protected void kTo(Output output, int fieldNumber, Object key,
                     boolean repeated) throws IOException
             {
+                if (!clazzK.isAssignableFrom(key.getClass()))
+                {
+                    throw new RuntimeException(clazzK + " not assignable to " + 
+                            key.getClass());
+                }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
             }

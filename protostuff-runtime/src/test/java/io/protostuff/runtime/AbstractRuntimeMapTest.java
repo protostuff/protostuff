@@ -2355,4 +2355,162 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest
         roundTrip(p, schema, pipeSchema);
     }
 
+    static final class TestMsg
+    {
+        int tid;
+        Map<String, DecalMsg> strKpojoV;
+        Map<Sequence, DecalMsg> enumKpojoV;
+        Map<PointMsg, DecalMsg> pojoKpojoV;
+        
+        Map<DecalMsg, String> pojoKstringV;
+        Map<DecalMsg, Sequence> pojoKenumV;
+        Map<DecalMsg, Object> pojoKobjectV;
+    }
+    static final class DecalMsg
+    {
+        int tid;
+        PointMsg point;
+    }
+    static final class PointMsg
+    {
+        int x, y, z;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidStrKPojoV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put("1", 1);
+        testMsg.strKpojoV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidEnumKPojoV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put(Sequence.ONE, 1);
+        testMsg.enumKpojoV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidPojoKPojoV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put(new PointMsg(), 1);
+        testMsg.pojoKpojoV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidPojoKStringV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put(1, "1");
+        testMsg.pojoKstringV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidPojoKEnumV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put(1, Sequence.TWO);
+        testMsg.pojoKenumV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidPojoKObjectV() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        Map map = new HashMap();
+        map.put(1, "1");
+        testMsg.pojoKobjectV = map;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
 }
