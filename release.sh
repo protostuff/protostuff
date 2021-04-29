@@ -18,4 +18,4 @@ git add -u . && git commit -m "$VERSION" && \
 $MVN -Prelease deploy && git tag protostuff-$VERSION && \
 $MVN versions:set -DnewVersion=$PR_VERSION -DgenerateBackupPoms=false && \
 git add -u . && git commit -m "$PR_VERSION" && \
-git push -u origin master && git push origin --tags
+git push -u origin 1.7.x && git push origin --tags
