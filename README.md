@@ -77,7 +77,7 @@ static void roundTrip()
 }
 ```
 
-## Important
+## Important (for version 1.8.x)
 If you are to purely use this to replace java serialization (no compatibility with protobuf), set the following system properties:
 ```
 -Dprotostuff.runtime.always_use_sun_reflection_factory=true
