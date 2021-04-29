@@ -5,6 +5,10 @@ protostuff-1.8.x
 - allow protostuff-runtime to work with java 9 and above
 - handle invalid repeated/collection/map pojos during serialization (Issue 309)
 
+protostuff-1.7.3 2021-04-29
+===========================
+- handle invalid repeated/collection/map pojos during serialization (Issue 309)
+
 protostuff-1.7.2 2020-04-18
 ===========================
 - Issue 273 - fix bug on custom maps without a K (Key) parameter type. Only the V (value) parameter type is declared.
