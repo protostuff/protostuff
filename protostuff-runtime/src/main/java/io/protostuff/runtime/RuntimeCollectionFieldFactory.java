@@ -227,6 +227,11 @@ final class RuntimeCollectionFieldFactory
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
+                if (!genericType.isAssignableFrom(value.getClass()))
+                {
+                    throw new RuntimeException(genericType + " not assignable to " + 
+                            value.getClass());
+                }
                 output.writeObject(fieldNumber, value, schemaV.getSchema(),
                         repeated);
             }
@@ -299,6 +304,11 @@ final class RuntimeCollectionFieldFactory
             protected void writeValueTo(Output output, int fieldNumber,
                     Object value, boolean repeated) throws IOException
             {
+                if (!genericType.isAssignableFrom(value.getClass()))
+                {
+                    throw new RuntimeException(genericType + " not assignable to " + 
+                            value.getClass());
+                }
                 output.writeObject(fieldNumber, value,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
             }

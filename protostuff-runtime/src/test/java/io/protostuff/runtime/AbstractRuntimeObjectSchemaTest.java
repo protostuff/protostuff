@@ -4427,4 +4427,41 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
 
     }
 
+    static final class TestMsg
+    {
+        int tid;
+        List<DecalMsg> decal;
+    }
+    static final class DecalMsg
+    {
+        int tid;
+        PointMsg point;
+    }
+    static final class PointMsg
+    {
+        int x, y, z;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testInvalidRepeatedElement() throws IOException
+    {
+        TestMsg testMsg = new TestMsg();
+        @SuppressWarnings("rawtypes")
+        List decals = new ArrayList();
+        decals.add(1);
+        testMsg.decal = decals;// force set different type data
+
+        Schema<TestMsg> schema = getSchema(TestMsg.class);
+        try
+        {
+            toByteArray(testMsg, schema);
+        }
+        catch (RuntimeException e)
+        {
+            // expected
+            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            return;
+        }
+        fail();
+    }
 }
