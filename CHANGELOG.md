@@ -3,7 +3,7 @@ protostuff-1.8.x
   This property replaces `-Dprotostuff.runtime.allow_null_array_element=true`, which only applied to arrays.
   Note that this works only on the binary formats (protostuff/protobuf/graph)
 - allow protostuff-runtime to work with java 9 and above
-- handle invalid repeated/collection pojos during serialization (Issue 309)
+- handle invalid repeated/collection/map pojos during serialization (Issue 309)
 
 protostuff-1.7.2 2020-04-18
 ===========================
