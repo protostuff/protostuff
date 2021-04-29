@@ -171,8 +171,19 @@ final class RuntimeRepeatedFieldFactory
                     final Schema<Object> schema = getSchema();
                     for (Object o : collection)
                     {
-                        if (o != null)
+                        if (o == null)
+                        {
+                            // ignore
+                        }
+                        else if (!genericType.isAssignableFrom(o.getClass()))
+                        {
+                            throw new RuntimeException(genericType + 
+                                    " not assignable to " + o.getClass());
+                        }
+                        else
+                        {
                             output.writeObject(number, o, schema, true);
+                        }
                     }
                 }
             }
@@ -226,8 +237,19 @@ final class RuntimeRepeatedFieldFactory
                 {
                     for (Object o : existing)
                     {
-                        if (o != null)
+                        if (o == null)
+                        {
+                            // ignore
+                        }
+                        else if (!genericType.isAssignableFrom(o.getClass()))
+                        {
+                            throw new RuntimeException(genericType + 
+                                    " not assignable to " + o.getClass());
+                        }
+                        else
+                        {
                             output.writeObject(number, o, schema, true);
+                        }
                     }
                 }
             }
