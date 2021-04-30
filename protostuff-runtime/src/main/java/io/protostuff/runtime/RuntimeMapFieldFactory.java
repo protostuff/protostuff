@@ -303,8 +303,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
@@ -414,8 +415,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
@@ -782,8 +784,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
@@ -895,8 +898,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
@@ -1077,8 +1081,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzK.isAssignableFrom(key.getClass()))
                 {
-                    throw new RuntimeException(clazzK + " not assignable to " + 
-                            key.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + key.getClass().getName() + 
+                            " is not assignable to " + clazzK.getName());
                 }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
@@ -1174,8 +1179,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzK.isAssignableFrom(key.getClass()))
                 {
-                    throw new RuntimeException(clazzK + " not assignable to " + 
-                            key.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + key.getClass().getName() + 
+                            " is not assignable to " + clazzK.getName());
                 }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
@@ -1273,8 +1279,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzK.isAssignableFrom(key.getClass()))
                 {
-                    throw new RuntimeException(clazzK + " not assignable to " + 
-                            key.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + key.getClass().getName() + 
+                            " is not assignable to " + clazzK.getName());
                 }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
@@ -1302,8 +1309,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val, schemaV.getSchema(),
                         repeated);
@@ -1386,8 +1394,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzK.isAssignableFrom(key.getClass()))
                 {
-                    throw new RuntimeException(clazzK + " not assignable to " + 
-                            key.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + key.getClass().getName() + 
+                            " is not assignable to " + clazzK.getName());
                 }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);
@@ -1423,8 +1432,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzV.isAssignableFrom(val.getClass()))
                 {
-                    throw new RuntimeException(clazzV + " not assignable to " + 
-                            val.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + val.getClass().getName() + 
+                            " is not assignable to " + clazzV.getName());
                 }
                 output.writeObject(fieldNumber, val,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
@@ -1508,8 +1518,9 @@ final class RuntimeMapFieldFactory
             {
                 if (!clazzK.isAssignableFrom(key.getClass()))
                 {
-                    throw new RuntimeException(clazzK + " not assignable to " + 
-                            key.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + key.getClass().getName() + 
+                            " is not assignable to " + clazzK.getName());
                 }
                 output.writeObject(fieldNumber, key, schemaK.getSchema(),
                         repeated);

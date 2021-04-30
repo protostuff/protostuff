@@ -4,6 +4,7 @@ protostuff-1.8.x
   Note that this works only on the binary formats (protostuff/protobuf/graph)
 - allow protostuff-runtime to work with java 9 and above
 - handle invalid repeated/collection/map pojos during serialization (Issue 309)
+- include class and field name in error msg for invalid repeated/collection/map pojos during serialization (Issue 309)
 
 protostuff-1.7.3 2021-04-29
 ===========================

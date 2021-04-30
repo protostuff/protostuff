@@ -177,8 +177,9 @@ final class RuntimeRepeatedFieldFactory
                         }
                         else if (!genericType.isAssignableFrom(o.getClass()))
                         {
-                            throw new RuntimeException(genericType + 
-                                    " not assignable to " + o.getClass());
+                            throw new RuntimeException(f.getDeclaringClass().getName() + 
+                                    "::" + f.getName() + " - " + o.getClass().getName() + 
+                                    " is not assignable to " + genericType.getName());
                         }
                         else
                         {
@@ -243,8 +244,9 @@ final class RuntimeRepeatedFieldFactory
                         }
                         else if (!genericType.isAssignableFrom(o.getClass()))
                         {
-                            throw new RuntimeException(genericType + 
-                                    " not assignable to " + o.getClass());
+                            throw new RuntimeException(f.getDeclaringClass() + "::" + 
+                                    f.getName() + " - " + o.getClass() + 
+                                    " is not assignable to " + genericType);
                         }
                         else
                         {

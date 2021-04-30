@@ -229,8 +229,9 @@ final class RuntimeCollectionFieldFactory
             {
                 if (!genericType.isAssignableFrom(value.getClass()))
                 {
-                    throw new RuntimeException(genericType + " not assignable to " + 
-                            value.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + value.getClass().getName() + 
+                            " is not assignable to " + genericType.getName());
                 }
                 output.writeObject(fieldNumber, value, schemaV.getSchema(),
                         repeated);
@@ -306,8 +307,9 @@ final class RuntimeCollectionFieldFactory
             {
                 if (!genericType.isAssignableFrom(value.getClass()))
                 {
-                    throw new RuntimeException(genericType + " not assignable to " + 
-                            value.getClass());
+                    throw new RuntimeException(f.getDeclaringClass().getName() + 
+                            "::" + f.getName() + " - " + value.getClass().getName() + 
+                            " is not assignable to " + genericType.getName());
                 }
                 output.writeObject(fieldNumber, value,
                         strategy.POLYMORPHIC_POJO_ELEMENT_SCHEMA, repeated);
