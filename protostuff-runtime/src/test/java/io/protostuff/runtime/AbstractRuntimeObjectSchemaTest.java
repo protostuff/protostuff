@@ -4452,7 +4452,8 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest
         catch (RuntimeException e)
         {
             // expected
-            assertTrue(e.getMessage().startsWith(DecalMsg.class + " not assignable to "));
+            assertTrue(e.getMessage().endsWith(" is not assignable to " + 
+                    DecalMsg.class.getName()));
             return;
         }
         fail();

@@ -1,3 +1,7 @@
+protostuff-1.7.4 2021-04-30
+===========================
+- include class and field name in error msg for invalid repeated/collection/map pojos during serialization (Issue 309)
+
 protostuff-1.7.3 2021-04-29
 ===========================
 - handle invalid repeated/collection/map pojos during serialization (Issue 309)
