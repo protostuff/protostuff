@@ -457,6 +457,7 @@
     <module>protostuff-collectionschema</module>
     <module>protostuff-runtime</module>
     <module>protostuff-runtime-md</module>
+    <module>protostuff-runtime-guava</module>
     <module>protostuff-runtime-registry</module>
     <module>protostuff-runtime-view</module>
     <module>protostuff-json</module>

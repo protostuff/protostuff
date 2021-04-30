@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>protostuff</artifactId>
+    <groupId>io.protostuff</groupId>
+    <version>1.8.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>protostuff-runtime-guava</artifactId>
+  <name>protostuff :: runtime-guava</name>
+  <description>protostuff runtime for guava Multimap</description>
+  <packaging>jar</packaging>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy todir="${project.build.directory}/extra-sources">
+                  <fileset dir="../protostuff-runtime/src/main/java">
+                    <exclude name="**/DefaultIdStrategy.java" />
+                    <exclude name="**/IdStrategy.java" />
+                    <exclude name="**/ObjectSchema.java" />
+                    <exclude name="**/MultiMapSchema.java" />
+                    <exclude name="**/RuntimeFieldFactory.java" />
+                    <exclude name="**/RuntimeUnsafeFieldFactory.java" />
+                    <exclude name="**/RuntimeMultiMapField.java" />
+                    <exclude name="**/RuntimeMultiMapFieldFactory.java" />
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/extra-sources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <forkCount>1</forkCount>
+          <!-- execute each test in separate process (workaround) -->
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-collectionschema</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>29.0-jre</version>
+      <scope>compile</scope>
+    </dependency>
+      <dependency>
+          <groupId>io.protostuff</groupId>
+          <artifactId>protostuff-runtime</artifactId>
+          <version>1.8.0-SNAPSHOT</version>
+          <scope>compile</scope>
+      </dependency>
+  </dependencies>
+
+</project>

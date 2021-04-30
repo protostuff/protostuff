@@ -82,6 +82,7 @@ public class IncrementalRuntimeObjectSchemaTest extends TestCase
                 20, 11,
                 20, 11,
                 20, 11,
+                20, 11,
                 80, 11);
 
         public IdStrategyFactory()

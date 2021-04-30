@@ -1,21 +1,7 @@
 package io.protostuff.runtime;
 
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BOOL;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_BYTE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_CHAR;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_DOUBLE;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_FLOAT;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT32;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_INT64;
-import static io.protostuff.runtime.RuntimeFieldFactory.ID_SHORT;
-import io.protostuff.CollectionSchema;
-import io.protostuff.Input;
-import io.protostuff.MapSchema;
-import io.protostuff.Message;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.ProtostuffException;
-import io.protostuff.Schema;
+import com.google.common.collect.Multimap;
+import io.protostuff.*;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -41,6 +27,9 @@ public final class DefaultIdStrategy extends IdStrategy
 
     final ConcurrentHashMap<String, MapSchema.MessageFactory> mapMapping = new ConcurrentHashMap<String, MapSchema.MessageFactory>();
 
+    final ConcurrentHashMap<String, MultiMapSchema.MessageFactory> multimapMapping = new ConcurrentHashMap
+            <String, MultiMapSchema.MessageFactory>();
+    
     final ConcurrentHashMap<String, HasDelegate<?>> delegateMapping = new ConcurrentHashMap<String, HasDelegate<?>>();
 
     public DefaultIdStrategy()
@@ -133,6 +122,15 @@ public final class DefaultIdStrategy extends IdStrategy
     {
         return null == mapMapping.putIfAbsent(factory.typeClass().getName(),
                 factory);
+    }
+
+    /**
+     * Registers a Multimap. Returns true if registration is successful.
+     */
+    public boolean registerMultiMap(MultiMapSchema.MessageFactory factory)
+    {
+        return null == multimapMapping.putIfAbsent(
+                factory.typeClass().getName(), factory);
     }
 
     /**
@@ -311,6 +309,33 @@ public final class DefaultIdStrategy extends IdStrategy
         }
 
         return factory;
+    }
+
+    @Override
+    protected MultiMapSchema.MessageFactory getMultiMapFactory(Class<?> clazz)
+    {
+        final String className = clazz.getName();
+        MultiMapSchema.MessageFactory mfactory = multimapMapping.get(className);
+        if (mfactory == null)
+        {
+            if (className.startsWith("com.google.common.collect")
+                    && MultiMapSchema.MessageFactories.accept(
+                            clazz.getSimpleName()))
+            {
+                mfactory = MultiMapSchema.MessageFactories.valueOf(clazz
+                        .getSimpleName());
+            }
+            else
+            {
+                mfactory = new RuntimeMultiMapFactory(clazz);
+                MultiMapSchema.MessageFactory f =
+                        multimapMapping.putIfAbsent(className, mfactory);
+                if (f != null)
+                    mfactory = f;
+            }
+        }
+
+        return mfactory;
     }
 
     @Override
@@ -588,21 +613,21 @@ public final class DefaultIdStrategy extends IdStrategy
 
         switch (inline.id)
         {
-            case ID_BOOL:
+            case RuntimeFieldFactory.ID_BOOL:
                 return boolean.class;
-            case ID_BYTE:
+            case RuntimeFieldFactory.ID_BYTE:
                 return byte.class;
-            case ID_CHAR:
+            case RuntimeFieldFactory.ID_CHAR:
                 return char.class;
-            case ID_SHORT:
+            case RuntimeFieldFactory.ID_SHORT:
                 return short.class;
-            case ID_INT32:
+            case RuntimeFieldFactory.ID_INT32:
                 return int.class;
-            case ID_INT64:
+            case RuntimeFieldFactory.ID_INT64:
                 return long.class;
-            case ID_FLOAT:
+            case RuntimeFieldFactory.ID_FLOAT:
                 return float.class;
-            case ID_DOUBLE:
+            case RuntimeFieldFactory.ID_DOUBLE:
                 return double.class;
             default:
                 throw new RuntimeException("Should never happen.");
@@ -685,6 +710,29 @@ public final class DefaultIdStrategy extends IdStrategy
             return mapClass;
         }
 
+    }
+
+    static final class RuntimeMultiMapFactory
+            implements MultiMapSchema.MessageFactory {
+
+        final Class<?> multimapClass;
+        final RuntimeEnv.Instantiator<?> instantiator;
+
+        public RuntimeMultiMapFactory(Class<?> mapClass) {
+            this.multimapClass = mapClass;
+            instantiator = RuntimeEnv.newInstantiator(mapClass);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <K, V> Multimap<K, V> newMessage() {
+            return (Multimap<K, V>) instantiator.newInstance();
+        }
+
+        @Override
+        public Class<?> typeClass() {
+            return multimapClass;
+        }
     }
 
     static final class Lazy<T> extends HasSchema<T>

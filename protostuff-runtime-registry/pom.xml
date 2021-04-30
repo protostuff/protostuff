@@ -46,6 +46,12 @@
       <artifactId>protostuff-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.protostuff</groupId>
+      <artifactId>protostuff-runtime-guava</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
 </project>

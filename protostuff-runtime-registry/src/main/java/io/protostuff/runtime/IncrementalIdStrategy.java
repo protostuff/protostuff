@@ -40,6 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
+import com.google.common.collect.Multimap;
 import io.protostuff.CollectionSchema;
 import io.protostuff.Input;
 import io.protostuff.MapSchema;
@@ -75,6 +76,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             return new IncrementalIdStrategy(
                     CollectionSchema.MessageFactories.values().length, 1,
                     MapSchema.MessageFactories.values().length, 1,
+                    MultiMapSchema.MessageFactories.values().length, 1,
                     16, 1, // enums
                     64, 1); // pojos
         }
@@ -97,12 +99,14 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         public Registry(
                 int collectionIdMax, int collectionIdStart,
                 int mapIdMax, int mapIdStart,
+                int multimapIdMax, int multimapIdStart,
                 int enumIdMax, int enumIdStart,
                 int pojoIdMax, int pojoIdStart)
         {
             this(DEFAULT_FLAGS, null, 0,
                     collectionIdMax, collectionIdStart,
                     mapIdMax, mapIdStart,
+                    multimapIdMax, multimapIdStart,
                     enumIdMax, enumIdStart,
                     pojoIdMax, pojoIdStart);
         }
@@ -112,6 +116,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                 IdStrategy primaryGroup, int groupId,
                 int collectionIdMax, int collectionIdStart,
                 int mapIdMax, int mapIdStart,
+                int multimapIdMax, int multimapIdStart,
                 int enumIdMax, int enumIdStart,
                 int pojoIdMax, int pojoIdStart)
         {
@@ -120,6 +125,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
                     primaryGroup, groupId,
                     collectionIdMax, collectionIdStart,
                     mapIdMax, mapIdStart,
+                    multimapIdMax, multimapIdStart,
                     enumIdMax, enumIdStart,
                     pojoIdMax, pojoIdStart);
         }
@@ -359,6 +365,10 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
     final ArrayList<RuntimeMapFactory> maps;
 
+    final ConcurrentHashMap<Class<?>, RuntimeMultiMapFactory> multimapMapping;
+
+    final ArrayList<RuntimeMultiMapFactory> multimaps;
+
     final ConcurrentHashMap<Class<?>, RuntimeEnumIO> enumMapping;
 
     final ArrayList<RuntimeEnumIO> enums;
@@ -371,18 +381,21 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
     final ArrayList<RegisteredDelegate<?>> delegates;
 
-    final AtomicInteger pojoId, enumId, collectionId, mapId;
-    final int pojoIdStart, enumIdStart, collectionIdStart, mapIdStart;
+    final AtomicInteger pojoId, enumId, collectionId, mapId, multimapId;
+    final int pojoIdStart, enumIdStart, collectionIdStart, mapIdStart,
+            multimapIdStart;
 
     public IncrementalIdStrategy(
             int collectionIdMax, int collectionIdStart,
             int mapIdMax, int mapIdStart,
+            int multimapIdMax, int multimapIdStart,
             int enumIdMax, int enumIdStart,
             int pojoIdMax, int pojoIdStart)
     {
         this(DEFAULT_FLAGS, null, 0,
                 collectionIdMax, collectionIdStart,
                 mapIdMax, mapIdStart,
+                multimapIdMax, multimapIdStart,
                 enumIdMax, enumIdStart,
                 pojoIdMax, pojoIdStart);
     }
@@ -392,6 +405,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
             IdStrategy primaryGroup, int groupId,
             int collectionIdMax, int collectionIdStart,
             int mapIdMax, int mapIdStart,
+            int multimapIdMax, int multimapIdStart,
             int enumIdMax, int enumIdStart,
             int pojoIdMax, int pojoIdStart)
     // int delegateIdMax, int delegateIdStart)
@@ -400,6 +414,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
 
         assert collectionIdMax > collectionIdStart;
         assert mapIdMax > mapIdStart;
+        assert multimapIdMax > multimapIdStart;
         assert enumIdMax > enumIdStart;
         assert pojoIdMax > pojoIdStart;
         // assert delegateIdMax > delegateIdStart;
@@ -414,6 +429,12 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         mapId = new AtomicInteger(mapIdStart);
         mapMapping = new ConcurrentHashMap<Class<?>, RuntimeMapFactory>(mapIdMax);
         maps = newList(mapIdMax + 1);
+
+        this.multimapIdStart = multimapIdStart;
+        multimapId = new AtomicInteger(multimapIdStart);
+        multimapMapping = new ConcurrentHashMap
+                <Class<?>, RuntimeMultiMapFactory>(multimapIdStart);
+        multimaps = newList(multimapIdMax + 1);
 
         this.enumIdStart = enumIdStart;
         enumId = new AtomicInteger(enumIdStart);
@@ -574,10 +595,45 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         return rfactory;
     }
 
+    private RuntimeMultiMapFactory getRuntimeMultiMapFactory(Class<?> clazz) {
+        RuntimeMultiMapFactory rmfactory = multimapMapping.get(clazz);
+        if (rmfactory == null) {
+            rmfactory = new RuntimeMultiMapFactory();
+            RuntimeMultiMapFactory f = multimapMapping.
+                    putIfAbsent(clazz, rmfactory);
+            if (f != null)
+                rmfactory = f;
+            else {
+                if (clazz.getName().startsWith("com.google.common.collect")
+                    && MapSchema.MessageFactories.
+                        accept(clazz.getSimpleName())) {
+
+                    rmfactory.factory = MultiMapSchema.MessageFactories.valueOf(
+                            clazz.getSimpleName());
+                } else {
+                    rmfactory.instantiator = RuntimeEnv.newInstantiator(clazz);
+                    rmfactory.multimapClass = clazz;
+                }
+
+                int id = multimapId.getAndIncrement();
+                multimaps.set(id, rmfactory);
+
+                rmfactory.id = id;
+            }
+        }
+        return rmfactory;
+    }
+
     @Override
     protected MapSchema.MessageFactory getMapFactory(Class<?> clazz)
     {
         return getRuntimeMapFactory(clazz);
+    }
+
+    @Override
+    protected MultiMapSchema.MessageFactory getMultiMapFactory(Class<?> clazz)
+    {
+        return getRuntimeMultiMapFactory(clazz);
     }
 
     @Override
@@ -999,6 +1055,32 @@ public final class IncrementalIdStrategy extends NumericIdStrategy
         public Class<?> typeClass()
         {
             return factory == null ? mapClass : factory.typeClass();
+        }
+    }
+
+    static final class RuntimeMultiMapFactory
+            implements MultiMapSchema.MessageFactory
+    {
+        volatile int id;
+        MultiMapSchema.MessageFactory factory;
+
+        Class<?> multimapClass;
+        RuntimeEnv.Instantiator<?> instantiator;
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <K, V> Multimap<K, V> newMessage()
+        {
+            if (factory == null)
+                return (Multimap<K, V>) instantiator.newInstance();
+
+            return factory.newMessage();
+        }
+
+        @Override
+        public Class<?> typeClass()
+        {
+            return factory == null ? multimapClass : factory.typeClass();
         }
     }
 

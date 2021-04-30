@@ -44,6 +44,7 @@ import io.protostuff.Message;
 import io.protostuff.Output;
 import io.protostuff.Pipe;
 import io.protostuff.Schema;
+import com.google.common.collect.Multimap;
 
 /**
  * Requires every messsage/pojo/enum/collection/map to be registered with unique ids.
@@ -64,12 +65,13 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
         public Registry()
         {
-            this(DEFAULT_FLAGS, null, 0, 10, 10, 10, 10, 10);
+            this(DEFAULT_FLAGS, null, 0, 10, 10, 10, 10, 10, 10);
         }
 
         public Registry(
                 int initialCollectionSize,
                 int initialMapSize,
+                int initialMultiMapSize,
                 int initialEnumSize,
                 int initialPojoSize,
                 int initialDelegateSize)
@@ -77,6 +79,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             this(DEFAULT_FLAGS, null, 0,
                     initialCollectionSize,
                     initialMapSize,
+                    initialMultiMapSize,
                     initialEnumSize,
                     initialPojoSize,
                     initialDelegateSize);
@@ -87,6 +90,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 IdStrategy primaryGroup, int groupId,
                 int initialCollectionSize,
                 int initialMapSize,
+                int initialMultiMapSize,
                 int initialEnumSize,
                 int initialPojoSize,
                 int initialDelegateSize)
@@ -100,6 +104,12 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping =
                     new IdentityHashMap<Class<?>, RegisteredMapFactory>(
                             initialMapSize);
+
+            IdentityHashMap<Class<?>, RegisteredMultiMapFactory> multimapMapping =
+                    new IdentityHashMap<Class<?>, RegisteredMultiMapFactory>(initialMultiMapSize);
+
+            ArrayList<RegisteredMultiMapFactory> multiMaps =
+                    newList(initialMultiMapSize);
 
             ArrayList<RegisteredMapFactory> maps = newList(initialMapSize);
 
@@ -124,6 +134,7 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                     primaryGroup, groupId,
                     collectionMapping, collections,
                     mapMapping, maps,
+                    multimapMapping, multiMaps,
                     enumMapping, enums,
                     pojoMapping, pojos,
                     delegateMapping, delegates);
@@ -363,6 +374,10 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
 
     final ArrayList<BaseHS<?>> pojos;
 
+    final IdentityHashMap<Class<?>, RegisteredMultiMapFactory> multimapMapping;
+
+    final ArrayList<RegisteredMultiMapFactory> multiMaps;
+
     final IdentityHashMap<Class<?>, RegisteredDelegate<?>> delegateMapping;
 
     final ArrayList<RegisteredDelegate<?>> delegates;
@@ -373,6 +388,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping,
             ArrayList<RegisteredMapFactory> maps,
             IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping,
+            IdentityHashMap<Class<?>, RegisteredMultiMapFactory> multimapMapping,
+            ArrayList<RegisteredMultiMapFactory> multiMaps,
             ArrayList<RegisteredEnumIO> enums,
             IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping,
             ArrayList<BaseHS<?>> pojos,
@@ -384,6 +401,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 collections,
                 mapMapping,
                 maps,
+                multimapMapping,
+                multiMaps,
                 enumMapping,
                 enums,
                 pojoMapping,
@@ -398,6 +417,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
             ArrayList<RegisteredCollectionFactory> collections,
             IdentityHashMap<Class<?>, RegisteredMapFactory> mapMapping,
             ArrayList<RegisteredMapFactory> maps,
+            IdentityHashMap<Class<?>, RegisteredMultiMapFactory> multimapMapping,
+            ArrayList<RegisteredMultiMapFactory> multiMaps,
             IdentityHashMap<Class<?>, RegisteredEnumIO> enumMapping,
             ArrayList<RegisteredEnumIO> enums,
             IdentityHashMap<Class<?>, BaseHS<?>> pojoMapping,
@@ -411,6 +432,8 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         this.collections = collections;
         this.mapMapping = mapMapping;
         this.maps = maps;
+        this.multimapMapping = multimapMapping;
+        this.multiMaps = multiMaps;
         this.enumMapping = enumMapping;
         this.enums = enums;
         this.pojoMapping = pojoMapping;
@@ -471,6 +494,21 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
                 return MapSchema.MessageFactories.valueOf(clazz.getSimpleName());
 
             throw new UnknownTypeException("map: " + clazz);
+        }
+
+        return rf;
+    }
+
+    @Override
+    protected MultiMapSchema.MessageFactory getMultiMapFactory(Class<?> clazz)
+    {
+        final RegisteredMultiMapFactory rf = multimapMapping.get(clazz);
+        if (rf == null)
+        {
+            if (clazz.getName().startsWith("com.google.common.collect"))
+                return MultiMapSchema.MessageFactories.valueOf(clazz.getSimpleName());
+
+            throw new UnknownTypeException("multimap: " + clazz);
         }
 
         return rf;
@@ -909,6 +947,29 @@ public final class ExplicitIdStrategy extends NumericIdStrategy
         {
             super(strategy);
             this.id = id;
+        }
+    }
+
+    static final class RegisteredMultiMapFactory
+            implements MultiMapSchema.MessageFactory {
+
+        final int id;
+        final MultiMapSchema.MessageFactory factory;
+
+        RegisteredMultiMapFactory(int id, MultiMapSchema.MessageFactory factory)
+        {
+            this.id = id;
+            this.factory = factory;
+        }
+
+        @Override
+        public <K, V> Multimap<K, V> newMessage() {
+            return factory.newMessage();
+        }
+
+        @Override
+        public Class<?> typeClass() {
+            return factory.typeClass();
         }
     }
 

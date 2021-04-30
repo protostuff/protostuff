@@ -150,6 +150,11 @@
       </dependency>
       <dependency>
         <groupId>io.protostuff</groupId>
+        <artifactId>protostuff-runtime-guava</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.protostuff</groupId>
         <artifactId>protostuff-runtime-registry</artifactId>
         <version>1.8.0-SNAPSHOT</version>
       </dependency>
