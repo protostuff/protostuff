@@ -1,9 +1,14 @@
-protostuff-1.8.x
+protostuff-1.8.0 2022-03-12
+===========================
 - `-Dprotostuff.runtime.preserve_null_elements=true` preserves null elements in collections/arrays.
   This property replaces `-Dprotostuff.runtime.allow_null_array_element=true`, which only applied to arrays.
   Note that this works only on the binary formats (protostuff/protobuf/graph)
 - allow protostuff-runtime to work with java 9 and above
 - handle invalid repeated/collection/map pojos during serialization (Issue 309)
+- include class and field name in error msg for invalid repeated/collection/map pojos during serialization (Issue 309)
+
+protostuff-1.7.4 2021-04-29
+===========================
 - include class and field name in error msg for invalid repeated/collection/map pojos during serialization (Issue 309)
 
 protostuff-1.7.3 2021-04-29
