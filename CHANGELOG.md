@@ -1,3 +1,5 @@
+protostuff-1.8.1-SNAPSHOT
+
 protostuff-1.8.0 2022-03-12
 ===========================
 - `-Dprotostuff.runtime.preserve_null_elements=true` preserves null elements in collections/arrays.
