@@ -36,7 +36,7 @@ public class HasDelegate<T> implements PolymorphicSchema.Factory
         this.delegate = delegate;
         this.strategy = strategy;
 
-        genericElementSchema = new ArraySchemas.DelegateArray(strategy, null,
+        genericElementSchema = new ArraySchemas.DelegateArray(strategy, ArraySchemas.GENERIC_HANDLER,
                 (Delegate<Object>) delegate);
     }
 
