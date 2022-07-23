@@ -1,4 +1,5 @@
 protostuff-1.8.1-SNAPSHOT
+- fix NPE for `delegates` on arrays (Issue 336)
 
 protostuff-1.8.0 2022-03-12
 ===========================
