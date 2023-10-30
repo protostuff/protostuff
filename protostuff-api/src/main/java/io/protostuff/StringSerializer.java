@@ -2,6 +2,7 @@ package io.protostuff;
 
 import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import static java.lang.Character.MIN_HIGH_SURROGATE;
 import static java.lang.Character.MIN_LOW_SURROGATE;
@@ -80,6 +81,8 @@ public final class StringSerializer
             (byte) '7', (byte) '7', (byte) '5',
             (byte) '8', (byte) '0', (byte) '8'
     };
+
+    static final Charset UTF_8 = Charset.forName("UTF-8");
 
     static final int TWO_BYTE_LOWER_LIMIT = 1 << 7;
 
@@ -1117,62 +1120,56 @@ public final class StringSerializer
         public static String deser(byte[] nonNullValue, int offset, int len)
         {
             final String result;
-            try
+
+            // Try to use the built-in deserialization first, since we expect
+            // that the most likely case is a valid UTF-8 encoded byte array.
+            // Additionally, the built-in serialization method has one less
+            // char[] copy than readUTF.
+            //
+            // If, however, there are invalid/malformed characters, i.e. 3-byte
+            // surrogates / 3-byte surrogate pairs, we should fall back to the
+            // readUTF method as it should be able to properly handle 3-byte surrogates
+            // (and therefore 6-byte surrogate pairs) in Java 8+.
+            //
+            // While Protostuff and many other applications, still use 3-byte surrogates
+            // / 6-byte surrogate pairs, the standard 'forbids' their use, and Java 8
+            // has started to enforce the standard, resulting in 'corrupted' data in
+            // strings when decoding using new String(nonNullValue, "UTF-8");
+            //
+            // While the readUTF should be able to handle both Standard Unicode
+            // (i.e. new String().getBytes("UTF-8") and the Legacy Unicode
+            // (with 3-byte surrogates, used in CESU-8 and Modified UTF-8),
+            // we don't want to introduce an unexpected loss of data due to
+            // some unforseen bug. As a result, a fallback mechanism is in
+            // place such that the worst case scenario results in the previous
+            // implementation's behaviour.
+            //
+            // For the Java 8 change, see: https://bugs.openjdk.java.net/browse/JDK-7096080
+
+            result = new String(nonNullValue, offset, len, UTF_8);
+
+            // Check if we should scan the string to make sure there were no
+            // corrupt characters caused by 3-byte / 6-byte surrogate pairs.
+            //
+            // In general, this *should* only be required for systems reading
+            // data stored using legacy protostuff. Moving forward, the data
+            // should be readable by new String("UTF-8"), so the scan is unnecessary.
+            if (CESU8_COMPAT && result.indexOf(0xfffd) != -1)
             {
-                // Try to use the built in deserialization first, since we expect
-                // that the most likely case is a valid UTF-8 encoded byte array.
-                // Additionally, the built in serialization method has one less
-                // char[] copy than readUTF.
-                //
-                // If, however, there are invalid/malformed characters, i.e. 3-byte
-                // surrogates / 3-byte surrogate pairs, we should fall back to the
-                // readUTF method as it should be able to properly handle 3-byte surrogates
-                // (and therefore 6-byte surrogate pairs) in Java 8+.
-                //
-                // While Protostuff and many other applications, still use 3-byte surrogates
-                // / 6-byte surrogate pairs, the standard 'forbids' their use, and Java 8
-                // has started to enforce the standard, resulting in 'corrupted' data in
-                // strings when decoding using new String(nonNullValue, "UTF-8");
-                //
-                // While the readUTF should be able to handle both Standard Unicode
-                // (i.e. new String().getBytes("UTF-8") and the Legacy Unicode
-                // (with 3-byte surrogates, used in CESU-8 and Modified UTF-8),
-                // we don't want to introduce an unexpected loss of data due to
-                // some unforseen bug. As a result, a fallback mechanism is in
-                // place such that the worst case scenario results in the previous
-                // implementation's behaviour.
-                //
-                // For the Java 8 change, see: https://bugs.openjdk.java.net/browse/JDK-7096080
-
-                result = new String(nonNullValue, offset, len, "UTF-8");
-
-                // Check if we should scan the string to make sure there were no
-                // corrupt characters caused by 3-byte / 6-byte surrogate pairs.
-                //
-                // In general, this *should* only be required for systems reading
-                // data stored using legacy protostuff. Moving forward, the data
-                // should be readable by new String("UTF-8"), so the scan is unnecessary.
-                if (CESU8_COMPAT && result.indexOf(0xfffd) != -1)
+                // If it contains the REPLACEMENT character, then there's a strong
+                // possibility of it containing 3-byte surrogates / 6-byte surrogate
+                // pairs, and we should try decoding using readUTF to handle it.
+                try
                 {
-                    // If it contains the REPLACEMENT character, then there's a strong
-                    // possibility of it containing 3-byte surrogates / 6-byte surrogate
-                    // pairs, and we should try decoding using readUTF to handle it.
-                    try
-                    {
-                        return readUTF(nonNullValue, offset, len);
-                    }
-                    catch (UTFDataFormatException e)
-                    {
-                        // Unexpected, but most systems previously using
-                        // Protostuff don't expect error to occur from
-                        // String deserialization, so we use this just in case.
-                        return result;
-                    }
+                    return readUTF(nonNullValue, offset, len);
                 }
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                throw new RuntimeException(e);
+                catch (UTFDataFormatException e)
+                {
+                    // Unexpected, but most systems previously using
+                    // Protostuff don't expect error to occur from
+                    // String deserialization, so we use this just in case.
+                    return result;
+                }
             }
 
             return result;
@@ -1223,7 +1220,7 @@ public final class StringSerializer
             int i = 0;
             int c = 0;
 
-            // Optimizaiton: Assume that the characters are all 7-bits encodable
+            // Optimization: Assume that the characters are all 7-bits encodable
             // (which is most likely the standard case).
             // If they're not, break out and take the 'slow' path.
             for (; i < len; i++)
