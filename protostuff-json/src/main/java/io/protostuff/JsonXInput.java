@@ -2,6 +2,7 @@ package io.protostuff;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.NetPermission;
 import java.nio.ByteBuffer;
 
 public class JsonXInput implements Input
@@ -67,13 +68,41 @@ public class JsonXInput implements Input
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         int nestedObjects = 0;
+        boolean quote = false;
         while (true)
         {
             checkBuffer(1);
             byte b = buf[o++];
+            if (b == '\\')
+            {
+                checkBuffer(1);
+                b = buf[o++];
+                if (b == 'u')
+                {
+                    checkBuffer(4);
+                    o += 4;
+                }
+                continue;
+            }
+            if (b == '"')
+                quote = !quote;
+            if (quote)
+                continue;
+
             if (b == '{' || b == ']')
                 nestedObjects++;
-            if ((b == '}' || b == ']') && --nestedObjects == 0)
+            else if (b == '}' || b == ']')
+            {
+                if (nestedObjects == 0)
+                {
+                    o--;
+                    break;
+                }
+                if (--nestedObjects == 0)
+                    break;
+            }
+
+            if (b == ',' && nestedObjects == 0)
                 break;
         }
         readRepeated();
