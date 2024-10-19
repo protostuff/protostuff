@@ -10,6 +10,7 @@ import javax.annotation.processing.Generated;
 <else>
 import javax.annotation.Generated;
 <endif>
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
