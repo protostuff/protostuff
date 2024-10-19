@@ -24,9 +24,9 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <copy failonerror="false" file="src/main/etc/MANIFEST.MF" tofile="target/MANIFEST.MF" />
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>

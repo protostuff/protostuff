@@ -24,7 +24,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <copy todir="${project.build.directory}/extra-sources">
                   <fileset dir="../protostuff-runtime/src/main/java">
                     <exclude name="**/RuntimeUnsafeFieldFactory.java" />
@@ -42,7 +42,7 @@
                     <exclude name="**/*RuntimeObjectSchemaTest.java" />
                   </fileset>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>
