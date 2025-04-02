@@ -180,6 +180,9 @@ public final class ProtostuffIOUtil
         if (buffer.start != buffer.offset)
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 
+        if (message == null)
+            throw new NullPointerException("Serialized object cannot be null.");
+
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         try
         {
