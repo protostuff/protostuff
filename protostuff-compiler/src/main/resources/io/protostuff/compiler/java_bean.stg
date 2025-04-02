@@ -149,6 +149,7 @@ import javax.annotation.processing.Generated;
 <else>
 import javax.annotation.Generated;
 <endif>
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -315,14 +316,14 @@ field_getters_and_setters(field, options, message) ::= <<
 // <field.name; format="CC">
 <if(field.repeated)>
 
-public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">List()
+public List\<<map_primitive_wrapper.(field.javaType)>\> get<field.name; format="PC">()
 {
     return <var(val=field.name, fmt="CC", options=options)>;
 }
 
 <if(!options.no_setters)>
 
-public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">List(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
+public <field:builder_pattern_return_type(field=it, options=options, type=message.name)> set<field.name; format="PC">(List\<<map_primitive_wrapper.(field.javaType)>\> <var(val=field.name, fmt="CC", options=options)>)
 {
     this.<var(val=field.name, fmt="CC", options=options)> = <var(val=field.name, fmt="CC", options=options)>;
     <field:builder_pattern_return(field=it, options=options)>
@@ -330,6 +331,12 @@ public <field:builder_pattern_return_type(field=it, options=options, type=messag
 
 <endif>
 <if(options.generate_helper_methods)>
+
+public boolean has<field.name; format="PC">()
+{
+   return <var(val=field.name, fmt="CC", options=options)> != null && !<var(val=field.name, fmt="CC", options=options)>.isEmpty();
+}
+
 
 public <map_primitive_wrapper.(field.javaType)> get<field.name; format="PC">(int index)
 {
@@ -443,7 +450,7 @@ public void writeExternal(ObjectOutput out) throws IOException
 
 message_impl_message(message, options) ::= <<
 // message method
-
+@Override
 public Schema\<<message.name>\> cachedSchema()
 {
     return DEFAULT_INSTANCE;
@@ -453,22 +460,25 @@ public Schema\<<message.name>\> cachedSchema()
 
 message_impl_schema(message, options) ::= <<
 // schema methods
-
+@Override
 public <message.name> newMessage()
 {
     return new <message.name>();
 }
 
+@Override
 public Class\<<message.name>\> typeClass()
 {
     return <message.name>.class;
 }
 
+@Override
 public String messageName()
 {
     return <message.name>.class.getSimpleName();
 }
 
+@Override
 public String messageFullName()
 {
     return <message.name>.class.getName();
@@ -481,18 +491,18 @@ public String messageFullName()
 >>
 
 message_method_is_initialized(message, options) ::= <<
-<if(message.requiredFieldPresentOnCurrent)>
+
+@Override
 public boolean isInitialized(<message.name> message)
 {
+<if(message.requiredFieldPresentOnCurrent)>
     return 
         <message.fields:field_is_initialized(field=it, options=options, name="message"); separator=" \n&& ">;
-}
 <else>
-public boolean isInitialized(<message.name> message)
-{
     return true;
-}
 <endif>
+
+}
 >>
 
 field_is_initialized(field, options, name) ::= <<
@@ -521,6 +531,7 @@ message_fields_to_string(field, options) ::= <<
 
 message_field_merge(message, options, name) ::= <<
 
+@Override
 public void mergeFrom(Input input, <message.name> <name>) throws IOException
 {
 <if(options.("java_unmodifiable_list"))>
@@ -610,6 +621,7 @@ break;
 
 message_field_write(message, options, name) ::= <<
 
+@Override
 public void writeTo(Output output, <message.name> <name>) throws IOException
 {
     <message.fields:field_write_switch(field=it, options=options, name=name); separator="\n\n">
@@ -707,6 +719,7 @@ if(<name>.<var(val=field.name, fmt="CC", options=options)> != null)
 
 message_field_map(message, options) ::= <<
 <if(options.generate_field_map)>
+@Override
 public String getFieldName(int number)
 {
     switch(number)
@@ -716,6 +729,7 @@ public String getFieldName(int number)
     }
 }
 
+@Override
 public int getFieldNumber(String name)
 {
     final Integer number = __fieldMap.get(name);
@@ -728,11 +742,13 @@ static
     <message.fields:field_map(field=it, options=options, mapVar="__fieldMap"); separator="\n">
 }
 <else>
+@Override
 public String getFieldName(int number)
 {
     return Integer.toString(number);
 }
 
+@Override
 public int getFieldNumber(String name)
 {
     return Integer.parseInt(name);
