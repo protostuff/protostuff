@@ -16,9 +16,11 @@ package io.protostuff;
 
 import static io.protostuff.SerializableObjects.bar;
 import static io.protostuff.SerializableObjects.baz;
+import static io.protostuff.SerializableObjects.bazV2;
 import static io.protostuff.SerializableObjects.foo;
 import static io.protostuff.SerializableObjects.negativeBar;
 import static io.protostuff.SerializableObjects.negativeBaz;
+import static io.protostuff.SerializableObjects.negativeBazV2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,6 +84,19 @@ public abstract class StandardTest extends AbstractTest
             byte[] output = toByteArray(bazCompare);
             mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema());
             SerializableObjects.assertEquals(bazCompare, dbaz);
+        }
+    }
+
+    public void testBazV2() throws Exception
+    {
+        for (BazV2 bazCompare : new BazV2[] { bazV2, negativeBazV2 })
+        {
+            Baz dbaz = new Baz();
+
+            byte[] output = toByteArray(bazCompare);
+            mergeFrom(output, 0, output.length, dbaz, dbaz.cachedSchema());
+            SerializableObjects
+                    .assertEquals(new Baz(bazCompare.getId(), bazCompare.getName(), bazCompare.getTimestamp()), dbaz);
         }
     }
 

@@ -47,7 +47,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
         Foo dfoo = new Foo();
 
         byte[] data = JsonXIOUtil.toByteArray(fooCompare, schema, true, buf());
-        JsonIOUtil.mergeFrom(data, dfoo, schema, true);
+        JsonXIOUtil.mergeFrom(data, dfoo, schema, true);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
 
@@ -70,7 +70,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
         }
         byte[] data = out.toByteArray();
 
-        JsonIOUtil.mergeFrom(data, dfoo, schema, true);
+        JsonXIOUtil.mergeFrom(data, dfoo, schema, true);
         SerializableObjects.assertEquals(fooCompare, dfoo);
     }
 
@@ -83,7 +83,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
             Bar dbar = new Bar();
 
             byte[] data = JsonXIOUtil.toByteArray(barCompare, schema, true, buf());
-            JsonIOUtil.mergeFrom(data, dbar, schema, true);
+            JsonXIOUtil.mergeFrom(data, dbar, schema, true);
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
@@ -108,7 +108,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
             }
             byte[] data = out.toByteArray();
 
-            JsonIOUtil.mergeFrom(data, dbar, schema, true);
+            JsonXIOUtil.mergeFrom(data, dbar, schema, true);
             SerializableObjects.assertEquals(barCompare, dbar);
         }
     }
@@ -122,7 +122,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
             Baz dbaz = new Baz();
 
             byte[] data = JsonXIOUtil.toByteArray(bazCompare, schema, true, buf());
-            JsonIOUtil.mergeFrom(data, dbaz, schema, true);
+            JsonXIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
@@ -147,7 +147,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
             }
             byte[] data = out.toByteArray();
 
-            JsonIOUtil.mergeFrom(data, dbaz, schema, true);
+            JsonXIOUtil.mergeFrom(data, dbaz, schema, true);
             SerializableObjects.assertEquals(bazCompare, dbaz);
         }
     }
@@ -161,7 +161,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
 
         byte[] data = JsonXIOUtil.toByteArray(zooCompare, schema, true, buf());
 
-        JsonIOUtil.mergeFrom(data, dzoo, schema, true);
+        JsonXIOUtil.mergeFrom(data, dzoo, schema, true);
         SerializableObjects.assertEquals(zooCompare, dzoo);
     }
 
@@ -184,7 +184,7 @@ public class JsonXNumericRuntimeTest extends AbstractTest
         }
         byte[] data = out.toByteArray();
 
-        JsonIOUtil.mergeFrom(data, dzoo, schema, true);
+        JsonXIOUtil.mergeFrom(data, dzoo, schema, true);
         SerializableObjects.assertEquals(zooCompare, dzoo);
     }
 
