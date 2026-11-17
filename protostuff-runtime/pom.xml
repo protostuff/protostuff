@@ -9,6 +9,10 @@
   <name>protostuff :: runtime</name>
   <description>protobuf serialization for pre-existing objects</description>
 
+  <properties>
+    <!-- empty default; the jacoco prepare-agent goal prepends its agent here when used -->
+    <argLine></argLine>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -56,6 +60,8 @@
           <forkCount>1.5C</forkCount>
           <!-- execute each test in separate process (workaround) -->
           <reuseForks>false</reuseForks>
+          <!-- JDK 9+ module access for reflection on java.util / java.lang internals -->
+          <argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
     </plugins>

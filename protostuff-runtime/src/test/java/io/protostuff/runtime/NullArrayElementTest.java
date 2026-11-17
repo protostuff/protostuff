@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Test for arrays that contain null elements.
@@ -736,49 +737,49 @@ public abstract class NullArrayElementTest extends AbstractTest
                 if (other.boolArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(boolArrayList.get(0)).equals(Arrays.asList(other.boolArrayList.get(0))))
+            else if (!arraysEqual(boolArrayList, other.boolArrayList))
                 return false;
             if (charArrayList == null)
             {
                 if (other.charArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(charArrayList.get(0)).equals(Arrays.asList(other.charArrayList.get(0))))
+            else if (!arraysEqual(charArrayList, other.charArrayList))
                 return false;
             if (doubleArrayList == null)
             {
                 if (other.doubleArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(doubleArrayList.get(0)).equals(Arrays.asList(other.doubleArrayList.get(0))))
+            else if (!arraysEqual(doubleArrayList, other.doubleArrayList))
                 return false;
             if (floatArrayList == null)
             {
                 if (other.floatArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(floatArrayList.get(0)).equals(Arrays.asList(other.floatArrayList.get(0))))
+            else if (!arraysEqual(floatArrayList, other.floatArrayList))
                 return false;
             if (intArrayList == null)
             {
                 if (other.intArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(intArrayList.get(0)).equals(Arrays.asList(other.intArrayList.get(0))))
+            else if (!arraysEqual(intArrayList, other.intArrayList))
                 return false;
             if (longArrayList == null)
             {
                 if (other.longArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(longArrayList.get(0)).equals(Arrays.asList(other.longArrayList.get(0))))
+            else if (!arraysEqual(longArrayList, other.longArrayList))
                 return false;
             if (shortArrayList == null)
             {
                 if (other.shortArrayList != null)
                     return false;
             }
-            else if (!Arrays.asList(shortArrayList.get(0)).equals(Arrays.asList(other.shortArrayList.get(0))))
+            else if (!arraysEqual(shortArrayList, other.shortArrayList))
                 return false;
             return true;
         }
@@ -867,49 +868,49 @@ public abstract class NullArrayElementTest extends AbstractTest
                 if (other.boolArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(boolArrayList.get(0), other.boolArrayList.get(0)))
+            else if (!arraysEqual(boolArrayList, other.boolArrayList))
                 return false;
             if (charArrayList == null)
             {
                 if (other.charArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(charArrayList.get(0), other.charArrayList.get(0)))
+            else if (!arraysEqual(charArrayList, other.charArrayList))
                 return false;
             if (doubleArrayList == null)
             {
                 if (other.doubleArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(doubleArrayList.get(0), other.doubleArrayList.get(0)))
+            else if (!arraysEqual(doubleArrayList, other.doubleArrayList))
                 return false;
             if (floatArrayList == null)
             {
                 if (other.floatArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(floatArrayList.get(0), other.floatArrayList.get(0)))
+            else if (!arraysEqual(floatArrayList, other.floatArrayList))
                 return false;
             if (intArrayList == null)
             {
                 if (other.intArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(intArrayList.get(0), other.intArrayList.get(0)))
+            else if (!arraysEqual(intArrayList, other.intArrayList))
                 return false;
             if (longArrayList == null)
             {
                 if (other.longArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(longArrayList.get(0), other.longArrayList.get(0)))
+            else if (!arraysEqual(longArrayList, other.longArrayList))
                 return false;
             if (shortArrayList == null)
             {
                 if (other.shortArrayList != null)
                     return false;
             }
-            else if (!Arrays.equals(shortArrayList.get(0), other.shortArrayList.get(0)))
+            else if (!arraysEqual(shortArrayList, other.shortArrayList))
                 return false;
             return true;
         }
@@ -998,49 +999,49 @@ public abstract class NullArrayElementTest extends AbstractTest
                 if (other.boolHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(boolHashMap.get(0)).equals(Arrays.asList(other.boolHashMap.get(0))))
+            else if (!arraysEqual(boolHashMap, other.boolHashMap))
                 return false;
             if (charHashMap == null)
             {
                 if (other.charHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(charHashMap.get(0)).equals(Arrays.asList(other.charHashMap.get(0))))
+            else if (!arraysEqual(charHashMap, other.charHashMap))
                 return false;
             if (doubleHashMap == null)
             {
                 if (other.doubleHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(doubleHashMap.get(0)).equals(Arrays.asList(other.doubleHashMap.get(0))))
+            else if (!arraysEqual(doubleHashMap, other.doubleHashMap))
                 return false;
             if (floatHashMap == null)
             {
                 if (other.floatHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(floatHashMap.get(0)).equals(Arrays.asList(other.floatHashMap.get(0))))
+            else if (!arraysEqual(floatHashMap, other.floatHashMap))
                 return false;
             if (intHashMap == null)
             {
                 if (other.intHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(intHashMap.get(0)).equals(Arrays.asList(other.intHashMap.get(0))))
+            else if (!arraysEqual(intHashMap, other.intHashMap))
                 return false;
             if (longHashMap == null)
             {
                 if (other.longHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(longHashMap.get(0)).equals(Arrays.asList(other.longHashMap.get(0))))
+            else if (!arraysEqual(longHashMap, other.longHashMap))
                 return false;
             if (shortHashMap == null)
             {
                 if (other.shortHashMap != null)
                     return false;
             }
-            else if (!Arrays.asList(shortHashMap.get(0)).equals(Arrays.asList(other.shortHashMap.get(0))))
+            else if (!arraysEqual(shortHashMap, other.shortHashMap))
                 return false;
             return true;
         }
@@ -1099,10 +1100,48 @@ public abstract class NullArrayElementTest extends AbstractTest
         int len = Array.getLength(array);
         for (int i = 0; i < len; i++)
             list.add(Array.get(array, i));
-        
+
         return list;
     }
-    
+
+    /**
+     * Compares every element (array) of both lists by content. Primitive and object arrays are both supported.
+     */
+    static boolean arraysEqual(List<?> list, List<?> otherList)
+    {
+        if (otherList == null || list.size() != otherList.size())
+            return false;
+
+        for (int i = 0, len = list.size(); i < len; i++)
+        {
+            if (!Arrays.deepEquals(new Object[] { list.get(i) }, new Object[] { otherList.get(i) }))
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Compares every entry of both maps, with the values (arrays) compared by content.
+     */
+    static boolean arraysEqual(Map<?, ?> map, Map<?, ?> otherMap)
+    {
+        if (otherMap == null || map.size() != otherMap.size())
+            return false;
+
+        for (Map.Entry<?, ?> entry : map.entrySet())
+        {
+            if (!otherMap.containsKey(entry.getKey()))
+                return false;
+
+            if (!Arrays.deepEquals(new Object[] { entry.getValue() },
+                    new Object[] { otherMap.get(entry.getKey()) }))
+                return false;
+        }
+
+        return true;
+    }
+
     public static final class PojoWithArrayPrimitiveInMap
     {
         HashMap<Integer,boolean[]> boolHashMap = new HashMap<Integer,boolean[]>();
@@ -1143,49 +1182,49 @@ public abstract class NullArrayElementTest extends AbstractTest
                 if (other.boolHashMap != null)
                     return false;
             }
-            else if (!asList(boolHashMap.get(0)).equals(asList(other.boolHashMap.get(0))))
+            else if (!arraysEqual(boolHashMap, other.boolHashMap))
                 return false;
             if (charHashMap == null)
             {
                 if (other.charHashMap != null)
                     return false;
             }
-            else if (!asList(charHashMap.get(0)).equals(asList(other.charHashMap.get(0))))
+            else if (!arraysEqual(charHashMap, other.charHashMap))
                 return false;
             if (doubleHashMap == null)
             {
                 if (other.doubleHashMap != null)
                     return false;
             }
-            else if (!asList(doubleHashMap.get(0)).equals(asList(other.doubleHashMap.get(0))))
+            else if (!arraysEqual(doubleHashMap, other.doubleHashMap))
                 return false;
             if (floatHashMap == null)
             {
                 if (other.floatHashMap != null)
                     return false;
             }
-            else if (!asList(floatHashMap.get(0)).equals(asList(other.floatHashMap.get(0))))
+            else if (!arraysEqual(floatHashMap, other.floatHashMap))
                 return false;
             if (intHashMap == null)
             {
                 if (other.intHashMap != null)
                     return false;
             }
-            else if (!asList(intHashMap.get(0)).equals(asList(other.intHashMap.get(0))))
+            else if (!arraysEqual(intHashMap, other.intHashMap))
                 return false;
             if (longHashMap == null)
             {
                 if (other.longHashMap != null)
                     return false;
             }
-            else if (!asList(longHashMap.get(0)).equals(asList(other.longHashMap.get(0))))
+            else if (!arraysEqual(longHashMap, other.longHashMap))
                 return false;
             if (shortHashMap == null)
             {
                 if (other.shortHashMap != null)
                     return false;
             }
-            else if (!asList(shortHashMap.get(0)).equals(asList(other.shortHashMap.get(0))))
+            else if (!arraysEqual(shortHashMap, other.shortHashMap))
                 return false;
             return true;
         }
