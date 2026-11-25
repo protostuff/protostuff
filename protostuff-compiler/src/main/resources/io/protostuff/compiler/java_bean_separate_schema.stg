@@ -5,6 +5,7 @@ message_block(message, module, options, nested) ::= <<
 <message:message_header(message=it, module=module, options=options)>
 <endif>
 
+@Generated("<module.generator>")
 public <if(nested)>static <endif>final class <message.name> <options.(message.name + ".extends_declaration"); format=" "><message:message_impl_declaration(message=it, options=options)>
 {
     <message.nestedMessages:message_block(message=it, module=module, options=options, nested="true")>
@@ -59,11 +60,13 @@ static final <message.name> DEFAULT_INSTANCE = new <message.name>();
 message_impl_serializable(message, options) ::= <<
 // java serialization
 
+@Override
 public void readExternal(ObjectInput in) throws IOException
 {
     GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
 }
 
+@Override
 public void writeExternal(ObjectOutput out) throws IOException
 {
     GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
@@ -74,6 +77,7 @@ public void writeExternal(ObjectOutput out) throws IOException
 message_impl_message(message, options) ::= <<
 // message method
 
+@Override
 public Schema\<<message.name>\> cachedSchema()
 {
     return SCHEMA;
@@ -83,6 +87,7 @@ public Schema\<<message.name>\> cachedSchema()
 
 message_field_map(message, options) ::= <<
 <if(options.generate_field_map)>
+@Override
 public String getFieldName(int number)
 {
     switch(number)
@@ -92,6 +97,7 @@ public String getFieldName(int number)
     }
 }
 
+@Override
 public int getFieldNumber(String name)
 {
     final Integer number = fieldMap.get(name);
@@ -103,11 +109,13 @@ final java.util.HashMap\<String,Integer\> fieldMap = new java.util.HashMap\<Stri
     <message.fields:field_map(field=it, options=options, mapVar="fieldMap"); separator="\n">
 }
 <else>
+@Override
 public String getFieldName(int number)
 {
     return Integer.toString(number);
 }
 
+@Override
 public int getFieldNumber(String name)
 {
     return Integer.parseInt(name);
