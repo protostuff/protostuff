@@ -29,10 +29,12 @@ public final class SerializableObjects
 {
 
     public static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
+    public static final BazV2 negativeBazV2 = new BazV2(-567, "negativeBaz", -202020202, "value{[");
     public static final Bar negativeBar = new Bar(-12, "negativeBar", negativeBaz, Bar.Status.STARTED,
             ByteString.copyFromUtf8("a1"), true, -130.031f, -1000.0001d, -101010101);
 
     public static final Baz baz = new Baz(567, "baz", 202020202);
+    public static final BazV2 bazV2 = new BazV2(567, "baz", 202020202, "value\"]}");
     public static final Bar bar = new Bar(890, "bar", baz, Bar.Status.STARTED,
             ByteString.copyFromUtf8("b2"), true, 150.051f, 2000.0002d, 303030303);
 

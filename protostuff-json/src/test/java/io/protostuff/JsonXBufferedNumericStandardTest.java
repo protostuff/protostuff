@@ -29,7 +29,7 @@ public class JsonXBufferedNumericStandardTest extends StandardTest
     protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
             Schema<T> schema) throws IOException
     {
-        JsonIOUtil.mergeFrom(data, 0, data.length, message, schema, true);
+        JsonXIOUtil.mergeFrom(data, 0, data.length, message, schema, true);
     }
 
     @Override

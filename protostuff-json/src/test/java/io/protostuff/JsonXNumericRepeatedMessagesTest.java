@@ -31,7 +31,7 @@ public class JsonXNumericRepeatedMessagesTest extends RepeatedMessagesTest
     @Override
     protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
-        return JsonIOUtil.parseListFrom(in, schema, true);
+        return JsonXIOUtil.parseListFrom(in, schema, true);
     }
 
     @Override
