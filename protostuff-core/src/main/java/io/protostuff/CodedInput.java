@@ -266,7 +266,7 @@ public final class CodedInput implements Input
     public boolean readBool() throws IOException
     {
         checkIfPackedField();
-        return readRawVarint32() != 0;
+        return readRawVarint64() != 0;
     }
 
     /**

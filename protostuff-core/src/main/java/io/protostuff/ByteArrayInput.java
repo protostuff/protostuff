@@ -361,7 +361,7 @@ public final class ByteArrayInput implements Input
     public boolean readBool() throws IOException
     {
         checkIfPackedField();
-        return buffer[offset++] != 0;
+        return readRawVarint64() != 0;
     }
 
     /**

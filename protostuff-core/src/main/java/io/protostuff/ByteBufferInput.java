@@ -350,7 +350,7 @@ public final class ByteBufferInput implements Input
     public boolean readBool() throws IOException
     {
         checkIfPackedField();
-        return buffer.get() != 0;
+        return readRawVarint64() != 0;
     }
 
     /**
