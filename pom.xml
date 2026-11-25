@@ -25,8 +25,8 @@
     <stringtemplate-version>3.2.1</stringtemplate-version>
     <mavenVersion>3.2.3</mavenVersion>
     <jmh.version>1.23</jmh.version>
-    <javac.target>1.6</javac.target>
-    <javadoc.source>6</javadoc.source>
+    <javac.target>1.8</javac.target>
+    <javadoc.source>8</javadoc.source>
   </properties>
 
   <developers>
